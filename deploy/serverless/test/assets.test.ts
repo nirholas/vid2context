@@ -3,10 +3,13 @@ import { join, relative } from 'node:path';
 import { afterAll, describe, expect, it } from 'vitest';
 // @ts-expect-error: plain ESM build script without type declarations
 import { buildAssets, mountPath, normalizeBasePath, rebaseHtml, spaMounts } from '../lib/assets.mjs';
+import { staticSiteFixture } from './site-fixture.ts';
 
 const root = join(import.meta.dirname, '../../..');
 const scratch = join(root, '.vid2context');
 const outs: string[] = [];
+const siteDir = staticSiteFixture(root);
+outs.push(siteDir);
 
 function tempOut(): string {
   const dir = mkdtempSync(join(scratch, 'assets-test-'));
@@ -23,10 +26,10 @@ type Part = { name: string; mount: string; status: string; reason?: string };
 describe('buildAssets', () => {
   it('assembles the real site and llms files at the root and reports skipped apps', () => {
     const out = tempOut();
-    const res = buildAssets({ root, out, build: false, log: () => {} });
+    const res = buildAssets({ root, out, build: false, siteDir, log: () => {} });
     for (const f of ['index.html', '404.html', 'llms.txt', 'llms-full.txt']) expect(existsSync(join(out, f))).toBe(true);
     expect(readFileSync(join(out, 'llms.txt'), 'utf8')).toBe(readFileSync(join(root, 'llms.txt'), 'utf8'));
-    expect(readFileSync(join(out, 'index.html'), 'utf8')).toBe(readFileSync(join(root, 'site/index.html'), 'utf8'));
+    expect(readFileSync(join(out, 'index.html'), 'utf8')).toBe(readFileSync(join(siteDir, 'index.html'), 'utf8'));
     // Source files of the site never ship.
     expect(existsSync(join(out, 'package.json'))).toBe(false);
     // No _redirects: on Workers a rewrite rule would also catch the apps' own assets.
@@ -47,7 +50,7 @@ describe('buildAssets', () => {
 
   it('rebases the site for a subpath (GitHub Pages project sites)', () => {
     const out = tempOut();
-    buildAssets({ root, out, build: false, basePath: '/vid2context/', log: () => {} });
+    buildAssets({ root, out, build: false, siteDir, basePath: '/vid2context/', log: () => {} });
     const html = readFileSync(join(out, 'index.html'), 'utf8');
     expect(html).toContain('href="/vid2context/llms.txt"');
     expect(html).not.toMatch(/href="\/llms\.txt"/);
@@ -55,9 +58,9 @@ describe('buildAssets', () => {
   });
 
   it('refuses to write into the repo root or site/', () => {
-    expect(() => buildAssets({ root, out: root, build: false, log: () => {} })).toThrow(/Refusing/);
-    expect(() => buildAssets({ root, out: join(root, 'site/out'), build: false, log: () => {} })).toThrow(/Refusing/);
-    expect(() => buildAssets({ root, out: '/tmp/v2c-outside', build: false, log: () => {} })).toThrow(/Refusing/);
+    expect(() => buildAssets({ root, out: root, build: false, siteDir, log: () => {} })).toThrow(/Refusing/);
+    expect(() => buildAssets({ root, out: join(root, 'site/out'), build: false, siteDir, log: () => {} })).toThrow(/Refusing/);
+    expect(() => buildAssets({ root, out: '/tmp/v2c-outside', build: false, siteDir, log: () => {} })).toThrow(/Refusing/);
   });
 });
 
@@ -80,5 +83,15 @@ describe('path helpers', () => {
 
   it('keeps every scratch output under the ignored .vid2context directory', () => {
     for (const d of outs) expect(relative(root, d).startsWith('.vid2context')).toBe(true);
+  });
+});
+
+describe.skipIf(!(process.env.WRANGLER_TEST || process.env.LIVE))('the real Astro site (slow)', () => {
+  it('builds site/ with Astro when it is an Astro project and copies its output', () => {
+    const out = tempOut();
+    const res = buildAssets({ root, out, build: false, buildSite: true, log: () => {} });
+    const site = (res.parts as Part[])[0];
+    expect(site?.name).toBe('site');
+    expect(existsSync(join(out, 'index.html'))).toBe(true);
   });
 });

@@ -65,6 +65,7 @@ export function publishPages(o = {}) {
     clientOnly: true,
     apiBase: o.apiBase ?? '',
     basePath,
+    siteDir: o.siteDir,
     log,
   });
   writeFileSync(join(out, '.nojekyll'), '');
@@ -82,14 +83,15 @@ export function publishPages(o = {}) {
   const email = git(repo, ['config', 'user.email'], { allowFail: true }).out;
   const name = git(repo, ['config', 'user.name'], { allowFail: true }).out;
   if (name !== 'nirholas' || !ALLOWED_EMAILS.includes(email)) {
-    throw new Error(`git identity is "${name} <${email}>"; AGENTS.md allows only nirholas with a noreply address. Not committing.`);
+    throw new Error(
+      `git identity is "${name} <${email}>"; AGENTS.md allows only nirholas with a noreply address. Not committing.`,
+    );
   }
 
   const wt = join(work, 'worktree');
   const lock = !o.dryRun;
   const localBranch = git(repo, ['rev-parse', '--verify', '--quiet', `refs/heads/${branch}`], { allowFail: true }).ok;
-  const remoteHasBranch =
-    !o.dryRun && git(repo, ['ls-remote', '--exit-code', '--heads', remote, branch], { allowFail: true }).ok;
+  const remoteHasBranch = !o.dryRun && git(repo, ['ls-remote', '--exit-code', '--heads', remote, branch], { allowFail: true }).ok;
   if (localBranch) {
     git(repo, ['worktree', 'add', '--quiet', wt, branch], { lock });
   } else if (remoteHasBranch) {

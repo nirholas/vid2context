@@ -9,16 +9,19 @@ import { afterAll, describe, expect, it } from 'vitest';
 import { publishPages } from '../github-pages/publish.mjs';
 // @ts-expect-error: plain ESM build script without type declarations
 import { buildVercel, vercelRoutes } from '../vercel/build.mjs';
+import { staticSiteFixture } from './site-fixture.ts';
 
 const root = join(import.meta.dirname, '../../..');
 const cleanups: (() => void)[] = [];
+const siteDir = staticSiteFixture(root);
+cleanups.push(() => execFileSync('rm', ['-rf', siteDir]));
 afterAll(() => {
   for (const c of cleanups) c();
 });
 
 describe('Vercel build output', () => {
   it('writes static files, a bundled function and a v3 config', async () => {
-    const res = await buildVercel({ build: false, log: () => {} });
+    const res = await buildVercel({ build: false, siteDir, log: () => {} });
     const out = res.out as string;
     for (const f of ['static/index.html', 'static/404.html', 'static/llms.txt', 'functions/api.func/index.mjs']) {
       expect(existsSync(join(out, f))).toBe(true);
@@ -47,7 +50,9 @@ describe('Vercel build output', () => {
   it('routes the API first, then files, then app fallbacks that skip file-like paths, then 404', () => {
     const routes = vercelRoutes(['/app/']) as { src?: string; dest?: string; handle?: string }[];
     const api = routes.filter((r) => r.dest === '/api').map((r) => new RegExp(r.src as string));
-    expect(['/api/v1/health', '/mcp', '/.well-known/oauth-authorization-server'].every((p) => api.some((re) => re.test(p)))).toBe(true);
+    expect(['/api/v1/health', '/mcp', '/.well-known/oauth-authorization-server'].every((p) => api.some((re) => re.test(p)))).toBe(
+      true,
+    );
     expect(api.some((re) => re.test('/apiary'))).toBe(false);
     const spa = new RegExp(routes.find((r) => r.dest === '/app/index.html')?.src as string);
     expect(spa.test('/app/runs/42')).toBe(true);
@@ -59,11 +64,13 @@ describe('Vercel build output', () => {
 describe('GitHub Pages publisher (dry run)', () => {
   it('builds the client-only tree and commits it to gh-pages in a throwaway clone only', () => {
     const before = execFileSync('git', ['branch', '--list', 'gh-pages'], { cwd: root, encoding: 'utf8' });
-    const res = publishPages({ dryRun: true, build: false, keep: true, log: () => {} });
+    const res = publishPages({ dryRun: true, build: false, keep: true, siteDir, log: () => {} });
     cleanups.push(() => execFileSync('rm', ['-rf', res.work]));
     expect(res.basePath).toBe('/vid2context/');
     expect(res.changed).toBe(true);
-    const files = execFileSync('git', ['ls-tree', '-r', '--name-only', res.commit], { cwd: res.repo, encoding: 'utf8' }).split('\n');
+    const files = execFileSync('git', ['ls-tree', '-r', '--name-only', res.commit], { cwd: res.repo, encoding: 'utf8' }).split(
+      '\n',
+    );
     expect(files).toEqual(expect.arrayContaining(['.nojekyll', 'index.html', '404.html', 'llms.txt', 'llms-full.txt']));
     expect(files).not.toContain('CNAME');
     const msg = execFileSync('git', ['log', '-1', '--format=%B', res.commit], { cwd: res.repo, encoding: 'utf8' });
@@ -77,13 +84,15 @@ describe('GitHub Pages publisher (dry run)', () => {
   });
 
   it('serves from the domain root and writes CNAME when a custom domain is given', () => {
-    const res = publishPages({ dryRun: true, build: false, keep: true, cname: 'pages.vid2context.com', log: () => {} });
+    const res = publishPages({ dryRun: true, build: false, keep: true, siteDir, cname: 'pages.vid2context.com', log: () => {} });
     cleanups.push(() => execFileSync('rm', ['-rf', res.work]));
     expect(res.basePath).toBe('/');
-    expect(execFileSync('git', ['show', `${res.commit}:CNAME`], { cwd: res.repo, encoding: 'utf8' })).toBe('pages.vid2context.com\n');
+    expect(execFileSync('git', ['show', `${res.commit}:CNAME`], { cwd: res.repo, encoding: 'utf8' })).toBe(
+      'pages.vid2context.com\n',
+    );
   });
 
   it('refuses to push from a dry run', () => {
-    expect(() => publishPages({ dryRun: true, push: true, build: false, log: () => {} })).toThrow(/--push/);
+    expect(() => publishPages({ dryRun: true, push: true, build: false, siteDir, log: () => {} })).toThrow(/--push/);
   });
 });

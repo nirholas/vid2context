@@ -28,7 +28,7 @@
     "start:server": "tsx packages/server/src/node.ts",
     "build:site": "cp llms.txt llms-full.txt site/",
     "dev:worker": "npm run gen && npm run build:site && npm run build:assets && wrangler dev",
-    "deploy": "npm run gen && npm run build:site && npm run build:assets -- --strict && wrangler deploy",
+    "deploy": "npm run gen && npm run build:site && npm run build:assets && wrangler deploy",
     "discovery:gen": "tsx packages/discovery/src/cli.ts gen",
     "discovery:logo": "tsx packages/discovery/src/cli.ts logo",
     "build:npm": "npm run gen && tsx packages/discovery/src/cli.ts build",

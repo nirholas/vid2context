@@ -35,10 +35,10 @@ export function vercelRoutes(spaMounts) {
   ];
 }
 
-export async function buildVercel({ build = true, strict = false, log = (m) => console.error(m) } = {}) {
+export async function buildVercel({ build = true, strict = false, siteDir, log = (m) => console.error(m) } = {}) {
   const out = join(root, '.vercel/output');
   rmSync(out, { recursive: true, force: true });
-  const assets = buildAssets({ root, out: join(out, 'static'), build, strict, log });
+  const assets = buildAssets({ root, out: join(out, 'static'), build, strict, siteDir, log });
 
   const fnDir = join(out, 'functions/api.func');
   mkdirSync(fnDir, { recursive: true });
@@ -54,13 +54,21 @@ export async function buildVercel({ build = true, strict = false, log = (m) => c
     metafile: true,
     legalComments: 'none',
     // Some dependencies are CommonJS and call require(); give the ESM bundle one.
-    banner: { js: "import { createRequire as __v2cCreateRequire } from 'node:module'; const require = __v2cCreateRequire(import.meta.url);" },
+    banner: {
+      js: "import { createRequire as __v2cCreateRequire } from 'node:module'; const require = __v2cCreateRequire(import.meta.url);",
+    },
     logLevel: 'warning',
   });
   writeFileSync(
     join(fnDir, '.vc-config.json'),
     `${JSON.stringify(
-      { runtime: 'nodejs22.x', handler: 'index.mjs', launcherType: 'Nodejs', shouldAddHelpers: false, supportsResponseStreaming: true },
+      {
+        runtime: 'nodejs22.x',
+        handler: 'index.mjs',
+        launcherType: 'Nodejs',
+        shouldAddHelpers: false,
+        supportsResponseStreaming: true,
+      },
       null,
       2,
     )}\n`,
@@ -73,7 +81,9 @@ export async function buildVercel({ build = true, strict = false, log = (m) => c
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  const { values } = parseArgs({ options: { 'no-build': { type: 'boolean', default: false }, strict: { type: 'boolean', default: false } } });
+  const { values } = parseArgs({
+    options: { 'no-build': { type: 'boolean', default: false }, strict: { type: 'boolean', default: false } },
+  });
   buildVercel({ build: !values['no-build'], strict: values.strict }).catch((err) => {
     console.error(`[vercel] ${err instanceof Error ? err.message : String(err)}`);
     process.exitCode = 1;

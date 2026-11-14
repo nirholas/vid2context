@@ -12,6 +12,7 @@ import { join } from 'node:path';
 import { afterAll, describe, expect, it } from 'vitest';
 // @ts-expect-error: plain ESM build script without type declarations
 import { buildAssets } from '../lib/assets.mjs';
+import { staticSiteFixture } from './site-fixture.ts';
 
 const root = join(import.meta.dirname, '../../..');
 const wranglerBin = join(root, 'node_modules/wrangler/bin/wrangler.js');
@@ -58,11 +59,13 @@ describe.skipIf(!enabled)('SPA fallback in the Workers runtime', () => {
     const dir = mkdtempSync(join(root, '.vid2context', 'worker-test-'));
     dirs.push(dir);
     const assets = join(dir, 'assets');
-    buildAssets({ root, out: assets, build: false, log: () => {} });
+    const siteDir = staticSiteFixture(root);
+    dirs.push(siteDir);
+    buildAssets({ root, out: assets, build: false, siteDir, log: () => {} });
     // A mounted app made of real repo files: the site's page as its index and
     // llms.txt as a static file inside it. The fallback only cares about paths.
     mkdirSync(join(assets, 'app'), { recursive: true });
-    cpSync(join(root, 'site/index.html'), join(assets, 'app/index.html'));
+    cpSync(join(siteDir, 'index.html'), join(assets, 'app/index.html'));
     cpSync(join(root, 'llms.txt'), join(assets, 'app/notes.txt'));
     const config = join(dir, 'wrangler.jsonc');
     writeFileSync(
@@ -101,7 +104,8 @@ describe.skipIf(!enabled)('SPA fallback in the Workers runtime', () => {
 
 describe.skipIf(!enabled)('the root wrangler.jsonc', () => {
   it('serves the site and the API from one Worker', async () => {
-    buildAssets({ root, out: join(root, 'dist/assets'), build: false, log: () => {} });
+    // The real site: Astro is built when site/ is an Astro project; apps use whatever dist/ they have.
+    buildAssets({ root, out: join(root, 'dist/assets'), build: false, buildSite: true, log: () => {} });
     const base = await startWrangler(join(root, 'wrangler.jsonc'));
     const health = await fetch(`${base}/api/v1/health`);
     expect(health.status).toBe(200);

@@ -87,32 +87,44 @@ function walk(dir) {
   return out;
 }
 
-function copySite(root, out, opts, log) {
-  const siteDir = join(root, 'site');
-  if (!existsSync(siteDir)) throw new Error('site/ is missing; the landing site is required.');
+function copySite(out, opts, log) {
+  const siteDir = opts.siteDir;
+  if (!existsSync(siteDir)) throw new Error(`${siteDir} is missing; the landing site is required.`);
   if (isAstroSite(siteDir)) {
-    if (opts.build) {
-      log('[assets] site: building the Astro site (npm run build in site/)');
-      const env = { ...process.env, ...(opts.basePath !== '/' ? { ASTRO_BASE: opts.basePath } : {}) };
-      const res = run('npm', ['run', 'build'], { cwd: siteDir, env });
+    if (opts.buildSite) {
+      // site/ is its own npm project (not a workspace): install it on a fresh clone.
+      if (!existsSync(join(siteDir, 'node_modules'))) {
+        log('[assets] site: installing its dependencies (npm ci in site/)');
+        const install = run('npm', ['ci', '--no-audit', '--no-fund'], { cwd: siteDir });
+        if (!install.ok) throw new Error(`site dependency install failed:\n${install.tail}`);
+      }
+      log(`[assets] site: building the Astro site${opts.basePath !== '/' ? ` with base ${opts.basePath}` : ''}`);
+      const args = ['run', 'build', ...(opts.basePath !== '/' ? ['--', '--base', opts.basePath] : [])];
+      const res = run('npm', args, { cwd: siteDir });
       if (!res.ok) throw new Error(`site build failed:\n${res.tail}`);
     }
     const dist = join(siteDir, 'dist');
-    if (!existsSync(join(dist, 'index.html'))) throw new Error('site/dist/index.html is missing after the Astro build.');
+    if (!existsSync(join(dist, 'index.html'))) {
+      throw new Error(
+        `site/dist/index.html is missing${opts.buildSite ? ' after the Astro build' : ': build the site first (or drop --no-build)'}.`,
+      );
+    }
     cpSync(dist, out, { recursive: true });
-    return { name: 'site', mount: '/', status: opts.build ? 'built' : 'copied', source: 'site/dist' };
+    // Astro applies the base path itself (--base and import.meta.env.BASE_URL); never rebase its HTML again.
+    return { name: 'site', mount: '/', status: opts.buildSite ? 'built' : 'copied', source: 'site/dist', rebase: false };
   }
   for (const entry of readdirSync(siteDir)) {
     if (entry.startsWith('.') || SITE_SOURCE_ENTRIES.has(entry) || entry.startsWith('astro.config.')) continue;
     cpSync(join(siteDir, entry), join(out, entry), { recursive: true });
   }
-  return { name: 'site', mount: '/', status: 'copied', source: 'site/' };
+  return { name: 'site', mount: '/', status: 'copied', source: 'site/', rebase: true };
 }
 
 function buildApp(root, out, app, opts, log) {
   const dir = join(root, app.dir);
   const pkgPath = join(dir, 'package.json');
-  if (!existsSync(pkgPath)) return { name: app.name, mount: `/${app.mount}/`, status: 'skipped', reason: `${app.dir} does not exist` };
+  if (!existsSync(pkgPath))
+    return { name: app.name, mount: `/${app.mount}/`, status: 'skipped', reason: `${app.dir} does not exist` };
   const pkg = readJson(pkgPath);
   if (!pkg.scripts?.build) {
     return { name: app.name, mount: `/${app.mount}/`, status: 'skipped', reason: `${app.dir} has no build script` };
@@ -157,7 +169,9 @@ export function spaMounts(parts) {
  * @param {object} o
  * @param {string} o.root        repo root
  * @param {string} o.out         output directory (emptied first)
- * @param {boolean} [o.build]    run the site and app builds (default true); false copies existing dist/ output
+ * @param {boolean} [o.build]    run the app builds (default true); false copies existing dist/ output
+ * @param {boolean} [o.buildSite] run the Astro site build (default: same as build)
+ * @param {string} [o.siteDir]   the landing site directory (default <root>/site)
  * @param {boolean} [o.strict]   fail instead of skipping an app that is present but does not build
  * @param {boolean} [o.clientOnly] build apps with VITE_CLIENT_ONLY=1
  * @param {string} [o.apiBase]   VITE_API_BASE for the apps ('' means pure client-only); omit to keep the apps' default
@@ -174,14 +188,16 @@ export function buildAssets(o) {
     clientOnly: o.clientOnly ?? false,
     apiBase: o.apiBase,
     basePath: normalizeBasePath(o.basePath),
+    siteDir: resolve(o.siteDir ?? join(root, 'site')),
   };
+  opts.buildSite = o.buildSite ?? opts.build;
   if (out === root || !out.startsWith(`${root}/`) || out.startsWith(join(root, 'site'))) {
     throw new Error(`Refusing to write assets to ${out}: use a path inside the repo, outside site/, such as dist/assets.`);
   }
   rmSync(out, { recursive: true, force: true });
   mkdirSync(out, { recursive: true });
 
-  const parts = [copySite(root, out, opts, log)];
+  const parts = [copySite(out, opts, log)];
   for (const name of ['llms.txt', 'llms-full.txt']) {
     const src = join(root, name);
     if (existsSync(src)) cpSync(src, join(out, name));
@@ -193,8 +209,8 @@ export function buildAssets(o) {
     log(`[assets] ${part.name}: ${part.status}${part.reason ? ` (${part.reason})` : ''}`);
   }
 
-  if (opts.basePath !== '/') {
-    // Apps were built with Vite --base; only the site's HTML needs rebasing.
+  if (opts.basePath !== '/' && parts[0].rebase) {
+    // Apps were built with Vite --base; only a plain static site's HTML needs rebasing.
     const appMounts = parts.filter((p) => p.name !== 'site').map((p) => join(out, p.mount));
     for (const file of walk(out)) {
       if (!file.endsWith('.html') || appMounts.some((m) => file.startsWith(m))) continue;
