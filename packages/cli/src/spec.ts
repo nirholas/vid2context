@@ -4,6 +4,14 @@
  * the `formatters` map at runtime, never from a list written here.
  */
 import { formatters } from '@vid2context/core';
+import {
+  AUDIO_FORMATS,
+  AUDIO_QUALITIES,
+  NOTICE,
+  SPONSOR_CATEGORIES,
+  VIDEO_CONTAINERS,
+  VIDEO_QUALITIES,
+} from '@vid2context/downloads';
 
 export interface FlagSpec {
   name: string;
@@ -128,6 +136,54 @@ export const FLAGS: Record<string, FlagSpec> = {
   profile: { name: 'profile', type: 'string', arg: '<name>', description: 'Config file profile to explain' },
   port: { name: 'port', type: 'string', arg: '<n>', description: 'Port (default: PORT or 8787)' },
   host: { name: 'host', type: 'string', arg: '<host>', description: 'Host (default: HOST or 127.0.0.1)' },
+
+  video: {
+    name: 'video',
+    type: 'string',
+    arg: '[mp4|webm|mkv]',
+    description: 'Save the video (default when neither --video nor --audio is given; format default mp4)',
+    choices: () => [...VIDEO_CONTAINERS],
+  },
+  audio: {
+    name: 'audio',
+    type: 'string',
+    arg: '[mp3|m4a|opus|flac|wav]',
+    description: 'Save only the audio (format default mp3)',
+    choices: () => [...AUDIO_FORMATS],
+  },
+  quality: {
+    name: 'quality',
+    type: 'string',
+    arg: '<q>',
+    description: 'Video: best, 2160 ... 144 (default 1080). mp3: best, 320 ... 64 kbps (default best)',
+    choices: () => [...new Set([...VIDEO_QUALITIES, ...AUDIO_QUALITIES])],
+  },
+  from: { name: 'from', type: 'string', arg: '<time>', description: 'Keep from this time: seconds, m:ss or h:mm:ss' },
+  to: { name: 'to', type: 'string', arg: '<time>', description: 'Keep up to this time' },
+  chapter: { name: 'chapter', type: 'string', arg: '<n|title>', description: 'Keep one chapter: 0-based index or title' },
+  'exact-cuts': {
+    name: 'exact-cuts',
+    type: 'boolean',
+    description: 'Re-encode at the cuts so a trimmed video starts exactly at --from',
+  },
+  subs: { name: 'subs', type: 'string', arg: '<langs>', description: 'Embed subtitles in the video, e.g. en or en,de' },
+  sponsorblock: {
+    name: 'sponsorblock',
+    type: 'string',
+    arg: '[cats]',
+    description: `Cut SponsorBlock segments from YouTube videos (default sponsor,selfpromo,interaction; all: ${SPONSOR_CATEGORIES.join(',')})`,
+  },
+  'no-thumbnail': { name: 'no-thumbnail', type: 'boolean', description: 'Do not embed the cover art' },
+  'no-metadata': { name: 'no-metadata', type: 'boolean', description: 'Do not write title, channel and date tags' },
+  'no-chapters': { name: 'no-chapters', type: 'boolean', description: 'Do not write chapter markers' },
+  dir: {
+    name: 'dir',
+    type: 'string',
+    short: 'd',
+    arg: '<folder>',
+    description: 'Save files here (default: VID2CONTEXT_DOWNLOAD_DIR or the current directory)',
+  },
+  info: { name: 'info', type: 'boolean', description: 'Show qualities, formats and estimated sizes; download nothing' },
 };
 
 export const GLOBAL_FLAGS = [
@@ -146,6 +202,17 @@ export const GLOBAL_FLAGS = [
   'force',
   'help',
   'version',
+];
+
+const DOWNLOAD_NOTES = [
+  'Video: mp4 (default; H.264 + stereo AAC up to 1080p, plays everywhere), webm (VP9 + Opus) or mkv (best streams in any codec).',
+  'Audio: mp3 (default; best VBR, about 245 kbps), m4a and opus (the original stream, no re-encode), flac or wav.',
+  `--quality: video ${VIDEO_QUALITIES.join(', ')} (default 1080); mp3 kbps ${AUDIO_QUALITIES.join(', ')}.`,
+  `Formats: ${VIDEO_CONTAINERS.join(', ')} | ${AUDIO_FORMATS.join(', ')}. Cover art, tags and chapters are embedded by default; trimmed files get no chapters.`,
+  'Playlists and channels download every video, up to --limit (default VID2CONTEXT_MAX_PLAYLIST_ITEMS).',
+  'Files go to --dir, else VID2CONTEXT_DOWNLOAD_DIR, else the current directory. Existing files are kept (--force replaces them).',
+  'stdout gets one saved path per line (JSON with --json); progress and notes go to stderr.',
+  NOTICE,
 ];
 
 const MEMORY_NOTE =
@@ -197,6 +264,40 @@ export const COMMANDS: CommandSpec[] = [
     completesFiles: true,
     notes: ['--out is required. Playlists, channels and feeds in <inputs> are expanded first.'],
     examples: ['vid2context bundle jNQXAC9IVRw -o me-at-the-zoo.zip'],
+  },
+  {
+    name: 'download',
+    args: '<inputs...>',
+    summary: 'Save videos as mp4, webm or mkv, or their audio as mp3, m4a, opus, flac or wav',
+    flags: [
+      'video',
+      'audio',
+      'quality',
+      'from',
+      'to',
+      'chapter',
+      'exact-cuts',
+      'subs',
+      'sponsorblock',
+      'no-thumbnail',
+      'no-metadata',
+      'no-chapters',
+      'dir',
+      'info',
+      'limit',
+    ],
+    completesFiles: true,
+    notes: DOWNLOAD_NOTES,
+    examples: [
+      'vid2context download https://www.youtube.com/watch?v=aqz-KE-bpKQ',
+      'vid2context download aqz-KE-bpKQ --video webm --quality 720 -d ~/Videos',
+      'vid2context download aqz-KE-bpKQ --audio mp3 --quality 320',
+      'vid2context download aqz-KE-bpKQ --audio m4a --from 1:00 --to 2:30',
+      'vid2context download <talk-url> --chapter "Q&A" --audio',
+      'vid2context download <playlist-url> --audio --limit 20 --sponsorblock',
+      'vid2context download aqz-KE-bpKQ --info',
+      'vid2context download ./lecture.mkv --audio opus',
+    ],
   },
   {
     name: 'search',

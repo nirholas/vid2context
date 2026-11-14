@@ -1,0 +1,30 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/downloads"
+  },
+  "status": 202,
+  "contentType": "application/json",
+  "body": {
+    "id": "b02d7ef7-0663-4d1e-aef5-bcd2d490f5f1",
+    "status": "running",
+    "request": {
+      "input": "https://www.youtube.com/watch?v=aqz-KE-bpKQ",
+      "kind": "video",
+      "format": "mp4",
+      "quality": "480",
+      "exactCuts": false,
+      "embedMetadata": true,
+      "embedThumbnail": true,
+      "embedChapters": true,
+      "subtitles": [],
+      "removeSegments": []
+    },
+    "progress": {
+      "phase": "preparing",
+      "downloadedBytes": 0
+    },
+    "createdAt": "2026-11-14T19:01:01.159Z",
+    "updatedAt": "2026-11-14T19:01:01.159Z"
+  }
+}

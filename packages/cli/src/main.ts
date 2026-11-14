@@ -6,6 +6,7 @@
  */
 import { bool, parseCli } from './args.ts';
 import { configCommand } from './commands/config.ts';
+import { downloadCommand } from './commands/download.ts';
 import { collectionCommand, libraryCommand, searchCommand } from './commands/library.ts';
 import { completionCommand, doctorCommand, helpCommand } from './commands/misc.ts';
 import { modelsCommand } from './commands/models.ts';
@@ -31,6 +32,7 @@ const HANDLERS: Record<string, Command> = {
   formats: formatsCommand,
   pack: packCommand,
   bundle: bundleCommand,
+  download: downloadCommand,
   search: searchCommand,
   library: libraryCommand,
   collection: collectionCommand,

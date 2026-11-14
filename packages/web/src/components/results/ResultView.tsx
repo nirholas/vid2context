@@ -13,6 +13,7 @@ import { timeAgo } from '../../lib/format.ts';
 import { chatHref } from '../../lib/links.ts';
 import type { RunParams } from '../../lib/route.ts';
 import { AttemptsTimeline } from '../AttemptsTimeline.tsx';
+import { ResultDownloads } from '../download/ResultDownloads.tsx';
 import { Tabs } from '../Tabs.tsx';
 import { Button, buttonClass, CopyButton, Spinner } from '../ui.tsx';
 import { ChaptersTab, CommentsTab, MetadataTab, VisualTab } from './DetailTabs.tsx';
@@ -147,6 +148,9 @@ export function ResultView({ context, params, cachedAt, onRefresh, onBundle, not
           </div>
         )}
       </section>
+
+      {/* Only for inputs the server can fetch again; renders nothing unless the server offers downloads. */}
+      {shareable && <ResultDownloads url={shareable} />}
 
       <section aria-label="Details">
         <Tabs

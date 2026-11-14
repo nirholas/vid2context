@@ -11,6 +11,7 @@
  */
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { Ctx, Registry, Storage } from '@vid2context/core';
+import type { Downloader } from '@vid2context/downloads';
 import type { AudioExtractor } from '@vid2context/live';
 import { registerPrompts } from './prompts.ts';
 import { registerResources } from './resources.ts';
@@ -40,6 +41,11 @@ export interface ServerOptions {
   storage?: Storage;
   /** Audio extractor for watch_live. bin.ts passes the ffmpeg one; without it watch_live answers with a no-provider error. */
   extractAudio?: AudioExtractor;
+  /**
+   * Video and audio downloads to this machine (get_media_options, download_media).
+   * bin.ts passes createDownloader; the remote HTTP server passes none, so the tools are not listed there.
+   */
+  downloader?: Downloader;
 }
 
 export function createServer(registry: Registry, ctx: Ctx, version = '0.1.0', opts: ServerOptions = {}): McpServer {
@@ -49,7 +55,11 @@ export function createServer(registry: Registry, ctx: Ctx, version = '0.1.0', op
   registerVideoTools(server, deps);
   registerListTools(server, deps);
   registerModelTools(server, deps);
-  registerPackageTools(server, { ...deps, extractAudio: opts.extractAudio });
+  registerPackageTools(server, {
+    ...deps,
+    extractAudio: opts.extractAudio,
+    ...(opts.downloader ? { downloader: opts.downloader } : {}),
+  });
   registerPrompts(server);
   registerResources(server, storage);
   return server;

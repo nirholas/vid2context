@@ -1,0 +1,44 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/downloads/065308f8-f247-4f76-8e4f-43309ccbebc4"
+  },
+  "status": 200,
+  "contentType": "application/json",
+  "body": {
+    "id": "065308f8-f247-4f76-8e4f-43309ccbebc4",
+    "status": "done",
+    "request": {
+      "input": "tests/fixtures/media/apollo11-small-step.mp3",
+      "kind": "audio",
+      "format": "mp3",
+      "quality": "128",
+      "exactCuts": false,
+      "embedMetadata": true,
+      "embedThumbnail": true,
+      "embedChapters": true,
+      "subtitles": [],
+      "removeSegments": []
+    },
+    "progress": {
+      "phase": "finished",
+      "percent": 100,
+      "downloadedBytes": 387692,
+      "totalBytes": 387692
+    },
+    "createdAt": "2026-11-14T19:01:01.016Z",
+    "updatedAt": "2026-11-14T19:01:01.135Z",
+    "file": {
+      "filename": "apollo11-small-step.mp3",
+      "bytes": 387692,
+      "mimeType": "audio/mpeg",
+      "kind": "audio",
+      "format": "mp3",
+      "title": "apollo11-small-step",
+      "source": "tests/fixtures/media/apollo11-small-step.mp3",
+      "durationSec": 24.192,
+      "warnings": []
+    },
+    "expiresAt": "2026-11-14T19:31:01.135Z"
+  }
+}

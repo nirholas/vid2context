@@ -47,6 +47,16 @@ export function closest(word: string, candidates: string[]): string | undefined 
   return best !== undefined && bestD <= Math.max(2, Math.floor(word.length / 3)) ? best : undefined;
 }
 
+const SPONSOR_LIST =
+  /^(sponsor|selfpromo|interaction|intro|outro|preview|filler|music_offtopic)(,(sponsor|selfpromo|interaction|intro|outro|preview|filler|music_offtopic))*$/;
+
+/** Flags whose value may be left out, with the values they accept right after them. */
+const OPTIONAL_VALUES: Record<string, RegExp> = {
+  '--video': /^(mp4|webm|mkv)$/i,
+  '--audio': /^(mp3|m4a|opus|flac|wav)$/i,
+  '--sponsorblock': SPONSOR_LIST,
+};
+
 /** `--comments` takes an optional number: rewrite to `--comments=<n>` or `--comments=all` so parseArgs can read it. */
 function normalize(argv: string[]): string[] {
   const out: string[] = [];
@@ -55,6 +65,16 @@ function normalize(argv: string[]): string[] {
     if (a === '--') {
       out.push(...argv.slice(i));
       break;
+    }
+    // --video, --audio and --sponsorblock take an optional value: a format or a category list.
+    const optional = OPTIONAL_VALUES[a];
+    if (optional) {
+      const next = argv[i + 1];
+      if (next !== undefined && optional.test(next)) {
+        out.push(`${a}=${next}`);
+        i++;
+      } else out.push(`${a}=`);
+      continue;
     }
     if (a === '--comments') {
       const next = argv[i + 1];

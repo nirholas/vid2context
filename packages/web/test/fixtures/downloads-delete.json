@@ -1,0 +1,12 @@
+{
+  "request": {
+    "method": "DELETE",
+    "path": "/downloads/065308f8-f247-4f76-8e4f-43309ccbebc4"
+  },
+  "status": 200,
+  "contentType": "application/json",
+  "body": {
+    "deleted": true,
+    "id": "065308f8-f247-4f76-8e4f-43309ccbebc4"
+  }
+}

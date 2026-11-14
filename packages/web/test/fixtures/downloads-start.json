@@ -1,0 +1,30 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/downloads"
+  },
+  "status": 202,
+  "contentType": "application/json",
+  "body": {
+    "id": "065308f8-f247-4f76-8e4f-43309ccbebc4",
+    "status": "running",
+    "request": {
+      "input": "tests/fixtures/media/apollo11-small-step.mp3",
+      "kind": "audio",
+      "format": "mp3",
+      "quality": "128",
+      "exactCuts": false,
+      "embedMetadata": true,
+      "embedThumbnail": true,
+      "embedChapters": true,
+      "subtitles": [],
+      "removeSegments": []
+    },
+    "progress": {
+      "phase": "preparing",
+      "downloadedBytes": 0
+    },
+    "createdAt": "2026-11-14T19:01:01.016Z",
+    "updatedAt": "2026-11-14T19:01:01.020Z"
+  }
+}

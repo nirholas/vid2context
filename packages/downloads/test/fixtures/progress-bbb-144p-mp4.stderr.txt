@@ -1,0 +1,13 @@
+WARNING: Unknown codec iamf.001.001.Opus
+v2c:pp:started:ThumbnailsConvertor
+v2c:pp:finished:ThumbnailsConvertor
+v2c:pp:started:Merger
+v2c:pp:finished:Merger
+v2c:pp:started:VideoRemuxer
+v2c:pp:finished:VideoRemuxer
+v2c:pp:started:Metadata
+v2c:pp:finished:Metadata
+v2c:pp:started:EmbedThumbnail
+v2c:pp:finished:EmbedThumbnail
+v2c:pp:started:MoveFiles
+v2c:pp:finished:MoveFiles

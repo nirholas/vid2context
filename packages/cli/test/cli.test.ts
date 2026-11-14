@@ -100,7 +100,7 @@ describe('usage errors', () => {
   it('rejects flags that belong to another command, mistyped commands and bad values', async () => {
     const limit = await cli(['get', 'jNQXAC9IVRw', '--limit', '3']);
     expect(limit.code).toBe(2);
-    expect(limit.stderr).toContain('It is a flag of: list, search, library');
+    expect(limit.stderr).toContain('It is a flag of: list, download, search, library');
     expect((await cli(['doctr'])).stderr).toContain('Did you mean `vid2context doctor`?');
     expect((await cli(['jNQXAC9IVRw', '--format', 'pdf'])).code).toBe(2);
     const mode = await cli(['jNQXAC9IVRw', '--mode', 'captins']);

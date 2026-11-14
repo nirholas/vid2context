@@ -5,6 +5,7 @@
  */
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { MemoryStorage, type Storage } from '@vid2context/core';
+import { createDownloader } from '@vid2context/downloads/node';
 import { createFfmpegExtractor } from '@vid2context/live/node';
 import { createNodeContext, createRegistry, loadEnvFiles } from '@vid2context/registry/node';
 import pkg from '../package.json' with { type: 'json' };
@@ -26,6 +27,7 @@ try {
 const server = createServer(registry, ctx, pkg.version, {
   storage,
   extractAudio: createFfmpegExtractor({ env: ctx.env }),
+  downloader: createDownloader({ registry }),
 });
 await server.connect(new StdioServerTransport());
 ctx.log.info('vid2context MCP server ready on stdio', { storage: storage.backend });

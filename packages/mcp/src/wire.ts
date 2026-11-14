@@ -10,6 +10,8 @@ import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { registerAskTools } from '@vid2context/ask/mcp';
 import type { Ctx, Registry, Storage } from '@vid2context/core';
 import { registerDedupeTools } from '@vid2context/dedupe/mcp';
+import type { Downloader } from '@vid2context/downloads';
+import { registerDownloadTools } from '@vid2context/downloads/mcp';
 import { registerExporterTools } from '@vid2context/exporters/mcp';
 import { registerInsightsTools } from '@vid2context/insights/mcp';
 import { registerLibraryTools } from '@vid2context/library/mcp';
@@ -26,6 +28,8 @@ export interface PackageToolDeps {
   storage: Storage;
   /** Audio extractor for watch_live (Node: createFfmpegExtractor from @vid2context/live/node). */
   extractAudio?: AudioExtractor;
+  /** Saves videos and audio on this machine (stdio only: bin.ts passes createDownloader; remote servers pass none). */
+  downloader?: Downloader;
 }
 
 export function registerPackageTools(server: McpServer, deps: PackageToolDeps): void {
@@ -50,6 +54,8 @@ export function registerPackageTools(server: McpServer, deps: PackageToolDeps): 
   registerLiveTools(server, { registry, ctx, extractAudio: deps.extractAudio });
   // open_transcript_viewer and its MCP Apps UI resource (item 52)
   registerAppsTools(server, { registry, ctx });
+  // get_media_options and download_media, only when a downloader is passed (downloads package)
+  registerDownloadTools(server, { registry, ctx, ...(deps.downloader ? { downloader: deps.downloader } : {}) });
   // digest_videos, choose_caption_track, the digest prompt, completions and the latest-items resource (item 51)
   registerAgenticFeatures(server, { registry, ctx, storage: async () => storage });
 }

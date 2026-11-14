@@ -1,0 +1,149 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/downloads/options?url=tests%2Ffixtures%2Fmedia%2Fapollo11-small-step.mp3"
+  },
+  "status": 200,
+  "contentType": "application/json",
+  "body": {
+    "title": "apollo11-small-step.mp3",
+    "isLive": false,
+    "chapters": [],
+    "video": [],
+    "audio": [
+      {
+        "format": "mp3",
+        "quality": "best",
+        "label": "MP3, best (VBR, about 245 kbps)",
+        "kbps": 245,
+        "method": "re-encode",
+        "sizeBytes": 740880
+      },
+      {
+        "format": "mp3",
+        "quality": "320",
+        "label": "MP3, 320 kbps",
+        "kbps": 320,
+        "method": "re-encode",
+        "sizeBytes": 967680
+      },
+      {
+        "format": "mp3",
+        "quality": "256",
+        "label": "MP3, 256 kbps",
+        "kbps": 256,
+        "method": "re-encode",
+        "sizeBytes": 774144
+      },
+      {
+        "format": "mp3",
+        "quality": "192",
+        "label": "MP3, 192 kbps",
+        "kbps": 192,
+        "method": "re-encode",
+        "sizeBytes": 580608
+      },
+      {
+        "format": "mp3",
+        "quality": "160",
+        "label": "MP3, 160 kbps",
+        "kbps": 160,
+        "method": "re-encode",
+        "sizeBytes": 483840
+      },
+      {
+        "format": "mp3",
+        "quality": "128",
+        "label": "MP3, 128 kbps",
+        "kbps": 128,
+        "method": "re-encode",
+        "sizeBytes": 387072
+      },
+      {
+        "format": "mp3",
+        "quality": "96",
+        "label": "MP3, 96 kbps",
+        "kbps": 96,
+        "method": "re-encode",
+        "sizeBytes": 290304
+      },
+      {
+        "format": "mp3",
+        "quality": "64",
+        "label": "MP3, 64 kbps",
+        "kbps": 64,
+        "method": "re-encode",
+        "sizeBytes": 193536
+      },
+      {
+        "format": "m4a",
+        "quality": "best",
+        "label": "M4A (AAC, converted)",
+        "method": "re-encode",
+        "sizeBytes": 483840
+      },
+      {
+        "format": "opus",
+        "quality": "best",
+        "label": "Opus (converted)",
+        "method": "re-encode",
+        "sizeBytes": 387072
+      },
+      {
+        "format": "flac",
+        "quality": "best",
+        "label": "FLAC (lossless container)",
+        "method": "lossless",
+        "sizeBytes": 425779
+      },
+      {
+        "format": "wav",
+        "quality": "best",
+        "label": "WAV (16 kHz, 16-bit)",
+        "method": "lossless",
+        "sizeBytes": 774144
+      }
+    ],
+    "subtitles": [],
+    "canRemoveSegments": false,
+    "formats": {
+      "video": [
+        {
+          "id": "mp4",
+          "label": "MP4 (H.264 + AAC, plays everywhere)"
+        },
+        {
+          "id": "webm",
+          "label": "WebM (VP9 + Opus)"
+        },
+        {
+          "id": "mkv",
+          "label": "MKV (best streams, any codec)"
+        }
+      ],
+      "audio": [
+        {
+          "id": "mp3",
+          "label": "MP3"
+        },
+        {
+          "id": "m4a",
+          "label": "M4A (original AAC, no re-encode)"
+        },
+        {
+          "id": "opus",
+          "label": "Opus (original stream, no re-encode)"
+        },
+        {
+          "id": "flac",
+          "label": "FLAC (lossless container)"
+        },
+        {
+          "id": "wav",
+          "label": "WAV (uncompressed)"
+        }
+      ]
+    },
+    "durationSec": 24.192
+  }
+}

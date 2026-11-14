@@ -1,0 +1,35 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/downloads/b02d7ef7-0663-4d1e-aef5-bcd2d490f5f1"
+  },
+  "status": 200,
+  "contentType": "application/json",
+  "body": {
+    "id": "b02d7ef7-0663-4d1e-aef5-bcd2d490f5f1",
+    "status": "running",
+    "request": {
+      "input": "https://www.youtube.com/watch?v=aqz-KE-bpKQ",
+      "kind": "video",
+      "format": "mp4",
+      "quality": "480",
+      "exactCuts": false,
+      "embedMetadata": true,
+      "embedThumbnail": true,
+      "embedChapters": true,
+      "subtitles": [],
+      "removeSegments": []
+    },
+    "progress": {
+      "phase": "downloading",
+      "downloadedBytes": 14607940,
+      "formatId": "135+140",
+      "totalBytes": 38478640,
+      "percent": 38,
+      "speedBps": 37397571.90087073,
+      "etaSec": 0
+    },
+    "createdAt": "2026-11-14T19:01:01.159Z",
+    "updatedAt": "2026-11-14T19:01:06.412Z"
+  }
+}

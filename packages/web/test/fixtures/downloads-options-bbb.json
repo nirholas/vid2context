@@ -1,0 +1,285 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/downloads/options?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3Daqz-KE-bpKQ"
+  },
+  "status": 200,
+  "contentType": "application/json",
+  "body": {
+    "title": "Big Buck Bunny 60fps 4K - Official Blender Foundation Short Film",
+    "isLive": false,
+    "chapters": [],
+    "video": [
+      {
+        "quality": "best",
+        "label": "2160p60",
+        "height": 2160,
+        "sizes": {
+          "mp4": 1372540977,
+          "webm": 1372471691,
+          "mkv": 722647490
+        },
+        "codecs": {
+          "mp4": "vp9 + aac",
+          "webm": "vp9 + opus",
+          "mkv": "av1 + opus"
+        },
+        "fps": 60
+      },
+      {
+        "quality": "1440",
+        "label": "1440p60",
+        "height": 1440,
+        "sizes": {
+          "mp4": 483635200,
+          "webm": 483565914,
+          "mkv": 322756523
+        },
+        "codecs": {
+          "mp4": "vp9 + aac",
+          "webm": "vp9 + opus",
+          "mkv": "av1 + opus"
+        },
+        "fps": 60
+      },
+      {
+        "quality": "1080",
+        "label": "1080p60",
+        "height": 1080,
+        "sizes": {
+          "mp4": 267891149,
+          "webm": 178938399,
+          "mkv": 134589086
+        },
+        "codecs": {
+          "mp4": "h264 + aac",
+          "webm": "vp9 + opus",
+          "mkv": "av1 + opus"
+        },
+        "fps": 60
+      },
+      {
+        "quality": "720",
+        "label": "720p60",
+        "height": 720,
+        "sizes": {
+          "mp4": 160796363,
+          "webm": 122878532,
+          "mkv": 81486037
+        },
+        "codecs": {
+          "mp4": "h264 + aac",
+          "webm": "vp9 + opus",
+          "mkv": "av1 + opus"
+        },
+        "fps": 60
+      },
+      {
+        "quality": "480",
+        "label": "480p",
+        "height": 480,
+        "sizes": {
+          "mp4": 38478640,
+          "webm": 43340272,
+          "mkv": 36200784
+        },
+        "codecs": {
+          "mp4": "h264 + aac",
+          "webm": "vp9 + opus",
+          "mkv": "av1 + opus"
+        },
+        "fps": 30
+      },
+      {
+        "quality": "360",
+        "label": "360p",
+        "height": 360,
+        "sizes": {
+          "mp4": 28526904,
+          "webm": 34311746,
+          "mkv": 28526904
+        },
+        "codecs": {
+          "mp4": "h264 + aac",
+          "webm": "vp9 + opus",
+          "mkv": "h264 + aac"
+        },
+        "fps": 30
+      },
+      {
+        "quality": "240",
+        "label": "240p",
+        "height": 240,
+        "sizes": {
+          "mp4": 19594979,
+          "webm": 20400491,
+          "mkv": 17778997
+        },
+        "codecs": {
+          "mp4": "h264 + aac",
+          "webm": "vp9 + opus",
+          "mkv": "av1 + opus"
+        },
+        "fps": 30
+      },
+      {
+        "quality": "144",
+        "label": "144p",
+        "height": 144,
+        "sizes": {
+          "mp4": 14595389,
+          "webm": 15492022,
+          "mkv": 14841943
+        },
+        "codecs": {
+          "mp4": "h264 + aac",
+          "webm": "vp9 + opus",
+          "mkv": "av1 + opus"
+        },
+        "fps": 30
+      }
+    ],
+    "audio": [
+      {
+        "format": "mp3",
+        "quality": "best",
+        "label": "MP3, best (VBR, about 245 kbps)",
+        "kbps": 245,
+        "method": "re-encode",
+        "sizeBytes": 19446875
+      },
+      {
+        "format": "mp3",
+        "quality": "320",
+        "label": "MP3, 320 kbps",
+        "kbps": 320,
+        "method": "re-encode",
+        "sizeBytes": 25400000
+      },
+      {
+        "format": "mp3",
+        "quality": "256",
+        "label": "MP3, 256 kbps",
+        "kbps": 256,
+        "method": "re-encode",
+        "sizeBytes": 20320000
+      },
+      {
+        "format": "mp3",
+        "quality": "192",
+        "label": "MP3, 192 kbps",
+        "kbps": 192,
+        "method": "re-encode",
+        "sizeBytes": 15240000
+      },
+      {
+        "format": "mp3",
+        "quality": "160",
+        "label": "MP3, 160 kbps",
+        "kbps": 160,
+        "method": "re-encode",
+        "sizeBytes": 12700000
+      },
+      {
+        "format": "mp3",
+        "quality": "128",
+        "label": "MP3, 128 kbps",
+        "kbps": 128,
+        "method": "re-encode",
+        "sizeBytes": 10160000
+      },
+      {
+        "format": "mp3",
+        "quality": "96",
+        "label": "MP3, 96 kbps",
+        "kbps": 96,
+        "method": "re-encode",
+        "sizeBytes": 7620000
+      },
+      {
+        "format": "mp3",
+        "quality": "64",
+        "label": "MP3, 64 kbps",
+        "kbps": 64,
+        "method": "re-encode",
+        "sizeBytes": 5080000
+      },
+      {
+        "format": "m4a",
+        "quality": "best",
+        "label": "M4A, original AAC, 129 kbps",
+        "kbps": 129,
+        "method": "copy",
+        "sizeBytes": 10271496
+      },
+      {
+        "format": "opus",
+        "quality": "best",
+        "label": "Opus, original, 129 kbps",
+        "kbps": 129,
+        "method": "copy",
+        "sizeBytes": 10202210
+      },
+      {
+        "format": "flac",
+        "quality": "best",
+        "label": "FLAC (lossless container)",
+        "method": "lossless",
+        "sizeBytes": 67056000
+      },
+      {
+        "format": "wav",
+        "quality": "best",
+        "label": "WAV (48 kHz, 16-bit)",
+        "method": "lossless",
+        "sizeBytes": 121920000
+      }
+    ],
+    "subtitles": [],
+    "canRemoveSegments": true,
+    "formats": {
+      "video": [
+        {
+          "id": "mp4",
+          "label": "MP4 (H.264 + AAC, plays everywhere)"
+        },
+        {
+          "id": "webm",
+          "label": "WebM (VP9 + Opus)"
+        },
+        {
+          "id": "mkv",
+          "label": "MKV (best streams, any codec)"
+        }
+      ],
+      "audio": [
+        {
+          "id": "mp3",
+          "label": "MP3"
+        },
+        {
+          "id": "m4a",
+          "label": "M4A (original AAC, no re-encode)"
+        },
+        {
+          "id": "opus",
+          "label": "Opus (original stream, no re-encode)"
+        },
+        {
+          "id": "flac",
+          "label": "FLAC (lossless container)"
+        },
+        {
+          "id": "wav",
+          "label": "WAV (uncompressed)"
+        }
+      ]
+    },
+    "id": "aqz-KE-bpKQ",
+    "channel": "Blender",
+    "durationSec": 635,
+    "thumbnailUrl": "https://i.ytimg.com/vi_webp/aqz-KE-bpKQ/maxresdefault.webp",
+    "webpageUrl": "https://www.youtube.com/watch?v=aqz-KE-bpKQ",
+    "extractor": "Youtube"
+  }
+}

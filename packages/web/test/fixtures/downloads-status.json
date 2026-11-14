@@ -1,0 +1,89 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/downloads/status"
+  },
+  "status": 200,
+  "contentType": "application/json",
+  "body": {
+    "enabled": true,
+    "notice": "Download only media you have the rights to: your own uploads, public-domain or Creative Commons works, or videos the site lets you download.",
+    "limits": {
+      "maxBytes": 0,
+      "maxDurationSec": 0,
+      "ttlMin": 30
+    },
+    "formats": {
+      "video": [
+        {
+          "id": "mp4",
+          "label": "MP4 (H.264 + AAC, plays everywhere)"
+        },
+        {
+          "id": "webm",
+          "label": "WebM (VP9 + Opus)"
+        },
+        {
+          "id": "mkv",
+          "label": "MKV (best streams, any codec)"
+        }
+      ],
+      "audio": [
+        {
+          "id": "mp3",
+          "label": "MP3"
+        },
+        {
+          "id": "m4a",
+          "label": "M4A (original AAC, no re-encode)"
+        },
+        {
+          "id": "opus",
+          "label": "Opus (original stream, no re-encode)"
+        },
+        {
+          "id": "flac",
+          "label": "FLAC (lossless container)"
+        },
+        {
+          "id": "wav",
+          "label": "WAV (uncompressed)"
+        }
+      ]
+    },
+    "qualities": {
+      "video": [
+        "best",
+        "2160",
+        "1440",
+        "1080",
+        "720",
+        "480",
+        "360",
+        "240",
+        "144"
+      ],
+      "audio": [
+        "best",
+        "320",
+        "256",
+        "192",
+        "160",
+        "128",
+        "96",
+        "64"
+      ]
+    },
+    "sponsorCategories": [
+      "sponsor",
+      "selfpromo",
+      "interaction",
+      "intro",
+      "outro",
+      "preview",
+      "filler",
+      "music_offtopic"
+    ],
+    "ytdlp": "2026.10.26"
+  }
+}

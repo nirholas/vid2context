@@ -15,6 +15,7 @@
     "@vid2context/ask": "*",
     "@vid2context/core": "*",
     "@vid2context/dedupe": "*",
+    "@vid2context/downloads": "*",
     "@vid2context/exporters": "*",
     "@vid2context/insights": "*",
     "@vid2context/library": "*",

@@ -1,0 +1,25 @@
+{
+  "name": "@vid2context/downloads",
+  "version": "0.1.0",
+  "description": "Download a video as mp4, webm or mkv, or its audio as mp3, m4a, opus, flac or wav, from YouTube and the other sites yt-dlp supports: quality picks with size estimates, trimming by time or chapter, embedded cover art, tags, chapters and subtitles, SponsorBlock cuts, and server-side jobs with progress.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./node": "./src/node.ts",
+    "./http": "./src/http.ts",
+    "./mcp": "./src/mcp.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "@vid2context/core": "*",
+    "@vid2context/ffmpeg": "*",
+    "@vid2context/provider-ytdlp": "*",
+    "hono": "^4.13.18",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@vid2context/provider-media-file": "*",
+    "@vid2context/registry": "*"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/downloads/b02d7ef7-0663-4d1e-aef5-bcd2d490f5f1"
+  },
+  "status": 200,
+  "contentType": "application/json",
+  "body": {
+    "id": "b02d7ef7-0663-4d1e-aef5-bcd2d490f5f1",
+    "status": "done",
+    "request": {
+      "input": "https://www.youtube.com/watch?v=aqz-KE-bpKQ",
+      "kind": "video",
+      "format": "mp4",
+      "quality": "480",
+      "exactCuts": false,
+      "embedMetadata": true,
+      "embedThumbnail": true,
+      "embedChapters": true,
+      "subtitles": [],
+      "removeSegments": []
+    },
+    "progress": {
+      "phase": "finished",
+      "percent": 100,
+      "downloadedBytes": 38885675,
+      "totalBytes": 38885675
+    },
+    "createdAt": "2026-11-14T19:01:01.159Z",
+    "updatedAt": "2026-11-14T19:01:08.248Z",
+    "file": {
+      "filename": "Big Buck Bunny 60fps 4K - Official Blender Foundation Short Film [aqz-KE-bpKQ].mp4",
+      "bytes": 38885675,
+      "mimeType": "video/mp4",
+      "kind": "video",
+      "format": "mp4",
+      "title": "Big Buck Bunny 60fps 4K - Official Blender Foundation Short Film",
+      "source": "https://www.youtube.com/watch?v=aqz-KE-bpKQ",
+      "durationSec": 635,
+      "warnings": []
+    },
+    "expiresAt": "2026-11-14T19:31:08.248Z"
+  }
+}

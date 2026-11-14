@@ -1,0 +1,16 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/downloads"
+  },
+  "status": 400,
+  "contentType": "application/json",
+  "body": {
+    "error": {
+      "code": "bad-request",
+      "message": "Unknown audio quality \"1080\".",
+      "hint": "Pick one of best, 320, 256, 192, 160, 128, 96, 64 (kbps; used by mp3)."
+    },
+    "attempts": []
+  }
+}

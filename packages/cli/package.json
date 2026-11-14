@@ -15,6 +15,7 @@
     "@modelcontextprotocol/sdk": "^1.32.2",
     "@vid2context/config": "*",
     "@vid2context/core": "*",
+    "@vid2context/downloads": "*",
     "@vid2context/library": "*",
     "@vid2context/mcp": "*",
     "@vid2context/provider-llm-local": "*",
@@ -22,6 +23,7 @@
     "@vid2context/server": "*"
   },
   "devDependencies": {
+    "@vid2context/ffmpeg": "*",
     "@vid2context/provider-media-file": "*",
     "@vid2context/provider-stt-openai-compatible": "*",
     "@vid2context/provider-youtube": "*"
