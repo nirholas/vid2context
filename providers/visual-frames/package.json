@@ -1,0 +1,32 @@
+{
+  "name": "@vid2context/provider-visual-frames",
+  "version": "0.1.0",
+  "description": "On-screen text and slides for vid2context: sample frames where the picture changes, drop near-duplicates, and read each distinct frame with local OCR (tesseract.js) or a vision model (Ollama, Gemini, keyless OVH Qwen2.5-VL).",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "workerd": "./src/edge.ts",
+      "worker": "./src/edge.ts",
+      "default": "./src/index.ts"
+    },
+    "./node": "./src/node/index.ts"
+  },
+  "vid2context": {
+    "runtimes": [
+      "node",
+      "workers",
+      "browser"
+    ]
+  },
+  "dependencies": {
+    "@tesseract.js-data/eng": "^1.0.0",
+    "@vid2context/core": "*",
+    "@vid2context/ffmpeg": "*",
+    "@vid2context/provider-ytdlp": "*",
+    "tesseract.js": "^7.0.0"
+  },
+  "devDependencies": {
+    "jpeg-js": "^0.4.4"
+  }
+}
