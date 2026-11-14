@@ -37,7 +37,11 @@ RUN --mount=type=cache,target=/root/.npm \
       ort_arch="$(case "$TARGETARCH" in amd64) echo x64;; arm64) echo arm64;; *) echo "$TARGETARCH";; esac)"; \
       find node_modules/onnxruntime-node/bin -mindepth 2 -maxdepth 2 -type d ! -name linux -exec rm -rf {} +; \
       find node_modules/onnxruntime-node/bin -mindepth 3 -maxdepth 3 -type d -path '*/linux/*' ! -name "$ort_arch" -exec rm -rf {} +; \
-    fi
+    fi \
+ # transformers.js's Node build loads onnxruntime-node and bundles the web
+ # runtime it needs, so the separate onnxruntime-web package (browser only,
+ # about 140 MB) is never imported on Node.
+ && rm -rf node_modules/onnxruntime-web
 
 # ---------------------------------------------------------------- app
 FROM deps AS app
@@ -64,6 +68,9 @@ RUN apt-get update \
  && apt-get install -y --no-install-recommends ca-certificates curl unzip \
  && rm -rf /var/lib/apt/lists/*
 WORKDIR /dl
+# yt-dlp's unpacked ("onedir") build, not the single-file one: the single
+# file unpacks shared libraries into /tmp on every run, which fails when /tmp
+# is mounted noexec (docker --read-only --tmpfs /tmp) and costs startup time.
 RUN case "$TARGETARCH" in \
       amd64) ytdlp_asset=yt-dlp_linux; deno_triple=x86_64-unknown-linux-gnu; deno_sha="$DENO_SHA256_AMD64";; \
       arm64) ytdlp_asset=yt-dlp_linux_aarch64; deno_triple=aarch64-unknown-linux-gnu; deno_sha="$DENO_SHA256_ARM64";; \
@@ -71,14 +78,18 @@ RUN case "$TARGETARCH" in \
     esac \
  && curl -fsSLo SHA2-256SUMS "https://github.com/yt-dlp/yt-dlp/releases/download/${YTDLP_VERSION}/SHA2-256SUMS" \
  && echo "${YTDLP_SUMS_SHA256}  SHA2-256SUMS" | sha256sum -c - \
- && curl -fsSLo yt-dlp "https://github.com/yt-dlp/yt-dlp/releases/download/${YTDLP_VERSION}/${ytdlp_asset}" \
- && awk -v a="$ytdlp_asset" '$2 == a || $2 == "*" a { print $1 "  yt-dlp"; found = 1 } END { exit !found }' SHA2-256SUMS | sha256sum -c - \
+ && curl -fsSLo yt-dlp.zip "https://github.com/yt-dlp/yt-dlp/releases/download/${YTDLP_VERSION}/${ytdlp_asset}.zip" \
+ && awk -v a="${ytdlp_asset}.zip" '$2 == a || $2 == "*" a { print $1 "  yt-dlp.zip"; found = 1 } END { exit !found }' SHA2-256SUMS | sha256sum -c - \
+ && mkdir -p /out/opt/yt-dlp /out/bin \
+ && unzip -q yt-dlp.zip -d /out/opt/yt-dlp \
+ && mv "/out/opt/yt-dlp/${ytdlp_asset}" /out/opt/yt-dlp/yt-dlp \
+ && chmod -R a+rX,go-w /out/opt/yt-dlp \
  && curl -fsSLo deno.zip "https://github.com/denoland/deno/releases/download/${DENO_VERSION}/deno-${deno_triple}.zip" \
  && echo "${deno_sha}  deno.zip" | sha256sum -c - \
  && unzip -q deno.zip deno \
- && install -m 0755 yt-dlp deno -t /out/bin -D \
+ && install -m 0755 deno /out/bin/deno \
  && /out/bin/deno --version \
- && /out/bin/yt-dlp --version
+ && /out/opt/yt-dlp/yt-dlp --version
 
 # ---------------------------------------------------------------- whisper.cpp
 # Off by default. WITH_WHISPER=1 builds whisper-cli and whisper-server from
@@ -125,16 +136,17 @@ LABEL org.opencontainers.image.title="vid2context" \
       org.opencontainers.image.version="${VERSION}"
 
 # ffmpeg for audio, tini as PID 1 (reaps yt-dlp and ffmpeg children and
-# forwards signals), libgomp1 for whisper.cpp's OpenMP threads. npm and
-# corepack are removed: nothing runs them at run time.
+# forwards signals), libgomp1 for whisper.cpp's OpenMP threads. npm,
+# corepack and yarn are removed: nothing runs them at run time.
 RUN apt-get update \
  && apt-get install -y --no-install-recommends ca-certificates ffmpeg libgomp1 tini \
  && rm -rf /var/lib/apt/lists/* \
- && rm -rf /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/corepack \
-           /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack \
+ && rm -rf /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/corepack /opt/yarn-v* \
+           /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack /usr/local/bin/yarn /usr/local/bin/yarnpkg \
  && mkdir -p /data \
  && chown node:node /data
 
+COPY --from=tools /out/opt/yt-dlp/ /opt/yt-dlp/
 COPY --from=tools /out/bin/ /usr/local/bin/
 COPY --from=whisper /opt/whisper.cpp/ /opt/whisper.cpp/
 COPY --from=app /app/ /app/
@@ -148,14 +160,14 @@ ENV NODE_ENV=production \
     VID2CONTEXT_HOME=/data \
     VID2CONTEXT_PUBLIC=1 \
     VID2CONTEXT_FFMPEG_DOWNLOAD=0 \
-    YTDLP_PATH=/usr/local/bin/yt-dlp \
+    YTDLP_PATH=/opt/yt-dlp/yt-dlp \
     YTDLP_AUTO_UPDATE=0 \
     FFMPEG_PATH=/usr/bin/ffmpeg \
     FFPROBE_PATH=/usr/bin/ffprobe \
     XDG_CACHE_HOME=/data/cache \
     DENO_DIR=/data/cache/deno \
     DENO_NO_UPDATE_CHECK=1 \
-    PATH=/opt/whisper.cpp/bin:$PATH
+    PATH=/opt/whisper.cpp/bin:/opt/yt-dlp:$PATH
 
 WORKDIR /app
 USER node

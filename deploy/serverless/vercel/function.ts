@@ -20,6 +20,9 @@ export const app = createApp({
   registry,
   makeCtx: (req) => createContext({ runtime: 'node', env: process.env as Env, signal: req.signal }),
   version: pkg.version,
+  // Vercel sets x-real-ip to the client address and overwrites any value the
+  // client sent, so it is safe for per-IP rate limits.
+  clientIp: (c) => c.req.header('x-real-ip') || undefined,
 });
 
 export default getRequestListener(app.fetch);
