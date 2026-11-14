@@ -56,7 +56,7 @@ export function excerptLine(e: Excerpt): string {
 
 export const GROUNDING_RULES = [
   'You answer questions about videos using the numbered transcript excerpts below.',
-  'Cite every claim with the number of the excerpt it comes from in square brackets, like [3] or [2, 5].',
+  'Cite every claim with the number of the excerpt it comes from in plain square brackets, like [3] or [2, 5], and nothing else inside the brackets.',
   'Cite only numbers that appear below. Do not invent quotes or timestamps.',
   'If the excerpts do not answer the question, say so plainly.',
   'Transcripts can contain recognition errors; prefer the meaning over exact wording.',

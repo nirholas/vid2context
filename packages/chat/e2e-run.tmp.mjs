@@ -1,0 +1,35 @@
+import { chromium } from '@playwright/test';
+const S = '/tmp/claude-1000/-home-user-vid2context-vid2context/53053589-c701-47c4-b62d-a5b95fee3dbf/scratchpad';
+const browser = await chromium.launch();
+const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+const log = [];
+page.on('pageerror', (e) => log.push('pageerror: ' + e.message));
+await page.goto('http://127.0.0.1:26101/chat/');
+await page.getByRole('button', { name: 'Attach context' }).first().click();
+await page.getByRole('tab', { name: 'JSON files' }).click();
+await page.locator('input[type=file]').setInputFiles('../../tests/fixtures/contexts/youtube-cCPsdFdlshc.json');
+await page.waitForSelector('[data-context]');
+await page.getByRole('button', { name: /Change model/ }).click();
+await page.getByRole('combobox').fill('gpt-oss ovh');
+await page.getByRole('combobox').press('Enter');
+const box = page.getByRole('textbox', { name: 'Message' });
+await box.fill('Which engine does the 2000 G500 have, and why do the hosts call it reliable? Cite the moments.');
+await box.press('Enter');
+await page.waitForSelector('[data-role=assistant]:not([data-status=streaming])', { timeout: 180000 });
+console.log('status', await page.locator('[data-role=assistant]').getAttribute('data-status'));
+const chips = page.locator('[data-cite]');
+console.log('chips:', await chips.count(), (await chips.allInnerTexts()).slice(0, 6));
+console.log((await page.locator('[data-role=assistant]').innerText()).slice(0, 700));
+await page.screenshot({ path: S + '/answer.png' });
+if (await chips.count()) {
+  await chips.nth(0).click();
+  const iframe = page.locator('iframe');
+  await iframe.waitFor({ timeout: 10000 });
+  console.log('iframe src:', await iframe.getAttribute('src'));
+  await page.waitForSelector('[data-cited]', { timeout: 10000 });
+  console.log('highlighted lines:', await page.locator('[data-cited]').count(), (await page.locator('[data-cited]').first().innerText()).slice(0, 80));
+  await page.waitForTimeout(4000);
+  await page.screenshot({ path: S + '/panel.png' });
+}
+console.log(log.join('\n'));
+await browser.close();

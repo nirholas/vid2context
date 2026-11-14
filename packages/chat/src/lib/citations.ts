@@ -1,16 +1,36 @@
 /**
- * `[n]` citation markers. The answer cites sources as [n] (also [1, 3] or
- * [1][2]), where n matches meta.sources[].n. These helpers split text into
+ * `[n]` citation markers. The answer cites sources as [n] (also [1, 3],
+ * [2-4] or [1][2]), where n matches meta.sources[].n. These helpers split text into
  * plain parts and citation parts, label a chip "Title @ m:ss", and turn the
  * markers into timestamp links for Markdown export.
  */
 import { formatTimestamp } from '@vid2context/core';
 import type { ChatSource, Citation } from './types.ts';
 
-/** Matches [3] and [1, 3] (commas, optional spaces). Not [a] or [1-3] or footnote-like [^1]. */
-export const CITE_RE = /\[(\d{1,3}(?:\s*,\s*\d{1,3})*)\]/g;
+/**
+ * Matches [3], [1, 3] and ranges [2-4] (as packages/ask accepts them), plus
+ * the lenticular form some models write, like gpt-oss: 【3】 or 【3†L1-L4】.
+ * Not [a], footnote-style [^1], or Markdown links [1](url).
+ */
+export const CITE_RE = /\[(\d{1,3}(?:\s*(?:,|-|\u2013)\s*\d{1,3})*)\]|\u3010(\d{1,3}(?:\s*,\s*\d{1,3})*)(?:\u2020[^\u3011]*)?\u3011/g;
 
 export type CitePart = { kind: 'text'; text: string } | { kind: 'cite'; ns: number[]; raw: string };
+
+/** "1, 3" -> [1, 3]; "2-4" -> [2, 3, 4] (short ascending ranges only, like packages/ask). */
+export function expandCiteBody(body: string): number[] {
+  const out: number[] = [];
+  for (const part of body.split(',')) {
+    const range = part.split(/-|\u2013/).map((x) => Number(x.trim()));
+    const [a, b] = range;
+    if (range.length === 2 && Number.isInteger(a) && Number.isInteger(b) && a !== undefined && b !== undefined) {
+      if (b >= a && b - a <= 20) for (let n = a; n <= b; n++) out.push(n);
+      else out.push(a, b);
+    } else {
+      for (const n of range) if (Number.isInteger(n)) out.push(n);
+    }
+  }
+  return out;
+}
 
 export function splitCitations(text: string): CitePart[] {
   const out: CitePart[] = [];
@@ -20,8 +40,7 @@ export function splitCitations(text: string): CitePart[] {
     // Skip Markdown links: [1](url) is a link, not a citation.
     if (text[start + m[0].length] === '(') continue;
     if (start > last) out.push({ kind: 'text', text: text.slice(last, start) });
-    const ns = (m[1] ?? '').split(',').map((s) => Number.parseInt(s.trim(), 10));
-    out.push({ kind: 'cite', ns, raw: m[0] });
+    out.push({ kind: 'cite', ns: expandCiteBody(m[1] ?? m[2] ?? ''), raw: m[0] });
     last = start + m[0].length;
   }
   if (last < text.length) out.push({ kind: 'text', text: text.slice(last) });

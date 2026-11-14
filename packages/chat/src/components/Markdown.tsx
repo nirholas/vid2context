@@ -29,7 +29,7 @@ export function remarkCitations() {
     if (!node.children || SKIP.has(node.type)) return;
     const next: MdNode[] = [];
     for (const child of node.children) {
-      if (child.type === 'text' && child.value && /\[\d/.test(child.value)) {
+      if (child.type === 'text' && child.value && /\[\d|\u3010\d/.test(child.value)) {
         for (const part of splitCitations(child.value)) {
           if (part.kind === 'text') next.push({ type: 'text', value: part.text });
           else
