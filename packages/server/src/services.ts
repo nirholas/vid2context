@@ -60,7 +60,16 @@ export interface Services {
   loadBatch(sel: { inputs?: string[]; collectionId?: string }, opts: LoadOptions, ctx: Ctx): Promise<VideoContext[]>;
 }
 
-export function createServices(registry: Registry, makeCtx: (req: Request) => Ctx): Services {
+/**
+ * `openStorage` overrides how the library storage is opened (the Node entry
+ * shares one Storage between the app and the jobs queue). Default: the
+ * registry's enabled storage provider, else a process-wide MemoryStorage.
+ */
+export function createServices(
+  registry: Registry,
+  makeCtx: (req: Request) => Ctx,
+  openStorage?: (ctx: Ctx) => Promise<Storage>,
+): Services {
   const ctxCache = new WeakMap<Request, Ctx>();
   const configCache = new WeakMap<Request, ServerConfig>();
   const memory = new MemoryStorage();
@@ -90,7 +99,9 @@ export function createServices(registry: Registry, makeCtx: (req: Request) => Ct
   };
 
   const storage = (ctx: Ctx): Promise<Storage> => {
-    storagePromise ??= registry.openStorage(ctx).then(
+    // Opened once with this request's env and fetch, but not its signal: the storage outlives the request.
+    const base: Ctx = { ...ctx, signal: undefined };
+    storagePromise ??= (openStorage ? openStorage(base) : registry.openStorage(base)).then(
       (s) => s ?? memory,
       (err) => {
         storagePromise = undefined;
