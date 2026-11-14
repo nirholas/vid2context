@@ -54,7 +54,8 @@ describe.skipIf(!process.env.LIVE)('digest_videos live: keyless LLM chain as the
         expect(res.isError).toBeFalsy();
         const cited = out.match(/\]\(https:\/\/www\.youtube\.com\/watch\?v=[\w-]+&t=\d+s\)/g) ?? [];
         expect(cited.length).toBeGreaterThan(0);
-        expect(invalidCitations(out, contexts.map(sourceOf))).toEqual([]);
+        // Everything above the dropped-claims list (which quotes the removed lines verbatim) must validate.
+        expect(invalidCitations(out.split('\nDropped claims:')[0] ?? '', contexts.map(sourceOf))).toEqual([]);
       } finally {
         await h.close();
       }

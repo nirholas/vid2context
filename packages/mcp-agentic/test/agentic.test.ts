@@ -140,7 +140,8 @@ describe('digest_videos with sampling (client model = the real LLM chain, replay
     const links = out.match(/\[[^\]]+ @ \d+:\d{2}\]\(https:\/\/www\.youtube\.com\/watch\?v=[\w-]+&t=\d+s\)/g) ?? [];
     expect(links.length).toBeGreaterThan(0);
     expect(out).toContain('Best & Worst G-Wagon Years');
-    expect(invalidCitations(out, [sourceOf(zoo), sourceOf(gwagon)])).toEqual([]);
+    // Everything above the dropped-claims list (which quotes the removed lines verbatim) must validate.
+    expect(invalidCitations(out.split('\nDropped claims:')[0] ?? '', [sourceOf(zoo), sourceOf(gwagon)])).toEqual([]);
     expect(out).toMatch(/Citation check \(tolerance 5 s\): \d+ citations verified/);
     expect(out).toContain('Sources:');
     // The recorded notes really contain one bullet without a timestamp; it is dropped and reported.
