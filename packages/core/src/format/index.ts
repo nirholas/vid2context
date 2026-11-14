@@ -5,10 +5,22 @@
 import { Vid2ContextError } from '../errors.ts';
 import { formatTimestamp, segmentsToText } from '../segments.ts';
 import type { VideoContext } from '../types.ts';
+import { markdown } from './markdown.ts';
+import { pack } from './pack.ts';
+import { srt } from './srt.ts';
+import { vtt } from './vtt.ts';
 
 export interface FormatOptions {
   /** Prefix lines with timestamps where the format allows. */
   timestamps?: boolean;
+  /** Token budget for formats that size themselves (pack), measured with estimateTokens. */
+  maxTokens?: number;
+  /** Include fetched comments. markdown: off unless true. pack: on unless false. */
+  includeComments?: boolean;
+  /** Include on-screen visual notes. markdown: off unless true. pack: on unless false. */
+  includeVisual?: boolean;
+  /** Make timestamps links into the video where the platform allows. Default true. */
+  linkTimestamps?: boolean;
 }
 
 export interface Formatter {
@@ -17,6 +29,8 @@ export interface Formatter {
   mimeType: string;
   extension: string;
   render(context: VideoContext, opts: FormatOptions): string;
+  /** One document from several videos. Only formats that can combine videos implement it. */
+  renderMany?(contexts: VideoContext[], opts: FormatOptions): string;
 }
 
 const text: Formatter = {
@@ -42,14 +56,32 @@ const json: Formatter = {
   },
 };
 
-export const formatters: Record<string, Formatter> = { text, json };
+export const formatters: Record<string, Formatter> = { text, json, markdown, srt, vtt, pack };
 
-export function render(context: VideoContext, format: string, opts: FormatOptions = {}): string {
+function formatterFor(format: string): Formatter {
   const f = formatters[format];
   if (!f) {
     throw new Vid2ContextError('bad-request', `Unknown format "${format}".`, {
       hint: `Available formats: ${Object.keys(formatters).join(', ')}.`,
     });
   }
-  return f.render(context, opts);
+  return f;
+}
+
+export function render(context: VideoContext, format: string, opts: FormatOptions = {}): string {
+  return formatterFor(format).render(context, opts);
+}
+
+/** Render several videos as one document. Throws for formats that only render one video. */
+export function renderMany(contexts: VideoContext[], format: string, opts: FormatOptions = {}): string {
+  const f = formatterFor(format);
+  if (!f.renderMany) {
+    const many = Object.values(formatters)
+      .filter((x) => x.renderMany)
+      .map((x) => x.id);
+    throw new Vid2ContextError('bad-request', `Format "${format}" renders one video at a time.`, {
+      hint: `Formats that accept several videos: ${many.join(', ')}. Or render each video separately.`,
+    });
+  }
+  return f.renderMany(contexts, opts);
 }

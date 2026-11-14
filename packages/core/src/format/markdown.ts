@@ -56,7 +56,8 @@ export function renderMarkdown(context: VideoContext, opts: FormatOptions): stri
   if (!paras.length) blocks.push('## Transcript\n\n_The transcript is empty._');
 
   if (opts.includeVisual && context.visual?.length) blocks.push(`## On screen\n\n${visualLines(context, link).join('\n')}`);
-  if (opts.includeComments && context.comments?.length) blocks.push(`## Comments\n\n${commentLines(context.comments).join('\n')}`);
+  if (opts.includeComments && context.comments?.length)
+    blocks.push(`## Comments\n\n${commentLines(context.comments).join('\n')}`);
 
   return `${blocks.join('\n\n')}\n`;
 }

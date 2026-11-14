@@ -1,0 +1,18 @@
+{
+  "name": "@vid2context/config",
+  "version": "0.1.0",
+  "description": "Versioned vid2context config files with profiles, compiled to env vars and per-stage chain options. Runtime-neutral core plus a Node loader.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./node": "./src/node.ts"
+  },
+  "scripts": {
+    "gen:schema": "tsx scripts/gen-schema.ts"
+  },
+  "dependencies": {
+    "@vid2context/core": "*",
+    "@vid2context/registry": "*"
+  }
+}

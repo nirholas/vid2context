@@ -1,0 +1,23 @@
+{
+  "name": "@vid2context/exporters",
+  "version": "0.1.0",
+  "description": "Export video contexts as notes: an Obsidian vault folder (one note per video, an index note per collection) or Notion pages with chapters and timestamp links.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./node": "./src/node.ts",
+    "./http": "./src/http.ts",
+    "./mcp": "./src/mcp.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "@vid2context/core": "*",
+    "hono": "^4.13.18",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@vid2context/provider-youtube": "^0.1.0",
+    "yaml": "^2.9.1"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "recorded": "2026-11-14",
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/context",
+    "query": {
+      "url": "xxxxxxxxxxx"
+    }
+  },
+  "status": 404,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": "{\"error\":{\"code\":\"not-found\",\"message\":\"YouTube xxxxxxxxxxx: ERROR (This video is unavailable)\",\"hint\":\"Check the video id or URL; the video may have been removed.\"},\"attempts\":[{\"id\":\"youtube\",\"stage\":\"resolve\",\"outcome\":\"ok\",\"detail\":\"youtube:xxxxxxxxxxx\"},{\"id\":\"youtube\",\"stage\":\"metadata\",\"outcome\":\"error\",\"reason\":\"not-found\",\"detail\":\"YouTube xxxxxxxxxxx: ERROR (This video is unavailable)\"}]}"
+}

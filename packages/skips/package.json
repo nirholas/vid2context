@@ -1,0 +1,18 @@
+{
+  "name": "@vid2context/skips",
+  "version": "0.1.0",
+  "description": "SponsorBlock segments for YouTube videos: find sponsor reads, self-promotion, intros and outros, and build a transcript layer without them while the raw transcript stays stored.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./http": "./src/http.ts",
+    "./mcp": "./src/mcp.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "@vid2context/core": "*",
+    "hono": "^4.13.18",
+    "zod": "^4.6.7"
+  }
+}

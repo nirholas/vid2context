@@ -1,0 +1,16 @@
+{
+  "name": "@vid2context/accounts",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Hosted mode for vid2context: GitHub sign-in, sessions, API keys, per-account quotas, a shared transcript cache for public videos and abuse protection. Off unless VID2CONTEXT_HOSTED=1.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./http": "./src/http.ts"
+  },
+  "dependencies": {
+    "@vid2context/core": "*",
+    "hono": "^4.13.18"
+  }
+}

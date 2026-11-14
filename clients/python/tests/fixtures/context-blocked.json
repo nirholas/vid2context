@@ -1,0 +1,15 @@
+{
+  "recorded": "2026-11-14",
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/context",
+    "query": {
+      "url": "https://youtu.be/jNQXAC9IVRw"
+    }
+  },
+  "status": 422,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": "{\"error\":{\"code\":\"no-transcript\",\"message\":\"Could not get a transcript for youtube:jNQXAC9IVRw (mode: auto).\",\"hint\":\"Check `attempts` for why each step failed. Installing the yt-dlp provider and enabling a speech-to-text rung covers most videos.\"},\"attempts\":[{\"id\":\"youtube\",\"stage\":\"resolve\",\"outcome\":\"ok\",\"detail\":\"youtube:jNQXAC9IVRw\"},{\"id\":\"youtube\",\"stage\":\"metadata\",\"outcome\":\"ok\",\"ms\":352},{\"id\":\"youtube-captions\",\"stage\":\"captions\",\"outcome\":\"error\",\"reason\":\"blocked\",\"detail\":\"YouTube captions en: YouTube answered HTTP 429 (automated-traffic block).\",\"ms\":226},{\"id\":\"audio\",\"stage\":\"audio\",\"outcome\":\"skipped\",\"reason\":\"no-audio-provider\",\"detail\":\"No installed source can supply audio for youtube. The yt-dlp provider covers most sites.\"}]}"
+}

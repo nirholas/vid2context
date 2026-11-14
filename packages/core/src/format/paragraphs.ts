@@ -61,8 +61,7 @@ function chapterAt(chapters: Chapter[], sec: number): number {
 export function groupParagraphs(segments: Segment[], chapters: Chapter[] = []): Paragraph[] {
   const sortedChapters = [...chapters].sort((a, b) => a.startSec - b.startSec);
   const out: Paragraph[] = [];
-  let cur: { startSec: number; endSec: number; parts: string[]; words: number; speaker?: string; chapter: number } | null =
-    null;
+  let cur: { startSec: number; endSec: number; parts: string[]; words: number; speaker?: string; chapter: number } | null = null;
   const flush = () => {
     if (cur?.parts.length) {
       out.push({
