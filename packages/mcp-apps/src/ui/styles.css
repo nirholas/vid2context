@@ -86,6 +86,11 @@
   box-sizing: border-box;
 }
 
+/* The hidden attribute must win over the display rules below (higher specificity than any of them). */
+.v2c [hidden] {
+  display: none;
+}
+
 html,
 body {
   margin: 0;

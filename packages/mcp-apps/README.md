@@ -41,7 +41,12 @@ The view side of the protocol is a small client (`src/ui/bridge.ts`) rather than
 
 ## Supported hosts
 
-Verified: the ext-apps `AppBridge` host implementation (protocol test) and a DOM environment (rendering tests). Not yet verified in a live host: ChatGPT (developer mode), Claude, VS Code, Goose and the ext-apps `basic-host` all render MCP Apps per their docs, but none was reachable from the build machine. See "Trying it in a real host" below.
+Verified:
+
+- The ext-apps `AppBridge` host implementation, in `test/bridge.test.ts` and `test/host.test.ts` (the built HTML in an iframe, driven over postMessage).
+- Headless Chromium (Playwright) with the built HTML in a `sandbox="allow-scripts"` iframe under the spec's default CSP, driven by `AppBridge` as host: the handshake, tool result, search, a timestamp click arriving as `ui/open-link`, "Send to chat" arriving as `ui/message`, size reports, and light and dark themes at 360 px and 900 px wide, with no console errors. This was a one-off check on 2026-11-14, not a committed test.
+
+Not verified live: ChatGPT (developer mode), Claude, VS Code, Goose and the ext-apps `basic-host` all render MCP Apps per their docs, but none was reachable from the build machine. See "Trying it in a real host" below.
 
 ## How item 44 mounts it
 

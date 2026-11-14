@@ -23,6 +23,8 @@ describe('viewer bundle', () => {
     expect(VIEWER_HTML.startsWith('<!doctype html>')).toBe(true);
     expect(VIEWER_HTML).toContain('<style>');
     expect(VIEWER_HTML).toContain('<script>');
+    // Elements the viewer hides with the hidden attribute also have display rules; this keeps them hidden.
+    expect(VIEWER_HTML).toContain('.v2c [hidden]{display:none}');
     expect(VIEWER_HTML).not.toMatch(/https?:\/\//i);
     expect(VIEWER_HTML).not.toMatch(/<script[^>]+src=|<link\b|<img\b|<iframe\b|@import|url\(/i);
     expect(VIEWER_HTML).not.toMatch(/[\u2013\u2014]/);
