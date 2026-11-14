@@ -99,7 +99,8 @@ export interface Bullet {
 }
 
 const STAMP = /\d{1,2}(?::\d{2}){1,2}/g;
-const TRAILING_STAMPS = /((?:\s*[([]\s*\d{1,2}(?::\d{2}){1,2}(?:\s*(?:[,;]|and|-)\s*\d{1,2}(?::\d{2}){1,2})*\s*[)\]])+)\s*[.,;]?\s*$/;
+const TRAILING_STAMPS =
+  /((?:\s*[([]\s*\d{1,2}(?::\d{2}){1,2}(?:\s*(?:[,;]|and|-)\s*\d{1,2}(?::\d{2}){1,2})*\s*[)\]])+)\s*[.,;]?\s*$/;
 
 /** "1:02:03" -> 3723, "3:25" -> 205. */
 export function parseTimestamp(s: string): number | null {
@@ -151,12 +152,7 @@ export interface Summary {
 }
 
 /** Ask the free-first LLM chain for the summary and keep only bullets with valid timestamps. */
-export async function summarize(
-  registry: Registry,
-  context: VideoContext,
-  ctx: Ctx,
-  chain: ChainOptions = {},
-): Promise<Summary> {
+export async function summarize(registry: Registry, context: VideoContext, ctx: Ctx, chain: ChainOptions = {}): Promise<Summary> {
   const res = await chat(registry, buildSummaryRequest(context), chain, ctx);
   return { bullets: parseSummary(res.text, context.transcript.segments), rung: res.rung };
 }

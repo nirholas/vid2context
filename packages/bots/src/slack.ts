@@ -128,11 +128,7 @@ export async function uploadText(
 }
 
 /** Post to a slash command's response_url (valid for 30 minutes, up to 5 times). No bot token needed. */
-export async function respond(
-  ctx: Ctx,
-  responseUrl: string,
-  msg: { text: string; inChannel?: boolean },
-): Promise<void> {
+export async function respond(ctx: Ctx, responseUrl: string, msg: { text: string; inChannel?: boolean }): Promise<void> {
   if (!/^https:\/\/hooks\.slack\.com\//.test(responseUrl)) {
     throw new Vid2ContextError('bad-request', 'Slack response_url is not a hooks.slack.com URL.');
   }

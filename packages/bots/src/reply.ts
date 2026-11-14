@@ -13,8 +13,8 @@ import {
   render,
   type Storage,
   timestampUrl,
-  type VideoContext,
   Vid2ContextError,
+  type VideoContext,
   type VideoRef,
 } from '@vid2context/core';
 import { type Bullet, summarize } from './summary.ts';
@@ -57,7 +57,11 @@ export interface VideoReply {
 /** What a user is told when something fails: the error's message and recovery hint, never a stack. */
 export function describeError(err: unknown): UserError {
   if (err instanceof Vid2ContextError) return { code: err.code, message: err.message, hint: err.hint };
-  return { code: 'internal', message: 'Something went wrong on the server.', hint: 'Try again in a minute. The server log has the details.' };
+  return {
+    code: 'internal',
+    message: 'Something went wrong on the server.',
+    hint: 'Try again in a minute. The server log has the details.',
+  };
 }
 
 /** A safe, readable file name from the video title. */
@@ -68,7 +72,7 @@ export function transcriptFilename(title: string, ref: VideoRef): string {
     .trim()
     .replace(/\s+/g, '-')
     .slice(0, 60)
-    .replace(/[-.]+$/, '');
+    .replace(/^[-.]+|[-.]+$/g, '');
   return `${base || ref.nativeId}-transcript.txt`;
 }
 

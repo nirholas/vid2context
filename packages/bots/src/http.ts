@@ -31,15 +31,7 @@ import { admit } from './gate.ts';
 import { commandArg, extractSlackUrls } from './input.ts';
 import { RateLimiter, SeenIds } from './ratelimit.ts';
 import { buildReply, describeError, type VideoReply } from './reply.ts';
-import {
-  postMessage,
-  respond,
-  SLACK_HELP,
-  SlackApiError,
-  type SlackEnvelope,
-  uploadText,
-  wantedEvent,
-} from './slack.ts';
+import { postMessage, respond, SLACK_HELP, SlackApiError, type SlackEnvelope, uploadText, wantedEvent } from './slack.ts';
 import { planTelegram, replyTarget, sendDocument, sendMessage, TELEGRAM_HELP, type TgUpdate, webhookReply } from './telegram.ts';
 import { verifyDiscord, verifySlack, verifyTelegram } from './verify.ts';
 

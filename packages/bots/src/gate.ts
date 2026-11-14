@@ -4,9 +4,9 @@
  * against the limit, so help messages and refused links cost nothing.
  */
 import type { Registry, VideoRef } from '@vid2context/core';
-import { describeError, type UserError } from './reply.ts';
 import { pickVideo } from './input.ts';
 import { formatWait, type RateLimiter } from './ratelimit.ts';
+import { describeError, type UserError } from './reply.ts';
 
 export type Admission = { ok: true; ref: VideoRef; input: string } | { ok: false; error: UserError };
 

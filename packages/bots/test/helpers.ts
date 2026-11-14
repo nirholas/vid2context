@@ -3,20 +3,15 @@
  * routes that serve the recorded YouTube and LLM responses. Every response
  * here is a real recording; see test/fixtures/README.md for where each came from.
  */
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
-import { Registry } from '@vid2context/core';
-import type { Route } from '@vid2context/core/testing';
+import { createContext, type Env, type Logger, Registry } from '@vid2context/core';
+import { type Route, replayFetch } from '@vid2context/core/testing';
 import llm from '@vid2context/provider-llm-openai-compatible';
 import mediaFile from '@vid2context/provider-media-file';
 import youtube from '@vid2context/provider-youtube';
+import { botsRoutes } from '../src/http.ts';
+import { fixtureJson, readRepo } from './util.ts';
 
-export const ROOT = join(import.meta.dirname, '../../..');
-export const FIXTURES = join(import.meta.dirname, 'fixtures');
-
-export const readRepo = (p: string) => readFileSync(join(ROOT, p), 'utf8');
-export const readFixture = (name: string) => readFileSync(join(FIXTURES, name), 'utf8');
-export const fixtureJson = <T = unknown>(name: string): T => JSON.parse(readFixture(name)) as T;
+export * from './util.ts';
 
 /** The video every route test summarizes: "Best & Worst G-Wagon Years", 18 minutes, auto-captions. */
 export const VIDEO_ID = 'cCPsdFdlshc';
@@ -73,7 +68,8 @@ export function llmRoute(): { route: Route; state: { mismatch?: string; calls: n
     response: (call) => {
       state.calls++;
       const body = JSON.parse(String(call.body)) as LlmRecording['request'];
-      if (body.model !== rec.request.model) throw new Error(`${LLM_FIXTURE} was recorded for ${rec.request.model}, not ${body.model}`);
+      if (body.model !== rec.request.model)
+        throw new Error(`${LLM_FIXTURE} was recorded for ${rec.request.model}, not ${body.model}`);
       if (JSON.stringify(body.messages) !== JSON.stringify(rec.request.messages)) {
         state.mismatch = `The summary request changed since ${LLM_FIXTURE} was recorded. Re-record: LIVE=1 npm run -w packages/bots record`;
         throw new Error(state.mismatch);
@@ -82,4 +78,47 @@ export function llmRoute(): { route: Route; state: { mismatch?: string; calls: n
     },
   };
   return { route, state };
+}
+
+export interface LogLine {
+  level: 'debug' | 'info' | 'warn' | 'error';
+  msg: string;
+  data?: Record<string, unknown>;
+}
+
+/**
+ * The bots routes wired to the replayed pipeline: YouTube and LLM fixtures plus
+ * the platform responses a test adds. Background work is collected through
+ * `waitUntil`, so `settle()` waits for the replies to be sent.
+ */
+export function harness(env: Env, routes: Route[] = [], opts: { now?: () => number } = {}) {
+  const llm = llmRoute();
+  const fetch = replayFetch([...youtubeRoutes(), llm.route, ...routes]);
+  const logs: LogLine[] = [];
+  const log: Logger = {
+    debug: (msg, data) => logs.push({ level: 'debug', msg, data }),
+    info: (msg, data) => logs.push({ level: 'info', msg, data }),
+    warn: (msg, data) => logs.push({ level: 'warn', msg, data }),
+    error: (msg, data) => logs.push({ level: 'error', msg, data }),
+  };
+  const tasks: Promise<unknown>[] = [];
+  const app = botsRoutes({
+    registry: testRegistry(),
+    makeCtx: (req) => createContext({ runtime: 'node', env, fetch, log, signal: req.signal }),
+    waitUntil: (p) => {
+      tasks.push(p);
+    },
+    now: opts.now,
+  });
+  return {
+    app,
+    fetch,
+    logs,
+    llm: llm.state,
+    settle: async () => {
+      await Promise.all(tasks);
+    },
+    /** Calls made to URLs matching `re`, in order. */
+    calls: (re: RegExp) => fetch.calls.filter((c) => re.test(c.url)),
+  };
 }

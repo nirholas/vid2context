@@ -106,5 +106,8 @@ export function pickVideo(registry: Registry, candidates: string[]): { ref: Vide
       first ??= err;
     }
   }
-  throw first ?? new Vid2ContextError('bad-request', 'No video link found.', { hint: 'Send a video URL, for example a YouTube link.' });
+  throw (
+    first ??
+    new Vid2ContextError('bad-request', 'No video link found.', { hint: 'Send a video URL, for example a YouTube link.' })
+  );
 }

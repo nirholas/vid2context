@@ -23,12 +23,18 @@ function need(env: Env, name: string, hint: string): string {
 
 /** Public webhook URLs. BOTS_PUBLIC_BASE_URL is the server's public origin; /api/v1 is added unless it is already there. */
 export function botUrls(env: Env): BotUrls {
-  const raw = need(env, 'BOTS_PUBLIC_BASE_URL', 'Set it to the public HTTPS origin of your vid2context server, for example https://v2c.example.com.');
+  const raw = need(
+    env,
+    'BOTS_PUBLIC_BASE_URL',
+    'Set it to the public HTTPS origin of your vid2context server, for example https://v2c.example.com.',
+  );
   let base: URL;
   try {
     base = new URL(raw);
   } catch {
-    throw new Vid2ContextError('bad-request', 'BOTS_PUBLIC_BASE_URL is not a URL.', { hint: 'Use a full URL such as https://v2c.example.com.' });
+    throw new Vid2ContextError('bad-request', 'BOTS_PUBLIC_BASE_URL is not a URL.', {
+      hint: 'Use a full URL such as https://v2c.example.com.',
+    });
   }
   if (base.protocol !== 'https:') {
     throw new Vid2ContextError('bad-request', 'BOTS_PUBLIC_BASE_URL must use https.', {
@@ -61,10 +67,14 @@ async function tg<T>(ctx: Ctx, token: string, method: string, body?: Record<stri
   });
   const data = (await res.json().catch(() => ({ ok: false, description: `HTTP ${res.status}` }))) as TgResult<T>;
   if (!data.ok) {
-    throw new Vid2ContextError(res.status === 401 ? 'auth' : 'upstream', `Telegram ${method}: ${data.description ?? res.status}`, {
-      status: res.status,
-      hint: res.status === 401 ? 'TELEGRAM_BOT_TOKEN was rejected. Copy it again from @BotFather.' : undefined,
-    });
+    throw new Vid2ContextError(
+      res.status === 401 ? 'auth' : 'upstream',
+      `Telegram ${method}: ${data.description ?? res.status}`,
+      {
+        status: res.status,
+        hint: res.status === 401 ? 'TELEGRAM_BOT_TOKEN was rejected. Copy it again from @BotFather.' : undefined,
+      },
+    );
   }
   return data.result as T;
 }
@@ -103,11 +113,19 @@ export async function setupTelegram(ctx: Ctx): Promise<string[]> {
 
 /** Register the /video command (globally, or in one guild for instant testing) and optionally set the interactions URL. */
 export async function setupDiscord(ctx: Ctx, opts: { guildId?: string; setEndpoint?: boolean } = {}): Promise<string[]> {
-  const appId = need(ctx.env, 'DISCORD_APPLICATION_ID', 'Copy the Application ID from the Developer Portal, General Information.');
+  const appId = need(
+    ctx.env,
+    'DISCORD_APPLICATION_ID',
+    'Copy the Application ID from the Developer Portal, General Information.',
+  );
   const botToken = need(ctx.env, 'DISCORD_BOT_TOKEN', 'Copy the token from the Developer Portal, Bot, Reset Token.');
   const headers = { authorization: `Bot ${botToken}`, 'content-type': 'application/json' };
   const path = opts.guildId ? `/applications/${appId}/guilds/${opts.guildId}/commands` : `/applications/${appId}/commands`;
-  const res = await fetchWithTimeout(ctx, `${DISCORD_API}${path}`, { method: 'PUT', headers, body: JSON.stringify([VIDEO_COMMAND]) });
+  const res = await fetchWithTimeout(ctx, `${DISCORD_API}${path}`, {
+    method: 'PUT',
+    headers,
+    body: JSON.stringify([VIDEO_COMMAND]),
+  });
   if (!res.ok) {
     const err = await errorFromResponse(res, 'Discord register commands');
     throw new Vid2ContextError(err.code, err.message, {
@@ -121,7 +139,10 @@ export async function setupDiscord(ctx: Ctx, opts: { guildId?: string; setEndpoi
   ];
   const endpoint = ctx.env.BOTS_PUBLIC_BASE_URL ? botUrls(ctx.env).discord : undefined;
   if (opts.setEndpoint) {
-    if (!endpoint) throw new Vid2ContextError('bad-request', 'BOTS_PUBLIC_BASE_URL is not set.', { hint: 'It is needed to set the interactions URL.' });
+    if (!endpoint)
+      throw new Vid2ContextError('bad-request', 'BOTS_PUBLIC_BASE_URL is not set.', {
+        hint: 'It is needed to set the interactions URL.',
+      });
     // Discord sends a signed PING to the URL before accepting it, so the server must be reachable now.
     const patch = await fetchWithTimeout(ctx, `${DISCORD_API}/applications/@me`, {
       method: 'PATCH',

@@ -44,7 +44,7 @@ function discordKey(publicKeyHex: string): Promise<CryptoKey> {
   let key = discordKeys.get(publicKeyHex);
   if (!key) {
     const raw = hexToBytes(publicKeyHex);
-    if (!raw || raw.length !== 32) return Promise.reject(new Error('DISCORD_PUBLIC_KEY must be 64 hex characters'));
+    if (raw?.length !== 32) return Promise.reject(new Error('DISCORD_PUBLIC_KEY must be 64 hex characters'));
     key = crypto.subtle.importKey('raw', raw as Uint8Array<ArrayBuffer>, { name: 'Ed25519' }, false, ['verify']);
     // A key that fails to import is not cached, so a fixed env var is picked up on the next request.
     key.catch(() => discordKeys.delete(publicKeyHex));
@@ -61,7 +61,7 @@ export async function verifyDiscord(
 ): Promise<boolean> {
   if (!signatureHex || !timestamp) return false;
   const sig = hexToBytes(signatureHex);
-  if (!sig || sig.length !== 64) return false;
+  if (sig?.length !== 64) return false;
   try {
     const key = await discordKey(publicKeyHex);
     return await crypto.subtle.verify('Ed25519', key, sig as Uint8Array<ArrayBuffer>, enc.encode(timestamp + body));

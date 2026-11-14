@@ -68,7 +68,8 @@ export function slackConfig(env: Env): SlackConfig | null {
 export function limits(env: Env): Limits {
   const raw = Number(val(env, 'BOTS_RATE_LIMIT_PER_HOUR'));
   return {
-    perHour: Number.isFinite(raw) && raw >= 0 && val(env, 'BOTS_RATE_LIMIT_PER_HOUR') ? Math.floor(raw) : DEFAULT_RATE_LIMIT_PER_HOUR,
+    perHour:
+      Number.isFinite(raw) && raw >= 0 && val(env, 'BOTS_RATE_LIMIT_PER_HOUR') ? Math.floor(raw) : DEFAULT_RATE_LIMIT_PER_HOUR,
     telegramChats: list(env, 'BOTS_ALLOWED_CHATS'),
     discordGuilds: list(env, 'BOTS_ALLOWED_GUILDS'),
     slackTeams: list(env, 'BOTS_ALLOWED_TEAMS'),
