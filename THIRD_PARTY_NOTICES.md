@@ -20,3 +20,9 @@ Add an entry when you copy or port code: the project, its URL, its license, the 
 - License: The Unlicense (public domain dedication). No copyright line is required; credited here anyway.
 - What was ported (logic re-written in TypeScript, no code copied verbatim): Google Drive's direct download endpoint and the virus-scan "Download anyway" form flow (`#download-form` action plus hidden inputs); Dropbox's `dl=1` download of share links; the URL shapes for Drive, Dropbox and SharePoint links.
 - Files: `providers/share-links/src/gdrive.ts`, `providers/share-links/src/dropbox.ts`, `providers/share-links/src/url.ts`.
+
+### OpenAI Whisper language identification and Transformers.js
+
+- Sources: https://github.com/openai/whisper (`whisper/decoding.py`, `detect_language`), MIT License, Copyright (c) 2022 OpenAI. https://github.com/huggingface/transformers.js, Apache-2.0, Copyright Hugging Face (used as the npm dependency `@huggingface/transformers`; the package ships no NOTICE file).
+- What was ported (logic re-written in TypeScript, no code copied verbatim): Whisper's language identification, one decoder step after the start-of-transcript token over the first 30 s of audio with every non-language token masked out. Transformers.js's ASR pipeline otherwise assumes English for multilingual models when no language is given.
+- Files: `providers/stt-transformers/src/index.ts` (`detectLanguage`).

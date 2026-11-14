@@ -124,7 +124,7 @@ uv run pytest            # replays recorded server responses, no network
 LIVE=1 VID2CONTEXT_API_URL=http://127.0.0.1:8787 uv run pytest tests/test_live.py
 ```
 
-Unit tests replay real responses recorded from a running vid2context server through `httpx.MockTransport` (see [tests/fixtures/README.md](tests/fixtures/README.md)). To re-record them, run `uv run python scripts/record_fixtures.py`: it starts `packages/server` on a random local port, makes the calls, redacts emails and phone numbers, writes the fixtures and stops the server. The live test starts nothing; it uses the server at `VID2CONTEXT_API_URL` and is skipped when that or `LIVE` is unset.
+Unit tests replay real responses recorded from a running vid2context server through `httpx.MockTransport` (see [tests/fixtures/README.md](tests/fixtures/README.md)). To re-record them, run `uv run python scripts/record_fixtures.py`: it starts `packages/server` on a random local port, makes the calls, redacts emails and phone numbers, writes the fixtures and stops the server. Pass fixture names to record only those, and `--minimal` to serve the same app with only the YouTube, media-file and speech-to-text providers when the full registry does not load. A response with an unexpected status is retried and never replaces a good fixture. The live test starts nothing; it uses the server at `VID2CONTEXT_API_URL` and is skipped when that or `LIVE` is unset.
 
 ## Build and publish
 
