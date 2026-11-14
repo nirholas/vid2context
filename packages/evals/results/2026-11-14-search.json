@@ -13,16 +13,11 @@
     "platform": "linux-x64",
     "policy": "free",
     "keyless": true,
-    "rungs": [
-      "search/keyword",
-      "search/hybrid"
-    ],
+    "rungs": ["search/keyword", "search/hybrid"],
     "envFiles": 1
   },
   "skippedRungs": [],
-  "notes": [
-    "Hybrid search used the embedding model embed/cloudflare/@cf/baai/bge-m3."
-  ],
+  "notes": ["Hybrid search used the embedding model embed/cloudflare/@cf/baai/bge-m3."],
   "items": [
     {
       "item": "land-cruiser-killer",
