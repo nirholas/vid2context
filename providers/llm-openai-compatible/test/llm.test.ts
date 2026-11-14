@@ -30,16 +30,14 @@ describe('rungs from env', () => {
     ]);
   });
 
-  it('orders local, free (per model, step-downs last), keyless, paid', () => {
+  it('orders free (per model, step-downs last), keyless, paid', () => {
     const env = {
-      OLLAMA_MODEL: 'qwen3:8b',
       GROQ_API_KEY: 'gsk_a',
       CEREBRAS_API_KEY: 'csk_a',
       OPENAI_API_KEY: 'sk-a',
       VID2CONTEXT_KEYLESS: '0',
     };
     expect(rankRungs(llmRungs(env), {}, env).map((r) => r.id)).toEqual([
-      'llm/ollama/qwen3:8b',
       'llm/groq/qwen/qwen3.8-27b',
       'llm/groq/openai/gpt-oss-120b',
       'llm/cerebras/gpt-oss-120b',

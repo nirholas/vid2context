@@ -1,10 +1,12 @@
 /**
  * Chat-completion rungs for every OpenAI-compatible API, free first.
  *
- *   local    Ollama (OLLAMA_MODEL), LM Studio (LMSTUDIO_MODEL), any server (LOCAL_LLM_BASE_URL + LOCAL_LLM_MODEL)
  *   free     Groq, Cerebras, Mistral, GitHub Models, Gemini AI Studio (your own free key)
  *   keyless  OVH AI Endpoints (Llama 3.3 70B, gpt-oss-120b) and Pollinations (no account)
  *   paid     OpenAI (OPENAI_API_KEY)
+ *
+ * Local servers (Ollama, LM Studio, llama.cpp, vLLM, Jan, LocalAI, any other
+ * OpenAI-compatible server) live in providers/llm-local.
  *
  * Groq and Cerebras meter quota per model, so each model is its own rung.
  * <PROVIDER>_MODEL replaces a lane's model list (comma-separated, in order).
@@ -55,41 +57,6 @@ interface Lane {
 const OVH = 'https://oai.endpoints.kepler.ai.cloud.ovh.net/v1/chat/completions';
 
 export const LANES: Lane[] = [
-  // ---- local: your machine, free and private
-  {
-    service: 'ollama',
-    tier: 'local',
-    priority: 10,
-    url: (env) => `${(env.OLLAMA_BASE_URL || 'http://localhost:11434/v1').replace(/\/+$/, '')}/chat/completions`,
-    modelVar: 'OLLAMA_MODEL',
-    models: [],
-    needsModelVar: true,
-    json: true,
-  },
-  {
-    service: 'lmstudio',
-    tier: 'local',
-    priority: 20,
-    url: (env) => `${(env.LMSTUDIO_BASE_URL || 'http://localhost:1234/v1').replace(/\/+$/, '')}/chat/completions`,
-    modelVar: 'LMSTUDIO_MODEL',
-    models: [],
-    needsModelVar: true,
-    json: true,
-    jsonSchema: true,
-  },
-  {
-    service: 'local',
-    tier: 'local',
-    priority: 30,
-    url: (env) => `${(env.LOCAL_LLM_BASE_URL || '').replace(/\/+$/, '')}/chat/completions`,
-    keyVar: 'LOCAL_LLM_API_KEY',
-    keyVarOptional: true,
-    modelVar: 'LOCAL_LLM_MODEL',
-    models: [],
-    needsModelVar: true,
-    alsoRequires: ['LOCAL_LLM_BASE_URL'],
-    json: false,
-  },
   // ---- free: hosted free tiers with your own key
   {
     service: 'groq',
