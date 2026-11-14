@@ -54,7 +54,7 @@ function values(): Record<string, string> {
       .join('\n'),
     'mcp.installMode': npmPublished
       ? `the published npm package \`${data.npm.mcpPackage}\``
-      : 'a clone of the repo (the npm package is not published yet, so these steps run the server from source)',
+      : 'a clone of the repo, because the npm package is not published yet',
   };
   // From a clone; -s keeps npm's banner out of redirected output.
   v.cli = 'npm run -s cli --';

@@ -7,10 +7,12 @@ interface Props {
   size?: number;
 }
 const { size = 28 } = Astro.props;
-const svg = readFileSync(repoPath('packages/discovery/assets/logo.svg'), 'utf8')
-  .replace(/<title[^>]*>.*?<\/title>/, '')
-  .replace(/\s(width|height|role|aria-labelledby)="[^"]*"/g, '')
-  .replace('<svg ', `<svg width="${size}" height="${size}" aria-hidden="true" focusable="false" `);
+const source = readFileSync(repoPath('packages/discovery/assets/logo.svg'), 'utf8').replace(/<title[^>]*>.*?<\/title>/, '');
+// Only the root <svg> tag gets new size and accessibility attributes; shapes keep theirs.
+const svg = source.replace(/<svg\b[^>]*>/, (tag) => {
+  const viewBox = tag.match(/viewBox="[^"]*"/)?.[0] ?? '';
+  return `<svg xmlns="http://www.w3.org/2000/svg" ${viewBox} width="${size}" height="${size}" aria-hidden="true" focusable="false">`;
+});
 ---
 
 <Fragment set:html={svg} />

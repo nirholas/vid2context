@@ -354,14 +354,27 @@ async function githubStars(): Promise<number | null> {
   }
 }
 
-/** Whether the MCP server is on npm yet. The install buttons only use `npx` once it is. */
-async function npmVersion(name: string): Promise<string | null> {
+/**
+ * The published version of the MCP server on npm, or null. The install buttons
+ * only use `npx` once a real release is there: a prerelease or a placeholder
+ * without the `vid2context-mcp` bin (a name reservation) does not count.
+ */
+async function npmVersion(name: string, bin: string): Promise<string | null> {
   if (process.env.SITE_OFFLINE === '1') return null;
   try {
     const res = await fetch(`https://registry.npmjs.org/${encodeURIComponent(name)}/latest`, { signal: AbortSignal.timeout(8000) });
     if (!res.ok) return null;
-    const body = (await res.json()) as { version?: unknown };
-    return typeof body.version === 'string' ? body.version : null;
+    const body = (await res.json()) as { version?: unknown; bin?: unknown };
+    if (typeof body.version !== 'string' || body.version.includes('-')) {
+      log(`npm ${name}@${String(body.version)} is a prerelease; install steps use a clone`);
+      return null;
+    }
+    const bins = typeof body.bin === 'string' ? { [name]: body.bin } : (body.bin as Record<string, unknown> | undefined);
+    if (!bins || !(bin in bins)) {
+      log(`npm ${name}@${body.version} has no "${bin}" bin; install steps use a clone`);
+      return null;
+    }
+    return body.version;
   } catch {
     return null;
   }
@@ -433,7 +446,7 @@ async function main(): Promise<void> {
 
   const tools = await mcpTools(registry);
   const playlist = await replayPlaylist(registry);
-  const mcpVersion = await npmVersion(discovery.MCP_PACKAGE.name);
+  const mcpVersion = await npmVersion(discovery.MCP_PACKAGE.name, discovery.MCP_PACKAGE.bin);
   const stars = await githubStars();
 
   const docSources = [
