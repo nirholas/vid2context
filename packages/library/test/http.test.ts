@@ -114,6 +114,9 @@ describe('collection routes', () => {
     expect(await storage.listCollections()).toEqual([]);
 
     const c = (await call('POST', '/collections', { name: 'x' })).json as Collection;
+    const halfBad = await call('PATCH', `/collections/${c.id}`, { name: 'renamed', watch: { every: 'never' } });
+    expect(halfBad.status).toBe(400);
+    expect((await call('GET', `/collections/${c.id}`)).json.name).toBe('x');
     expect((await call('POST', `/collections/${c.id}/items`, { inputs: 'nope' })).status).toBe(400);
     expect((await call('POST', `/collections/${c.id}/items`)).status).toBe(400);
     expect((await call('POST', `/collections/${c.id}/refresh`, { limit: 0 })).status).toBe(400);

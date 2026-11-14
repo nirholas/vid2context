@@ -25,6 +25,7 @@ import type { JobQueue } from '@vid2context/jobs';
 import { type Context, Hono } from 'hono';
 import { INGEST_KIND, REFRESH_KIND, registerLibraryJobs } from './jobs.ts';
 import { createLibrary, type Library, type LibraryDeps } from './library.ts';
+import { parseSchedule } from './schedule.ts';
 import { bad } from './util.ts';
 
 export interface RouteDeps {
@@ -132,9 +133,12 @@ export function libraryRoutes(deps: RouteDeps): Hono {
     const lib = await open(c.req.raw);
     const id = c.req.param('id');
     const body = await readBody(c.req.raw, '{"name"?: "...", "description"?: "...", "sources"?: [...], "watch"?: {...} | null}');
-    if (body.watch === null) await lib.removeWatch(id);
-    else if (body.watch !== undefined) await lib.setWatch(id, body.watch);
-    return c.json(await lib.updateCollection(id, body));
+    // Validate the schedule before changing anything, so a bad request leaves the collection as it was.
+    const schedule = body.watch === undefined || body.watch === null ? body.watch : parseSchedule(body.watch);
+    const updated = await lib.updateCollection(id, body);
+    if (schedule === null) await lib.removeWatch(id);
+    else if (schedule !== undefined) await lib.setWatch(id, schedule);
+    return c.json(updated);
   });
 
   app.delete('/collections/:id', async (c) => {
