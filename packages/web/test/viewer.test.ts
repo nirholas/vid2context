@@ -45,7 +45,7 @@ describe('FileViewer', () => {
     expect(screen.getByRole('button', { name: 'Download context.json' })).toBeTruthy();
     const blob = toBlob(f.bytes, f.mimeType);
     expect(blob.type).toBe('application/json');
-    expect(new Uint8Array(await blob.arrayBuffer())).toEqual(f.bytes);
+    expect(Array.from(new Uint8Array(await blob.arrayBuffer()))).toEqual(Array.from(f.bytes));
     expect(JSON.parse(await blob.text()).metadata.ref.id).toBe('youtube:cCPsdFdlshc');
   });
 });

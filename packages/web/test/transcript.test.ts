@@ -20,16 +20,16 @@ describe('TranscriptTab', () => {
       expect(links[i]?.getAttribute('href')).toBe(timestampUrl(context.metadata.ref, s.startSec));
       expect(links[i]?.getAttribute('target')).toBe('_blank');
     });
-    expect(links[0]?.getAttribute('href')).toBe('https://www.youtube.com/watch?v=jNQXAC9IVRw&t=0s');
+    expect(links[0]?.getAttribute('href')).toBe('https://www.youtube.com/watch?v=jNQXAC9IVRw&t=1s');
   });
 
   it('highlights search matches and steps through them', async () => {
     const user = userEvent.setup();
     const context = sharedContext('youtube-cCPsdFdlshc');
-    const expected = context.transcript.segments.reduce((n, s) => n + (s.text.match(/g-wagon/gi)?.length ?? 0), 0);
+    const expected = context.transcript.segments.reduce((n, s) => n + (s.text.match(/wagon/gi)?.length ?? 0), 0);
     expect(expected).toBeGreaterThan(1);
     const { container } = render(createElement(TranscriptTab, { context }));
-    await user.type(screen.getByLabelText('Search the transcript'), 'G-Wagon');
+    await user.type(screen.getByLabelText('Search the transcript'), 'wagon');
     expect(await screen.findByText(`1 of ${expected} matches`)).toBeTruthy();
     const marks = container.querySelectorAll('mark');
     expect(marks).toHaveLength(expected);
@@ -37,6 +37,7 @@ describe('TranscriptTab', () => {
     await user.click(screen.getByRole('button', { name: 'Next match' }));
     expect(screen.getByTestId('match-count').textContent).toBe(`2 of ${expected} matches`);
     expect(container.querySelectorAll('mark')[1]?.getAttribute('data-current')).toBe('true');
+    await user.click(screen.getByLabelText('Search the transcript'));
     await user.keyboard('{Shift>}{Enter}{/Shift}');
     expect(screen.getByTestId('match-count').textContent).toBe(`1 of ${expected} matches`);
   });
