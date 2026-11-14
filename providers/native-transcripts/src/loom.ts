@@ -25,7 +25,14 @@ const HOSTS = new Set(['loom.com', 'www.loom.com']);
 
 function videoRef(input: string, id: string): VideoRef {
   const lower = id.toLowerCase();
-  return { input, platform: 'loom', kind: 'video', id: `loom:${lower}`, nativeId: lower, url: `https://www.loom.com/share/${lower}` };
+  return {
+    input,
+    platform: 'loom',
+    kind: 'video',
+    id: `loom:${lower}`,
+    nativeId: lower,
+    url: `https://www.loom.com/share/${lower}`,
+  };
 }
 
 /** loom.com/share/<id>, loom.com/share/<title-slug>-<id> and loom.com/embed/<id>. */

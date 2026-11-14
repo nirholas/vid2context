@@ -32,10 +32,13 @@ interface Cue {
 /** Strip tags from one cue line, returning the text and the first voice name seen. */
 function cleanLine(line: string): { text: string; speaker?: string } {
   let speaker: string | undefined;
-  const text = line.replace(/<\/?([a-z0-9]+)?(?:\.[^\s>]*)?(?:\s+([^>]*))?>|<\d[^>]*>/gi, (_m, tag?: string, annotation?: string) => {
-    if (tag?.toLowerCase() === 'v' && annotation && speaker === undefined) speaker = annotation.trim();
-    return '';
-  });
+  const text = line.replace(
+    /<\/?([a-z0-9]+)?(?:\.[^\s>]*)?(?:\s+([^>]*))?>|<\d[^>]*>/gi,
+    (_m, tag?: string, annotation?: string) => {
+      if (tag?.toLowerCase() === 'v' && annotation && speaker === undefined) speaker = annotation.trim();
+      return '';
+    },
+  );
   return { text: decodeEntities(text).replace(/\s+/g, ' ').trim(), speaker };
 }
 

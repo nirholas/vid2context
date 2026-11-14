@@ -155,9 +155,13 @@ function blocked(ref: VideoRef): Vid2ContextError {
 }
 
 function unavailable(ref: VideoRef, view: number | undefined): Vid2ContextError {
-  return new Vid2ContextError('unavailable', `Vimeo video ${ref.nativeId} is private or password-protected (player view ${view ?? 'unknown'}).`, {
-    hint: 'Only public and unlisted Vimeo videos can be read without signing in. For an unlisted video, pass the full link with its hash (vimeo.com/<id>/<hash>).',
-  });
+  return new Vid2ContextError(
+    'unavailable',
+    `Vimeo video ${ref.nativeId} is private or password-protected (player view ${view ?? 'unknown'}).`,
+    {
+      hint: 'Only public and unlisted Vimeo videos can be read without signing in. For an unlisted video, pass the full link with its hash (vimeo.com/<id>/<hash>).',
+    },
+  );
 }
 
 function notFound(ref: VideoRef): Vid2ContextError {
@@ -226,7 +230,15 @@ export async function vimeoMetadata(ref: VideoRef, ctx: Ctx): Promise<VideoMetad
   return {
     ref,
     title,
-    ...(ownerName ? { channel: { name: ownerName, ...(v?.owner?.id ? { id: String(v.owner.id) } : {}), ...(ownerUrl ? { url: ownerUrl } : {}) } } : {}),
+    ...(ownerName
+      ? {
+          channel: {
+            name: ownerName,
+            ...(v?.owner?.id ? { id: String(v.owner.id) } : {}),
+            ...(ownerUrl ? { url: ownerUrl } : {}),
+          },
+        }
+      : {}),
     ...(o?.description ? { description: o.description } : {}),
     ...((v?.duration ?? o?.duration) ? { durationSec: v?.duration ?? o?.duration } : {}),
     ...(oembedDate(o?.upload_date) ? { publishedAt: oembedDate(o?.upload_date) } : {}),
@@ -280,9 +292,13 @@ export async function vimeoCaptions(
   if (!track) return null;
   const res = await getText(ctx, track.url);
   if (res.status !== 200) {
-    throw new Vid2ContextError(res.status === 404 ? 'not-found' : 'upstream', `Vimeo caption track ${track.id}: HTTP ${res.status}`, {
-      status: res.status,
-    });
+    throw new Vid2ContextError(
+      res.status === 404 ? 'not-found' : 'upstream',
+      `Vimeo caption track ${track.id}: HTTP ${res.status}`,
+      {
+        status: res.status,
+      },
+    );
   }
   return { track, segments: parseVtt(res.body) };
 }
