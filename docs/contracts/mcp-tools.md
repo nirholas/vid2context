@@ -78,6 +78,7 @@ Long operations over many videos (`export_context_pack` with list `urls`) send `
 | `watch_live` | `@vid2context/live` (61) | `registerLiveTools` |
 | `open_transcript_viewer` | `@vid2context/mcp-apps` (52) | `registerAppsTools` |
 | `digest_videos`, `choose_caption_track`, prompt `digest`, resource `.../latest` | `@vid2context/mcp-agentic` (51) | `registerAgenticFeatures` |
+| `get_media_options`, `download_media` (stdio only) | `@vid2context/downloads` | `registerDownloadTools`; registered only when `createServer(..., { downloader })` gets one, which `bin.ts` passes and the remote HTTP server does not, so a remote client never sees a tool that writes files on the server |
 
 The rows for these tools in the tables below describe their inputs and outputs. `ask` returns `[n] Title @ m:ss <timestamp URL>` source lines after the answer, and its error body nests the code as `{ error: { code, message, hint }, attempts }`.
 
@@ -146,6 +147,8 @@ Same rules as above. Each package registers its tools from its own `src/mcp.ts` 
 | resource `vid2context://collection/{id}/latest` | 51 | | The newest items of a collection; subscribable, updated through `notifyCollectionUpdated(id)` |
 | `open_transcript_viewer` | 52 | `{ url }` | `structuredContent` (metadata, chapters, segments) plus an MCP Apps UI resource `ui://vid2context/transcript-viewer`; text fallback for clients without MCP Apps |
 | `get_skip_segments` | 53 | `{ url, categories? }` | SponsorBlock segments (sponsor, self-promotion, intro, outro, interaction reminders, ...) with times, and the transcript share each covers |
+| `get_media_options` | downloads | `{ url }` | qualities with estimated sizes per container (mp4, webm, mkv), audio formats and mp3 bitrates with sizes, chapters, subtitle languages; text summary plus `structuredContent` (`MediaOptions`). Read-only |
+| `download_media` | downloads | `{ url, kind?, format?, quality?, from?, to?, chapter?, exactCuts?, subtitles?, removeSegments?, embedThumbnail?, embedMetadata?, embedChapters?, dir?, limit? }` | saves files on the server's machine (stdio only) and returns their paths, sizes and warnings (`structuredContent: { dir, files, failed }`); playlists download their first `limit` (default 10) videos; sends `notifications/progress` when the call has a progress token |
 | `research_videos` | 54 | `{ urls (1 to 10), query, contextSec?, maxExcerpts? }` | Ranked excerpts per video with surrounding context, `[m:ss]` and timestamp URLs; works without a saved library |
 | `list_caption_languages` | 54 | `{ url }` | Caption tracks (language, name, creator or auto) and YouTube translation targets |
 | `get_key_moments` | 54 | `{ url, count? }` | Key moments chosen by the LLM chain, each with a timestamp verified against real segments |

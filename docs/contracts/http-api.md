@@ -148,9 +148,24 @@ Mounted by `createApp` (`packages/server/src/app.ts`, `MOUNTED_SUB_APPS`). They 
 | `@vid2context/research` (54) | `researchRoutes` | `/api/v1` | |
 | `@vid2context/exporters` (57) | `exporterRoutes` | `/api/v1` | |
 | `@vid2context/webhooks` (59) | `webhookRoutes` | `/api/v1` | |
+| `@vid2context/downloads` | `downloadsRoutes` | `/api/v1` | `/downloads/*`, see below. `createApp({ downloads })` takes the Node entry's `createDownloadManager`; without one (Workers) every route but `/downloads/status` answers `no-provider` |
 | `@vid2context/mcp-http` (45) | `mcpHttpRoutes` | `/` | `/mcp`, `/oauth/*`, `/.well-known/*`; answers its own errors and keeps its own auth and CORS rules |
 
 Hosted mode (58): `hostedMiddleware` from `@vid2context/accounts/http` runs on `/api/*` after CORS and before the server's own key check, and `accountsRoutes` is mounted at `/api/v1`. Both are inert unless `VID2CONTEXT_HOSTED=1`. With hosted mode on, accounts owns authentication (sessions, `v2c_` keys, the anonymous plan), per-IP limits and quotas, so the server skips `VID2CONTEXT_API_KEYS` and its own rate limit; pipeline work for a request runs on `hosted.registry(registry)` (metered against the caller's plan) and `hosted.storage(storage, ...)` (the shared cache for public videos), and single-flight runs are shared per caller only.
+
+### Downloads (`@vid2context/downloads`)
+
+Save a video as mp4, webm or mkv, or its audio as mp3, m4a, opus, flac or wav. Off on public servers (`VID2CONTEXT_PUBLIC=1`) unless `VID2CONTEXT_DOWNLOADS=1`; then every route but `/downloads/status` answers `unavailable` (403). Downloads run as in-process jobs so long files never hit the request timeout; finished files are deleted after `VID2CONTEXT_DOWNLOAD_TTL_MIN` (default 30) minutes or on restart. Guide: [guides/downloads.md](../guides/downloads.md).
+
+| Method and path | Request | Response |
+|---|---|---|
+| `GET /downloads/status` | | `{ enabled, reason?, notice, limits: { maxBytes, maxDurationSec, ttlMin }, formats: { video[], audio[] }, qualities, sponsorCategories, ytdlp? }`. Open even when downloads are off, so a client can say why |
+| `GET /downloads/options?url=` | | `MediaOptions`: `title`, `durationSec`, `chapters`, `video: [{ quality, label, height, fps?, sizes: { mp4, webm, mkv }, codecs }]`, `audio: [{ format, quality, label, sizeBytes?, kbps?, method }]`, `subtitles`, `canRemoveSegments`, `isLive`. Sizes are estimates (exact when the site reports them) |
+| `POST /downloads` | JSON `{ url, kind?, format?, quality?, from?, to?, chapter?, exactCuts?, embedMetadata?, embedThumbnail?, embedChapters?, subtitles?, removeSegments? }` | `202` `DownloadJob` with a `Location` header. Defaults: video mp4 1080, audio mp3 best. `from`/`to` take seconds, `m:ss` or `1m30s`; `chapter` an index or a title. Too many jobs: `rate-limited` (429) |
+| `GET /downloads` | | `{ jobs: DownloadJob[] }`, newest first |
+| `GET /downloads/:id` | | `DownloadJob { id, status: queued \| running \| done \| error \| canceled, request, progress: { phase, percent?, downloadedBytes, totalBytes?, speedBps?, etaSec?, step? }, file?: { filename, bytes, mimeType, title, durationSec?, section?, warnings }, error?, expiresAt? }` |
+| `GET /downloads/:id/file?inline=` | `Range: bytes=` (one range) | the file, `Content-Disposition: attachment` (or `inline` with `inline=1`), `206` for a range, `416` when unsatisfiable, `400` while not done |
+| `DELETE /downloads/:id` | | `{ deleted: true, id }`; cancels a running job or deletes the file |
 
 Not mounted, because the package exports no route factory yet: bots (56), live (61) and duplicates (62).
 
