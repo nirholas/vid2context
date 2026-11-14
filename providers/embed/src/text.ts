@@ -46,8 +46,8 @@ export function l2normalize(v: number[]): number[] {
   let sum = 0;
   for (const x of v) sum += x * x;
   if (sum === 0) return v;
-  const inv = 1 / Math.sqrt(sum);
-  return v.map((x) => x * inv);
+  const n = Math.sqrt(sum);
+  return v.map((x) => x / n);
 }
 
 /** Cosine similarity of two vectors of the same length. */
