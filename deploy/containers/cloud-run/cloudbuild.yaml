@@ -14,10 +14,12 @@ substitutions:
   _DATA_BUCKET: ""
   _IMAGE: ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/vid2context
 
+# The default build machine (e2-standard-2) is the one Cloud Build's free
+# build minutes cover. Add machineType: E2_HIGHCPU_8 under options for
+# faster, billed builds (worth it with _WITH_WHISPER=1).
 options:
   dynamicSubstitutions: true
   logging: CLOUD_LOGGING_ONLY
-  machineType: E2_HIGHCPU_8
 
 timeout: 3600s
 

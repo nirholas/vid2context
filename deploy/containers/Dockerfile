@@ -64,6 +64,9 @@ ARG DENO_VERSION=v2.9.8
 ARG DENO_SHA256_AMD64=e890975bc2549807bbcc0b584ffafda72cc7c93349dd99c80483dd784f6c4609
 ARG DENO_SHA256_ARM64=d49596c20b9788cf8f5d8ddf644103d4bde56ed239753f0bdb92ba9361d51905
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# Debian package versions are not pinned: Debian drops superseded versions
+# from its mirrors, so exact pins break rebuilds. The base image tag is pinned.
+# hadolint ignore=DL3008
 RUN apt-get update \
  && apt-get install -y --no-install-recommends ca-certificates curl unzip \
  && rm -rf /var/lib/apt/lists/*
@@ -101,6 +104,9 @@ RUN mkdir -p /opt/whisper.cpp/bin
 FROM ${DEBIAN_IMAGE} AS whisper-1
 ARG WHISPER_CPP_VERSION=v1.9.5
 ARG WHISPER_CPP_COMMIT=d1be6fde11ac6e0407606b4e42fe72d34add8037
+# Debian package versions are not pinned: Debian drops superseded versions
+# from its mirrors, so exact pins break rebuilds. The base image tag is pinned.
+# hadolint ignore=DL3008
 RUN apt-get update \
  && apt-get install -y --no-install-recommends build-essential ca-certificates cmake git \
  && rm -rf /var/lib/apt/lists/*
@@ -110,6 +116,8 @@ WORKDIR /src
 # GGML_NATIVE=OFF with CPU_ALL_VARIANTS builds one CPU backend per
 # instruction set and picks the best at run time, so the image runs on any
 # host of its architecture instead of only on the build machine's CPU.
+# '$ORIGIN' is literal on purpose: the runtime linker expands it.
+# hadolint ignore=SC2016
 RUN cmake -S . -B build -DCMAKE_BUILD_TYPE=Release \
       -DBUILD_SHARED_LIBS=ON -DGGML_NATIVE=OFF -DGGML_BACKEND_DL=ON -DGGML_CPU_ALL_VARIANTS=ON \
       -DWHISPER_BUILD_TESTS=OFF -DWHISPER_BUILD_EXAMPLES=ON -DWHISPER_SDL2=OFF -DWHISPER_CURL=OFF \
@@ -122,6 +130,8 @@ RUN cmake -S . -B build -DCMAKE_BUILD_TYPE=Release \
       "$WHISPER_CPP_VERSION" "$WHISPER_CPP_COMMIT" > /opt/whisper.cpp/build.json \
  && /opt/whisper.cpp/bin/whisper-cli --help > /dev/null
 
+# whisper-0 or whisper-1 above, a build stage rather than an image.
+# hadolint ignore=DL3006
 FROM whisper-${WITH_WHISPER} AS whisper
 
 # ---------------------------------------------------------------- runtime
@@ -138,6 +148,9 @@ LABEL org.opencontainers.image.title="vid2context" \
 # ffmpeg for audio, tini as PID 1 (reaps yt-dlp and ffmpeg children and
 # forwards signals), libgomp1 for whisper.cpp's OpenMP threads. npm,
 # corepack and yarn are removed: nothing runs them at run time.
+# Debian package versions are not pinned: Debian drops superseded versions
+# from its mirrors, so exact pins break rebuilds. The base image tag is pinned.
+# hadolint ignore=DL3008
 RUN apt-get update \
  && apt-get install -y --no-install-recommends ca-certificates ffmpeg libgomp1 tini \
  && rm -rf /var/lib/apt/lists/* \

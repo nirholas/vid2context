@@ -1,0 +1,61 @@
+# Serverless Devs config: the vid2context HTTP API on Alibaba Cloud Function
+# Compute 3.0 as a custom container, with a public HTTP trigger.
+#
+#   export ACR_IMAGE="registry.$ALIBABA_REGION.aliyuncs.com/$ACR_NAMESPACE/vid2context:0.1.0"
+#   export VID2CONTEXT_API_KEYS=...       # see docs/deploy/alibaba.md
+#   s deploy -t deploy/containers/alibaba/s.yaml
+#
+# Push the image to Alibaba Container Registry (ACR) in the same region first.
+# Guide: docs/deploy/alibaba.md
+edition: 3.0.0
+name: vid2context
+access: ${env('ALIBABA_ACCESS', 'default')}
+
+vars:
+  # Singapore by default: outside mainland China (no ICP filing needed for a
+  # public endpoint) and with unrestricted egress to YouTube and other sites.
+  region: ${env('ALIBABA_REGION', 'ap-southeast-1')}
+
+resources:
+  vid2context:
+    component: fc3
+    props:
+      region: ${vars.region}
+      functionName: ${env('FC_FUNCTION_NAME', 'vid2context')}
+      description: vid2context HTTP API (yt-dlp, deno, ffmpeg)
+      runtime: custom-container
+      # ffmpeg and yt-dlp want real CPU. FC needs memory between 1x and 4x
+      # the vCPU count in GB.
+      cpu: 2
+      memorySize: 4096
+      # Temporary disk for /tmp (media downloads). 512 MB is free of charge;
+      # raise to 10240 for long videos.
+      diskSize: 512
+      timeout: 900
+      instanceConcurrency: 4
+      internetAccess: true
+      customContainerConfig:
+        image: ${env('ACR_IMAGE')}
+        port: 8787
+        healthCheckConfig:
+          httpGetUrl: /api/v1/health
+          initialDelaySeconds: 3
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 6
+          successThreshold: 1
+      environmentVariables:
+        VID2CONTEXT_LOG_LEVEL: info
+        # Function Compute instances are ephemeral; keep data on the
+        # temporary disk. Attach NAS or OSS (docs/deploy/alibaba.md) and
+        # point this at the mount to keep models and the library.
+        VID2CONTEXT_HOME: /tmp/vid2context
+        # Use hashed entries (name:scope:sha256) so the keys themselves are
+        # never stored in the function's configuration.
+        VID2CONTEXT_API_KEYS: ${env('VID2CONTEXT_API_KEYS')}
+      triggers:
+        - triggerName: http
+          triggerType: http
+          triggerConfig:
+            authType: anonymous
+            methods: [GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS]

@@ -95,7 +95,36 @@ if curl -fsSL --max-time 15 https://backboard.railway.app/railway.schema.json -o
 else
   skip "railway.json schema (could not download it)"
 fi
-rm -f "$schema"
+
+# Alibaba: resolve the Serverless Devs variables (env defaults, vars.*) and
+# check the fc3 props against the component's published schema.
+props="$(mktemp)"
+if ! { have python3 && python3 -c 'import yaml' 2>/dev/null; }; then
+  skip "alibaba/s.yaml fc3 schema (needs python3 with PyYAML)"
+elif ! curl -fsSL --max-time 15 https://raw.githubusercontent.com/devsapp/fc3/master/src/schema.json -o "$schema" 2>/dev/null; then
+  skip "alibaba/s.yaml fc3 schema (could not download it)"
+else
+  python3 - "$here/alibaba/s.yaml" > "$props" <<'PY'
+import json, re, sys, yaml
+doc = yaml.safe_load(open(sys.argv[1]))
+def resolve(v):
+    if isinstance(v, dict):
+        return {k: resolve(x) for k, x in v.items()}
+    if isinstance(v, list):
+        return [resolve(x) for x in v]
+    if not isinstance(v, str):
+        return v
+    v = re.sub(r"\$\{env\('(\w+)'(?:, '([^']*)')?\)\}", lambda m: m.group(2) if m.group(2) is not None else 'set-from-env', v)
+    return re.sub(r"\$\{vars\.(\w+)\}", lambda m: resolve(doc['vars'][m.group(1)]), v)
+print(json.dumps(resolve(doc['resources']['vid2context']['props'])))
+PY
+  if node "$here/validate-json.mjs" "$schema" "$props"; then
+    pass "alibaba/s.yaml matches the fc3 component schema"
+  else
+    fail "alibaba/s.yaml fc3 schema"
+  fi
+fi
+rm -f "$schema" "$props"
 
 if [ "$lint_only" = 1 ]; then
   echo
