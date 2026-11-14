@@ -117,7 +117,8 @@ export async function toSSE(queue: JobQueue, id: string, opts: SSEOptions = {}):
         last = Math.max(last, e.id);
         if (isTerminal(e)) return close();
       }
-      if (initial.job.status === 'succeeded' || initial.job.status === 'failed' || initial.job.status === 'canceled') return close();
+      if (initial.job.status === 'succeeded' || initial.job.status === 'failed' || initial.job.status === 'canceled')
+        return close();
 
       for (const e of buffered.splice(0)) send(e);
       if (closed) return;

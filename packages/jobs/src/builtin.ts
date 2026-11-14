@@ -13,9 +13,9 @@ import {
   getVideoContext,
   summarize,
   type TranscriptMode,
+  Vid2ContextError,
   type VideoContext,
   type VideoRef,
-  Vid2ContextError,
 } from '@vid2context/core';
 import { publicError, toJobError } from './retry.ts';
 import type { ItemEvent, JobHandler, JobQueue } from './types.ts';
@@ -43,13 +43,13 @@ function intOption(options: Record<string, unknown>, name: string, min: number, 
 }
 
 /** The pipeline options a job may set. Everything else in `options` is ignored here. */
-export function contextOptions(options: Record<string, unknown>): Pick<
-  GetContextOptions,
-  'mode' | 'language' | 'allowAuto' | 'comments' | 'refresh'
-> {
+export function contextOptions(
+  options: Record<string, unknown>,
+): Pick<GetContextOptions, 'mode' | 'language' | 'allowAuto' | 'comments' | 'refresh'> {
   const out: Pick<GetContextOptions, 'mode' | 'language' | 'allowAuto' | 'comments' | 'refresh'> = {};
   if (options.mode !== undefined) {
-    if (!MODES.includes(options.mode as TranscriptMode)) throw bad(`Unknown mode "${String(options.mode)}".`, `Use one of: ${MODES.join(', ')}.`);
+    if (!MODES.includes(options.mode as TranscriptMode))
+      throw bad(`Unknown mode "${String(options.mode)}".`, `Use one of: ${MODES.join(', ')}.`);
     out.mode = options.mode as TranscriptMode;
   }
   if (options.language !== undefined) {
@@ -97,7 +97,12 @@ export const contextKind: JobHandler = async ({ input, options, registry, storag
 };
 
 /** Run `fn` over `items` with at most `limit` in flight, keeping input order in the output. */
-async function mapLimit<T, R>(items: T[], limit: number, signal: AbortSignal, fn: (item: T, i: number) => Promise<R>): Promise<R[]> {
+async function mapLimit<T, R>(
+  items: T[],
+  limit: number,
+  signal: AbortSignal,
+  fn: (item: T, i: number) => Promise<R>,
+): Promise<R[]> {
   const out = new Array<R>(items.length);
   let next = 0;
   const worker = async () => {
@@ -202,12 +207,16 @@ function fileContent(bytes: Uint8Array): { encoding: 'utf-8' | 'base64'; content
 export const bundleKind: JobHandler = async (args) => {
   const { input, options, registry, ctx, progress } = args;
   const inputs = (Array.isArray(input) ? input : [input]).map((i) => inputString(i, 'bundle'));
-  if (inputs.length === 0 || inputs.length > 200) throw bad('The bundle job takes 1 to 200 inputs.', 'Pass "input" as a URL or an array of URLs.');
+  if (inputs.length === 0 || inputs.length > 200)
+    throw bad('The bundle job takes 1 to 200 inputs.', 'Pass "input" as a URL or an array of URLs.');
   const limit = intOption(options, 'limit', 1, 5_000);
   const concurrency = intOption(options, 'concurrency', 1, 8) ?? 2;
   const formats = options.formats;
   if (formats !== undefined && !(Array.isArray(formats) && formats.every((f) => typeof f === 'string'))) {
-    throw bad('Option "formats" must be an array of formatter ids.', 'Omit it for every format, or pass for example ["markdown", "srt"].');
+    throw bad(
+      'Option "formats" must be an array of formatter ids.',
+      'Omit it for every format, or pass for example ["markdown", "srt"].',
+    );
   }
   progress({ done: 0, message: 'expanding inputs' });
   const refs: VideoRef[] = [];

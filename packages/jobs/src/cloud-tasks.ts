@@ -91,7 +91,11 @@ export function metadataAccessToken(ctx: Ctx): AccessTokenSource {
 }
 
 /** Producer: create one HTTP task per dispatch. */
-export function cloudTasksDispatch(cfg: CloudTasksConfig, ctx: Ctx, accessToken: AccessTokenSource = metadataAccessToken(ctx)): Dispatch {
+export function cloudTasksDispatch(
+  cfg: CloudTasksConfig,
+  ctx: Ctx,
+  accessToken: AccessTokenSource = metadataAccessToken(ctx),
+): Dispatch {
   return async (job, delayMs) => {
     const task = buildCloudTask(cfg, job, delayMs);
     const res = await ctx.fetch(`https://cloudtasks.googleapis.com/v2/${cfg.queue}/tasks`, {

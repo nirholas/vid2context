@@ -44,7 +44,18 @@ export function publicJob(rec: JobRecord): Job {
 
 export function newRecord(kind: string, input: unknown, options: Record<string, unknown>): JobRecord {
   const now = new Date().toISOString();
-  return { id: newJobId(), kind, status: 'queued', input, options, attempts: 0, seq: 0, events: [], createdAt: now, updatedAt: now };
+  return {
+    id: newJobId(),
+    kind,
+    status: 'queued',
+    input,
+    options,
+    attempts: 0,
+    seq: 0,
+    events: [],
+    createdAt: now,
+    updatedAt: now,
+  };
 }
 
 interface ListCursor {
@@ -64,7 +75,9 @@ function decodeCursor(raw: string): ListCursor {
     if (typeof parsed.s !== 'number' || (parsed.c !== undefined && typeof parsed.c !== 'string')) throw new Error('shape');
     return parsed;
   } catch {
-    throw new Vid2ContextError('bad-request', 'Invalid jobs cursor.', { hint: 'Pass the cursor exactly as a previous list returned it.' });
+    throw new Vid2ContextError('bad-request', 'Invalid jobs cursor.', {
+      hint: 'Pass the cursor exactly as a previous list returned it.',
+    });
   }
 }
 
@@ -108,7 +121,8 @@ export class JobStore {
         out.push(rec);
         if (out.length >= limit) {
           const more = i + 1 < page.keys.length || page.cursor !== undefined;
-          const next: ListCursor = i + 1 < page.keys.length ? { ...(cur.c ? { c: cur.c } : {}), s: i + 1 } : { c: page.cursor, s: 0 };
+          const next: ListCursor =
+            i + 1 < page.keys.length ? { ...(cur.c ? { c: cur.c } : {}), s: i + 1 } : { c: page.cursor, s: 0 };
           return more ? { records: out, cursor: encodeCursor(next) } : { records: out };
         }
       }

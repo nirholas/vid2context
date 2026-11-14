@@ -1,0 +1,20 @@
+{
+  "name": "@vid2context/jobs",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Background jobs for vid2context: a persistent in-process queue with retries, cancellation and live SSE progress, plus Cloudflare Queues and Google Cloud Tasks adapters.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./http": "./src/http.ts"
+  },
+  "dependencies": {
+    "@vid2context/core": "*",
+    "hono": "^4.13.18"
+  },
+  "devDependencies": {
+    "@hono/node-server": "^2.1.8",
+    "@vid2context/provider-youtube": "*"
+  }
+}

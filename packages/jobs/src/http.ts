@@ -14,7 +14,6 @@
 import { type Ctx, type Registry, type Storage, Vid2ContextError } from '@vid2context/core';
 import { Hono } from 'hono';
 import type { GoogleOidcVerifier } from './cloud-tasks.ts';
-import { publicJob } from './store.ts';
 import type { ConsumerDeps, Dispatch } from './remote.ts';
 import { runDispatchedJob } from './remote.ts';
 import { parseLastEventId, toSSE } from './sse.ts';
@@ -57,7 +56,10 @@ async function readBody(req: Request): Promise<Record<string, unknown>> {
   try {
     body = JSON.parse(text);
   } catch {
-    throw bad('The request body is not valid JSON.', 'Send {"kind": "...", "input": ..., "options": {...}} with content-type application/json.');
+    throw bad(
+      'The request body is not valid JSON.',
+      'Send {"kind": "...", "input": ..., "options": {...}} with content-type application/json.',
+    );
   }
   if (typeof body !== 'object' || body === null || Array.isArray(body)) {
     throw bad('The request body must be a JSON object.', 'Send {"kind": "...", "input": ..., "options": {...}}.');
@@ -113,12 +115,19 @@ export function jobsRoutes(deps: JobsRouteDeps): Hono {
       const auth = c.req.header('authorization') ?? '';
       const token = /^Bearer\s+(\S+)$/i.exec(auth)?.[1];
       try {
-        if (!token) throw new Vid2ContextError('auth', 'Missing bearer token.', { status: 401, hint: 'Only Cloud Tasks may call this endpoint.' });
+        if (!token)
+          throw new Vid2ContextError('auth', 'Missing bearer token.', {
+            status: 401,
+            hint: 'Only Cloud Tasks may call this endpoint.',
+          });
         await run.verifier.verify(token, ctx);
       } catch (err) {
         if (err instanceof Vid2ContextError && err.status === 401) {
           // 401, not the 502 the main app uses for `auth`: here the caller, not an upstream key, failed.
-          return c.json({ error: { code: err.code, message: err.message, ...(err.hint ? { hint: err.hint } : {}) }, attempts: [] }, 401);
+          return c.json(
+            { error: { code: err.code, message: err.message, ...(err.hint ? { hint: err.hint } : {}) }, attempts: [] },
+            401,
+          );
         }
         throw err;
       }
@@ -132,5 +141,3 @@ export function jobsRoutes(deps: JobsRouteDeps): Hono {
 
   return app;
 }
-
-export { publicJob };

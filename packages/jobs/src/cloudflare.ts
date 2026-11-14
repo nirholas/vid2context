@@ -87,7 +87,11 @@ export function workersKv(ns: KvNamespace): KvStore {
       await ns.delete(key);
     },
     async kvList(prefix: string, opts: { limit?: number; cursor?: string } = {}) {
-      const res = await ns.list({ prefix, limit: Math.min(opts.limit ?? 100, 1000), ...(opts.cursor ? { cursor: opts.cursor } : {}) });
+      const res = await ns.list({
+        prefix,
+        limit: Math.min(opts.limit ?? 100, 1000),
+        ...(opts.cursor ? { cursor: opts.cursor } : {}),
+      });
       const keys = res.keys.map((k) => k.name);
       return !res.list_complete && res.cursor ? { keys, cursor: res.cursor } : { keys };
     },

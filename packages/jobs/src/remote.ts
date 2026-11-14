@@ -158,7 +158,13 @@ export interface ConsumerDeps {
  */
 export async function runDispatchedJob(id: string, deps: ConsumerDeps): Promise<RunOutcome> {
   const store = new JobStore(deps.kv, Math.round((deps.ttlHours ?? jobSettings(deps.ctx.env).ttlHours) * 3600));
-  const runDeps: RunDeps = { store, kinds: deps.kinds, registry: deps.registry, storage: deps.storage ?? new MemoryStorage(), ctx: deps.ctx };
+  const runDeps: RunDeps = {
+    store,
+    kinds: deps.kinds,
+    registry: deps.registry,
+    storage: deps.storage ?? new MemoryStorage(),
+    ctx: deps.ctx,
+  };
   const controller = new AbortController();
   const watch = setInterval(async () => {
     try {

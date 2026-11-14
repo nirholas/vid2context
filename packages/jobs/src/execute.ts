@@ -88,6 +88,8 @@ export class RecordWriter {
   private chain: Promise<void> = Promise.resolve();
   private dirty = false;
   private sealed = false;
+  /** Events waiting for the write that contains them; published only after it lands, so listeners never see state ahead of the store. */
+  private unpublished: JobEventRecord[] = [];
 
   constructor(
     readonly rec: JobRecord,
@@ -105,8 +107,8 @@ export class RecordWriter {
     if (rec.events.length > MAX_EVENTS) rec.events.splice(0, rec.events.length - MAX_EVENTS);
     if (event.type === 'progress') rec.progress = event.data;
     rec.updatedAt = stored.at;
+    this.unpublished.push(stored);
     this.schedule();
-    this.hub?.publish(rec.id, stored);
   }
 
   update(change: Partial<JobRecord>): void {
@@ -129,11 +131,13 @@ export class RecordWriter {
     this.dirty = true;
     this.chain = this.chain.then(async () => {
       this.dirty = false;
+      const batch = this.unpublished.splice(0);
       try {
         await this.store.put(this.rec);
       } catch (err) {
         this.log.error('jobs: could not persist job state', { id: this.rec.id, message: (err as Error).message });
       }
+      for (const e of batch) this.hub?.publish(this.rec.id, e);
     });
   }
 }

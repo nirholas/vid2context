@@ -39,7 +39,8 @@ export function retryDelayMs(
   random: () => number = Math.random,
 ): number | null {
   if (!RETRYABLE_CODES.has(failure.code)) return null;
-  const step = failure.code === 'blocked' ? backoff.blockedMs : Math.min(backoff.maxMs, backoff.baseMs * 2 ** Math.max(0, attempt - 1));
+  const step =
+    failure.code === 'blocked' ? backoff.blockedMs : Math.min(backoff.maxMs, backoff.baseMs * 2 ** Math.max(0, attempt - 1));
   let delay = step / 2 + random() * (step / 2);
   if (failure.retryAfterSec !== undefined) delay = Math.max(delay, failure.retryAfterSec * 1000);
   return Math.round(delay);
