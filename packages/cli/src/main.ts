@@ -1,135 +1,91 @@
 /**
- * vid2context CLI (minimal). Program output goes to stdout; logs, errors and
- * the attempts list go to stderr, so `vid2context URL > transcript.txt` is clean.
+ * vid2context CLI. Program output goes to stdout (or the --out file); logs,
+ * progress, errors, hints and the attempts list go to stderr, so
+ * `vid2context URL > transcript.txt` is clean. Every command is a function of
+ * injected dependencies (RunDeps), so tests run them in-process.
  */
-import { parseArgs } from 'node:util';
-import {
-  type Attempt,
-  attemptsOf,
-  type Ctx,
-  formatters,
-  getVideoContext,
-  type Registry,
-  render,
-  type TranscriptMode,
-  Vid2ContextError,
-} from '@vid2context/core';
+import { bool, parseCli } from './args.ts';
+import { configCommand } from './commands/config.ts';
+import { collectionCommand, libraryCommand, searchCommand } from './commands/library.ts';
+import { completionCommand, doctorCommand, helpCommand } from './commands/misc.ts';
+import { modelsCommand } from './commands/models.ts';
+import { mcpCommand, serveCommand } from './commands/servers.ts';
+import { bundleCommand, formatsCommand, getCommand, listCommand, packCommand } from './commands/video.ts';
+import { EXIT_INTERRUPTED, EXIT_USAGE, exitCodeFor } from './exit-codes.ts';
+import { commandHelp, mainHelp } from './help.ts';
+import { errorJson, formatError } from './output.ts';
+import { type CommandContext, makeContext, type RunDeps } from './runtime.ts';
 
-export interface Io {
-  stdout: (s: string) => void;
-  stderr: (s: string) => void;
-}
+export { exitCodeFor, exitCodeTable, EXIT_BY_CODE, UsageError } from './exit-codes.ts';
+export { formatAttempts, formatError, type Io } from './output.ts';
+export type { RunDeps } from './runtime.ts';
+export { listModels, type ModelInfo } from './commands/models.ts';
+export { completionScript } from './completion.ts';
+export { mainHelp as usage } from './help.ts';
 
-export interface RunDeps {
-  registry: Registry;
-  ctx: Ctx;
-  io: Io;
-}
+type Command = (c: CommandContext) => Promise<number>;
 
-const MODES: TranscriptMode[] = ['auto', 'captions', 'stt', 'video'];
+const HANDLERS: Record<string, Command> = {
+  get: getCommand,
+  list: listCommand,
+  formats: formatsCommand,
+  pack: packCommand,
+  bundle: bundleCommand,
+  search: searchCommand,
+  library: libraryCommand,
+  collection: collectionCommand,
+  models: modelsCommand,
+  doctor: doctorCommand,
+  config: configCommand,
+  serve: serveCommand,
+  mcp: mcpCommand,
+  completion: completionCommand,
+  help: helpCommand,
+};
 
-export function usage(): string {
-  const formats = Object.values(formatters)
-    .map((f) => `  ${f.id.padEnd(10)} ${f.description}`)
-    .join('\n');
-  return `vid2context: turn any video into context for AI agents.
-
-Usage:
-  vid2context <url-or-file> [options]
-
-Options:
-  --format <id>     Output format (default: text)
-  --timestamps      Prefix lines with timestamps where the format allows
-  --mode <mode>     auto | captions | stt | video (default: auto)
-  --lang <code>     Preferred transcript language, e.g. en, de, pt-BR
-  --verbose         Log progress to stderr
-  -h, --help        Show this help
-  -v, --version     Show the version
-
-Formats:
-${formats}
-
-Examples:
-  vid2context https://www.youtube.com/watch?v=jNQXAC9IVRw --timestamps
-  vid2context ./interview.mp3 --format json > interview.json
-`;
-}
-
-export function formatAttempts(attempts: Attempt[]): string {
-  if (attempts.length === 0) return '';
-  const rows = attempts.map((a) => {
-    const what = [a.reason, a.detail].filter(Boolean).join(': ');
-    return `  ${a.stage.padEnd(8)} ${a.outcome.padEnd(7)} ${a.id}${what ? `  ${what}` : ''}`;
-  });
-  return `Attempts:\n${rows.join('\n')}\n`;
-}
-
-export function formatError(err: unknown): string {
-  if (err instanceof Vid2ContextError) {
-    return `error (${err.code}): ${err.message}\n${err.hint ? `hint: ${err.hint}\n` : ''}${formatAttempts(attemptsOf(err))}`;
-  }
-  return `error: ${err instanceof Error ? err.message : String(err)}\n${formatAttempts(attemptsOf(err))}`;
-}
-
-/** Run the CLI. Returns the process exit code: 0 ok, 1 failure, 2 usage error. */
+/** Run the CLI. Returns the process exit code (see exit-codes.ts). */
 export async function run(argv: string[], deps: RunDeps, version: string): Promise<number> {
   const { io } = deps;
-  let parsed: ReturnType<typeof parseArgs>;
+  const wantsJson = argv.includes('--json');
+  const verbose = argv.includes('--verbose');
+  const fail = (err: unknown): number => {
+    if (deps.ctx.signal?.aborted) {
+      io.stderr('interrupted\n');
+      return EXIT_INTERRUPTED;
+    }
+    io.stderr(wantsJson ? errorJson(err) : formatError(err, verbose));
+    return exitCodeFor(err);
+  };
+
+  let ctx: CommandContext;
   try {
-    parsed = parseArgs({
-      args: argv,
-      allowPositionals: true,
-      options: {
-        format: { type: 'string', default: 'text' },
-        timestamps: { type: 'boolean', default: false },
-        mode: { type: 'string', default: 'auto' },
-        lang: { type: 'string' },
-        verbose: { type: 'boolean', default: false },
-        help: { type: 'boolean', short: 'h', default: false },
-        version: { type: 'boolean', short: 'v', default: false },
-      },
-    });
+    const args = parseCli(argv);
+    if (bool(args.values, 'version')) {
+      io.stdout(`${version}\n`);
+      return 0;
+    }
+    if (bool(args.values, 'help')) {
+      io.stdout(args.explicit ? commandHelp(args.command) : mainHelp());
+      return 0;
+    }
+    if (!args.explicit && args.positionals.length === 0) {
+      io.stderr(`${mainHelp()}\nerror: pass a video URL or file path, or a command.\n`);
+      return EXIT_USAGE;
+    }
+    ctx = makeContext(deps, args, version);
+    ctx.out.precheck();
   } catch (err) {
-    io.stderr(`${err instanceof Error ? err.message : String(err)}\n\n${usage()}`);
-    return 2;
-  }
-  const { values, positionals } = parsed;
-  if (values.help) {
-    io.stdout(usage());
-    return 0;
-  }
-  if (values.version) {
-    io.stdout(`${version}\n`);
-    return 0;
-  }
-  const input = positionals[0];
-  const format = String(values.format);
-  const mode = String(values.mode) as TranscriptMode;
-  if (!input || positionals.length > 1) {
-    io.stderr(`Pass exactly one video URL or file path.\n\n${usage()}`);
-    return 2;
-  }
-  if (!formatters[format]) {
-    io.stderr(`Unknown format "${format}". Available: ${Object.keys(formatters).join(', ')}.\n`);
-    return 2;
-  }
-  if (!MODES.includes(mode)) {
-    io.stderr(`Unknown mode "${mode}". Available: ${MODES.join(', ')}.\n`);
-    return 2;
+    return fail(err);
   }
 
   try {
-    const context = await getVideoContext(
-      deps.registry,
-      input,
-      { mode, language: typeof values.lang === 'string' ? values.lang : undefined },
-      deps.ctx,
-    );
-    io.stdout(render(context, format, { timestamps: Boolean(values.timestamps) }));
-    if (values.verbose) io.stderr(formatAttempts(context.attempts));
-    return 0;
+    const handler = HANDLERS[ctx.args.command.name] as Command;
+    const code = await handler(ctx);
+    const wrote = await ctx.out.flush();
+    if (wrote) ctx.note(`wrote ${wrote.path} (${wrote.bytes} bytes)`);
+    return code;
   } catch (err) {
-    io.stderr(formatError(err));
-    return 1;
+    ctx.progress.stop();
+    return fail(err);
   }
 }
