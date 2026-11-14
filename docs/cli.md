@@ -31,7 +31,7 @@ Node 22 or newer. Keys are read from the environment and `./.env` (or `VID2CONTE
 | `library ls`, `show <id>`, `rm <id>` | Saved video contexts |
 | `collection create`, `add`, `ls`, `show`, `refresh`, `rm` | Named groups of videos in the library |
 | `models` | Every rung by tier, whether it is enabled, and the env var names it needs |
-| `doctor` | Checks Node, ffmpeg, yt-dlp, deno, GPU, the data directory, keys and the network |
+| `doctor` | Checks Node, ffmpeg, yt-dlp, deno, GPU, local model servers, the data directory, keys and the network |
 | `config` | Resolved settings and where each came from, secrets masked |
 | `serve` | Start the HTTP API |
 | `mcp` | Start the stdio MCP server |
@@ -215,25 +215,27 @@ paid (0 of 3 enabled)
 
 ### doctor
 
-Each check is `ok`, `warn` or `fail`, with a fix line when it is not ok. Exits 1 when any check fails. It makes two small network requests: the keyless OVH models list, and the captions of `jNQXAC9IVRw` on YouTube (which detects an IP block). `--json` prints the checks as an array.
+Each check is `ok`, `warn` or `fail`, with a fix line when it is not ok. Exits 1 when any check fails. It makes two small network requests, the keyless OVH models list and the captions of `jNQXAC9IVRw` on YouTube (which detects an IP block), and probes localhost for Ollama, llama.cpp, vLLM and whisper.cpp servers with the local LLM provider's detector. `--json` prints the checks as an array.
 
 ```
 $ vid2context doctor
-ok    Node.js           v24.22.2 (22 or newer required)
-ok    ffmpeg            7.0.2-static at /home/user/.local/bin/ffmpeg
-ok    ffprobe           7.0.2-static at /home/user/.local/bin/ffprobe
-ok    yt-dlp            2026.10.26 at /home/user/vid2context/vid2context/.vid2context/bin/yt-dlp
-warn  deno              not found. yt-dlp uses a JavaScript runtime to solve YouTube player challenges.
-                        fix: Install deno (curl -fsSL https://deno.land/install.sh | sh, or brew install deno).
-warn  NVIDIA GPU        nvidia-smi not found: local speech-to-text and LLMs run on the CPU
-                        fix: Optional. Free hosted and keyless rungs work without a GPU; install the NVIDIA driver to speed up local models.
-ok    Data directory    /home/user/vid2context/vid2context/.vid2context is writable
-ok    Keys              2 of 34 set: CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_API_TOKEN
-ok    Keyless hosts     OVH AI Endpoints reachable (21 models listed)
-fail  YouTube captions  YouTube is blocking this machine's IP (blocked): YouTube captions en: YouTube answered HTTP 429 (automated-traffic block).
-                        fix: YouTube is refusing requests from this IP address, which is common on cloud servers. Fixes, best first: run vid2context on your own machine; route the server through your home network (docs/guides/cloudflare-tunnel.md); set YOUTUBE_COOKIE to a signed-in Cookie header (ties requests to your account); or install the yt-dlp provider. Then wait for the block to clear (YOUTUBE_BLOCK_COOLDOWN_SEC).
+ok    Node.js              v24.22.2 (22 or newer required)
+ok    ffmpeg               7.0.2-static at /home/user/.local/bin/ffmpeg
+ok    ffprobe              7.0.2-static at /home/user/.local/bin/ffprobe
+ok    yt-dlp               2026.10.26 at /home/user/vid2context/vid2context/.vid2context/bin/yt-dlp
+warn  deno                 not found. yt-dlp uses a JavaScript runtime to solve YouTube player challenges.
+                           fix: Install deno (curl -fsSL https://deno.land/install.sh | sh, or brew install deno).
+warn  NVIDIA GPU           nvidia-smi not found: local speech-to-text and LLMs run on the CPU
+                           fix: Optional. Free hosted and keyless rungs work without a GPU; install the NVIDIA driver to speed up local models.
+warn  Local model servers  none found on the usual local ports (optional)
+                           fix: No local model server found. Install Ollama (https://ollama.com/download), then run: ollama pull qwen2.5:3b
+ok    Data directory       /home/user/vid2context/vid2context/.vid2context is writable
+ok    Keys                 2 of 38 set: CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_API_TOKEN
+ok    Keyless hosts        OVH AI Endpoints reachable (21 models listed)
+fail  YouTube captions     YouTube is blocking this machine's IP (blocked): YouTube captions en: YouTube answered HTTP 429 (automated-traffic block).
+                           fix: YouTube is refusing requests from this IP address, which is common on cloud servers. Fixes, best first: run vid2context on your own machine; route the server through your home network (docs/guides/cloudflare-tunnel.md); set YOUTUBE_COOKIE to a signed-in Cookie header (ties requests to your account); or install the yt-dlp provider. Then wait for the block to clear (YOUTUBE_BLOCK_COOLDOWN_SEC).
 
-10 checks: 7 ok, 2 warn, 1 fail
+11 checks: 7 ok, 3 warn, 1 fail
 ```
 
 Binaries are looked up in the env var path (`FFMPEG_PATH`, `FFPROBE_PATH`, `YTDLP_PATH`), then `PATH`, then `~/.local/bin`, then `<data dir>/bin`. The data directory is `VID2CONTEXT_HOME`, else `./.vid2context`.
