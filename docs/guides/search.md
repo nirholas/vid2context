@@ -66,3 +66,31 @@ Embedding requests are batched to the rung's `maxBatch` (24 when the rung does n
 ## Keep the index warm
 
 The keyword index and chunk table live in memory. The HTTP and MCP factories keep one engine per `Storage` instance, so pass the same instance across requests (the server's `storage(ctx)` should return a shared object). A new instance means a new engine, which re-reads the library on its first search; with a backend that stores vectors and the manifest, it reuses the stored vectors instead of embedding again.
+
+## Evaluation
+
+`packages/search/test/eval.test.ts` runs 23 queries from `packages/search/test/fixtures/queries.json` over two real transcripts: the 18-minute G-Wagon buyer's guide (auto-captions, no punctuation) and "Me at the zoo". There are 8 exact-term queries ("M278", "W463 platform", `"Land Cruiser killer"`), 13 paraphrases ("does the engine use a cam chain or a belt" for "single overhead cam motor, it's timing chains"; "which version has a supercharger" for "compressor motor"), and 2 negations (`oil -cooler`). Each expected time range was checked by reading the transcript. Embeddings are real OVH `bge-m3` responses, replayed. A hit is relevant when its range overlaps an expected range; top 5 hits per query.
+
+| Queries | n | Method | P@5 (distinct) | P@5 (raw) | MRR | Hit@5 |
+|---|---|---|---|---|---|---|
+| all | 23 | keyword | 0.261 | 0.261 | 0.949 | 1.000 |
+| all | 23 | vector | 0.261 | 0.278 | 0.891 | 1.000 |
+| all | 23 | hybrid | **0.270** | 0.270 | **0.978** | 1.000 |
+| exact | 8 | keyword | 0.275 | 0.275 | 1.000 | 1.000 |
+| exact | 8 | vector | 0.275 | 0.275 | 0.938 | 1.000 |
+| exact | 8 | hybrid | 0.275 | 0.275 | 1.000 | 1.000 |
+| paraphrase | 13 | keyword | 0.246 | 0.246 | 0.910 | 1.000 |
+| paraphrase | 13 | vector | 0.246 | 0.277 | 0.846 | 1.000 |
+| paraphrase | 13 | hybrid | 0.262 | 0.262 | 0.962 | 1.000 |
+| negation | 2 | keyword | 0.300 | 0.300 | 1.000 | 1.000 |
+| negation | 2 | vector | 0.300 | 0.300 | 1.000 | 1.000 |
+| negation | 2 | hybrid | 0.300 | 0.300 | 1.000 | 1.000 |
+
+How to read it:
+
+- **MRR** (how high the first relevant hit ranks) is where the methods differ. Hybrid puts a relevant passage first in 22 of 23 queries. Keyword alone misses the top spot on some paraphrases; vector alone sometimes ranks a loosely related passage above an exact model name.
+- **Precision@5** divides by 5 even when fewer hits come back, and most queries have one or two relevant passages, so values near 0.2 to 0.3 are the ceiling here. Compare the rows with each other.
+- **Distinct vs raw.** Raw precision counts every relevant hit, so three overlapping hits on the same passage count three times. Distinct precision credits each expected passage once. Hybrid merges neighbouring chunks into one range, so a passage both sides found comes back once. On raw precision, vector alone scores 0.278 against hybrid's 0.270: that is one query ("why a non-turbo engine is better for off-roading") where vector returned three overlapping ranges inside the same passage and hybrid returned the one merged range. Distinct precision does not reward that repetition, and there hybrid is best.
+- Every method found a relevant passage in the top 5 for every query (Hit@5 1.0). The set is small and the transcripts are only two, so treat this as a regression check that hybrid does not lose to either side, not as a benchmark.
+
+The test asserts that hybrid's MRR and distinct precision@5 are at least the better single method's. Re-record the embeddings after changing the chunker or the queries: `npx tsx packages/search/scripts/record-fixtures.ts`.
