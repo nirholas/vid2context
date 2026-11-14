@@ -1,0 +1,15 @@
+{
+  "recorded": "2026-11-14",
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/items",
+    "query": {
+      "url": "https://www.youtube.com/watch?v=cCPsdFdlshc"
+    }
+  },
+  "status": 200,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": "{\"items\":[{\"input\":\"https://www.youtube.com/watch?v=cCPsdFdlshc\",\"platform\":\"youtube\",\"kind\":\"video\",\"id\":\"youtube:cCPsdFdlshc\",\"nativeId\":\"cCPsdFdlshc\",\"url\":\"https://www.youtube.com/watch?v=cCPsdFdlshc\"}]}"
+}

@@ -1,0 +1,15 @@
+{
+  "recorded": "2026-11-14",
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/items",
+    "query": {
+      "url": "https://example.com/"
+    }
+  },
+  "status": 400,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": "{\"error\":{\"code\":\"unsupported-input\",\"message\":\"No source understands \\\"https://example.com/\\\".\",\"hint\":\"Pass a video URL (YouTube, or any site yt-dlp supports when that provider is installed), a podcast feed, or a local media file path.\"},\"attempts\":[]}"
+}

@@ -1,0 +1,15 @@
+{
+  "recorded": "2026-11-14",
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/section",
+    "query": {
+      "url": "https://youtu.be/jNQXAC9IVRw"
+    }
+  },
+  "status": 400,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": "{\"error\":{\"code\":\"bad-request\",\"message\":\"Pass from, to or chapter.\",\"hint\":\"For example ?from=1:00&to=2:30, or ?chapter=2 (see GET /api/v1/outline).\"},\"attempts\":[]}"
+}

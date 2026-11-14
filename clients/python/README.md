@@ -42,6 +42,17 @@ docs = VideoContextReader(chunking="window", window_sec=90).load_data([
 ])
 ```
 
+A whole playlist, channel or feed, expanded by the server first:
+
+```python
+docs = VideoContextLoader(
+    "https://www.youtube.com/playlist?list=PL59FEE129ADFF2B12",
+    expand=True,
+    max_items=20,
+    continue_on_failure=True,
+).load()
+```
+
 The plain client:
 
 ```python
@@ -67,6 +78,13 @@ with Client() as v2c:
 | `health()` | `GET /api/v1/health` | `Health`: version, runtime, transcript formats, providers (env var names only) |
 | `context(url, mode=None, lang=None)` | `GET /api/v1/context` | `VideoContext` dataclass (`metadata`, `transcript.segments`, `attempts`, `raw` JSON) |
 | `transcript(url, format="text", timestamps=False, mode=None, lang=None)` | `GET /api/v1/transcript` | `str` rendered by the server formatter; ids come from `health().formats` |
+| `metadata(url)` | `GET /api/v1/metadata` | `VideoMetadata` (title, channel, duration, chapters) without fetching a transcript |
+| `outline(url, mode=None, lang=None)` | `GET /api/v1/outline` | `Outline`: `chapters` (or five-minute sections) with `tokens` each, and `total_tokens` |
+| `section(url, start=None, end=None, chapter=None, format="text", timestamps=False, mode=None, lang=None)` | `GET /api/v1/section` | `str`: one range (`start` to `end`, end exclusive) or one chapter (outline index or title). Times are seconds or `"m:ss"` / `"h:mm:ss"` strings. Pass at least one of them; the server answers `bad-request` otherwise |
+| `items(url, limit=None)` | `GET /api/v1/items` | `list[VideoRef]`: a playlist, channel, feed or page expanded to videos; a single video returns itself |
+| `formats()` | `GET /api/v1/formats` | `list[FormatInfo]` with `extension` |
+
+Left out because `packages/server` does not mount them yet (November 2026): `search`, collections (`/collections/...`), jobs, and the intelligence routes (`/ask`, `/chat`, `/briefs`, `/extract`). The server does serve `/comments`, `/pack`, `/bundle` and `/library`; this client does not wrap them yet. Call them through `httpx` against the same base URL in the meantime.
 
 `Client(base_url=None, api_key=None, timeout=300.0, *, headers=None, transport=None)`:
 
@@ -82,7 +100,7 @@ Every failure raises `Vid2ContextError` with `code`, `message`, `hint`, `attempt
 
 ## Loader options
 
-`VideoContextLoader(urls, chunking="chapters", window_sec=60, client=None, *, mode=None, lang=None, continue_on_failure=False, async_client=None, base_url=None, api_key=None)`
+`VideoContextLoader(urls, chunking="chapters", window_sec=60, client=None, *, mode=None, lang=None, continue_on_failure=False, async_client=None, base_url=None, api_key=None, expand=False, max_items=None)`
 
 `VideoContextReader(chunking="chapters", window_sec=60, client=None, *, ...)` takes the same options; URLs go to `load_data(urls)`.
 
@@ -92,7 +110,9 @@ Every failure raises `Vid2ContextError` with `code`, `message`, `hint`, `attempt
 | `chunking="chapters"` | One document per chapter. A video without chapters is split into windows instead, and its documents say `chunking: "window"`, `chunking_requested: "chapters"` |
 | `chunking="segments"` | One document per transcript segment (caption line) |
 | `chunking="window"` | Documents of about `window_sec` seconds. A window starts at its first segment and takes each segment that starts before `start + window_sec`; segments are never split |
-| `continue_on_failure` | Log a warning (Python `logging`, logger `vid2context`) and skip videos that fail, instead of raising |
+| `continue_on_failure` | Log a warning (Python `logging`, logger `vid2context`) and skip videos (or lists) that fail, instead of raising |
+| `expand` | Send each URL through `GET /api/v1/items` first, so a playlist, channel, feed or page loads every video in it. A single video expands to itself. Off by default, so plain video URLs cost one request each and older servers without `/items` still work |
+| `max_items` | With `expand`, the most videos taken from each list (default: the server cap, `VID2CONTEXT_MAX_PLAYLIST_ITEMS`) |
 
 Document text is the raw transcript text of that chunk with whitespace collapsed; nothing is summarized. Each document gets a stable id, `<video_id>#<chunking>-<index>`, so loading the same video again upserts instead of duplicating.
 

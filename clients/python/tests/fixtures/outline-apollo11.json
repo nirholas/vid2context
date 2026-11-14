@@ -1,0 +1,15 @@
+{
+  "recorded": "2026-11-14",
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/outline",
+    "query": {
+      "url": "tests/fixtures/media/apollo11-small-step.mp3"
+    }
+  },
+  "status": 200,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": "{\"metadata\":{\"ref\":{\"input\":\"tests/fixtures/media/apollo11-small-step.mp3\",\"platform\":\"file\",\"kind\":\"video\",\"id\":\"file:38010fa474cd134a25d80936cf1877b2\",\"nativeId\":\"38010fa474cd134a25d80936cf1877b2\",\"url\":\"file:///home/user/vid2context/vid2context/tests/fixtures/media/apollo11-small-step.mp3\"},\"title\":\"apollo11-small-step\",\"chapters\":[],\"extra\":{\"path\":\"/home/user/vid2context/vid2context/tests/fixtures/media/apollo11-small-step.mp3\",\"sizeBytes\":145412,\"modifiedAt\":\"2026-11-14T15:55:57.360Z\",\"container\":\"mp3\",\"hasVideo\":false,\"streams\":[{\"index\":0,\"type\":\"audio\",\"codec\":\"mp3\",\"channels\":1,\"sampleRate\":16000}]},\"durationSec\":24.192},\"chapters\":[{\"title\":\"0:00 to 0:24\",\"startSec\":0,\"endSec\":24.192,\"tokens\":24}],\"totalTokens\":24}"
+}

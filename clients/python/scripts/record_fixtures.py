@@ -63,6 +63,8 @@ CALLS: list[tuple[str, str, dict[str, str], int]] = [
     ("metadata-jNQXAC9IVRw", "/api/v1/metadata", {"url": "https://youtu.be/jNQXAC9IVRw"}, 200),
     ("outline-jNQXAC9IVRw", "/api/v1/outline", {"url": "https://youtu.be/jNQXAC9IVRw"}, 200),
     ("items-jNQXAC9IVRw", "/api/v1/items", {"url": "https://youtu.be/jNQXAC9IVRw"}, 200),
+    # Its canonical url is the same request as context-cCPsdFdlshc, so loaders can expand then load.
+    ("items-cCPsdFdlshc", "/api/v1/items", {"url": "https://www.youtube.com/watch?v=cCPsdFdlshc"}, 200),
     (
         "items-playlist",
         "/api/v1/items",
@@ -82,6 +84,7 @@ CALLS: list[tuple[str, str, dict[str, str], int]] = [
     ("section-apollo11-chapter", "/api/v1/section", {"url": APOLLO, "chapter": "0"}, 200),
     ("section-apollo11-range", "/api/v1/section", {"url": APOLLO, "from": "0", "to": "0:06", "timestamps": "1"}, 200),
     ("items-apollo11", "/api/v1/items", {"url": APOLLO}, 200),
+    ("items-unsupported", "/api/v1/items", {"url": "https://example.com/"}, 400),
 ]
 RETRIES = 4
 
