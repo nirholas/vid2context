@@ -65,6 +65,8 @@ Many agents work in this folder at the same time. These rules keep them from bre
 - Commit messages: `type(scope): what changed and why it matters`, for example `feat(youtube): fall back to srv1 when srv3 is empty so old tracks still parse`. Never "update" or "wip".
 - End every commit message with `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`.
 - Commit and push only when the owner asks. Never force-push.
+- Commit and push only as user `nirholas` with the owner's GitHub noreply email: `22895867+nirholas@users.noreply.github.com` or the older `nirholas@users.noreply.github.com` (same account). Before every commit, check `git config user.name` and `git config user.email`; if either is anything else, stop and tell the owner instead of committing. Never pass `--author`, set `GIT_AUTHOR_*` or `GIT_COMMITTER_*`, or change git config to another identity.
+- Never publish an email address or other personal detail anywhere: not in commits, code, docs, fixtures, issues, PRs, logs or requests to outside services. The only addresses allowed in a commit are the noreply identity above and the `Co-Authored-By` trailer.
 - GitHub Actions is unavailable on this account (billing locked since 2026-09-15), so workflows there fail. Verify with `npm run check` locally, or use Cloud Build.
 - Use the `gh` CLI for GitHub. Never put tokens in remote URLs.
 

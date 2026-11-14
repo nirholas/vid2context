@@ -4,21 +4,22 @@ Fifty agents build vid2context at the same time, in one working folder, each own
 
 Rules for this file:
 
-- Where `docs/contracts/*.md` or the foundation code already defines something, they win. This file only adds to them.
+- `docs/contracts/*.md` (providers, HTTP API, MCP tools), `AGENTS.md` and the foundation code win. This file only adds what they do not define yet.
+- Item numbers here are the prompt numbers in `docs/prompts/README.md`, which are also the item numbers in `docs/ROADMAP.md` and `docs/contracts/`. Where a roadmap item was merged into another, the README's mapping table says which prompt now owns its work (for example, work the contracts assign to item 33 "extract" is done by prompt 32).
 - The code blocks in section 1 are exact. Copy them byte for byte. Do not "improve" them while copying.
 - The surfaces in sections 2 to 7 are the plan the wave codes against. The prompt that owns a surface implements it and moves its final form into `docs/contracts/`. Consumers code against the shapes here.
 - Changing anything here is a contract change: additive only, and update this file in the same commit.
 
 ## 1. Shared core files (create if missing)
 
-Four small files in `packages/core/src/` are needed by several prompts that run in parallel. The first prompt that needs one creates it. Every later prompt finds it already there and uses it as is.
+Four small files in `packages/core/src/` are needed by several prompts that run in parallel. The foundation session was asked to add them; if one is still missing when you need it, the first prompt that needs it creates it, and every later prompt finds it already there and uses it as is.
 
 | File | Needed by prompts | Who may change it later |
 |---|---|---|
-| `storage-ext.ts` | 05, 22, 32, 34, 35, 36, 37, 38, 41, 42 | additive only; storage backends implement its interfaces |
-| `llm-stream.ts` | 21, 25, 26, 28, 32, 42, 45 | additive only; prompt 28 owns streaming |
-| `audio-split.ts` | 05, 16 | additive only |
-| `tokens.ts` | 01, 02, 04, 31, 32, 33, 40, 42, 45 | prompt 04 may improve accuracy, never the signature |
+| `storage-ext.ts` | 04, 20, 34, 37, 39, 40, 41, 42, 45, 46 | additive only; storage backends implement its interfaces |
+| `llm-stream.ts` | 19, 25, 26, 27, 28, 34, 46 | additive only; prompt 25 owns streaming |
+| `audio-split.ts` | 04, 12 | additive only |
+| `tokens.ts` | 01, 03, 15, 28, 32, 34, 35, 44, 46 | prompt 03 may improve accuracy, never the signature |
 
 Procedure, every time you need one of these files:
 
@@ -297,7 +298,7 @@ export interface AudioSplitter {
  * token for alphabetic scripts and about 1 token per CJK character. Use it
  * for budgets with headroom, never for billing.
  *
- * Created verbatim from docs/prompts/SHARED-CONTRACTS.md. Prompt 04 (chunking)
+ * Created verbatim from docs/prompts/SHARED-CONTRACTS.md. Prompt 03 (chunking)
  * owns its accuracy and may improve the implementation, but must keep this
  * signature.
  */
@@ -327,7 +328,7 @@ Prompt 01 adds formatters to the `formatters` map in `packages/core/src/format/`
 
 Surfaces never hard-code this list. They read `formatters` at runtime, so a formatter added later shows up everywhere.
 
-### Bundle layout (prompt 02)
+### Bundle layout (prompt 15)
 
 One video:
 
@@ -384,37 +385,21 @@ File names for formatters not in the table above: `<id>.<extension>`.
 }
 ```
 
-## 3. HTTP API v1 additions (prompt 42 implements)
+## 3. HTTP API additions (prompt 46 implements unless noted)
 
-The foundation defines `GET /api/v1/health`, `GET /api/v1/context` and `GET /api/v1/transcript`, plus the error body and status mapping, in `docs/contracts/http-api.md`. These routes are added by the wave. All paths are under `/api/v1`. JSON unless stated. Errors use the foundation's error body.
+`docs/contracts/http-api.md` is the source of truth for the error body, the status mapping, the implemented routes and the planned routes (metadata, formats, items, section, outline, comments, pack, library, collections, search, briefs, extract, ask, translation, chapters, jobs, MCP, OpenAPI, auth and limits). Build those exactly as written there, including the rule that only prompt 46 edits `packages/server`, and that other packages export a Hono sub-app factory from their own `src/http.ts`.
 
-| Method and path | Owner | Request | Response |
+These routes are not in that contract yet. Whoever implements one adds it to `docs/contracts/http-api.md` in the same commit. All paths are under `/api/v1`.
+
+| Method and path | Owner (exported from) | Request | Response |
 |---|---|---|---|
-| `GET /formats` | 42 | | `{ formats: { id, description, mimeType, extension }[] }` |
-| `GET /items?url=&limit=` | 42 | | `{ items: VideoRef[] }` (playlist, channel, feed or page expansion) |
-| `GET /bundle?url=&formats=&comments=` | 42 | | `application/zip`, `Content-Disposition: attachment` |
-| `POST /bundle` | 42 | `{ inputs: string[], formats?: string[], comments?: boolean }` | `application/zip` |
-| `POST /uploads` | 42 | multipart, field `file` | `201 { input: "upload:<sha256>", filename, bytes, mimeType, expiresAt }` |
-| `GET /models?kind=llm\|stt\|embed\|video\|visual` | 42 | | `{ models: ModelInfo[], defaultPolicy: Policy }` |
-| `POST /chat` | 42 | ChatApiRequest | `text/event-stream`, events below |
-| `GET /library?limit=&cursor=` | 42 | | `Page<VideoSummary>` |
-| `GET /library/:id` | 42 | id URL-encoded (`youtube%3AjNQXAC9IVRw`) | `VideoContext` |
-| `DELETE /library/:id` | 42 | | `204` |
-| `GET /collections` | 42 | | `{ collections: Collection[] }` |
-| `POST /collections` | 42 | `{ name, description?, sources? }` | `201 Collection` |
-| `GET /collections/:id` | 42 | | `Collection` |
-| `PATCH /collections/:id` | 42 | `{ name?, description?, sources? }` | `Collection` |
-| `DELETE /collections/:id` | 42 | | `204` |
-| `POST /collections/:id/items` | 42 | `{ inputs: string[] }` | `Collection` |
-| `DELETE /collections/:id/items` | 42 | `{ videoIds: string[] }` | `Collection` |
-| `GET /search?q=&collectionId=&limit=` | 42 | | `{ hits: (SearchHit & { url?: string })[] }` |
-| `POST /jobs` | 38 | `{ kind, input, options? }` | `202 Job` |
-| `GET /jobs/:id` | 38 | | `Job` |
-| `GET /jobs/:id/events` | 38 | | `text/event-stream`: `progress`, `item`, `done`, `error` |
-| `DELETE /jobs/:id` | 38 | | `202 Job` (cancel requested) |
-| `GET /openapi.json` | 42 | | OpenAPI 3.1 for every route above |
+| `GET /models?kind=llm\|stt\|embed\|video\|visual` | 46 (uses `listModels` from prompt 25 when present) | | `{ models: ModelInfo[], defaultPolicy: Policy }` |
+| `POST /chat` | 34 (`packages/ask/src/http.ts`) | `ChatApiRequest` | `text/event-stream`, events below |
+| `POST /uploads` | 46 | multipart, field `file` | `201 { input: "upload:<sha256>", filename, bytes, mimeType, expiresAt }` |
+| `GET /bundle?url=&formats=&comments=` | 46 (uses `buildBundle` from prompt 15) | | `application/zip`, `Content-Disposition: attachment` |
+| `POST /bundle` | 46 | `{ inputs?: string[], collectionId?: string, formats?: string[], comments?: boolean }` | `application/zip` |
 
-`upload:<sha256>` is a server-side input: `GET /context?url=upload:<sha256>` and `POST /jobs` accept it for as long as the upload lives. Uploaded media is never written to the library unless the user saves the result.
+`upload:<sha256>` is a server-side input: `GET /context?url=upload:<sha256>`, `POST /jobs` and `POST /chat` accept it for as long as the upload lives. Uploaded media is never written to the library unless the user saves the result.
 
 ### ModelInfo
 
@@ -425,7 +410,7 @@ interface ModelInfo {
   kind: 'llm' | 'stt' | 'embed' | 'video' | 'visual';
   /** Display name: the model id without vendor prefixes, e.g. "gpt-oss-120b". */
   label: string;
-  /** Upstream service: 'groq', 'ovh', 'ollama', 'anthropic'. */
+  /** Upstream service: 'groq', 'ovh', 'ollama', 'anthropic'. Pooled keys look like 'groq#2'. */
   service: string;
   provider: string;
   model: string;
@@ -442,12 +427,14 @@ interface ModelInfo {
 
 ### Chat over SSE
 
+The chat page (prompt 28) talks to this. It is the multi-turn, model-selectable sibling of `POST /ask` from the contract, and lives in the same package (prompt 34).
+
 ```ts
 interface ChatApiRequest {
   messages: { role: 'user' | 'assistant'; content: string }[];
   /** Omit for Auto (the server's policy, free-first). */
   model?: { rung: string; strict?: boolean } | { policy: 'free' | 'quality' | 'local-only' };
-  /** What to ground the answer in. Inputs are URLs, ids like youtube:abc, or upload:<sha256>. */
+  /** What to ground the answer in: URLs, ids like youtube:abc, or upload:<sha256>, and/or a collection. */
   context?: { inputs?: string[]; collectionId?: string };
   maxTokens?: number;
   temperature?: number;
@@ -456,75 +443,44 @@ interface ChatApiRequest {
 
 `model.rung` with `strict: false` (the default) means "start with this rung, then fall back along the chain". `strict: true` means "this rung or an error".
 
-Events, in order (`event:` name, `data:` one JSON object per line):
+Events, in order (`event:` name, `data:` one JSON object):
 
 | event | data |
 |---|---|
 | `meta` | `{ rung, model, contextTokens?, sources: { n, videoId, title, url?, startSec, endSec }[] }` |
 | `reasoning` | `{ text }` (zero or more, only when the model exposes reasoning) |
 | `delta` | `{ text }` (one or more) |
-| `done` | `{ text, rung, model, usage?, attempts }` |
+| `done` | `{ text, rung, model, usage?, citations: Citation[], attempts }` |
 | `error` | `{ code, message, hint?, attempts? }` (instead of `done`) |
 
-The answer cites sources as `[n]` where `n` matches `meta.sources[].n`. Clients render `[n]` as a chip "Title @ m:ss" linking to the source `url` (a timestamp link).
+The answer cites sources as `[n]`, where `n` matches `meta.sources[].n`. `Citation` is the type in `docs/contracts/http-api.md`. Clients render `[n]` as a chip "Title @ m:ss" linking to the source `url` (a timestamp link).
 
-### Job
+## 4. MCP tools
 
-```ts
-interface Job {
-  id: string;
-  kind: string;          // 'context', 'items', 'bundle', 'collection-refresh', ...
-  status: 'queued' | 'running' | 'succeeded' | 'failed' | 'canceled';
-  input: unknown;
-  progress?: { stage: string; done?: number; total?: number; message?: string };
-  result?: unknown;
-  error?: { code: string; message: string; hint?: string };
-  createdAt: string;     // ISO 8601
-  updatedAt: string;
-}
-```
+`docs/contracts/mcp-tools.md` is the source of truth for tool names, inputs, prompts, resources and ownership: only prompt 44 edits `packages/mcp`; packages that back tools export a `register<Name>Tools(server, deps)` function from their own `src/mcp.ts`; prompt 45 (`packages/mcp-http`) serves the same `createServer()` over Streamable HTTP and defines no tools of its own. One addition, owned by prompt 44, added to the contract when built:
 
-## 4. MCP tools (prompts 40 and 41)
-
-The foundation ships `get_transcript` and `get_metadata` (see `docs/contracts/mcp-tools.md`). The wave adds the tools below. Names are final; other prompts (integrations, docs, the site) refer to them.
-
-| Tool | Input | Purpose |
+| Tool | Input | Returns |
 |---|---|---|
-| `list_formats` | `{}` | formats from the `formatters` map |
-| `get_outline` | `{ url }` | metadata, chapters and estimated tokens per chapter, so an agent can fetch only what it needs |
-| `get_section` | `{ url, from?, to?, chapter?, format? }` | a time range or chapter of a transcript |
-| `list_items` | `{ url, limit? }` | expand a playlist, channel, feed or page |
-| `search_transcripts` | `{ query, urls?, collection?, limit? }` | keyword search over saved transcripts, hits with timestamp links |
-| `get_comments` | `{ url, limit?, sort? }` | top comments, creator replies flagged |
-| `export_context_pack` | `{ urls?, collection?, maxTokens? }` | the `pack` format for one or many videos |
-| `list_collections` | `{}` | |
-| `create_collection` | `{ name, description?, sources? }` | |
-| `add_to_collection` | `{ collection, urls }` | fetches and saves each video |
-| `get_collection` | `{ collection }` | collection with video summaries |
-| `list_models` | `{ kind? }` | ModelInfo list (no secrets) |
+| `list_models` | `{ kind? }` | `ModelInfo[]` (section 3), no secrets |
 
-MCP prompts: `build_brief`, `buyer_guide`, `summarize_video`, `ask_collection`. Resource templates: `vid2context://video/{id}/transcript`, `vid2context://video/{id}/metadata`, `vid2context://collection/{id}`.
+## 5. CLI commands (prompt 43)
 
-Remote MCP endpoint path: `/mcp` (Streamable HTTP). OAuth metadata: `/.well-known/oauth-protected-resource` and `/.well-known/oauth-authorization-server`.
-
-## 5. CLI commands (prompt 39)
-
-`vid2context <input>` (same as `get`), `get`, `list`, `formats`, `bundle`, `pack`, `search`, `library`, `collection`, `models`, `doctor`, `config`, `serve`, `mcp`. Global flags: `--format`, `--timestamps`, `--mode`, `--lang`, `--policy`, `--only`, `--skip`, `--allow-paid`, `--json`, `--quiet`, `--verbose`, `--out`. Other prompts that ship setup steps (whisper.cpp, local LLM detection, yt-dlp) export a function the CLI can call later and document a `npx tsx <their package>/src/<script>.ts` command for now.
+`vid2context <input>` (same as `get`), `get`, `list`, `formats`, `bundle`, `pack`, `search`, `library`, `collection`, `models`, `doctor`, `config`, `serve`, `mcp`. Global flags: `--format`, `--timestamps`, `--mode`, `--lang`, `--policy`, `--only`, `--skip`, `--allow-paid`, `--json`, `--quiet`, `--verbose`, `--out`. Prompts that ship setup steps (yt-dlp 11, whisper.cpp 18, local LLM detection 27) export a function the CLI can call later and document an `npx tsx <their package>/src/<script>.ts` command for now.
 
 ## 6. Web: stack, URL layout, storage keys, design tokens
 
-Stack for `packages/web`, `packages/chat` and `packages/extension`: React 19, Vite, TypeScript, Tailwind CSS v4, `lucide-react` icons, self-hosted fonts through `@fontsource` (no requests to Google Fonts). `packages/site` uses Astro with React islands and the same tokens. No Next.js: everything must build to static files that Cloudflare Pages, Vercel and GitHub Pages can all serve.
+Stack for `packages/web` (47), `packages/chat` (28) and `packages/extension` (48): React 19, Vite, TypeScript, Tailwind CSS v4, `lucide-react` icons, self-hosted fonts through `@fontsource` (no requests to Google Fonts). The landing site in `site/` (36) uses Astro with React islands and the same tokens, building static files into the directory the root `wrangler.jsonc` serves. No Next.js: everything must build to static files that Cloudflare Pages, Vercel and GitHub Pages can all serve.
 
 One domain, one layout:
 
 | Path | Served by |
 |---|---|
-| `/` and `/docs/*` | `packages/site` (Astro, static) |
+| `/` and `/docs/*` | `site/` (36), served as Worker assets by the root `wrangler.jsonc` |
 | `/app/` | `packages/web` (Vite `base: '/app/'`) |
 | `/chat/` | `packages/chat` (Vite `base: '/chat/'`) until the integration pass merges it into `/app/` |
 | `/api/v1/*` | `packages/server` |
-| `/mcp`, `/.well-known/oauth-*` | `packages/mcp` remote transport, mounted by the server |
-| `/llms.txt`, `/llms-full.txt` | `packages/site` |
+| `/mcp`, `/.well-known/oauth-*` | `packages/mcp-http` (45), mounted by the server (46) |
+| `/llms.txt`, `/llms-full.txt` | the repo's `llms.txt` and `llms-full.txt`, copied into the site by `npm run build:site` |
 
 Hand-off links between them:
 
@@ -606,10 +562,12 @@ Visual language, from the owner's references (llm.energy, xactions.app/video, th
 
 ## 7. Shared test fixtures
 
-- `tests/fixtures/contexts/youtube-jNQXAC9IVRw.json` and `tests/fixtures/contexts/youtube-cCPsdFdlshc.json`: real `VideoContext` objects produced by the foundation pipeline (short video with creator captions, and a longer video with auto-captions). Load them with `readFileSync(new URL('../../../tests/fixtures/contexts/<file>', import.meta.url))` from a package test. If they are not there when you start, produce one yourself with the foundation CLI against the real video (`npm run cli -- https://www.youtube.com/watch?v=jNQXAC9IVRw --format json > <your package>/test/fixtures/...`) and keep it in your own package.
-- `providers/youtube/test/fixtures/`: real innertube player responses, srv1 and srv3 caption payloads, and a real 429 block page.
-- `providers/stt-openai-compatible/test/fixtures/`: real OVH Whisper responses.
-- Never edit another package's fixtures. Record your own into your package's `test/fixtures/`, and add a `test/fixtures/README.md` saying where and when each file was recorded and its license when it is media.
+`tests/fixtures/README.md` documents every shared fixture. Read it first.
+
+- `tests/fixtures/contexts/youtube-jNQXAC9IVRw.json` and `tests/fixtures/contexts/youtube-cCPsdFdlshc.json`: real `VideoContext` output of the foundation pipeline (a short video with creator captions, and a longer one with auto-captions). Load them from a package test with `readFileSync(new URL('../../../tests/fixtures/contexts/<file>', import.meta.url), 'utf8')` (adjust the depth to your test file).
+- `tests/fixtures/media/apollo11-small-step.mp3`: real public-domain audio for speech-to-text, splitting and media tests.
+- `providers/youtube/test/fixtures/`: real innertube player responses, srv1 and srv3 caption payloads, and a real 429 block page. `providers/stt-openai-compatible/test/fixtures/`: real OVH Whisper responses.
+- Never edit another package's fixtures or the shared ones. Record your own into your package's `test/fixtures/` and document each file in that folder's `README.md`: where, when and how it was recorded, and the license when it is media. Remove anything personal before committing (stream URLs embed your IP; emails, phone numbers, keys).
 
 ## 8. Shared files: who may edit what
 
@@ -618,23 +576,28 @@ Everything not listed belongs to exactly one prompt (see the index in `docs/prom
 | Shared file | Prompts allowed to edit, and what |
 |---|---|
 | `packages/core/src/index.ts` | any prompt adding a core subdirectory or a section 1 file: one `export *` line |
-| `packages/core/src/pipeline.ts` | 03 (repetition-loop guard on STT output), 05 (long-audio hook and `splitters` option), 07 (input policy check), 08 (stage spans), 23 (require `diarization` capability when asked), 38 (`onProgress` option) |
-| `packages/core/src/chain.ts` | 07 (redact secrets in attempt details), 08 (rung spans and usage) |
-| `packages/core/src/context.ts` | 07 (redacting logger), 08 (JSON log format, telemetry passthrough) |
-| `packages/core/src/types.ts` | 08 (`Ctx.telemetry?`), 22 (`Ctx.bindings?`) |
-| `packages/registry/src/workers.ts` | 22 (pass non-string bindings through as `ctx.bindings`) |
-| `providers/youtube/src/index.ts` | 11, 12, 13, 14: only the properties each one owns |
-| `providers/llm-openai-compatible/src/` | 24 owns it; 26 removes the local rungs it moves; 28 attaches `stream` to the rung factory |
-| `packages/server/src/` (the Hono app file) | 42 owns it; 38 and 41 each add one line that mounts their routes |
-| root `package.json` | 09, 10, 24, 50: add `scripts` entries only (and 10 its devDependencies) |
-| `docs/providers.md`, `.env.example` | every provider prompt: add or update only the rows and variables for its own rungs |
-| `docs/contracts/*.md` | the owner of the surface: 40 and 41 (`mcp-tools.md`), 42 (`http-api.md`), 08, 22 and 28 (`providers.md`) |
+| `packages/core/src/pipeline.ts` | 02 (repetition-loop guard on STT output), 04 (long-audio hook and `splitters` option), 10 (input policy check), 21 (stage spans), 22 (require `diarization` when asked), 42 (`onProgress` option) |
+| `packages/core/src/chain.ts` | 10 (redact secrets in attempt details), 21 (rung spans and usage) |
+| `packages/core/src/context.ts` | 10 (redacting logger), 21 (JSON log format, telemetry passthrough) |
+| `packages/core/src/types.ts` | 20 (`Ctx.bindings?`), 21 (`Ctx.telemetry?`) |
+| `packages/registry/src/workers.ts` | 20 (pass non-string bindings through as `ctx.bindings`) |
+| `providers/youtube/src/index.ts` | 06, 07, 08, 09: only the wiring each one owns |
+| `providers/llm-openai-compatible/src/` | 25 (attach `stream` to the rung factory), 27 (move the local rungs out to `providers/llm-local`) |
+| `packages/server/` | 46 only. Everyone else exports a Hono sub-app factory from their own `src/http.ts` |
+| `packages/mcp/` | 44 only. Everyone else exports `register<Name>Tools` from their own `src/mcp.ts` |
+| root `package.json` | 23, 24, 33, 36, 38, 50: add `scripts` entries only (and 38 its devDependencies) |
+| root `tsconfig.json` | 28, 36: add their package to `exclude` (as `packages/web` and `packages/extension` already are) |
+| root `wrangler.jsonc` | 50 only (36 may change the assets directory if the site build output moves) |
+| `docs/providers.md`, `.env.example` | every prompt that adds env vars or rungs: add or update only its own rows and variables |
+| `docs/contracts/*.md` | the surface owner: 44 (`mcp-tools.md`), 45 (transport section of `mcp-tools.md`), 46 (`http-api.md`), 34 (the `/chat` and `/ask` rows), 20, 21 and 25 (`providers.md`) |
+| `docs/guides/youtube.md` | 06, 07, 08, 09: each adds or edits only its own `##` section |
 
-Nobody in the wave edits `CLAUDE.md`, `AGENTS.md`, the root `README.md`, `docs/ROADMAP.md`, `docs/prompts/` (except to fix this file additively), `.github/`, or another prompt's directory. The owner updates those after the wave.
+Nobody in the wave edits `CLAUDE.md`, `AGENTS.md`, the root `README.md`, `docs/ROADMAP.md`, `docs/ARCHITECTURE.md`, `docs/prompts/` (except fixing this file additively when a contract here changes), `.github/`, the shared fixtures, or another prompt's directory. The owner updates those after the wave.
 
 ## 9. Naming conventions
 
 - Packages: `packages/<name>` is `@vid2context/<name>`. Providers: `providers/<dir>` is `@vid2context/provider-<dir>`.
 - Provider ids are kebab-case and unique. Rung ids are `<kind>/<service>/<model>`, for example `llm/groq/openai/gpt-oss-120b`.
-- Env vars: `<SERVICE>_API_KEY` (one key), `<SERVICE>_FALLBACK_KEYS` (extra keys, comma-separated, see `keyPool` in `packages/core/src/keys.ts`), `<SERVICE>_MODEL` or `<SERVICE>_<KIND>_MODEL` (model override), `<SERVICE>_BASE_URL` (endpoint override). App settings start with `VID2CONTEXT_`.
+- Env vars: `<PROVIDER>_API_KEY` (one key), `<PROVIDER>_FALLBACK_KEYS` (extra keys, comma-separated, one rung per key: see `keyPool` and `pooledService` in `packages/core/src/keys.ts`), `<PROVIDER>_MODEL` (comma-separated LLM model list), `<PROVIDER>_STT_MODEL` and `<PROVIDER>_EMBED_MODEL` (other kinds), `<PROVIDER>_BASE_URL` (endpoint override). App settings start with `VID2CONTEXT_`. `docs/providers.md` and `.env.example` are the catalog; check them before naming a new variable.
+- Node entry points load `.env` files with `loadEnvFiles()` from `@vid2context/registry/node` (shell variables win).
 - Local data lives under `.vid2context/` in the working directory (gitignored), or under `VID2CONTEXT_HOME` when set: `bin/` (managed binaries), `models/` (downloaded models), `cache/` (media), `library.db` (SQLite), `locks/`.

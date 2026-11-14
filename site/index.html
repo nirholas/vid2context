@@ -48,7 +48,7 @@
   .btn.primary { background: var(--fg); color: var(--bg); border-color: var(--fg); }
   .btn:hover { transform: translateY(-1px); }
 
-  .term { background: var(--code-bg); color: var(--code-fg); border-radius: 14px; font: 13.5px/1.7 var(--mono); box-shadow: 0 20px 50px -20px rgb(0 0 0 / .45); overflow: hidden; }
+  .term { margin: 0; background: var(--code-bg); color: var(--code-fg); border-radius: 14px; font: 13.5px/1.7 var(--mono); box-shadow: 0 20px 50px -20px rgb(0 0 0 / .45); overflow: hidden; }
   .term .bar { display: flex; gap: 7px; padding: 12px 14px; border-bottom: 1px solid #ffffff12; }
   .term .bar i { width: 11px; height: 11px; border-radius: 50%; background: #ffffff22; }
   .term pre { margin: 0; padding: 16px 18px 20px; overflow-x: auto; }
@@ -132,7 +132,7 @@
         </a>
       </div>
     </div>
-    <div class="term" aria-label="Example terminal session">
+    <figure class="term" aria-label="Example terminal session">
       <div class="bar"><i></i><i></i><i></i></div>
 <pre><span class="p">$</span> vid2context https://youtu.be/jNQXAC9IVRw --timestamps
 <span class="ts">[0:01]</span> All right, so here we are, in front of the elephants
@@ -144,7 +144,7 @@
   resolve  <span class="ok">ok</span>  youtube           youtube:jNQXAC9IVRw
   metadata <span class="ok">ok</span>  youtube
   captions <span class="ok">ok</span>  youtube-captions  creator-captions</pre>
-    </div>
+    </figure>
   </div>
 </div>
 
@@ -200,12 +200,12 @@
     <h2>Use it</h2>
     <p class="sub">The same TypeScript core runs behind every surface. You need Node.js 22 or newer.</p>
     <div class="tabs" role="tablist">
-      <button role="tab" aria-selected="true" data-tab="cli">CLI</button>
-      <button role="tab" aria-selected="false" data-tab="mcp">Claude Code (MCP)</button>
-      <button role="tab" aria-selected="false" data-tab="api">HTTP API</button>
+      <button type="button" role="tab" aria-selected="true" data-tab="cli">CLI</button>
+      <button type="button" role="tab" aria-selected="false" data-tab="mcp">Claude Code (MCP)</button>
+      <button type="button" role="tab" aria-selected="false" data-tab="api">HTTP API</button>
     </div>
     <div data-panel="cli">
-      <div class="code"><button class="copy">copy</button><pre><span class="p"># install from source</span>
+      <div class="code"><button type="button" class="copy">copy</button><pre><span class="p"># install from source</span>
 git clone https://github.com/nirholas/vid2context.git
 cd vid2context
 npm install
@@ -218,12 +218,12 @@ npm run cli -- ./interview.mp3 --format json > interview.json</pre></div>
       <p class="panel-note">Program output goes to stdout and logs go to stderr, so <code>vid2context URL &gt; transcript.txt</code> stays clean.</p>
     </div>
     <div data-panel="mcp" hidden>
-      <div class="code"><button class="copy">copy</button><pre><span class="p"># from the repo root</span>
+      <div class="code"><button type="button" class="copy">copy</button><pre><span class="p"># from the repo root</span>
 claude mcp add vid2context -- "$PWD/node_modules/.bin/tsx" "$PWD/packages/mcp/src/bin.ts"</pre></div>
       <p class="panel-note">Then ask: <em>"get the transcript of https://youtu.be/jNQXAC9IVRw and summarize it with timestamps"</em>. The server exposes <code>get_transcript</code> and <code>get_metadata</code>. Any stdio MCP client works the same way, including Claude Desktop, Cursor, VS Code and Windsurf.</p>
     </div>
     <div data-panel="api" hidden>
-      <div class="code"><button class="copy">copy</button><pre><span class="p"># health, formats and configured providers</span>
+      <div class="code"><button type="button" class="copy">copy</button><pre><span class="p"># health, formats and configured providers</span>
 curl https://vid2context.com/api/v1/health
 
 <span class="p"># transcript as text with timestamps</span>
@@ -259,17 +259,19 @@ curl "https://vid2context.com/api/v1/context?url=https://youtu.be/jNQXAC9IVRw"</
 <script>
   // Tabs
   const tabs = document.querySelectorAll('[role=tab]');
-  tabs.forEach((t) => t.addEventListener('click', () => {
-    tabs.forEach((x) => x.setAttribute('aria-selected', String(x === t)));
-    document.querySelectorAll('[data-panel]').forEach((p) => { p.hidden = p.dataset.panel !== t.dataset.tab; });
-  }));
+  for (const t of tabs) {
+    t.addEventListener('click', () => {
+      for (const x of tabs) x.setAttribute('aria-selected', String(x === t));
+      for (const p of document.querySelectorAll('[data-panel]')) p.hidden = p.dataset.panel !== t.dataset.tab;
+    });
+  }
 
   // Copy buttons (strip comment lines)
-  document.querySelectorAll('.copy').forEach((b) => b.addEventListener('click', async () => {
-    const text = b.nextElementSibling.innerText.split('\n').filter((l) => !l.startsWith('#')).join('\n').trim();
+  for (const b of document.querySelectorAll('.copy')) b.addEventListener('click', async () => {
+    const text = b.nextElementSibling.textContent.split('\n').filter((l) => !l.startsWith('#')).join('\n').trim();
     try { await navigator.clipboard.writeText(text); b.textContent = 'copied'; } catch { b.textContent = 'select & copy'; }
     setTimeout(() => { b.textContent = 'copy'; }, 1600);
-  }));
+  });
 
   // Try it
   const form = document.getElementById('tryForm');

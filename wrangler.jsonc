@@ -16,5 +16,8 @@
     { "pattern": "vid2context.com", "custom_domain": true },
     { "pattern": "www.vid2context.com", "custom_domain": true }
   ],
+  // Also serve on vid2context.<account>.workers.dev, a fallback URL that works without the custom domain.
+  "workers_dev": true,
+  "preview_urls": false,
   "observability": { "enabled": true }
 }

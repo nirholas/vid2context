@@ -58,10 +58,10 @@ vid2context turns any video into context for AI agents: transcripts, metadata, c
 
 ## Out of scope
 
-- The .zip bundle and "copy for agents" text: prompt 02 (bundle). It reads your formatters from the map.
-- Caption cleanup (punctuation, rolling dedupe, Whisper loops): prompt 03. Render the segments you are given.
-- Chunking, outlines and section fetch: prompt 04. Keep your paragraph grouping local to the format module.
-- Surfaces (CLI flags, MCP tools, HTTP routes): prompts 39, 40, 42. They list `formatters` at runtime.
+- The .zip bundle and "copy for agents" text: prompt 15 (bundle). It reads your formatters from the map.
+- Caption cleanup (punctuation, rolling dedupe, Whisper loops): prompt 02. Render the segments you are given.
+- Chunking, outlines and section fetch: prompt 03. Keep your paragraph grouping local to the format module.
+- Surfaces (CLI flags, MCP tools, HTTP routes): prompts 43, 44, 46. They list `formatters` at runtime.
 
 ## Tests
 
