@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { type Ctx, createContext, getVideoContext } from '@vid2context/core';
+import { type Ctx, createContext, getVideoContext, Registry } from '@vid2context/core';
 import { type RecordedResponse, replayFetch, testContext } from '@vid2context/core/testing';
 import { describe, expect, it } from 'vitest';
 import { canonicalUrl, matchMediaUrl, maxMediaBytes, mediaUrl, sha256Hex, titleFromUrl, urlExtension } from '../src/index.ts';
@@ -158,8 +158,9 @@ describe.skipIf(!process.env.LIVE)('media-url (LIVE)', () => {
   });
 
   it('transcribes a real direct mp3 URL through the full pipeline with the keyless OVH rung', { timeout: 180_000 }, async () => {
-    const { createRegistry } = await import('@vid2context/registry/node');
-    const registry = createRegistry();
+    // Only the providers this path needs, so unrelated packages cannot break the live check.
+    const stt = (await import('@vid2context/provider-stt-openai-compatible')).default;
+    const registry = new Registry([mediaUrl, stt].flat(), 'node');
     const ctx = live();
     const result = await getVideoContext(registry, URL_MP3, { mode: 'auto', chain: { only: ['ovh'] }, storage: null }, ctx);
     expect(result.transcript.origin).toBe('stt');
