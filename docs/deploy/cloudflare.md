@@ -71,8 +71,13 @@ YouTube blocks many datacenter IPs. Cloudflare's egress IPs are shared and somet
 ## Domain
 
 - `vid2context.com` and `www.vid2context.com` are custom domains in `routes`; Cloudflare creates the DNS records and certificates on the first deploy. The Worker redirects `www.` to the bare domain.
+- The zone must be active first: at the registrar, set the domain's nameservers to the two Cloudflare assigns (dashboard, the zone's Overview). Until Cloudflare sees them the zone stays "pending" and no certificate is issued, so browsers show `ERR_SSL_VERSION_OR_CIPHER_MISMATCH`. The certificate usually follows within 15 minutes of activation.
 - `vidtocontext.com`: add it to the same Cloudflare account, then create a redirect rule (Rules, Redirect Rules, "Redirect from root to WWW" style, custom): when hostname equals `vidtocontext.com` or `www.vidtocontext.com`, redirect to `https://vid2context.com${path}` keeping the query string, status 301. The zone needs a proxied DNS record (for example an `A` record to `192.0.2.1`, proxied) so requests reach the rule.
 - `vid2context.<account>.workers.dev` stays on as a fallback URL (`workers_dev: true`).
+
+## Asset size limit
+
+Workers static assets reject any file above 25 MiB, and `npm run build:assets` fails the build when one is present. The one known exception is handled: the web and chat apps bundle transformers.js, so Vite copies ONNX Runtime's WASM (the asyncify build is about 25.6 MiB) into their `assets/`. In the browser, transformers.js loads that WASM from `cdn.jsdelivr.net` unless the app sets `TRANSFORMERS_WASM_PATH`, so the copy is never fetched, and the build removes oversize `ort-wasm*.wasm` files with a log line. To self-host ONNX Runtime instead, serve its files from a host without the limit (R2, for example) and point `TRANSFORMERS_WASM_PATH` there.
 
 ## SPA routing for the apps
 

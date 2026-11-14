@@ -1,8 +1,16 @@
-import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { afterAll, describe, expect, it } from 'vitest';
 // @ts-expect-error: plain ESM build script without type declarations
-import { buildAssets, mountPath, normalizeBasePath, rebaseHtml, spaMounts } from '../lib/assets.mjs';
+import {
+  buildAssets,
+  dropUnfetchedOrtWasm,
+  MAX_ASSET_BYTES,
+  mountPath,
+  normalizeBasePath,
+  rebaseHtml,
+  spaMounts,
+} from '../lib/assets.mjs';
 import { staticSiteFixture } from './site-fixture.ts';
 
 const root = join(import.meta.dirname, '../../..');
@@ -61,6 +69,35 @@ describe('buildAssets', () => {
     expect(() => buildAssets({ root, out: root, build: false, siteDir, log: () => {} })).toThrow(/Refusing/);
     expect(() => buildAssets({ root, out: join(root, 'site/out'), build: false, siteDir, log: () => {} })).toThrow(/Refusing/);
     expect(() => buildAssets({ root, out: '/tmp/v2c-outside', build: false, siteDir, log: () => {} })).toThrow(/Refusing/);
+  });
+});
+
+// The real ONNX Runtime builds that Vite copies into the apps (installed with transformers.js).
+const ortDist = join(root, 'node_modules/onnxruntime-web/dist');
+const ortAsyncify = join(ortDist, 'ort-wasm-simd-threaded.asyncify.wasm');
+const ortPlain = join(ortDist, 'ort-wasm-simd-threaded.wasm');
+const ortJsep = join(ortDist, 'ort-wasm-simd-threaded.jsep.wasm');
+
+describe.skipIf(![ortAsyncify, ortPlain, ortJsep].every((f) => existsSync(f)))('dropUnfetchedOrtWasm', () => {
+  it('removes only ONNX Runtime WASM above the Workers limit and keeps every other file', () => {
+    const out = tempOut();
+    const assets = join(out, 'app/assets');
+    mkdirSync(assets, { recursive: true });
+    copyFileSync(ortAsyncify, join(assets, 'ort-wasm-simd-threaded.asyncify-CxOG5pUO.wasm'));
+    copyFileSync(ortPlain, join(assets, 'ort-wasm-simd-threaded-B2x9.wasm'));
+    // An oversize file that is not ONNX Runtime stays, so the 25 MiB check still fails the build.
+    copyFileSync(ortJsep, join(assets, 'model.wasm'));
+    expect(statSync(ortAsyncify).size).toBeGreaterThan(MAX_ASSET_BYTES);
+    expect(statSync(ortPlain).size).toBeLessThanOrEqual(MAX_ASSET_BYTES);
+
+    const lines: string[] = [];
+    const dropped = dropUnfetchedOrtWasm(out, (l: string) => lines.push(l));
+    expect(dropped).toEqual(['app/assets/ort-wasm-simd-threaded.asyncify-CxOG5pUO.wasm']);
+    expect(lines).toHaveLength(1);
+    expect(lines[0]).toContain('from the CDN');
+    expect(existsSync(join(assets, 'ort-wasm-simd-threaded.asyncify-CxOG5pUO.wasm'))).toBe(false);
+    expect(existsSync(join(assets, 'ort-wasm-simd-threaded-B2x9.wasm'))).toBe(true);
+    expect(existsSync(join(assets, 'model.wasm'))).toBe(true);
   });
 });
 

@@ -36,6 +36,24 @@ const SITE_SOURCE_ENTRIES = new Set([
 /** Cloudflare Workers static assets reject files above 25 MiB. */
 export const MAX_ASSET_BYTES = 25 * 1024 * 1024;
 
+/**
+ * Vite emits ONNX Runtime's WASM next to the apps that bundle transformers.js, but in
+ * the browser transformers.js points ONNX Runtime at cdn.jsdelivr.net unless the app
+ * sets TRANSFORMERS_WASM_PATH, so these copies are never fetched. Copies above the
+ * Workers limit are removed so the deploy can go ahead; every other oversize file still
+ * fails the build. Returns the removed paths, relative to `out`.
+ */
+export function dropUnfetchedOrtWasm(out, log = () => {}) {
+  const dropped = [];
+  for (const file of walk(out)) {
+    if (!/(^|\/)ort-wasm[^/]*\.wasm$/.test(file) || statSync(file).size <= MAX_ASSET_BYTES) continue;
+    rmSync(file);
+    dropped.push(relative(out, file));
+    log(`[assets] dropped ${relative(out, file)} (over 25 MiB; browsers load ONNX Runtime WASM from the CDN)`);
+  }
+  return dropped;
+}
+
 function readJson(path) {
   return JSON.parse(readFileSync(path, 'utf8'));
 }
@@ -218,15 +236,7 @@ export function buildAssets(o) {
     }
   }
 
-  // Vite emits ONNX Runtime's WASM next to the apps, but transformers.js loads it from
-  // cdn.jsdelivr.net unless TRANSFORMERS_WASM_PATH points elsewhere, so an oversize copy is
-  // never fetched. Drop it rather than fail the deploy; any other oversize file still fails.
-  for (const file of walk(out)) {
-    if (/(^|\/)ort-wasm[^/]*\.wasm$/.test(file) && statSync(file).size > MAX_ASSET_BYTES) {
-      rmSync(file);
-      log(`[assets] dropped ${relative(out, file)} (over 25 MiB; browsers load ONNX Runtime WASM from the CDN)`);
-    }
-  }
+  dropUnfetchedOrtWasm(out, log);
   const tooBig = walk(out).filter((f) => statSync(f).size > MAX_ASSET_BYTES);
   if (tooBig.length > 0) {
     throw new Error(`Assets above 25 MiB cannot be served by Workers: ${tooBig.map((f) => relative(out, f)).join(', ')}`);
