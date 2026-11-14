@@ -11,8 +11,10 @@
  * (see SUB_APPS); docs/contracts/http-api.md lists every route and its owner.
  */
 import { askRoutes } from '@vid2context/ask/http';
+import { chaptersRoutes } from '@vid2context/chapters/http';
 import { type Ctx, formatters, type Registry, type Storage } from '@vid2context/core';
 import { exporterRoutes } from '@vid2context/exporters/http';
+import { insightsRoutes } from '@vid2context/insights/http';
 import { type JobsRouteDeps, jobsRoutes } from '@vid2context/jobs/http';
 import { libraryRoutes as collectionRoutes } from '@vid2context/library/http';
 import { type McpHttpApp, mcpHttpRoutes } from '@vid2context/mcp-http';
@@ -86,6 +88,8 @@ export const MOUNTED_SUB_APPS = [
   '@vid2context/search',
   '@vid2context/library',
   '@vid2context/ask',
+  '@vid2context/insights',
+  '@vid2context/chapters',
   '@vid2context/jobs',
   '@vid2context/mcp-http',
   '@vid2context/skips',
@@ -111,6 +115,13 @@ function subApps(services: Services, opts: AppOptions, version: string): { list:
       routes: collectionRoutes({ ...deps, kv: services.kv, ...(opts.jobs ? { jobs: opts.jobs.queue } : {}) }),
     },
     { name: '@vid2context/ask', prefix: '/api/v1', routes: askRoutes(deps) },
+    {
+      name: '@vid2context/insights',
+      prefix: '/api/v1',
+      // With the jobs queue, briefs and extractions answer 202 Job; without it they answer 200 with the result.
+      routes: insightsRoutes({ ...deps, ...(opts.jobs ? { queue: opts.jobs.queue } : {}) }),
+    },
+    { name: '@vid2context/chapters', prefix: '/api/v1', routes: chaptersRoutes(deps) },
     ...(opts.jobs ? [{ name: '@vid2context/jobs', prefix: '/api/v1', routes: jobsRoutes({ ...deps, ...opts.jobs }) }] : []),
     { name: '@vid2context/skips', prefix: '/api/v1', routes: skipsRoutes(deps) },
     { name: '@vid2context/research', prefix: '/api/v1', routes: researchRoutes(deps) },

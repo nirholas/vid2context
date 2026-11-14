@@ -14,8 +14,10 @@ import {
   renderMany,
   type SectionSelector,
   Vid2ContextError,
+  type VideoContext,
 } from '@vid2context/core';
 import { ATTRIBUTION_HEADER, SPONSORBLOCK_ATTRIBUTION, skipQueryOption } from '@vid2context/skips';
+import { translateContext } from '@vid2context/translate';
 import { type Context, Hono } from 'hono';
 import { badRequest } from '../errors.ts';
 import {
@@ -72,7 +74,7 @@ export function videoRoutes({ services, docs }: RouteDeps): Hono<AppEnv> {
     path: `${V}/transcript`,
     summary: 'The transcript rendered by a formatter.',
     description:
-      'skip= removes SponsorBlock segments (sponsor, selfpromo, ...; 1 for the defaults) from a copy of the transcript; the raw transcript stays stored. translate=1 asks for LLM translation into lang when the platform has no track in that language.',
+      "skip= removes SponsorBlock segments (sponsor, selfpromo, ...; 1 for the defaults) from a copy of the transcript; the raw transcript stays stored. translate=1 (with lang) returns the transcript in lang: the platform's own track or translation first, then LLM translation that keeps every timestamp. X-Translated-Via says which (source, platform or llm).",
     tags: ['videos'],
     params: [
       P.url,
@@ -81,23 +83,32 @@ export function videoRoutes({ services, docs }: RouteDeps): Hono<AppEnv> {
       P.mode,
       P.lang,
       { name: 'skip', description: 'Comma-separated SponsorBlock categories to remove, or 1 for the defaults.' },
-      { name: 'translate', description: '1 to allow LLM translation into lang.' },
+      { name: 'translate', description: '1 to translate into lang when the platform has no track in it. Needs lang.' },
     ],
-    responses: { '200': textResponse() },
+    responses: { '200': { ...textResponse(), headers: { 'X-Translated-Via': 'With translate=1: source, platform or llm.' } } },
   });
   app.get('/transcript', async (c) => {
     const ctx = services.ctxFor(c.req.raw);
     const formatter = readFormat(c.req.query('format'));
+    const headers: Record<string, string> = { 'content-type': formatter.mimeType };
+    const lang = c.req.query('lang') || undefined;
+    let context: VideoContext;
     if (readFlag(c.req.query('translate'))) {
-      throw badRequest(
-        'This server has no translation layer, so translate=1 is not available.',
-        'Leave out translate=1 to get the transcript in its spoken language, or pass lang=xx to pick a caption track the platform already has.',
+      if (!lang) throw badRequest('translate=1 needs a target language.', 'Add lang=xx, for example lang=de.');
+      // The source transcript is loaded (and saved) as it is; the translation is a layer next to it, never stored over it.
+      const source = await services.loadContext(
+        readUrl(c.req.query('url')),
+        { mode: readMode(c.req.query('mode')), refresh: readFlag(c.req.query('refresh')) },
+        ctx,
       );
+      const res = await translateContext(services.registry, source, { language: lang }, ctx);
+      context = { ...source, transcript: res.transcript, attempts: [...source.attempts, ...res.attempts] };
+      headers['x-translated-via'] = res.via;
+    } else {
+      context = await load(c);
     }
-    const context = await load(c);
     const skip = c.req.query('skip');
     const transcript = skip ? await skipQueryOption(context.transcript, ctx, skip) : context.transcript;
-    const headers: Record<string, string> = { 'content-type': formatter.mimeType };
     if (transcript.producer.endsWith('+skips')) headers[ATTRIBUTION_HEADER] = SPONSORBLOCK_ATTRIBUTION;
     const timestamps = readFlag(c.req.query('timestamps'));
     return c.body(render({ ...context, transcript }, formatter.id, { timestamps }), 200, headers);

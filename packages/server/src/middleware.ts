@@ -76,6 +76,7 @@ const EXPOSE_HEADERS = [
   'ETag',
   'Content-Disposition',
   'X-Data-Attribution',
+  'X-Translated-Via',
   'X-RateLimit-Limit',
   'X-RateLimit-Remaining',
 ];

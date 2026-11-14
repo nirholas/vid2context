@@ -77,11 +77,19 @@ describe('video routes', () => {
     expect(await srt.text()).toMatch(/^1\r?\n00:00:01,/);
   });
 
-  it('answers translate=1 with a hint, since no translation layer is installed', async () => {
-    const { app } = makeApp();
-    const res = await app.request('/api/v1/transcript?url=jNQXAC9IVRw&lang=fr&translate=1');
-    expect(res.status).toBe(400);
-    expect((await res.json()).error).toMatchObject({ code: 'bad-request', hint: expect.stringContaining('lang=') });
+  it('translates with translate=1 through the platform track first, keeping the stored transcript in its language', async () => {
+    const { app, fetch } = makeApp();
+    const res = await app.request('/api/v1/transcript?url=jNQXAC9IVRw&lang=de&translate=1');
+    expect(res.status).toBe(200);
+    expect(res.headers.get('x-translated-via')).toBe('platform');
+    expect((await res.text()).trim().startsWith('Also hier sind wir vor den Elefanten.')).toBe(true);
+    expect(fetch.calls.some((c) => /timedtext.*lang=de/.test(c.url))).toBe(true);
+    const saved = (await (await app.request('/api/v1/library/youtube%3AjNQXAC9IVRw')).json()) as VideoContext;
+    expect(saved.transcript.language).toBe('en');
+
+    const noLang = await app.request('/api/v1/transcript?url=jNQXAC9IVRw&translate=1');
+    expect(noLang.status).toBe(400);
+    expect((await noLang.json()).error.hint).toContain('lang=');
   });
 
   it('removes SponsorBlock segments with skip= and credits SponsorBlock, keeping the stored transcript whole', async () => {
@@ -272,6 +280,9 @@ describe('openapi.json', () => {
       'get /api/v1/models',
       'post /api/v1/chat',
       'get /api/v1/search',
+      'post /api/v1/chapters',
+      'post /api/v1/briefs',
+      'post /api/v1/extract',
       'post /mcp',
     ]) {
       expect(listed).toContain(route);
