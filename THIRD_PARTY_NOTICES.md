@@ -14,12 +14,12 @@ Add an entry when you copy or port code: the project, its URL, its license, the 
 - Non-commercial: a paid hosted plan must not depend on this data. `VID2CONTEXT_SPONSORBLOCK=0` turns it off.
 - Files: `packages/skips/src/` (lookups), `packages/skips/test/fixtures/skipSegments-*.json` (recorded API responses).
 
-### yt-dlp extractors (Google Drive, Dropbox, SharePoint)
+### yt-dlp extractors (Google Drive, Dropbox, SharePoint, Bilibili)
 
-- Source: https://github.com/yt-dlp/yt-dlp, `yt_dlp/extractor/googledrive.py`, `dropbox.py` and `sharepoint.py` (master, read 2026-11-14).
+- Source: https://github.com/yt-dlp/yt-dlp, `yt_dlp/extractor/googledrive.py`, `dropbox.py`, `sharepoint.py` and `bilibili.py` (master, read 2026-11-14).
 - License: The Unlicense (public domain dedication). No copyright line is required; credited here anyway.
-- What was ported (logic re-written in TypeScript, no code copied verbatim): Google Drive's direct download endpoint and the virus-scan "Download anyway" form flow (`#download-form` action plus hidden inputs); Dropbox's `dl=1` download of share links; the URL shapes for Drive, Dropbox and SharePoint links.
-- Files: `providers/share-links/src/gdrive.ts`, `providers/share-links/src/dropbox.ts`, `providers/share-links/src/url.ts`.
+- What was ported (logic re-written in TypeScript, no code copied verbatim): Google Drive's direct download endpoint and the virus-scan "Download anyway" form flow (`#download-form` action plus hidden inputs); Dropbox's `dl=1` download of share links; the URL shapes for Drive, Dropbox and SharePoint links. For Bilibili: the WBI request signature (mixin key table, character filter, sorted query, MD5 of query plus key) and the API endpoints for video info, play URLs and subtitles.
+- Files: `providers/share-links/src/gdrive.ts`, `providers/share-links/src/dropbox.ts`, `providers/share-links/src/url.ts`; `providers/bilibili/src/wbi.ts`, `providers/bilibili/src/api.ts`.
 
 ### OpenAI Whisper language identification and Transformers.js
 
