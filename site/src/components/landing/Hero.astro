@@ -58,9 +58,7 @@ const app = withBase('/app/');
     position: absolute;
     inset: -20% -10% auto;
     height: 38rem;
-    background:
-      radial-gradient(40rem 22rem at 50% 0%, var(--site-glow), transparent 70%),
-      radial-gradient(22rem 14rem at 70% 10%, color-mix(in srgb, var(--v2c-accent-2) 14%, transparent), transparent 70%);
+    background: radial-gradient(40rem 22rem at 50% 0%, var(--site-glow), transparent 70%);
     pointer-events: none;
   }
   .hero-inner {
@@ -128,7 +126,7 @@ const app = withBase('/app/');
   .hero-box:focus-within {
     border-color: var(--v2c-accent);
     box-shadow:
-      0 0 0 3px color-mix(in srgb, var(--v2c-accent) 30%, transparent),
+      0 0 0 3px color-mix(in srgb, var(--v2c-accent) 22%, transparent),
       var(--v2c-shadow);
   }
   .hero-icon {

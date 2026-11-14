@@ -46,7 +46,9 @@ export const steps: Step[] = [
     body: `A link from ${nativeSources
       .filter((s) => s.name !== 'Local files')
       .map((s) => SENTENCE_NAME[s.name] ?? s.name)
-      .join(', ')}${ytdlpSources.length ? ' or any other site yt-dlp supports' : ''}, or an audio or video file from your machine.`,
+      .join(
+        ', ',
+      )}${ytdlpSources.length ? ' or any other site yt-dlp supports' : ''}, or an audio or video file from your machine.`,
   },
   {
     n: '02',
@@ -69,7 +71,12 @@ export const chain = [
     body: `Download the audio and transcribe it through ${allRungs().filter((r) => r.kind === 'stt').length} Whisper-class rungs.`,
   },
   ...(videoRungs > 0
-    ? [{ title: 'Video model', body: `A multimodal model watches the video (${videoRungs} rungs), so slides and on-screen text are captured.` }]
+    ? [
+        {
+          title: 'Video model',
+          body: `A multimodal model watches the video (${videoRungs} rungs), so slides and on-screen text are captured.`,
+        },
+      ]
     : []),
 ];
 
@@ -143,7 +150,9 @@ export const faq: Faq[] = [
     q: 'Which sites work?',
     a:
       `${siteNames}.` +
-      (data.ytdlpExtractors ? ` Anything else that yt-dlp supports (${data.ytdlpExtractors.toLocaleString('en-US')} sites) works through the yt-dlp provider.` : ''),
+      (data.ytdlpExtractors
+        ? ` Anything else that yt-dlp supports (${data.ytdlpExtractors.toLocaleString('en-US')} sites) works through the yt-dlp provider.`
+        : ''),
   },
   {
     q: 'Why does a YouTube video fail on the hosted demo?',

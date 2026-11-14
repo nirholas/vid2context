@@ -51,7 +51,12 @@ function printConfig(shape: 'mcpServers' | 'servers'): string {
 /** The JSON block for clients that read an `mcpServers` file, for the current install mode. */
 function mcpServersSteps(file: string): InstallStep[] {
   if (npmPublished) {
-    return [{ text: `Add the server to ${file}. Merge it into \`mcpServers\` if the file already has other servers.`, code: { lang: 'json', text: i.mcpServersJson } }];
+    return [
+      {
+        text: `Add the server to ${file}. Merge it into \`mcpServers\` if the file already has other servers.`,
+        code: { lang: 'json', text: i.mcpServersJson },
+      },
+    ];
   }
   return [
     CLONE_STEP,
@@ -75,13 +80,22 @@ export const clients: Client[] = [
     vendorDocs: 'https://code.claude.com/docs/en/mcp',
     steps: npmPublished
       ? [
-          { text: 'Add the server for your user, so it is available in every project:', code: { lang: 'sh', text: i.claudeCode } },
+          {
+            text: 'Add the server for your user, so it is available in every project:',
+            code: { lang: 'sh', text: i.claudeCode },
+          },
           {
             text: 'With an optional key (another option has to sit between `--env` and the name):',
             code: { lang: 'sh', text: i.claudeCodeWithKey },
           },
         ]
-      : [CLONE_STEP, { text: 'Add the server from the repo root:', code: { lang: 'sh', text: `claude mcp add vid2context -- ${SOURCE_COMMAND_LINE}` } }],
+      : [
+          CLONE_STEP,
+          {
+            text: 'Add the server from the repo root:',
+            code: { lang: 'sh', text: `claude mcp add vid2context -- ${SOURCE_COMMAND_LINE}` },
+          },
+        ],
     verify: 'Run `claude mcp list`, or type `/mcp` inside Claude Code: vid2context shows as connected.',
   },
   {
@@ -113,7 +127,10 @@ export const clients: Client[] = [
               { label: 'Add to Cursor (web link)', href: i.cursorInstallUrl },
             ],
           },
-          { text: 'Or add it by hand to `~/.cursor/mcp.json` (all projects) or `.cursor/mcp.json` (one project):', code: { lang: 'json', text: i.mcpServersJson } },
+          {
+            text: 'Or add it by hand to `~/.cursor/mcp.json` (all projects) or `.cursor/mcp.json` (one project):',
+            code: { lang: 'json', text: i.mcpServersJson },
+          },
         ]
       : mcpServersSteps('`~/.cursor/mcp.json` (all projects) or `.cursor/mcp.json` (one project)'),
     verify: 'Cursor Settings, MCP: vid2context has a green dot and lists its tools. Use it from the Agent chat.',
@@ -132,7 +149,10 @@ export const clients: Client[] = [
               { label: 'Install in VS Code Insiders', href: i.vscodeInsidersInstallUrl },
             ],
           },
-          { text: 'Or add it to `.vscode/mcp.json` in a workspace, or to your user profile\'s `mcp.json`:', code: { lang: 'json', text: i.vscodeMcpJson } },
+          {
+            text: "Or add it to `.vscode/mcp.json` in a workspace, or to your user profile's `mcp.json`:",
+            code: { lang: 'json', text: i.vscodeMcpJson },
+          },
         ]
       : [
           CLONE_STEP,
@@ -143,7 +163,10 @@ export const clients: Client[] = [
               text: 'code --add-mcp "{\\"name\\":\\"vid2context\\",\\"command\\":\\"$PWD/node_modules/.bin/tsx\\",\\"args\\":[\\"$PWD/packages/mcp/src/bin.ts\\"]}"',
             },
           },
-          { text: 'Or print a `.vscode/mcp.json` block with this clone\'s paths:', code: { lang: 'sh', text: printConfig('servers') } },
+          {
+            text: "Or print a `.vscode/mcp.json` block with this clone's paths:",
+            code: { lang: 'sh', text: printConfig('servers') },
+          },
         ],
     verify: 'Open Copilot Chat in Agent mode and click the tools icon: vid2context and its tools are listed.',
   },
@@ -154,7 +177,13 @@ export const clients: Client[] = [
     vendorDocs: 'https://developers.openai.com/codex/mcp',
     steps: npmPublished
       ? [{ text: 'Add the server. Codex writes it to `~/.codex/config.toml`.', code: { lang: 'sh', text: i.codex } }]
-      : [CLONE_STEP, { text: 'Add the server from the repo root. Codex writes it to `~/.codex/config.toml`.', code: { lang: 'sh', text: `codex mcp add vid2context -- ${SOURCE_COMMAND_LINE}` } }],
+      : [
+          CLONE_STEP,
+          {
+            text: 'Add the server from the repo root. Codex writes it to `~/.codex/config.toml`.',
+            code: { lang: 'sh', text: `codex mcp add vid2context -- ${SOURCE_COMMAND_LINE}` },
+          },
+        ],
     verify: 'Run `codex mcp list`, or `/mcp` inside a Codex session.',
   },
   {
@@ -178,7 +207,9 @@ export const clients: Client[] = [
     short: 'Add one block to mcp_config.json.',
     vendorDocs: 'https://docs.windsurf.com/windsurf/cascade/mcp',
     steps: [
-      { text: 'In Cascade, open the MCP servers panel and choose to edit the raw config. The file is `~/.codeium/windsurf/mcp_config.json`.' },
+      {
+        text: 'In Cascade, open the MCP servers panel and choose to edit the raw config. The file is `~/.codeium/windsurf/mcp_config.json`.',
+      },
       ...mcpServersSteps('`mcp_config.json`'),
       KEY_NOTE,
     ],
@@ -190,7 +221,9 @@ export const clients: Client[] = [
     short: 'Add one block to cline_mcp_settings.json.',
     vendorDocs: 'https://docs.cline.bot/mcp/configuring-mcp-servers',
     steps: [
-      { text: 'Click the MCP Servers icon in the Cline panel, open Configure, then Configure MCP Servers. That opens `cline_mcp_settings.json`.' },
+      {
+        text: 'Click the MCP Servers icon in the Cline panel, open Configure, then Configure MCP Servers. That opens `cline_mcp_settings.json`.',
+      },
       ...mcpServersSteps('`cline_mcp_settings.json`'),
       KEY_NOTE,
     ],
@@ -203,7 +236,10 @@ export const clients: Client[] = [
     vendorDocs: 'https://lmstudio.ai/docs/app/mcp',
     steps: npmPublished
       ? [
-          { text: 'Click to add it. LM Studio opens and asks you to confirm.', buttons: [{ label: 'Add to LM Studio', href: i.lmStudioDeeplink }] },
+          {
+            text: 'Click to add it. LM Studio opens and asks you to confirm.',
+            buttons: [{ label: 'Add to LM Studio', href: i.lmStudioDeeplink }],
+          },
           { text: 'Or open the Program tab, Install, Edit mcp.json, and add:', code: { lang: 'json', text: i.mcpServersJson } },
         ]
       : [{ text: 'Open the Program tab in the right sidebar, then Install, Edit mcp.json.' }, ...mcpServersSteps('`mcp.json`')],
@@ -216,13 +252,21 @@ export const clients: Client[] = [
     vendorDocs: 'https://block.github.io/goose/docs/getting-started/using-extensions',
     steps: npmPublished
       ? [
-          { text: 'Click to add the extension. Goose Desktop opens and asks you to confirm.', buttons: [{ label: 'Add to Goose', href: i.gooseDeeplink }] },
-          { text: 'Or, in the Goose CLI, run `goose configure`, choose Add Extension, then Command-line Extension, and enter this command:', code: { lang: 'sh', text: i.mcpCommandLine } },
+          {
+            text: 'Click to add the extension. Goose Desktop opens and asks you to confirm.',
+            buttons: [{ label: 'Add to Goose', href: i.gooseDeeplink }],
+          },
+          {
+            text: 'Or, in the Goose CLI, run `goose configure`, choose Add Extension, then Command-line Extension, and enter this command:',
+            code: { lang: 'sh', text: i.mcpCommandLine },
+          },
         ]
       : [
           CLONE_STEP,
-          { text: 'Print the start command with this clone\'s paths:', code: { lang: 'sh', text: `echo ${SOURCE_COMMAND_LINE}` } },
-          { text: 'Run `goose configure`, choose Add Extension, then Command-line Extension, name it `vid2context` and paste that command.' },
+          { text: "Print the start command with this clone's paths:", code: { lang: 'sh', text: `echo ${SOURCE_COMMAND_LINE}` } },
+          {
+            text: 'Run `goose configure`, choose Add Extension, then Command-line Extension, name it `vid2context` and paste that command.',
+          },
         ],
     verify: 'Start `goose session` and ask which extensions are enabled, or open Extensions in Goose Desktop.',
   },
@@ -242,7 +286,9 @@ export const chatgpt = {
         text: `${data.npm.cliPublished ? `npx -y ${data.npm.cliPackage}` : 'npm run -s cli --'} pack "https://www.youtube.com/watch?v=jNQXAC9IVRw" > context.md`,
       },
     },
-    { text: 'In ChatGPT, open a Project (or edit a custom GPT), add `context.md` as a file, and ask about the video. Timestamps in the pack let it cite moments.' },
+    {
+      text: 'In ChatGPT, open a Project (or edit a custom GPT), add `context.md` as a file, and ask about the video. Timestamps in the pack let it cite moments.',
+    },
   ] satisfies InstallStep[],
 };
 

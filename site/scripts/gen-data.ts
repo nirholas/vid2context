@@ -15,8 +15,8 @@ import { fileURLToPath } from 'node:url';
 import {
   buildBundle,
   createContext,
-  formatters,
   formatTimestamp,
+  formatters,
   type Provider,
   Registry,
   type Rung,
@@ -47,7 +47,8 @@ interface LoadedRegistry {
 async function loadRegistry(): Promise<LoadedRegistry> {
   const generated = readFileSync(join(root, 'packages/registry/src/generated/node.ts'), 'utf8');
   const listMatch = generated.match(/providerPackages: string\[\] = (\[.*\]);/);
-  if (!listMatch?.[1]) throw new Error('packages/registry/src/generated/node.ts has no providerPackages list. Run `npm run gen`.');
+  if (!listMatch?.[1])
+    throw new Error('packages/registry/src/generated/node.ts has no providerPackages list. Run `npm run gen`.');
   const packages = JSON.parse(listMatch[1]) as string[];
   try {
     const mod = await import('@vid2context/registry/node');
@@ -124,7 +125,11 @@ function ytdlpExtractorCount(): number | null {
   for (const bin of candidates) {
     if (!existsSync(bin)) continue;
     try {
-      const out = execFileSync(bin, ['--list-extractors'], { encoding: 'utf8', timeout: 60_000, stdio: ['ignore', 'pipe', 'ignore'] });
+      const out = execFileSync(bin, ['--list-extractors'], {
+        encoding: 'utf8',
+        timeout: 60_000,
+        stdio: ['ignore', 'pipe', 'ignore'],
+      });
       const n = out.split('\n').filter((l) => l.trim() && !l.includes('(CURRENTLY BROKEN)')).length;
       return n > 0 ? n : null;
     } catch {
@@ -148,10 +153,13 @@ interface DeployTarget {
 
 /** A deploy target is listed only when the repo has something for it at build time. */
 function deployTargets(): DeployTarget[] {
-  const scripts = (JSON.parse(readFileSync(join(root, 'package.json'), 'utf8')) as { scripts?: Record<string, string> }).scripts ?? {};
+  const scripts =
+    (JSON.parse(readFileSync(join(root, 'package.json'), 'utf8')) as { scripts?: Record<string, string> }).scripts ?? {};
   const doc = (name: string) => (existsSync(join(root, `docs/deploy/${name}.md`)) ? `docs/deploy/${name}.md` : null);
   const dockerComment = existsSync(join(root, 'Dockerfile'))
-    ? (readFileSync(join(root, 'Dockerfile'), 'utf8').match(/^#\s+(docker build[^\n]+)$/m)?.[1]?.trim() ?? null)
+    ? (readFileSync(join(root, 'Dockerfile'), 'utf8')
+        .match(/^#\s+(docker build[^\n]+)$/m)?.[1]
+        ?.trim() ?? null)
     : null;
   const candidates: (DeployTarget | null)[] = [
     existsSync(join(root, 'deploy/containers/compose.yaml'))
@@ -166,7 +174,13 @@ function deployTargets(): DeployTarget[] {
               ?.trim() ?? null,
         }
       : existsSync(join(root, 'Dockerfile'))
-        ? { name: 'Docker', summary: 'A stdio MCP server image built from source.', evidence: 'Dockerfile', doc: doc('docker'), command: dockerComment }
+        ? {
+            name: 'Docker',
+            summary: 'A stdio MCP server image built from source.',
+            evidence: 'Dockerfile',
+            doc: doc('docker'),
+            command: dockerComment,
+          }
         : null,
     existsSync(join(root, 'wrangler.jsonc'))
       ? {
@@ -190,7 +204,11 @@ function deployTargets(): DeployTarget[] {
       ? {
           name: 'Railway',
           summary: 'Deploy the server container on Railway.',
-          evidence: existsSync(join(root, 'railway.json')) ? 'railway.json' : existsSync(join(root, 'railway.toml')) ? 'railway.toml' : 'docs/deploy/railway.md',
+          evidence: existsSync(join(root, 'railway.json'))
+            ? 'railway.json'
+            : existsSync(join(root, 'railway.toml'))
+              ? 'railway.toml'
+              : 'docs/deploy/railway.md',
           doc: doc('railway'),
           command: null,
         }
@@ -199,7 +217,9 @@ function deployTargets(): DeployTarget[] {
       ? {
           name: 'GitHub Pages',
           summary: 'A client-only build: the apps run in the browser with your own keys or local models.',
-          evidence: existsSync(join(root, 'deploy/serverless/github-pages')) ? 'deploy/serverless/github-pages' : 'docs/deploy/github-pages.md',
+          evidence: existsSync(join(root, 'deploy/serverless/github-pages'))
+            ? 'deploy/serverless/github-pages'
+            : 'docs/deploy/github-pages.md',
           doc: doc('github-pages'),
           command: scripts['deploy:pages'] ? 'npm run deploy:pages' : null,
         }
@@ -278,7 +298,11 @@ async function replayPlaylist(registry: Registry): Promise<{ url: string; title:
           const { context: _context, ...body } = JSON.parse(String(call.body)) as Record<string, unknown>;
           const hit = recorded.find((r) => r.endpoint === endpoint && isDeepStrictEqual(r.body, body));
           if (!hit) throw new Error(`no recording for ${endpoint}`);
-          return { status: hit.status, headers: { 'content-type': 'application/json' }, body: readFileSync(join(dir, hit.file), 'utf8') };
+          return {
+            status: hit.status,
+            headers: { 'content-type': 'application/json' },
+            body: readFileSync(join(dir, hit.file), 'utf8'),
+          };
         },
       },
     ]);
@@ -362,7 +386,9 @@ async function githubStars(): Promise<number | null> {
 async function npmVersion(name: string, bin: string): Promise<string | null> {
   if (process.env.SITE_OFFLINE === '1') return null;
   try {
-    const res = await fetch(`https://registry.npmjs.org/${encodeURIComponent(name)}/latest`, { signal: AbortSignal.timeout(8000) });
+    const res = await fetch(`https://registry.npmjs.org/${encodeURIComponent(name)}/latest`, {
+      signal: AbortSignal.timeout(8000),
+    });
     if (!res.ok) return null;
     const body = (await res.json()) as { version?: unknown; bin?: unknown };
     if (typeof body.version !== 'string' || body.version.includes('-')) {
@@ -436,7 +462,12 @@ async function main(): Promise<void> {
   const gwagon = readContext('youtube-cCPsdFdlshc.json');
   const bundle = await buildBundle([zoo], { createdAt: new Date(zoo.transcript.createdAt) });
   const decoder = new TextDecoder();
-  const bundleFiles = bundle.files.map((f) => ({ path: f.path, mimeType: f.mimeType, bytes: f.bytes.length, text: decoder.decode(f.bytes) }));
+  const bundleFiles = bundle.files.map((f) => ({
+    path: f.path,
+    mimeType: f.mimeType,
+    bytes: f.bytes.length,
+    text: decoder.decode(f.bytes),
+  }));
 
   const whisper = JSON.parse(
     readFileSync(join(root, 'providers/stt-openai-compatible/test/fixtures/ovh-whisper-large-v3-turbo.verbose.json'), 'utf8'),

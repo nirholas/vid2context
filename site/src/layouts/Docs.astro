@@ -1,7 +1,7 @@
 ---
+import { withBase } from '../lib/base.ts';
 /** Docs pages: sidebar, article, in-page table of contents. */
 import { type DocPage, docPages, SECTIONS, sectionLabel } from '../lib/docs.ts';
-import { withBase } from '../lib/base.ts';
 import { breadcrumbNode } from '../lib/seo.ts';
 import Base from './Base.astro';
 
@@ -187,7 +187,7 @@ const copyScript = `document.addEventListener('click',function(e){var b=e.target
   .docs-section {
     margin-top: 1.5rem;
     margin-bottom: 0.4rem;
-    color: var(--site-link);
+    color: var(--v2c-muted);
     font-size: 0.8125rem;
     font-weight: 600;
   }
@@ -203,6 +203,8 @@ const copyScript = `document.addEventListener('click',function(e){var b=e.target
   }
   .docs-meta a {
     color: var(--site-link);
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
   .docs-pager {
     display: grid;

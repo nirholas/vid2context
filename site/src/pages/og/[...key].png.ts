@@ -6,7 +6,11 @@ import { ogImageFor } from '../../lib/seo.ts';
 
 export function getStaticPaths() {
   return sitePages().map((page) => ({
-    params: { key: ogImageFor(page.url).replace(/^\/og\//, '').replace(/\.png$/, '') },
+    params: {
+      key: ogImageFor(page.url)
+        .replace(/^\/og\//, '')
+        .replace(/\.png$/, ''),
+    },
     props: { page },
   }));
 }

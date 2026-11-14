@@ -4,7 +4,7 @@
  * anchors written for GitHub keep working, and a link hook that turns repo
  * paths into site URLs.
  */
-import { Marked, type Token, type Tokens, TextRenderer } from 'marked';
+import { Marked, TextRenderer, type Token, type Tokens } from 'marked';
 import { bundledLanguages, createHighlighter } from 'shiki';
 
 export interface Heading {
@@ -46,7 +46,22 @@ const LANGS = [
 const highlighter = await createHighlighter({ themes: ['github-dark-default', 'github-light-default'], langs: [...LANGS] });
 const loaded = new Set<string>(highlighter.getLoadedLanguages());
 
-const ALIASES: Record<string, string> = { sh: 'bash', shell: 'bash', zsh: 'bash', console: 'shellsession', ts: 'typescript', js: 'javascript', yml: 'yaml', md: 'markdown', py: 'python', env: 'ini', text: 'text', txt: 'text', srt: 'text', vtt: 'text' };
+const ALIASES: Record<string, string> = {
+  sh: 'bash',
+  shell: 'bash',
+  zsh: 'bash',
+  console: 'shellsession',
+  ts: 'typescript',
+  js: 'javascript',
+  yml: 'yaml',
+  md: 'markdown',
+  py: 'python',
+  env: 'ini',
+  text: 'text',
+  txt: 'text',
+  srt: 'text',
+  vtt: 'text',
+};
 
 function langOf(info: string | undefined): string {
   const raw = (info ?? '').trim().split(/\s+/)[0]?.toLowerCase() ?? '';
@@ -57,8 +72,9 @@ function langOf(info: string | undefined): string {
 }
 
 const ENTITIES: Record<string, string> = { '&amp;': '&', '&lt;': '<', '&gt;': '>', '&quot;': '"', '&#39;': "'" };
-const unescape = (s: string) => s.replace(/&(amp|lt|gt|quot|#39);/g, (m) => ENTITIES[m] ?? m);
-const escapeHtml = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c] ?? c);
+const decodeEntities = (s: string) => s.replace(/&(amp|lt|gt|quot|#39);/g, (m) => ENTITIES[m] ?? m);
+const escapeHtml = (s: string) =>
+  s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c] ?? c);
 
 /** Highlighted code as HTML, the same markup the docs and the landing page use. */
 export function highlight(code: string, lang: string): string {
@@ -87,9 +103,7 @@ export class Slugger {
 }
 
 function plainOf(tokens: Token[], parser: { parseInline(t: Token[], r?: TextRenderer): string }): string {
-  return unescape(parser.parseInline(tokens, new TextRenderer()))
-    .replace(/\s+/g, ' ')
-    .trim();
+  return decodeEntities(parser.parseInline(tokens, new TextRenderer())).replace(/\s+/g, ' ').trim();
 }
 
 function firstParagraph(tokens: Token[]): string {
@@ -162,7 +176,9 @@ export function renderMarkdown(source: string, opts: RenderOptions = {}): Render
       t.href = opts.rewriteHref(t.href) ?? t.href;
     }
   });
-  const html = (md.parser(tokens) as string).replace(/<table>/g, '<div class="table-wrap"><table>').replace(/<\/table>/g, '</table></div>');
+  const html = (md.parser(tokens) as string)
+    .replace(/<table>/g, '<div class="table-wrap"><table>')
+    .replace(/<\/table>/g, '</table></div>');
   const title = headings.find((h) => h.depth === 1)?.text ?? '';
   return { html, headings, title, description: clip(firstParagraph(tokens)) };
 }

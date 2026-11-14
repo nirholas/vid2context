@@ -31,47 +31,40 @@
 }
 
 /*
- * Site-only values that depend on the theme. Text on the gradient button is
- * black in dark mode (5.7:1 or better on both ends) and white on a slightly
- * darkened gradient in light mode (5:1 or better), so it passes WCAG AA at
- * any size. Tier colors get a text-safe variant for the light theme.
+ * Site-only values that depend on the theme. The palette is monochrome
+ * (SHARED-CONTRACTS section 6): the accent is white in dark mode and
+ * near-black in light mode, and color is kept for status and provider tiers.
+ * Tier colors get a text-safe variant for the light theme.
  */
 :root {
-  --site-btn-fg: #000000;
-  --site-btn-shade: transparent;
+  --site-btn-fg: var(--v2c-accent-fg);
+  --site-glow: rgb(255 255 255 / 0.08);
+  --site-link: var(--v2c-text);
   --site-tier-local-text: var(--v2c-tier-local);
   --site-tier-free-text: #60a5fa;
   --site-tier-keyless-text: #c084fc;
   --site-tier-paid-text: var(--v2c-tier-paid);
-  --site-glow: rgb(59 130 246 / 0.18);
   --site-success-text: var(--v2c-success);
   --site-danger-text: #f87171;
-  --site-link: #60a5fa;
 }
 :root[data-theme="light"] {
-  --site-btn-fg: #ffffff;
-  --site-btn-shade: rgb(0 0 0 / 0.2);
+  --site-glow: rgb(0 0 0 / 0.05);
   --site-tier-local-text: #15803d;
   --site-tier-free-text: #1d4ed8;
   --site-tier-keyless-text: #7e22ce;
   --site-tier-paid-text: #b45309;
-  --site-glow: rgb(37 99 235 / 0.1);
   --site-success-text: #15803d;
   --site-danger-text: #b91c1c;
-  --site-link: var(--v2c-accent);
 }
 @media (prefers-color-scheme: light) {
   :root[data-theme="system"] {
-    --site-btn-fg: #ffffff;
-    --site-btn-shade: rgb(0 0 0 / 0.2);
+    --site-glow: rgb(0 0 0 / 0.05);
     --site-tier-local-text: #15803d;
     --site-tier-free-text: #1d4ed8;
     --site-tier-keyless-text: #7e22ce;
     --site-tier-paid-text: #b45309;
-    --site-glow: rgb(37 99 235 / 0.1);
     --site-success-text: #15803d;
     --site-danger-text: #b91c1c;
-    --site-link: var(--v2c-accent);
   }
 }
 
@@ -91,7 +84,7 @@
     -webkit-font-smoothing: antialiased;
   }
   ::selection {
-    background: color-mix(in srgb, var(--v2c-accent) 35%, transparent);
+    background: color-mix(in srgb, var(--v2c-accent) 25%, transparent);
   }
   :focus-visible {
     outline: 2px solid var(--v2c-accent);
@@ -104,6 +97,7 @@
   samp {
     font-family: var(--v2c-font-mono);
   }
+  /* biome-ignore-start lint/complexity/noImportantStyles: reduced motion must win over every component's transitions */
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
@@ -114,6 +108,7 @@
       scroll-behavior: auto !important;
     }
   }
+  /* biome-ignore-end lint/complexity/noImportantStyles: reduced motion must win over every component's transitions */
 }
 
 @layer components {
@@ -172,15 +167,11 @@
   .btn-primary {
     border: 0;
     color: var(--site-btn-fg);
-    background:
-      linear-gradient(var(--site-btn-shade), var(--site-btn-shade)),
-      var(--v2c-gradient);
+    background: var(--v2c-gradient);
   }
   .btn-primary:hover {
-    background:
-      linear-gradient(var(--site-btn-shade), var(--site-btn-shade)),
-      var(--v2c-gradient);
-    filter: brightness(1.08);
+    background: var(--v2c-gradient);
+    filter: brightness(0.92);
   }
   .btn:disabled {
     opacity: 0.6;
@@ -198,15 +189,7 @@
     font-size: 0.8125rem;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    color: var(--v2c-accent-2);
-  }
-  :root[data-theme="light"] .eyebrow {
-    color: #0e7490;
-  }
-  @media (prefers-color-scheme: light) {
-    :root[data-theme="system"] .eyebrow {
-      color: #0e7490;
-    }
+    color: var(--v2c-muted);
   }
 
   .gradient-text {
@@ -269,6 +252,7 @@
     overflow-x: auto;
     font-size: 0.8125rem;
     line-height: 1.7;
+    /* biome-ignore lint/complexity/noImportantStyles: shiki writes an inline background that the theme surface replaces */
     background: transparent !important;
   }
   .code pre:focus-visible {

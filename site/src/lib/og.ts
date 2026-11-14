@@ -22,9 +22,10 @@ const h = (type: string, style: Record<string, unknown>, children?: unknown, ext
   props: { style, children, ...extra },
 });
 
-export async function ogImage(opts: { title: string; description: string; kicker: string }): Promise<Uint8Array> {
+export async function ogImage(opts: { title: string; description: string; kicker: string }): Promise<Uint8Array<ArrayBuffer>> {
   const title = opts.title.length > 90 ? `${opts.title.slice(0, 87).replace(/\s+\S*$/, '')}...` : opts.title;
-  const description = opts.description.length > 150 ? `${opts.description.slice(0, 147).replace(/\s+\S*$/, '')}...` : opts.description;
+  const description =
+    opts.description.length > 150 ? `${opts.description.slice(0, 147).replace(/\s+\S*$/, '')}...` : opts.description;
   const tree = h(
     'div',
     {
@@ -35,7 +36,7 @@ export async function ogImage(opts: { title: string; description: string; kicker
       justifyContent: 'space-between',
       padding: '64px 72px',
       background: '#000000',
-      backgroundImage: 'radial-gradient(900px 420px at 85% -10%, rgba(59,130,246,0.35), rgba(0,0,0,0) 70%)',
+      backgroundImage: 'radial-gradient(900px 420px at 85% -10%, rgba(255,255,255,0.14), rgba(0,0,0,0) 70%)',
       color: '#fafafa',
       fontFamily: 'Inter',
     },
@@ -45,17 +46,17 @@ export async function ogImage(opts: { title: string; description: string; kicker
         h('div', { fontSize: 34, fontWeight: 700, letterSpacing: -0.5 }, 'vid2context'),
         h(
           'div',
-          { marginLeft: 12, padding: '6px 16px', border: '1px solid #3a3a42', borderRadius: 999, fontSize: 22, color: '#a1a1aa' },
+          { marginLeft: 12, padding: '6px 16px', border: '1px solid #3d3d3d', borderRadius: 999, fontSize: 22, color: '#a3a3a3' },
           opts.kicker,
         ),
       ]),
       h('div', { display: 'flex', flexDirection: 'column', gap: 22 }, [
         h('div', { fontSize: title.length > 50 ? 60 : 72, fontWeight: 700, lineHeight: 1.08, letterSpacing: -2 }, title),
-        description ? h('div', { fontSize: 28, lineHeight: 1.4, color: '#a1a1aa' }, description) : h('div', {}, ''),
+        description ? h('div', { fontSize: 28, lineHeight: 1.4, color: '#a3a3a3' }, description) : h('div', {}, ''),
       ]),
-      h('div', { display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 24, color: '#a1a1aa' }, [
+      h('div', { display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 24, color: '#a3a3a3' }, [
         h('div', {}, 'vid2context.com'),
-        h('div', { width: 220, height: 6, borderRadius: 999, backgroundImage: 'linear-gradient(90deg, #3b82f6, #22d3ee)' }, ''),
+        h('div', { width: 220, height: 6, borderRadius: 999, backgroundImage: 'linear-gradient(90deg, #ffffff, #d4d4d4)' }, ''),
       ]),
     ],
   );

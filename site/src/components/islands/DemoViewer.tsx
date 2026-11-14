@@ -18,7 +18,12 @@ interface Props {
 }
 
 export default function DemoViewer({ files, initial, zipName, zipSize }: Props) {
-  const [active, setActive] = useState(Math.max(0, files.findIndex((f) => f.path === initial)));
+  const [active, setActive] = useState(
+    Math.max(
+      0,
+      files.findIndex((f) => f.path === initial),
+    ),
+  );
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
   const base = useId();
   const file = files[active] ?? files[0];

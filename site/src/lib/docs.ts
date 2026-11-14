@@ -73,7 +73,12 @@ function repoDocs(): RepoDoc[] {
     data.docSources
       .filter((p) => posix.dirname(p) === dir)
       .map((p, n) => ({ path: p, slug: `${dir.replace(/^docs\//, '')}/${posix.basename(p, '.md')}`, section, order: n }));
-  return [...fixed, ...fromDir('docs/guides', 'guides'), ...fromDir('docs/deploy', 'deploy'), ...fromDir('docs/contracts', 'contracts')];
+  return [
+    ...fixed,
+    ...fromDir('docs/guides', 'guides'),
+    ...fromDir('docs/deploy', 'deploy'),
+    ...fromDir('docs/contracts', 'contracts'),
+  ];
 }
 
 const REPO_DOCS = repoDocs();
@@ -151,7 +156,13 @@ function parseFrontmatter(text: string, file: string): { fm: Frontmatter; body: 
   }
   if (!fields.title || !fields.description) throw new Error(`${file} needs a title and a description.`);
   return {
-    fm: { requires: fields.requires, title: fields.title, label: fields.label, description: fields.description, order: Number(fields.order ?? 99) },
+    fm: {
+      requires: fields.requires,
+      title: fields.title,
+      label: fields.label,
+      description: fields.description,
+      order: Number(fields.order ?? 99),
+    },
     body: m[2] ?? '',
   };
 }
@@ -288,7 +299,9 @@ export function docPages(): DocPage[] {
   if (pages) return pages;
   const all = [...REPO_DOCS.map(repoPage), ...authoredPages(), ...clients.map((c, n) => clientPage(c.slug, n))];
   const order = new Map(SECTIONS.map((s, n) => [s.id, n]));
-  all.sort((a, b) => (order.get(a.section) ?? 0) - (order.get(b.section) ?? 0) || a.order - b.order || a.label.localeCompare(b.label));
+  all.sort(
+    (a, b) => (order.get(a.section) ?? 0) - (order.get(b.section) ?? 0) || a.order - b.order || a.label.localeCompare(b.label),
+  );
   pages = all;
   return all;
 }

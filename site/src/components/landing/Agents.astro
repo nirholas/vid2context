@@ -89,7 +89,7 @@ const chatgptCmd = chatgpt.steps.find((s) => s.code)?.code;
           <h3>
             {tools.length} tools your agent can call
           </h3>
-          <p class="tools-sub">Read from the MCP server itself when this site was built.</p>
+          <p class="tools-sub">Listed by the MCP server in the repo when this site was built.</p>
           <ul>
             {tools.map((t) => (
               <li>
@@ -144,14 +144,18 @@ const chatgptCmd = chatgpt.steps.find((s) => s.code)?.code;
   .agent header a,
   .agents-more a {
     color: var(--site-link);
+    text-decoration: underline;
+    text-underline-offset: 3px;
     font-size: 0.875rem;
   }
   .agent > p {
     color: var(--v2c-muted);
     font-size: 0.9375rem;
   }
-  .agent .code {
-    margin-top: auto;
+  .agent .code pre,
+  .deploy .code pre {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
   }
   .agents-more {
     margin-top: 1rem;

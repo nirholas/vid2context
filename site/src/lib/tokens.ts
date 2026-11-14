@@ -4,7 +4,7 @@
  * outputs are rendered by @vid2context/core from recorded fixtures, counts
  * come from the registry. An unknown token fails the build.
  */
-import { clients, chatgpt, type InstallStep, npmPublished } from '../data/agents.ts';
+import { chatgpt, clients, type InstallStep, npmPublished } from '../data/agents.ts';
 import { allRungs, data, rungsByTier, serviceCount } from '../data/site.ts';
 
 function stepsMarkdown(steps: InstallStep[]): string {
@@ -73,9 +73,12 @@ function values(): Record<string, string> {
     v['playlist.list'] = data.playlist.items.map((item) => item.url).join('\n');
   }
   for (const [k, val] of Object.entries(data.install)) v[`install.${k}`] = val;
-  for (const [k, val] of Object.entries(data.demo)) if (typeof val === 'string' || typeof val === 'number') v[`demo.${k}`] = String(val);
-  for (const [k, val] of Object.entries(data.gwagon)) if (typeof val === 'string' || typeof val === 'number') v[`gwagon.${k}`] = String(val);
-  for (const [k, val] of Object.entries(data.whisper)) if (typeof val === 'string' || typeof val === 'number') v[`whisper.${k}`] = String(val);
+  for (const [k, val] of Object.entries(data.demo))
+    if (typeof val === 'string' || typeof val === 'number') v[`demo.${k}`] = String(val);
+  for (const [k, val] of Object.entries(data.gwagon))
+    if (typeof val === 'string' || typeof val === 'number') v[`gwagon.${k}`] = String(val);
+  for (const [k, val] of Object.entries(data.whisper))
+    if (typeof val === 'string' || typeof val === 'number') v[`whisper.${k}`] = String(val);
   return v;
 }
 

@@ -182,6 +182,7 @@ export function formatStars(n: number): string {
 /** Last commit date among repo paths, for sitemap lastmod and "updated" lines. */
 export function lastModOf(paths: string[]): string {
   const dates = paths.map((p) => data.gitDates[p]).filter((d): d is string => Boolean(d));
-  if (!dates.length) throw new Error(`No git date recorded for ${paths.join(', ')}. Add the path to datedPaths in scripts/gen-data.ts.`);
+  if (!dates.length)
+    throw new Error(`No git date recorded for ${paths.join(', ')}. Add the path to datedPaths in scripts/gen-data.ts.`);
   return dates.sort().at(-1) as string;
 }

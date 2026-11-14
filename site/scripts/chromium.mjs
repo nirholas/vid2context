@@ -22,7 +22,12 @@ export function findChromium() {
     .filter((d) => /^chromium-\d+$/.test(d))
     .sort((a, b) => Number(b.split('-')[1]) - Number(a.split('-')[1]));
   for (const d of dirs) {
-    for (const rel of ['chrome-linux64/chrome', 'chrome-linux/chrome', 'chrome-mac/Chromium.app/Contents/MacOS/Chromium', 'chrome-win/chrome.exe']) {
+    for (const rel of [
+      'chrome-linux64/chrome',
+      'chrome-linux/chrome',
+      'chrome-mac/Chromium.app/Contents/MacOS/Chromium',
+      'chrome-win/chrome.exe',
+    ]) {
       const p = join(cache, d, rel);
       if (existsSync(p)) return p;
     }

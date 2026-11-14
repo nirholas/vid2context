@@ -103,6 +103,7 @@ export default function LiveDemo({ endpoint, initialUrl }: Props) {
         {result.kind === 'ok' && (
           <>
             <p className="live-msg ok">Done in {(result.ms / 1000).toFixed(1)} s.</p>
+            {/* biome-ignore lint/a11y/noNoninteractiveTabindex: a scrollable region must be reachable by keyboard (WCAG 2.1.1) */}
             <pre tabIndex={0}>{result.body}</pre>
           </>
         )}
@@ -111,9 +112,13 @@ export default function LiveDemo({ endpoint, initialUrl }: Props) {
             <p className="live-msg err">{result.message}</p>
             {result.hint && <p className="live-hint">{result.hint}</p>}
             {result.attempts.length > 0 && (
+              // biome-ignore lint/a11y/noNoninteractiveTabindex: a scrollable region must be reachable by keyboard (WCAG 2.1.1)
               <pre tabIndex={0}>
                 {`Attempts:\n${result.attempts
-                  .map((a) => `  ${a.stage.padEnd(9)}${a.outcome.padEnd(8)}${a.id}${a.reason ? `  ${a.reason}` : ''}${a.detail ? `  ${a.detail}` : ''}`)
+                  .map(
+                    (a) =>
+                      `  ${a.stage.padEnd(9)}${a.outcome.padEnd(8)}${a.id}${a.reason ? `  ${a.reason}` : ''}${a.detail ? `  ${a.detail}` : ''}`,
+                  )
                   .join('\n')}`}
               </pre>
             )}
