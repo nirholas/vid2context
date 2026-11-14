@@ -1,0 +1,19 @@
+{
+  "name": "@vid2context/chapters",
+  "version": "0.1.0",
+  "description": "Auto-chapters for videos without them: offline TextTiling segmentation snapped to transcript segments, validated, optionally titled and refined by the LLM chain.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./http": "./src/http.ts"
+  },
+  "dependencies": {
+    "@vid2context/core": "*",
+    "hono": "^4.13.18"
+  },
+  "devDependencies": {
+    "@vid2context/provider-llm-openai-compatible": "*",
+    "@vid2context/provider-youtube": "*"
+  }
+}
