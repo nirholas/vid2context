@@ -1,0 +1,23 @@
+{
+  "name": "@vid2context/ask",
+  "version": "0.1.0",
+  "description": "Question answering and chat over videos for vid2context: retrieval over transcripts, grounded answers through the free-first LLM chain, verified [n] timestamp citations, multi-turn chat and SSE streaming.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./http": "./src/http.ts",
+    "./mcp": "./src/mcp.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "@vid2context/core": "*",
+    "hono": "^4.13.18",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@vid2context/provider-llm-openai-compatible": "*",
+    "@vid2context/provider-youtube": "*",
+    "eventsource-parser": "^3.1.1"
+  }
+}
