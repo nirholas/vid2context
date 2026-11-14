@@ -15,6 +15,7 @@
     "@modelcontextprotocol/sdk": "^1.32.2",
     "@vid2context/config": "*",
     "@vid2context/core": "*",
+    "@vid2context/library": "*",
     "@vid2context/mcp": "*",
     "@vid2context/registry": "*",
     "@vid2context/server": "*"

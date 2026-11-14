@@ -143,7 +143,7 @@ async function titlesOf(storage: Storage, ids: string[]): Promise<Map<string, st
 }
 
 export async function collectionCommand(c: CommandContext): Promise<number> {
-  const action = sub(c, ['create', 'add', 'ls', 'show', 'rm']);
+  const action = sub(c, ['create', 'add', 'ls', 'show', 'refresh', 'rm']);
   const storage = await c.storage();
   backendNote(c, storage);
 
@@ -177,6 +177,8 @@ export async function collectionCommand(c: CommandContext): Promise<number> {
     emit(c, col, collectionText(col, await titlesOf(storage, col.videoIds)));
     return 0;
   }
+
+  if (action === 'refresh') return refreshCollection(c, storage, col);
 
   if (action === 'add') {
     const inputs = c.positionals.slice(2);
@@ -214,5 +216,33 @@ export async function collectionCommand(c: CommandContext): Promise<number> {
     await storage.deleteCollection(col.id);
     emit(c, { deleted: col.id }, `deleted ${col.id}\n`);
   }
+  return 0;
+}
+
+/**
+ * `collection refresh`: expand the collection's sources and ingest videos it
+ * has not seen, through `Library.refresh` from @vid2context/library (loaded
+ * lazily). Per-video failures are listed on stderr; the run itself succeeds.
+ */
+async function refreshCollection(c: CommandContext, storage: Storage, col: Collection): Promise<number> {
+  if (!col.sources.length) c.note(`note: ${col.id} follows no sources, so only queued imports are ingested.`);
+  const { Library } = await import('@vid2context/library');
+  const library = new Library({ registry: c.deps.registry, storage, ctx: c.deps.ctx });
+  let summary: Awaited<ReturnType<typeof library.refresh>>;
+  try {
+    summary = await library.refresh(col.id, {
+      limit: positiveInt(c.values, 'limit'),
+      onProgress: (p) => c.progress.start(`${p.done}${p.total !== undefined ? `/${p.total}` : ''} ${p.message ?? ''}`.trim()),
+    });
+  } finally {
+    c.progress.stop();
+  }
+  const lines = [
+    `${col.name} (${col.id}): ${summary.added.length} added, ${summary.skipped} skipped, ${summary.failed.length} failed, ${summary.remaining} left for the next run`,
+    ...summary.added.map((v) => `  + ${v.id}  ${v.title}`),
+  ];
+  emit(c, summary, `${lines.join('\n')}\n`);
+  for (const f of summary.failed)
+    c.deps.io.stderr(`failed ${f.input} (${f.code}): ${f.message}${f.hint ? `\nhint: ${f.hint}` : ''}\n`);
   return 0;
 }

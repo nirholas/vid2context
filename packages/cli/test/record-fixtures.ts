@@ -90,7 +90,7 @@ console.error(`listed ${refs.length} refs: ${refs.map((r) => r.nativeId).join(',
 const json = `${JSON.stringify(recorded, null, 2)}\n`;
 const ip = (await (await fetch('https://api.ipify.org')).text()).trim();
 if (ip && json.includes(ip)) {
-  console.error('The recording still contains this machine\'s public IP address; not writing it.');
+  console.error("The recording still contains this machine's public IP address; not writing it.");
   process.exit(1);
 }
 const file = join(import.meta.dirname, 'fixtures', 'playlist-gwagon.json');

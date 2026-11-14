@@ -221,20 +221,23 @@ export const COMMANDS: CommandSpec[] = [
   },
   {
     name: 'collection',
-    args: '<create|add|ls|show|rm> ...',
+    args: '<create|add|ls|show|refresh|rm> ...',
     summary: 'Named groups of videos in the library',
-    flags: ['description', 'source', 'refresh'],
+    flags: ['description', 'source', 'refresh', 'limit'],
     subcommands: [
       { name: 'create', args: '<name>', summary: 'Create a collection (--description, --source)' },
       { name: 'add', args: '<id> <inputs...>', summary: 'Fetch, save and add videos (lists are expanded)' },
       { name: 'ls', args: '', summary: 'List collections' },
       { name: 'show', args: '<id>', summary: 'Show a collection and its videos' },
+      { name: 'refresh', args: '<id>', summary: 'Ingest new videos from the collection sources (--limit n)' },
       { name: 'rm', args: '<id> [video-ids...]', summary: 'Remove videos from a collection, or delete it' },
     ],
     notes: [MEMORY_NOTE],
     examples: [
       'vid2context collection create "Talks" --description "Conference talks"',
       'vid2context collection add talks-1a2b3c4d jNQXAC9IVRw',
+      'vid2context collection create "G-Wagon" --source "https://www.youtube.com/playlist?list=PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b"',
+      'vid2context collection refresh g-wagon-1a2b3c4d --limit 5',
     ],
   },
   {
