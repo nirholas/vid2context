@@ -8,15 +8,12 @@
  * Loads .env through loadEnvFiles(). Logs go to stderr; the only stdout
  * output is the hash printed by hash-password.
  */
+import { lookup } from 'node:dns/promises';
 import { createInterface } from 'node:readline';
 import { parseArgs } from 'node:util';
-import { serve } from '@hono/node-server';
-import { createFfmpegExtractor } from '@vid2context/live/node';
-import { createNodeContext, createRegistry, loadEnvFiles } from '@vid2context/registry/node';
 import pkg from '../package.json' with { type: 'json' };
 import { authConfigured, oauthEnabled } from './auth.ts';
 import { readConfig } from './config.ts';
-import { mcpHttpRoutes } from './routes.ts';
 import { hashPassword } from './scrypt.ts';
 
 const USAGE = `Usage:
@@ -85,6 +82,20 @@ async function main(): Promise<void> {
     process.exit(2);
   }
 
+  // Loaded only to serve, so hash-password works even when a provider package is broken.
+  const [
+    { serve },
+    { setHostResolver },
+    { createFfmpegExtractor },
+    { createNodeContext, createRegistry, loadEnvFiles },
+    { mcpHttpRoutes },
+  ] = await Promise.all([
+    import('@hono/node-server'),
+    import('@vid2context/core'),
+    import('@vid2context/live/node'),
+    import('@vid2context/registry/node'),
+    import('./routes.ts'),
+  ]);
   const loaded = loadEnvFiles();
   const port = Number(values.port ?? process.env.PORT ?? 8790);
   const hostname = values.host ?? process.env.HOST ?? '127.0.0.1';
@@ -93,6 +104,8 @@ async function main(): Promise<void> {
     process.exit(2);
   }
 
+  // Client ID Metadata Documents are fetched from client-supplied URLs: check every resolved address, not just the name.
+  setHostResolver((host) => lookup(host, { all: true }).then((a) => a.map((x) => x.address)));
   const ctx = createNodeContext();
   const cfg = await readConfig(ctx.env);
   const app = mcpHttpRoutes({
