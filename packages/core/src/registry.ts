@@ -1,4 +1,4 @@
-import { isRungEnabled } from './chain.ts';
+import { isRungEnabled, keylessAllowed } from './chain.ts';
 import { Vid2ContextError } from './errors.ts';
 import type {
   CaptionsProvider,
@@ -99,7 +99,7 @@ export class Registry {
             service: r.service,
             model: r.model,
             tier: r.tier,
-            enabled: isRungEnabled(r, env),
+            enabled: isRungEnabled(r, env) && (r.tier !== 'keyless' || keylessAllowed(env)),
             requires: r.requires,
           })),
         };

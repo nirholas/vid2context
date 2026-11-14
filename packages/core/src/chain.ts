@@ -18,7 +18,7 @@ export function isRungEnabled(rung: Rung, env: Env): boolean {
 }
 
 /** Keyless lanes send data to third-party hosts without an account; VID2CONTEXT_KEYLESS=0 turns them off. */
-function keylessAllowed(env: Env): boolean {
+export function keylessAllowed(env: Env): boolean {
   return env.VID2CONTEXT_KEYLESS !== '0' && env.VID2CONTEXT_KEYLESS !== 'false';
 }
 
