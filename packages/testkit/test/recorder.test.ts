@@ -93,9 +93,8 @@ describe('recordingFetch scrubbing (local echo server)', () => {
     for (const secret of [bearer, queryKey, bodyKey, envOnly, pool1, pool2]) {
       expect(secret && disk.includes(secret), `a secret reached disk: ${secret?.slice(0, 6)}...`).toBe(false);
     }
-    const [{ exchange }] = readRecorded(dir, { name: 'echo' }) as [
-      { exchange: ReturnType<typeof readRecorded>[number]['exchange'] },
-    ];
+    const exchange = readRecorded(dir, { name: 'echo' })[0]?.exchange;
+    if (!exchange) throw new Error('nothing was recorded');
     expect(exchange.request.headers.authorization).toBe('[redacted]');
     expect(exchange.request.headers.cookie).toBe('[redacted]');
     expect(exchange.request.headers['x-custom']).toBeUndefined();
@@ -178,6 +177,18 @@ describe('Scrubber', () => {
     ).toEqual(
       ['anthropic-key', 'github-pat', 'github-token', 'google-key', 'groq-key', 'huggingface-token', 'openai-key'].sort(),
     );
+  });
+
+  it('scrubs account ids from env, and a bare "key" field only when it looks like a credential', () => {
+    const accountId = '0123456789abcdef0123456789abcdef'.split('').reverse().join('');
+    const s = new Scrubber({ env: { CLOUDFLARE_ACCOUNT_ID: accountId } });
+    expect(s.url(`https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/@cf/openai/whisper`)).toBe(
+      'https://api.cloudflare.com/client/v4/accounts/REDACTED/ai/run/@cf/openai/whisper',
+    );
+    const body = JSON.stringify({ params: [{ key: 'cver', value: '20.10.38' }], auth: { key: keyShapedValue('SERVICE_KEY') } });
+    const out = JSON.parse(s.body(body, 'response.body')) as { params: { key: string }[]; auth: { key: string } };
+    expect(out.params[0]?.key).toBe('cver');
+    expect(out.auth.key).toBe('[redacted]');
   });
 
   it('recognises IP addresses but not clock times or versions', () => {

@@ -33,8 +33,12 @@ export const STREAM_PARAMS = ['ip', 'ipbits', 'sig', 'lsig', 'signature', 'n'];
 const SECRET_FIELD =
   /^(api[_-]?key|apikey|key|token|access[_-]?token|refresh[_-]?token|id[_-]?token|secret|client[_-]?secret|password|passwd|authorization|bearer)$/i;
 
-/** Env var names whose literal values are scrubbed from everything recorded. */
-const SECRET_ENV = /_(KEY|KEYS|TOKEN|SECRET|PASSWORD)$/;
+/**
+ * Env var names whose literal values are scrubbed from everything recorded.
+ * Account ids are not secrets, but they identify the person who recorded the
+ * fixture (Cloudflare puts them in every API URL), so they go too.
+ */
+const SECRET_ENV = /_(KEY|KEYS|TOKEN|SECRET|PASSWORD|ACCOUNT_ID)$/;
 
 /** Shapes of well-known API keys. Order matters: sk-ant- before sk-. */
 const KEY_SHAPES: { name: string; re: RegExp }[] = [
@@ -198,7 +202,7 @@ export class Scrubber {
           if (v && typeof v === 'object') {
             const o: Record<string, unknown> = {};
             for (const [k, val] of Object.entries(v as Record<string, unknown>)) {
-              if (SECRET_FIELD.test(k) && (typeof val === 'string' || typeof val === 'number')) {
+              if (SECRET_FIELD.test(k) && (typeof val === 'string' || typeof val === 'number') && secretValue(k, val)) {
                 hits++;
                 this.note(where, `json-field:${k}`);
                 o[k] = REDACTED;
@@ -221,6 +225,17 @@ export class Scrubber {
   report(): ScrubReport {
     return { findings: this.findings.map((f) => ({ ...f })), warnings: [...this.warnings] };
   }
+}
+
+/**
+ * A bare `key` field is often harmless (YouTube sends {key, value} tracking
+ * pairs), so it counts only when the value looks like a credential: long and
+ * without spaces. Every other secret-named field is always scrubbed.
+ */
+function secretValue(field: string, value: string | number): boolean {
+  if (field.toLowerCase() !== 'key') return true;
+  const v = String(value);
+  return v.length >= 20 && !/\s/.test(v);
 }
 
 function decodeSafe(v: string): string {
