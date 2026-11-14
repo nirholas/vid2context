@@ -1,0 +1,3039 @@
+
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<title>HTML Video</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="title" property="og:title" content="HTML Video">
+<meta name="Keywords" content="HTML, Python, CSS, SQL, JavaScript, How to, PHP, Java, C, C++, C#, jQuery, Bootstrap, Colors, W3.CSS, XML, MySQL, Icons, NodeJS, React, Graphics, Angular, R, AI, Git, Data Science, Code Game, Tutorials, Programming, Web Development, Training, Learning, Quiz, Exercises, Courses, Lessons, References, Examples, Learn to code, Source code, Demos, Tips, Website">
+<meta name="Description" content="Well organized and easy to understand Web building tutorials with lots of examples of how to use HTML, CSS, JavaScript, SQL, Python, PHP, Bootstrap, Java, XML and more.">
+<meta property="og:image" content="https://www.w3schools.com/images/og/html/html5_video.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:description" content="The HTML &lt;video&gt; element is used to show a video on a web page.">
+<meta property="og:url" content="https://www.w3schools.com/html/html5_video.asp">
+<link rel="canonical" href="https://www.w3schools.com/html/html5_video.asp">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="W3Schools">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@w3schools">
+<meta name="twitter:title" content="HTML Video">
+<meta name="twitter:description" content="The HTML &lt;video&gt; element is used to show a video on a web page.">
+<meta name="twitter:image" content="https://www.w3schools.com/images/og/html/html5_video.png">
+<meta name="apple-itunes-app" content="app-id=6770531503">
+<link rel="icon" href="https://www.w3schools.com/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest" crossorigin="use-credentials">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#04aa6d">
+<meta name="msapplication-TileColor" content="#00a300">
+<meta name="theme-color" content="#ffffff">
+<meta name="format-detection" content="telephone=no">
+<link rel="preload" href="/lib/fonts/fontawesome.woff2?14663396" as="font" type="font/woff2" crossorigin> 
+<link rel="preload" href="/lib/fonts/source-code-pro-v14-latin-regular.woff2" as="font" type="font/woff2" crossorigin> 
+<link rel="preload" href="/lib/fonts/source-sans-pro-v14-latin-700.woff2" as="font" type="font/woff2" crossorigin> 
+<link rel="preload" href="/lib/fonts/source-sans-pro-v14-latin-600.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/lib/fonts/W3HomeSSans-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/lib/topnav/main.v1.0.151.css">
+<link rel="stylesheet" href="/lib/my-learning/main.v1.0.107.css">
+<link rel="stylesheet" href="/lib/pathfinder/main.v1.0.12.css">
+<link rel="stylesheet" href="/lib/w3css/w3css.v6.0.5.css">
+<link rel="stylesheet" href="/lib/w3schools/main.v1.0.7.css">
+<link rel="stylesheet" href="/plus/plans/main.v1.0.3.css">
+<link rel="stylesheet" href="/lib/sparteo.css?v=1.0.6">
+</head>
+<body>
+<div id="tnb-search-suggestions"></div>
+<div
+ id="top-nav-bar"
+>
+ <div
+ id="pagetop"
+ >
+ <a
+ id="w3-logo"
+ href="https://www.w3schools.com"
+ title="Home"
+ aria-label="Home link"
+ >
+ <i
+ aria-hidden="true"
+ ></i>
+ </a>
+ <nav>
+ <a
+ data-tnb-action="openNavItem"
+ data-tnb-nav-id="tutorials"
+ href="#"
+ id="navbtn_tutorials"
+ title="Tutorials and References"
+ role="button"
+ >
+ Tutorials
+ <i
+ aria-hidden="true"
+ ></i>
+ <i
+ aria-hidden="true"
+ ></i>
+ </a>
+ <a
+ data-tnb-action="openNavItem"
+ data-tnb-nav-id="references"
+ href="#"
+ id="navbtn_references"
+ title="References"
+ role="button"
+ >
+ References
+ <i
+ aria-hidden="true"
+ ></i>
+ <i
+ aria-hidden="true"
+ ></i>
+ </a>
+ <a
+ data-tnb-action="openNavItem"
+ data-tnb-nav-id="exercises"
+ href="#"
+ id="navbtn_exercises"
+ title="Exercises and Quizzes"
+ role="button"
+ >
+ Exercises
+ <i
+ aria-hidden="true"
+ ></i>
+ <i
+ aria-hidden="true"
+ ></i>
+ </a>
+ <a
+ data-tnb-action="openNavItem"
+ data-tnb-nav-id="certified"
+ href="#"
+ id="navbtn_certified"
+ title="Certificates"
+ role="button"
+ >
+ Certificates
+ <i
+ aria-hidden="true"
+ ></i>
+ <i
+ aria-hidden="true"
+ ></i>
+ </a>
+ </nav>
+ <a
+ data-tnb-action="openMenu"
+ href="#"
+ title="Menu"
+ aria-label="Menu"
+ role="button"
+ >
+ <span>Menu</span>
+ <i
+ aria-hidden="true"
+ ></i>
+ <i
+ aria-hidden="true"
+ ></i>
+ </a>
+ <div
+ id="tnb-google-search-container"
+ >
+ <div id="tnb-google-search-inner-container">
+ <label
+ for="tnb-google-search-input"
+ >
+ Search field
+ </label>
+ <input
+ id="tnb-google-search-input"
+ type="text"
+ placeholder="Search..."
+ autocomplete="off"
+ data-tnb-on-keydown="googleSearchKeyPress"
+ data-tnb-on-input="searchWithSuggestions"
+ data-tnb-on-focus="searchWithSuggestions"
+ data-tnb-on-blur="searchFieldLostFocus"
+ aria-label="Search field"
+ />
+ <div
+ id="tnb-google-search-submit-btn"
+ role="button"
+ aria-label="Button to search"
+ data-tnb-action="googleSearchSubmit"
+ >
+ </div>
+ </div>
+ <div id="tnb-google-search-mobile-action-btns">
+ <div
+ id="tnb-google-search-mobile-show"
+ data-tnb-action="googleSearchShowMobileContainer"
+ aria-label="Button to open search field"
+ role="button"
+ >
+ </div>
+ <div
+ id="tnb-google-search-mobile-close"
+ data-tnb-action="googleSearchHideMobileContainer"
+ role="button"
+ aria-label="Close search field"
+ >
+ <i>&times;</i>
+ </div>
+ </div>
+ </div>
+ <div id="tnb-menu-toggle-wrapper">
+ <a
+ data-tnb-action="openNavItem"
+ data-tnb-nav-id="services"
+ href="#"
+ id="navbtn_services"
+ aria-label="All our services"
+ role="button"
+ >
+ <span
+ id="button-to-open-services"
+ >
+ See More
+ </span>
+ <span>&nbsp;</span>
+ <i aria-hidden="true"></i>
+ <i aria-hidden="true"></i>
+ </a>
+ </div>
+ <div>
+ <a
+ href="/adventure/index.php"
+ target="_blank"
+ rel="noopener noreferrer"
+ title="W3Schools Adventure App - iOS and Android"
+ aria-label="W3Schools Adventure App - iOS and Android"
+ >
+ <span>NEW</span>
+ <img
+ src="/adventure/img/mascot-lynx.png"
+ width="64"
+ height="82"
+ alt=""
+ loading="eager"
+ />
+ <span>
+ <span>W3Schools app</span>
+ <span>iOS &amp; Android</span>
+ <span>Start the adventure</span>
+ </span>
+ </a>
+ <div
+ id="tnb-login-btn"
+ title="Sign in to your account"
+ aria-label="Sign in to your account"
+ tabindex="0"
+ role="button"
+ >
+ <span>Sign In</span>
+ <span></span>
+ </div>
+ <a
+ id="tnb-user-profile"
+ href="https://profile.w3schools.com/log-in"
+ title="Your W3Schools Profile"
+ aria-label="Your W3Schools Profile"
+ >
+ <span>&#x2605;</span>
+ <span>+1</span>
+ </a>
+ <a
+ href="/spaces/index.php"
+ title="Get Your Own Website With W3Schools Spaces"
+ aria-label="Get Your Own Website With W3Schools Spaces"
+ >
+ Spaces
+ </a>
+ <a
+ href="https://order.w3schools.com/plans"
+ title="Become a PLUS user and unlock powerful features"
+ aria-label="Become a PLUS user and unlock powerful features"
+ >
+ Upgrade
+ </a>
+ <a
+ target="_blank"
+ href="https://campus.w3schools.com/collections/course-catalog"
+ title="W3Schools Paid Courses"
+ aria-label="W3Schools Paid Courses"
+ >
+ Paid Courses
+ </a>
+ <a
+ href="https://spaces.w3schools.com/"
+ title="Go to Your W3Schools Space"
+ aria-label="Go to Your W3Schools Space"
+ >
+ Spaces
+ </a>
+ <a
+ href="https://order.w3schools.com/plans"
+ title="Get personalized learning journey based on your current skills and goals"
+ aria-label="Get personalized learning journey based on your current skills and goals"
+ >
+ Upgrade
+ </a>
+ <a
+ target="_blank"
+ href="https://campus.w3schools.com/collections/course-catalog"
+ title="W3Schools Paid Courses"
+ aria-label="W3Schools Paid Courses"
+ >
+ Paid Courses
+ </a>
+ </div>
+ </div>
+ <nav
+ id="tnb-mobile-nav"
+ >
+ <div>
+ <div
+ id="toggle-darkmode-mobile-wrapper"
+ >
+ <label
+ data-tnb-action="toggleUserPreferredTheme"
+ >
+ <input
+ type="checkbox"
+ id="darkToggle_on_small"
+ />
+ <span
+ >
+ <span>&#xe80b;</span>
+ </span>
+ </label>
+ </div>
+ <a
+ href="https://pathfinder.w3schools.com"
+ title="My W3Schools"
+ aria-label="My W3Schools"
+ >
+ <span>My W3Schools</span>
+ </a>
+ <div
+ data-section="tutorials"
+ >
+ <div
+ data-tnb-action="openNavItem"
+ data-tnb-nav-id="tutorials"
+ aria-label="Tutorials"
+ role="button"
+ >
+ <span>Tutorials</span>
+ <i
+ aria-hidden="true"
+ ></i>
+ </div>
+ <div
+ id="sectionxs_tutorials"
+ >
+ &nbsp;
+ </div>
+ </div>
+ <div
+ data-section="References"
+ >
+ <div
+ data-tnb-action="openNavItem"
+ data-tnb-nav-id="references"
+ aria-label="References"
+ role="button"
+ >
+ <span>References</span>
+ <i
+ aria-hidden="true"
+ ></i>
+ </div>
+ <div
+ id="sectionxs_references"
+ >
+ &nbsp;
+ </div>
+ </div>
+ <div
+ data-section="exercises"
+ >
+ <div
+ data-tnb-action="openNavItem"
+ data-tnb-nav-id="exercises"
+ aria-label="Exercises"
+ role="button"
+ >
+ <span>Exercises</span>
+ <i
+ aria-hidden="true"
+ ></i>
+ </div>
+ <div
+ id="sectionxs_exercises"
+ >
+ &nbsp;
+ </div>
+ </div>
+ <div
+ data-section="certified"
+ >
+ <div
+ data-tnb-action="openNavItem"
+ data-tnb-nav-id="certified"
+ aria-label="Certificates"
+ role="button"
+ >
+ <span>Certificates</span>
+ <i
+ aria-hidden="true"
+ ></i>
+ </div>
+ <div
+ id="sectionxs_certified"
+ >
+ &nbsp;
+ </div>
+ </div>
+ <a
+ href="/adventure/index.php"
+ target="_blank"
+ rel="noopener noreferrer"
+ title="W3Schools Adventure App - iOS and Android"
+ aria-label="W3Schools Adventure App - iOS and Android"
+ >
+ <img
+ src="/adventure/img/mascot-lynx.png"
+ width="64"
+ height="82"
+ alt=""
+ loading="lazy"
+ />
+ <span>
+ <span>W3Schools app</span>
+ <span>iOS &amp; Android</span>
+ </span>
+ <span>NEW</span>
+ </a>
+ <a
+ href="/spaces/index.php"
+ title="Get Your Own Website With W3Schools Spaces"
+ aria-label="Get Your Own Website With W3Schools Spaces"
+ >
+ <span>Spaces</span>
+ </a>
+ <a
+ target="_blank"
+ href="https://campus.w3schools.com/collections/course-catalog"
+ title="W3Schools Certificates"
+ aria-label="W3Schools Certificates"
+ >
+ <span>Get Certified</span>
+ </a>
+ <a
+ href="https://order.w3schools.com/plans"
+ title="Become a PLUS user and unlock powerful features"
+ aria-label="Become a PLUS user and unlock powerful features"
+ >
+ <span>Plus</span>
+ </a>
+ <a
+ href="/practice/index.php"
+ title="W3Schools Practice Coding Problems"
+ aria-label="W3Schools Practice Coding Problems"
+ >
+ <span>Practice</span>
+ </a>
+ <a target="_blank"
+ href="https://campus.w3schools.com/pages/for-teams"
+ title="W3Schools Campus"
+ aria-label="W3Schools Campus"
+ >
+ <span>Campus (previously Academy)</span>
+ </a>
+ <div
+ data-section="services"
+ >
+ <div
+ data-tnb-action="toggleMobileNav"
+ data-tnb-nav-id="services"
+ aria-label="Services"
+ role="button"
+ >
+ <span>All our Services</span>
+ <i
+ aria-hidden="true"
+ ></i>
+ </div>
+ <div
+ id="sectionxs_services"
+ >
+ &nbsp;
+ </div>
+ </div>
+ <a
+ href="https://profile.w3schools.com/logout"
+ title="Logout"
+ aria-label="Logout"
+ >
+ <span>Logout</span>
+ </a>
+ <div
+ >
+ <a
+ target="_blank"
+ href="https://www.youtube.com/@w3schools"
+ title="W3Schools on YouTube"
+ rel="noopener"
+ >
+ <i
+ aria-hidden="true"
+ ></i>
+ </a>
+ <a
+ target="_blank"
+ href="https://www.linkedin.com/company/w3schools.com/"
+ title="W3Schools on LinkedIn"
+ rel="noopener"
+ >
+ <i
+ aria-hidden="true"
+ >
+ &#62220;
+ </i>
+ </a>
+ <a
+ target="_blank"
+ href="https://discord.com/invite/w3schools"
+ title="Join the W3schools community on Discord"
+ rel="noopener"
+ >
+ <i
+ aria-hidden="true"
+ >
+ &#59399;
+ </i>
+ </a>
+ <a
+ target="_blank"
+ href="https://www.facebook.com/w3schoolscom/"
+ title="W3Schools on Facebook"
+ rel="noopener"
+ >
+ <i
+ aria-hidden="true"
+ >
+ &#59398;
+ </i>
+ </a>
+ <a
+ target="_blank"
+ href="https://www.instagram.com/w3schools.com_official/"
+ title="W3Schools on Instagram"
+ rel="noopener"
+ >
+ <i
+ aria-hidden="true"
+ >
+ &#61805;
+ </i>
+ </a>
+ </div>
+ </div>
+ <div
+ tabindex="0"
+ data-tnb-action="closeMenu"
+ role="button"
+ aria-label="Close menu"
+ >
+ <span>&times;</span>
+ </div>
+ </nav>
+ <div id="dropdown-nav-outer-wrapper">
+ <div id="dropdown-nav-inner-wrapper">
+ <nav
+ id="nav_tutorials"
+ tabindex="-1"
+ aria-label="Menu for tutorials"
+ data-tnb-action="closeNavItemBackdrop"
+ data-tnb-nav-id="tutorials"
+ >
+ <div>
+ <button
+ tabindex="0"
+ data-tnb-action="closeNavItem"
+ data-tnb-nav-id="tutorials"
+ aria-label="Close navigation"
+ >
+ &times;
+ </button>
+ <div
+ id="tutnav_main_heading"
+ >
+ <h1>Tutorials</h1>
+ </div>
+ <div id="tutorials_list">
+ <div id="tutnav_title_area">
+ <h1>Tutorials</h1>
+ <p>Learn web development, programming, data science, and more.</p>
+ </div>
+ <div
+ id="tutnav_current_topic"
+ ></div>
+ <div>
+ <h2>W3SCHOOLS TUTORIALS:</h2>
+ <div>
+ <input
+ id="filter-tutorials-input"
+ type="text"
+ placeholder="Filter..."
+ aria-label="Tutorials filter input"
+ />
+ <button
+ aria-label="Clear filter"
+ >
+ &times;
+ </button>
+ </div>
+ </div>
+ <div>
+ <div
+ id="tutnav_grid"
+ ></div>
+ </div>
+ </div>
+ </div>
+ </nav>
+ <nav
+ id="nav_references"
+ tabindex="-1"
+ aria-label="References menu"
+ data-tnb-action="closeNavItemBackdrop"
+ data-tnb-nav-id="references"
+ >
+ <div>
+ <button
+ tabindex="0"
+ data-tnb-action="closeNavItem"
+ data-tnb-nav-id="references"
+ data-tnb-on-keydown="mouseHandler"
+ aria-label="Close navigation"
+ >
+ &times;
+ </button>
+ <div
+ id="refnav_main_heading"
+ >
+ <h1>References</h1>
+ </div>
+ <div id="references_list">
+ <div id="refnav_quick_actions"></div>
+ <div>
+ <h2>W3SCHOOLS REFERENCES:</h2>
+ <div>
+ <input
+ id="filter-references-input"
+ data-tnb-on-input="filter"
+ data-tnb-filter-nav="nav_references"
+ type="text"
+ placeholder="Filter..."
+ aria-label="References filter bar"
+ />
+ <button
+ aria-label="Filter clear button"
+ data-tnb-action="clearFilter"
+ data-tnb-filter-nav="nav_references"
+ >
+ &times;
+ </button>
+ </div>
+ </div>
+ <div>
+ <div>
+ <div
+ data-name="html"
+ >
+ <div></div>
+ <h4>HTML</h4>
+ <p>Tag reference</p>
+ </div>
+ <div
+ data-name="css"
+ >
+ <div></div>
+ <h4>CSS</h4>
+ <p>Reference</p>
+ </div>
+ <div
+ data-name="javascript"
+ >
+ <div></div>
+ <h4>JavaScript</h4>
+ <p>Reference</p>
+ </div>
+ <div
+ data-name="sql"
+ >
+ <div></div>
+ <h4>SQL</h4>
+ <p>Keyword reference</p>
+ </div>
+ <div
+ data-name="python"
+ >
+ <div></div>
+ <h4>Python</h4>
+ <p>Reference</p>
+ </div>
+ <div
+ data-name="java"
+ >
+ <div></div>
+ <h4>Java</h4>
+ <p>Reference</p>
+ </div>
+ <div
+ data-name="c"
+ >
+ <div></div>
+ <h4>C</h4>
+ <p>Reference</p>
+ </div>
+ <div
+ data-name="c++"
+ >
+ <div></div>
+ <h4>C++</h4>
+ <p>Reference</p>
+ </div>
+ <div
+ data-name="colors"
+ >
+ <div></div>
+ <h4>Colors</h4>
+ <p>Color names</p>
+ </div>
+ <div
+ data-name="php"
+ >
+ <div></div>
+ <h4>PHP</h4>
+ <p>Reference</p>
+ </div>
+ <div
+ data-name="htmldom"
+ >
+ <div></div>
+ <h4>HTML DOM</h4>
+ <p>Reference</p>
+ </div>
+ <div
+ data-name="mysql"
+ >
+ <div></div>
+ <h4>MySQL</h4>
+ <p>Reference</p>
+ </div>
+ <div
+ data-name="w3css"
+ >
+ <div></div>
+ <h4>W3.CSS</h4>
+ <p>Reference</p>
+ </div>
+ <div
+ data-name="bootstrap3"
+ >
+ <div></div>
+ <h4>Bootstrap 3</h4>
+ <p>Reference</p>
+ </div>
+ <div
+ data-name="bootstrap4"
+ >
+ <div></div>
+ <h4>Bootstrap 4</h4>
+ <p>Reference</p>
+ </div>
+ <div
+ data-name="nodejs"
+ >
+ <div></div>
+ <h4>Node.js</h4>
+ <p>Reference</p>
+ </div>
+ <div
+ data-name="django"
+ >
+ <div></div>
+ <h4>Django</h4>
+ <p>Reference</p>
+ </div>
+ <div
+ data-name="jquery"
+ >
+ <div></div>
+ <h4>jQuery</h4>
+ <p>Reference</p>
+ </div>
+ <div
+ data-name="vue"
+ >
+ <div></div>
+ <h4>Vue</h4>
+ <p>Attributes</p>
+ </div>
+ <div
+ data-name="angular"
+ >
+ <div></div>
+ <h4>Angular</h4>
+ <p>Reference</p>
+ </div>
+ <div
+ data-name="sass"
+ >
+ <div></div>
+ <h4>Sass</h4>
+ <p>Reference</p>
+ </div>
+ <div
+ data-name="xml"
+ >
+ <div></div>
+ <h4>XML</h4>
+ <p>Reference</p>
+ </div>
+ <div
+ data-name="json"
+ >
+ <div></div>
+ <h4>JSON</h4>
+ <p>Reference</p>
+ </div>
+ <div
+ data-name="asp"
+ >
+ <div></div>
+ <h4>ASP</h4>
+ <p>Reference</p>
+ </div>
+ <div
+ data-name="icons"
+ >
+ <div></div>
+ <h4>Icons</h4>
+ <p>Reference</p>
+ </div>
+ <div
+ data-name="svg"
+ >
+ <div></div>
+ <h4>SVG</h4>
+ <p>Reference</p>
+ </div>
+ <div
+ data-name="canvas"
+ >
+ <div></div>
+ <h4>Canvas</h4>
+ <p>Reference</p>
+ </div>
+ <div
+ data-name="charsets"
+ >
+ <div></div>
+ <h4>Charsets</h4>
+ <p>Reference</p>
+ </div>
+ <div
+ data-name="emojis"
+ >
+ <div></div>
+ <h4>Emojis</h4>
+ <p>Reference</p>
+ </div>
+ <div
+ data-name="appml"
+ >
+ <div></div>
+ <h4>AppML</h4>
+ <p>Reference</p>
+ </div>
+ <div
+ data-name="w3js"
+ >
+ <div></div>
+ <h4>W3.JS</h4>
+ <p>Reference</p>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </nav>
+ <nav
+ id="nav_exercises"
+ tabindex="-1"
+ aria-label="Exercises menu"
+ data-tnb-action="closeNavItemBackdrop"
+ data-tnb-nav-id="exercises"
+ >
+ <div>
+ <button
+ tabindex="0"
+ data-tnb-action="closeExercisesNavItem"
+ data-tnb-on-keydown="mouseHandler"
+ data-tnb-nav-id="exercises"
+ aria-label="Close navigation"
+ >
+ &times;
+ </button>
+ <div
+ id="exnav_main_heading"
+ >
+ <h1>Exercises</h1>
+ <p>Practice and test your skills with different exercises.</p>
+ </div>
+ <div id="exercises_list">
+ <div id="exnav_quick_actions"></div>
+ <div
+ id="exnav_quick_tip"
+ >
+ <p>
+ <b>Tip:</b>
+ <a href="https://profile.w3schools.com/signup">Sign in</a>
+ to track your progress.
+ </p>
+ <div>
+ <a
+ href="https://profile.w3schools.com/signup"
+ title="Sign in with Google"
+ >
+ </a>
+ <a
+ href="https://profile.w3schools.com/signup"
+ title="Sign in with Facebook"
+ >
+ </a>
+ <a
+ href="https://profile.w3schools.com/signup"
+ title="Sign in with GitHub"
+ >
+ </a>
+ </div>
+ </div>
+ <div>
+ <h2>Select another topic:</h2>
+ <div>
+ <input
+ id="filter-exercises-input"
+ data-tnb-on-input="filter"
+ data-tnb-filter-nav="nav_exercises"
+ type="text"
+ placeholder="Filter..."
+ aria-label="Exercises filter bar"
+ />
+ <button
+ aria-label="Filter clear button"
+ data-tnb-action="clearFilter"
+ data-tnb-filter-nav="nav_exercises"
+ >
+ &times;
+ </button>
+ </div>
+ </div>
+ <div>
+ <div>
+ <div
+ data-name="html"
+ >
+ <div></div>
+ <h4>HTML</h4>
+ <p>Exercises</p>
+ </div>
+ <div
+ data-name="css"
+ >
+ <div></div>
+ <h4>CSS</h4>
+ <p>Exercises</p>
+ </div>
+ <div
+ data-name="javascript"
+ >
+ <div></div>
+ <h4>JavaScript</h4>
+ <p>Exercises</p>
+ </div>
+ <div
+ data-name="sql"
+ >
+ <div></div>
+ <h4>SQL</h4>
+ <p>Exercises</p>
+ </div>
+ <div
+ data-name="python"
+ >
+ <div></div>
+ <h4>Python</h4>
+ <p>Exercises</p>
+ </div>
+ <div
+ data-name="java"
+ >
+ <div></div>
+ <h4>Java</h4>
+ <p>Exercises</p>
+ </div>
+ <div
+ data-name="c"
+ >
+ <div></div>
+ <h4>C</h4>
+ <p>Exercises</p>
+ </div>
+ <div
+ data-name="c++"
+ >
+ <div></div>
+ <h4>C++</h4>
+ <p>Exercises</p>
+ </div>
+ <div
+ data-name="c#"
+ >
+ <div></div>
+ <h4>C#</h4>
+ <p>Exercises</p>
+ </div>
+ <div
+ data-name="php"
+ >
+ <div></div>
+ <h4>PHP</h4>
+ <p>Exercises</p>
+ </div>
+ <div
+ data-name="react"
+ >
+ <div></div>
+ <h4>React</h4>
+ <p>Exercises</p>
+ </div>
+ <div
+ data-name="mysql"
+ >
+ <div></div>
+ <h4>MySQL</h4>
+ <p>Exercises</p>
+ </div>
+ <div
+ data-name="excel"
+ >
+ <div></div>
+ <h4>Excel</h4>
+ <p>Exercises</p>
+ </div>
+ <div
+ data-name="dsa"
+ >
+ <div></div>
+ <h4>DSA</h4>
+ <p>Exercises</p>
+ </div>
+ <div
+ data-name="bootstrap3"
+ >
+ <div></div>
+ <h4>Bootstrap 3</h4>
+ <p>Exercises</p>
+ </div>
+ <div
+ data-name="bootstrap4"
+ >
+ <div></div>
+ <h4>Bootstrap 4</h4>
+ <p>Exercises</p>
+ </div>
+ <div
+ data-name="bootstrap5"
+ >
+ <div></div>
+ <h4>Bootstrap 5</h4>
+ <p>Exercises</p>
+ </div>
+ <div
+ data-name="nodejs"
+ >
+ <div></div>
+ <h4>Node.js</h4>
+ <p>Exercises</p>
+ </div>
+ <div
+ data-name="typescript"
+ >
+ <div></div>
+ <h4>TypeScript</h4>
+ <p>Exercises</p>
+ </div>
+ <div
+ data-name="django"
+ >
+ <div></div>
+ <h4>Django</h4>
+ <p>Exercises</p>
+ </div>
+ <div
+ data-name="postgresql"
+ >
+ <div></div>
+ <h4>PostgreSQL</h4>
+ <p>Exercises</p>
+ </div>
+ <div
+ data-name="jquery"
+ >
+ <div></div>
+ <h4>jQuery</h4>
+ <p>Exercises</p>
+ </div>
+ <div
+ data-name="numpy"
+ >
+ <div></div>
+ <h4>NumPy</h4>
+ <p>Exercises</p>
+ </div>
+ <div
+ data-name="pandas"
+ >
+ <div></div>
+ <h4>Pandas</h4>
+ <p>Exercises</p>
+ </div>
+ <div
+ data-name="angular"
+ >
+ <div></div>
+ <h4>Angular</h4>
+ <p>Exercises</p>
+ </div>
+ <div
+ data-name="git"
+ >
+ <div></div>
+ <h4>Git</h4>
+ <p>Exercises</p>
+ </div>
+ <div
+ data-name="mongodb"
+ >
+ <div></div>
+ <h4>MongoDB</h4>
+ <p>Exercises</p>
+ </div>
+ <div
+ data-name="r"
+ >
+ <div></div>
+ <h4>R</h4>
+ <p>Exercises</p>
+ </div>
+ <div
+ data-name="go"
+ >
+ <div></div>
+ <h4>Go</h4>
+ <p>Exercises</p>
+ </div>
+ <div
+ data-name="kotlin"
+ >
+ <div></div>
+ <h4>Kotlin</h4>
+ <p>Exercises</p>
+ </div>
+ <div
+ data-name="swift"
+ >
+ <div></div>
+ <h4>Swift</h4>
+ <p>Exercises</p>
+ </div>
+ <div
+ data-name="vue"
+ >
+ <div></div>
+ <h4>Vue</h4>
+ <p>Exercises</p>
+ </div>
+ <div
+ data-name="scipy"
+ >
+ <div></div>
+ <h4>SciPy</h4>
+ <p>Exercises</p>
+ </div>
+ <div
+ data-name="bash"
+ >
+ <div></div>
+ <h4>Bash</h4>
+ <p>Exercises</p>
+ </div>
+ </div>
+ </div>
+ </div>
+ <div
+ id="exnav_detail"
+ >
+ <div>
+ <div
+ id="exnav_detail_icon"
+ ></div>
+ <div>
+ <h2
+ id="exnav_detail_title"
+ ></h2>
+ <p
+ id="exnav_detail_subtitle"
+ >
+ Choose an activity
+ </p>
+ </div>
+ <button
+ data-tnb-action="exnavBackToList"
+ >
+ &larr; Back to topics
+ </button>
+ </div>
+ <div
+ id="exnav_detail_grid"
+ ></div>
+ <p>
+ <b>Tip:</b>
+ <a
+ href="https://profile.w3schools.com/signup"
+ >
+ Sign in
+ </a>
+ to track your progress.
+ </p>
+ </div>
+ </div>
+ </nav>
+ <nav
+ id="nav_certified"
+ tabindex="-1"
+ aria-label="Certificates menu"
+ data-tnb-action="closeNavItemBackdrop"
+ data-tnb-nav-id="certified"
+ >
+ <div>
+ <button
+ tabindex="0"
+ data-tnb-action="closeNavItem"
+ data-tnb-nav-id="certified"
+ data-tnb-on-keydown="mouseHandler"
+ aria-label="Close navigation"
+ >
+ &times;
+ </button>
+ <div
+ id="certnav_main_heading"
+ >
+ <h1>Get Certified</h1>
+ </div>
+ <div id="certified_list">
+ <div id="certnav_quick_actions"></div>
+ <div
+ id="certnav_header"
+ >
+ <h2
+ id="certnav_heading"
+ >
+ W3SCHOOLS CERTIFICATES:
+ </h2>
+ <div>
+ <input
+ id="filter-certified-input"
+ data-tnb-on-input="filter"
+ data-tnb-filter-nav="nav_certified"
+ type="text"
+ placeholder="Filter..."
+ aria-label="Certificates filter input"
+ />
+ <button
+ aria-label="Filter clear button"
+ data-tnb-action="clearFilter"
+ data-tnb-filter-nav="nav_certified"
+ >
+ &times;
+ </button>
+ </div>
+ </div>
+ <div>
+ <div
+ id="certnav_grid"
+ >
+ <a
+ data-name="html"
+ href="https://campus.w3schools.com/collections/course-catalog/products/html-course"
+ target="_blank"
+ >
+ <div></div>
+ <p>HTML</p>
+ </a>
+ <a
+ data-name="css"
+ href="https://campus.w3schools.com/collections/course-catalog/products/css-course"
+ target="_blank"
+ >
+ <div></div>
+ <p>CSS</p>
+ </a>
+ <a
+ data-name="javascript"
+ href="https://campus.w3schools.com/collections/course-catalog/products/javascript-course"
+ target="_blank"
+ >
+ <div></div>
+ <p>JavaScript</p>
+ </a>
+ <a
+ data-name="sql"
+ href="https://campus.w3schools.com/collections/course-catalog/products/sql-course"
+ target="_blank"
+ >
+ <div>
+ </div>
+ <p>SQL</p>
+ </a>
+ <a
+ data-name="python"
+ href="https://campus.w3schools.com/collections/course-catalog/products/python-course"
+ target="_blank"
+ >
+ <div></div>
+ <p>Python</p>
+ </a>
+ <a
+ data-name="java"
+ href="https://campus.w3schools.com/collections/course-catalog/products/java-course"
+ target="_blank"
+ >
+ <div></div>
+ <p>Java</p>
+ </a>
+ <a
+ data-name="c"
+ href="https://campus.w3schools.com/products/c-programming-course"
+ target="_blank"
+ >
+ <div></div>
+ <p>C</p>
+ </a>
+ <a
+ data-name="c++"
+ href="https://campus.w3schools.com/collections/course-catalog/products/cpp-course"
+ target="_blank"
+ >
+ <div></div>
+ <p>C++</p>
+ </a>
+ <a
+ data-name="c#"
+ href="https://campus.w3schools.com/products/csharp-course"
+ target="_blank"
+ >
+ <div></div>
+ <p>C#</p>
+ </a>
+ <a
+ data-name="php"
+ href="https://campus.w3schools.com/collections/course-catalog/products/php-course"
+ target="_blank"
+ >
+ <div></div>
+ <p>PHP</p>
+ </a>
+ <a
+ data-name="react"
+ href="https://campus.w3schools.com/collections/course-catalog/products/react-js-course"
+ target="_blank"
+ >
+ <div></div>
+ <p>React</p>
+ </a>
+ <a
+ data-name="mysql"
+ href="https://campus.w3schools.com/products/mysql-course"
+ target="_blank"
+ >
+ <div></div>
+ <p>MySQL</p>
+ </a>
+ <a
+ data-name="excel"
+ href="https://campus.w3schools.com/products/excel-course"
+ target="_blank"
+ >
+ <div></div>
+ <p>Excel</p>
+ </a>
+ <a
+ data-name="dsa"
+ href="https://campus.w3schools.com/products/dsa-course"
+ target="_blank"
+ >
+ <div></div>
+ <p>DSA</p>
+ </a>
+ <a
+ data-name="w3css"
+ href="https://campus.w3schools.com/collections/certifications/products/w3-css-certificate"
+ target="_blank"
+ >
+ <div></div>
+ <p>W3.CSS</p>
+ </a>
+ <a
+ data-name="bootstrap3"
+ href="https://campus.w3schools.com/collections/course-catalog/products/bootstrap-course"
+ target="_blank"
+ >
+ <div></div>
+ <p>Bootstrap 3</p>
+ </a>
+ <a
+ data-name="bootstrap4"
+ href="https://campus.w3schools.com/collections/course-catalog/products/bootstrap-4-course"
+ target="_blank"
+ >
+ <div></div>
+ <p>Bootstrap 4</p>
+ </a>
+ <a
+ data-name="bootstrap5"
+ href="https://campus.w3schools.com/collections/course-catalog/products/learn-bootstrap-5"
+ target="_blank"
+ >
+ <div></div>
+ <p>Bootstrap 5</p>
+ </a>
+ <a
+ data-name="nodejs"
+ href="https://campus.w3schools.com/products/nodejs-course"
+ target="_blank"
+ >
+ <div></div>
+ <p>Node.js</p>
+ </a>
+ <a
+ data-name="typescript"
+ href="https://campus.w3schools.com/collections/course-catalog/products/learn-typescript"
+ target="_blank"
+ >
+ <div></div>
+ <p>TypeScript</p>
+ </a>
+ <a
+ data-name="django"
+ href="https://campus.w3schools.com/products/django-course"
+ target="_blank"
+ >
+ <div></div>
+ <p>Django</p>
+ </a>
+ <a
+ data-name="postgresql"
+ href="https://campus.w3schools.com/products/postgresql-course"
+ target="_blank"
+ >
+ <div></div>
+ <p>PostgreSQL</p>
+ </a>
+ <a
+ data-name="jquery"
+ href="https://campus.w3schools.com/collections/course-catalog/products/jquery-course"
+ target="_blank"
+ >
+ <div></div>
+ <p>jQuery</p>
+ </a>
+ <a
+ data-name="vue"
+ href="https://campus.w3schools.com/products/vue-js-course"
+ target="_blank"
+ >
+ <div></div>
+ <p>Vue</p>
+ </a>
+ <a
+ data-name="numpy"
+ href="https://campus.w3schools.com/collections/course-catalog/products/numpy-course"
+ target="_blank"
+ >
+ <div></div>
+ <p>NumPy</p>
+ </a>
+ <a
+ data-name="pandas"
+ href="https://campus.w3schools.com/collections/course-catalog/products/pandas-course"
+ target="_blank"
+ >
+ <div></div>
+ <p>Pandas</p>
+ </a>
+ <a
+ data-name="xml"
+ href="https://campus.w3schools.com/collections/course-catalog/products/xml-course"
+ target="_blank"
+ >
+ <div></div>
+ <p>XML</p>
+ </a>
+ <a
+ data-name="cybersecurity"
+ href="https://campus.w3schools.com/collections/course-catalog/products/cyber-security-course"
+ target="_blank"
+ >
+ <div></div>
+ <p>Cyber Security</p>
+ </a>
+ <a
+ data-name="accessibility"
+ href="https://campus.w3schools.com/collections/course-catalog/products/accessibility-course"
+ target="_blank"
+ >
+ <div></div>
+ <p>Accessibility</p>
+ </a>
+ <a
+ data-name="angularjs"
+ href="https://campus.w3schools.com/collections/certifications/products/angularjs-certificate"
+ target="_blank"
+ >
+ <div></div>
+ <p>AngularJS</p>
+ </a>
+ <a
+ data-name="git"
+ href="https://campus.w3schools.com/products/git-course"
+ target="_blank"
+ >
+ <div></div>
+ <p>Git</p>
+ </a>
+ <a
+ data-name="mongodb"
+ href="https://campus.w3schools.com/products/mongodb-course"
+ target="_blank"
+ >
+ <div></div>
+ <p>MongoDB</p>
+ </a>
+ <a
+ data-name="r"
+ href="https://campus.w3schools.com/collections/course-catalog/products/r-course"
+ target="_blank"
+ >
+ <div></div>
+ <p>R</p>
+ </a>
+ <a
+ data-name="go"
+ href="https://campus.w3schools.com/collections/certifications/products/go-certificate"
+ target="_blank"
+ >
+ <div></div>
+ <p>Go</p>
+ </a>
+ <a
+ data-name="kotlin"
+ href="https://campus.w3schools.com/products/kotlin-course"
+ target="_blank"
+ >
+ <div></div>
+ <p>Kotlin</p>
+ </a>
+ <a
+ data-name="sass"
+ href="https://campus.w3schools.com/collections/certifications/products/sass-certificate"
+ target="_blank"
+ >
+ <div></div>
+ <p>SASS</p>
+ </a>
+ <a
+ data-name="scipy"
+ href="https://campus.w3schools.com/products/scipy-course"
+ target="_blank"
+ >
+ <div></div>
+ <p>SciPy</p>
+ </a>
+ <a
+ data-name="bash"
+ href="https://campus.w3schools.com/products/bash-certificate"
+ target="_blank"
+ >
+ <div></div>
+ <p>BASH</p>
+ </a>
+ <a
+ data-name="rust"
+ href="https://campus.w3schools.com/products/rust-certificate"
+ target="_blank"
+ >
+ <div></div>
+ <p>Rust</p>
+ </a>
+ </div>
+ </div>
+ </div>
+ </div>
+ </nav>
+ <nav
+ id="nav_services"
+ tabindex="-1"
+ aria-label="Services menu"
+ >
+ <div>
+ <div
+ id="services_list"
+ >
+ <div>
+ <div>
+ <h2><b>All Our Services</b></h2>
+ </div>
+ <div
+ id="toggle-darkmode-wrapper"
+ >
+ <label
+ data-tnb-action="toggleUserPreferredTheme"
+ >
+ <span
+ id="tnb-darkmode-tooltip"
+ >
+ Dark mode
+ </span>
+ <input
+ type="checkbox"
+ id="darkToggle"
+ />
+ <span
+ >
+ <span>&#xe80b;</span>
+ </span>
+ </label>
+ </div>
+ <div
+ data-section="services"
+ >
+ <div>
+ <label
+ for="filter-services-input"
+ >
+ Services filter input
+ </label>
+ <input
+ id="filter-services-input"
+ data-tnb-on-input="filter"
+ data-tnb-filter-nav="nav_services"
+ type="text"
+ placeholder="Filter..."
+ aria-label="Services filter bar"
+ />
+ <div
+ role="button"
+ aria-label="Filter clear button"
+ data-tnb-action="clearFilter"
+ data-tnb-filter-nav="nav_services"
+ >
+ <span>&times;</span>
+ </div>
+ </div>
+ </div>
+ </div>
+ <div>
+ <p>
+ W3Schools offers a wide range of services and products for beginners and professionals,
+ <br />
+ helping millions of people everyday to learn and master new skills.
+ </p>
+ </div>
+ <div>
+ <div>
+ <a
+ href="/tutorials/index.php"
+ title="Tutorials"
+ aria-label="Free tutorials"
+ >
+ <div>
+ <h4>Free Tutorials</h4>
+ <p>Enjoy our free tutorials like millions of other internet users since 1999</p>
+ </div>
+ </a>
+ </div>
+ <div>
+ <a
+ href="/references/index.php"
+ title="References"
+ aria-label="Tutorial references"
+ >
+ <div>
+ <h4>References</h4>
+ <p>Explore our selection of references covering all popular coding languages</p>
+ </div>
+ </a>
+ </div>
+ <div>
+ <a
+ href="/adventure/index.php"
+ target="_blank"
+ rel="noopener noreferrer"
+ title="W3Schools Adventure App"
+ aria-label="W3Schools Adventure App - iOS and Android"
+ >
+ <div
+ >
+ <div>
+ <div>
+ <h4>
+ W3Schools app
+ <span>NEW</span>
+ </h4>
+ <p>
+ For iOS &amp; Android,
+ <br />
+ start a new learning adventure.
+ </p>
+ </div>
+ <div>
+ <img
+ src="/adventure/img/screen-map.png"
+ width="420"
+ height="868"
+ alt=""
+ loading="lazy"
+ />
+ <img
+ src="/adventure/img/mascot-lynx.png"
+ width="230"
+ height="295"
+ alt=""
+ loading="lazy"
+ />
+ </div>
+ </div>
+ </div>
+ </a>
+ </div>
+ <div>
+ <a
+ href="/spaces/index.php"
+ title="Create a Website"
+ aria-label="Create a website"
+ >
+ <div>
+ <h4>Create a Website</h4>
+ <p>
+ Create your own website with
+ <strong>W3Schools Spaces</strong>
+ - no setup required
+ </p>
+ </div>
+ </a>
+ </div>
+ <div>
+ <a
+ href="/exercises/index.php"
+ title="Test yourself with exercises"
+ aria-label="Exercises"
+ >
+ <div>
+ <h4>Exercises</h4>
+ <p>Test your skills with different exercises</p>
+ </div>
+ </a>
+ </div>
+ <div>
+ <a
+ href="/quiztest/default.asp"
+ title="Test yourself with quizzes"
+ aria-label="Quizzes"
+ >
+ <div>
+ <h4>Quizzes</h4>
+ <p>Test yourself with multiple choice questions</p>
+ </div>
+ </a>
+ </div>
+ <div>
+ <a
+ href="/challenges/index.php"
+ title="Test yourself with Code Challenges"
+ aria-label="Code Challenges"
+ >
+ <div>
+ <h4>Code Challenges</h4>
+ <p>Test your skills with interactive code challenges</p>
+ </div>
+ </a>
+ </div>
+ <div>
+ <a
+ target="_blank"
+ href="https://campus.w3schools.com/collections/certifications"
+ title="Certificates"
+ aria-label="Certificates"
+ >
+ <div
+ >
+ <h4>Get Certified</h4>
+ <p>Document your knowledge</p>
+ </div>
+ </a>
+ </div>
+ <div>
+ <a
+ href="https://profile.w3schools.com/sign-up"
+ title="Log in our Sign up"
+ aria-label="Login or Sign up"
+ >
+ <div>
+ <h4>Log in / Sign Up</h4>
+ <p>Create an account to track your progress</p>
+ </div>
+ </a>
+ </div>
+ <div>
+ <a
+ href="/league/"
+ title="Earn XP and climb the ranks with our League"
+ aria-label="League"
+ >
+ <div>
+ <h4>League</h4>
+ <p>Earn XP and climb the ranks with different challenges</p>
+ </div>
+ </a>
+ </div>
+ <div>
+ <a
+ href="https://order.w3schools.com/plans"
+ title="Upgrade subscription"
+ aria-label="Upgrade subscription"
+ >
+ <div
+ >
+ <h4>Upgrade</h4>
+ <p>Become a PLUS user and unlock powerful features (ad-free, hosting, support,..)</p>
+ </div>
+ </a>
+ </div>
+ <div>
+ <a
+ href="/where_to_start.asp"
+ title="Where To Start"
+ aria-label="Where to start"
+ >
+ <div>
+ <h4>Where To Start</h4>
+ <p>Not sure where you want to start? Follow our guided path</p>
+ </div>
+ </a>
+ </div>
+ <div>
+ <a
+ href="/tryit/default.asp"
+ title="W3Schools Code Editor"
+ aria-label="Code editor"
+ >
+ <div>
+ <h4>Code Editor (Try it)</h4>
+ <p>With our online code editor, you can edit code and view the result in your browser</p>
+ </div>
+ </a>
+ </div>
+ <div>
+ <a
+ href="/w3css/w3css_templates.asp"
+ title="Free Web Templates"
+ aria-label="Templates"
+ >
+ <div>
+ <h4>Templates</h4>
+ <p>We have created a bunch of responsive website templates you can use - for free!</p>
+ </div>
+ </a>
+ </div>
+ <div>
+ <a
+ href="/spaces/index.php"
+ title="Web Hosting with Spaces"
+ aria-label="Web Hosting with Spaces"
+ >
+ <div>
+ <h4>Web Hosting</h4>
+ <p>
+ Host your own website, and share it to the world with
+ <strong>W3Schools Spaces</strong>
+ </p>
+ </div>
+ </a>
+ </div>
+ <div>
+ <a
+ href="/spaces/index.php"
+ title="Get your own server"
+ aria-label="Get your own server"
+ >
+ <div
+ >
+ <h4>Create a Server</h4>
+ <p>Create your own server using Python, PHP, React.js, Node.js, Java, C#, etc.</p>
+ </div>
+ </a>
+ </div>
+ <div>
+ <a
+ href="/howto/default.asp"
+ title="How To Collection"
+ aria-label="How To's"
+ >
+ <div>
+ <h4>How To's</h4>
+ <p>Large collection of code snippets for HTML, CSS and JavaScript</p>
+ </div>
+ </a>
+ </div>
+ <div>
+ <a
+ href="/w3css/default.asp"
+ title="W3.CSS Framework"
+ aria-label="W3.CSS Framework"
+ >
+ <div>
+ <h4>CSS Framework</h4>
+ <p>
+ Build fast and responsive sites using our free
+ <strong>W3.CSS</strong>
+ framework
+ </p>
+ </div>
+ </a>
+ </div>
+ <div>
+ <a
+ href="/videos/index.php"
+ title="HTML Video Tutorial"
+ aria-label="Videos"
+ >
+ <div
+ >
+ <h4>Videos</h4>
+ <p>Learn the basics of HTML in a fun and engaging video tutorial</p>
+ </div>
+ </a>
+ </div>
+ <div>
+ <a
+ href="/browsers/default.asp"
+ title="Browser Statistics"
+ aria-label="Browser Statistics"
+ >
+ <div>
+ <h4>Browser Statistics</h4>
+ <p>Read long term trends of browser usage</p>
+ </div>
+ </a>
+ </div>
+ <div>
+ <a
+ href="/typingspeed/default.asp"
+ title="Test Your Typing speed"
+ aria-label="Test Your Typing speed"
+ >
+ <div>
+ <h4>Typing Speed</h4>
+ <p>Test your typing speed</p>
+ </div>
+ </a>
+ </div>
+ <div>
+ <a
+ href="/colors/colors_picker.asp"
+ title="Color Picker"
+ aria-label="Color picker"
+ >
+ <div
+ >
+ <h4>Color Picker</h4>
+ <p>
+ Use our color picker to find different RGB, HEX and HSL colors.
+ <img
+ src="/images/colorpicker2000.png"
+ alt="A circular color wheel showing the gradation of colors in the spectrum"
+ loading="lazy"
+ />
+ </p>
+ </div>
+ </a>
+ </div>
+ <div>
+ <a
+ target="_blank"
+ href="https://campus.w3schools.com/pages/newsletter"
+ title="Join Our Newsletter"
+ aria-label="Newsletter"
+ >
+ <div>
+ <h4>Newsletter</h4>
+ <p>Join our newsletter and get access to exclusive content every month</p>
+ </div>
+ </a>
+ </div>
+ <div>
+ <a
+ href="/charsets/ref_emoji_intro.asp"
+ title="Emojis Reference"
+ aria-label="Emojis Reference"
+ >
+ <div
+ >
+ <h4>Emojis Reference</h4>
+ <p>
+ Check out our refererence page with all the emojis supported in HTML
+ <span
+ alt="Smiley"
+ >
+ &#128522;
+ </span>
+ </p>
+ </div>
+ </a>
+ </div>
+ <div>
+ <a
+ href="/codegame/index.html"
+ title="Coding Game"
+ aria-label="Code game"
+ >
+ <div
+ >
+ <h4>Code Game</h4>
+ <p>
+ W3Schools Coding Game! Help the lynx collect pine cones
+ <img
+ src="/signup/lynxlogo.svg"
+ alt="Lynx logo"
+ />
+ </p>
+ </div>
+ </a>
+ </div>
+ <div>
+ <a
+ href="/charsets/default.asp"
+ title="UTF-8 Reference"
+ aria-label="UTF-8 Reference"
+ >
+ <div
+ >
+ <h4>UTF-8 Reference</h4>
+ <p>Check out our full UTF-8 Character reference</p>
+ </div>
+ </a>
+ </div>
+ <div>
+ <a
+ href="https://discord.com/invite/w3schools"
+ title="W3Schools Community"
+ aria-label="W3Schools Community"
+ target="_blank"
+ >
+ <div>
+ <h4>Community</h4>
+ <p>Chat, Learn and Connect with Us on Discord</p>
+ </div>
+ </a>
+ </div>
+ <div>
+ <a target="_blank"
+ href="https://campus.w3schools.com/pages/for-teams"
+ title="W3Schools Campus"
+ aria-label="W3Schools Campus"
+ >
+ <div>
+ <h4>Campus (previously Academy)</h4>
+ <p>Contact us about W3Schools Campus for educational institutions</p>
+ </div>
+ </a>
+ </div>
+ <div>
+ <a target="_blank"
+ href="https://campus.w3schools.com/pages/for-teams"
+ title="W3Schools Campus"
+ aria-label="W3Schools Campus"
+ >
+ <div>
+ <h4>For Businesses</h4>
+ <p>Contact us about W3Schools Campus for your organization</p>
+ </div>
+ </a>
+ </div>
+ <div>
+ <div
+ title="Contact Us"
+ aria-label="Contact Us"
+ >
+ <div>
+ <h4>Contact Us</h4>
+ <p>
+ About sales:
+ <br />
+ About errors:
+ </p>
+ </div>
+ </div>
+ </div>
+ <div>
+ <a
+ target="_blank"
+ href="https://www.youtube.com/@w3schools"
+ title="W3Schools on YouTube"
+ rel="noopener"
+ >
+ <i
+ aria-hidden="true"
+ ></i>
+ </a>
+ <a
+ target="_blank"
+ href="https://www.linkedin.com/company/w3schools.com/"
+ title="W3Schools on LinkedIn"
+ rel="noopener"
+ >
+ <i
+ aria-hidden="true"
+ >
+ &#62220;
+ </i>
+ </a>
+ <a
+ target="_blank"
+ href="https://discord.com/invite/w3schools"
+ title="Join the W3schools community on Discord"
+ rel="noopener"
+ >
+ <i
+ aria-hidden="true"
+ >
+ &#59399;
+ </i>
+ </a>
+ <a
+ target="_blank"
+ href="https://www.facebook.com/w3schoolscom/"
+ title="W3Schools on Facebook"
+ rel="noopener"
+ >
+ <i
+ aria-hidden="true"
+ >
+ &#59398;
+ </i>
+ </a>
+ <a
+ target="_blank"
+ href="https://www.instagram.com/w3schools.com_official/"
+ title="W3Schools on Instagram"
+ rel="noopener"
+ >
+ <i
+ aria-hidden="true"
+ >
+ &#61805;
+ </i>
+ </a>
+ </div>
+ </div>
+ <div
+ tabindex="0"
+ data-tnb-action="closeNavItem"
+ data-tnb-nav-id="services"
+ data-tnb-on-keydown="mouseHandler"
+ role="button"
+ aria-label="Close navigation"
+ >
+ <span>&times;</span>
+ </div>
+ </div>
+ </div>
+ </nav>
+ </div>
+ </div>
+ <div id="googleSearch">
+ <div></div>
+ </div>
+</div>
+<div></div>
+<div>
+<div id="subtopnav" onmousedown="startscrolling_subtopnav(event)" onmousemove="scrolling_subtopnav(event)" onmouseup="endscrolling_subtopnav(event)" onclick="return pellessii(event)">
+ <div id="scroll_left_btn">
+ <span onmousedown="scrollmenow(-1)" onmouseup="stopscrollmenow()" onmouseout="stopscrollmenow()">&nbsp;&nbsp;&nbsp;<span>&#10094;</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+ </div>
+ <div id="scroll_right_btn">
+ <span onmousedown="scrollmenow(1)" onmouseup="stopscrollmenow()" onmouseout="stopscrollmenow()">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>&#10095;</span>&nbsp;&nbsp;&nbsp;</span>
+ </div>
+ <div id="menubtn_container">
+ <span>
+ <a href='javascript:void(0);' class='topnav-icons fa fa-menu w3-hide-large w3-left w3-bar-item w3-button ga-nav' onclick='open_menu()' title='Menu'></a>
+ </span> 
+ </div>
+ <a href="/html/default.asp" title="HTML Tutorial">HTML</a>
+ <a href="/css/default.asp" title="CSS Tutorial">CSS</a>
+ <a href="/js/default.asp" title="JavaScript Tutorial">JAVASCRIPT</a>
+ <a href="/sql/default.asp" title="SQL Tutorial">SQL</a>
+ <a href="/python/default.asp" title="Python Tutorial">PYTHON</a>
+ <a href="/java/default.asp" title="Java Tutorial">JAVA</a>
+ <a href="/php/default.asp" title="PHP Tutorial">PHP</a>
+ <a href="/c/index.php" title="C Tutorial">C</a>
+ <a href="/cpp/default.asp" title="C++ Tutorial">C++</a>
+ <a href="/cs/index.php" title="C# Tutorial">C#</a>
+ <a href="/aws/index.php" title="AWS Tutorial">AWS</a>
+ <a href="/w3css/default.asp" title="W3.CSS Tutorial">W3.CSS</a>
+ <a href="/howto/default.asp" title="How to">HOW TO</a>
+ <a href="/bootstrap/bootstrap_ver.asp" title="Bootstrap Tutorial">BOOTSTRAP</a>
+ <a href="/react/default.asp" title="React Tutorial">REACT</a>
+ <a href="/mysql/default.asp" title="MySQL Tutorial">MYSQL</a>
+ <a href="/jquery/default.asp" title="JQuery Tutorial">JQUERY</a>
+ <a href="/excel/index.php" title="Excel Tutorial">EXCEL</a>
+ <a href="/xml/default.asp" title="XML Tutorial">XML</a>
+ <a href="/django/index.php" title="Django Tutorial">DJANGO</a>
+ <a href="/python/numpy/default.asp" title="NumPy Tutorial">NUMPY</a>
+ <a href="/python/pandas/default.asp" title="Pandas Tutorial">PANDAS</a>
+ <a href="/nodejs/default.asp" title="Node.js Tutorial">NODEJS</a>
+ <a href="/dsa/index.php" title="DSA Tutorial">DSA</a>
+ <a href="/typescript/index.php" title="TypeScript Tutorial">TYPESCRIPT</a>
+ <a href="/angular/default.asp" title="Angular Tutorial">ANGULAR</a>
+ <a href="/angularjs/default.asp" title="Angular.js Tutorial">ANGULARJS</a>
+ <a href="/git/default.asp" title="Git Tutorial">GIT</a>
+ <a href="/postgresql/index.php" title="PostgreSQL Tutorial">POSTGRESQL</a>
+ <a href="/mongodb/index.php" title="MongoDB Tutorial">MONGODB</a>
+ <a href="/asp/default.asp" title="ASP Tutorial">ASP</a>
+ <a href="/ai/default.asp" title="A.I. Tutorial">AI</a>
+ <a href="/r/default.asp" title="R Tutorial">R</a>
+ <a href="/go/index.php" title="Go Tutorial">GO</a>
+ <a href="/kotlin/index.php" title="Kotlin Tutorial">KOTLIN</a>
+ <a href="/swift/default.asp" title="Swift Tutorial">SWIFT</a>
+ <a href="/sass/default.asp" title="Sass Tutorial">SASS</a>
+ <a href="/vue/index.php" title="Vue.js Tutorial">VUE</a>
+ <a href="/gen_ai/index.php" title="Gen A.I. Tutorial">GEN AI</a>
+ <a href="/python/scipy/index.php" title="SciPy Tutorial">SCIPY</a>
+ <a href="/cybersecurity/index.php" title="Cyber security Tutorial">CYBERSECURITY</a>
+ <a href="/datascience/default.asp" title="Data science Tutorial">DATA SCIENCE</a>
+ <a href="/programming/index.php" title="Introduction to Programming">INTRO TO PROGRAMMING</a>
+ <a href="/htmlcss/default.asp" title="Introduction to HTML &amp; CSS">INTRO TO HTML &amp; CSS</a>
+ <a href="/bash/index.php" title="Bash Tutorial">BASH</a>
+ <a href="/rust/index.php" title="Rust Tutorial">RUST</a>
+ <a href="/tools/index.php" title="Web Developer Tools">TOOLS</a>
+ <a href="javascript:void(0)"></a> 
+</div>
+</div>
+<div class='contentcontainer'>
+<div class='belowtopnavcontainer'>
+<div class='w3-sidebar w3-collapse' id='sidenav'>
+ <div id='leftmenuinner'>
+ <div id='leftmenuinnerinner'>
+<h2><span>HTML</span> Tutorial</h2>
+<a target="_top" href="default.asp">HTML HOME</a>
+<a target="_top" href="html_intro.asp">HTML Introduction</a>
+<div>
+ <a target="_top" href="html_intro.asp">Introduction</a>
+ <a target="_top" href="html_exercise_embed.asp?topic=intro">Exercises</a>
+</div>
+<a target="_top" href="html_editors.asp">HTML Editors</a>
+<a target="_top" href="html_basic.asp">HTML Basic</a>
+<div>
+ <a target="_top" href="html_basic.asp">Basic</a>
+ <a target="_top" href="html_exercise_embed.asp?topic=basic">Exercises</a>
+ <a target="_top" href="html_challenges_basic.asp">Code Challenge</a>
+</div>
+<a target="_top" href="html_elements.asp">HTML Elements</a>
+<div>
+ <a target="_top" href="html_elements.asp">Elements</a>
+ <a target="_top" href="html_exercise_embed.asp?topic=elements">Exercises</a>
+ <a target="_top" href="html_challenges_elements.asp">Code Challenge</a>
+</div>
+<a target="_top" href="html_attributes.asp">HTML Attributes</a>
+<div>
+ <a target="_top" href="html_attributes.asp">Attributes</a>
+ <a target="_top" href="html_exercise_embed.asp?topic=attributes">Exercises</a>
+ <a target="_top" href="html_challenges_attributes.asp">Code Challenge</a>
+</div>
+<a target="_top" href="html_headings.asp">HTML Headings</a>
+<div>
+ <a target="_top" href="html_headings.asp">Headings</a>
+ <a target="_top" href="html_exercise_embed.asp?topic=headings">Exercises</a>
+ <a target="_top" href="html_challenges_headings.asp">Code Challenge</a>
+</div>
+<a target="_top" href="html_paragraphs.asp">HTML Paragraphs</a>
+<div>
+ <a target="_top" href="html_paragraphs.asp">Paragraphs</a>
+ <a target="_top" href="html_exercise_embed.asp?topic=paragraphs">Exercises</a>
+ <a target="_top" href="html_challenges_paragraphs.asp">Code Challenge</a>
+</div>
+<a target="_top" href="html_styles.asp">HTML Styles</a>
+<div>
+ <a target="_top" href="html_styles.asp">Styles</a>
+ <a target="_top" href="html_exercise_embed.asp?topic=styles">Exercises</a>
+ <a target="_top" href="html_challenges_styles.asp">Code Challenge</a>
+</div>
+<a target="_top" href="html_formatting.asp">HTML Formatting</a>
+<div>
+ <a target="_top" href="html_formatting.asp">Formatting</a>
+ <a target="_top" href="html_exercise_embed.asp?topic=formatting">Exercises</a>
+ <a target="_top" href="html_challenges_formatting.asp">Code Challenge</a>
+</div>
+<a target="_top" href="html_quotation_elements.asp">HTML Quotations</a>
+<div>
+ <a target="_top" href="html_quotation_elements.asp">Quotations</a>
+ <a target="_top" href="html_exercise_embed.asp?topic=quotation_elements">Exercises</a>
+ <a target="_top" href="html_challenges_quotations.asp">Code Challenge</a>
+</div>
+<a target="_top" href="html_comments.asp">HTML Comments</a>
+<div>
+ <a target="_top" href="html_comments.asp">Comments</a>
+ <a target="_top" href="html_exercise_embed.asp?topic=comments">Exercises</a>
+ <a target="_top" href="html_challenges_comments.asp">Code Challenge</a>
+</div>
+<a target="_top" href="html_colors.asp">HTML Colors</a>
+<div>
+ <a target="_top" href="html_colors.asp">Colors</a>
+ <a target="_top" href="html_colors_rgb.asp">RGB</a>
+ <a target="_top" href="html_colors_hex.asp">HEX</a>
+ <a target="_top" href="html_colors_hsl.asp">HSL</a>
+ <a target="_top" href="html_exercise_embed.asp?topic=colors">Exercises</a>
+ <a target="_top" href="html_challenges_colors.asp">Code Challenge</a>
+</div>
+<a target="_top" href="html_css.asp">HTML CSS</a>
+<div>
+ <a target="_top" href="html_css.asp">CSS</a>
+ <a target="_top" href="html_exercise_embed.asp?topic=css">Exercises</a>
+ <a target="_top" href="html_challenges_css.asp">Code Challenge</a>
+</div>
+<a target="_top" href="html_links.asp">HTML Links</a>
+<div>
+ <a target="_top" href="html_links.asp">Links</a>
+ <a target="_top" href="html_links_colors.asp">Link Colors</a>
+ <a target="_top" href="html_links_bookmarks.asp">Link Bookmarks</a>
+ <a target="_top" href="html_exercise_embed.asp?topic=links">Exercises</a>
+ <a target="_top" href="html_challenges_links.asp">Code Challenge</a>
+</div>
+<a target="_top" href="html_images.asp">HTML Images</a>
+<div>
+ <a target="_top" href="html_images.asp">Images</a>
+ <a target="_top" href="html_images_imagemap.asp">Image Map</a>
+ <a target="_top" href="html_images_background.asp">Background Images</a>
+ <a target="_top" href="html_images_picture.asp">The Picture Element</a>
+ <a target="_top" href="html_exercise_embed.asp?topic=images">Exercises</a>
+ <a target="_top" href="html_challenges_images.asp">Code Challenge</a>
+</div>
+<a target="_top" href="html_project_bio.php">HTML Project</a>
+<a target="_top" href="html_favicon.asp">HTML Favicon</a>
+<div>
+ <a target="_top" href="html_favicon.asp">Favicon</a>
+ <a target="_top" href="html_exercise_embed.asp?topic=favicon">Exercises</a>
+</div>
+<a target="_top" href="html_page_title.asp">HTML Page Title</a>
+<div>
+ <a target="_top" href="html_page_title.asp">Page Title</a>
+ <a target="_top" href="html_exercise_embed.asp?topic=page_title">Exercises</a>
+</div>
+<a target="_top" href="html_tables.asp">HTML Tables</a>
+<div>
+ <a target="_top" href="html_tables.asp">HTML Tables</a>
+ <a target="_top" href="html_table_borders.asp">Table Borders</a>
+ <a target="_top" href="html_table_sizes.asp">Table Sizes</a>
+ <a target="_top" href="html_table_headers.asp">Table Headers</a>
+ <a target="_top" href="html_table_padding_spacing.asp">Padding &amp; Spacing</a>
+ <a target="_top" href="html_table_colspan_rowspan.asp">Colspan &amp; Rowspan</a>
+ <a target="_top" href="html_table_styling.asp">Table Styling</a>
+ <a target="_top" href="html_table_colgroup.asp">Table Colgroup</a>
+ <a target="_top" href="html_exercise_embed.asp?topic=tables">Exercises</a>
+ <a target="_top" href="html_challenges_tables.asp">Code Challenge</a>
+</div>
+<a target="_top" href="html_lists.asp">HTML Lists</a>
+<div>
+ <a target="_top" href="html_lists.asp">Lists</a>
+ <a target="_top" href="html_lists_unordered.asp">Unordered Lists</a>
+ <a target="_top" href="html_lists_ordered.asp">Ordered Lists</a>
+ <a target="_top" href="html_lists_other.asp">Description Lists</a>
+ <a target="_top" href="html_exercise_embed.asp?topic=lists">Exercises</a>
+ <a target="_top" href="html_challenges_lists.asp">Code Challenge</a>
+</div>
+<a target="_top" href="html_blocks.asp">HTML Block &amp; Inline</a>
+<div>
+ <a target="_top" href="html_blocks.asp">Block &amp; Inline</a>
+ <a target="_top" href="html_exercise_embed.asp?topic=blocks">Exercises</a>
+ <a target="_top" href="html_challenges_blocks.asp">Code Challenge</a>
+</div>
+<a target="_top" href="html_div.asp">HTML Div</a>
+<div>
+ <a target="_top" href="html_div.asp">Div</a>
+ <a target="_top" href="html_exercise_embed.asp?topic=div">Exercises</a>
+ <a target="_top" href="html_challenges_div.asp">Code Challenge</a>
+</div>
+<a target="_top" href="html_classes.asp">HTML Classes</a>
+<div>
+ <a target="_top" href="html_classes.asp">Classes</a>
+ <a target="_top" href="html_exercise_embed.asp?topic=classes">Exercises</a>
+ <a target="_top" href="html_challenges_classes.asp">Code Challenge</a>
+</div>
+<a target="_top" href="html_id.asp">HTML Id</a>
+<div>
+ <a target="_top" href="html_id.asp">Id</a>
+ <a target="_top" href="html_exercise_embed.asp?topic=id">Exercises</a>
+ <a target="_top" href="html_challenges_id.asp">Code Challenge</a>
+</div>
+<a target="_top" href="html_buttons.asp">HTML Buttons</a>
+<div>
+ <a target="_top" href="html_buttons.asp">Buttons</a>
+ <a target="_top" href="html_challenges_buttons.asp">Code Challenge</a>
+</div>
+<a target="_top" href="html_iframe.asp">HTML Iframes</a>
+<div>
+ <a target="_top" href="html_iframe.asp">Iframes</a>
+ <a target="_top" href="html_exercise_embed.asp?topic=iframe">Exercises</a>
+ <a target="_top" href="html_challenges_iframes.asp">Code Challenge</a>
+</div>
+<a target="_top" href="html_scripts.asp">HTML JavaScript</a>
+<div>
+ <a target="_top" href="html_scripts.asp">JavaScript</a>
+ <a target="_top" href="html_exercise_embed.asp?topic=scripts">Exercises</a>
+ <a target="_top" href="html_challenges_scripts.asp">Code Challenge</a>
+</div>
+<a target="_top" href="html_filepaths.asp">HTML File Paths</a>
+<div>
+ <a target="_top" href="html_filepaths.asp">File Paths</a>
+ <a target="_top" href="html_challenges_filepaths.asp">Code Challenge</a>
+</div>
+<a target="_top" href="html_head.asp">HTML Head</a>
+<div>
+ <a target="_top" href="html_head.asp">Head</a>
+ <a target="_top" href="html_exercise_embed.asp?topic=head">Exercises</a>
+ <a target="_top" href="html_challenges_head.asp">Code Challenge</a>
+</div>
+<a target="_top" href="html_layout.asp">HTML Layout</a>
+<div>
+ <a target="_top" href="html_layout.asp">Layouts</a>
+ <a target="_top" href="html_layout_float.asp">Layout - Float</a>
+ <a target="_top" href="html_layout_flexbox.asp">Layout - Flexbox</a>
+ <a target="_top" href="html_layout_grid.asp">Layout - Grid</a> 
+ <a target="_top" href="html_challenges_layout.asp">Code Challenge</a>
+</div>
+<a target="_top" href="html_responsive.asp">HTML Responsive</a>
+<div>
+ <a target="_top" href="html_responsive.asp">Responsive</a>
+ <a target="_top" href="html_exercise_embed.asp?topic=responsive">Exercises</a>
+ <a target="_top" href="html_challenges_responsive.asp">Code Challenge</a>
+</div>
+<a target="_top" href="html_computercode_elements.asp">HTML Computercode</a>
+<div>
+ <a target="_top" href="html_computercode_elements.asp">Computercode</a>
+ <a target="_top" href="html_exercise_embed.asp?topic=computercode_elements">Exercises</a>
+ <a target="_top" href="html_challenges_computercode.asp">Code Challenge</a>
+</div>
+<a target="_top" href="html5_semantic_elements.asp">HTML Semantics</a>
+<div>
+ <a target="_top" href="html5_semantic_elements.asp">Semantics</a>
+ <a target="_top" href="html_exercise_embed.asp?topic=semantic_elements">Exercises</a>
+ <a target="_top" href="html_challenges_semantics.asp">Code Challenge</a>
+</div>
+<a target="_top" href="html5_syntax.asp">HTML Style Guide</a>
+<a target="_top" href="html_entities.asp">HTML Entities</a>
+<div>
+ <a target="_top" href="html_entities.asp">Entities</a>
+ <a target="_top" href="html_exercise_embed.asp?topic=entities">Exercises</a>
+ <a target="_top" href="html_challenges_entities.asp">Code Challenge</a>
+</div>
+<a target="_top" href="html_symbols.asp">HTML Symbols</a>
+<a target="_top" href="html_emojis.asp">HTML Emojis</a>
+<a target="_top" href="html_charset.asp">HTML Charsets</a>
+<a target="_top" href="html_urlencode.asp">HTML URL Encode</a>
+<a target="_top" href="html_xhtml.asp">HTML vs. XHTML</a>
+<br>
+<h2><span>HTML</span> Forms</h2>
+<a target="_top" href="html_forms.asp">HTML Forms</a>
+<div>
+ <a target="_top" href="html_forms.asp">Forms</a>
+ <a target="_top" href="html_exercise_embed.asp?topic=forms">Exercises</a>
+ <a target="_top" href="html_challenges_forms.asp">Code Challenge</a>
+</div>
+<a target="_top" href="html_forms_attributes.asp">HTML Form Attributes</a>
+<div>
+ <a target="_top" href="html_forms_attributes.asp">Form Attributes</a>
+ <a target="_top" href="html_exercise_embed.asp?topic=forms_attributes">Exercises</a>
+</div>
+<a target="_top" href="html_form_elements.asp">HTML Form Elements</a>
+<div>
+ <a target="_top" href="html_form_elements.asp">Form Elements</a>
+ <a target="_top" href="html_exercise_embed.asp?topic=form_elements">Exercises</a>
+ <a target="_top" href="html_challenges_form_elements.asp">Code Challenge</a>
+</div>
+<a target="_top" href="html_form_input_types.asp">HTML Input Types</a>
+<div>
+ <a target="_top" href="html_form_input_types.asp">Input Types</a>
+ <a target="_top" href="html_exercise_embed.asp?topic=form_input_types">Exercises</a>
+ <a target="_top" href="html_challenges_input_types.asp">Code Challenge</a>
+</div>
+<a target="_top" href="html_form_attributes.asp">HTML Input Attributes</a>
+<div>
+ <a target="_top" href="html_form_attributes.asp">Input Attributes</a>
+ <a target="_top" href="html_exercise_embed.asp?topic=form_attributes">Exercises</a>
+</div>
+<a target="_top" href="html_form_attributes_form.asp">Input Form Attributes</a>
+<div>
+ <a target="_top" href="html_form_attributes_form.asp">Input Form Attributes</a>
+ <a target="_top" href="html_exercise_embed.asp?topic=form_attributes_form">Exercises</a>
+</div>
+<br>
+<h2><span>HTML</span> Graphics</h2>
+<a target="_top" href="html5_canvas.asp">HTML Canvas</a>
+<div>
+ <a target="_top" href="html5_canvas.asp">Canvas</a>
+ <a target="_top" href="html_challenges_canvas.asp">Code Challenge</a>
+</div>
+<a target="_top" href="html5_svg.asp">HTML SVG</a>
+<div>
+ <a target="_top" href="html5_svg.asp">SVG</a>
+ <a target="_top" href="html_challenges_svg.asp">Code Challenge</a>
+</div>
+<br>
+<h2><span>HTML</span> Media</h2>
+<a target="_top" href="html_media.asp">HTML Media</a>
+<a target="_top" href="html5_video.asp">HTML Video</a>
+<div>
+ <a target="_top" href="html5_video.asp">Video</a>
+ <a target="_top" href="html_challenges_video.asp">Code Challenge</a>
+</div>
+<a target="_top" href="html5_audio.asp">HTML Audio</a>
+<div>
+ <a target="_top" href="html5_audio.asp">Audio</a>
+ <a target="_top" href="html_challenges_audio.asp">Code Challenge</a>
+</div>
+<a target="_top" href="html_youtube.asp">HTML YouTube</a>
+<br>
+<h2><span>Web</span> APIs</h2>
+<a target="_top" href="html5_api_whatis.asp">Web APIs</a>
+<a target="_top" href="html5_geolocation.asp">Geolocation API</a>
+<a target="_top" href="html5_draganddrop.asp">Drag and Drop API</a>
+<a target="_top" href="html5_popover.asp">Popover API</a>
+<a target="_top" href="html5_webstorage.asp">Web Storage API</a>
+<a target="_top" href="html5_webworkers.asp">Web Workers API</a>
+<a target="_top" href="html5_serversentevents.asp">Server-Sent Events API</a>
+<br>
+<h2><span>HTML</span> Cert</h2>
+<a target="_top" href="html_exam.asp">HTML Certificate</a>
+<br>
+<h2><span>HTML</span> Examples</h2>
+<a target="_top" href="html_examples.asp">HTML Examples</a>
+<a target="_top" href="html_videos.asp">HTML Videos</a>
+<a target="_top" href="html_editor.asp">HTML Editor</a>
+<a target="_top" href="html_quiz.asp">HTML Quiz</a>
+<a target="_top" href="html_exercises.asp">HTML Exercises</a>
+<a target="_top" href="html_challenges.asp">HTML Challenges</a>
+<a target="_top" href="html_website.asp">HTML Website</a>
+<a target="_top" href="html_syllabus.asp">HTML Syllabus</a>
+<a target="_top" href="html_study_plan.asp">HTML Study Plan</a>
+<a target="_top" href="html_interview_prep.asp">HTML Interview Prep</a>
+<a target="_top" href="html_summary.asp">HTML Summary</a>
+<a target="_top" href="html_accessibility.asp">HTML Accessibility</a>
+<br>
+<h2><span>HTML</span> References</h2>
+<a target="_top" href="/tags/default.asp">HTML Tag List</a>
+<a target="_top" href="/tags/ref_attributes.asp">HTML Attributes</a>
+<a target="_top" href="/tags/ref_standardattributes.asp">HTML Global Attributes</a>
+<a target="_top" href="/tags/ref_html_browsersupport.asp">HTML Browser Support</a>
+<a target="_top" href="/tags/ref_eventattributes.asp">HTML Event Attributes</a>
+<a target="_top" href="/tags/ref_colornames.asp">HTML Colors</a>
+<a target="_top" href="/tags/ref_canvas.asp">HTML Canvas</a>
+<a target="_top" href="/tags/ref_av_dom.asp">HTML Audio/Video</a>
+<a target="_top" href="/tags/ref_html_dtd.asp">HTML Doctypes</a>
+<a target="_top" href="/tags/ref_charactersets.asp">HTML Character Sets</a>
+<a target="_top" href="/tags/ref_urlencode.asp">HTML URL Encode</a>
+<a target="_top" href="/tags/ref_language_codes.asp">HTML Language Codes</a>
+<a target="_top" href="/tags/ref_country_codes.asp">HTML Country Codes</a>
+<a target="_top" href="/tags/ref_httpmessages.asp">HTTP Status Codes</a>
+<a target="_top" href="/tags/ref_httpmethods.asp">HTTP Request Methods</a>
+<a target="_top" href="/tags/ref_pxtoemconversion.asp">PX to EM Converter</a>
+<a target="_top" href="/tags/ref_keyboardshortcuts.asp">Keyboard Shortcuts</a>
+ <br><br>
+ </div>
+ </div>
+</div>
+<div class='w3-main ws-light-grey' id='belowtopnav' style='margin-left:230px;'>
+ <div class='w3-row'>
+ <div class='w3-col l10 m12 w3-white' id='main'>
+ <div id='mainLeaderboard' style='overflow:hidden;'>
+ </div>
+<h1>HTML <span>Video</span></h1>
+<div>
+<a href="html_media.asp">&#10094; Previous</a>
+<a href="/adventure/demo.php"><span aria-hidden="true"></span>Try Adventure Mode</a>
+<a href="html_challenges_video.asp">Next &#10095;</a>
+</div>
+<hr>
+<div data-nosnippet>
+<span>Share</span>
+<button type="button" data-ws-net="x" aria-label="Share on X" title="Share on X"></button>
+<button type="button" data-ws-net="facebook" aria-label="Share on Facebook" title="Share on Facebook"></button>
+<button type="button" data-ws-net="linkedin" aria-label="Share on LinkedIn" title="Share on LinkedIn"></button>
+<button type="button" data-ws-net="copy" aria-label="Copy link" title="Copy link"><span>Link Copied</span></button>
+</div>
+<h2>HTML &lt;video&gt; Element</h2>
+<p>The HTML <code>&lt;video&gt;</code> element is used to show a video on a web page.</p>
+<p>It supports playback controls like play, pause, volume, and fullscreen.</p>
+<div>
+<h3>Example</h3>
+<p>The HTML code:</p>
+<div>
+ &lt;video width=&quot;400&quot; controls&gt;<br>&nbsp; &lt;source src=&quot;mov_bbb.mp4&quot; 
+ type=&quot;video/mp4&quot;&gt;<br>&nbsp; &lt;source src=&quot;mov_bbb.ogg&quot; type=&quot;video/ogg&quot;&gt;<br>&nbsp; 
+ Your browser does not support HTML video.<br>&lt;/video&gt; </div>
+<h3>Result</h3>
+<div>
+ <div> 
+ <video id="video1" controls>
+ <source src="mov_bbb.mp4" type="video/mp4">
+ <source src="mov_bbb.ogg" type="video/ogg">
+ Your browser does not support HTML5 video.
+ </video>
+<p>Video courtesy of <a href="https://www.bigbuckbunny.org/" target="_blank">Big Buck Bunny</a>.</p>
+</div> 
+</div>
+<a target="_blank" href="tryit.asp?filename=tryhtml5_video">Try it Yourself &raquo;</a>
+</div>
+<hr>
+<div id="midcontentadcontainer">
+</div>
+<hr>
+<h2>HTML &lt;video&gt; Attributes</h2>
+<p>The <code>controls</code> attribute adds video controls, like play, pause, volume 
+and full screen.</p>
+<p>It is also a good idea to include <code>width</code> and <code>height</code> attributes. If height and width are not set, the page 
+might flicker while the video loads.</p>
+<p>The <code>&lt;source&gt;</code> element allows you to specify alternative video 
+files the browser may choose from. The browser will use the first recognized format.</p>
+<p>The text between the <code>&lt;video&gt;</code> and <code>&lt;/video&gt;</code> tags will only be displayed 
+in browsers that do not 
+support the <code>&lt;video&gt;</code> element.</p>
+<hr>
+<h2>HTML &lt;video&gt; Autoplay</h2>
+<p>To start a video automatically, use the <code>autoplay</code> attribute:</p>
+<div>
+<h3>Example</h3>
+<div>
+&lt;video controls width=&quot;320&quot; height=&quot;240&quot; autoplay&gt;<br>
+&nbsp; &lt;source src=&quot;movie.mp4&quot; type=&quot;video/mp4&quot;&gt;<br>
+&nbsp; &lt;source src=&quot;movie.ogg&quot; type=&quot;video/ogg&quot;&gt;<br>
+Your browser does not support the video tag.<br>
+&lt;/video&gt;
+</div>
+<a target="_blank" href="tryit.asp?filename=tryhtml5_video_autoplay">Try it Yourself &raquo;</a>
+</div>
+<p><strong>Tip:</strong> Add <code>muted</code> after <code>
+autoplay</code> to let your video start playing automatically (but muted):</p>
+<div>
+<h3>Example</h3>
+<div>
+&lt;video controls width=&quot;320&quot; height=&quot;240&quot; autoplay muted&gt;<br>
+&nbsp; &lt;source src=&quot;movie.mp4&quot; type=&quot;video/mp4&quot;&gt;<br>
+&nbsp; &lt;source src=&quot;movie.ogg&quot; type=&quot;video/ogg&quot;&gt;<br>
+Your browser does not support the video tag.<br>
+&lt;/video&gt;
+</div>
+<a target="_blank" href="tryit.asp?filename=tryhtml5_video_autoplay_mute">Try it Yourself &raquo;</a>
+</div>
+<hr>
+<h2>HTML &lt;video&gt; Loop</h2>
+<p>The <code>loop</code> attribute specifies that the video will start over again, every time it is finished:</p>
+<div>
+<h3>Example</h3>
+<div>
+&lt;video controls width=&quot;320&quot; height=&quot;240&quot; autoplay loop&gt;<br>
+&nbsp; &lt;source src=&quot;movie.mp4&quot; type=&quot;video/mp4&quot;&gt;<br>
+&nbsp; &lt;source src=&quot;movie.ogg&quot; type=&quot;video/ogg&quot;&gt;<br>
+Your browser does not support the video tag.<br>
+&lt;/video&gt;
+</div>
+<a target="_blank" href="tryit.asp?filename=tryhtml5_video_loop">Try it Yourself &raquo;</a>
+</div>
+<hr>
+<h2>Supported Video Formats in HTML5</h2>
+<p>The supported video formats in HTML are:</p>
+<table>
+<tr>
+<th>Video Format</th>
+<th>File Extension</th>
+<th>Media Type</th>
+</tr>
+ <tr>
+ <td>MPEG-4<br>or MP4</td>
+ <td>.mp4</td>
+ <td>video/mp4</td>
+ </tr>
+ <tr>
+ <td>Ogg</td>
+ <td>.ogg</td>
+ <td>video/ogg</td>
+ </tr>
+ <tr>
+ <td>WebM</td>
+ <td>.webm</td>
+ <td>video/webm</td>
+</tr>
+</table>
+<hr>
+<h2>HTML &lt;video&gt; and JavaScript</h2>
+<p>The HTML DOM defines methods, properties, and events for the <code>&lt;video&gt;</code> element.</p>
+<p>This allows you to load, play, and pause videos, as well as setting duration and volume.</p>
+<p>There are also DOM events that can notify you when a video begins to play, is paused, etc.</p>
+<div>
+<h3>Example: Using JavaScript</h3>
+ <br>
+ <div> 
+ <button onclick="playPause()">Play/Pause</button> 
+ <button onclick="makeBig()">Big</button>
+ <button onclick="makeSmall()">Small</button>
+ <button onclick="makeNormal()">Normal</button>
+ <br><br> 
+ <video id="video2" width="480">
+ <source src="mov_bbb.mp4" type="video/mp4">
+ <source src="mov_bbb.ogg" type="video/ogg">
+ Your browser does not support HTML5 video.
+ </video>
+<p>Video courtesy of <a href="https://www.bigbuckbunny.org/" target="_blank">Big Buck Bunny</a>.</p>
+</div>
+<a target="_blank" href="tryit.asp?filename=tryhtml5_video_js_prop">Try it Yourself &raquo;</a>
+</div>
+<p>For a full DOM reference, go to our <a href="/tags/ref_av_dom.asp">HTML Audio/Video DOM Reference</a>.</p>
+<hr>
+<h2>HTML Video Tags</h2>
+<table>
+<tr>
+<th>Tag</th>
+<th>Description</th>
+</tr>
+<tr>
+<td><a href="/tags/tag_video.asp">&lt;video&gt;</a></td>
+<td>Defines a video or movie</td>
+</tr>
+<tr>
+<td><a href="/tags/tag_source.asp">&lt;source&gt;</a></td>
+<td>Defines multiple media resources for media elements, such as &lt;video&gt; and &lt;audio&gt;</td>
+</tr>
+<tr>
+<td><a href="/tags/tag_track.asp">&lt;track&gt;</a></td>
+<td>Defines text tracks in media players</td>
+</tr>
+</table>
+<br>
+<div>
+<a href="html_media.asp">&#10094; Previous</a>
+<a href="html_challenges_video.asp">Next &#10095;</a>
+</div>
+<div
+ id="user-profile-bottom-wrapper"
+>
+ <div>
+ <a
+ href="https://profile.w3schools.com/log-in?redirect_url=https%3A%2F%2Fmy-learning.w3schools.com"
+ title="Your W3Schools Profile"
+ aria-label="Your W3Schools Profile"
+ target="_top"
+ >
+ <span>&#x2605;</span>
+ <span>+1</span>
+ </a>
+ </div>
+ <div>
+ <div>
+ <a
+ href="https://profile.w3schools.com/log-in?redirect_url=https%3A%2F%2Fpathfinder.w3schools.com"
+ title="Sign in to track your progress"
+ aria-label="Sign in to track your progress"
+ target="_blank"
+ >
+ Sign in to track progress
+ </a>
+ </div>
+</div>
+</div>
+</div>
+<div id="right">
+<div id="footer-skyscraper">
+ <div id="skyscraper">
+ </div>
+</div>
+<div>
+<a id="upperfeatureshowcaselink" href="https://campus.w3schools.com/products/w3schools-full-access-course" target="_blank">
+<picture id="upperfeatureshowcase">
+ <source id="upperfeatureshowcase3001" srcset="/images/img_fa_nextmove_300_2.webp" media="(max-width: 990px)">
+ <source id="upperfeatureshowcase120" srcset="/images/img_fa_nextmove_300_2.webp" media="(max-width: 1260px)">
+ <source id="upperfeatureshowcase160" srcset="/images/img_fa_nextmove_300_2.webp" media="(max-width: 1700px)">
+ <img id="upperfeatureshowcase300" src="/images/img_fa_nextmove_300.png" alt="W3Schools Full Access - your next career move">
+</picture>
+</a>
+<div id="upperfeatureshowcase-text"></div>
+</div>
+<div>
+ <div>
+ <a href="https://www.youtube.com/@w3schools" target="_blank" title="W3Schools on YouTube" rel="noopener"><span></span></a>
+ <a href="https://www.linkedin.com/company/w3schools.com/" target="_blank" title="W3Schools on LinkedIn" rel="noopener"><span></span></a>
+ <a href="https://discord.com/invite/w3schools" target="_blank" title='Join the W3schools community on Discord' rel="noopener"><span></span></a> 
+ <a href="https://www.facebook.com/w3schoolscom/" target="_blank" title="W3Schools on Facebook" rel="noopener"><span></span></a>
+ <a href="https://www.instagram.com/w3schools.com_official/" target="_blank" title="W3Schools on Instagram" rel="noopener"><span></span></a>
+ <a href="https://www.tiktok.com/@w3schools.com" target="_blank" title="New: W3Schools on TikTok" rel="noopener"><span></span></a>
+ </div>
+</div>
+<div id="vidpos">
+</div>
+<div id="stickypos">
+ <div id="stickyadcontainer">
+ <div>
+ </div>
+ <p><a href="https://order.w3schools.com/plans" target="_blank">REMOVE ADS</a></p>
+ </div>
+</div>
+</div>
+</div>
+<div id="footer">
+<hr>
+<div id="bottomads">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="wrappercontainer">
+<div id="footerwrapper">
+<div>
+ <span></span>
+ <span></span>
+ <span></span>
+ <span></span>
+ <div>
+ <div>
+ <img src="/adventure/img/map/oakTree.webp" alt="">
+ <img src="/adventure/img/map/birchTree.webp" alt="">
+ <img src="/adventure/img/map/oakTree.webp" alt="">
+ <img src="/adventure/img/map/birchTree.webp" alt="">
+ <img src="/adventure/img/map/oakTree.webp" alt="">
+ <img src="/adventure/img/map/bush.webp" alt="">
+ <img src="/adventure/img/map/leaf.png" alt="">
+ <img src="/adventure/img/map/oakTreeLog.webp" alt="">
+ <img src="/adventure/img/map/leaf.png" alt="">
+ <img src="/adventure/img/map/stone.webp" alt="">
+ <img src="/adventure/img/map/mushroom.png" alt="">
+ <img src="/adventure/img/map/oakTreeLog.webp" alt="">
+ <img src="/adventure/img/map/mushroom.png" alt="">
+ <img src="/adventure/img/map/leaf.png" alt="">
+ <img src="/adventure/img/map/stone.webp" alt="">
+ </div>
+ <img src="/adventure/img/map/adventure_sign.webp"
+ alt="This way to the W3Schools Adventure app">
+ <span>
+ <span></span>
+ <span></span>
+ <span></span>
+ <span></span>
+ <span></span>
+ <span></span>
+ <span></span>
+ <span></span>
+ <img src="/adventure/img/map/chest.webp" alt="">
+ <img src="/adventure/img/map/chest.webp" alt="">
+ </span>
+ <div>
+ <img src="/adventure/img/lynx-7.webp" alt="">
+ <a href="/adventure/"
+ title="Learn more about W3Schools Adventure Mode">
+ Learn more about Adventure Mode<i>&rsaquo;</i>
+ </a>
+ </div>
+ </div>
+ <span></span>
+ <span></span>
+ <div>
+ <section>
+ <div>
+ <p>Free account</p>
+ <h2>Track your progress</h2>
+ <div>
+ <span>XP earned <b>0</b></span>
+ <span>Day streak <b>0</b></span>
+ <span>Spaces <b>0</b></span>
+ <span>League <b>&mdash;</b></span>
+ </div>
+ <div>
+ <a
+ href="https://profile.w3schools.com/log-in?redirect_url=https%3A%2F%2Fmy-learning.w3schools.com"
+ title="Sign in to track your progress"
+ target="_top">
+ Sign in to track progress
+ </a>
+ </div>
+ </div>
+ </section>
+ <section>
+ <p>New</p>
+ <h2>
+ <span>Learn in Adventure Mode</span>
+ <span>W3Schools Adventure App</span>
+ </h2>
+ <p>
+ Coding fundamentals as bite-sized lessons and challenges.
+ </p>
+ <div>
+ <div>
+ <a href="https://apps.apple.com/us/app/w3schools/id6770531503"
+ rel="noopener" target="_blank"
+ aria-label="Download on the App Store"
+ title="Get W3Schools Adventure App on App Store">
+ </a>
+ <a href="https://play.google.com/store/apps/details?id=com.w3schools.app.prod"
+ rel="noopener" target="_blank"
+ aria-label="Get it on Google Play"
+ title="Get W3Schools Adventure App on Google Play">
+ </a>
+ <a href="https://app.w3schools.com/"
+ rel="noopener" target="_blank"
+ aria-label="Try Adventure Mode now in your browser"
+ title="Try W3Schools Adventure Mode in your browser">
+ </a>
+ </div>
+ </div>
+ </section>
+ </div>
+</div>
+<div id="spacemyfooter">
+<div>
+<div>
+ <a href="//www.w3schools.com" aria-label="W3Schools.com" alt="W3Schools.com">
+ <i></i>
+ </a>
+</div>
+<div><a href="https://order.w3schools.com/plans" title="Become a PLUS user and unlock powerful features" target="_blank">PLUS</a></div>
+<div><a href="/spaces/index.php" title="Get your own website with W3Schools Spaces">SPACES</a></div>
+<div><a href="https://campus.w3schools.com/collections/certifications" title="Document your knowledge by getting certified" target="_blank">GET CERTIFIED</a></div>
+<div><a target="_blank" href="https://campus.w3schools.com/pages/for-teams" title="Contact us about W3Schools Campus for educational institutions">FOR TEACHERS</a></div>
+<div><a href="/practice/index.php" title="W3Schools Practice Problems">PRACTICE</a></div>
+<div><a href="javascript:void(0);" title="Contact us about sales or errors" onclick="reportError();return false">CONTACT US</a></div>
+</div>
+<div id="err_message">
+ <span id="close_err_message" onclick="this.parentElement.style.display='none'">&times;</span>
+ <h2>Contact Sales</h2>
+ <h2>Report Error</h2>
+</div>
+<div>
+<div>
+ <h5>Top Tutorials</h5>
+ <a href="/html/default.asp">HTML Tutorial</a><br>
+ <a href="/css/default.asp">CSS Tutorial</a><br>
+ <a href="/js/default.asp">JavaScript Tutorial</a><br>
+ <a href="/howto/default.asp">How To Tutorial</a><br>
+ <a href="/sql/default.asp">SQL Tutorial</a><br>
+ <a href="/python/default.asp">Python Tutorial</a><br>
+ <a href="/w3css/default.asp">W3.CSS Tutorial</a><br>
+ <a href="/bootstrap/bootstrap_ver.asp">Bootstrap Tutorial</a><br>
+ <a href="/php/default.asp">PHP Tutorial</a><br>
+ <a href="/java/default.asp">Java Tutorial</a><br>
+ <a href="/cpp/default.asp">C++ Tutorial</a><br>
+ <a href="/jquery/default.asp">jQuery Tutorial</a><br>
+</div>
+<div>
+ <h5>Top References</h5>
+ <a href="/tags/default.asp">HTML Reference</a><br>
+ <a href="/cssref/index.php">CSS Reference</a><br>
+ <a href="/jsref/default.asp">JavaScript Reference</a><br>
+ <a href="/sql/sql_ref_keywords.asp">SQL Reference</a><br>
+ <a href="/python/python_reference.asp">Python Reference</a><br>
+ <a href="/w3css/w3css_references.asp">W3.CSS Reference</a><br>
+ <a href="/bootstrap/bootstrap_ref_all_classes.asp">Bootstrap Reference</a><br>
+ <a href="/php/php_ref_overview.asp">PHP Reference</a><br>
+ <a href="/colors/colors_names.asp">HTML Colors</a><br>
+ <a href="/java/java_ref_keywords.asp">Java Reference</a><br>
+ <a href="/angularjs/angularjs_ref_directives.asp">AngularJS Reference</a><br>
+ <a href="/jquery/jquery_ref_overview.asp">jQuery Reference</a><br>
+</div>
+<div>
+ <h5>Top Examples</h5>
+ <a href="/html/html_examples.asp">HTML Examples</a><br>
+ <a href="/css/css_examples.asp">CSS Examples</a><br>
+ <a href="/js/js_examples.asp">JavaScript Examples</a><br>
+ <a href="/howto/default.asp">How To Examples</a><br>
+ <a href="/sql/sql_examples.asp">SQL Examples</a><br>
+ <a href="/python/python_examples.asp">Python Examples</a><br>
+ <a href="/w3css/w3css_examples.asp">W3.CSS Examples</a><br>
+ <a href="/bootstrap/bootstrap_examples.asp">Bootstrap Examples</a><br>
+ <a href="/php/php_examples.asp">PHP Examples</a><br>
+ <a href="/java/java_examples.asp">Java Examples</a><br>
+ <a href="/xml/xml_examples.asp">XML Examples</a><br>
+ <a href="/jquery/jquery_examples.asp">jQuery Examples</a><br>
+</div>
+<div>
+ <a href="https://campus.w3schools.com/collections/course-catalog" target="_blank"><h5>Get Certified</h5></a>
+ <a href="https://campus.w3schools.com/collections/certifications/products/html-certificate" target="_blank">HTML Certificate</a><br>
+ <a href="https://campus.w3schools.com/collections/certifications/products/css-certificate" target="_blank">CSS Certificate</a><br>
+ <a href="https://campus.w3schools.com/collections/certifications/products/javascript-certificate" target="_blank">JavaScript Certificate</a><br>
+ <a href="https://campus.w3schools.com/collections/certifications/products/front-end-certificate" target="_blank">Front End Certificate</a><br>
+ <a href="https://campus.w3schools.com/collections/certifications/products/sql-certificate" target="_blank">SQL Certificate</a><br>
+ <a href="https://campus.w3schools.com/collections/certifications/products/python-certificate" target="_blank">Python Certificate</a><br>
+ <a href="https://campus.w3schools.com/collections/certifications/products/php-certificate" target="_blank">PHP Certificate</a><br>
+ <a href="https://campus.w3schools.com/collections/certifications/products/jquery-certificate" target="_blank">jQuery Certificate</a><br>
+ <a href="https://campus.w3schools.com/collections/certifications/products/java-certificate" target="_blank">Java Certificate</a><br>
+ <a href="https://campus.w3schools.com/collections/certifications/products/c-certificate" target="_blank">C++ Certificate</a><br>
+ <a href="https://campus.w3schools.com/collections/certifications/products/c-certificate-1" target="_blank">C# Certificate</a><br>
+ <a href="https://campus.w3schools.com/collections/certifications/products/xml-certificate" target="_blank">XML Certificate</a><br>
+</div>
+</div>
+<div>
+ <a target="_blank" href="https://www.youtube.com/@w3schools" title="W3Schools on YouTube" rel="noopener"><i></i></a>
+ <a target="_blank" href="https://www.linkedin.com/company/w3schools.com/" title="W3Schools on LinkedIn" rel="noopener"><i>&#62220;</i></a>
+ <a target="_blank" href="https://discord.com/invite/w3schools" title="Join the W3schools community on Discord" rel="noopener"><i>&#59399;</i></a>
+ <a target="_blank" href="https://www.facebook.com/w3schoolscom/" title="W3Schools on Facebook" rel="noopener"><i>&#59398;</i></a>
+ <a target="_blank" href="https://www.instagram.com/w3schools.com_official/" title="W3Schools on Instagram" rel="noopener"><i>&#61805;</i></a>
+ <div></div>
+ <a target="_blank" href="/forum/index.php" title="Forum">FORUM</a>
+ <a target="_blank" href="/about/default.asp" title="About W3Schools">ABOUT</a>
+ <a target="_blank" href="https://campus.w3schools.com/pages/for-teams"
+ title="Contact us about W3Schools Campus (previously Academy) for educational institutions and organizations">CAMPUS</a>
+</div>
+<div>
+W3Schools is optimized for learning and training. Examples might be simplified to improve reading and learning.<br>
+Tutorials, references, and examples are constantly reviewed to avoid errors, but we cannot warrant full correctness<br>
+of all content. While using W3Schools, you agree to have read and accepted our <a href="/about/about_copyright.asp">terms of use</a>,
+<a onclick="window.FastCMP.open();">cookies</a> and 
+<a href="/about/about_privacy.asp">privacy policy</a>.<br><br>
+<a href="/about/about_copyright.asp">Copyright 1999-2026</a> by Refsnes Data. All Rights Reserved.
+<a href="//www.w3schools.com/w3css/default.asp">W3Schools is Powered by W3.CSS</a>.<br><br><br><br><br><br><br><br><br><br>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

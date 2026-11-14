@@ -1,0 +1,23 @@
+{
+  "name": "@vid2context/provider-web-page",
+  "version": "0.1.0",
+  "description": "Finds every video embedded in a web page (iframes, video tags, Open Graph, JSON-LD, oEmbed links, video links) for page: inputs, and serves JSON-LD transcripts as native transcripts. Keyless.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "vid2context": {
+    "runtimes": [
+      "node",
+      "workers"
+    ]
+  },
+  "dependencies": {
+    "@vid2context/core": "*",
+    "@vid2context/provider-native-transcripts": "*",
+    "@vid2context/provider-youtube": "*",
+    "entities": "^8.0.0",
+    "htmlparser2": "^12.0.0"
+  }
+}
