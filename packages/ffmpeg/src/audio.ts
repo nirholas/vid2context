@@ -94,6 +94,7 @@ export async function extractAudio(input: string, opts: ExtractAudioOptions = {}
     args.push('-ac', String(channels), '-ar', String(sampleRate), ...CODEC_ARGS[format](bitrate), out);
     try {
       await runProcess(tools.ffmpeg, args, {
+        network: isUrlInput(target),
         label: 'ffmpeg audio extraction',
         timeoutMs: opts.timeoutMs ?? 60 * 60_000,
         signal: ctx.signal,

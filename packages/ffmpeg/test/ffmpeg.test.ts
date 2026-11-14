@@ -97,7 +97,9 @@ describe('managed download source', () => {
     const x64 = pickBtbnAsset(sums, 'linux64');
     expect(x64).toMatchObject({ name: 'ffmpeg-n9.0-latest-linux64-gpl-9.0.tar.xz', version: '9.0' });
     expect(x64?.sha256).toMatch(/^[0-9a-f]{64}$/);
-    expect(x64?.url).toBe('https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-n9.0-latest-linux64-gpl-9.0.tar.xz');
+    expect(x64?.url).toBe(
+      'https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-n9.0-latest-linux64-gpl-9.0.tar.xz',
+    );
     expect(pickBtbnAsset(sums, 'linuxarm64')?.name).toBe('ffmpeg-n9.0-latest-linuxarm64-gpl-9.0.tar.xz');
     expect(sums).toContain(`${x64?.sha256}  ${x64?.name}`);
   });

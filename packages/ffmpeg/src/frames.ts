@@ -8,7 +8,7 @@ import { join } from 'node:path';
 import { Vid2ContextError } from '@vid2context/core';
 import { withTempDir } from './audio.ts';
 import { locateFfmpeg, majorVersion } from './locate.ts';
-import { type FfCtx, inputGuards, runProcess, toInput } from './process.ts';
+import { type FfCtx, inputGuards, isUrlInput, runProcess, toInput } from './process.ts';
 
 export interface ExtractFramesOptions {
   /** One frame every this many seconds. Default 10 when sceneThreshold is not set. */
@@ -90,6 +90,7 @@ export async function extractFrames(input: string, opts: ExtractFramesOptions, c
         join(dir, 'frame-%06d.jpg'),
       ],
       {
+        network: isUrlInput(target),
         label: 'ffmpeg frame extraction',
         signal: ctx.signal,
         timeoutMs: opts.timeoutMs ?? 30 * 60_000,

@@ -3,7 +3,7 @@
  */
 import { Vid2ContextError } from '@vid2context/core';
 import { locateFfmpeg } from './locate.ts';
-import { type FfCtx, inputGuards, runProcess, toInput } from './process.ts';
+import { type FfCtx, inputGuards, isUrlInput, runProcess, toInput } from './process.ts';
 
 export interface ProbeStream {
   /** Stream index in the container (what `-map 0:<index>` takes). */
@@ -273,7 +273,13 @@ export async function probeWith(
       '-i',
       target,
     ],
-    { label: 'ffprobe', captureStdout: true, timeoutMs: opts.timeoutMs ?? 60_000, signal: ctx.signal },
+    {
+      network: isUrlInput(target),
+      label: 'ffprobe',
+      captureStdout: true,
+      timeoutMs: opts.timeoutMs ?? 60_000,
+      signal: ctx.signal,
+    },
   );
   let raw: RawProbe;
   try {

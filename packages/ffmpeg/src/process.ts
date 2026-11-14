@@ -31,6 +31,8 @@ export interface RunOptions {
   stderrTailBytes?: number;
   /** Called with the child's pid right after spawn. */
   onSpawn?: (pid: number) => void;
+  /** The input is a URL, so a crash may be the build's networking (better hint). */
+  network?: boolean;
 }
 
 export interface RunResult {
@@ -81,8 +83,19 @@ export function inputGuards(input: string): string[] {
   return isUrlInput(input) ? ['-protocol_whitelist', 'http,https,tcp,tls,crypto'] : [];
 }
 
-function failure(label: string, code: number | null, sig: NodeJS.Signals | null, stderr: string): Vid2ContextError {
+function failure(
+  label: string,
+  code: number | null,
+  sig: NodeJS.Signals | null,
+  stderr: string,
+  network: boolean,
+): Vid2ContextError {
   const tail = stderr.trim().split('\n').slice(-6).join(' | ').slice(0, 600);
+  if (code === null && sig === 'SIGSEGV' && network) {
+    return new Vid2ContextError('upstream', `${label} crashed (SIGSEGV) while opening a network URL.`, {
+      hint: 'Some static ffmpeg builds (for example johnvansickle.com) crash on DNS lookups unless nscd is running. Install ffmpeg from your package manager, or point FFMPEG_PATH and FFPROBE_PATH at another build.',
+    });
+  }
   if (code === null) {
     return new Vid2ContextError('upstream', `${label} was killed by ${sig ?? 'a signal'}${tail ? `: ${tail}` : ''}`, {
       hint: 'ffmpeg crashed. Try again; if it repeats, update ffmpeg or set FFMPEG_PATH to another build.',
@@ -182,7 +195,7 @@ export function runProcess(bin: string, args: string[], opts: RunOptions): Promi
     child.on('close', (code, sig) => {
       if (partial && opts.onStderrLine) opts.onStderrLine(partial);
       if (code === 0) finish(null, { stdout: new Uint8Array(Buffer.concat(out)), stderr: stderrTail });
-      else finish(failure(label, code, sig, stderrTail));
+      else finish(failure(label, code, sig, stderrTail, opts.network ?? false));
     });
   });
 }

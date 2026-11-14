@@ -6,7 +6,7 @@
 import { Vid2ContextError } from '@vid2context/core';
 import { locateFfmpeg } from './locate.ts';
 import { type ProbeStream, probeWith } from './probe.ts';
-import { type FfCtx, inputGuards, runProcess, toInput } from './process.ts';
+import { type FfCtx, inputGuards, isUrlInput, runProcess, toInput } from './process.ts';
 
 /** Subtitle codecs that carry text ffmpeg can convert to WebVTT. */
 export const TEXT_SUBTITLE_CODECS: ReadonlySet<string> = new Set([
@@ -99,6 +99,7 @@ export async function extractSubtitles(
       'pipe:1',
     ],
     {
+      network: isUrlInput(target),
       label: 'ffmpeg subtitle extraction',
       captureStdout: true,
       maxStdoutBytes: 32 * 1024 * 1024,
