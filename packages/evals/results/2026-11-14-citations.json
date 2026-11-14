@@ -1,0 +1,412 @@
+{
+  "suite": "citations",
+  "date": "2026-11-14",
+  "startedAt": "2026-11-14T17:38:59.382Z",
+  "finishedAt": "2026-11-14T17:43:33.146Z",
+  "dataset": {
+    "file": "packages/evals/datasets/citations.json",
+    "items": 8,
+    "evaluated": 8
+  },
+  "environment": {
+    "node": "24.22.2",
+    "platform": "linux-x64",
+    "policy": "free",
+    "keyless": true,
+    "rungs": [
+      "ask",
+      "brief"
+    ],
+    "envFiles": 1
+  },
+  "skippedRungs": [],
+  "notes": [
+    "LLM rungs that answered: llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast."
+  ],
+  "items": [
+    {
+      "item": "reliable-engine",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "ask",
+      "outcome": "ok",
+      "detail": "llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+      "citations": {
+        "total": 1,
+        "verified": 1,
+        "hit": true,
+        "rejected": 0
+      },
+      "latencyMs": 2254,
+      "wallMs": 2287,
+      "attempts": [
+        {
+          "id": "llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+          "stage": "llm",
+          "outcome": "ok",
+          "ms": 2254
+        }
+      ]
+    },
+    {
+      "item": "g55-horsepower",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "ask",
+      "outcome": "ok",
+      "detail": "llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+      "citations": {
+        "total": 1,
+        "verified": 1,
+        "hit": true,
+        "rejected": 0
+      },
+      "latencyMs": 1818,
+      "wallMs": 1837,
+      "attempts": [
+        {
+          "id": "llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+          "stage": "llm",
+          "outcome": "ok",
+          "ms": 1818
+        }
+      ]
+    },
+    {
+      "item": "g55-oil",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "ask",
+      "outcome": "ok",
+      "detail": "llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+      "citations": {
+        "total": 1,
+        "verified": 1,
+        "hit": true,
+        "rejected": 0
+      },
+      "latencyMs": 1832,
+      "wallMs": 1848,
+      "attempts": [
+        {
+          "id": "llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+          "stage": "llm",
+          "outcome": "ok",
+          "ms": 1832
+        }
+      ]
+    },
+    {
+      "item": "m278-years",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "ask",
+      "outcome": "ok",
+      "detail": "llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+      "citations": {
+        "total": 3,
+        "verified": 3,
+        "hit": true,
+        "rejected": 0
+      },
+      "latencyMs": 4889,
+      "wallMs": 4914,
+      "attempts": [
+        {
+          "id": "llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+          "stage": "llm",
+          "outcome": "ok",
+          "ms": 4889
+        }
+      ]
+    },
+    {
+      "item": "daily-driver",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "ask",
+      "outcome": "ok",
+      "detail": "llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+      "citations": {
+        "total": 1,
+        "verified": 1,
+        "hit": true,
+        "rejected": 0
+      },
+      "latencyMs": 2304,
+      "wallMs": 2318,
+      "attempts": [
+        {
+          "id": "llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+          "stage": "llm",
+          "outcome": "ok",
+          "ms": 2304
+        }
+      ]
+    },
+    {
+      "item": "why-na-offroad",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "ask",
+      "outcome": "ok",
+      "detail": "llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+      "citations": {
+        "total": 2,
+        "verified": 2,
+        "hit": true,
+        "rejected": 0
+      },
+      "latencyMs": 2904,
+      "wallMs": 2922,
+      "attempts": [
+        {
+          "id": "llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+          "stage": "llm",
+          "outcome": "ok",
+          "ms": 2904
+        }
+      ]
+    },
+    {
+      "item": "appreciate",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "ask",
+      "outcome": "ok",
+      "detail": "llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+      "citations": {
+        "total": 1,
+        "verified": 1,
+        "hit": true,
+        "rejected": 0
+      },
+      "latencyMs": 2884,
+      "wallMs": 2900,
+      "attempts": [
+        {
+          "id": "llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+          "stage": "llm",
+          "outcome": "ok",
+          "ms": 2884
+        }
+      ]
+    },
+    {
+      "item": "add-tech",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "ask",
+      "outcome": "ok",
+      "detail": "llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+      "citations": {
+        "total": 3,
+        "verified": 3,
+        "hit": true,
+        "rejected": 0
+      },
+      "latencyMs": 4367,
+      "wallMs": 4395,
+      "attempts": [
+        {
+          "id": "llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+          "stage": "llm",
+          "outcome": "ok",
+          "ms": 4367
+        }
+      ]
+    },
+    {
+      "item": "reliable-engine",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "brief",
+      "outcome": "ok",
+      "detail": "llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+      "citations": {
+        "total": 5,
+        "verified": 5,
+        "hit": true,
+        "rejected": 0
+      },
+      "latencyMs": 22065,
+      "wallMs": 22096,
+      "attempts": [
+        {
+          "id": "llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+          "stage": "llm",
+          "outcome": "ok",
+          "ms": 22065
+        }
+      ]
+    },
+    {
+      "item": "g55-horsepower",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "brief",
+      "outcome": "ok",
+      "detail": "llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+      "citations": {
+        "total": 4,
+        "verified": 4,
+        "hit": true,
+        "rejected": 3
+      },
+      "latencyMs": 20690,
+      "wallMs": 20728,
+      "attempts": [
+        {
+          "id": "llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+          "stage": "llm",
+          "outcome": "ok",
+          "ms": 20690
+        }
+      ]
+    },
+    {
+      "item": "g55-oil",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "brief",
+      "outcome": "ok",
+      "detail": "llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+      "citations": {
+        "total": 4,
+        "verified": 3,
+        "hit": true,
+        "rejected": 0
+      },
+      "latencyMs": 20129,
+      "wallMs": 20167,
+      "attempts": [
+        {
+          "id": "llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+          "stage": "llm",
+          "outcome": "ok",
+          "ms": 20129
+        }
+      ]
+    },
+    {
+      "item": "m278-years",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "brief",
+      "outcome": "ok",
+      "detail": "llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+      "citations": {
+        "total": 6,
+        "verified": 6,
+        "hit": true,
+        "rejected": 0
+      },
+      "latencyMs": 29089,
+      "wallMs": 29149,
+      "attempts": [
+        {
+          "id": "llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+          "stage": "llm",
+          "outcome": "ok",
+          "ms": 29089
+        }
+      ]
+    },
+    {
+      "item": "daily-driver",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "brief",
+      "outcome": "ok",
+      "detail": "llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+      "citations": {
+        "total": 4,
+        "verified": 4,
+        "hit": true,
+        "rejected": 0
+      },
+      "latencyMs": 22705,
+      "wallMs": 22747,
+      "attempts": [
+        {
+          "id": "llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+          "stage": "llm",
+          "outcome": "ok",
+          "ms": 22705
+        }
+      ]
+    },
+    {
+      "item": "why-na-offroad",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "brief",
+      "outcome": "ok",
+      "detail": "llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+      "citations": {
+        "total": 7,
+        "verified": 7,
+        "hit": true,
+        "rejected": 0
+      },
+      "latencyMs": 24329,
+      "wallMs": 24392,
+      "attempts": [
+        {
+          "id": "llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+          "stage": "llm",
+          "outcome": "ok",
+          "ms": 24329
+        }
+      ]
+    },
+    {
+      "item": "appreciate",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "brief",
+      "outcome": "ok",
+      "detail": "llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+      "citations": {
+        "total": 7,
+        "verified": 7,
+        "hit": true,
+        "rejected": 0
+      },
+      "latencyMs": 30530,
+      "wallMs": 30594,
+      "attempts": [
+        {
+          "id": "llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+          "stage": "llm",
+          "outcome": "ok",
+          "ms": 30530
+        }
+      ]
+    },
+    {
+      "item": "add-tech",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "brief",
+      "outcome": "ok",
+      "detail": "llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+      "citations": {
+        "total": 15,
+        "verified": 14,
+        "hit": false,
+        "rejected": 0
+      },
+      "latencyMs": 80350,
+      "wallMs": 80469,
+      "attempts": [
+        {
+          "id": "llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+          "stage": "llm",
+          "outcome": "ok",
+          "ms": 80350
+        }
+      ]
+    }
+  ]
+}
