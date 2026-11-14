@@ -44,7 +44,7 @@ export interface LocalChatOptions {
 
 /** Rung ids the browser cannot call (CORS), passed to the chain as `skip`. */
 export function blockedRungIds(rungs: LlmRung[]): string[] {
-  return rungs.filter((r) => browserCorsFor(r.service, r.provider).status === 'blocked').map((r) => r.id);
+  return rungs.filter((r) => browserCorsFor(r.service, r.provider, r.tier).status === 'blocked').map((r) => r.id);
 }
 
 /** Chain options for the request's model choice, minus what the browser cannot call. */
@@ -55,7 +55,7 @@ export function chainOptions(registry: Pick<Registry, 'llmRungs'>, request: Chat
   if (spec && 'rung' in spec && blocked.includes(spec.rung)) {
     const r = rungs.find((x) => x.id === spec.rung);
     throw new Vid2ContextError('bad-request', `${spec.rung} cannot be called from a web page.`, {
-      hint: `${browserCorsFor(r?.service ?? '', r?.provider).reason ?? ''} Or pick another model.`.trim(),
+      hint: `${browserCorsFor(r?.service ?? '', r?.provider, r?.tier).reason ?? ''} Or pick another model.`.trim(),
     });
   }
   const base = resolveModelChoice(spec, registry as Registry, ctx.env);

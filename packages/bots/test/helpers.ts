@@ -3,7 +3,7 @@
  * routes that serve the recorded YouTube and LLM responses. Every response
  * here is a real recording; see test/fixtures/README.md for where each came from.
  */
-import { createContext, type Env, type Logger, Registry } from '@vid2context/core';
+import { createContext, type Env, type Logger, type Provider, Registry } from '@vid2context/core';
 import { type Route, replayFetch } from '@vid2context/core/testing';
 import llm from '@vid2context/provider-llm-openai-compatible';
 import mediaFile from '@vid2context/provider-media-file';
@@ -23,7 +23,9 @@ export const LLM_FIXTURE = `llm-summary-${VIDEO_ID}.json`;
  * work adds later cannot change which rungs these tests reach.
  */
 export function testRegistry(): Registry {
-  return new Registry([...youtube, mediaFile, llm], 'node');
+  // Providers may default-export one provider or an array; flatten either shape.
+  const all = [youtube, mediaFile, llm].flat() as Provider[];
+  return new Registry(all, 'node');
 }
 
 /** The recorded YouTube player and timedtext responses (shared with providers/youtube). */

@@ -23,10 +23,10 @@ const ovhStt = () => ({
 });
 const zoo = JSON.parse(read('tests/fixtures/contexts/youtube-jNQXAC9IVRw.json')) as VideoContext;
 
-const registry = new Registry([mediaFile, stt, llm], 'node');
+const registry = new Registry([mediaFile, stt, llm].flat(), 'node');
 // Loaded only by the tests that resolve YouTube URLs, so the others do not depend on the YouTube provider.
 const withYoutube = async () =>
-  new Registry([...(await import('@vid2context/provider-youtube')).default, mediaFile, stt, llm], 'node');
+  new Registry([(await import('@vid2context/provider-youtube')).default, mediaFile, stt, llm].flat(), 'node');
 const T0 = Date.parse('2026-11-14T22:00:00Z');
 const plan = (p: Partial<Plan> = {}): Plan => ({ ...(DEFAULT_PLANS.free as Plan), ...p });
 
@@ -62,9 +62,18 @@ describe('daily counters', () => {
 describe('metered rungs', () => {
   it('charges speech-to-text minutes from the transcript end when the source reports no duration', async () => {
     const meter = new UsageMeter(new MemoryKv(), 'acc_1', 'free', plan(), () => T0);
-    const fetch = replayFetch([ovhStt()]);
-    const ctx = await getVideoContext(meter.wrapRegistry(registry), APOLLO, { mode: 'stt' }, testContext({ fetch }));
-    expect(ctx.transcript).toMatchObject({ origin: 'stt', producer: 'stt/ovh/whisper-large-v3-turbo' });
+    const ctx = testContext({ fetch: replayFetch([ovhStt()]) });
+    const rung = meter
+      .wrapRegistry(registry)
+      .sttRungs({})
+      .find((r) => r.service === 'ovh');
+    const data = new Uint8Array(readFileSync(APOLLO));
+    const res = await rung?.transcribe(
+      { kind: 'bytes', data, mimeType: 'audio/mpeg', filename: 'apollo11-small-step.mp3' },
+      {},
+      ctx,
+    );
+    expect(res?.model).toBe('whisper-large-v3-turbo');
     // The last OVH segment ends at 23.06 s.
     expect((await meter.read()).sttSeconds).toBe(24);
   });
@@ -194,8 +203,9 @@ describe('shared cache', () => {
     for (const account of ['acc_1', 'acc_2']) {
       const meter = new UsageMeter(kv, account, 'free', plan(), () => T0);
       const storage = sharedCache(new MemoryStorage(), { kv, userCredentials: false, mode: 'stt' });
-      await getVideoContext(meter.wrapRegistry(registry), APOLLO, { mode: 'stt', storage }, testContext({ fetch }));
-      expect((await meter.read()).sttSeconds).toBe(24);
+      const ctx = await getVideoContext(meter.wrapRegistry(registry), APOLLO, { mode: 'stt', storage }, testContext({ fetch }));
+      // The probed duration (24.192 s) when ffprobe is reachable, else the last segment end (23.06 s).
+      expect((await meter.read()).sttSeconds).toBe(Math.ceil(ctx.metadata.durationSec ?? 23.06));
       expect(storage.stats).toEqual({ hits: 0, misses: 0, writes: 0 });
     }
     expect(fetch.calls).toHaveLength(2);

@@ -486,7 +486,7 @@ export function ChatWorkspace(props: ChatWorkspaceProps) {
   const keyFields = useMemo<KeyField[]>(() => {
     const map = new Map<string, Set<string>>();
     for (const r of rows ?? []) {
-      if (browserCorsFor(r.service, r.provider).status === 'blocked') continue;
+      if (browserCorsFor(r.service, r.provider, r.tier).status === 'blocked') continue;
       for (const k of r.requires) {
         const set = map.get(k) ?? new Set<string>();
         set.add(serviceLabel(r.service.replace(/#\d+$/, '')));

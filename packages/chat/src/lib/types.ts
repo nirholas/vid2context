@@ -31,6 +31,8 @@ export interface ModelInfo {
 /** A ModelInfo as the picker shows it: with the reason it cannot be chosen, when it cannot. */
 export interface ModelRow extends ModelInfo {
   disabledReason?: string;
+  /** A hint for an enabled row, e.g. that a local server must allow this page (CORS). */
+  note?: string;
 }
 
 export type ChatModelSpec = { rung: string; strict?: boolean } | { policy: 'free' | 'quality' | 'local-only' };

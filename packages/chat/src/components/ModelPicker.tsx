@@ -273,6 +273,8 @@ export function ModelPicker(props: ModelPickerProps) {
                 {props.mode === 'client' && /^Needs /.test(row.disabledReason) ? 'Open settings' : 'See providers'}
               </span>
             </span>
+          ) : row.note ? (
+            <span className="mt-0.5 block text-xs text-muted">{row.note}</span>
           ) : null}
         </span>
         <span className="flex shrink-0 items-center gap-1.5 text-muted">

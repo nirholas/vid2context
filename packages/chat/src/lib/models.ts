@@ -34,6 +34,19 @@ const SERVICE_LABEL: Record<string, string> = {
   cloudflare: 'Cloudflare',
   webllm: 'WebLLM',
   'chrome-ai': 'Chrome built-in AI',
+  llamacpp: 'llama.cpp',
+  vllm: 'vLLM',
+  jan: 'Jan',
+  localai: 'LocalAI',
+  kilo: 'Kilo',
+  nvidia: 'NVIDIA',
+  sambanova: 'SambaNova',
+  zhipu: 'Zhipu',
+  siliconflow: 'SiliconFlow',
+  'cloudflare-binding': 'Workers AI binding',
+  'gemini-native': 'Gemini (native)',
+  'vertex-gemini': 'Vertex AI Gemini',
+  'vertex-anthropic': 'Vertex AI Claude',
 };
 
 /** 'groq#2' -> 'groq'. */
@@ -77,12 +90,16 @@ export type Mode = 'server' | 'client';
  * whose API blocks browser requests (CORS).
  */
 export function toModelRows(models: ModelInfo[], mode: Mode, env: Env = {}): ModelRow[] {
-  return models.map((m) => {
+  return models.map((source) => {
+    // Rungs with no model yet (a local server before its *_MODEL is set) read better as "Ollama (set a model)".
+    const m = source.model ? source : { ...source, label: modelLabel('', source.service) };
+    let note: string | undefined;
     if (mode === 'client') {
-      const cors = browserCorsFor(m.service, m.provider);
+      const cors = browserCorsFor(m.service, m.provider, m.tier);
       if (cors.status === 'blocked') return { ...m, enabled: false, disabledReason: cors.reason };
+      if (cors.status === 'needs-config') note = cors.reason;
     }
-    if (m.enabled) return { ...m };
+    if (m.enabled) return note ? { ...m, note } : { ...m };
     const missing = mode === 'client' ? m.requires.filter((k) => !env[k]) : m.requires;
     if (missing.length > 0) return { ...m, disabledReason: `Needs ${missing.join(', ')}` };
     if (m.tier === 'keyless') return { ...m, disabledReason: 'Keyless rungs are off (VID2CONTEXT_KEYLESS=0)' };

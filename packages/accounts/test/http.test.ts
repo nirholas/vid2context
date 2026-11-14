@@ -22,8 +22,10 @@ import { upsertGithubAccount } from '../src/accounts.ts';
 import { sha256Base64url } from '../src/crypto.ts';
 import { GITHUB_SCOPE, GITHUB_TOKEN_URL, type OAuthState } from '../src/github.ts';
 import { accountOf, accountsRoutes, canTriggerStt, hostedMiddleware } from '../src/http.ts';
+import { type Plan, parsePlans } from '../src/plans.ts';
 import { createSession, SESSION_COOKIE } from '../src/sessions.ts';
 import { TURNSTILE_VERIFY_URL } from '../src/turnstile.ts';
+import { UsageMeter } from '../src/usage.ts';
 
 const root = new URL('../../../', import.meta.url);
 const read = (p: string) => readFileSync(new URL(p, root), 'utf8');
@@ -69,10 +71,10 @@ const routes: Route[] = [
   },
 ];
 
-const registry = new Registry([mediaFile, stt], 'node');
+const registry = new Registry([mediaFile, stt].flat(), 'node');
 // Loaded only by the tests that resolve YouTube URLs, so the others do not depend on the YouTube provider.
 const withYoutube = async () =>
-  new Registry([...(await import('@vid2context/provider-youtube')).default, mediaFile, stt], 'node');
+  new Registry([(await import('@vid2context/provider-youtube')).default, mediaFile, stt].flat(), 'node');
 
 interface Harness {
   app: Hono;
@@ -378,15 +380,25 @@ describe('quotas', () => {
   });
 
   it('counts speech-to-text minutes and turns a refusal mid-request into a 429', async () => {
-    const h = harness({ VID2CONTEXT_PLANS: '{"free":{"sttMinutesPerDay":0.3}}' });
-    const { cookie } = await h.signIn();
+    const h = harness({ VID2CONTEXT_PLANS: '{"free":{"sttMinutesPerDay":0.5}}' });
+    const { accountId, cookie } = await h.signIn();
     const url = encodeURIComponent(APOLLO);
     const first = await get(h, `/api/v1/context?url=${url}&mode=stt`, { cookie });
     expect(first.status).toBe(200);
+    // 24 or 25 s, depending on whether ffprobe reported the duration (24.192 s) or the transcript end was used (23.06 s).
     expect((await (await get(h, '/api/v1/me/usage', { cookie })).json()).used.sttMinutes).toBe(0.4);
 
     // The same file again is served from storage and costs nothing.
     expect((await get(h, `/api/v1/context?url=${url}&mode=stt`, { cookie })).status).toBe(200);
+    // Use up the rest of the 30 s: the meter is the same one the middleware reads.
+    const meter = new UsageMeter(
+      h.kv,
+      accountId,
+      'free',
+      parsePlans('{"free":{"sttMinutesPerDay":0.5}}').free as Plan,
+      () => h.clock.now,
+    );
+    await meter.add({ sttSeconds: 6 });
     // Rebuilding it with no minutes left: the speech-to-text rung refuses before uploading, and the 422 becomes a 429.
     const asStt = await get(h, `/api/v1/context?url=${url}&mode=stt&refresh=1`, { cookie });
     expect(asStt.status).toBe(429);
