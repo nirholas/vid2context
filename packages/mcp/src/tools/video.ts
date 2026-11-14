@@ -4,6 +4,7 @@
  */
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import {
+  type Comment,
   type Ctx,
   estimateTokens,
   formatTimestamp,
@@ -154,11 +155,11 @@ const outlineOutput = {
       url: z.string().optional(),
     }),
   ),
-  metadata: z.record(z.string(), z.unknown()),
+  metadata: z.record(z.string(), z.json()),
   next: z.string(),
 };
 
-const commentShape = z.object({
+const commentFields = {
   id: z.string(),
   author: z.string(),
   text: z.string(),
@@ -166,8 +167,22 @@ const commentShape = z.object({
   publishedAt: z.string().optional(),
   isCreator: z.boolean().optional(),
   isPinned: z.boolean().optional(),
-  replies: z.array(z.unknown()).optional(),
-});
+};
+const commentShape = z.object({ ...commentFields, replies: z.array(z.object(commentFields)).optional() });
+
+/** Only the declared Comment fields, so structured output matches its schema exactly. */
+function commentOut(c: Comment, withReplies = true): z.infer<typeof commentShape> {
+  return {
+    id: c.id,
+    author: c.author,
+    text: c.text,
+    ...(c.likes !== undefined ? { likes: c.likes } : {}),
+    ...(c.publishedAt ? { publishedAt: c.publishedAt } : {}),
+    ...(c.isCreator !== undefined ? { isCreator: c.isCreator } : {}),
+    ...(c.isPinned !== undefined ? { isPinned: c.isPinned } : {}),
+    ...(withReplies && c.replies ? { replies: c.replies.map((r) => commentOut(r, false)) } : {}),
+  };
+}
 
 export function registerVideoTools(server: McpServer, deps: ToolDeps): void {
   const { registry } = deps;
@@ -309,7 +324,7 @@ export function registerVideoTools(server: McpServer, deps: ToolDeps): void {
             const url = timestampUrl(ref, c.startSec);
             return { index, ...c, start: formatTimestamp(c.startSec), ...(url ? { url } : {}) };
           }),
-          metadata: api.metadata as unknown as Record<string, unknown>,
+          metadata: JSON.parse(JSON.stringify(api.metadata)) as Record<string, z.infer<ReturnType<typeof z.json>>>,
           next:
             api.totalTokens > 15000
               ? 'This video is long: read the chapters you need with get_section { url, chapter }, or search_transcript for a topic.'
@@ -417,7 +432,7 @@ export function registerVideoTools(server: McpServer, deps: ToolDeps): void {
           title: title ?? ref.url ?? args.url,
           ...(ref.url ? { url: ref.url } : {}),
           count: comments.length,
-          comments,
+          comments: comments.map((c) => commentOut(c)),
         });
       } catch (err) {
         return toolError(err);

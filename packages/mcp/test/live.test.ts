@@ -11,7 +11,8 @@ import { GWAGON, GWAGON_PLAYLIST, jsonOf, root, type TextResult, textOf, ZOO } f
 describe.skipIf(!process.env.LIVE)('live: stdio server against real YouTube', () => {
   let client: Client;
   const run = async (name: string, args: Record<string, unknown>) =>
-    (await client.callTool({ name, arguments: args })) as TextResult;
+    // Long videos can fall through to speech-to-text, which outlasts the SDK's 60 s default request timeout.
+    (await client.callTool({ name, arguments: args }, undefined, { timeout: 280_000 })) as TextResult;
 
   beforeAll(async () => {
     const env = Object.fromEntries(Object.entries(process.env).filter((e): e is [string, string] => e[1] !== undefined));
@@ -45,7 +46,7 @@ describe.skipIf(!process.env.LIVE)('live: stdio server against real YouTube', ()
     expect(textOf(page)).toMatch(/next_cursor: seg:\d+/);
     const hits = await run('search_transcript', { query: 'w463' });
     expect((hits.structuredContent as { count: number }).count).toBeGreaterThan(0);
-  });
+  }, 300_000);
 
   it('lists a playlist', async () => {
     const res = await run('list_items', { url: GWAGON_PLAYLIST, limit: 3 });
