@@ -1,9 +1,13 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import {
   apiBase,
+  apiErrorMessage,
   contextRequest,
   type FullResponse,
   healthRequest,
+  isMissingRoute,
+  itemsRequest,
+  metadataRequest,
   transcriptItem,
   transcriptRequest,
 } from '../src/shared/requests.ts';
@@ -47,6 +51,31 @@ describe('request building', () => {
   });
 });
 
+describe('metadata and items requests', () => {
+  it('asks /metadata for status errors as values, so a missing route can fall back to /context', () => {
+    expect(metadataRequest('http://h', { url: 'jNQXAC9IVRw', mode: 'stt' })).toEqual({
+      method: 'GET',
+      baseURL: 'http://h',
+      url: '/api/v1/metadata',
+      qs: { url: 'jNQXAC9IVRw' },
+      json: true,
+      returnFullResponse: true,
+      ignoreHttpStatusErrors: true,
+    });
+  });
+
+  it('builds the items request with an optional whole-number limit', () => {
+    expect(itemsRequest('http://h', { url: 'https://www.youtube.com/playlist?list=PL1', limit: 25.7 })).toEqual({
+      method: 'GET',
+      baseURL: 'http://h',
+      url: '/api/v1/items',
+      qs: { url: 'https://www.youtube.com/playlist?list=PL1', limit: '25' },
+      json: true,
+    });
+    expect(itemsRequest('http://h', { url: 'x', limit: 0 }).qs).toEqual({ url: 'x' });
+  });
+});
+
 describe('requests against a real vid2context server (recorded YouTube responses underneath)', () => {
   let api: ApiServer;
   const request = fetchRequester();
@@ -80,6 +109,34 @@ describe('requests against a real vid2context server (recorded YouTube responses
     expect(context.metadata.title).toBe('Me at the zoo');
     expect(context.metadata.chapters).toHaveLength(3);
     expect(context.transcript.segments.length).toBe(6);
+  });
+
+  it('Get Metadata reads /metadata, or /context on a server without that route', async () => {
+    const res = (await request(metadataRequest(api.base, { url: 'jNQXAC9IVRw' }))) as FullResponse;
+    const metadata = isMissingRoute(res)
+      ? ((await request(contextRequest(api.base, { url: 'jNQXAC9IVRw' }))) as { metadata: { title: string } }).metadata
+      : (res.body as { title: string });
+    expect(metadata.title).toBe('Me at the zoo');
+  });
+
+  it('tells a missing route apart from a missing video', async () => {
+    const route = (await request({
+      method: 'GET',
+      baseURL: api.base,
+      url: '/api/v1/no-such-route',
+      json: true,
+      returnFullResponse: true,
+      ignoreHttpStatusErrors: true,
+    })) as FullResponse;
+    expect(isMissingRoute(route)).toBe(true);
+    const video = (await request({
+      ...contextRequest(api.base, { url: 'xxxxxxxxxxx' }),
+      returnFullResponse: true,
+      ignoreHttpStatusErrors: true,
+    })) as FullResponse;
+    expect(video.statusCode).toBe(404);
+    expect(isMissingRoute(video)).toBe(false);
+    expect(apiErrorMessage(video)).toMatch(/^not-found: /);
   });
 
   it('the format list comes from the server health route', async () => {

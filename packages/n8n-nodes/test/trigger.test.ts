@@ -28,13 +28,17 @@ const VECTOR = {
 describe('trigger signature check', () => {
   it('matches the Standard Webhooks published vector', () => {
     expect(signPayload(VECTOR.secret, VECTOR.msgId, VECTOR.timestamp, VECTOR.payload)).toBe(VECTOR.signature);
-    const headers = { 'webhook-id': VECTOR.msgId, 'webhook-timestamp': String(VECTOR.timestamp), 'webhook-signature': VECTOR.signature };
+    const headers = {
+      'webhook-id': VECTOR.msgId,
+      'webhook-timestamp': String(VECTOR.timestamp),
+      'webhook-signature': VECTOR.signature,
+    };
     expect(verifySignature(VECTOR.secret, headers, Buffer.from(VECTOR.payload), VECTOR.timestamp)).toEqual({ test: 2432232314 });
     expect(() => verifySignature(VECTOR.secret, headers, VECTOR.payload)).toThrow(/tolerance/);
     expect(() => verifySignature(VECTOR.secret, headers, '{"test": 1}', VECTOR.timestamp)).toThrow(/No webhook signature/);
-    expect(() => verifySignature(VECTOR.secret, { ...headers, 'webhook-id': undefined }, VECTOR.payload, VECTOR.timestamp)).toThrow(
-      /Missing/,
-    );
+    expect(() =>
+      verifySignature(VECTOR.secret, { ...headers, 'webhook-id': undefined }, VECTOR.payload, VECTOR.timestamp),
+    ).toThrow(/Missing/);
   });
 
   it('accepts what the official library and @vid2context/webhooks sign', async () => {
@@ -81,7 +85,11 @@ describe('trigger lifecycle against a real vid2context server', () => {
   });
 
   it('registers on activation, verifies a delivered event, and deletes on deactivation', async () => {
-    const reg = await registerWebhook(request, api.base, { url: receiverUrl, events: ['collection.updated'], description: 'n8n workflow 1' });
+    const reg = await registerWebhook(request, api.base, {
+      url: receiverUrl,
+      events: ['collection.updated'],
+      description: 'n8n workflow 1',
+    });
     expect(reg.webhookId).toMatch(/^wh_/);
     expect(reg.secret).toMatch(/^whsec_/);
     expect(await webhookExists(request, api.base, reg)).toBe(true);
@@ -90,7 +98,10 @@ describe('trigger lifecycle against a real vid2context server', () => {
 
     const store = await api.stores(api.ctx);
     const realFetchCtx = { ...api.ctx, fetch: globalThis.fetch };
-    const data = collectionUpdatedData({ id: 'g-wagon', name: 'G-Wagon', videoIds: [gwagon.metadata.ref.id] }, { added: [gwagon] });
+    const data = collectionUpdatedData(
+      { id: 'g-wagon', name: 'G-Wagon', videoIds: [gwagon.metadata.ref.id] },
+      { added: [gwagon] },
+    );
     const result = await emit({ type: 'collection.updated', data }, store, realFetchCtx);
     expect(result.deliveries[0]).toMatchObject({ hookId: reg.webhookId, outcome: 'delivered' });
 

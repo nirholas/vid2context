@@ -14,10 +14,14 @@ import {
 } from 'n8n-workflow';
 import {
   apiBase,
+  apiErrorMessage,
   contextRequest,
   type FullResponse,
   healthRequest,
+  isMissingRoute,
+  itemsRequest,
   MODES,
+  metadataRequest,
   type TranscriptParams,
   transcriptItem,
   transcriptRequest,
@@ -69,6 +73,12 @@ export class Vid2Context implements INodeType {
             action: 'Get the full context of a video',
             description: 'Metadata, timed transcript segments and how they were obtained',
           },
+          {
+            name: 'List Items',
+            value: 'listItems',
+            action: 'List the videos in a playlist channel or feed',
+            description: 'Expand a playlist, channel, podcast feed or page into one item per video',
+          },
         ],
         default: 'getTranscript',
       },
@@ -79,7 +89,17 @@ export class Vid2Context implements INodeType {
         required: true,
         default: '',
         placeholder: 'https://www.youtube.com/watch?v=jNQXAC9IVRw',
-        description: 'A video URL or ID that vid2context understands (YouTube, podcasts, files on the server)',
+        description:
+          'A video URL or ID that vid2context understands (YouTube, podcasts, files on the server). For List Items: a playlist, channel or feed URL.',
+      },
+      {
+        displayName: 'Limit',
+        name: 'limit',
+        type: 'number',
+        typeOptions: { minValue: 1 },
+        default: 50,
+        description: 'Max number of results to return',
+        displayOptions: { show: { operation: ['listItems'] } },
       },
       {
         displayName: 'Format Name or ID',
@@ -160,7 +180,24 @@ export class Vid2Context implements INodeType {
           };
           json = transcriptItem(params, (await send(transcriptRequest(base, params))) as FullResponse);
         } else if (operation === 'getMetadata') {
-          json = ((await send(contextRequest(base, video))) as { metadata: IDataObject }).metadata;
+          const res = (await send(metadataRequest(base, video))) as FullResponse;
+          if (isMissingRoute(res)) {
+            // Servers from before GET /metadata existed: read it from the full context.
+            json = ((await send(contextRequest(base, video))) as { metadata: IDataObject }).metadata;
+          } else if (res.statusCode >= 400) {
+            throw new NodeApiError(this.getNode(), (res.body ?? {}) as JsonObject, {
+              itemIndex: i,
+              httpCode: String(res.statusCode),
+              message: apiErrorMessage(res),
+            });
+          } else {
+            json = res.body as IDataObject;
+          }
+        } else if (operation === 'listItems') {
+          const limit = this.getNodeParameter('limit', i, 50) as number;
+          const listed = (await send(itemsRequest(base, { url, limit }))) as { items?: IDataObject[] };
+          for (const ref of listed.items ?? []) out.push({ json: ref, pairedItem: { item: i } });
+          continue;
         } else if (operation === 'getContext') {
           json = (await send(contextRequest(base, video))) as IDataObject;
         } else {

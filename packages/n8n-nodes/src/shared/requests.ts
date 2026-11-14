@@ -68,6 +68,34 @@ export function contextRequest(base: string, p: VideoParams): IHttpRequestOption
   };
 }
 
+/**
+ * GET /api/v1/metadata: metadata without fetching a transcript. Status errors
+ * are returned so the node can fall back to /context on servers that predate
+ * the route (see isMissingRoute).
+ */
+export function metadataRequest(base: string, p: VideoParams): IHttpRequestOptions {
+  return {
+    method: 'GET',
+    baseURL: base,
+    url: '/api/v1/metadata',
+    qs: query({ url: requireUrl(p.url) }),
+    json: true,
+    returnFullResponse: true,
+    ignoreHttpStatusErrors: true,
+  };
+}
+
+/** GET /api/v1/items: a playlist, channel, feed or page expanded to video refs. */
+export function itemsRequest(base: string, p: { url: string; limit?: number }): IHttpRequestOptions {
+  return {
+    method: 'GET',
+    baseURL: base,
+    url: '/api/v1/items',
+    qs: query({ url: requireUrl(p.url), limit: p.limit && p.limit > 0 ? String(Math.floor(p.limit)) : undefined }),
+    json: true,
+  };
+}
+
 /** GET /api/v1/health: formats and providers (no secrets). */
 export function healthRequest(base: string): IHttpRequestOptions {
   return { method: 'GET', baseURL: base, url: '/api/v1/health', json: true };
@@ -100,6 +128,22 @@ export interface FullResponse {
   statusCode: number;
   headers: Record<string, string | string[] | undefined>;
   body: unknown;
+}
+
+interface ErrorBody {
+  error?: { code?: string; message?: string; hint?: string };
+}
+
+/** True when the server has no such route at all (its notFound answer), as opposed to "video not found". */
+export function isMissingRoute(res: FullResponse): boolean {
+  return res.statusCode === 404 && /^No route for /.test((res.body as ErrorBody | undefined)?.error?.message ?? '');
+}
+
+/** A readable message from the API's standard error body: "code: message (hint)". */
+export function apiErrorMessage(res: FullResponse): string {
+  const e = (res.body as ErrorBody | undefined)?.error;
+  if (!e) return `vid2context answered HTTP ${res.statusCode}`;
+  return `${e.code ?? 'error'}: ${e.message ?? `HTTP ${res.statusCode}`}${e.hint ? ` (${e.hint})` : ''}`;
 }
 
 /** Turns a transcript response into an output item: JSON formats are parsed, everything else is kept as text. */
