@@ -131,5 +131,6 @@ export interface DuplicatesResult {
   representativeOf: Record<string, string>;
   /** Videos too short to judge, or given twice. */
   skipped: { videoId: string; reason: 'too-short' | 'duplicate-input' }[];
-  stats: { videos: number; windows: number; candidatePairs: number };
+  /** Work done: videos compared, MinHash windows, pairs LSH proposed, and pairs aligned exactly. */
+  stats: { videos: number; windows: number; candidatePairs: number; comparedPairs: number };
 }

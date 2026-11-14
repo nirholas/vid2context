@@ -215,12 +215,15 @@ export function findDuplicates(contexts: VideoContext[], options: DedupeOptions 
     return pair;
   };
 
-  const evaluated = candidates.map(([x, y]) => evaluate(x, y));
-
-  // Reupload clusters.
+  // Reupload clusters, built while comparing: a pair whose videos are already in one cluster is not compared again, so
+  // a video uploaded fifty times costs about fifty comparisons rather than 1,225.
   const uf = new UnionFind(docs.length);
   const reuploadEdges = new Map<number, number[]>();
-  for (const p of evaluated) {
+  const evaluated: Pair[] = [];
+  for (const [x, y] of candidates) {
+    if (uf.find(x) === uf.find(y)) continue;
+    const p = evaluate(x, y);
+    evaluated.push(p);
     if (p.kind !== 'reupload') continue;
     uf.union(p.a, p.b);
     for (const [u, v] of [
@@ -457,7 +460,7 @@ export function findDuplicates(contexts: VideoContext[], options: DedupeOptions 
     related,
     representativeOf,
     skipped,
-    stats: { videos: docs.length, windows, candidatePairs: candidates.length },
+    stats: { videos: docs.length, windows, candidatePairs: candidates.length, comparedPairs: evaluated.length },
   };
 }
 
