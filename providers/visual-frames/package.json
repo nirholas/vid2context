@@ -8,6 +8,8 @@
     ".": {
       "workerd": "./src/edge.ts",
       "worker": "./src/edge.ts",
+      "browser": "./src/index.ts",
+      "node": "./src/node-provider.ts",
       "default": "./src/index.ts"
     },
     "./node": "./src/node/index.ts"
