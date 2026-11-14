@@ -10,7 +10,11 @@
   "dependencies": {
     "@hono/node-server": "^2.1.8",
     "@vid2context/core": "*",
+    "@vid2context/exporters": "^0.1.0",
     "@vid2context/registry": "*",
+    "@vid2context/research": "^0.1.0",
+    "@vid2context/skips": "^0.1.0",
+    "@vid2context/webhooks": "^0.1.0",
     "hono": "^4.13.18"
   }
 }

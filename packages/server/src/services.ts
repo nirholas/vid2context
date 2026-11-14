@@ -47,6 +47,8 @@ export interface Services {
   uploads: UploadStore;
   /** The Ctx for a request, created once and reused by every middleware, route and sub-app. */
   ctxFor(req: Request): Ctx;
+  /** Make `next` share the Ctx and config of `prev` (for middleware that re-wraps the Request). */
+  alias(next: Request, prev: Request): void;
   config(req: Request): ServerConfig;
   storage(ctx: Ctx): Promise<Storage>;
   kv(ctx: Ctx): Promise<KvStore>;
@@ -230,10 +232,16 @@ export function createServices(registry: Registry, makeCtx: (req: Request) => Ct
     return results;
   };
 
+  const alias = (next: Request, prev: Request): void => {
+    ctxCache.set(next, ctxFor(prev));
+    configCache.set(next, config(prev));
+  };
+
   return {
     registry,
     uploads,
     ctxFor,
+    alias,
     config,
     storage,
     kv,
