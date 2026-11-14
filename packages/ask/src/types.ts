@@ -3,7 +3,7 @@
  * contract in docs/prompts/SHARED-CONTRACTS.md section 3 field for field;
  * extra fields are additive.
  */
-import type { Attempt, ChatMessage, Ctx, Policy, Registry, Storage, VideoContext } from '@vid2context/core';
+import type { Attempt, ChatMessage, Ctx, ModelChoice, Registry, Storage, VideoContext } from '@vid2context/core';
 
 /** The citation shape from docs/contracts/http-api.md, plus the source number it came from. */
 export interface Citation {
@@ -36,15 +36,6 @@ export interface Source {
 /** The source list as sent in the `meta` event: everything but the text. */
 export type SourceRef = Omit<Source, 'text'>;
 
-/**
- * Which model answers.
- *   { rung }           start with this rung id, then fall back along the chain
- *   { rung, strict }   this rung or an error
- *   { policy }         the chain ordered by that policy
- *   undefined          Auto: the server's policy (free first by default)
- */
-export type ModelChoice = { rung: string; strict?: boolean } | { policy: Policy };
-
 /** A previous turn. Only user and assistant turns are accepted. */
 export type HistoryMessage = { role: 'user' | 'assistant'; content: string };
 
@@ -60,6 +51,7 @@ export interface AskOptions {
   collectionId?: string;
   /** Library and cache. Saved contexts are reused; resolved ones are saved; keyword search runs here. */
   storage: Storage;
+  /** Which model answers (core's ModelChoice): { rung, strict? }, { policy }, or omitted for Auto. */
   model?: ModelChoice;
   /** Most answer tokens. Default 2048 (reasoning models spend part of it thinking). */
   maxTokens?: number;
@@ -99,6 +91,8 @@ export type AskEvent =
       /** Estimated tokens of the prompt sent (instructions, history, sources, question). */
       promptTokens: number;
       sources: SourceRef[];
+      /** Sent again with true when a rung failed after reasoning but before any answer text; drop the reasoning shown. */
+      restart?: boolean;
     }
   | { type: 'reasoning'; text: string }
   | { type: 'delta'; text: string }
@@ -136,4 +130,4 @@ export interface Retriever {
   needsQuery?(scope: RetrievalScope): boolean;
 }
 
-export type { ChatMessage };
+export type { ChatMessage, ModelChoice };

@@ -6,7 +6,7 @@ import { testContext } from '@vid2context/core/testing';
 import { describe, expect, it } from 'vitest';
 import { buildCitations, CitationFilter, rewriteCitations } from '../src/cite.ts';
 import { chunkByTime, MAX_CHUNK_SEC } from '../src/chunk.ts';
-import { modelPlan } from '../src/engine.ts';
+import { firstRung } from '../src/engine.ts';
 import { answerMessages, stripMarkers } from '../src/prompt.ts';
 import { defaultRetriever, fuseRankings, keywords } from '../src/retrieve.ts';
 import { loadContext, makeRegistry, makeStorage } from './helpers.ts';
@@ -23,8 +23,7 @@ describe('chunkByTime', () => {
       if (c.segments.length > 1) expect(c.endSec - c.startSec).toBeLessThanOrEqual(MAX_CHUNK_SEC);
       if (i < chunks.length - 1) expect(c.endSec - c.startSec).toBeGreaterThanOrEqual(30);
     }
-    const segs = gwagon.transcript.segments.filter((s) => s.text.trim());
-    expect(chunks.flatMap((c) => c.segments)).toEqual(segs);
+    expect(chunks.flatMap((c) => c.segments)).toEqual(gwagon.transcript.segments);
   });
 
   it('keeps a short video as one chunk', () => {
@@ -127,23 +126,13 @@ describe('prompt', () => {
   });
 });
 
-describe('modelPlan', () => {
+describe('firstRung', () => {
   const registry = makeRegistry();
-  const ctx = testContext();
+  const env = {};
 
-  it('strict pins exactly one rung', () => {
-    const plan = modelPlan(registry, { rung: 'llm/ovh/gpt-oss-120b', strict: true }, ctx);
-    expect(plan).toHaveLength(1);
-    expect(plan[0]?.rungs.map((r) => r.id)).toEqual(['llm/ovh/gpt-oss-120b']);
-  });
-
-  it('non-strict puts the rung first, then the rest of the chain', () => {
-    const plan = modelPlan(registry, { rung: 'llm/ovh/gpt-oss-120b' }, ctx);
-    expect(plan).toHaveLength(2);
-    expect(plan[1]?.rungs.some((r) => r.id === 'llm/ovh/gpt-oss-120b')).toBe(false);
-  });
-
-  it('refuses a strict rung that is not enabled', () => {
-    expect(() => modelPlan(registry, { rung: 'llm/groq/openai/gpt-oss-120b', strict: true }, ctx)).toThrow(/not available/);
+  it('is the pinned rung for a model choice, else the head of the free-first chain', () => {
+    expect(firstRung(registry, { only: ['llm/ovh/gpt-oss-120b'] }, env)?.id).toBe('llm/ovh/gpt-oss-120b');
+    expect(firstRung(registry, { prefer: ['llm/pollinations/openai-fast'] }, env)?.id).toBe('llm/pollinations/openai-fast');
+    expect(firstRung(registry, {}, env)?.tier).toBe('keyless');
   });
 });

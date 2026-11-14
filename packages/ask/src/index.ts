@@ -10,18 +10,18 @@
  * ./http.ts (askRoutes) and the MCP tool from ./mcp.ts (registerAskTools).
  */
 
-export { chunkByTime, MAX_CHUNK_SEC, MIN_CHUNK_SEC, type TimeChunk } from './chunk.ts';
+export { chunkByTime, MAX_CHUNK_SEC, TARGET_CHUNK_SEC, type TimeChunk } from './chunk.ts';
 export { buildCitations, CitationFilter, type Rewritten, rewriteCitations } from './cite.ts';
-export { ask, askStream, LIMITS, modelPlan, type PreparedAsk, prepareAsk, streamAnswer } from './engine.ts';
+export { ask, askStream, firstRung, LIMITS, type PreparedAsk, prepareAsk, streamAnswer } from './engine.ts';
 export { ANSWER_SYSTEM_PROMPT, answerMessages, CONDENSE_SYSTEM_PROMPT, condenseMessages } from './prompt.ts';
 export { defaultRetriever, fuseRankings, keywords, toSources } from './retrieve.ts';
+export type { ModelChoice } from '@vid2context/core';
 export type {
   AskEvent,
   AskOptions,
   AskResult,
   Citation,
   HistoryMessage,
-  ModelChoice,
   RetrievalScope,
   Retriever,
   Source,
