@@ -381,7 +381,7 @@ export async function runDigest(
     ...contexts.map((c, i) => sourceLine(c, i + 1)),
     '',
     `Built with MCP sampling by the client's model (${[...models].join(', ') || 'model not reported'}): ${ok.length} of ${chunks.length} note calls succeeded, ${reduceError ? 'the combine call failed' : '1 combine call'}.`,
-    `Citation check (tolerance ${tolerance} s): ${digestCitations} citations verified against the transcripts; ${droppedNotes.length} note lines and ${droppedDigest.length} digest lines dropped because their timestamps do not exist in the source.`,
+    `Citation check (tolerance ${tolerance} s): ${digestCitations} citations verified against the transcripts; ${droppedNotes.length} note lines and ${droppedDigest.length} digest lines dropped because a timestamp was missing or does not exist in the source.`,
   ];
   if (droppedNotes.length + droppedDigest.length > 0) {
     lines.push('', 'Dropped claims:');

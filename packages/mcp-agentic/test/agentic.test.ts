@@ -126,7 +126,11 @@ describe('digest_videos with sampling (client model = the real LLM chain, replay
     expect(maps).toHaveLength(chunks);
     expect(reduces).toHaveLength(1);
     expect(maps.every((c) => (c.modelPreferences?.costPriority ?? 0) >= 0.8)).toBe(true);
-    expect(progress.map((p) => p.progress)).toEqual([...Array.from({ length: chunks }, (_, i) => i + 1), chunks, chunks + 1]);
+    expect(progress.map((p) => p.progress)).toEqual([
+      ...Array.from({ length: chunks }, (_, i) => i + 1),
+      chunks + 0.5,
+      chunks + 1,
+    ]);
     expect(progress.every((p) => p.total === chunks + 1)).toBe(true);
 
     // Citations are rewritten to deep links, and every one of them checks out against the transcripts.
@@ -136,11 +140,14 @@ describe('digest_videos with sampling (client model = the real LLM chain, replay
     expect(invalidCitations(out, [sourceOf(zoo), sourceOf(gwagon)])).toEqual([]);
     expect(out).toMatch(/Citation check \(tolerance 5 s\): \d+ citations verified/);
     expect(out).toContain('Sources:');
+    // The recorded notes really contain one bullet without a timestamp; it is dropped and reported.
+    expect(out).toMatch(/1 note line(s)? and 0 digest lines dropped/);
+    expect(out).toMatch(/Dropped claims:\n- \(notes, Best & Worst G-Wagon Years[^\n]+\[no timestamp\]/);
   });
 
   it('sends the exact map and reduce instructions, with [m:ss] lines and the question', async () => {
     const { calls } = await run();
-    const first = calls.find((c) => c.systemPrompt === MAP_SYSTEM);
+    const first = calls.find((c) => c.systemPrompt === MAP_SYSTEM && chatMessages(c)[1]?.content.includes('Video: Best & Worst'));
     const text = first ? chatMessages(first)[1]?.content : '';
     expect(text).toContain(`Question: ${QUESTION}`);
     expect(text).toMatch(/Transcript:\n\[0:0\d\] /);
@@ -168,13 +175,16 @@ describe('citation validation on recorded model output', () => {
   });
 
   it('drops claims whose timestamps do not exist in the cited video', () => {
-    // The model's real G-Wagon notes cite moments up to 18 minutes in. Checked against the 19-second
-    // "Me at the zoo", every one of those timestamps is past the end, so every claim must go.
+    // The recorded digest run produced no out-of-range timestamp, so check the validator on the model's real
+    // G-Wagon notes (moments up to 18 minutes in) against the 19-second "Me at the zoo": everything past
+    // 0:19 must go, and only lines whose every timestamp exists in that video may stay.
     const text = notesFor(gwagon.metadata.title).map(recordedAnswer).join('\n');
     const checked = checkNotes(text, sourceOf(zoo));
-    expect(checked.verified).toBe(0);
     const late = checked.dropped.filter((d) => d.reason.includes('past the end of the video (0:19)'));
-    expect(late.length).toBeGreaterThan(5);
+    expect(late.length).toBeGreaterThan(20);
+    for (const line of checked.text.split('\n').filter((l) => l.trim().startsWith('-'))) {
+      for (const m of line.matchAll(/\[(\d+):(\d{2})\]/g)) expect(Number(m[1]) * 60 + Number(m[2])).toBeLessThanOrEqual(19);
+    }
   });
 
   it('rewrites titled citations to deep links and drops lines that cite a moment that does not exist', () => {
