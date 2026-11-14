@@ -11,7 +11,7 @@ import type { ChatSource } from '../lib/types.ts';
 
 export interface CitationScope {
   sources: ChatSource[] | undefined;
-  onOpen: (source: ChatSource, sources: ChatSource[]) => void;
+  onOpen: (source: ChatSource) => void;
 }
 
 /** Lets chips deep inside rendered Markdown reach the message's sources and the panel opener. */
@@ -43,7 +43,7 @@ export function CitationGroup(props: { ns: number[]; raw: string }) {
       {props.ns.map((n, i) => {
         const s = known[i];
         return s ? (
-          <CitationChip key={`${n}-${i}`} source={s} onOpen={(src) => scope.onOpen(src, scope.sources ?? [])} />
+          <CitationChip key={`${n}-${i}`} source={s} onOpen={scope.onOpen} />
         ) : (
           <span key={`${n}-${i}`}>[{n}]</span>
         );

@@ -30,6 +30,9 @@ const SourcePanel = lazy(() => import('./SourcePanel.tsx'));
 
 export const PROVIDERS_DOC_URL = 'https://github.com/nirholas/vid2context/blob/main/docs/providers.md';
 
+/** An answer that sends nothing (no meta, reasoning or text) for this long is abandoned with a timeout error. */
+export const IDLE_TIMEOUT_MS = 60_000;
+
 export interface ChatWorkspaceProps {
   backend: Backend;
   store: ChatStore;
@@ -209,6 +212,22 @@ export function ChatWorkspace(props: ChatWorkspaceProps) {
     async (conv: Conversation, history: MessageRecord[]) => {
       const controller = new AbortController();
       streamRef.current = controller;
+      // Watchdog: a stalled upstream stream would otherwise leave the answer spinning forever.
+      let idle = false;
+      let timer: ReturnType<typeof setTimeout> | undefined;
+      const touch = () => {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+          idle = true;
+          controller.abort();
+        }, IDLE_TIMEOUT_MS);
+      };
+      touch();
+      const idleError = {
+        code: 'timeout',
+        message: `No data from the model for ${IDLE_TIMEOUT_MS / 1000} seconds.`,
+        hint: 'The service stalled. Retry, or pick another model.',
+      };
       let cur: MessageRecord = {
         id: newId(),
         conversationId: conv.id,
@@ -238,6 +257,7 @@ export function ChatWorkspace(props: ChatWorkspaceProps) {
 
       try {
         for await (const ev of backend.chat(req, conv, controller.signal)) {
+          touch();
           if (ev.type === 'meta') {
             push({
               rung: ev.rung,
@@ -269,14 +289,17 @@ export function ChatWorkspace(props: ChatWorkspaceProps) {
         }
         if (cur.status === 'streaming') {
           push(
-            controller.signal.aborted
+            idle
+              ? { status: 'error', error: idleError }
+              : controller.signal.aborted
               ? { status: 'stopped' }
               : { status: 'error', error: { code: 'upstream', message: 'The answer ended without a result.', hint: 'Retry, or pick another model.' } },
           );
         }
       } catch (err) {
-        push(controller.signal.aborted ? { status: 'stopped' } : { status: 'error', error: toErrorData(err) });
+        push(idle ? { status: 'error', error: idleError } : controller.signal.aborted ? { status: 'stopped' } : { status: 'error', error: toErrorData(err) });
       } finally {
+        clearTimeout(timer);
         if (streamRef.current === controller) streamRef.current = null;
         setStreamingId(null);
         await store.putMessage(cur).catch(() => {});

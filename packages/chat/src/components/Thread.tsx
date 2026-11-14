@@ -7,6 +7,7 @@
  */
 import { Brain, Check, Copy, Pencil, RefreshCw, Square } from 'lucide-react';
 import { lazy, Suspense, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { citedNumbers, sourceByNumber } from '../lib/citations.ts';
 import { modelLabel, serviceLabel } from '../lib/models.ts';
 import type { ChatSource, MessageRecord, ModelRow } from '../lib/types.ts';
 import { CitationContext, TextWithCitations } from './CitationChip.tsx';
@@ -185,7 +186,11 @@ function AssistantMessage(props: {
   const { message } = props;
   const streaming = message.status === 'streaming';
   const tag = modelTag(message, props.rows);
-  const scope = { sources: message.sources, onOpen: props.onOpenSource };
+  // The panel's switcher lists only the sources this answer actually cited.
+  const cited = citedNumbers(message.content)
+    .map((n) => sourceByNumber(message.sources, n))
+    .filter((x): x is ChatSource => x !== undefined);
+  const scope = { sources: message.sources, onOpen: (s: ChatSource) => props.onOpenSource(s, cited.length ? cited : [s]) };
 
   return (
     <div className="group flex flex-col gap-2" data-role="assistant" data-status={message.status}>

@@ -44,6 +44,7 @@ export default function SourcePanel(props: SourcePanelProps) {
   const [state, setState] = useState<'loading' | 'ready' | 'missing' | 'error'>('loading');
   const [error, setError] = useState<ChatErrorData | undefined>();
   const highlightRef = useRef<HTMLLIElement>(null);
+  const transcriptRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const ytId = youtubeIdOf(source);
 
@@ -73,7 +74,11 @@ export default function SourcePanel(props: SourcePanelProps) {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: scroll when the cited range or transcript changes.
   useEffect(() => {
-    highlightRef.current?.scrollIntoView?.({ block: 'center' });
+    // Scroll only the transcript box, so the video above stays in view.
+    const box = transcriptRef.current;
+    const line = highlightRef.current;
+    // The box is the line's offsetParent (position: relative), so offsetTop is measured from its top.
+    if (box && line) box.scrollTop = Math.max(0, line.offsetTop - box.clientHeight / 3);
   }, [state, source.n]);
 
   const segments = video ? sliceSegments(video.transcript.segments, source.startSec - AROUND_SEC, source.endSec + AROUND_SEC) : [];
@@ -100,7 +105,7 @@ export default function SourcePanel(props: SourcePanelProps) {
             [{source.n}] {formatTimestamp(source.startSec)} to {formatTimestamp(source.endSec)}
           </p>
         </div>
-        <IconButton label="Close source panel" onClick={props.onClose} ref={closeRef}>
+        <IconButton label="Close source panel" tip={false} onClick={props.onClose} ref={closeRef}>
           <X size={17} aria-hidden />
         </IconButton>
       </div>
@@ -124,8 +129,8 @@ export default function SourcePanel(props: SourcePanelProps) {
         </div>
       ) : null}
 
-      <div className="v2c-scroll min-h-0 flex-1 overflow-y-auto">
-        <div className="p-4">
+      <div className="flex min-h-0 flex-1 flex-col">
+        <div className="shrink-0 p-4">
           {ytId ? (
             <div className="aspect-video w-full overflow-hidden rounded-md border border-border bg-black">
               <iframe
@@ -153,7 +158,7 @@ export default function SourcePanel(props: SourcePanelProps) {
           )}
         </div>
 
-        <div className="border-t border-border px-4 py-3">
+        <div ref={transcriptRef} className="v2c-scroll relative min-h-0 flex-1 overflow-y-auto border-t border-border px-4 py-3">
           <h3 className="mb-2 text-xs font-semibold text-muted">Transcript around the citation</h3>
           {state === 'loading' ? <Spinner label="Loading transcript" /> : null}
           {state === 'missing' ? <p className="text-sm text-muted">The transcript for this video is not available here.</p> : null}
