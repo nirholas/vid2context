@@ -285,4 +285,12 @@ describe.skipIf(!process.env.LIVE)('live', () => {
     expect(checkChapters(res.chapters, res.durationSec)).toEqual([]);
     console.error(res.producer, JSON.stringify(res.chapters, null, 2));
   });
+
+  it('titles the chapters of a real transcript with the live LLM chain (no YouTube call)', async () => {
+    const { createNodeContext, createRegistry } = await import('@vid2context/registry/node');
+    const ctx = createNodeContext();
+    const res = await autoChapters(createRegistry(), gwagon, { summaries: true }, ctx);
+    expect(checkChapters(res.chapters, res.durationSec)).toEqual([]);
+    console.error(res.producer, res.notes, JSON.stringify(res.chapters, null, 2));
+  });
 });
