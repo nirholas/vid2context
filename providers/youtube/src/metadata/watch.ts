@@ -143,7 +143,8 @@ export function parseWatch(next: unknown): WatchInfo {
     channelId: typeof at(browse, 'browseId') === 'string' ? (at(browse, 'browseId') as string) : undefined,
     channelHandle: typeof handlePath === 'string' && handlePath.startsWith('/@') ? handlePath.slice(1) : undefined,
     subscriberCountText: textOf(at(owner, 'subscriberCountText')),
-    membersOnly: Array.isArray(badges) && badges.some((b) => at(b, 'metadataBadgeRenderer', 'style') === 'BADGE_STYLE_TYPE_MEMBERS_ONLY'),
+    membersOnly:
+      Array.isArray(badges) && badges.some((b) => at(b, 'metadataBadgeRenderer', 'style') === 'BADGE_STYLE_TYPE_MEMBERS_ONLY'),
     descriptionMarkers: markerChapters(next, 'DESCRIPTION_CHAPTERS'),
     autoChapters: markerChapters(next, 'AUTO_CHAPTERS'),
   };

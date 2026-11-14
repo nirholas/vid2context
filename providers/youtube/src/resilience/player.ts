@@ -108,6 +108,8 @@ export async function fetchPlayer(videoId: string, ctx: Ctx): Promise<PlayerResp
       const e = asYouTubeError(err);
       attempts.push({ id, stage: 'metadata', outcome: 'error', reason: e.code, detail: errInfo(e), ms: ms() });
       // A block or an open breaker is about the IP, not the client; an abort is the caller's decision.
+      // A playable answer already in hand (only its captions were missing) is still worth returning.
+      if (e.code === 'blocked' && withoutCaptions && !ctx.signal?.aborted) break;
       if (e.code === 'blocked' || ctx.signal?.aborted || e.code === 'bad-request') {
         throw Object.assign(e, { attempts: [...((e as { attempts?: Attempt[] }).attempts ?? []), ...attempts] });
       }

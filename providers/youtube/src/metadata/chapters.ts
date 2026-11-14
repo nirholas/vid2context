@@ -53,7 +53,8 @@ export function parseChapterLine(line: string): { title: string; startSec: numbe
   const trail = TRAILING.exec(line);
   if (trail) {
     const clock = trail[2] ?? trail[3];
-    const bare = trail[2] !== undefined && !/[-:|.~\u2013\u2014\u2022\u25B6\u27A4>]\s*$/u.test(line.slice(0, line.lastIndexOf(trail[2])));
+    const bare =
+      trail[2] !== undefined && !/[-:|.~\u2013\u2014\u2022\u25B6\u27A4>]\s*$/u.test(line.slice(0, line.lastIndexOf(trail[2])));
     if (bare && REFERENCE.test(trail[1] ?? '')) return null;
     const title = cleanTitle(trail[1] ?? '');
     if (clock && title) return { title, startSec: parseClock(clock) };
@@ -98,4 +99,3 @@ export function parseDescriptionChapters(description: string | undefined, durati
   if (list.length < 3) return [];
   return withEnds(list, durationSec);
 }
-

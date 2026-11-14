@@ -9,9 +9,7 @@ import { defineProvider, type SourceProvider } from '@vid2context/core';
 import { listMetadata, listYouTube } from './browse/index.ts';
 import { youtubeCaptions } from './captions/provider.ts';
 import { getYouTubeComments } from './comments/index.ts';
-import { toMetadata } from './metadata.ts';
-import { playabilityError } from './resilience/errors.ts';
-import { getPlayer } from './resilience/player.ts';
+import { getYouTubeMetadata } from './metadata/index.ts';
 import { matchYouTube } from './url.ts';
 
 export { listMetadata, listYouTube } from './browse/index.ts';
@@ -28,7 +26,15 @@ export {
 export { youtubeCaptions } from './captions/provider.ts';
 export { chooseTrack, spokenLanguage, type TrackChoice } from './captions/tracks.ts';
 export { type CommentOptions, type CommentSort, getYouTubeComments } from './comments/index.ts';
-export { parseDescriptionChapters } from './metadata.ts';
+export {
+  type ChapterSource,
+  extractLinks,
+  getYouTubeMetadata,
+  parseDescriptionChapters,
+  parseWatch,
+  toMetadata,
+  type WatchInfo,
+} from './metadata/index.ts';
 export { resetBreaker } from './resilience/breaker.ts';
 export { CLIENTS, type ClientSpec, resolveClients } from './resilience/clients.ts';
 export { BLOCKED_HINT, classifyPlayability, playabilityError, youtubeHttpError } from './resilience/errors.ts';
@@ -46,11 +52,7 @@ export const youtubeSource: SourceProvider = defineProvider({
   match: matchYouTube,
   async getMetadata(ref, ctx) {
     if (ref.kind !== 'video') return listMetadata(ref, ctx);
-    const player = await getPlayer(ref.nativeId, ctx);
-    if (!player.videoDetails) {
-      throw playabilityError(player, ref.nativeId) ?? playabilityError({ playabilityStatus: { status: 'ERROR' } }, ref.nativeId);
-    }
-    return toMetadata(ref, player);
+    return getYouTubeMetadata(ref, ctx);
   },
   listItems: (ref, ctx, opts) => listYouTube(ref, ctx, opts),
   getComments: (ref, ctx, opts) => getYouTubeComments(ref, ctx, opts),

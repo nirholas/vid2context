@@ -39,6 +39,8 @@ Recorded from this repo's VM on 2026-11-14 with `POST /youtubei/v1/player` (`hl=
 | `player-upcoming-w8DxIwCbsVc.json` | ANDROID, a scheduled live stream: `LIVE_STREAM_OFFLINE` with `scheduledStartTime` 1794717000 (2026-11-15T04:30:00Z) |
 | `player-live-0U8ykcdZL2g.json` | ANDROID, a 24/7 live stream: `OK`, `isLive`, no captions |
 
+The player endpoint itself was never blocked from the VM, so the block-during-fallback test serves the real `timedtext-429-blocked.html` page as a player answer.
+
 Not recorded, because none could be found or reached from the VM: a region-blocked video, a real 5xx or a 429 with Retry-After that is not the block page, and a 403 on timedtext. The timedtext endpoint answered every request from the VM with the 429 block page from about 16:55 UTC onward, so no json3, WebVTT or `tlang` caption payload could be recorded.
 
 To re-record, call the player as `src/resilience/transport.ts` does, with the client from `src/resilience/clients.ts`, apply the same trimming, and grep for your public IP before committing.

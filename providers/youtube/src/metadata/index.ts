@@ -9,7 +9,7 @@
  * Every field and its source is listed in docs/guides/youtube.md,
  * "Metadata and chapters".
  */
-import { type Chapter, type Ctx, type VideoMetadata, type VideoRef, Vid2ContextError } from '@vid2context/core';
+import { type Chapter, type Ctx, Vid2ContextError, type VideoMetadata, type VideoRef } from '@vid2context/core';
 import { playabilityError } from '../resilience/errors.ts';
 import { getPlayer, type PlayerResponse } from '../resilience/player.ts';
 import { type ChapterSource, parseDescriptionChapters, withEnds } from './chapters.ts';
@@ -52,7 +52,9 @@ export function detectShort(ref: VideoRef, player: Player, durationSec: number |
 
 /** The scheduled start of an upcoming live stream or premiere, ISO 8601. */
 function scheduledStart(player: Player): string | undefined {
-  const raw = player.playabilityStatus?.liveStreamability?.liveStreamabilityRenderer?.offlineSlate?.liveStreamOfflineSlateRenderer?.scheduledStartTime;
+  const raw =
+    player.playabilityStatus?.liveStreamability?.liveStreamabilityRenderer?.offlineSlate?.liveStreamOfflineSlateRenderer
+      ?.scheduledStartTime;
   const sec = Number(raw);
   return raw && Number.isFinite(sec) && sec > 0 ? new Date(sec * 1000).toISOString() : undefined;
 }
@@ -68,8 +70,10 @@ export function pickChapters(
 ): { chapters: Chapter[]; source?: ChapterSource } {
   const fromDescription = parseDescriptionChapters(description, durationSec);
   if (fromDescription.length > 0) return { chapters: fromDescription, source: 'description' };
-  if (watch && watch.descriptionMarkers.length > 0) return { chapters: withEnds(watch.descriptionMarkers, durationSec), source: 'markers' };
-  if (watch && watch.autoChapters.length > 0) return { chapters: withEnds(watch.autoChapters, durationSec), source: 'key-moments' };
+  if (watch && watch.descriptionMarkers.length > 0)
+    return { chapters: withEnds(watch.descriptionMarkers, durationSec), source: 'markers' };
+  if (watch && watch.autoChapters.length > 0)
+    return { chapters: withEnds(watch.autoChapters, durationSec), source: 'key-moments' };
   return { chapters: [] };
 }
 

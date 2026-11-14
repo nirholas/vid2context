@@ -121,6 +121,19 @@ describe('player clients', () => {
     expect(playerCalls(fetch.calls)).toHaveLength(2);
   });
 
+  it('keeps a playable answer without captions when the next client hits the block page', async () => {
+    const fetch = replayFetch([
+      byClient({
+        ANDROID: json('player-nocaptions-android-brXcsLhw84o.json'),
+        IOS: { status: 429, body: fixture('timedtext-429-blocked.html') },
+      }),
+    ]);
+    const p = await fetchPlayer('brXcsLhw84o', testContext({ fetch }));
+    expect(p.client).toBe('ANDROID');
+    expect(p.attempts?.map((a) => a.reason)).toEqual(['no-captions', 'blocked']);
+    expect(breakerRemainingSec()).toBe(600);
+  });
+
   it('stops at a verdict about the video instead of asking more clients', async () => {
     const fetch = replayFetch([byClient({ ANDROID: json('player-private-yZIXLfi8CZQ.json') })]);
     const ctx = testContext({ fetch });
