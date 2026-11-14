@@ -50,6 +50,10 @@ vid2context turns any video into context for AI agents: transcripts, metadata, c
 
 Keyless innertube only. No YouTube Data API key is needed or used.
 
+## Prior art you may reuse
+
+`youtubei.js` (MIT) implements innertube browse, search and continuations for playlists and channels on every runtime. Use it as a dependency or port its parsing; say which in your report. Licenses and attribution rules: `docs/prior-art.md`. Copy only MIT, BSD, ISC, Unlicense or Apache-2.0 code, keep the original copyright line in the copied file, and add the project to `THIRD_PARTY_NOTICES.md` (create it if missing; additive edits only). Never copy GPL or unlicensed code.
+
 ## Out of scope
 
 - Captions, clients, blocks: prompt 06. Video metadata and chapters: prompt 07. Comments: prompt 09.

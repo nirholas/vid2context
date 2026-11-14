@@ -50,6 +50,10 @@ vid2context turns any video into context for AI agents: transcripts, metadata, c
 
 Keyless innertube only. No YouTube Data API key.
 
+## Prior art you may reuse
+
+`youtubei.js` (MIT) parses the comments `next` response, including the newer entity payloads; kevinwatt/yt-dlp-mcp (MIT) shows threaded comment output for agents. Licenses and attribution rules: `docs/prior-art.md`. Copy only MIT, BSD, ISC, Unlicense or Apache-2.0 code, keep the original copyright line in the copied file, and add the project to `THIRD_PARTY_NOTICES.md` (create it if missing; additive edits only). Never copy GPL or unlicensed code.
+
 ## Out of scope
 
 - Captions, clients, blocks and backoff: prompt 06. Metadata: prompt 07. Listing: prompt 08.

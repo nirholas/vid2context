@@ -52,6 +52,10 @@ vid2context turns any video into context for AI agents: transcripts, metadata, c
 
 Order: tesseract.js and local Ollama vision first, then free Gemini, then keyless OVH. Under `local-only`, only tesseract and Ollama run. The frame budget keeps hosted use small.
 
+## Prior art you may reuse
+
+steipete/summarize (MIT) extracts slides at scene changes and runs OCR with timestamps (see its docs/slides.md and media code); samson-art/transcriptor-mcp (MIT) has a `get_video_frame` tool. Licenses and attribution rules: `docs/prior-art.md`. Copy only MIT, BSD, ISC, Unlicense or Apache-2.0 code, keep the original copyright line in the copied file, and add the project to `THIRD_PARTY_NOTICES.md` (create it if missing; additive edits only). Never copy GPL or unlicensed code.
+
 ## Out of scope
 
 - Gemini whole-video understanding by URL: prompt 30. Rendering notes in Markdown and the pack: prompt 01. Wiring visual notes into `getVideoContext` options and surfaces: the integration pass.

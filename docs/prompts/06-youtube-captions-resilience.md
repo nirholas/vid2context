@@ -60,6 +60,10 @@ vid2context turns any video into context for AI agents: transcripts, metadata, c
 
 Everything here is keyless. Running locally on a residential IP is the most reliable path, and the hints say so. Cookies are optional and personal; the docs must warn that they tie requests to the user's account.
 
+## Prior art you may reuse
+
+`youtubei.js` (LuanRT/YouTube.js, MIT, runs on Node, Workers and browsers) is a maintained innertube client with player clients, caption tracks and session handling; `bgutils-js` (LuanRT/BgUtils, MIT) generates PO tokens; `yt-dlp/ejs` (Unlicense) solves signatures and the n parameter in JS. jdepoix/youtube-transcript-api (MIT, Python) has a well-tested error taxonomy (`_errors.py`: IpBlocked, RequestBlocked, AgeRestricted, ...) and proxy and cookie options worth porting. Decide whether to depend on youtubei.js or keep the own client and port its logic; say which in your report and why. Licenses and attribution rules: `docs/prior-art.md`. Copy only MIT, BSD, ISC, Unlicense or Apache-2.0 code, keep the original copyright line in the copied file, and add the project to `THIRD_PARTY_NOTICES.md` (create it if missing; additive edits only). Never copy GPL or unlicensed code.
+
 ## Out of scope
 
 - Metadata, chapters, video states as metadata: prompt 07.

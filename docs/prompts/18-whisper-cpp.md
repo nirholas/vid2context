@@ -55,6 +55,10 @@ A node-only provider whose rung transcribes through whisper.cpp with segment tim
 
 This is the local, private rung. With it enabled and the default `free` policy, nothing leaves the machine for speech-to-text. With `VID2CONTEXT_POLICY=local-only`, it is the rung that makes speech-to-text possible at all.
 
+## Prior art you may reuse
+
+`smart-whisper` and `nodejs-whisper` (both MIT) are whisper.cpp bindings for Node; smart-whisper keeps the model loaded between calls. Licenses and attribution rules: `docs/prior-art.md`. Copy only MIT, BSD, ISC, Unlicense or Apache-2.0 code, keep the original copyright line in the copied file, and add the project to `THIRD_PARTY_NOTICES.md` (create it if missing; additive edits only). Never copy GPL or unlicensed code.
+
 ## Out of scope
 
 - Hosted speech-to-text: prompt 17. Transformers.js in Node and the browser: prompt 19.

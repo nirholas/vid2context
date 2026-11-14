@@ -69,6 +69,10 @@ vid2context turns any video into context for AI agents: transcripts, metadata, c
 
 Agent-side synthesis costs nothing extra and is the default. Server-side runs use the core chain with the default `free` policy: local LLM rungs first, then free tiers, then keyless lanes (OVH, Pollinations), paid only when a key is set and allowed. Prefer small, fast models for the map step and allow a stronger rung for the reduce step through `ChainOptions` (for example `policy: 'quality'` for reduce only).
 
+## Prior art you may reuse
+
+danielmiessler/Fabric (MIT) has prompt patterns such as `data/patterns/extract_wisdom`; coyaSONG/youtube-mcp-server (MIT) returns cited excerpts with timestamp links across several videos. Licenses and attribution rules: `docs/prior-art.md`. Copy only MIT, BSD, ISC, Unlicense or Apache-2.0 code, keep the original copyright line in the copied file, and add the project to `THIRD_PARTY_NOTICES.md` (create it if missing; additive edits only). Never copy GPL or unlicensed code.
+
 ## Out of scope
 
 - Q&A and chat over videos: prompt 34 (ask).

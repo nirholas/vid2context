@@ -50,6 +50,10 @@ vid2context turns any video into context for AI agents: transcripts, metadata, c
 - Prompts `brief` and `buyer_guide` (contract names), each producing messages that tell the calling agent to fetch the outline, read sections, search, and cite every claim as `[Title @ m:ss](url)`, flagging consensus and disagreement. Use prompt text exported by `@vid2context/insights` (prompt 32) if it exists; otherwise write it here.
 - Resources and templates: `vid2context://video/{id}`, `vid2context://video/{id}/transcript`, `vid2context://collection/{id}`, listing saved items from storage.
 
+## Prior art you may reuse
+
+jkawamoto/mcp-youtube-transcript (MIT) pages long transcripts with `next_cursor`; kimtaeyoon83/mcp-server-youtube-transcript (MIT) caps output with `max_tokens`; coyaSONG/youtube-mcp-server (MIT) ships resources and prompts worth comparing against. Licenses and attribution rules: `docs/prior-art.md`. Copy only MIT, BSD, ISC, Unlicense or Apache-2.0 code, keep the original copyright line in the copied file, and add the project to `THIRD_PARTY_NOTICES.md` (create it if missing; additive edits only). Never copy GPL or unlicensed code.
+
 ## Out of scope
 
 - The Streamable HTTP transport, OAuth and the tunnel guide: prompt 45 (`packages/mcp-http`). Keep `createServer` free of transport code so 45 can serve it unchanged.

@@ -48,6 +48,10 @@ vid2context turns any video into context for AI agents: transcripts, metadata, c
 
 Everything here is local and free by definition. These rungs only exist where they can run (feature detection); they never send audio or text anywhere.
 
+## Prior art you may reuse
+
+`@huggingface/transformers` (Apache-2.0: keep its NOTICE in THIRD_PARTY_NOTICES.md) runs Whisper on ONNX and WebGPU in the browser and Node. Licenses and attribution rules: `docs/prior-art.md`. Copy only MIT, BSD, ISC, Unlicense or Apache-2.0 code, keep the original copyright line in the copied file, and add the project to `THIRD_PARTY_NOTICES.md` (create it if missing; additive edits only). Never copy GPL or unlicensed code.
+
 ## Out of scope
 
 - whisper.cpp: prompt 18. Local LLM servers such as Ollama: prompt 27. Local embeddings with Transformers.js: prompt 29.
