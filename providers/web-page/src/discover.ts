@@ -187,6 +187,9 @@ export function discoverInHtml(html: string, pageUrl: URL): PageInfo {
         classify(embed) ??
         classify(content) ??
         mediaFile(content) ??
+        // No player URL: the VideoObject's own url or @id (YouTube uses the watch URL) when it names a known platform.
+        classify(firstUrlOf(o.url)) ??
+        classify(typeof o['@id'] === 'string' ? o['@id'] : undefined) ??
         (absoluteUrl(embed, base) ? { input: (absoluteUrl(embed, base) as URL).href, platform: 'web' } : null) ??
         (absoluteUrl(content, base) ? { input: (absoluteUrl(content, base) as URL).href, platform: 'web' } : null) ??
         // A VideoObject with a transcript but no playable URL still describes this page's video.
