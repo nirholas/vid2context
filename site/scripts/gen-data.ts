@@ -243,6 +243,66 @@ async function mcpTools(registry: Registry): Promise<ToolInfo[] | null> {
   }
 }
 
+// ------------------------------------------------------------------ playlist (replayed)
+
+const GWAGON_PLAYLIST = 'https://www.youtube.com/playlist?list=PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b';
+
+interface PlaylistItem {
+  id: string;
+  url: string;
+}
+
+/**
+ * The G-Wagon playlist as the YouTube source lists it, replaying the innertube
+ * responses recorded in providers/youtube/test/fixtures/browse/ (no network).
+ * Null when the provider has no playlist support or the recording is missing.
+ */
+async function replayPlaylist(registry: Registry): Promise<{ url: string; title: string | null; items: PlaylistItem[] } | null> {
+  const dir = join(root, 'providers/youtube/test/fixtures/browse');
+  if (!existsSync(join(dir, 'requests.json'))) return null;
+  try {
+    const { replayFetch } = await import('@vid2context/core/testing');
+    const { isDeepStrictEqual } = await import('node:util');
+    const recorded = JSON.parse(readFileSync(join(dir, 'requests.json'), 'utf8')) as {
+      endpoint: string;
+      body: Record<string, unknown>;
+      status: number;
+      file: string;
+    }[];
+    const fetch = replayFetch([
+      {
+        method: 'POST',
+        url: /^https:\/\/www\.youtube\.com\/youtubei\/v1\/(browse|search|navigation\/resolve_url)\?prettyPrint=false$/,
+        response: (call) => {
+          const endpoint = new URL(call.url).pathname.replace('/youtubei/v1/', '');
+          const { context: _context, ...body } = JSON.parse(String(call.body)) as Record<string, unknown>;
+          const hit = recorded.find((r) => r.endpoint === endpoint && isDeepStrictEqual(r.body, body));
+          if (!hit) throw new Error(`no recording for ${endpoint}`);
+          return { status: hit.status, headers: { 'content-type': 'application/json' }, body: readFileSync(join(dir, hit.file), 'utf8') };
+        },
+      },
+    ]);
+    const silent = { debug() {}, info() {}, warn() {}, error() {} };
+    const ctx = createContext({ runtime: 'node', env: {}, fetch, log: silent });
+    const { source, ref } = registry.resolve(GWAGON_PLAYLIST);
+    if (!source.listItems) return null;
+    const items: PlaylistItem[] = [];
+    for await (const item of source.listItems(ref, ctx)) {
+      items.push({ id: item.nativeId, url: item.url ?? `https://www.youtube.com/watch?v=${item.nativeId}` });
+    }
+    let title: string | null = null;
+    try {
+      title = (await source.getMetadata(ref, ctx)).title;
+    } catch {
+      title = null;
+    }
+    return items.length ? { url: GWAGON_PLAYLIST, title, items } : null;
+  } catch (err) {
+    log(`the recorded playlist did not replay (${(err as Error).message.split('\n')[0]}); the playlist page is left out`);
+    return null;
+  }
+}
+
 // ------------------------------------------------------------------ git
 
 function git(args: string[]): string {
@@ -372,6 +432,7 @@ async function main(): Promise<void> {
   const gwagonText = render(gwagon, 'text', { timestamps: true }).split('\n');
 
   const tools = await mcpTools(registry);
+  const playlist = await replayPlaylist(registry);
   const mcpVersion = await npmVersion(discovery.MCP_PACKAGE.name);
   const stars = await githubStars();
 
@@ -444,6 +505,7 @@ async function main(): Promise<void> {
     ytdlpExtractors: ytdlpExtractorCount(),
     deployTargets: deployTargets(),
     mcpTools: tools,
+    playlist,
     formatters: Object.values(formatters).map((f) => ({ id: f.id, description: f.description, extension: f.extension })),
     demo: {
       fixture: 'tests/fixtures/contexts/youtube-jNQXAC9IVRw.json',

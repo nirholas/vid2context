@@ -56,6 +56,12 @@ function values(): Record<string, string> {
       ? `the published npm package \`${data.npm.mcpPackage}\``
       : 'a clone of the repo (the npm package is not published yet, so these steps run the server from source)',
   };
+  if (data.playlist) {
+    v['playlist.url'] = data.playlist.url;
+    v['playlist.title'] = data.playlist.title ?? 'the playlist';
+    v['playlist.count'] = String(data.playlist.items.length);
+    v['playlist.list'] = data.playlist.items.map((item) => item.url).join('\n');
+  }
   for (const [k, val] of Object.entries(data.install)) v[`install.${k}`] = val;
   for (const [k, val] of Object.entries(data.demo)) if (typeof val === 'string' || typeof val === 'number') v[`demo.${k}`] = String(val);
   for (const [k, val] of Object.entries(data.gwagon)) if (typeof val === 'string' || typeof val === 'number') v[`gwagon.${k}`] = String(val);

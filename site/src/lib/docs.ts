@@ -133,6 +133,8 @@ function renderTwin(source: string, rewrite: (href: string) => string | undefine
 // ------------------------------------------------------------------ site-authored pages
 
 interface Frontmatter {
+  /** A generated-data key the page needs (for example `playlist`); the page is left out when it is missing. */
+  requires?: string;
   title: string;
   label?: string;
   description: string;
@@ -149,7 +151,7 @@ function parseFrontmatter(text: string, file: string): { fm: Frontmatter; body: 
   }
   if (!fields.title || !fields.description) throw new Error(`${file} needs a title and a description.`);
   return {
-    fm: { title: fields.title, label: fields.label, description: fields.description, order: Number(fields.order ?? 99) },
+    fm: { requires: fields.requires, title: fields.title, label: fields.label, description: fields.description, order: Number(fields.order ?? 99) },
     body: m[2] ?? '',
   };
 }
@@ -171,9 +173,10 @@ function resolveSiteLink(href: string, twin: boolean): string | undefined {
   return `${REPO_URL}/blob/main/${posix.normalize(href)}`;
 }
 
-function authoredPage(section: Section, dir: string, file: string): DocPage {
+function authoredPage(section: Section, dir: string, file: string): DocPage | null {
   const rel = `site/src/content/${dir}/${file}`;
   const { fm, body } = parseFrontmatter(readFileSync(repoPath(rel), 'utf8'), rel);
+  if (fm.requires && !(data as unknown as Record<string, unknown>)[fm.requires]) return null;
   const expanded = `# ${fm.title}\n\n${expandTokens(body, rel).trim()}\n`;
   const rendered = renderMarkdown(expanded, { rewriteHref: (h) => resolveSiteLink(h, false) });
   const slug = `${dir}/${file.replace(/\.md$/, '')}`;
@@ -203,7 +206,8 @@ function authoredPages(): DocPage[] {
     return readdirSync(abs)
       .filter((f) => f.endsWith('.md'))
       .sort()
-      .map((f) => authoredPage(section, dir, f));
+      .map((f) => authoredPage(section, dir, f))
+      .filter((p): p is DocPage => p !== null);
   });
 }
 
