@@ -77,7 +77,8 @@ export function playabilityError(player: PlayerResponse, videoId: string): Vid2C
   if (status === 'LOGIN_REQUIRED' && /age|inappropriate/i.test(reason)) {
     return new Vid2ContextError('unavailable', msg, { hint: 'This video is age-restricted and needs a signed-in session.' });
   }
-  if (status === 'ERROR') return new Vid2ContextError('not-found', msg, { hint: 'Check the video id or URL; the video may have been removed.' });
+  if (status === 'ERROR')
+    return new Vid2ContextError('not-found', msg, { hint: 'Check the video id or URL; the video may have been removed.' });
   if (status === 'LIVE_STREAM_OFFLINE') {
     return new Vid2ContextError('unavailable', msg, { hint: 'This live stream or premiere has not started yet.' });
   }

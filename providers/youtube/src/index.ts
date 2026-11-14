@@ -5,7 +5,7 @@
  * browser build routes through a configured API base instead.
  */
 import { type CaptionsProvider, defineProvider, type SourceProvider, type Transcript } from '@vid2context/core';
-import { choose, fetchTrack, tracksOf, trackInfo } from './captions.ts';
+import { choose, fetchTrack, trackInfo, tracksOf } from './captions.ts';
 import { getPlayer, playabilityError } from './innertube.ts';
 import { toMetadata } from './metadata.ts';
 import { matchYouTube } from './url.ts';
@@ -26,9 +26,7 @@ export const youtubeSource: SourceProvider = defineProvider({
   async getMetadata(ref, ctx) {
     const player = await getPlayer(ref.nativeId, ctx);
     if (!player.videoDetails) {
-      throw (
-        playabilityError(player, ref.nativeId) ?? playabilityError({ playabilityStatus: { status: 'ERROR' } }, ref.nativeId)
-      );
+      throw playabilityError(player, ref.nativeId) ?? playabilityError({ playabilityStatus: { status: 'ERROR' } }, ref.nativeId);
     }
     return toMetadata(ref, player);
   },

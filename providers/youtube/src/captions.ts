@@ -42,7 +42,9 @@ const primary = (code: string): string => code.toLowerCase().split(/[-_]/)[0] ??
 /** Exact language match first, then same primary subtag (en matches en-GB and the reverse). */
 function byLanguage(tracks: RawCaptionTrack[], language: string): RawCaptionTrack | undefined {
   const want = language.toLowerCase();
-  return tracks.find((t) => t.languageCode.toLowerCase() === want) ?? tracks.find((t) => primary(t.languageCode) === primary(want));
+  return (
+    tracks.find((t) => t.languageCode.toLowerCase() === want) ?? tracks.find((t) => primary(t.languageCode) === primary(want))
+  );
 }
 
 export interface TrackChoice {
@@ -73,9 +75,7 @@ export function chooseTrack(tracks: RawCaptionTrack[], opts: CaptionOptions, def
   const best = (): RawCaptionTrack | undefined => {
     const spoken = spokenLanguage(tracks);
     const def = defaultIndex === undefined ? undefined : tracks[defaultIndex];
-    return (
-      (spoken ? byLanguage(creator, spoken) : undefined) ?? (def && !isAsr(def) ? def : undefined) ?? creator[0] ?? auto[0]
-    );
+    return (spoken ? byLanguage(creator, spoken) : undefined) ?? (def && !isAsr(def) ? def : undefined) ?? creator[0] ?? auto[0];
   };
 
   if (opts.language) {

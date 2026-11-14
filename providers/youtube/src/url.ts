@@ -12,7 +12,14 @@ const HOSTS = new Set([
 ]);
 
 export function videoRef(input: string, id: string): VideoRef {
-  return { input, platform: 'youtube', kind: 'video', id: `youtube:${id}`, nativeId: id, url: `https://www.youtube.com/watch?v=${id}` };
+  return {
+    input,
+    platform: 'youtube',
+    kind: 'video',
+    id: `youtube:${id}`,
+    nativeId: id,
+    url: `https://www.youtube.com/watch?v=${id}`,
+  };
 }
 
 function playlistRef(input: string, list: string): VideoRef {

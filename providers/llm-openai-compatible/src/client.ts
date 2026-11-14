@@ -32,7 +32,9 @@ export interface ChatEndpoint {
 const JSON_INSTRUCTION = 'Reply with a single JSON object and nothing else.';
 
 function withJsonInstruction(messages: ChatMessage[], schema?: Record<string, unknown>): ChatMessage[] {
-  const instruction = schema ? `${JSON_INSTRUCTION} It must match this JSON Schema:\n${JSON.stringify(schema)}` : JSON_INSTRUCTION;
+  const instruction = schema
+    ? `${JSON_INSTRUCTION} It must match this JSON Schema:\n${JSON.stringify(schema)}`
+    : JSON_INSTRUCTION;
   const sys = messages.findIndex((m) => m.role === 'system');
   if (sys === -1) return [{ role: 'system', content: instruction }, ...messages];
   return messages.map((m, i) => (i === sys ? { ...m, content: `${m.content}\n\n${instruction}` } : m));

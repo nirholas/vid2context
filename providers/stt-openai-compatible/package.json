@@ -8,7 +8,11 @@
     ".": "./src/index.ts"
   },
   "vid2context": {
-    "runtimes": ["node", "workers", "browser"]
+    "runtimes": [
+      "node",
+      "workers",
+      "browser"
+    ]
   },
   "dependencies": {
     "@vid2context/core": "*"

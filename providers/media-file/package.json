@@ -1,0 +1,18 @@
+{
+  "name": "@vid2context/provider-media-file",
+  "version": "0.1.0",
+  "description": "Local media files for vid2context: file paths and file:// URLs become refs, metadata and audio for speech-to-text. Node only.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "vid2context": {
+    "runtimes": [
+      "node"
+    ]
+  },
+  "dependencies": {
+    "@vid2context/core": "*"
+  }
+}

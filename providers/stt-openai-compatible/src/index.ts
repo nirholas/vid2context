@@ -31,7 +31,13 @@ interface LaneSpec {
 }
 
 function rung(spec: LaneSpec): SttRung {
-  const ep: Endpoint = { baseUrl: spec.baseUrl.replace(/\/+$/, ''), model: spec.model, key: spec.key, label: spec.service, maxBytes: spec.maxBytes };
+  const ep: Endpoint = {
+    baseUrl: spec.baseUrl.replace(/\/+$/, ''),
+    model: spec.model,
+    key: spec.key,
+    label: spec.service,
+    maxBytes: spec.maxBytes,
+  };
   return {
     id: spec.model ? `stt/${spec.service}/${spec.model}` : `stt/${spec.service}`,
     provider: 'stt-openai-compatible',
@@ -52,7 +58,9 @@ function rung(spec: LaneSpec): SttRung {
 function keyedRungs(env: Env, keyVar: string, spec: Omit<LaneSpec, 'requires' | 'enabled' | 'key'>): SttRung[] {
   const keys = keyPool(env, keyVar);
   if (keys.length === 0) return [rung({ ...spec, requires: [keyVar], enabled: false })];
-  return keys.map((k) => rung({ ...spec, service: pooledService(spec.service, k.index), key: k.key, requires: [k.envVar], enabled: true }));
+  return keys.map((k) =>
+    rung({ ...spec, service: pooledService(spec.service, k.index), key: k.key, requires: [k.envVar], enabled: true }),
+  );
 }
 
 export function sttRungs(env: Env): SttRung[] {

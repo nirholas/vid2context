@@ -51,7 +51,10 @@ describe('matchYouTube', () => {
     ['https://www.youtube-nocookie.com/embed/jNQXAC9IVRw', 'youtube:jNQXAC9IVRw'],
     ['jNQXAC9IVRw', 'youtube:jNQXAC9IVRw'],
     ['https://www.youtube.com/watch?v=cCPsdFdlshc&list=PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b', 'youtube:cCPsdFdlshc'],
-    ['https://www.youtube.com/playlist?list=PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b', 'youtube:playlist:PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b'],
+    [
+      'https://www.youtube.com/playlist?list=PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b',
+      'youtube:playlist:PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b',
+    ],
     ['https://www.youtube.com/@jawed', 'youtube:channel:@jawed'],
     ['https://www.youtube.com/channel/UC4QobU6STFB0P71PMvOGN5A', 'youtube:channel:UC4QobU6STFB0P71PMvOGN5A'],
   ])('%s -> %s', (input, id) => {

@@ -1,0 +1,1 @@
+{"id":"chatcmpl-9c5227cb0da02b69","choices":[{"index":0,"message":{"role":"assistant","reasoning":"The user"},"finish_reason":"length"}],"created":1794672227,"model":"gpt-oss-120b","object":"chat.completion","usage":{"prompt_tokens":84,"completion_tokens":5,"total_tokens":89,"completion_tokens_details":{"reasoning_tokens":2}}}

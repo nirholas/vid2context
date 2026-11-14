@@ -186,8 +186,20 @@ function modelsFor(lane: Lane, env: Env): ModelDef[] {
   return override.map((id) => lane.models.find((m) => m.id === id) ?? { id, quality: 3 });
 }
 
-function makeRung(lane: Lane, env: Env, model: ModelDef, i: number, opts: { service: string; key?: string; requires: string[]; enabled: boolean }): LlmRung {
-  const ep: ChatEndpoint = { url: lane.url(env), model: model.id, key: opts.key, label: opts.service, jsonSchema: lane.jsonSchema };
+function makeRung(
+  lane: Lane,
+  env: Env,
+  model: ModelDef,
+  i: number,
+  opts: { service: string; key?: string; requires: string[]; enabled: boolean },
+): LlmRung {
+  const ep: ChatEndpoint = {
+    url: lane.url(env),
+    model: model.id,
+    key: opts.key,
+    label: opts.service,
+    jsonSchema: lane.jsonSchema,
+  };
   const capabilities = [...(lane.json ? ['json'] : []), ...(lane.jsonSchema ? ['json-schema'] : [])];
   return {
     id: model.id ? `llm/${opts.service}/${model.id}` : `llm/${opts.service}`,

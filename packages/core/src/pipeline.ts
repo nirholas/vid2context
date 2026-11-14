@@ -184,7 +184,13 @@ export async function chat(
 ): Promise<ChatResult & { rung: string; attempts: Attempt[] }> {
   const needs = [...(chain.needs ?? [])];
   if (req.json && typeof req.json === 'object' && !needs.includes('json')) needs.push('json');
-  const res = await runChain<LlmRung, ChatResult>('llm', registry.llmRungs(ctx.env), (r) => r.chat(req, ctx), { ...chain, needs }, ctx);
+  const res = await runChain<LlmRung, ChatResult>(
+    'llm',
+    registry.llmRungs(ctx.env),
+    (r) => r.chat(req, ctx),
+    { ...chain, needs },
+    ctx,
+  );
   return { ...res.value, rung: res.rung.id, attempts: res.attempts };
 }
 
