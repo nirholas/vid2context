@@ -1,0 +1,189 @@
+{
+  "description": "Evaluation queries over tests/fixtures/contexts/youtube-cCPsdFdlshc.json (G-Wagon buyer's guide, 18 min, auto-captions) and youtube-jNQXAC9IVRw.json (Me at the zoo). Each expected range was checked by reading the transcript; a hit is relevant when it overlaps any expected range of its video.",
+  "queries": [
+    {
+      "id": "exact-m278",
+      "type": "exact",
+      "query": "M278",
+      "expect": [{ "videoId": "youtube:cCPsdFdlshc", "startSec": 575, "endSec": 602 }],
+      "evidence": "[9:43] m278 dual overhead cam naturally aspirated V8"
+    },
+    {
+      "id": "exact-m113",
+      "type": "exact",
+      "query": "M113 engine",
+      "expect": [
+        { "videoId": "youtube:cCPsdFdlshc", "startSec": 69, "endSec": 100 },
+        { "videoId": "youtube:cCPsdFdlshc", "startSec": 210, "endSec": 216 },
+        { "videoId": "youtube:cCPsdFdlshc", "startSec": 330, "endSec": 342 }
+      ],
+      "evidence": "[1:11] legendary m113 V8; [3:33] legendary m113 engine; [5:33] still uses a 113 motor; [5:38] available with the m113"
+    },
+    {
+      "id": "exact-phrase-land-cruiser",
+      "type": "exact",
+      "query": "\"Land Cruiser killer\"",
+      "expect": [{ "videoId": "youtube:cCPsdFdlshc", "startSec": 76, "endSec": 86 }],
+      "evidence": "[1:20] some call it the Land Cruiser killer"
+    },
+    {
+      "id": "exact-w463",
+      "type": "exact",
+      "query": "W463 platform",
+      "expect": [{ "videoId": "youtube:cCPsdFdlshc", "startSec": 3, "endSec": 15 }],
+      "evidence": "[0:04] breakdown of the legendary w463 platform"
+    },
+    {
+      "id": "exact-carplay",
+      "type": "exact",
+      "query": "Apple CarPlay",
+      "expect": [{ "videoId": "youtube:cCPsdFdlshc", "startSec": 460, "endSec": 472 }],
+      "evidence": "[7:46] there's Apple carplay and Android audio capable"
+    },
+    {
+      "id": "exact-auto-stop",
+      "type": "exact",
+      "query": "auto stop start",
+      "expect": [{ "videoId": "youtube:cCPsdFdlshc", "startSec": 780, "endSec": 800 }],
+      "evidence": "[13:07] they introduced the Auto Stop start ... 16"
+    },
+    {
+      "id": "exact-seven-speed",
+      "type": "exact",
+      "query": "seven-speed automatic transmission",
+      "expect": [
+        { "videoId": "youtube:cCPsdFdlshc", "startSec": 626, "endSec": 650 },
+        { "videoId": "youtube:cCPsdFdlshc", "startSec": 805, "endSec": 818 },
+        { "videoId": "youtube:cCPsdFdlshc", "startSec": 833, "endSec": 840 }
+      ],
+      "evidence": "[10:31] 5-speed to a seven-speed automatic; [13:32] same seven-speed transmission; [13:55] 7-speed automatic"
+    },
+    {
+      "id": "para-cam-chain",
+      "type": "paraphrase",
+      "query": "does the engine use a cam chain or a belt",
+      "expect": [{ "videoId": "youtube:cCPsdFdlshc", "startSec": 88, "endSec": 98 }],
+      "evidence": "[1:31] single overhead cam motor it's timing Chains"
+    },
+    {
+      "id": "para-oil-consumption",
+      "type": "paraphrase",
+      "query": "engine burns oil between services",
+      "expect": [{ "videoId": "youtube:cCPsdFdlshc", "startSec": 298, "endSec": 334 }],
+      "evidence": "[5:00] they just drink a little oil ... a quart and a half between oil changes"
+    },
+    {
+      "id": "para-supercharger",
+      "type": "paraphrase",
+      "query": "which version has a supercharger",
+      "expect": [{ "videoId": "youtube:cCPsdFdlshc", "startSec": 270, "endSec": 300 }],
+      "evidence": "[4:37] the compressor motor that came out in 05 ... a Supercharged motor"
+    },
+    {
+      "id": "para-phone-camera",
+      "type": "paraphrase",
+      "query": "connect my phone and add a reversing camera",
+      "expect": [{ "videoId": "youtube:cCPsdFdlshc", "startSec": 440, "endSec": 476 }],
+      "evidence": "[7:28] hands free phone option ... aftermarket head unit ... add a backup camera"
+    },
+    {
+      "id": "para-budget-buyer",
+      "type": "paraphrase",
+      "query": "best choice for a first-time buyer on a budget",
+      "expect": [
+        { "videoId": "youtube:cCPsdFdlshc", "startSec": 495, "endSec": 560 },
+        { "videoId": "youtube:cCPsdFdlshc", "startSec": 1020, "endSec": 1035 }
+      ],
+      "evidence": "[8:31] your first-time G buyer ... on a little bit of a budget ... best value on the market; [17:04] best economy value for the buck"
+    },
+    {
+      "id": "para-twin-turbo-economy",
+      "type": "paraphrase",
+      "query": "fuel economy of the twin turbo engine",
+      "expect": [{ "videoId": "youtube:cCPsdFdlshc", "startSec": 798, "endSec": 830 }],
+      "evidence": "[13:17] four liter biturbo ... a mile and a half better fuel economy"
+    },
+    {
+      "id": "para-offroad-na",
+      "type": "paraphrase",
+      "query": "why a non-turbo engine is better for off-roading",
+      "expect": [{ "videoId": "youtube:cCPsdFdlshc", "startSec": 925, "endSec": 1000 }],
+      "evidence": "[15:31] last year the naturally aspirated V8 ... not a lot of extra coolers; [16:27] naturally aspirated engine off-road, no turbo lag"
+    },
+    {
+      "id": "para-collectible",
+      "type": "paraphrase",
+      "query": "which model will go up in value as a collectible",
+      "expect": [{ "videoId": "youtube:cCPsdFdlshc", "startSec": 1015, "endSec": 1070 }],
+      "evidence": "[17:20] something that will absolutely appreciate and gain in value ... future collectors in the making"
+    },
+    {
+      "id": "para-seat-storage",
+      "type": "paraphrase",
+      "query": "hidden storage under the seats",
+      "expect": [
+        { "videoId": "youtube:cCPsdFdlshc", "startSec": 390, "endSec": 410 },
+        { "videoId": "youtube:cCPsdFdlshc", "startSec": 750, "endSec": 760 }
+      ],
+      "evidence": "[6:34] this cool little compartment down here ... G wagons are short of storage; [12:33] same little compartment"
+    },
+    {
+      "id": "para-exterior-tell",
+      "type": "paraphrase",
+      "query": "how to tell the newer trucks apart from the outside",
+      "expect": [{ "videoId": "youtube:cCPsdFdlshc", "startSec": 648, "endSec": 670 }],
+      "evidence": "[10:58] 13s through 18s you get these cool little LED strips ... how you can tell from the exterior"
+    },
+    {
+      "id": "para-leather",
+      "type": "paraphrase",
+      "query": "is the leather cracked or worn on high mileage trucks",
+      "expect": [
+        { "videoId": "youtube:cCPsdFdlshc", "startSec": 215, "endSec": 232 },
+        { "videoId": "youtube:cCPsdFdlshc", "startSec": 420, "endSec": 435 }
+      ],
+      "evidence": "[3:41] 171,000 Mi ... no rips tears or cracks; [7:05] you don't see any rips stains tears or fading in the leather"
+    },
+    {
+      "id": "para-diff-locks",
+      "type": "paraphrase",
+      "query": "differential lockers",
+      "expect": [
+        { "videoId": "youtube:cCPsdFdlshc", "startSec": 228, "endSec": 240 },
+        { "videoId": "youtube:cCPsdFdlshc", "startSec": 376, "endSec": 386 }
+      ],
+      "evidence": "[3:52] the locker buttons ... in the dash; [6:21] a command system with the diff locks"
+    },
+    {
+      "id": "neg-oil-not-cooler",
+      "type": "negation",
+      "query": "oil -cooler",
+      "expect": [{ "videoId": "youtube:cCPsdFdlshc", "startSec": 298, "endSec": 334 }],
+      "evidence": "Oil consumption at [5:00]; the only other oil mention is the oil cooler at [15:38], which the exclusion removes"
+    },
+    {
+      "id": "neg-horsepower-not-supercharged",
+      "type": "negation",
+      "query": "horsepower -compressor -supercharged",
+      "expect": [
+        { "videoId": "youtube:cCPsdFdlshc", "startSec": 95, "endSec": 102 },
+        { "videoId": "youtube:cCPsdFdlshc", "startSec": 800, "endSec": 840 }
+      ],
+      "evidence": "[1:38] 300 horsepower (M113); [13:28] 419 horsepower biturbo, [13:43] 60 70 horsepower more, [13:55] 560 horsepower; the supercharged G55 at [4:39] is excluded"
+    },
+    {
+      "id": "zoo-exact",
+      "type": "exact",
+      "query": "elephants",
+      "expect": [{ "videoId": "youtube:jNQXAC9IVRw", "startSec": 0, "endSec": 5 }],
+      "evidence": "[0:01] here we are, in front of the elephants"
+    },
+    {
+      "id": "zoo-paraphrase",
+      "type": "paraphrase",
+      "query": "animals with long noses",
+      "expect": [{ "videoId": "youtube:jNQXAC9IVRw", "startSec": 5, "endSec": 16 }],
+      "evidence": "[0:05] they have really really really long trunks"
+    }
+  ]
+}
