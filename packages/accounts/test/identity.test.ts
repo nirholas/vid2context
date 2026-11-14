@@ -143,7 +143,12 @@ describe('plans and config', () => {
 
   it('reads hosted settings from env and guards redirects', () => {
     const off = readHostedConfig({});
-    expect(off).toMatchObject({ hosted: false, anonymous: false, sharedCachePlatforms: ['youtube'], sharedCacheTtlSec: 30 * 86_400 });
+    expect(off).toMatchObject({
+      hosted: false,
+      anonymous: false,
+      sharedCachePlatforms: ['youtube'],
+      sharedCacheTtlSec: 30 * 86_400,
+    });
     expect(() => requireSessionSecret(off)).toThrow(/VID2CONTEXT_SESSION_SECRET/);
     const on = readHostedConfig({
       VID2CONTEXT_HOSTED: '1',

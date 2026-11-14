@@ -13,7 +13,7 @@ import {
   type TranscriptMode,
   Vid2ContextError,
 } from '@vid2context/core';
-import { type ReplayFetch, replayFetch, type Route } from '@vid2context/core/testing';
+import { type ReplayFetch, type Route, replayFetch } from '@vid2context/core/testing';
 import mediaFile from '@vid2context/provider-media-file';
 import stt from '@vid2context/provider-stt-openai-compatible';
 import { Hono } from 'hono';
@@ -71,7 +71,8 @@ const routes: Route[] = [
 
 const registry = new Registry([mediaFile, stt], 'node');
 // Loaded only by the tests that resolve YouTube URLs, so the others do not depend on the YouTube provider.
-const withYoutube = async () => new Registry([...(await import('@vid2context/provider-youtube')).default, mediaFile, stt], 'node');
+const withYoutube = async () =>
+  new Registry([...(await import('@vid2context/provider-youtube')).default, mediaFile, stt], 'node');
 
 interface Harness {
   app: Hono;
@@ -97,7 +98,10 @@ function harness(extraEnv: Env = {}, reg: Registry = registry): Harness {
   const fetch = replayFetch(routes);
   const logs: string[] = [];
   const log: Logger = Object.fromEntries(
-    (['debug', 'info', 'warn', 'error'] as const).map((l) => [l, (m: string, d?: object) => logs.push(`${l} ${m} ${JSON.stringify(d ?? {})}`)]),
+    (['debug', 'info', 'warn', 'error'] as const).map((l) => [
+      l,
+      (m: string, d?: object) => logs.push(`${l} ${m} ${JSON.stringify(d ?? {})}`),
+    ]),
   ) as unknown as Logger;
   const clock = { now: T0 };
   const deps = {
@@ -116,7 +120,10 @@ function harness(extraEnv: Env = {}, reg: Registry = registry): Harness {
       e?.code as 'bad-request'
     ];
     return c.json(
-      { error: { code: e?.code ?? 'internal', message: e?.message ?? err.message, ...(e?.hint ? { hint: e.hint } : {}) }, attempts: attemptsOf(err) },
+      {
+        error: { code: e?.code ?? 'internal', message: e?.message ?? err.message, ...(e?.hint ? { hint: e.hint } : {}) },
+        attempts: attemptsOf(err),
+      },
       status ?? 500,
     );
   });
@@ -128,11 +135,12 @@ function harness(extraEnv: Env = {}, reg: Registry = registry): Harness {
   // How a pipeline route uses hosted mode: the metered registry and the shared-cache storage.
   app.get('/api/v1/context', async (c) => {
     const mode = (c.req.query('mode') ?? 'auto') as TranscriptMode;
+    const refresh = c.req.query('refresh') === '1';
     const hosted = c.get('hosted');
     const result = await getVideoContext(
       hosted ? hosted.registry(reg) : reg,
       c.req.query('url') ?? '',
-      { mode, storage: hosted ? hosted.storage(storage, { mode }) : storage },
+      { mode, refresh, storage: hosted ? hosted.storage(storage, { mode, refresh }) : storage },
       deps.makeCtx(c.req.raw),
     );
     return c.json(result);
@@ -147,7 +155,7 @@ function harness(extraEnv: Env = {}, reg: Registry = registry): Harness {
     clock,
     async signIn(identity = OCTOCAT) {
       const account = await upsertGithubAccount(kv, identity, { plan: 'free' });
-      const { cookie } = await createSession(kv, SECRET, account.id, { ttlSec: 3600 });
+      const { cookie } = await createSession(kv, SECRET, account.id, { ttlSec: 7 * 86_400, now: clock.now });
       return { accountId: account.id, cookie: `${SESSION_COOKIE}=${cookie}` };
     },
   };
@@ -292,7 +300,11 @@ describe('sessions and API keys over HTTP', () => {
     expect(await (await get(h, '/api/v1/metadata', bearer)).json()).toEqual({ account: accountId });
     expect((await get(h, '/api/v1/me/keys', bearer)).status).toBe(200);
     // A key cannot mint or delete keys.
-    const viaKey = await h.app.request('/api/v1/me/keys', { method: 'POST', headers: { ...bearer, 'content-type': 'application/json' }, body: '{"name":"x"}' });
+    const viaKey = await h.app.request('/api/v1/me/keys', {
+      method: 'POST',
+      headers: { ...bearer, 'content-type': 'application/json' },
+      body: '{"name":"x"}',
+    });
     expect(viaKey.status).toBe(403);
     // A cross-site form cannot either.
     const cross = await h.app.request('/api/v1/me/keys', {
@@ -323,7 +335,11 @@ describe('sessions and API keys over HTTP', () => {
     const h = harness({ VID2CONTEXT_LOG_LEVEL: 'debug' });
     const { accountId, cookie } = await h.signIn();
     await get(h, '/api/v1/metadata', { cookie });
-    await h.app.request('/api/v1/me/keys', { method: 'POST', headers: { cookie, 'content-type': 'application/json' }, body: '{"name":"a"}' });
+    await h.app.request('/api/v1/me/keys', {
+      method: 'POST',
+      headers: { cookie, 'content-type': 'application/json' },
+      body: '{"name":"a"}',
+    });
     const all = h.logs.join('\n');
     expect(all).toContain(accountId);
     expect(all).not.toContain('octocat');
@@ -369,14 +385,15 @@ describe('quotas', () => {
     expect(first.status).toBe(200);
     expect((await (await get(h, '/api/v1/me/usage', { cookie })).json()).used.sttMinutes).toBe(0.4);
 
-    // mode=stt with no minutes left is refused up front.
-    const early = await get(h, `/api/v1/context?url=${url}&mode=stt`, { cookie });
-    expect(early.status).toBe(429);
-    // mode=auto reaches the speech-to-text rung, which refuses; the 422 becomes a 429 naming the limit.
-    const late = await get(h, `/api/v1/context?url=${url}`, { cookie });
-    expect(late.status).toBe(429);
-    expect(late.headers.get('retry-after')).toBe('7200');
-    const body = await late.json();
+    // The same file again is served from storage and costs nothing.
+    expect((await get(h, `/api/v1/context?url=${url}&mode=stt`, { cookie })).status).toBe(200);
+    // Rebuilding it with no minutes left: the speech-to-text rung refuses before uploading, and the 422 becomes a 429.
+    const asStt = await get(h, `/api/v1/context?url=${url}&mode=stt&refresh=1`, { cookie });
+    expect(asStt.status).toBe(429);
+    const asAuto = await get(h, `/api/v1/context?url=${url}&refresh=1`, { cookie });
+    expect(asAuto.status).toBe(429);
+    expect(asAuto.headers.get('retry-after')).toBe('7200');
+    const body = await asAuto.json();
     expect(body.error.message).toContain('daily speech-to-text limit (0.3 audio minutes per day)');
     expect(body.error.hint).toContain('mode=captions');
     expect(h.fetch.calls.filter((c) => c.url.includes('/audio/transcriptions'))).toHaveLength(1);
@@ -444,9 +461,11 @@ describe('anonymous access and abuse protection', () => {
     for (const [secret, code] of [
       ['2x0000000000000000000000000000000AA', 'invalid-input-response'],
       ['3x0000000000000000000000000000000AA', 'timeout-or-duplicate'],
-    ]) {
+    ] as const) {
       const h = harness({ ...anonEnv, TURNSTILE_SECRET: secret });
-      const res = await get(h, `/api/v1/context?url=${encodeURIComponent(APOLLO)}`, { 'x-turnstile-token': 'XXXX.DUMMY.TOKEN.XXXX' });
+      const res = await get(h, `/api/v1/context?url=${encodeURIComponent(APOLLO)}`, {
+        'x-turnstile-token': 'XXXX.DUMMY.TOKEN.XXXX',
+      });
       expect(res.status).toBe(403);
       expect((await res.json()).error).toMatchObject({ code: 'auth', message: expect.stringContaining(code) });
     }

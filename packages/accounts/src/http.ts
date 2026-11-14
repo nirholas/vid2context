@@ -327,9 +327,6 @@ export function hostedMiddleware(deps: AccountsDeps): MiddlewareHandler {
       const hit = await meter.chargeRequest();
       if (hit) return limitResponse(c, hit);
     }
-    if ((mode === 'stt' || mode === 'video') && sttPossible && (await meter.sttSecondsLeft()) <= 0) {
-      return limitResponse(c, meter.hit('stt'));
-    }
     const collection = /^\/collections\/([^/]+)\/items$/.exec(rel);
     if (collection?.[1] && c.req.method === 'POST' && deps.storage) {
       const storage = await deps.storage(ctx);
