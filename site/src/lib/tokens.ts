@@ -56,8 +56,12 @@ function values(): Record<string, string> {
       ? `the published npm package \`${data.npm.mcpPackage}\``
       : 'a clone of the repo, because the npm package is not published yet',
   };
-  // From a clone; -s keeps npm's banner out of redirected output.
-  v.cli = 'npm run -s cli --';
+  // The published CLI when it is on npm, else a clone (-s keeps npm's banner out of redirected output).
+  v.cli = data.npm.cliPublished ? `npx -y ${data.npm.cliPackage}` : 'npm run -s cli --';
+  v.cliClone = 'npm run -s cli --';
+  v['cli.note'] = data.npm.cliPublished
+    ? `These commands use the published CLI through \`npx\`, so you only need Node.js 22 or newer.`
+    : 'Run these commands from a clone of the repo after `npm install` (Node.js 22 or newer).';
   v['demo.contextMd'] = data.demo.files.find((f) => f.path === 'context.md')?.text ?? '';
   v['demo.fileList'] = data.demo.files.map((f) => `\`${f.path}\``).join(', ');
   v['mcp.toolCount'] = String(data.mcpTools?.length ?? 0);

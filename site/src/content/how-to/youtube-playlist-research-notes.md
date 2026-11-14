@@ -12,6 +12,8 @@ The example here is "{{playlist.title}}", a {{playlist.count}}-video series on c
 
 ## See what is in the playlist
 
+{{cli.note}}
+
 ```sh
 {{cli}} list "{{playlist.url}}"
 ```

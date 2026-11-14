@@ -217,7 +217,7 @@ describe('landing page', () => {
   const html = read(join(DIST, 'index.html'));
 
   it('the hero form sends the link to /app/ as ?url=', () => {
-    expect(html).toMatch(/<form action="\/app\/" method="get"[^>]*>/);
+    expect(html).toMatch(/<form[^>]*action="\/app\/" method="get"/);
     expect(html).toMatch(/<input[^>]*name="url"/);
     expect(html).toContain(`/app/?url=${encodeURIComponent('https://www.youtube.com/watch?v=cCPsdFdlshc')}`);
   });

@@ -15,7 +15,7 @@ From a clone of the repo, with no keys set:
 git clone https://github.com/nirholas/vid2context.git
 cd vid2context
 npm install
-{{cli}} tests/fixtures/media/apollo11-small-step.mp3 --timestamps
+{{cliClone}} tests/fixtures/media/apollo11-small-step.mp3 --timestamps
 ```
 
 That file is Neil Armstrong's first words on the Moon (public domain, {{whisper.durationSec}} seconds). This is the transcript the keyless OVH `whisper-large-v3-turbo` rung returned for it, recorded from the real service and rendered by vid2context:

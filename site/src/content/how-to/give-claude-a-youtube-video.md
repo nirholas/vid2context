@@ -32,7 +32,7 @@ When Claude calls `get_transcript`, this is the text it gets back for "Me at the
 
 ## A Claude Project, without MCP
 
-To give Claude a video in the web app, upload a context pack: one Markdown file with the header, the chapters and the timed transcript, written for a model to read and cite. From a clone of the repo:
+To give Claude a video in the web app, upload a context pack: one Markdown file with the header, the chapters and the timed transcript, written for a model to read and cite. {{cli.note}}
 
 ```sh
 {{cli}} pack "https://www.youtube.com/watch?v=jNQXAC9IVRw" > context.md

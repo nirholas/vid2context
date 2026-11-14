@@ -447,6 +447,7 @@ async function main(): Promise<void> {
   const tools = await mcpTools(registry);
   const playlist = await replayPlaylist(registry);
   const mcpVersion = await npmVersion(discovery.MCP_PACKAGE.name, discovery.MCP_PACKAGE.bin);
+  const cliVersion = await npmVersion(discovery.CLI_PACKAGE.name, discovery.CLI_PACKAGE.bin);
   const stars = await githubStars();
 
   const docSources = [
@@ -480,6 +481,8 @@ async function main(): Promise<void> {
       cliPackage: discovery.CLI_PACKAGE.name,
       published: mcpVersion !== null,
       version: mcpVersion,
+      cliPublished: cliVersion !== null,
+      cliVersion,
       url: `https://www.npmjs.com/package/${discovery.MCP_PACKAGE.name}`,
     },
     meta: {

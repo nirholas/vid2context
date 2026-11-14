@@ -234,8 +234,13 @@ export const chatgpt = {
   short: 'Upload a context pack to a Project or custom GPT.',
   steps: [
     {
-      text: 'From a clone of the repo, render the video (or a whole playlist) as one Markdown context pack sized for upload:',
-      code: { lang: 'sh', text: 'npm run -s cli -- pack "https://www.youtube.com/watch?v=jNQXAC9IVRw" > context.md' },
+      text: data.npm.cliPublished
+        ? 'Render the video (or a whole playlist) as one Markdown context pack sized for upload. You only need Node.js 22 or newer:'
+        : 'From a clone of the repo, render the video (or a whole playlist) as one Markdown context pack sized for upload:',
+      code: {
+        lang: 'sh',
+        text: `${data.npm.cliPublished ? `npx -y ${data.npm.cliPackage}` : 'npm run -s cli --'} pack "https://www.youtube.com/watch?v=jNQXAC9IVRw" > context.md`,
+      },
     },
     { text: 'In ChatGPT, open a Project (or edit a custom GPT), add `context.md` as a file, and ask about the video. Timestamps in the pack let it cite moments.' },
   ] satisfies InstallStep[],

@@ -124,19 +124,13 @@ export function renderMarkdown(source: string, opts: RenderOptions = {}): Render
   const headings: Heading[] = [];
   const md = new Marked({ gfm: true });
   md.use({
-    walkTokens(token) {
-      if ((token.type === 'link' || token.type === 'image') && opts.rewriteHref) {
-        const t = token as Tokens.Link | Tokens.Image;
-        t.href = opts.rewriteHref(t.href) ?? t.href;
-      }
-    },
     renderer: {
       heading({ tokens, depth }) {
         const text = plainOf(tokens, this.parser);
         const id = slugger.slug(text);
         headings.push({ depth, text, id });
         const inner = this.parser.parseInline(tokens);
-        return `<h${depth} id="${id}">${inner}<a class="anchor" href="#${id}" aria-label="Link to this section">#</a></h${depth}>\n`;
+        return `<h${depth} id="${id}">${inner}<a class="anchor" href="#${id}" aria-hidden="true" tabindex="-1">#</a></h${depth}>\n`;
       },
       code({ text, lang }) {
         const label = escapeHtml((lang ?? '').split(/\s+/)[0] || 'text');
@@ -161,6 +155,13 @@ export function renderMarkdown(source: string, opts: RenderOptions = {}): Render
     },
   });
   const tokens = md.lexer(source);
+  // marked runs walkTokens only inside parse(); lexer() plus parser() needs it called here.
+  md.walkTokens(tokens, (token) => {
+    if ((token.type === 'link' || token.type === 'image') && opts.rewriteHref) {
+      const t = token as Tokens.Link | Tokens.Image;
+      t.href = opts.rewriteHref(t.href) ?? t.href;
+    }
+  });
   const html = (md.parser(tokens) as string).replace(/<table>/g, '<div class="table-wrap"><table>').replace(/<\/table>/g, '</table></div>');
   const title = headings.find((h) => h.depth === 1)?.text ?? '';
   return { html, headings, title, description: clip(firstParagraph(tokens)) };

@@ -47,7 +47,15 @@ export interface Attempt {
 interface SiteData {
   head: string;
   stars: number | null;
-  npm: { mcpPackage: string; cliPackage: string; published: boolean; version: string | null; url: string };
+  npm: {
+    mcpPackage: string;
+    cliPackage: string;
+    published: boolean;
+    version: string | null;
+    cliPublished: boolean;
+    cliVersion: string | null;
+    url: string;
+  };
   meta: {
     siteUrl: string;
     repoUrl: string;
