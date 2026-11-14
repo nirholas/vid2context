@@ -1,0 +1,4600 @@
+{
+  "metadata": {
+    "ref": {
+      "input": "https://www.youtube.com/watch?v=q6dzm-O1i2o",
+      "platform": "youtube",
+      "kind": "video",
+      "id": "youtube:q6dzm-O1i2o",
+      "nativeId": "q6dzm-O1i2o",
+      "url": "https://www.youtube.com/watch?v=q6dzm-O1i2o"
+    },
+    "title": "What to Look For When Buying a Used G-Wagon (Rust, Known Issues, Engine & More)",
+    "description": "Buying a used G-Wagon? This is exactly what to look for. Follow along for this complete pre-purchase inspection and test drive for used G-Wagons (Mercedes G-Class). We cover known issues, rust, engine, suspension, test drive, and more. \n\nThanks to Joe, the G Wagon Expert at Alliance Auto Care in Loveland, CO, for helping prepare our Buyer's Guide (link below) and for helping me on this series. Have a dream G Wagon build? \n\nCONTACT JOE: \nhttps://allianceautocare.com/ \n[email redacted] \n[phone redacted] \n\nWatch all the videos in this Buyer's & Build series in this playlist: https://www.youtube.com/playlist?list=PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b\n\nFREE G-Wagon's Buyer's Guide: https://docs.google.com/document/d/12AuluAdmYzX5J3fkvwb2Vcos9EYJr1mSu7M1WzFkAhE/edit?usp=sharing\n\n#gwagen  #gwagon  #gclass  #gwheeln #offroad #4x4 #mercedes4x4",
+    "durationSec": 1834,
+    "publishedAt": "2025-03-29",
+    "thumbnailUrl": "https://i.ytimg.com/vi/q6dzm-O1i2o/maxresdefault.jpg",
+    "language": "en",
+    "chapters": [
+      {
+        "title": "Under vehicle inspection",
+        "startSec": 0,
+        "endSec": 628.6
+      },
+      {
+        "title": "Identifying body rust",
+        "startSec": 628.6,
+        "endSec": 1047.6
+      },
+      {
+        "title": "Test drive and interior",
+        "startSec": 1047.6,
+        "endSec": 1556.52
+      },
+      {
+        "title": "Testing locker systems",
+        "startSec": 1556.52,
+        "endSec": 1834
+      }
+    ],
+    "isLive": false,
+    "extra": {
+      "viewCount": 80852,
+      "likeCount": 1734,
+      "dateText": "Mar 29, 2025",
+      "channelHandle": "@alliancemotorworks",
+      "channelHandleUrl": "https://www.youtube.com/@alliancemotorworks",
+      "subscriberCountText": "15.1K subscribers",
+      "isShort": false,
+      "isLive": false,
+      "isUpcoming": false,
+      "isLiveContent": false,
+      "ageRestricted": false,
+      "membersOnly": false,
+      "playability": "OK",
+      "chapterSource": "key-moments",
+      "links": [
+        "https://allianceautocare.com/",
+        "https://www.youtube.com/playlist?list=PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b",
+        "https://docs.google.com/document/d/12AuluAdmYzX5J3fkvwb2Vcos9EYJr1mSu7M1WzFkAhE/edit?usp=sharing"
+      ]
+    },
+    "channel": {
+      "name": "Alliance Motorworks",
+      "id": "UCdEjP_BjQ5audhxLKKzZl2A",
+      "url": "https://www.youtube.com/channel/UCdEjP_BjQ5audhxLKKzZl2A"
+    }
+  },
+  "transcript": {
+    "ref": {
+      "input": "https://www.youtube.com/watch?v=q6dzm-O1i2o",
+      "platform": "youtube",
+      "kind": "video",
+      "id": "youtube:q6dzm-O1i2o",
+      "nativeId": "q6dzm-O1i2o",
+      "url": "https://www.youtube.com/watch?v=q6dzm-O1i2o"
+    },
+    "language": "en",
+    "origin": "stt",
+    "producer": "stt/whisper-cpp/small",
+    "model": "small",
+    "segments": [
+      {
+        "startSec": 0,
+        "endSec": 2.64,
+        "text": "What do you look for when buying a used G-Wagon?"
+      },
+      {
+        "startSec": 2.64,
+        "endSec": 4.04,
+        "text": "If you're in the market for a G-Wagon,"
+      },
+      {
+        "startSec": 4.04,
+        "endSec": 5.14,
+        "text": "watch this video all the way through,"
+      },
+      {
+        "startSec": 5.14,
+        "endSec": 9.6,
+        "text": "because Joe, the G-Wagon expert here at Alliance AutoCare,"
+      },
+      {
+        "startSec": 9.6,
+        "endSec": 13.02,
+        "text": "is gonna walk us through a used vehicle inspection."
+      },
+      {
+        "startSec": 13.02,
+        "endSec": 16.7,
+        "text": "So, he helped me bring this beautiful beast to life,"
+      },
+      {
+        "startSec": 16.7,
+        "endSec": 18.82,
+        "text": "which is a 2015 4-inch lift 35s."
+      },
+      {
+        "startSec": 18.82,
+        "endSec": 20.8,
+        "text": "We're gonna build a walkthrough on the channel,"
+      },
+      {
+        "startSec": 20.8,
+        "endSec": 22.54,
+        "text": "and if you're new, welcome to the G-Wagon channel"
+      },
+      {
+        "startSec": 22.54,
+        "endSec": 24.5,
+        "text": "where everything we do here is for the love of G."
+      },
+      {
+        "startSec": 24.5,
+        "endSec": 27.22,
+        "text": "We're gonna turn our attention to this G63"
+      },
+      {
+        "startSec": 27.22,
+        "endSec": 29.14,
+        "text": "that's on the rack as we speak,"
+      },
+      {
+        "startSec": 29.14,
+        "endSec": 30.74,
+        "text": "and Joe's gonna take over from here"
+      },
+      {
+        "startSec": 30.74,
+        "endSec": 32.7,
+        "text": "to show you what to look for as you inspect"
+      },
+      {
+        "startSec": 32.7,
+        "endSec": 34.66,
+        "text": "your own G-Wagon before you buy it."
+      },
+      {
+        "startSec": 34.66,
+        "endSec": 36.62,
+        "text": "And wait, wait, wait, before we get into this video."
+      },
+      {
+        "startSec": 36.62,
+        "endSec": 39.06,
+        "text": "Linked beneath here is a link to the Ultimate Buyers"
+      },
+      {
+        "startSec": 39.06,
+        "endSec": 41.38,
+        "text": "and Build Guide that'll walk you through model years,"
+      },
+      {
+        "startSec": 41.38,
+        "endSec": 45.18,
+        "text": "what to look for, and all the aftermarket you need to know"
+      },
+      {
+        "startSec": 45.18,
+        "endSec": 48.14,
+        "text": "so you can bring your G-Dreams to life."
+      },
+      {
+        "startSec": 48.14,
+        "endSec": 51.3,
+        "text": "Joe, walk us through inspecting this vehicle."
+      },
+      {
+        "startSec": 51.3,
+        "endSec": 52.38,
+        "text": "- All right, here we are, should we order a G?"
+      },
+      {
+        "startSec": 52.38,
+        "endSec": 54.26,
+        "text": "- This is a G63, about 100,000 miles."
+      },
+      {
+        "startSec": 54.26,
+        "endSec": 56.38,
+        "text": "So, it is in here for some maintenance and service,"
+      },
+      {
+        "startSec": 56.38,
+        "endSec": 58.54,
+        "text": "but this is a fantastic example"
+      },
+      {
+        "startSec": 58.54,
+        "endSec": 60.14,
+        "text": "of things we see and things to look for."
+      },
+      {
+        "startSec": 60.14,
+        "endSec": 61.18,
+        "text": "- This is a 2015, by the way."
+      },
+      {
+        "startSec": 61.18,
+        "endSec": 62.74,
+        "text": "- Yep, 2015 G63."
+      },
+      {
+        "startSec": 62.74,
+        "endSec": 63.9,
+        "text": "So, initially we have it up in the air,"
+      },
+      {
+        "startSec": 63.9,
+        "endSec": 65.3,
+        "text": "we pulled the skid plates off,"
+      },
+      {
+        "startSec": 65.3,
+        "endSec": 68.38,
+        "text": "and this is a lot of our process we do for PPI also."
+      },
+      {
+        "startSec": 68.38,
+        "endSec": 70.94,
+        "text": "But we need it, we see some stuff that's wet here."
+      },
+      {
+        "startSec": 70.94,
+        "endSec": 72.1,
+        "text": "We trace it down and we've got"
+      },
+      {
+        "startSec": 72.1,
+        "endSec": 74.26,
+        "text": "some power steering fluid leaks up top."
+      },
+      {
+        "startSec": 74.26,
+        "endSec": 75.94,
+        "text": "So, this is pretty common on trucks"
+      },
+      {
+        "startSec": 75.94,
+        "endSec": 77.14,
+        "text": "that are 100,000 miles old."
+      },
+      {
+        "startSec": 77.14,
+        "endSec": 78.86,
+        "text": "You're gonna see some leaks and some wet stuff."
+      },
+      {
+        "startSec": 78.86,
+        "endSec": 81.06,
+        "text": "The key thing is pinpoint and figure out what it is,"
+      },
+      {
+        "startSec": 81.06,
+        "endSec": 83.18,
+        "text": "so you can put a game plan together and get it fixed."
+      },
+      {
+        "startSec": 83.18,
+        "endSec": 84.78,
+        "text": "Everything is fixable on these trucks."
+      },
+      {
+        "startSec": 84.78,
+        "endSec": 88.12,
+        "text": "Everything is mechanical, everything is analog."
+      },
+      {
+        "startSec": 88.12,
+        "endSec": 89.5,
+        "text": "There's no excuse not to fix it."
+      },
+      {
+        "startSec": 89.5,
+        "endSec": 90.7,
+        "text": "Don't run away from stuff like that,"
+      },
+      {
+        "startSec": 90.7,
+        "endSec": 93.1,
+        "text": "'cause it's usually pretty inexpensive and easy to fix."
+      },
+      {
+        "startSec": 93.1,
+        "endSec": 95.38,
+        "text": "Moving along side of this, this is a good example."
+      },
+      {
+        "startSec": 95.38,
+        "endSec": 96.94,
+        "text": "And we'll see a lot of this on the swivel balls"
+      },
+      {
+        "startSec": 96.94,
+        "endSec": 99.18,
+        "text": "and these axles, there's two of them here."
+      },
+      {
+        "startSec": 99.18,
+        "endSec": 101.46,
+        "text": "And these are in great working condition."
+      },
+      {
+        "startSec": 101.46,
+        "endSec": 103.06,
+        "text": "So, I get asked this question all the time,"
+      },
+      {
+        "startSec": 103.06,
+        "endSec": 104.62,
+        "text": "like hey, I see some grease on my swivel balls,"
+      },
+      {
+        "startSec": 104.62,
+        "endSec": 106.1,
+        "text": "do I need to be alarmed about this?"
+      },
+      {
+        "startSec": 106.1,
+        "endSec": 109.38,
+        "text": "This is normal, this is a, it's a Cosway and it's a grease."
+      },
+      {
+        "startSec": 109.38,
+        "endSec": 111.42,
+        "text": "What we see when these things start to wear out"
+      },
+      {
+        "startSec": 111.42,
+        "endSec": 114.34,
+        "text": "is there's an inner CV that the boot tears open"
+      },
+      {
+        "startSec": 114.34,
+        "endSec": 116.54,
+        "text": "and we get a green snotty ooze coming out of there."
+      },
+      {
+        "startSec": 116.54,
+        "endSec": 118.42,
+        "text": "When we see the green ooze, that's when it's time"
+      },
+      {
+        "startSec": 118.42,
+        "endSec": 119.54,
+        "text": "to do a front axle rebuild."
+      },
+      {
+        "startSec": 119.54,
+        "endSec": 122.62,
+        "text": "Usually about every 150,000 miles"
+      },
+      {
+        "startSec": 122.62,
+        "endSec": 124.38,
+        "text": "is when we see the front axle swivel balls"
+      },
+      {
+        "startSec": 124.38,
+        "endSec": 125.22,
+        "text": "needing a rebuild."
+      },
+      {
+        "startSec": 125.22,
+        "endSec": 128.06,
+        "text": "And it's just kingpin bearings, CV boots,"
+      },
+      {
+        "startSec": 128.06,
+        "endSec": 130.1,
+        "text": "grease lubrication seals and whatnot."
+      },
+      {
+        "startSec": 130.1,
+        "endSec": 132.82,
+        "text": "But again, look for the green tinted grease that's coming out."
+      },
+      {
+        "startSec": 132.82,
+        "endSec": 134.02,
+        "text": "This is still great shape,"
+      },
+      {
+        "startSec": 134.02,
+        "endSec": 135.86,
+        "text": "it's probably got another 50,000 miles on it."
+      },
+      {
+        "startSec": 135.86,
+        "endSec": 137.18,
+        "text": "Hey, no big deal."
+      },
+      {
+        "startSec": 137.18,
+        "endSec": 138.62,
+        "text": "- What's that cost, by the way?"
+      },
+      {
+        "startSec": 138.62,
+        "endSec": 140.46,
+        "text": "- Front axle rebuild, 5,500 bucks."
+      },
+      {
+        "startSec": 140.46,
+        "endSec": 142.14,
+        "text": "- Oh, that's cheap."
+      },
+      {
+        "startSec": 142.14,
+        "endSec": 143.78,
+        "text": "That was a joke, by the way."
+      },
+      {
+        "startSec": 143.78,
+        "endSec": 144.62,
+        "text": "That was a joke."
+      },
+      {
+        "startSec": 144.62,
+        "endSec": 147.86,
+        "text": "- Considering that that's a major front axle service"
+      },
+      {
+        "startSec": 147.86,
+        "endSec": 149.94,
+        "text": "at 150K, it's not bad."
+      },
+      {
+        "startSec": 149.94,
+        "endSec": 151.48,
+        "text": "- You got a lot of years out of it by then."
+      },
+      {
+        "startSec": 151.48,
+        "endSec": 152.32,
+        "text": "- Yeah, totally."
+      },
+      {
+        "startSec": 152.32,
+        "endSec": 153.16,
+        "text": "So, moving along to this."
+      },
+      {
+        "startSec": 153.16,
+        "endSec": 155.34,
+        "text": "And this is, as you come underneath here,"
+      },
+      {
+        "startSec": 155.34,
+        "endSec": 157.06,
+        "text": "I'm gonna point out a couple things."
+      },
+      {
+        "startSec": 157.06,
+        "endSec": 160.26,
+        "text": "The front suspension on this truck is largely original."
+      },
+      {
+        "startSec": 160.26,
+        "endSec": 162.14,
+        "text": "So we've still got the original shocks on this."
+      },
+      {
+        "startSec": 162.14,
+        "endSec": 164.2,
+        "text": "You notice the bushings are starting to crack."
+      },
+      {
+        "startSec": 164.2,
+        "endSec": 166.94,
+        "text": "Everything's looking pretty questionable for wear there."
+      },
+      {
+        "startSec": 166.94,
+        "endSec": 169.4,
+        "text": "This is a good time when I'm gonna have the conversation"
+      },
+      {
+        "startSec": 169.4,
+        "endSec": 171.14,
+        "text": "with the client to figure out, A,"
+      },
+      {
+        "startSec": 171.14,
+        "endSec": 173.46,
+        "text": "how does he wanna use the truck moving forward"
+      },
+      {
+        "startSec": 173.46,
+        "endSec": 174.86,
+        "text": "if he's gonna do some light trail work"
+      },
+      {
+        "startSec": 174.86,
+        "endSec": 176.22,
+        "text": "or take it out of the mountains."
+      },
+      {
+        "startSec": 176.22,
+        "endSec": 177.3,
+        "text": "We're gonna have that discussion"
+      },
+      {
+        "startSec": 177.3,
+        "endSec": 178.9,
+        "text": "about upgrading his shocks and springs."
+      },
+      {
+        "startSec": 178.9,
+        "endSec": 180.86,
+        "text": "'Cause the springs are pretty worn out"
+      },
+      {
+        "startSec": 180.86,
+        "endSec": 181.94,
+        "text": "on the test drive on this truck"
+      },
+      {
+        "startSec": 181.94,
+        "endSec": 183.1,
+        "text": "and the shocks are pretty worn out."
+      },
+      {
+        "startSec": 183.1,
+        "endSec": 184.78,
+        "text": "So that's an easy upgrade"
+      },
+      {
+        "startSec": 184.78,
+        "endSec": 186.54,
+        "text": "that would definitely not turn me away"
+      },
+      {
+        "startSec": 186.54,
+        "endSec": 187.38,
+        "text": "from getting into the truck."
+      },
+      {
+        "startSec": 187.38,
+        "endSec": 188.82,
+        "text": "It just opens the door for an opportunity"
+      },
+      {
+        "startSec": 188.82,
+        "endSec": 190.14,
+        "text": "to make it ride better."
+      },
+      {
+        "startSec": 190.14,
+        "endSec": 191.26,
+        "text": "- And if you're gonna lift it,"
+      },
+      {
+        "startSec": 191.26,
+        "endSec": 192.54,
+        "text": "I mean, there's no better time."
+      },
+      {
+        "startSec": 192.54,
+        "endSec": 193.38,
+        "text": "- Yeah, totally."
+      },
+      {
+        "startSec": 193.38,
+        "endSec": 194.74,
+        "text": "- 'Cause otherwise you do what student people do"
+      },
+      {
+        "startSec": 194.74,
+        "endSec": 196.66,
+        "text": "like I do, and you just throw out good stuff."
+      },
+      {
+        "startSec": 196.66,
+        "endSec": 198.02,
+        "text": "- Yep, you gotta replace the stuff anyway."
+      },
+      {
+        "startSec": 198.02,
+        "endSec": 199.38,
+        "text": "So, moving on back."
+      },
+      {
+        "startSec": 199.38,
+        "endSec": 200.58,
+        "text": "This truck is a great example, though."
+      },
+      {
+        "startSec": 200.58,
+        "endSec": 201.86,
+        "text": "There's no rust, no corrosion."
+      },
+      {
+        "startSec": 201.86,
+        "endSec": 203.5,
+        "text": "It's dirty 'cause it just came from the mountains"
+      },
+      {
+        "startSec": 203.5,
+        "endSec": 205.74,
+        "text": "on this one, but it's good shape."
+      },
+      {
+        "startSec": 205.74,
+        "endSec": 207.94,
+        "text": "Moving underneath here, we've got"
+      },
+      {
+        "startSec": 207.94,
+        "endSec": 210.18,
+        "text": "still all the factory undercoatings on there."
+      },
+      {
+        "startSec": 210.18,
+        "endSec": 211.9,
+        "text": "Even the TK still has all the factory undercoatings."
+      },
+      {
+        "startSec": 211.9,
+        "endSec": 213.7,
+        "text": "I'm not really seeing anything bad."
+      },
+      {
+        "startSec": 215.18,
+        "endSec": 218.58,
+        "text": "One thing we do wanna watch out for is the transmission."
+      },
+      {
+        "startSec": 218.58,
+        "endSec": 220.3,
+        "text": "This one, again, is dry,"
+      },
+      {
+        "startSec": 220.3,
+        "endSec": 223.46,
+        "text": "but we do occasionally see some fluid leaks around the pan"
+      },
+      {
+        "startSec": 223.46,
+        "endSec": 226.46,
+        "text": "and around the adaptive plug up here."
+      },
+      {
+        "startSec": 226.46,
+        "endSec": 228.86,
+        "text": "And we do services every 50,000 miles."
+      },
+      {
+        "startSec": 228.86,
+        "endSec": 230.86,
+        "text": "And because of that, our routine maintenance customers,"
+      },
+      {
+        "startSec": 230.86,
+        "endSec": 232.26,
+        "text": "we just don't see the leaks."
+      },
+      {
+        "startSec": 232.26,
+        "endSec": 234.02,
+        "text": "And this one has been serviced also."
+      },
+      {
+        "startSec": 234.02,
+        "endSec": 236.54,
+        "text": "But what that means is we replace the adaptive plug,"
+      },
+      {
+        "startSec": 236.54,
+        "endSec": 238.14,
+        "text": "replace the gaskets, and we just don't have"
+      },
+      {
+        "startSec": 238.14,
+        "endSec": 239.54,
+        "text": "that problem before."
+      },
+      {
+        "startSec": 239.54,
+        "endSec": 242.78,
+        "text": "So, this is a case where it has been serviced."
+      },
+      {
+        "startSec": 242.78,
+        "endSec": 244.26,
+        "text": "We just don't see these problems."
+      },
+      {
+        "startSec": 244.26,
+        "endSec": 246.18,
+        "text": "Moving on back to the transfer case,"
+      },
+      {
+        "startSec": 246.18,
+        "endSec": 248.26,
+        "text": "'cause it is a divorce transfer case,"
+      },
+      {
+        "startSec": 248.26,
+        "endSec": 250.06,
+        "text": "it's not uncommon to see 'em wet like this."
+      },
+      {
+        "startSec": 250.06,
+        "endSec": 251.86,
+        "text": "What we look for, though, is any kind of drips"
+      },
+      {
+        "startSec": 251.86,
+        "endSec": 253.46,
+        "text": "coming off the bottom of this transfer case."
+      },
+      {
+        "startSec": 253.46,
+        "endSec": 254.98,
+        "text": "And this one is super dry. - You can see this is dry."
+      },
+      {
+        "startSec": 254.98,
+        "endSec": 255.82,
+        "text": "Yeah, yeah."
+      },
+      {
+        "startSec": 255.82,
+        "endSec": 258.06,
+        "text": "- This is still what we call the cosmoline coating."
+      },
+      {
+        "startSec": 258.06,
+        "endSec": 260.06,
+        "text": "It's a factory coating that Mercedes"
+      },
+      {
+        "startSec": 260.06,
+        "endSec": 261.58,
+        "text": "puts on there from the factory."
+      },
+      {
+        "startSec": 261.58,
+        "endSec": 263.46,
+        "text": "It prevents rust, corrosion, all that kind of jazz."
+      },
+      {
+        "startSec": 263.46,
+        "endSec": 265.22,
+        "text": "So, again, don't worry about it."
+      },
+      {
+        "startSec": 265.22,
+        "endSec": 270.22,
+        "text": "Usually at about 150,000 miles or 20 plus years of service,"
+      },
+      {
+        "startSec": 270.78,
+        "endSec": 272.42,
+        "text": "the liquid gasket in here will break down over time."
+      },
+      {
+        "startSec": 272.42,
+        "endSec": 274.54,
+        "text": "So, we actually pull the whole box out of the truck."
+      },
+      {
+        "startSec": 274.54,
+        "endSec": 276.54,
+        "text": "We blow it apart on a bench and reseal it,"
+      },
+      {
+        "startSec": 276.54,
+        "endSec": 278.66,
+        "text": "put new seals, put new mounts in it,"
+      },
+      {
+        "startSec": 278.66,
+        "endSec": 280.46,
+        "text": "and it freshens the whole thing back up again."
+      },
+      {
+        "startSec": 280.46,
+        "endSec": 282.34,
+        "text": "Super serviceable, easy."
+      },
+      {
+        "startSec": 282.34,
+        "endSec": 285.34,
+        "text": "Where we look really hard on these trucks"
+      },
+      {
+        "startSec": 285.34,
+        "endSec": 287.18,
+        "text": "is actually at the back of the truck."
+      },
+      {
+        "startSec": 287.18,
+        "endSec": 289.14,
+        "text": "We look at the control arms."
+      },
+      {
+        "startSec": 289.14,
+        "endSec": 290.7,
+        "text": "We look at the bushings."
+      },
+      {
+        "startSec": 290.7,
+        "endSec": 293.66,
+        "text": "We look at any kind of rust and corrosion up on the frame."
+      },
+      {
+        "startSec": 293.66,
+        "endSec": 295.58,
+        "text": "And this one looks like it's led a pretty good life."
+      },
+      {
+        "startSec": 295.58,
+        "endSec": 296.78,
+        "text": "It's dirty, but I don't see it."
+      },
+      {
+        "startSec": 296.78,
+        "endSec": 297.78,
+        "text": "- You know, speaking of rust,"
+      },
+      {
+        "startSec": 297.78,
+        "endSec": 299.94,
+        "text": "we're gonna dive into this in more detail."
+      },
+      {
+        "startSec": 299.94,
+        "endSec": 300.78,
+        "text": "- Totally."
+      },
+      {
+        "startSec": 300.78,
+        "endSec": 305.5,
+        "text": "- In a video soon, because rusty G wagons, that's a thing."
+      },
+      {
+        "startSec": 305.5,
+        "endSec": 306.9,
+        "text": "- It's a thing, and you know,"
+      },
+      {
+        "startSec": 306.9,
+        "endSec": 308.86,
+        "text": "we make a living fixing rusty G wagons."
+      },
+      {
+        "startSec": 308.86,
+        "endSec": 309.7,
+        "text": "- Yeah."
+      },
+      {
+        "startSec": 309.7,
+        "endSec": 310.66,
+        "text": "- So, find a good specimen."
+      },
+      {
+        "startSec": 310.66,
+        "endSec": 312.26,
+        "text": "We'll talk through those common areas for rust here"
+      },
+      {
+        "startSec": 312.26,
+        "endSec": 313.1,
+        "text": "later in this video."
+      },
+      {
+        "startSec": 313.1,
+        "endSec": 315.26,
+        "text": "So, one of the things we wanna look at"
+      },
+      {
+        "startSec": 315.26,
+        "endSec": 318.1,
+        "text": "is the rear suspension area and these shock mounts."
+      },
+      {
+        "startSec": 318.1,
+        "endSec": 318.94,
+        "text": "And you'll see these."
+      },
+      {
+        "startSec": 318.94,
+        "endSec": 320.94,
+        "text": "If you're looking for a G wagging yourself,"
+      },
+      {
+        "startSec": 320.94,
+        "endSec": 323.94,
+        "text": "inspect this area really closely."
+      },
+      {
+        "startSec": 323.94,
+        "endSec": 326.18,
+        "text": "This is the first thing to rust out"
+      },
+      {
+        "startSec": 326.18,
+        "endSec": 328.18,
+        "text": "and degrade on these trucks."
+      },
+      {
+        "startSec": 328.18,
+        "endSec": 329.26,
+        "text": "- Which, again, is fixable."
+      },
+      {
+        "startSec": 329.26,
+        "endSec": 330.1,
+        "text": "- Totally."
+      },
+      {
+        "startSec": 330.1,
+        "endSec": 330.94,
+        "text": "We fix a lot of these."
+      },
+      {
+        "startSec": 330.94,
+        "endSec": 333.94,
+        "text": "We actually keep all the factory Mercedes metal in stock"
+      },
+      {
+        "startSec": 333.94,
+        "endSec": 335.74,
+        "text": "just 'cause we do so many of them."
+      },
+      {
+        "startSec": 335.74,
+        "endSec": 337.18,
+        "text": "We actually plasma torch those off,"
+      },
+      {
+        "startSec": 337.18,
+        "endSec": 339.18,
+        "text": "take one on new ones, recode it,"
+      },
+      {
+        "startSec": 339.18,
+        "endSec": 340.02,
+        "text": "put them back to factory."
+      },
+      {
+        "startSec": 340.02,
+        "endSec": 341.54,
+        "text": "We've actually had to redo"
+      },
+      {
+        "startSec": 341.54,
+        "endSec": 343.7,
+        "text": "all the suspension metal on some trucks."
+      },
+      {
+        "startSec": 343.7,
+        "endSec": 345.38,
+        "text": "So, again, it's all fixable."
+      },
+      {
+        "startSec": 345.38,
+        "endSec": 347.38,
+        "text": "You just need to know what you're getting into"
+      },
+      {
+        "startSec": 347.38,
+        "endSec": 348.94,
+        "text": "before you get into the truck"
+      },
+      {
+        "startSec": 348.94,
+        "endSec": 351.54,
+        "text": "and determine if it's worth it or not for you."
+      },
+      {
+        "startSec": 351.54,
+        "endSec": 355.3,
+        "text": "Aside from that, usually at about 120,000 to 150,000 miles,"
+      },
+      {
+        "startSec": 355.3,
+        "endSec": 357.3,
+        "text": "we always look at the suspension bushings,"
+      },
+      {
+        "startSec": 357.3,
+        "endSec": 362.18,
+        "text": "all the pickup points that hold the axle to the frame."
+      },
+      {
+        "startSec": 362.18,
+        "endSec": 363.02,
+        "text": "And again, this one,"
+      },
+      {
+        "startSec": 363.02,
+        "endSec": 364.82,
+        "text": "we're starting to see some micro-cracking in there."
+      },
+      {
+        "startSec": 364.82,
+        "endSec": 365.66,
+        "text": "Not the end of the world,"
+      },
+      {
+        "startSec": 365.66,
+        "endSec": 367.66,
+        "text": "but if you are gonna do any kind of suspension upgrade"
+      },
+      {
+        "startSec": 367.66,
+        "endSec": 371.42,
+        "text": "on the truck, we look at redoing the suspension bushings"
+      },
+      {
+        "startSec": 371.42,
+        "endSec": 372.74,
+        "text": "and/or changing out control arms"
+      },
+      {
+        "startSec": 372.74,
+        "endSec": 373.78,
+        "text": "to aftermarket control arms"
+      },
+      {
+        "startSec": 373.78,
+        "endSec": 376.42,
+        "text": "and making it perform better for you."
+      },
+      {
+        "startSec": 376.42,
+        "endSec": 378.78,
+        "text": "So those are some of the things we look at."
+      },
+      {
+        "startSec": 378.78,
+        "endSec": 382.86,
+        "text": "Moving on to the usual stuff, brakes, tires and all that."
+      },
+      {
+        "startSec": 382.86,
+        "endSec": 386.54,
+        "text": "As trucks age, we still have the rubber brake lines"
+      },
+      {
+        "startSec": 386.54,
+        "endSec": 387.54,
+        "text": "on this truck."
+      },
+      {
+        "startSec": 387.54,
+        "endSec": 388.9,
+        "text": "Again, this truck's only 10 years old,"
+      },
+      {
+        "startSec": 388.9,
+        "endSec": 389.86,
+        "text": "we're not at risk of that,"
+      },
+      {
+        "startSec": 389.86,
+        "endSec": 391.46,
+        "text": "but all the trucks that come through our shop"
+      },
+      {
+        "startSec": 391.46,
+        "endSec": 394.34,
+        "text": "that are 20 plus years old,"
+      },
+      {
+        "startSec": 394.34,
+        "endSec": 395.66,
+        "text": "we always put these on the list,"
+      },
+      {
+        "startSec": 395.66,
+        "endSec": 397.42,
+        "text": "largely 'cause we do see the factory rubber stuff"
+      },
+      {
+        "startSec": 397.42,
+        "endSec": 398.7,
+        "text": "break down over time"
+      },
+      {
+        "startSec": 398.7,
+        "endSec": 400.18,
+        "text": "and we don't wanna risk a safety issue"
+      },
+      {
+        "startSec": 400.18,
+        "endSec": 401.06,
+        "text": "where you blow out a brake line."
+      },
+      {
+        "startSec": 401.06,
+        "endSec": 403.14,
+        "text": "So we do all these in-house,"
+      },
+      {
+        "startSec": 403.14,
+        "endSec": 405.54,
+        "text": "we actually make them out of braided stainless steel"
+      },
+      {
+        "startSec": 405.54,
+        "endSec": 406.62,
+        "text": "and they're all throughout the truck."
+      },
+      {
+        "startSec": 406.62,
+        "endSec": 408.02,
+        "text": "So not just at the wheels,"
+      },
+      {
+        "startSec": 408.02,
+        "endSec": 411.18,
+        "text": "we do them at the axle, the chassis junction as well."
+      },
+      {
+        "startSec": 411.18,
+        "endSec": 412.82,
+        "text": "So those are some of the things you wanna look for."
+      },
+      {
+        "startSec": 412.82,
+        "endSec": 414.3,
+        "text": "Coming out here,"
+      },
+      {
+        "startSec": 415.46,
+        "endSec": 416.54,
+        "text": "and again, this is a little easier"
+      },
+      {
+        "startSec": 416.54,
+        "endSec": 418.7,
+        "text": "since the truck's up in the air,"
+      },
+      {
+        "startSec": 418.7,
+        "endSec": 422.38,
+        "text": "we can have a better look at the suspension pickup points"
+      },
+      {
+        "startSec": 423.54,
+        "endSec": 425.5,
+        "text": "up in here where the shock mount is"
+      },
+      {
+        "startSec": 425.5,
+        "endSec": 427.14,
+        "text": "and where the spring mount is."
+      },
+      {
+        "startSec": 427.14,
+        "endSec": 428.82,
+        "text": "And those are areas that they,"
+      },
+      {
+        "startSec": 428.82,
+        "endSec": 431.14,
+        "text": "what happens is they just collect a bunch of water"
+      },
+      {
+        "startSec": 431.14,
+        "endSec": 433.14,
+        "text": "and it doesn't have a good way to drain."
+      },
+      {
+        "startSec": 433.14,
+        "endSec": 435.3,
+        "text": "So it's kind of a design issue."
+      },
+      {
+        "startSec": 435.3,
+        "endSec": 436.46,
+        "text": "And if you don't wash your truck,"
+      },
+      {
+        "startSec": 436.46,
+        "endSec": 437.9,
+        "text": "particularly if you live on the coastal regions"
+      },
+      {
+        "startSec": 437.9,
+        "endSec": 440.02,
+        "text": "where you have a lot of salt"
+      },
+      {
+        "startSec": 440.02,
+        "endSec": 443.58,
+        "text": "or they salt the roads in the wintertime,"
+      },
+      {
+        "startSec": 443.58,
+        "endSec": 445.18,
+        "text": "you have to get in the habit of washing all that off"
+      },
+      {
+        "startSec": 445.18,
+        "endSec": 446.34,
+        "text": "just so it doesn't sit there and corrode."
+      },
+      {
+        "startSec": 446.34,
+        "endSec": 449.14,
+        "text": "So get your vehicles out of the rusted belt."
+      },
+      {
+        "startSec": 449.14,
+        "endSec": 450.74,
+        "text": "Like when I look at older vehicles,"
+      },
+      {
+        "startSec": 450.74,
+        "endSec": 454.14,
+        "text": "I'm like looking down south and I'm looking down out west."
+      },
+      {
+        "startSec": 454.14,
+        "endSec": 457.42,
+        "text": "But also the white one I got was from St. Louis"
+      },
+      {
+        "startSec": 457.42,
+        "endSec": 458.26,
+        "text": "and they salt roads,"
+      },
+      {
+        "startSec": 458.26,
+        "endSec": 459.1,
+        "text": "they just didn't get a lot of snow,"
+      },
+      {
+        "startSec": 459.1,
+        "endSec": 460.66,
+        "text": "but that was a garage queen."
+      },
+      {
+        "startSec": 460.66,
+        "endSec": 461.58,
+        "text": "It was, yeah, lucky."
+      },
+      {
+        "startSec": 461.58,
+        "endSec": 463.42,
+        "text": "And they pressure washed it."
+      },
+      {
+        "startSec": 463.42,
+        "endSec": 465.22,
+        "text": "And you'll usually have indicators of that."
+      },
+      {
+        "startSec": 465.22,
+        "endSec": 467.3,
+        "text": "What you'll see in addition to that is you'll see"
+      },
+      {
+        "startSec": 467.3,
+        "endSec": 469.58,
+        "text": "the exhaust systems will start to rust out."
+      },
+      {
+        "startSec": 469.58,
+        "endSec": 471.62,
+        "text": "You'll see the joints up here"
+      },
+      {
+        "startSec": 471.62,
+        "endSec": 474.62,
+        "text": "where things are kind of welded together,"
+      },
+      {
+        "startSec": 474.62,
+        "endSec": 477.5,
+        "text": "largely 'cause the pipework on all Mercedes stuff"
+      },
+      {
+        "startSec": 477.5,
+        "endSec": 480.1,
+        "text": "is stainless, but the joints are mild steel."
+      },
+      {
+        "startSec": 480.1,
+        "endSec": 481.66,
+        "text": "So if you get in a truck and you see this stuff"
+      },
+      {
+        "startSec": 481.66,
+        "endSec": 483.26,
+        "text": "starting to fall apart, that's a good indicator"
+      },
+      {
+        "startSec": 483.26,
+        "endSec": 485.58,
+        "text": "that it's got some other rust elsewhere in the truck."
+      },
+      {
+        "startSec": 485.58,
+        "endSec": 487.5,
+        "text": "So just little things to look for."
+      },
+      {
+        "startSec": 487.5,
+        "endSec": 489.14,
+        "text": "This isn't meant to scare anybody away"
+      },
+      {
+        "startSec": 489.14,
+        "endSec": 490.3,
+        "text": "from getting into one of these trucks."
+      },
+      {
+        "startSec": 490.3,
+        "endSec": 492.26,
+        "text": "This is meant as an educational piece to know,"
+      },
+      {
+        "startSec": 492.26,
+        "endSec": 494.62,
+        "text": "let's you know that everything is addressable,"
+      },
+      {
+        "startSec": 494.62,
+        "endSec": 496.1,
+        "text": "everything is fixable."
+      },
+      {
+        "startSec": 497.1,
+        "endSec": 498.18,
+        "text": "Just arm yourself with the knowledge"
+      },
+      {
+        "startSec": 498.18,
+        "endSec": 500.06,
+        "text": "before getting into it, that's really it."
+      },
+      {
+        "startSec": 500.06,
+        "endSec": 501.1,
+        "text": "- And if you find the right vehicle"
+      },
+      {
+        "startSec": 501.1,
+        "endSec": 502.18,
+        "text": "and you know it needs a few things,"
+      },
+      {
+        "startSec": 502.18,
+        "endSec": 504.82,
+        "text": "like factors into your offer, factors into your budget."
+      },
+      {
+        "startSec": 504.82,
+        "endSec": 506.34,
+        "text": "- Totally, in a vehicle like this,"
+      },
+      {
+        "startSec": 506.34,
+        "endSec": 507.46,
+        "text": "if you're looking for a 63,"
+      },
+      {
+        "startSec": 507.46,
+        "endSec": 509.5,
+        "text": "but you want to lift it with a two inch lift"
+      },
+      {
+        "startSec": 509.5,
+        "endSec": 510.82,
+        "text": "and do some off-roading on it,"
+      },
+      {
+        "startSec": 510.82,
+        "endSec": 512.06,
+        "text": "this is the perfect time to get into it"
+      },
+      {
+        "startSec": 512.06,
+        "endSec": 513.7,
+        "text": "'cause you know you need shocks and springs anyway,"
+      },
+      {
+        "startSec": 513.7,
+        "endSec": 516.14,
+        "text": "no harm no foul, you're gonna upgrade it, so."
+      },
+      {
+        "startSec": 516.14,
+        "endSec": 519.1,
+        "text": "- And the best part is when you look at a G-Wagon"
+      },
+      {
+        "startSec": 519.1,
+        "endSec": 522.18,
+        "text": "and you want one like this and you want a solid axle"
+      },
+      {
+        "startSec": 522.18,
+        "endSec": 523.38,
+        "text": "and you want the original G,"
+      },
+      {
+        "startSec": 523.38,
+        "endSec": 526.94,
+        "text": "your options are up 'til 2018, so you're not getting new."
+      },
+      {
+        "startSec": 526.94,
+        "endSec": 528.82,
+        "text": "And you just need to come to grips with the fact"
+      },
+      {
+        "startSec": 528.82,
+        "endSec": 532.26,
+        "text": "that you're buying a 140-some-odd thousand dollar vehicle"
+      },
+      {
+        "startSec": 532.26,
+        "endSec": 534.82,
+        "text": "that hopefully the people before had taken great care of,"
+      },
+      {
+        "startSec": 534.82,
+        "endSec": 536.42,
+        "text": "but as long as you do the work,"
+      },
+      {
+        "startSec": 536.42,
+        "endSec": 537.86,
+        "text": "the things are just gonna keep going"
+      },
+      {
+        "startSec": 537.86,
+        "endSec": 538.7,
+        "text": "and going and going."
+      },
+      {
+        "startSec": 538.7,
+        "endSec": 541.02,
+        "text": "- Yep, so that's typically what we see."
+      },
+      {
+        "startSec": 541.02,
+        "endSec": 542.42,
+        "text": "They're super solid, but that's what I look for"
+      },
+      {
+        "startSec": 542.42,
+        "endSec": 546.02,
+        "text": "underneath the truck is all those little items."
+      },
+      {
+        "startSec": 546.02,
+        "endSec": 549.42,
+        "text": "So I look for rust, corrosion, leaks,"
+      },
+      {
+        "startSec": 549.42,
+        "endSec": 551.38,
+        "text": "I look at the suspension, we look at the brakes,"
+      },
+      {
+        "startSec": 551.38,
+        "endSec": 552.78,
+        "text": "we look at all the chassis stuff,"
+      },
+      {
+        "startSec": 552.78,
+        "endSec": 554.46,
+        "text": "we look at all the bushings,"
+      },
+      {
+        "startSec": 554.46,
+        "endSec": 556.14,
+        "text": "and you really just make sure it's solid."
+      },
+      {
+        "startSec": 556.14,
+        "endSec": 557.46,
+        "text": "And then the last part of the equation,"
+      },
+      {
+        "startSec": 557.46,
+        "endSec": 559.14,
+        "text": "this is the unwritten part of the equation,"
+      },
+      {
+        "startSec": 559.14,
+        "endSec": 561.66,
+        "text": "is we always look for accident damage."
+      },
+      {
+        "startSec": 561.66,
+        "endSec": 563.06,
+        "text": "Occasionally we'll get 'em in there"
+      },
+      {
+        "startSec": 563.06,
+        "endSec": 566.7,
+        "text": "where they weren't fully disclosed, it's very rare,"
+      },
+      {
+        "startSec": 566.7,
+        "endSec": 569.34,
+        "text": "but you'd be surprised the amount of"
+      },
+      {
+        "startSec": 569.34,
+        "endSec": 572.1,
+        "text": "hits these trucks can take, I'm looking at 'em."
+      },
+      {
+        "startSec": 572.1,
+        "endSec": 574.1,
+        "text": "- They're beefy, there's a few vehicles"
+      },
+      {
+        "startSec": 574.1,
+        "endSec": 575.18,
+        "text": "that Joe's worked on recently"
+      },
+      {
+        "startSec": 575.18,
+        "endSec": 577.22,
+        "text": "that have seen some better days,"
+      },
+      {
+        "startSec": 577.22,
+        "endSec": 581.94,
+        "text": "including the salvage G55 AMG, used to be over there."
+      },
+      {
+        "startSec": 581.94,
+        "endSec": 583.46,
+        "text": "- Oh man, yeah."
+      },
+      {
+        "startSec": 583.46,
+        "endSec": 585.98,
+        "text": "- Which is, they can take a tremendous beating,"
+      },
+      {
+        "startSec": 585.98,
+        "endSec": 587.94,
+        "text": "but even if they were in an accident,"
+      },
+      {
+        "startSec": 587.94,
+        "endSec": 590.34,
+        "text": "make sure they were repaired properly."
+      },
+      {
+        "startSec": 590.34,
+        "endSec": 593.1,
+        "text": "- So it was an accident on a car facts report,"
+      },
+      {
+        "startSec": 593.1,
+        "endSec": 594.06,
+        "text": "a deal breaker for you?"
+      },
+      {
+        "startSec": 594.06,
+        "endSec": 595.42,
+        "text": "- Nope, not at all."
+      },
+      {
+        "startSec": 595.42,
+        "endSec": 596.74,
+        "text": "- Joe, can we walk over to the green truck"
+      },
+      {
+        "startSec": 596.74,
+        "endSec": 600.02,
+        "text": "and talk through, when we're looking at a used G,"
+      },
+      {
+        "startSec": 600.02,
+        "endSec": 601.46,
+        "text": "and by the way, as we walk through,"
+      },
+      {
+        "startSec": 601.46,
+        "endSec": 603.94,
+        "text": "you'll notice beautiful G, I don't wanna get too deep,"
+      },
+      {
+        "startSec": 603.94,
+        "endSec": 605.62,
+        "text": "just talk about that engine once."
+      },
+      {
+        "startSec": 606.62,
+        "endSec": 608.86,
+        "text": "- This is the M113 AMG motor,"
+      },
+      {
+        "startSec": 608.86,
+        "endSec": 610.82,
+        "text": "this is actually a five and a half liter AMG motor."
+      },
+      {
+        "startSec": 610.82,
+        "endSec": 613.9,
+        "text": "It's in process, this is a motor swap into an early one."
+      },
+      {
+        "startSec": 613.9,
+        "endSec": 615.02,
+        "text": "- 250 GD."
+      },
+      {
+        "startSec": 615.02,
+        "endSec": 616.82,
+        "text": "Back on track, that's what happens when you get two guys"
+      },
+      {
+        "startSec": 616.82,
+        "endSec": 619.26,
+        "text": "that love Gs talking, so what we're gonna do"
+      },
+      {
+        "startSec": 619.26,
+        "endSec": 623.42,
+        "text": "over on this beautiful truck over here,"
+      },
+      {
+        "startSec": 623.42,
+        "endSec": 626.98,
+        "text": "I'd love to walk through and just highlight the key areas"
+      },
+      {
+        "startSec": 626.98,
+        "endSec": 631.1,
+        "text": "for people to look for when we have rust on a G-Wag,"
+      },
+      {
+        "startSec": 631.1,
+        "endSec": 632.66,
+        "text": "'cause I know that the internet's probably plagued"
+      },
+      {
+        "startSec": 632.66,
+        "endSec": 635.14,
+        "text": "with G-Wagons or Rusty, G-Wagons or Rusty,"
+      },
+      {
+        "startSec": 635.14,
+        "endSec": 638.9,
+        "text": "and I will say the first one I look at was a 2014,"
+      },
+      {
+        "startSec": 638.9,
+        "endSec": 641.5,
+        "text": "and the side steps, which these don't have,"
+      },
+      {
+        "startSec": 641.5,
+        "endSec": 643.86,
+        "text": "the factory side steps, factory side steps were rusty"
+      },
+      {
+        "startSec": 643.86,
+        "endSec": 646.02,
+        "text": "and there was rust in all of the areas"
+      },
+      {
+        "startSec": 646.02,
+        "endSec": 647.86,
+        "text": "and I was like, no, I'm not touching it,"
+      },
+      {
+        "startSec": 647.86,
+        "endSec": 649.5,
+        "text": "which again, it's repairable, but how much?"
+      },
+      {
+        "startSec": 649.5,
+        "endSec": 650.58,
+        "text": "And you can find them without rust."
+      },
+      {
+        "startSec": 650.58,
+        "endSec": 652.58,
+        "text": "So let's walk through from the front to the back"
+      },
+      {
+        "startSec": 652.58,
+        "endSec": 654.82,
+        "text": "and just highlight the main areas you'll find."
+      },
+      {
+        "startSec": 654.82,
+        "endSec": 656.5,
+        "text": "- And what you're talking about is external things"
+      },
+      {
+        "startSec": 656.5,
+        "endSec": 658.34,
+        "text": "that you can see without putting a truck up in the air."
+      },
+      {
+        "startSec": 658.34,
+        "endSec": 659.7,
+        "text": "That's actually really good."
+      },
+      {
+        "startSec": 659.7,
+        "endSec": 663.74,
+        "text": "We're gonna start right here, actually,"
+      },
+      {
+        "startSec": 663.74,
+        "endSec": 665.46,
+        "text": "'cause this is the first thing I look at,"
+      },
+      {
+        "startSec": 665.46,
+        "endSec": 666.66,
+        "text": "is when you go down,"
+      },
+      {
+        "startSec": 666.66,
+        "endSec": 669.94,
+        "text": "we've got this neat little rubber rocker molding,"
+      },
+      {
+        "startSec": 669.94,
+        "endSec": 671.86,
+        "text": "and you see our starting to pull up over here."
+      },
+      {
+        "startSec": 671.86,
+        "endSec": 673.66,
+        "text": "This is an older one, it's got--"
+      },
+      {
+        "startSec": 673.66,
+        "endSec": 675.06,
+        "text": "- What year's this truck, or so folks know?"
+      },
+      {
+        "startSec": 675.06,
+        "endSec": 676.9,
+        "text": "- '97, so it's-- - '97, it's 20--"
+      },
+      {
+        "startSec": 676.9,
+        "endSec": 678.74,
+        "text": "- 30 year old truck. - Almost 30, yeah."
+      },
+      {
+        "startSec": 678.74,
+        "endSec": 680.34,
+        "text": "- Yeah, the rubber part is a little big,"
+      },
+      {
+        "startSec": 680.34,
+        "endSec": 681.38,
+        "text": "but the thing I look for is,"
+      },
+      {
+        "startSec": 681.38,
+        "endSec": 683.9,
+        "text": "is there any rust or corrosion underneath there?"
+      },
+      {
+        "startSec": 683.9,
+        "endSec": 685.9,
+        "text": "And the answer to this one is no, I don't see it."
+      },
+      {
+        "startSec": 685.9,
+        "endSec": 688.18,
+        "text": "- Before we get there, windshield surrounds."
+      },
+      {
+        "startSec": 688.18,
+        "endSec": 689.02,
+        "text": "- I'm getting there."
+      },
+      {
+        "startSec": 689.02,
+        "endSec": 689.94,
+        "text": "- Oh, we're gonna do windshields later."
+      },
+      {
+        "startSec": 689.94,
+        "endSec": 690.9,
+        "text": "Joe's gotta order, we're gonna--"
+      },
+      {
+        "startSec": 690.9,
+        "endSec": 691.74,
+        "text": "- There's an order for this first."
+      },
+      {
+        "startSec": 691.74,
+        "endSec": 693.82,
+        "text": "- There is a logic, I start from the bottom up."
+      },
+      {
+        "startSec": 693.82,
+        "endSec": 695.54,
+        "text": "So, if you're looking at a truck,"
+      },
+      {
+        "startSec": 695.54,
+        "endSec": 697.86,
+        "text": "I want you to open up every single door."
+      },
+      {
+        "startSec": 697.86,
+        "endSec": 698.98,
+        "text": "And what you wanna look for is"
+      },
+      {
+        "startSec": 698.98,
+        "endSec": 701.14,
+        "text": "any kind of questionable material here,"
+      },
+      {
+        "startSec": 701.14,
+        "endSec": 705.66,
+        "text": "anything that's rusty, bubbled paint is a dead giveaway."
+      },
+      {
+        "startSec": 705.66,
+        "endSec": 707.46,
+        "text": "So this truck, again, it's really clean,"
+      },
+      {
+        "startSec": 707.46,
+        "endSec": 708.9,
+        "text": "open up the back doors,"
+      },
+      {
+        "startSec": 708.9,
+        "endSec": 710.26,
+        "text": "and there's one little key difference"
+      },
+      {
+        "startSec": 710.26,
+        "endSec": 711.74,
+        "text": "I want you to look at."
+      },
+      {
+        "startSec": 711.74,
+        "endSec": 713.46,
+        "text": "Again, everything looks really good,"
+      },
+      {
+        "startSec": 713.46,
+        "endSec": 717.66,
+        "text": "but on older trucks, look at this, the door bellows."
+      },
+      {
+        "startSec": 717.66,
+        "endSec": 719.94,
+        "text": "There's a wiring harness that goes through this,"
+      },
+      {
+        "startSec": 719.94,
+        "endSec": 723.98,
+        "text": "and as trucks age, those will routinely rip"
+      },
+      {
+        "startSec": 723.98,
+        "endSec": 725.74,
+        "text": "and expose the wiring harness."
+      },
+      {
+        "startSec": 725.74,
+        "endSec": 728.22,
+        "text": "- Do you see, Joe, 'cause I've seen some of this,"
+      },
+      {
+        "startSec": 728.22,
+        "endSec": 732.06,
+        "text": "some rust around hinges specifically,"
+      },
+      {
+        "startSec": 732.06,
+        "endSec": 733.38,
+        "text": "underneath the hinges?"
+      },
+      {
+        "startSec": 733.38,
+        "endSec": 734.5,
+        "text": "- I have and I have it."
+      },
+      {
+        "startSec": 734.5,
+        "endSec": 737.58,
+        "text": "It really depends on if it's in a salty environment or not."
+      },
+      {
+        "startSec": 737.58,
+        "endSec": 739.3,
+        "text": "So, that's what--"
+      },
+      {
+        "startSec": 739.3,
+        "endSec": 741.9,
+        "text": "- As with any vehicle, if anyone knows,"
+      },
+      {
+        "startSec": 741.9,
+        "endSec": 744.22,
+        "text": "Toyota would have their rusty problems,"
+      },
+      {
+        "startSec": 744.22,
+        "endSec": 745.46,
+        "text": "Dodge has had rusty problems."
+      },
+      {
+        "startSec": 745.46,
+        "endSec": 748.06,
+        "text": "So what we're showing you is the common areas,"
+      },
+      {
+        "startSec": 748.06,
+        "endSec": 750.38,
+        "text": "there's all these vehicles are showing the rust symptoms"
+      },
+      {
+        "startSec": 750.38,
+        "endSec": 751.34,
+        "text": "in certain areas."
+      },
+      {
+        "startSec": 751.34,
+        "endSec": 753.02,
+        "text": "So what you're seeing here are the main areas"
+      },
+      {
+        "startSec": 753.02,
+        "endSec": 754.22,
+        "text": "to observe for rust."
+      },
+      {
+        "startSec": 754.22,
+        "endSec": 755.94,
+        "text": "It's not like, I looked at it, it's rusty,"
+      },
+      {
+        "startSec": 755.94,
+        "endSec": 756.98,
+        "text": "I'm gonna stay away."
+      },
+      {
+        "startSec": 756.98,
+        "endSec": 760.1,
+        "text": "And be mindful, as Joe said, of bubbles"
+      },
+      {
+        "startSec": 760.1,
+        "endSec": 761.74,
+        "text": "that were repainted over."
+      },
+      {
+        "startSec": 761.74,
+        "endSec": 764.38,
+        "text": "- Yep, and I wanna focus on the back of the truck."
+      },
+      {
+        "startSec": 764.38,
+        "endSec": 765.86,
+        "text": "We'll save them the windshield for last."
+      },
+      {
+        "startSec": 765.86,
+        "endSec": 767.38,
+        "text": "- The windshield for last."
+      },
+      {
+        "startSec": 767.38,
+        "endSec": 770.14,
+        "text": "- Okay, one thing you're gonna see,"
+      },
+      {
+        "startSec": 770.14,
+        "endSec": 771.22,
+        "text": "and I see this more often than not,"
+      },
+      {
+        "startSec": 771.22,
+        "endSec": 773.94,
+        "text": "is the back area from this area back,"
+      },
+      {
+        "startSec": 773.94,
+        "endSec": 777.3,
+        "text": "you will see bubbles starting to form under here,"
+      },
+      {
+        "startSec": 777.3,
+        "endSec": 779.34,
+        "text": "or water kind of sits there and coagulates,"
+      },
+      {
+        "startSec": 779.34,
+        "endSec": 781.1,
+        "text": "and gets underneath the paint and goes through."
+      },
+      {
+        "startSec": 781.1,
+        "endSec": 783.22,
+        "text": "So watch these back corners really closely,"
+      },
+      {
+        "startSec": 783.22,
+        "endSec": 784.98,
+        "text": "particularly around this area also."
+      },
+      {
+        "startSec": 784.98,
+        "endSec": 787.78,
+        "text": "Also the seam seal from here will start to rot"
+      },
+      {
+        "startSec": 787.78,
+        "endSec": 789.98,
+        "text": "as it comes up, 'cause underneath,"
+      },
+      {
+        "startSec": 789.98,
+        "endSec": 791.66,
+        "text": "it's just a channel of water will sit there"
+      },
+      {
+        "startSec": 791.66,
+        "endSec": 792.62,
+        "text": "and slowly permeate up."
+      },
+      {
+        "startSec": 792.62,
+        "endSec": 794.78,
+        "text": "So watch this area really closely."
+      },
+      {
+        "startSec": 794.78,
+        "endSec": 796.7,
+        "text": "Again, this one isn't in bad shape,"
+      },
+      {
+        "startSec": 796.7,
+        "endSec": 798.94,
+        "text": "it actually has zero issues with it."
+      },
+      {
+        "startSec": 798.94,
+        "endSec": 801.1,
+        "text": "But we will see rust come up through here,"
+      },
+      {
+        "startSec": 801.1,
+        "endSec": 802.98,
+        "text": "and kind of permeate through the rear quarters."
+      },
+      {
+        "startSec": 802.98,
+        "endSec": 804.02,
+        "text": "I've got trucks at the other shop"
+      },
+      {
+        "startSec": 804.02,
+        "endSec": 805.58,
+        "text": "where we've done a full repair on them,"
+      },
+      {
+        "startSec": 805.58,
+        "endSec": 807.58,
+        "text": "and it's a whole mess."
+      },
+      {
+        "startSec": 807.58,
+        "endSec": 808.94,
+        "text": "I'm gonna open up the tailgate on this"
+      },
+      {
+        "startSec": 808.94,
+        "endSec": 812.58,
+        "text": "and show you where we typically see rust on the tailgate."
+      },
+      {
+        "startSec": 814.06,
+        "endSec": 816.26,
+        "text": "It is where, feel free to open,"
+      },
+      {
+        "startSec": 816.26,
+        "endSec": 818.06,
+        "text": "make sure you open up all the doors."
+      },
+      {
+        "startSec": 818.06,
+        "endSec": 820.66,
+        "text": "But on the tailgate, I want you to get down here,"
+      },
+      {
+        "startSec": 820.66,
+        "endSec": 822.46,
+        "text": "and you're gonna look really goofy to the seller,"
+      },
+      {
+        "startSec": 822.46,
+        "endSec": 825.78,
+        "text": "and I want you to take this and pull it."
+      },
+      {
+        "startSec": 825.78,
+        "endSec": 827.18,
+        "text": "It comes off pretty easily,"
+      },
+      {
+        "startSec": 827.18,
+        "endSec": 829.14,
+        "text": "but you can see right away,"
+      },
+      {
+        "startSec": 829.14,
+        "endSec": 831.34,
+        "text": "this area holds a lot of water."
+      },
+      {
+        "startSec": 831.34,
+        "endSec": 833.14,
+        "text": "Again, this is too nice of an example"
+      },
+      {
+        "startSec": 833.14,
+        "endSec": 834.58,
+        "text": "to really play this game."
+      },
+      {
+        "startSec": 834.58,
+        "endSec": 836.3,
+        "text": "But it just pulls out."
+      },
+      {
+        "startSec": 836.3,
+        "endSec": 837.22,
+        "text": "Oops, look at that."
+      },
+      {
+        "startSec": 837.22,
+        "endSec": 838.42,
+        "text": "We got a little bit of discoloration,"
+      },
+      {
+        "startSec": 838.42,
+        "endSec": 839.26,
+        "text": "we got a little bubble."
+      },
+      {
+        "startSec": 839.26,
+        "endSec": 841.5,
+        "text": "So something's starting to happen on this truck."
+      },
+      {
+        "startSec": 841.5,
+        "endSec": 842.46,
+        "text": "So we may wanna address that"
+      },
+      {
+        "startSec": 842.46,
+        "endSec": 843.94,
+        "text": "and get it fixed before it goes out."
+      },
+      {
+        "startSec": 843.94,
+        "endSec": 846.14,
+        "text": "- Yeah, it's much easier to be proactive on this stuff"
+      },
+      {
+        "startSec": 846.14,
+        "endSec": 848.66,
+        "text": "than it is to be reactive and deal with it later."
+      },
+      {
+        "startSec": 848.66,
+        "endSec": 850.22,
+        "text": "- Yeah, and it just pushes in there,"
+      },
+      {
+        "startSec": 850.22,
+        "endSec": 852.78,
+        "text": "it's just a friction fit, so it's not a big deal."
+      },
+      {
+        "startSec": 852.78,
+        "endSec": 855.14,
+        "text": "But also the weather stripping on this is fairly fresh,"
+      },
+      {
+        "startSec": 855.14,
+        "endSec": 857.38,
+        "text": "that's why it's still pliable and seals nicely."
+      },
+      {
+        "startSec": 858.9,
+        "endSec": 859.86,
+        "text": "- And away you go."
+      },
+      {
+        "startSec": 859.86,
+        "endSec": 861.66,
+        "text": "- In door cells and also hinges,"
+      },
+      {
+        "startSec": 861.66,
+        "endSec": 864.34,
+        "text": "hinges I've seen totally"
+      },
+      {
+        "startSec": 864.34,
+        "endSec": 866.18,
+        "text": "on the inside of the rear doors."
+      },
+      {
+        "startSec": 866.18,
+        "endSec": 867.18,
+        "text": "- All of that."
+      },
+      {
+        "startSec": 867.18,
+        "endSec": 870.18,
+        "text": "So, God, I love this truck, by the way."
+      },
+      {
+        "startSec": 871.26,
+        "endSec": 872.94,
+        "text": "- Again, moving around here,"
+      },
+      {
+        "startSec": 872.94,
+        "endSec": 875.3,
+        "text": "make sure you check everything,"
+      },
+      {
+        "startSec": 875.3,
+        "endSec": 877.7,
+        "text": "look at the bellows, look through here."
+      },
+      {
+        "startSec": 877.7,
+        "endSec": 879.38,
+        "text": "This truck's kinda, it's easier on us"
+      },
+      {
+        "startSec": 879.38,
+        "endSec": 880.82,
+        "text": "'cause we do have the 90 degree hinges,"
+      },
+      {
+        "startSec": 880.82,
+        "endSec": 882.5,
+        "text": "so it opens all the way up."
+      },
+      {
+        "startSec": 882.5,
+        "endSec": 884.14,
+        "text": "- Yeah, that's coming on my truck soon too."
+      },
+      {
+        "startSec": 884.14,
+        "endSec": 886.38,
+        "text": "I got a wish list, a growing wish list."
+      },
+      {
+        "startSec": 886.38,
+        "endSec": 889.02,
+        "text": "And then of course, as we went through the underside"
+      },
+      {
+        "startSec": 889.02,
+        "endSec": 892.42,
+        "text": "of the other vehicle, the G63, look for surface rust."
+      },
+      {
+        "startSec": 892.42,
+        "endSec": 893.66,
+        "text": "- Right, it's not rocket science."
+      },
+      {
+        "startSec": 893.66,
+        "endSec": 896.14,
+        "text": "- So, the driver's door is the worst"
+      },
+      {
+        "startSec": 896.14,
+        "endSec": 897.82,
+        "text": "'cause we're always getting out of the driver's side."
+      },
+      {
+        "startSec": 897.82,
+        "endSec": 899.38,
+        "text": "Take a good look at the weather stripping down here,"
+      },
+      {
+        "startSec": 899.38,
+        "endSec": 900.42,
+        "text": "that'll tell you pretty quickly"
+      },
+      {
+        "startSec": 900.42,
+        "endSec": 901.98,
+        "text": "if we've got anything major going on."
+      },
+      {
+        "startSec": 901.98,
+        "endSec": 903.62,
+        "text": "Again, this has been replaced a couple years ago,"
+      },
+      {
+        "startSec": 903.62,
+        "endSec": 905.34,
+        "text": "so it's still soft and pliable."
+      },
+      {
+        "startSec": 905.34,
+        "endSec": 908.42,
+        "text": "Pull up the floor mats, make sure the carpet is dry."
+      },
+      {
+        "startSec": 908.42,
+        "endSec": 910.18,
+        "text": "That's another big one that'll tell you right off the bat"
+      },
+      {
+        "startSec": 910.18,
+        "endSec": 911.46,
+        "text": "if the drains are clogged."
+      },
+      {
+        "startSec": 912.58,
+        "endSec": 914.42,
+        "text": "Believe it or not, I get trucks shipped into me"
+      },
+      {
+        "startSec": 914.42,
+        "endSec": 915.66,
+        "text": "in the middle of summertime"
+      },
+      {
+        "startSec": 915.66,
+        "endSec": 917.94,
+        "text": "that came from a different location geographically."
+      },
+      {
+        "startSec": 917.94,
+        "endSec": 920.1,
+        "text": "We pull the floor mats out and it is wet."
+      },
+      {
+        "startSec": 920.1,
+        "endSec": 921.82,
+        "text": "The carpet's just wet, so we actually pull everything out,"
+      },
+      {
+        "startSec": 921.82,
+        "endSec": 922.66,
+        "text": "we roll the windows down"
+      },
+      {
+        "startSec": 922.66,
+        "endSec": 924.26,
+        "text": "and we actually let it bake in the sun"
+      },
+      {
+        "startSec": 924.26,
+        "endSec": 925.42,
+        "text": "and get all the moisture out of there,"
+      },
+      {
+        "startSec": 925.42,
+        "endSec": 927.18,
+        "text": "but that's one of those things to watch out for,"
+      },
+      {
+        "startSec": 927.18,
+        "endSec": 928.54,
+        "text": "especially if you're looking for a used truck"
+      },
+      {
+        "startSec": 928.54,
+        "endSec": 929.94,
+        "text": "'cause you don't wanna have water intrusion."
+      },
+      {
+        "startSec": 929.94,
+        "endSec": 932.54,
+        "text": "And if you do, we gotta figure out why."
+      },
+      {
+        "startSec": 932.54,
+        "endSec": 934.34,
+        "text": "One of the most common areas of water intrusion"
+      },
+      {
+        "startSec": 934.34,
+        "endSec": 936.18,
+        "text": "is actually gonna be your sunroof seal."
+      },
+      {
+        "startSec": 936.18,
+        "endSec": 938.1,
+        "text": "And sunroofs, some people love 'em,"
+      },
+      {
+        "startSec": 938.1,
+        "endSec": 939.34,
+        "text": "but they are the bane of our existence"
+      },
+      {
+        "startSec": 939.34,
+        "endSec": 941.5,
+        "text": "'cause we fixed so many of these trucks."
+      },
+      {
+        "startSec": 941.5,
+        "endSec": 944.02,
+        "text": "This truck, you're not really gonna see anything in there,"
+      },
+      {
+        "startSec": 944.02,
+        "endSec": 946.18,
+        "text": "but this one did have a sunroof seal leak"
+      },
+      {
+        "startSec": 946.18,
+        "endSec": 948.14,
+        "text": "and we had to reseal everything"
+      },
+      {
+        "startSec": 948.14,
+        "endSec": 950.14,
+        "text": "and we actually had to steam clean the headliner"
+      },
+      {
+        "startSec": 950.14,
+        "endSec": 951.14,
+        "text": "to get it out there."
+      },
+      {
+        "startSec": 951.14,
+        "endSec": 952.9,
+        "text": "It happens, it's not a big deal,"
+      },
+      {
+        "startSec": 952.9,
+        "endSec": 955.22,
+        "text": "it's just, you get sticks, branches,"
+      },
+      {
+        "startSec": 955.22,
+        "endSec": 957.78,
+        "text": "or even it gets misaligned and you gotta fix it."
+      },
+      {
+        "startSec": 957.78,
+        "endSec": 959.46,
+        "text": "They're just part of the game, but--"
+      },
+      {
+        "startSec": 959.46,
+        "endSec": 961.06,
+        "text": "- Which we'll go through in our,"
+      },
+      {
+        "startSec": 961.06,
+        "endSec": 963.9,
+        "text": "which we went through in our drive tours,"
+      },
+      {
+        "startSec": 963.9,
+        "endSec": 965.1,
+        "text": "checking that."
+      },
+      {
+        "startSec": 965.1,
+        "endSec": 967.02,
+        "text": "- And no truck is in purposes."
+      },
+      {
+        "startSec": 967.02,
+        "endSec": 968.98,
+        "text": "Just so you know, the sunroofs on these trucks"
+      },
+      {
+        "startSec": 968.98,
+        "endSec": 973.34,
+        "text": "are the same from day one 463 to 2018."
+      },
+      {
+        "startSec": 973.34,
+        "endSec": 975.38,
+        "text": "The exact same parts, exact same seal,"
+      },
+      {
+        "startSec": 975.38,
+        "endSec": 976.9,
+        "text": "there's no right or wrong answer."
+      },
+      {
+        "startSec": 976.9,
+        "endSec": 978.9,
+        "text": "All right, come around here, let's look at the windshield."
+      },
+      {
+        "startSec": 978.9,
+        "endSec": 982.42,
+        "text": "So, this windshield,"
+      },
+      {
+        "startSec": 982.42,
+        "endSec": 984.66,
+        "text": "there's two different variants, basically."
+      },
+      {
+        "startSec": 984.66,
+        "endSec": 987.62,
+        "text": "What we'll start to see is bubbling of paint along the base"
+      },
+      {
+        "startSec": 987.62,
+        "endSec": 991.06,
+        "text": "'cause water will get in between and sit underneath it."
+      },
+      {
+        "startSec": 991.06,
+        "endSec": 992.9,
+        "text": "This gasket is just a rubber gasket,"
+      },
+      {
+        "startSec": 992.9,
+        "endSec": 995.5,
+        "text": "you can peel it up and get underneath it"
+      },
+      {
+        "startSec": 995.5,
+        "endSec": 997.38,
+        "text": "and there's no glue in here."
+      },
+      {
+        "startSec": 997.38,
+        "endSec": 1000.42,
+        "text": "So if you see any bubbling or cracks in the paint"
+      },
+      {
+        "startSec": 1000.42,
+        "endSec": 1002.38,
+        "text": "or anything starting to kinda come apart"
+      },
+      {
+        "startSec": 1002.38,
+        "endSec": 1004.58,
+        "text": "on the windshield frame, that's time to have it addressed."
+      },
+      {
+        "startSec": 1004.58,
+        "endSec": 1006.26,
+        "text": "And believe it or not, what it looks like"
+      },
+      {
+        "startSec": 1006.26,
+        "endSec": 1008.62,
+        "text": "is we cut the glass out of the truck,"
+      },
+      {
+        "startSec": 1008.62,
+        "endSec": 1011.42,
+        "text": "we have to cut this and ruin it, we pull the glass out,"
+      },
+      {
+        "startSec": 1011.42,
+        "endSec": 1013.06,
+        "text": "we take all the paint off the windshield frame"
+      },
+      {
+        "startSec": 1013.06,
+        "endSec": 1015.26,
+        "text": "and cut in new material wherever we need to"
+      },
+      {
+        "startSec": 1015.26,
+        "endSec": 1018.26,
+        "text": "or we fix all the corrosion repair in the truck."
+      },
+      {
+        "startSec": 1018.26,
+        "endSec": 1020.42,
+        "text": "Again, it's not a big deal, it is a little time consuming"
+      },
+      {
+        "startSec": 1020.42,
+        "endSec": 1022.74,
+        "text": "but it's done right and you kinda reset the clock on it."
+      },
+      {
+        "startSec": 1022.74,
+        "endSec": 1023.98,
+        "text": "We can usually paint match everything"
+      },
+      {
+        "startSec": 1023.98,
+        "endSec": 1026.3,
+        "text": "and so no one will know the repair is actually done."
+      },
+      {
+        "startSec": 1026.3,
+        "endSec": 1028.62,
+        "text": "In severe cases where there's just not enough material"
+      },
+      {
+        "startSec": 1028.62,
+        "endSec": 1029.58,
+        "text": "left or it's all Swiss cheese,"
+      },
+      {
+        "startSec": 1029.58,
+        "endSec": 1030.9,
+        "text": "we can actually get a brand new windshield frame"
+      },
+      {
+        "startSec": 1030.9,
+        "endSec": 1033.06,
+        "text": "from Mercedes and TIG welded in there"
+      },
+      {
+        "startSec": 1033.06,
+        "endSec": 1035.1,
+        "text": "so it looks factory."
+      },
+      {
+        "startSec": 1035.1,
+        "endSec": 1036.02,
+        "text": "That's the key thing."
+      },
+      {
+        "startSec": 1036.02,
+        "endSec": 1039.42,
+        "text": "So we do get rusty trucks, it happens."
+      },
+      {
+        "startSec": 1039.42,
+        "endSec": 1040.54,
+        "text": "They are made out of steel"
+      },
+      {
+        "startSec": 1040.54,
+        "endSec": 1042.54,
+        "text": "and we do live on coastal regions."
+      },
+      {
+        "startSec": 1042.54,
+        "endSec": 1044.1,
+        "text": "It's not a bad thing, it just means"
+      },
+      {
+        "startSec": 1044.1,
+        "endSec": 1045.78,
+        "text": "that we need to be proactive about it"
+      },
+      {
+        "startSec": 1045.78,
+        "endSec": 1047.78,
+        "text": "and have it rectified when the time comes."
+      },
+      {
+        "startSec": 1047.78,
+        "endSec": 1049.66,
+        "text": "- All right, we are on a test drive."
+      },
+      {
+        "startSec": 1049.66,
+        "endSec": 1054.66,
+        "text": "So what should a G-Wagon shopper look for"
+      },
+      {
+        "startSec": 1054.82,
+        "endSec": 1057.62,
+        "text": "on their G-Wagon when they're doing a test ride?"
+      },
+      {
+        "startSec": 1057.62,
+        "endSec": 1060.62,
+        "text": "Before we go anywhere, let's talk about buttons."
+      },
+      {
+        "startSec": 1062.86,
+        "endSec": 1063.98,
+        "text": "Buttons, right Joe?"
+      },
+      {
+        "startSec": 1063.98,
+        "endSec": 1064.82,
+        "text": "- Lots of buttons."
+      },
+      {
+        "startSec": 1064.82,
+        "endSec": 1065.86,
+        "text": "- Check everything."
+      },
+      {
+        "startSec": 1065.86,
+        "endSec": 1070.1,
+        "text": "- Windows, of course, front, rear, by the way,"
+      },
+      {
+        "startSec": 1070.1,
+        "endSec": 1071.38,
+        "text": "G-Wagons don't have one touch up"
+      },
+      {
+        "startSec": 1071.38,
+        "endSec": 1072.82,
+        "text": "because that would be luxurious."
+      },
+      {
+        "startSec": 1072.82,
+        "endSec": 1074.86,
+        "text": "You have one touch down, no one touch up."
+      },
+      {
+        "startSec": 1076.02,
+        "endSec": 1078.38,
+        "text": "- Sunroof, again, I've preached on this"
+      },
+      {
+        "startSec": 1078.38,
+        "endSec": 1079.82,
+        "text": "as a ban of my existence."
+      },
+      {
+        "startSec": 1079.82,
+        "endSec": 1082.26,
+        "text": "Go ahead and get on the road, I'll chat about this."
+      },
+      {
+        "startSec": 1083.94,
+        "endSec": 1085.18,
+        "text": "Open it up, make sure it works."
+      },
+      {
+        "startSec": 1085.18,
+        "endSec": 1088.34,
+        "text": "If it doesn't work, we're gonna know about it right away."
+      },
+      {
+        "startSec": 1088.34,
+        "endSec": 1090.42,
+        "text": "If you get a G-Wagon with Sunroof, it doesn't work."
+      },
+      {
+        "startSec": 1090.42,
+        "endSec": 1093.26,
+        "text": "Don't fret it, it just means we gotta fix it."
+      },
+      {
+        "startSec": 1093.26,
+        "endSec": 1096.82,
+        "text": "Look at all the lights as you're looking up on the truck."
+      },
+      {
+        "startSec": 1096.82,
+        "endSec": 1099.3,
+        "text": "Make sure you look around here for any kind of discoloration."
+      },
+      {
+        "startSec": 1099.3,
+        "endSec": 1101.34,
+        "text": "That means you've got water leaks, water intrusion,"
+      },
+      {
+        "startSec": 1101.34,
+        "endSec": 1103.1,
+        "text": "or seal that's not working."
+      },
+      {
+        "startSec": 1103.1,
+        "endSec": 1104.78,
+        "text": "Moving down from there."
+      },
+      {
+        "startSec": 1104.78,
+        "endSec": 1106.06,
+        "text": "Again, I gotta go from top to bottom."
+      },
+      {
+        "startSec": 1106.06,
+        "endSec": 1107.82,
+        "text": "- Oh yeah, we have opposite orders."
+      },
+      {
+        "startSec": 1107.82,
+        "endSec": 1109.18,
+        "text": "I like your order, go ahead."
+      },
+      {
+        "startSec": 1109.18,
+        "endSec": 1111.94,
+        "text": "- Systematic, on the outside, you go from the bottom up,"
+      },
+      {
+        "startSec": 1111.94,
+        "endSec": 1113.62,
+        "text": "outside, inside, top down."
+      },
+      {
+        "startSec": 1113.62,
+        "endSec": 1115.54,
+        "text": "- Yeah, obviously, you're looking at the front of the truck."
+      },
+      {
+        "startSec": 1115.54,
+        "endSec": 1117.62,
+        "text": "Make sure the windshield is not cracked,"
+      },
+      {
+        "startSec": 1117.62,
+        "endSec": 1121.78,
+        "text": "severely pitted, or just overall out of sorts."
+      },
+      {
+        "startSec": 1121.78,
+        "endSec": 1124.3,
+        "text": "It's not uncommon to see these things that get really pitted."
+      },
+      {
+        "startSec": 1124.3,
+        "endSec": 1126.22,
+        "text": "You can go with a factory Mercedes glass."
+      },
+      {
+        "startSec": 1126.22,
+        "endSec": 1128.1,
+        "text": "Believe it or not, there's actually aftermarket support,"
+      },
+      {
+        "startSec": 1128.1,
+        "endSec": 1130.02,
+        "text": "I know Novus and Anchor and so forth,"
+      },
+      {
+        "startSec": 1130.02,
+        "endSec": 1132.94,
+        "text": "will can carry glass for this and get you in there"
+      },
+      {
+        "startSec": 1132.94,
+        "endSec": 1136.46,
+        "text": "for a lot less than factory Mercedes."
+      },
+      {
+        "startSec": 1136.46,
+        "endSec": 1138.78,
+        "text": "So we actually do all of our glass in-house."
+      },
+      {
+        "startSec": 1138.78,
+        "endSec": 1141.02,
+        "text": "So again, it's one of those services we offer."
+      },
+      {
+        "startSec": 1141.02,
+        "endSec": 1143.18,
+        "text": "Moving on down the truck, you've got your vents."
+      },
+      {
+        "startSec": 1143.18,
+        "endSec": 1145.34,
+        "text": "These things are always made out of cheap plastic."
+      },
+      {
+        "startSec": 1145.34,
+        "endSec": 1148.22,
+        "text": "On older trucks, let's say early MB USA trucks,"
+      },
+      {
+        "startSec": 1148.22,
+        "endSec": 1150.5,
+        "text": "these usually crack and kind of fall apart."
+      },
+      {
+        "startSec": 1150.5,
+        "endSec": 1151.9,
+        "text": "Nothing in the world where you can still get these,"
+      },
+      {
+        "startSec": 1151.9,
+        "endSec": 1154.02,
+        "text": "especially the centered vent on the older trucks."
+      },
+      {
+        "startSec": 1154.02,
+        "endSec": 1155.46,
+        "text": "They usually kind of fall apart over time."
+      },
+      {
+        "startSec": 1155.46,
+        "endSec": 1157.14,
+        "text": "So just kind of keep that in the back of your mind."
+      },
+      {
+        "startSec": 1157.14,
+        "endSec": 1158.66,
+        "text": "If you find one that's in great shape"
+      },
+      {
+        "startSec": 1158.66,
+        "endSec": 1159.78,
+        "text": "and it's not falling apart,"
+      },
+      {
+        "startSec": 1159.78,
+        "endSec": 1161.82,
+        "text": "these trucks sat inside and was garage."
+      },
+      {
+        "startSec": 1161.82,
+        "endSec": 1162.74,
+        "text": "So that's really good."
+      },
+      {
+        "startSec": 1162.74,
+        "endSec": 1164.02,
+        "text": "So keep an eye out for that."
+      },
+      {
+        "startSec": 1164.02,
+        "endSec": 1166.58,
+        "text": "Glob boxes, again, these are always kind of tricky."
+      },
+      {
+        "startSec": 1166.58,
+        "endSec": 1167.62,
+        "text": "So keep an eye out for those."
+      },
+      {
+        "startSec": 1167.62,
+        "endSec": 1168.7,
+        "text": "- This is mine."
+      },
+      {
+        "startSec": 1168.7,
+        "endSec": 1170.22,
+        "text": "That's not normally there."
+      },
+      {
+        "startSec": 1170.22,
+        "endSec": 1171.3,
+        "text": "- This is my doggie bag."
+      },
+      {
+        "startSec": 1171.3,
+        "endSec": 1172.14,
+        "text": "- It's your doggie bag."
+      },
+      {
+        "startSec": 1172.14,
+        "endSec": 1173.54,
+        "text": "It's for clipping the radio when you're off-road."
+      },
+      {
+        "startSec": 1173.54,
+        "endSec": 1175.1,
+        "text": "My wife to have her spot of things."
+      },
+      {
+        "startSec": 1175.1,
+        "endSec": 1176.3,
+        "text": "- Yeah, cup holders are one of those things"
+      },
+      {
+        "startSec": 1176.3,
+        "endSec": 1178.66,
+        "text": "that G-Wagons never really thought was a necessity."
+      },
+      {
+        "startSec": 1178.66,
+        "endSec": 1182.58,
+        "text": "I'm gonna say these gave us this little token basket"
+      },
+      {
+        "startSec": 1182.58,
+        "endSec": 1183.42,
+        "text": "down here for your cup."
+      },
+      {
+        "startSec": 1183.42,
+        "endSec": 1185.34,
+        "text": "- But there's enough ashtrays for an army."
+      },
+      {
+        "startSec": 1185.34,
+        "endSec": 1187.02,
+        "text": "- Yeah, apparently everyone likes to smoke in these."
+      },
+      {
+        "startSec": 1187.02,
+        "endSec": 1188.02,
+        "text": "- Yeah."
+      },
+      {
+        "startSec": 1188.02,
+        "endSec": 1189.54,
+        "text": "- The other thing we always look for is"
+      },
+      {
+        "startSec": 1189.54,
+        "endSec": 1191.22,
+        "text": "make sure the air conditioning works."
+      },
+      {
+        "startSec": 1191.22,
+        "endSec": 1192.38,
+        "text": "Hate, you're gonna know that right away,"
+      },
+      {
+        "startSec": 1192.38,
+        "endSec": 1194.46,
+        "text": "but air conditioning, crank it up,"
+      },
+      {
+        "startSec": 1194.46,
+        "endSec": 1195.78,
+        "text": "crank it all the way down,"
+      },
+      {
+        "startSec": 1195.78,
+        "endSec": 1197.14,
+        "text": "make sure you get cold air."
+      },
+      {
+        "startSec": 1197.14,
+        "endSec": 1198.3,
+        "text": "It should freeze you out."
+      },
+      {
+        "startSec": 1198.3,
+        "endSec": 1200.18,
+        "text": "These newer trucks especially"
+      },
+      {
+        "startSec": 1200.18,
+        "endSec": 1202.14,
+        "text": "have really efficient cooling systems,"
+      },
+      {
+        "startSec": 1202.14,
+        "endSec": 1203.74,
+        "text": "and it should make you really cold."
+      },
+      {
+        "startSec": 1203.74,
+        "endSec": 1206.54,
+        "text": "It's already working, so there we go."
+      },
+      {
+        "startSec": 1206.54,
+        "endSec": 1207.38,
+        "text": "So make sure that works."
+      },
+      {
+        "startSec": 1207.38,
+        "endSec": 1208.42,
+        "text": "That's the big thing there."
+      },
+      {
+        "startSec": 1208.42,
+        "endSec": 1210.14,
+        "text": "Aside from that, overall aesthetics,"
+      },
+      {
+        "startSec": 1210.14,
+        "endSec": 1212.38,
+        "text": "the seat switches on these newer trucks,"
+      },
+      {
+        "startSec": 1212.38,
+        "endSec": 1214.26,
+        "text": "run them forward and backwards,"
+      },
+      {
+        "startSec": 1214.26,
+        "endSec": 1217.42,
+        "text": "make sure the seatback goes forward and backwards."
+      },
+      {
+        "startSec": 1217.42,
+        "endSec": 1219.02,
+        "text": "One of the key things we'll see on this,"
+      },
+      {
+        "startSec": 1219.02,
+        "endSec": 1220.86,
+        "text": "starting from 2002,"
+      },
+      {
+        "startSec": 1220.86,
+        "endSec": 1225.42,
+        "text": "and newer is these switches always go south."
+      },
+      {
+        "startSec": 1225.42,
+        "endSec": 1227.94,
+        "text": "So you always wanna check these,"
+      },
+      {
+        "startSec": 1227.94,
+        "endSec": 1231.34,
+        "text": "and if they are going south, just get new switches."
+      },
+      {
+        "startSec": 1231.34,
+        "endSec": 1232.74,
+        "text": "But one of the telltales on this"
+      },
+      {
+        "startSec": 1232.74,
+        "endSec": 1234.1,
+        "text": "is we'll start working in reverse."
+      },
+      {
+        "startSec": 1234.1,
+        "endSec": 1235.46,
+        "text": "So you go forward, the seat will go back,"
+      },
+      {
+        "startSec": 1235.46,
+        "endSec": 1238.1,
+        "text": "or vice versa, it's really counterintuitive."
+      },
+      {
+        "startSec": 1238.1,
+        "endSec": 1241.74,
+        "text": "- They do occasionally just decide to not work randomly."
+      },
+      {
+        "startSec": 1241.74,
+        "endSec": 1243.54,
+        "text": "And then they work."
+      },
+      {
+        "startSec": 1243.54,
+        "endSec": 1244.38,
+        "text": "- Correct."
+      },
+      {
+        "startSec": 1244.38,
+        "endSec": 1245.66,
+        "text": "- So maybe that one needs some help sometime,"
+      },
+      {
+        "startSec": 1245.66,
+        "endSec": 1246.58,
+        "text": "but it's working now."
+      },
+      {
+        "startSec": 1246.58,
+        "endSec": 1247.78,
+        "text": "- It's like an old early Nintendo."
+      },
+      {
+        "startSec": 1247.78,
+        "endSec": 1249.78,
+        "text": "You just unplug it, blow on it, put it back together."
+      },
+      {
+        "startSec": 1249.78,
+        "endSec": 1250.86,
+        "text": "- Right?"
+      },
+      {
+        "startSec": 1250.86,
+        "endSec": 1252.18,
+        "text": "Aside from that, there's not a whole lot"
+      },
+      {
+        "startSec": 1252.18,
+        "endSec": 1253.66,
+        "text": "internally you gotta look for."
+      },
+      {
+        "startSec": 1253.66,
+        "endSec": 1255.82,
+        "text": "Now that we're going down the road,"
+      },
+      {
+        "startSec": 1255.82,
+        "endSec": 1259.98,
+        "text": "you wanna feel for vibrations, weird sounds,"
+      },
+      {
+        "startSec": 1259.98,
+        "endSec": 1261.58,
+        "text": "weird kind of lumpiness."
+      },
+      {
+        "startSec": 1261.58,
+        "endSec": 1263.38,
+        "text": "And this truck, it's lifted on 35s,"
+      },
+      {
+        "startSec": 1263.38,
+        "endSec": 1265.54,
+        "text": "and it's pretty damn smooth, which is a great thing."
+      },
+      {
+        "startSec": 1265.54,
+        "endSec": 1267.22,
+        "text": "But we have driven some other trucks"
+      },
+      {
+        "startSec": 1267.22,
+        "endSec": 1269.42,
+        "text": "that are lifted incorrectly."
+      },
+      {
+        "startSec": 1269.42,
+        "endSec": 1271.66,
+        "text": "And we've just got awful vibrations"
+      },
+      {
+        "startSec": 1271.66,
+        "endSec": 1272.94,
+        "text": "or harmonic frequencies."
+      },
+      {
+        "startSec": 1272.94,
+        "endSec": 1275.02,
+        "text": "- And you'll feel it, wheels will shake."
+      },
+      {
+        "startSec": 1275.02,
+        "endSec": 1275.86,
+        "text": "- Yep."
+      },
+      {
+        "startSec": 1275.86,
+        "endSec": 1277.62,
+        "text": "- Drive lines will stutter."
+      },
+      {
+        "startSec": 1277.62,
+        "endSec": 1279.82,
+        "text": "- Exactly, so starting in the middle of a truck,"
+      },
+      {
+        "startSec": 1279.82,
+        "endSec": 1282.1,
+        "text": "when you have a truck that's not quite put together right,"
+      },
+      {
+        "startSec": 1282.1,
+        "endSec": 1284.26,
+        "text": "you're gonna get a pretty gnarly harmonic frequency"
+      },
+      {
+        "startSec": 1284.26,
+        "endSec": 1286.5,
+        "text": "and it just shakes the whole truck"
+      },
+      {
+        "startSec": 1286.5,
+        "endSec": 1289.06,
+        "text": "at a big, really heavy frequency."
+      },
+      {
+        "startSec": 1289.06,
+        "endSec": 1290.42,
+        "text": "You're gonna walk away from it"
+      },
+      {
+        "startSec": 1290.42,
+        "endSec": 1293.34,
+        "text": "or have a heavily discounted price."
+      },
+      {
+        "startSec": 1293.34,
+        "endSec": 1295.66,
+        "text": "At a move the wheel like you said with the shimmy,"
+      },
+      {
+        "startSec": 1295.66,
+        "endSec": 1297.14,
+        "text": "you'll get trucks that are going down the road"
+      },
+      {
+        "startSec": 1297.14,
+        "endSec": 1299.78,
+        "text": "and we'll start to do a little bit of shimmy like that."
+      },
+      {
+        "startSec": 1299.78,
+        "endSec": 1301.18,
+        "text": "That's usually indicative that we've got"
+      },
+      {
+        "startSec": 1301.18,
+        "endSec": 1304.82,
+        "text": "a front axle CD8 shaft that's starting to go out on us"
+      },
+      {
+        "startSec": 1304.82,
+        "endSec": 1306.34,
+        "text": "and it just can't hold a centerline."
+      },
+      {
+        "startSec": 1306.34,
+        "endSec": 1307.18,
+        "text": "And that's pretty common."
+      },
+      {
+        "startSec": 1307.18,
+        "endSec": 1309.18,
+        "text": "Usually we'll see that at like 40 to 60 miles an hour."
+      },
+      {
+        "startSec": 1309.18,
+        "endSec": 1310.5,
+        "text": "We'll get like a little shimmy out of the wheel,"
+      },
+      {
+        "startSec": 1310.5,
+        "endSec": 1311.9,
+        "text": "but the truck's going straight."
+      },
+      {
+        "startSec": 1311.9,
+        "endSec": 1313.82,
+        "text": "So keep an eye out for that."
+      },
+      {
+        "startSec": 1313.82,
+        "endSec": 1315.42,
+        "text": "Aside from that, you wanna make sure"
+      },
+      {
+        "startSec": 1315.42,
+        "endSec": 1316.74,
+        "text": "you have a firm brake pedal."
+      },
+      {
+        "startSec": 1316.74,
+        "endSec": 1319.14,
+        "text": "You wanna make sure you have a consistent brake pedal."
+      },
+      {
+        "startSec": 1319.14,
+        "endSec": 1320.18,
+        "text": "Granted, we've got a road ground,"
+      },
+      {
+        "startSec": 1320.18,
+        "endSec": 1321.74,
+        "text": "but find this flat piece of the road"
+      },
+      {
+        "startSec": 1321.74,
+        "endSec": 1323.06,
+        "text": "that you can pull."
+      },
+      {
+        "startSec": 1323.06,
+        "endSec": 1325.14,
+        "text": "- Exactly, you wanna be able to hit the brakes"
+      },
+      {
+        "startSec": 1325.14,
+        "endSec": 1325.98,
+        "text": "and it's stopped."
+      },
+      {
+        "startSec": 1325.98,
+        "endSec": 1328.58,
+        "text": "You don't want it to dart off one side of the other."
+      },
+      {
+        "startSec": 1328.58,
+        "endSec": 1332.66,
+        "text": "- Which isn't quite as common with all vehicles,"
+      },
+      {
+        "startSec": 1332.66,
+        "endSec": 1334.98,
+        "text": "but is something that seems to happen with two wagons."
+      },
+      {
+        "startSec": 1334.98,
+        "endSec": 1336.82,
+        "text": "- These are very sensitive to that,"
+      },
+      {
+        "startSec": 1336.82,
+        "endSec": 1339.06,
+        "text": "largely 'cause it is a solid axle truck."
+      },
+      {
+        "startSec": 1339.06,
+        "endSec": 1341.62,
+        "text": "And if we've got a tire pressure that's out of whack"
+      },
+      {
+        "startSec": 1341.62,
+        "endSec": 1343.54,
+        "text": "or any kind of brake imbalance,"
+      },
+      {
+        "startSec": 1343.54,
+        "endSec": 1344.98,
+        "text": "you're gonna know it right away."
+      },
+      {
+        "startSec": 1344.98,
+        "endSec": 1347.5,
+        "text": "And it's gonna pull and do some really funky stuff."
+      },
+      {
+        "startSec": 1348.5,
+        "endSec": 1351.82,
+        "text": "So once you kinda get outside the basic safety stuff,"
+      },
+      {
+        "startSec": 1351.82,
+        "endSec": 1354.18,
+        "text": "if you wanna run it up and down the freeway once,"
+      },
+      {
+        "startSec": 1354.18,
+        "endSec": 1355.7,
+        "text": "get it up the highway speeds,"
+      },
+      {
+        "startSec": 1355.7,
+        "endSec": 1357.74,
+        "text": "you wanna make sure, A, it accelerates okay,"
+      },
+      {
+        "startSec": 1357.74,
+        "endSec": 1358.94,
+        "text": "it's got good power."
+      },
+      {
+        "startSec": 1358.94,
+        "endSec": 1360.46,
+        "text": "It's not misfiring."
+      },
+      {
+        "startSec": 1360.46,
+        "endSec": 1361.78,
+        "text": "You're gonna get a check-ins right away"
+      },
+      {
+        "startSec": 1361.78,
+        "endSec": 1363.38,
+        "text": "if there is any fault with the motor."
+      },
+      {
+        "startSec": 1363.38,
+        "endSec": 1364.86,
+        "text": "It'll let you know really fast."
+      },
+      {
+        "startSec": 1364.86,
+        "endSec": 1366.26,
+        "text": "The other thing you wanna make sure is,"
+      },
+      {
+        "startSec": 1366.26,
+        "endSec": 1367.66,
+        "text": "does it shift okay?"
+      },
+      {
+        "startSec": 1367.66,
+        "endSec": 1370.78,
+        "text": "Meaning, does it grab the next gear when it should?"
+      },
+      {
+        "startSec": 1370.78,
+        "endSec": 1372.42,
+        "text": "Does it grab it quickly?"
+      },
+      {
+        "startSec": 1372.42,
+        "endSec": 1374.1,
+        "text": "Does it feel like it's slipping,"
+      },
+      {
+        "startSec": 1374.1,
+        "endSec": 1377.14,
+        "text": "or does it feel like it's..."
+      },
+      {
+        "startSec": 1377.14,
+        "endSec": 1379.86,
+        "text": "Oops, that's okay, we can go down."
+      },
+      {
+        "startSec": 1379.86,
+        "endSec": 1383.9,
+        "text": "Or does it feel like it's too harsh when it shifts gears?"
+      },
+      {
+        "startSec": 1383.9,
+        "endSec": 1385.86,
+        "text": "So those are some of the things you wanna watch for"
+      },
+      {
+        "startSec": 1385.86,
+        "endSec": 1388.78,
+        "text": "when you're driving one of these trucks up to speed."
+      },
+      {
+        "startSec": 1389.82,
+        "endSec": 1391.18,
+        "text": "Now right now we're going through town,"
+      },
+      {
+        "startSec": 1391.18,
+        "endSec": 1392.26,
+        "text": "so this is kind of a nice example."
+      },
+      {
+        "startSec": 1392.26,
+        "endSec": 1394.62,
+        "text": "You can kind of make sure that it's grabbing"
+      },
+      {
+        "startSec": 1394.62,
+        "endSec": 1396.14,
+        "text": "and shuffling the gears accordingly"
+      },
+      {
+        "startSec": 1396.14,
+        "endSec": 1399.42,
+        "text": "and not giving me a bunch of weird shift points either."
+      },
+      {
+        "startSec": 1399.42,
+        "endSec": 1404.02,
+        "text": "- Obviously check for air lights on the dash too."
+      },
+      {
+        "startSec": 1404.02,
+        "endSec": 1406.06,
+        "text": "Check engine lights, the obvious."
+      },
+      {
+        "startSec": 1406.06,
+        "endSec": 1408.26,
+        "text": "- Absolutely, in fact, on that note,"
+      },
+      {
+        "startSec": 1408.26,
+        "endSec": 1409.54,
+        "text": "if you are looking at a truck"
+      },
+      {
+        "startSec": 1409.54,
+        "endSec": 1411.18,
+        "text": "and it does have any kind of air light,"
+      },
+      {
+        "startSec": 1411.18,
+        "endSec": 1414.46,
+        "text": "being a check engine light, airbag light, or ABS light,"
+      },
+      {
+        "startSec": 1414.46,
+        "endSec": 1416.9,
+        "text": "it's an immediate fail on the state inspection"
+      },
+      {
+        "startSec": 1416.9,
+        "endSec": 1418.54,
+        "text": "and emissions inspection, believe it or not."
+      },
+      {
+        "startSec": 1418.54,
+        "endSec": 1420.1,
+        "text": "- Really? - Yup."
+      },
+      {
+        "startSec": 1420.1,
+        "endSec": 1422.58,
+        "text": "So even if you're buying it from out of state,"
+      },
+      {
+        "startSec": 1422.58,
+        "endSec": 1424.98,
+        "text": "you need to know the laws and registration requirements"
+      },
+      {
+        "startSec": 1424.98,
+        "endSec": 1425.82,
+        "text": "where you're living,"
+      },
+      {
+        "startSec": 1425.82,
+        "endSec": 1427.22,
+        "text": "because that's where you have to register it."
+      },
+      {
+        "startSec": 1427.22,
+        "endSec": 1428.62,
+        "text": "But I will say in the state of Colorado,"
+      },
+      {
+        "startSec": 1428.62,
+        "endSec": 1430.5,
+        "text": "if you have an airbag light on,"
+      },
+      {
+        "startSec": 1430.5,
+        "endSec": 1432.1,
+        "text": "a traction control or ABS light on,"
+      },
+      {
+        "startSec": 1432.1,
+        "endSec": 1434.02,
+        "text": "or check engine light, it's an immediate fail,"
+      },
+      {
+        "startSec": 1434.02,
+        "endSec": 1435.86,
+        "text": "and the seller's on the hook for fixing it."
+      },
+      {
+        "startSec": 1435.86,
+        "endSec": 1437.94,
+        "text": "So it just heads up on that."
+      },
+      {
+        "startSec": 1437.94,
+        "endSec": 1439.62,
+        "text": "- I did not know that, yeah."
+      },
+      {
+        "startSec": 1439.62,
+        "endSec": 1443.06,
+        "text": "You know, can you talk about seats?"
+      },
+      {
+        "startSec": 1443.06,
+        "endSec": 1443.9,
+        "text": "- Seats."
+      },
+      {
+        "startSec": 1443.9,
+        "endSec": 1444.74,
+        "text": "- Let's do that."
+      },
+      {
+        "startSec": 1444.74,
+        "endSec": 1447.78,
+        "text": "So this truck is a 2015 550,"
+      },
+      {
+        "startSec": 1447.78,
+        "endSec": 1450.7,
+        "text": "and this truck has the heated and cooled seats"
+      },
+      {
+        "startSec": 1450.7,
+        "endSec": 1452.34,
+        "text": "with the pneumatic adjusters,"
+      },
+      {
+        "startSec": 1452.34,
+        "endSec": 1455.78,
+        "text": "and it has these little air, these adjusters down here."
+      },
+      {
+        "startSec": 1455.78,
+        "endSec": 1457.22,
+        "text": "Believe it or not, these are air powered,"
+      },
+      {
+        "startSec": 1457.22,
+        "endSec": 1459.38,
+        "text": "and there's a little compressor underneath my seat,"
+      },
+      {
+        "startSec": 1459.38,
+        "endSec": 1461.18,
+        "text": "that as I move these around,"
+      },
+      {
+        "startSec": 1461.18,
+        "endSec": 1465.42,
+        "text": "they will, I can feel the bladder inflating and deflating."
+      },
+      {
+        "startSec": 1465.42,
+        "endSec": 1469.34,
+        "text": "These are really nifty when they work."
+      },
+      {
+        "startSec": 1469.34,
+        "endSec": 1473.18,
+        "text": "- They seem to go out on all older Gs in there."
+      },
+      {
+        "startSec": 1473.18,
+        "endSec": 1478.18,
+        "text": "When I got this, I was shopping over the phone,"
+      },
+      {
+        "startSec": 1478.98,
+        "endSec": 1480.62,
+        "text": "'cause I was buying out of state."
+      },
+      {
+        "startSec": 1480.62,
+        "endSec": 1483.26,
+        "text": "I had another seller, actually I'm bringing a trailer."
+      },
+      {
+        "startSec": 1483.26,
+        "endSec": 1485.3,
+        "text": "I said, hey, I'm interested in everything."
+      },
+      {
+        "startSec": 1485.3,
+        "endSec": 1486.86,
+        "text": "Did video, showed everything else."
+      },
+      {
+        "startSec": 1486.86,
+        "endSec": 1488.9,
+        "text": "I said, do the pneumatics on the seat work?"
+      },
+      {
+        "startSec": 1488.9,
+        "endSec": 1491.1,
+        "text": "And he said, no, and it wasn't disclosed."
+      },
+      {
+        "startSec": 1491.1,
+        "endSec": 1492.66,
+        "text": "Then, find this truck."
+      },
+      {
+        "startSec": 1492.66,
+        "endSec": 1493.7,
+        "text": "Everything checks out."
+      },
+      {
+        "startSec": 1493.7,
+        "endSec": 1495.98,
+        "text": "I did a little virtual test drive,"
+      },
+      {
+        "startSec": 1495.98,
+        "endSec": 1498.46,
+        "text": "and I said, can you check the pneumatics on the seat?"
+      },
+      {
+        "startSec": 1498.46,
+        "endSec": 1499.5,
+        "text": "And they don't work."
+      },
+      {
+        "startSec": 1499.5,
+        "endSec": 1500.66,
+        "text": "And if my memory is right,"
+      },
+      {
+        "startSec": 1500.66,
+        "endSec": 1502.82,
+        "text": "it's one pneumatic pump that controlled both."
+      },
+      {
+        "startSec": 1502.82,
+        "endSec": 1504.02,
+        "text": "Is that right? - Correct."
+      },
+      {
+        "startSec": 1504.02,
+        "endSec": 1506.06,
+        "text": "- And it's, I think it was like a $1,200 repair"
+      },
+      {
+        "startSec": 1506.06,
+        "endSec": 1506.9,
+        "text": "or something like that?"
+      },
+      {
+        "startSec": 1506.9,
+        "endSec": 1507.86,
+        "text": "- It is very expensive."
+      },
+      {
+        "startSec": 1507.86,
+        "endSec": 1510.7,
+        "text": "It's a small pump underneath the passenger seat."
+      },
+      {
+        "startSec": 1510.7,
+        "endSec": 1513.3,
+        "text": "What happens is the O-rings for all these little switches"
+      },
+      {
+        "startSec": 1513.3,
+        "endSec": 1516.38,
+        "text": "inside of here will degrade and it'll start to leak."
+      },
+      {
+        "startSec": 1516.38,
+        "endSec": 1518.82,
+        "text": "The pump is always powered whenever the truck is on,"
+      },
+      {
+        "startSec": 1518.82,
+        "endSec": 1520.22,
+        "text": "meaning that it has a little reservoir"
+      },
+      {
+        "startSec": 1520.22,
+        "endSec": 1522.9,
+        "text": "and it wants to see, I think it's somewhere like 10 PSI"
+      },
+      {
+        "startSec": 1522.9,
+        "endSec": 1523.74,
+        "text": "or something like that."
+      },
+      {
+        "startSec": 1523.74,
+        "endSec": 1524.58,
+        "text": "It's not a whole lot."
+      },
+      {
+        "startSec": 1524.58,
+        "endSec": 1527.9,
+        "text": "But when it sees that the pressure drops,"
+      },
+      {
+        "startSec": 1527.9,
+        "endSec": 1529.46,
+        "text": "it'll automatically cycle the pump."
+      },
+      {
+        "startSec": 1529.46,
+        "endSec": 1531.26,
+        "text": "So some of the other trucks you get into,"
+      },
+      {
+        "startSec": 1531.26,
+        "endSec": 1534.1,
+        "text": "as it's failing, you're gonna hear this little electric motor"
+      },
+      {
+        "startSec": 1534.1,
+        "endSec": 1536.94,
+        "text": "going brr, brr, brr, brr, all the time."
+      },
+      {
+        "startSec": 1536.94,
+        "endSec": 1537.94,
+        "text": "And it's maddening, 'cause you don't know"
+      },
+      {
+        "startSec": 1537.94,
+        "endSec": 1540.5,
+        "text": "where it's coming from, until it burns out."
+      },
+      {
+        "startSec": 1540.5,
+        "endSec": 1541.74,
+        "text": "And it can only do that for so long"
+      },
+      {
+        "startSec": 1541.74,
+        "endSec": 1543.94,
+        "text": "before the pump just says, no more, I'm done."
+      },
+      {
+        "startSec": 1543.94,
+        "endSec": 1546.14,
+        "text": "And not only do you lose all your pneumatics,"
+      },
+      {
+        "startSec": 1546.14,
+        "endSec": 1550.06,
+        "text": "but then you are now out of a pump."
+      },
+      {
+        "startSec": 1550.06,
+        "endSec": 1552.3,
+        "text": "- Yeah, and it's nice, it only matters"
+      },
+      {
+        "startSec": 1552.3,
+        "endSec": 1553.9,
+        "text": "if you want to be comfortable."
+      },
+      {
+        "startSec": 1553.9,
+        "endSec": 1556.38,
+        "text": "So, minor details. - Minor details."
+      },
+      {
+        "startSec": 1556.38,
+        "endSec": 1557.94,
+        "text": "- And you know, I should have mentioned this before."
+      },
+      {
+        "startSec": 1557.94,
+        "endSec": 1560.82,
+        "text": "People might be wondering, are G-Wagons that loud?"
+      },
+      {
+        "startSec": 1560.82,
+        "endSec": 1565.1,
+        "text": "This has an MBRP aftermarket exhaust."
+      },
+      {
+        "startSec": 1565.1,
+        "endSec": 1566.94,
+        "text": "And it's really loud."
+      },
+      {
+        "startSec": 1566.94,
+        "endSec": 1569.1,
+        "text": "So don't expect your G-Wagons to sound like that."
+      },
+      {
+        "startSec": 1569.1,
+        "endSec": 1570.82,
+        "text": "- This truck is really loud. - Really loud."
+      },
+      {
+        "startSec": 1570.82,
+        "endSec": 1573.3,
+        "text": "I mean, we'll have some fun, we can downshift it."
+      },
+      {
+        "startSec": 1573.3,
+        "endSec": 1576.3,
+        "text": "And really let it rip."
+      },
+      {
+        "startSec": 1576.3,
+        "endSec": 1578.74,
+        "text": "- Yeah, but other than that, I mean, you just need to."
+      },
+      {
+        "startSec": 1578.74,
+        "endSec": 1581.58,
+        "text": "(engine revving)"
+      },
+      {
+        "startSec": 1581.58,
+        "endSec": 1584.66,
+        "text": "- Oh yeah, we should get the, oh, tunnel poles are the best."
+      },
+      {
+        "startSec": 1584.66,
+        "endSec": 1587.86,
+        "text": "Let's get some. - I know where to go."
+      },
+      {
+        "startSec": 1587.86,
+        "endSec": 1590.74,
+        "text": "- Like, this is what I call my Redneck G-Wagon."
+      },
+      {
+        "startSec": 1590.74,
+        "endSec": 1592.02,
+        "text": "I love it."
+      },
+      {
+        "startSec": 1592.02,
+        "endSec": 1594.38,
+        "text": "So we're gonna head over to the shop real quick"
+      },
+      {
+        "startSec": 1594.38,
+        "endSec": 1596.02,
+        "text": "on the other side."
+      },
+      {
+        "startSec": 1596.02,
+        "endSec": 1597.1,
+        "text": "- Hold on my keys with me, sorry."
+      },
+      {
+        "startSec": 1597.1,
+        "endSec": 1598.46,
+        "text": "- We're not gonna head over to the shop,"
+      },
+      {
+        "startSec": 1598.46,
+        "endSec": 1600.14,
+        "text": "but I am 'cause I'm in this turn lane."
+      },
+      {
+        "startSec": 1600.14,
+        "endSec": 1602.02,
+        "text": "And we're just gonna pull into this gravel lot"
+      },
+      {
+        "startSec": 1602.02,
+        "endSec": 1602.94,
+        "text": "and just show you."
+      },
+      {
+        "startSec": 1602.94,
+        "endSec": 1605.3,
+        "text": "It's really important that you test the lockers"
+      },
+      {
+        "startSec": 1605.3,
+        "endSec": 1608.1,
+        "text": "on your G-Wagon because my prediction is"
+      },
+      {
+        "startSec": 1608.1,
+        "endSec": 1610.06,
+        "text": "that the person that owned it before you"
+      },
+      {
+        "startSec": 1610.06,
+        "endSec": 1612.66,
+        "text": "has never used them. - Never once used them."
+      },
+      {
+        "startSec": 1612.66,
+        "endSec": 1615.86,
+        "text": "- Joe, are these fixable?"
+      },
+      {
+        "startSec": 1615.86,
+        "endSec": 1616.98,
+        "text": "- 100%, yes."
+      },
+      {
+        "startSec": 1616.98,
+        "endSec": 1618.06,
+        "text": "- What fails on them?"
+      },
+      {
+        "startSec": 1619.06,
+        "endSec": 1620.82,
+        "text": "- Ooh, what fails?"
+      },
+      {
+        "startSec": 1620.82,
+        "endSec": 1623.86,
+        "text": "It's usually the hydraulic lines get clogged"
+      },
+      {
+        "startSec": 1623.86,
+        "endSec": 1628.86,
+        "text": "and the lines get ripped out from weeds"
+      },
+      {
+        "startSec": 1629.14,
+        "endSec": 1630.5,
+        "text": "and tumbleweeds and all sorts of crap."
+      },
+      {
+        "startSec": 1630.5,
+        "endSec": 1633.74,
+        "text": "But the big killer of differential locks"
+      },
+      {
+        "startSec": 1633.74,
+        "endSec": 1637.02,
+        "text": "is gonna be the lack of use, pure and simple."
+      },
+      {
+        "startSec": 1637.02,
+        "endSec": 1638.42,
+        "text": "So cycle your stuff."
+      },
+      {
+        "startSec": 1638.42,
+        "endSec": 1639.58,
+        "text": "This says private property."
+      },
+      {
+        "startSec": 1639.58,
+        "endSec": 1641.1,
+        "text": "I wanna respect the private property."
+      },
+      {
+        "startSec": 1641.1,
+        "endSec": 1642.82,
+        "text": "So we're gonna go to your property."
+      },
+      {
+        "startSec": 1642.82,
+        "endSec": 1643.66,
+        "text": "- Deal."
+      },
+      {
+        "startSec": 1643.66,
+        "endSec": 1644.58,
+        "text": "- 'Cause I respect that one too,"
+      },
+      {
+        "startSec": 1644.58,
+        "endSec": 1645.7,
+        "text": "but we're allowed to be there."
+      },
+      {
+        "startSec": 1645.7,
+        "endSec": 1646.54,
+        "text": "- Yep."
+      },
+      {
+        "startSec": 1647.26,
+        "endSec": 1650.46,
+        "text": "- Now, when you test the four low,"
+      },
+      {
+        "startSec": 1650.46,
+        "endSec": 1653.58,
+        "text": "don't freak out if it has a hard time connecting"
+      },
+      {
+        "startSec": 1653.58,
+        "endSec": 1656.5,
+        "text": "when you're on pavement because it will."
+      },
+      {
+        "startSec": 1656.5,
+        "endSec": 1659.1,
+        "text": "And it's not ideal to do this on pavement"
+      },
+      {
+        "startSec": 1659.1,
+        "endSec": 1660.86,
+        "text": "for a long term, for a test, it's gonna be fine."
+      },
+      {
+        "startSec": 1660.86,
+        "endSec": 1662.34,
+        "text": "- Why don't you show 'em how to put it in four low?"
+      },
+      {
+        "startSec": 1662.34,
+        "endSec": 1663.5,
+        "text": "'Cause it's a big question, so."
+      },
+      {
+        "startSec": 1663.5,
+        "endSec": 1664.62,
+        "text": "- Big question on four low."
+      },
+      {
+        "startSec": 1664.62,
+        "endSec": 1666.58,
+        "text": "So if you can take the camera and put right here,"
+      },
+      {
+        "startSec": 1666.58,
+        "endSec": 1669.98,
+        "text": "this is actually, these vehicles are all time"
+      },
+      {
+        "startSec": 1669.98,
+        "endSec": 1671.82,
+        "text": "four wheel drive, and to put it in four low,"
+      },
+      {
+        "startSec": 1671.82,
+        "endSec": 1673.22,
+        "text": "we gotta put it into neutral."
+      },
+      {
+        "startSec": 1673.22,
+        "endSec": 1675.5,
+        "text": "Now if you'll notice, I was able to put it into neutral"
+      },
+      {
+        "startSec": 1675.5,
+        "endSec": 1676.34,
+        "text": "while I was driving."
+      },
+      {
+        "startSec": 1676.34,
+        "endSec": 1678.26,
+        "text": "Joe actually showed me this, I didn't know he could do it."
+      },
+      {
+        "startSec": 1678.26,
+        "endSec": 1681.1,
+        "text": "While I'm moving, and then you can see on the dash,"
+      },
+      {
+        "startSec": 1681.1,
+        "endSec": 1682.78,
+        "text": "low range is now on."
+      },
+      {
+        "startSec": 1682.78,
+        "endSec": 1685.06,
+        "text": "So now, I can shift it back into drive"
+      },
+      {
+        "startSec": 1685.06,
+        "endSec": 1686.94,
+        "text": "while I'm driving, I'm in four low."
+      },
+      {
+        "startSec": 1687.9,
+        "endSec": 1689.98,
+        "text": "Your locker number one is your center lock,"
+      },
+      {
+        "startSec": 1689.98,
+        "endSec": 1692.9,
+        "text": "which will provide equal power to the front and rear."
+      },
+      {
+        "startSec": 1692.9,
+        "endSec": 1695.5,
+        "text": "And this little yellow light means,"
+      },
+      {
+        "startSec": 1695.5,
+        "endSec": 1698.86,
+        "text": "hey, we got the signal, we're gonna try to turn on now."
+      },
+      {
+        "startSec": 1698.86,
+        "endSec": 1703.18,
+        "text": "And then when it actuates, it will highlight this red one."
+      },
+      {
+        "startSec": 1703.18,
+        "endSec": 1704.42,
+        "text": "And then you'll notice on the dash,"
+      },
+      {
+        "startSec": 1704.42,
+        "endSec": 1706.66,
+        "text": "it says differential locks active."
+      },
+      {
+        "startSec": 1706.66,
+        "endSec": 1708.46,
+        "text": "And so that's on."
+      },
+      {
+        "startSec": 1708.46,
+        "endSec": 1709.9,
+        "text": "I'm gonna hit the rear."
+      },
+      {
+        "startSec": 1709.9,
+        "endSec": 1712.02,
+        "text": "Sometimes, you do need to shimmy the wheel"
+      },
+      {
+        "startSec": 1712.02,
+        "endSec": 1714.1,
+        "text": "to get all those teeth to line up."
+      },
+      {
+        "startSec": 1714.1,
+        "endSec": 1716.86,
+        "text": "Sometimes you need a little throttle, sorry about this."
+      },
+      {
+        "startSec": 1716.86,
+        "endSec": 1719.5,
+        "text": "And then, oh, you can, yeah."
+      },
+      {
+        "startSec": 1719.5,
+        "endSec": 1720.74,
+        "text": "All right, now what we're gonna do"
+      },
+      {
+        "startSec": 1720.74,
+        "endSec": 1722.82,
+        "text": "is you do not wanna do this in turn."
+      },
+      {
+        "startSec": 1722.82,
+        "endSec": 1723.66,
+        "text": "I'm gonna hit the front."
+      },
+      {
+        "startSec": 1723.66,
+        "endSec": 1725.3,
+        "text": "So this was the rear, here's the front."
+      },
+      {
+        "startSec": 1725.3,
+        "endSec": 1726.42,
+        "text": "We're gonna test this again."
+      },
+      {
+        "startSec": 1726.42,
+        "endSec": 1729.38,
+        "text": "I'm gonna cycle the wheels, give it a little gas."
+      },
+      {
+        "startSec": 1729.38,
+        "endSec": 1733.18,
+        "text": "And we're gonna go on this dirt because we're not, right?"
+      },
+      {
+        "startSec": 1733.18,
+        "endSec": 1734.58,
+        "text": "And there's our front locker."
+      },
+      {
+        "startSec": 1734.58,
+        "endSec": 1736.54,
+        "text": "The reason I'm driving into the dirt now is,"
+      },
+      {
+        "startSec": 1736.54,
+        "endSec": 1740.02,
+        "text": "if I was on pavement, I wouldn't be able to turn the wheel."
+      },
+      {
+        "startSec": 1740.02,
+        "endSec": 1741.78,
+        "text": "Okay, you can even hear it binding up."
+      },
+      {
+        "startSec": 1741.78,
+        "endSec": 1744.74,
+        "text": "To reverse order, you can just hit the one"
+      },
+      {
+        "startSec": 1744.74,
+        "endSec": 1746.9,
+        "text": "or you can go like this."
+      },
+      {
+        "startSec": 1746.9,
+        "endSec": 1748.26,
+        "text": "And then it'll take a minute."
+      },
+      {
+        "startSec": 1748.26,
+        "endSec": 1750.7,
+        "text": "So these are showing that it's on."
+      },
+      {
+        "startSec": 1750.7,
+        "endSec": 1752.7,
+        "text": "And I can feel that they're still locked."
+      },
+      {
+        "startSec": 1754.34,
+        "endSec": 1758.7,
+        "text": "And now we're in business."
+      },
+      {
+        "startSec": 1758.7,
+        "endSec": 1760.66,
+        "text": "And I'm gonna shift it out of four low."
+      },
+      {
+        "startSec": 1761.58,
+        "endSec": 1763.26,
+        "text": "And high range is back on."
+      },
+      {
+        "startSec": 1767.42,
+        "endSec": 1769.9,
+        "text": "I didn't expect to do an off-road test on this today."
+      },
+      {
+        "startSec": 1769.9,
+        "endSec": 1771.46,
+        "text": "- Yeah, but you know, we gotta show the clients"
+      },
+      {
+        "startSec": 1771.46,
+        "endSec": 1773.06,
+        "text": "what the behind the dumpster machine looks like."
+      },
+      {
+        "startSec": 1773.06,
+        "endSec": 1773.9,
+        "text": "- It's true."
+      },
+      {
+        "startSec": 1773.9,
+        "endSec": 1774.98,
+        "text": "And what I love is when that would have been"
+      },
+      {
+        "startSec": 1774.98,
+        "endSec": 1776.62,
+        "text": "an off-road test on some YouTube channels,"
+      },
+      {
+        "startSec": 1776.62,
+        "endSec": 1779.46,
+        "text": "like check out, we're gonna off-road our vehicle."
+      },
+      {
+        "startSec": 1779.46,
+        "endSec": 1780.54,
+        "text": "So there you have it."
+      },
+      {
+        "startSec": 1780.54,
+        "endSec": 1782.3,
+        "text": "Everything you need to look for on the inside."
+      },
+      {
+        "startSec": 1782.3,
+        "endSec": 1785.22,
+        "text": "And remember, if there are heated seats,"
+      },
+      {
+        "startSec": 1785.22,
+        "endSec": 1787.26,
+        "text": "check them because there are even heated seats"
+      },
+      {
+        "startSec": 1787.26,
+        "endSec": 1788.94,
+        "text": "in the rear of this vehicle."
+      },
+      {
+        "startSec": 1788.94,
+        "endSec": 1791.34,
+        "text": "And you wanna make sure all of that works."
+      },
+      {
+        "startSec": 1791.34,
+        "endSec": 1793.02,
+        "text": "Again, that's all kind of common sense"
+      },
+      {
+        "startSec": 1793.02,
+        "endSec": 1794.94,
+        "text": "with any old, any used vehicle."
+      },
+      {
+        "startSec": 1794.94,
+        "endSec": 1795.78,
+        "text": "So there we go."
+      },
+      {
+        "startSec": 1795.78,
+        "endSec": 1797.34,
+        "text": "Now you know what to look for"
+      },
+      {
+        "startSec": 1797.34,
+        "endSec": 1800.1,
+        "text": "and how to inspect to buy the G-Wagon of your dreams."
+      },
+      {
+        "startSec": 1800.1,
+        "endSec": 1802.38,
+        "text": "The common areas of rust, the common areas of leaks,"
+      },
+      {
+        "startSec": 1802.38,
+        "endSec": 1805.3,
+        "text": "concerns and other items with your suspension."
+      },
+      {
+        "startSec": 1805.3,
+        "endSec": 1807.66,
+        "text": "If you wanna learn more about finding the perfect G4,"
+      },
+      {
+        "startSec": 1807.66,
+        "endSec": 1809.1,
+        "text": "you click the link in the description right now"
+      },
+      {
+        "startSec": 1809.1,
+        "endSec": 1811.9,
+        "text": "and download the ultimate buyers and build guide."
+      },
+      {
+        "startSec": 1811.9,
+        "endSec": 1812.94,
+        "text": "If you're anywhere in the country"
+      },
+      {
+        "startSec": 1812.94,
+        "endSec": 1814.18,
+        "text": "and you want your vehicle serviced,"
+      },
+      {
+        "startSec": 1814.18,
+        "endSec": 1815.02,
+        "text": "you can ship it to Joe."
+      },
+      {
+        "startSec": 1815.02,
+        "endSec": 1817.98,
+        "text": "Joe does an extensive repair division"
+      },
+      {
+        "startSec": 1817.98,
+        "endSec": 1820.3,
+        "text": "from everything from frame off restorations"
+      },
+      {
+        "startSec": 1820.3,
+        "endSec": 1822.1,
+        "text": "to maintenance and he specialized in working with Gs."
+      },
+      {
+        "startSec": 1822.1,
+        "endSec": 1823.7,
+        "text": "We're not even in the G shop."
+      },
+      {
+        "startSec": 1823.7,
+        "endSec": 1824.54,
+        "text": "- We're not even in G shop yet."
+      },
+      {
+        "startSec": 1824.54,
+        "endSec": 1825.78,
+        "text": "- You'll see that more later."
+      },
+      {
+        "startSec": 1825.78,
+        "endSec": 1827.94,
+        "text": "So thanks for sticking around in this video."
+      },
+      {
+        "startSec": 1827.94,
+        "endSec": 1829.66,
+        "text": "If you are new, subscribe to the channel"
+      },
+      {
+        "startSec": 1829.66,
+        "endSec": 1831.98,
+        "text": "and then YouTube thinks you're really gonna love this video."
+      },
+      {
+        "startSec": 1831.98,
+        "endSec": 1833.38,
+        "text": "And we'll see you in the next one."
+      }
+    ],
+    "createdAt": "2026-11-14T18:07:05.662Z"
+  },
+  "attempts": [
+    {
+      "id": "youtube",
+      "stage": "resolve",
+      "outcome": "ok",
+      "detail": "youtube:q6dzm-O1i2o"
+    },
+    {
+      "id": "youtube",
+      "stage": "metadata",
+      "outcome": "ok",
+      "ms": 1257984
+    },
+    {
+      "id": "yt-dlp",
+      "stage": "audio",
+      "outcome": "ok",
+      "detail": "bestaudio, re-encoded to 16 kHz mono MP3 with ffmpeg"
+    },
+    {
+      "id": "stt/whisper-cpp/small",
+      "stage": "stt",
+      "outcome": "ok",
+      "ms": 1256997
+    }
+  ]
+}

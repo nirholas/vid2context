@@ -9,9 +9,10 @@
  */
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import type { VideoContext } from '@vid2context/core';
 import { type ReplayFetch, replayFetch } from '@vid2context/core/testing';
 import { vi } from 'vitest';
+
+export { GWAGON_IDS, gwagonContext, gwagonContexts } from './gwagon.ts';
 
 export interface Exchange {
   atMs: number;
@@ -38,22 +39,6 @@ const FIXTURES = join(import.meta.dirname, 'fixtures');
 
 export function loadRecording(name: string): Recording {
   return JSON.parse(readFileSync(join(FIXTURES, 'llm', `${name}.json`), 'utf8')) as Recording;
-}
-
-/** Index 0 is the shared part-1 fixture; 1 to 3 are this package's G-Wagon series fixtures. */
-export const GWAGON_IDS = ['cCPsdFdlshc', 'q6dzm-O1i2o', 'ovIkN7UgbgE', '1Xx1fmHIsiA'] as const;
-
-export function gwagonContext(i: number): VideoContext {
-  const id = GWAGON_IDS[i];
-  const file =
-    i === 0
-      ? join(import.meta.dirname, '../../../tests/fixtures/contexts/youtube-cCPsdFdlshc.json')
-      : join(FIXTURES, 'contexts', `youtube-${id}.json`);
-  return JSON.parse(readFileSync(file, 'utf8')) as VideoContext;
-}
-
-export function gwagonContexts(): VideoContext[] {
-  return GWAGON_IDS.map((_, i) => gwagonContext(i));
 }
 
 function modelOf(body: unknown): string | undefined {

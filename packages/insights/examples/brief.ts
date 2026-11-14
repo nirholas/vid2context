@@ -13,7 +13,7 @@ import { writeFileSync } from 'node:fs';
 import { createContext, Registry, stderrLogger } from '@vid2context/core';
 import llm from '@vid2context/provider-llm-openai-compatible';
 import { buildBrief } from '../src/index.ts';
-import { gwagonContexts } from '../test/recording.ts';
+import { gwagonContexts } from '../test/gwagon.ts';
 import { QUESTION } from '../test/scenarios.ts';
 
 const registry = new Registry([llm], 'node');

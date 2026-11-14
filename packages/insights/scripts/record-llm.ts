@@ -18,8 +18,8 @@ import { join } from 'node:path';
 import { createContext, Registry, stderrLogger, type VideoContext } from '@vid2context/core';
 import llm from '@vid2context/provider-llm-openai-compatible';
 import { buildBrief, extract } from '../src/index.ts';
+import { gwagonContext } from '../test/gwagon.ts';
 import type { Exchange, Recording } from '../test/recording.ts';
-import { gwagonContext } from '../test/recording.ts';
 import { SCENARIOS } from '../test/scenarios.ts';
 
 const scenario = process.argv[2] ?? '';
