@@ -2,6 +2,27 @@
 
 The MCP server ([packages/mcp/src/server.ts](../../packages/mcp/src/server.ts)) is how agents use vid2context. Claude Code, Claude Desktop, Cursor and VS Code connect over stdio (`vid2context-mcp`). ChatGPT and Claude.ai connect to the remote server over Streamable HTTP (`/mcp`, served by `packages/mcp-http`, item 45). Both transports serve exactly the same tools from `createServer(registry, ctx)`.
 
+## Transports
+
+Item 45 owns this section.
+
+| Transport | Entry | Auth | Notes |
+|---|---|---|---|
+| stdio | `vid2context-mcp` (`packages/mcp/src/bin.ts`) | none (local process) | stdout is the protocol; logs go to stderr |
+| Streamable HTTP | `vid2context-mcp-http` (`packages/mcp-http/src/bin.ts`), or `mcpHttpRoutes(deps)` mounted at `/` by the HTTP API | static bearer tokens (`VID2CONTEXT_MCP_TOKENS`) or OAuth 2.1 access tokens bound to `<origin>/mcp` | `POST/GET/DELETE /mcp`. Session mode (`Mcp-Session-Id`, Node default) or stateless (Workers default, GET and DELETE answer 405) |
+
+Streamable HTTP rules:
+
+- Every request builds its own `Ctx` with `makeCtx(req)`. In stateless mode an aborted request closes its server, which aborts running tool calls. A session's server keeps the `Ctx` of the request that opened it, minus that request's signal; tool calls use the SDK's per-call signal.
+- One library `Storage` is opened once and passed to every `createServer(registry, ctx, version, { storage, ...serverOptions })`.
+- 401 responses carry `WWW-Authenticate: Bearer resource_metadata="<origin>/.well-known/oauth-protected-resource/mcp", scope="mcp"` when OAuth is on. 401, 403 and 429 bodies use the HTTP API error shape and are returned by the sub-app, never thrown.
+- An `Origin` header not listed in `VID2CONTEXT_CORS_ORIGINS` (or the public origin) gets 403. When bound to loopback, a Host header that is not loopback, the public host or `VID2CONTEXT_MCP_ALLOWED_HOSTS` gets 403.
+- A session is bound to the credential that opened it. Another credential gets 404, as if there were no session.
+- Per-token token bucket: `VID2CONTEXT_MCP_RATE_LIMIT` requests per minute (default 120), answering 429 with `Retry-After`.
+- Tools that touch the server's own filesystem (`export_obsidian`) refuse calls that arrive over HTTP.
+- Discovery is public: `/mcp/server-card` (SEP-2127) and `/.well-known/ai-catalog.json`. OAuth endpoints are `/.well-known/oauth-protected-resource[/mcp]`, `/.well-known/oauth-authorization-server` and `/oauth/{register,authorize,token,revoke}`. See [docs/guides/remote-mcp.md](../guides/remote-mcp.md).
+- Protocol versions: the SDK in use (1.32.2) speaks 2025-11-25 and older. The 2026-07-28 changes (no sessions, no GET stream, `Mcp-Method` headers) follow when the SDK supports them.
+
 ## Rules for every tool
 
 - **Names** are snake_case verb phrases. They are final once listed here; integrations, docs and the web app refer to them.
