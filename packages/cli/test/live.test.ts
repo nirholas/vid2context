@@ -51,6 +51,7 @@ describe.skipIf(!process.env.LIVE)('live: the real binary', () => {
       'yt-dlp',
       'deno',
       'gpu',
+      'local-servers',
       'data-dir',
       'keys',
       'keyless',
