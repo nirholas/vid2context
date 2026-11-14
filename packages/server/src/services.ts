@@ -1,0 +1,245 @@
+/**
+ * What every route needs: the registry, one Ctx per request (with the request
+ * timeout folded into its abort signal), the library storage, a KvStore, the
+ * upload store, and context loading with single-flight (identical concurrent
+ * requests share one pipeline run).
+ */
+import {
+  attemptsOf,
+  type Attempt,
+  checkInput,
+  type Ctx,
+  enforceInputPolicy,
+  expandInput,
+  getVideoContext,
+  hasKv,
+  type KvStore,
+  MemoryKv,
+  MemoryStorage,
+  type Registry,
+  type Storage,
+  type TranscriptMode,
+  transcribe,
+  type VideoContext,
+  type VideoMetadata,
+  Vid2ContextError,
+} from '@vid2context/core';
+import { type ServerConfig, serverConfig } from './config.ts';
+import { isUploadInput, UploadStore, uploadAudio, uploadMetadata, uploadRef } from './uploads.ts';
+
+export interface LoadOptions {
+  mode?: TranscriptMode;
+  language?: string;
+  /** Fetch comments too: true for the source default, or a limit. */
+  comments?: boolean | number;
+  /** Ignore the library copy and rebuild. */
+  refresh?: boolean;
+}
+
+/** Most videos one POST /pack or POST /bundle may combine. Larger sets belong in a collection and a job. */
+export const MAX_BATCH_VIDEOS = 100;
+
+/** Videos loaded at the same time for batch routes. */
+const BATCH_CONCURRENCY = 4;
+
+export interface Services {
+  registry: Registry;
+  uploads: UploadStore;
+  /** The Ctx for a request, created once and reused by every middleware, route and sub-app. */
+  ctxFor(req: Request): Ctx;
+  config(req: Request): ServerConfig;
+  storage(ctx: Ctx): Promise<Storage>;
+  kv(ctx: Ctx): Promise<KvStore>;
+  /** Throw `unsupported-input` for inputs public mode refuses (local paths, file://, private hosts). */
+  checkInput(input: string, ctx: Ctx): void;
+  loadContext(input: string, opts: LoadOptions, ctx: Ctx): Promise<VideoContext>;
+  loadMetadata(input: string, ctx: Ctx): Promise<VideoMetadata>;
+  /** Contexts for a batch: inputs (playlists expanded) and/or a collection's saved videos. */
+  loadBatch(sel: { inputs?: string[]; collectionId?: string }, opts: LoadOptions, ctx: Ctx): Promise<VideoContext[]>;
+}
+
+export function createServices(registry: Registry, makeCtx: (req: Request) => Ctx): Services {
+  const ctxCache = new WeakMap<Request, Ctx>();
+  const configCache = new WeakMap<Request, ServerConfig>();
+  const memory = new MemoryStorage();
+  const memoryKv = new MemoryKv();
+  let storagePromise: Promise<Storage> | undefined;
+  const uploads = new UploadStore();
+  const inflight = new Map<string, Promise<VideoContext>>();
+
+  const config = (req: Request): ServerConfig => {
+    let cfg = configCache.get(req);
+    if (!cfg) {
+      cfg = serverConfig(ctxFor(req).env);
+      configCache.set(req, cfg);
+    }
+    return cfg;
+  };
+
+  const ctxFor = (req: Request): Ctx => {
+    let ctx = ctxCache.get(req);
+    if (ctx) return ctx;
+    const base = makeCtx(req);
+    const timeoutMs = serverConfig(base.env).requestTimeoutMs;
+    const signals = [AbortSignal.timeout(timeoutMs), base.signal].filter((s): s is AbortSignal => Boolean(s));
+    ctx = { ...base, signal: AbortSignal.any(signals) };
+    ctxCache.set(req, ctx);
+    return ctx;
+  };
+
+  const storage = (ctx: Ctx): Promise<Storage> => {
+    storagePromise ??= registry.openStorage(ctx).then(
+      (s) => s ?? memory,
+      (err) => {
+        storagePromise = undefined;
+        throw err;
+      },
+    );
+    return storagePromise;
+  };
+
+  const kv = async (ctx: Ctx): Promise<KvStore> => {
+    const s = await storage(ctx);
+    return hasKv(s) ? s : memoryKv;
+  };
+
+  const check = (input: string, ctx: Ctx): void => {
+    const refused = checkInput(input, ctx.env);
+    if (refused) throw refused;
+  };
+
+  /**
+   * Run `work` once for all identical concurrent requests. The shared run
+   * gets its own timeout signal instead of the first caller's, so one client
+   * disconnecting does not fail the others.
+   */
+  const shared = (key: string, ctx: Ctx, work: (runCtx: Ctx) => Promise<VideoContext>): Promise<VideoContext> => {
+    const running = inflight.get(key);
+    if (running) return running;
+    const runCtx: Ctx = { ...ctx, signal: AbortSignal.timeout(serverConfig(ctx.env).requestTimeoutMs) };
+    const p = work(runCtx).finally(() => inflight.delete(key));
+    inflight.set(key, p);
+    return p;
+  };
+
+  const loadUpload = async (input: string, opts: LoadOptions, ctx: Ctx): Promise<VideoContext> => {
+    const cfg = serverConfig(ctx.env);
+    const entry = uploads.get(input, cfg.uploadTtlMin);
+    const mode = opts.mode ?? 'auto';
+    if (mode === 'captions' || mode === 'video') {
+      throw new Vid2ContextError('unsupported-input', `Uploads are transcribed from their audio; mode "${mode}" does not apply.`, {
+        hint: 'Use mode "auto" or "stt" (or leave mode out) for uploaded files.',
+      });
+    }
+    const langKey = opts.language ?? '';
+    const cached = entry.contexts.get(langKey);
+    if (cached) return cached;
+    return shared(`upload\u0000${entry.sha256}\u0000${langKey}`, ctx, async (runCtx) => {
+      const ref = uploadRef(entry);
+      const attempts: Attempt[] = [{ id: 'uploads', stage: 'resolve', outcome: 'ok', detail: ref.id }];
+      try {
+        const res = await transcribe(registry, ref, uploadAudio(entry), { stt: { language: opts.language } }, runCtx);
+        const context: VideoContext = { metadata: uploadMetadata(entry), transcript: res.transcript, attempts: [...attempts, ...res.attempts] };
+        entry.contexts.set(langKey, context);
+        return context;
+      } catch (err) {
+        attempts.push(...attemptsOf(err));
+        const tooLarge = attempts.some((a) => a.reason === 'too-large');
+        throw Object.assign(
+          new Vid2ContextError('no-transcript', `Could not transcribe ${entry.filename}.`, {
+            hint: tooLarge
+              ? 'The file is larger than every speech-to-text service accepts. Reduce it to compressed audio first (for example 64 kbit/s mono MP3 or Opus); the web app does this in the browser.'
+              : 'Check `attempts` for why each speech-to-text rung failed. Adding a free key (GROQ_API_KEY) or a local whisper.cpp adds rungs.',
+          }),
+          { attempts },
+        );
+      }
+    });
+  };
+
+  const loadContext = async (input: string, opts: LoadOptions, ctx: Ctx): Promise<VideoContext> => {
+    check(input, ctx);
+    if (isUploadInput(input)) return loadUpload(input, opts, ctx);
+    const store = await storage(ctx);
+    const key = JSON.stringify([input.trim(), opts.mode ?? 'auto', opts.language ?? '', opts.comments ?? false, opts.refresh ?? false]);
+    return shared(key, ctx, (runCtx) =>
+      getVideoContext(
+        registry,
+        input,
+        { mode: opts.mode, language: opts.language, comments: opts.comments, refresh: opts.refresh, storage: store },
+        runCtx,
+      ),
+    );
+  };
+
+  const loadMetadata = async (input: string, ctx: Ctx): Promise<VideoMetadata> => {
+    check(input, ctx);
+    if (isUploadInput(input)) return uploadMetadata(uploads.get(input, serverConfig(ctx.env).uploadTtlMin));
+    await enforceInputPolicy(input, ctx);
+    const { source, ref } = registry.resolve(input);
+    return source.getMetadata(ref, ctx);
+  };
+
+  const loadBatch = async (
+    sel: { inputs?: string[]; collectionId?: string },
+    opts: LoadOptions,
+    ctx: Ctx,
+  ): Promise<VideoContext[]> => {
+    const jobs: (() => Promise<VideoContext>)[] = [];
+    const tooMany = () =>
+      new Vid2ContextError('too-large', `More than ${MAX_BATCH_VIDEOS} videos in one request.`, {
+        hint: 'Split the request, or add the videos to a collection and work with it through jobs.',
+      });
+    if (sel.collectionId) {
+      const store = await storage(ctx);
+      const collection = await store.getCollection(sel.collectionId);
+      if (!collection) {
+        throw new Vid2ContextError('not-found', `Collection not found: ${sel.collectionId}`, {
+          hint: 'List collections with GET /api/v1/collections to see valid ids.',
+        });
+      }
+      for (const id of collection.videoIds) {
+        jobs.push(async () => (await store.getContext(id)) ?? loadContext(id, opts, ctx));
+      }
+    }
+    for (const input of sel.inputs ?? []) {
+      check(input, ctx);
+      if (isUploadInput(input)) {
+        jobs.push(() => loadContext(input, opts, ctx));
+        continue;
+      }
+      const refs = await expandInput(registry, input, ctx, { limit: MAX_BATCH_VIDEOS + 1 });
+      for (const ref of refs) jobs.push(() => loadContext(ref.kind === 'video' && ref.url ? ref.url : ref.input, opts, ctx));
+      if (jobs.length > MAX_BATCH_VIDEOS) throw tooMany();
+    }
+    if (jobs.length > MAX_BATCH_VIDEOS) throw tooMany();
+    if (jobs.length === 0) {
+      throw new Vid2ContextError('bad-request', 'No videos to work on.', {
+        hint: 'Pass "inputs" (video, playlist or channel URLs) or a "collectionId" that has videos.',
+      });
+    }
+    const results: VideoContext[] = new Array(jobs.length);
+    let next = 0;
+    const worker = async () => {
+      while (next < jobs.length) {
+        const i = next++;
+        results[i] = await (jobs[i] as () => Promise<VideoContext>)();
+      }
+    };
+    await Promise.all(Array.from({ length: Math.min(BATCH_CONCURRENCY, jobs.length) }, worker));
+    return results;
+  };
+
+  return {
+    registry,
+    uploads,
+    ctxFor,
+    config,
+    storage,
+    kv,
+    checkInput: check,
+    loadContext,
+    loadMetadata,
+    loadBatch,
+  };
+}
