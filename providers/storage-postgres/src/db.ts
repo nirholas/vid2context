@@ -1,7 +1,9 @@
 /**
  * The small query interface the storage is written against. Every statement
  * is plain SQL with $1..$n parameters, and parameters are only strings,
- * numbers, booleans or null (JSON travels as text and is cast in SQL), so the
+ * numbers, booleans or null (JSON travels as text and is cast in SQL as
+ * `$n::text::jsonb`: postgres.js JSON-encodes any parameter the server types
+ * as jsonb, which would encode the text a second time), so the
  * same SQL runs unchanged on postgres.js (Node), Neon's HTTP driver
  * (Workers) and PGlite (tests).
  *

@@ -230,7 +230,7 @@ export class PostgresStorage implements Storage, KvStore, VectorStore {
     await this.tx([
       {
         text: `INSERT INTO ${S}.videos (tenant_id, id, ref, title, channel, duration_sec, origin, language, ts_config, saved_at, context)
-          VALUES ($1, $2, $4::jsonb, $5, $6, $7, $8, $9, ${cfg.text}, now(), $10::jsonb)
+          VALUES ($1, $2, $4::text::jsonb, $5, $6, $7, $8, $9, ${cfg.text}, now(), $10::text::jsonb)
           ON CONFLICT (tenant_id, id) DO UPDATE SET ref = excluded.ref, title = excluded.title, channel = excluded.channel,
             duration_sec = excluded.duration_sec, origin = excluded.origin, language = excluded.language,
             ts_config = excluded.ts_config, saved_at = excluded.saved_at, context = excluded.context`,
@@ -251,7 +251,7 @@ export class PostgresStorage implements Storage, KvStore, VectorStore {
       {
         text: `INSERT INTO ${S}.segments (tenant_id, video_id, idx, start_sec, end_sec, text, speaker, ts_config)
           SELECT $1, $2, r.idx, r.start_sec, r.end_sec, r.text, r.speaker, ${cfg.text}
-          FROM jsonb_to_recordset($4::jsonb) AS r(idx integer, start_sec double precision, end_sec double precision, text text, speaker text)`,
+          FROM jsonb_to_recordset($4::text::jsonb) AS r(idx integer, start_sec double precision, end_sec double precision, text text, speaker text)`,
         params: [this.tenant, m.ref.id, tsConfigFor(t.language), JSON.stringify(segments)],
       },
     ]);
@@ -333,7 +333,7 @@ export class PostgresStorage implements Storage, KvStore, VectorStore {
     const id = slugId(input.name);
     const [, rows] = await this.tx([
       {
-        text: `INSERT INTO ${this.S}.collections (tenant_id, id, name, description, sources) VALUES ($1, $2, $3, $4, $5::jsonb)`,
+        text: `INSERT INTO ${this.S}.collections (tenant_id, id, name, description, sources) VALUES ($1, $2, $3, $4, $5::text::jsonb)`,
         params: [this.tenant, id, input.name, input.description ?? null, JSON.stringify(input.sources ?? [])],
       },
       { text: this.collectionSelect('AND c.id = $2'), params: [this.tenant, id] },
@@ -362,7 +362,7 @@ export class PostgresStorage implements Storage, KvStore, VectorStore {
         text: `UPDATE ${this.S}.collections SET
             name = CASE WHEN $3::boolean THEN $4::text ELSE name END,
             description = CASE WHEN $5::boolean THEN $6::text ELSE description END,
-            sources = CASE WHEN $7::boolean THEN $8::jsonb ELSE sources END,
+            sources = CASE WHEN $7::boolean THEN $8::text::jsonb ELSE sources END,
             updated_at = now()
           WHERE tenant_id = $1 AND id = $2`,
         params: [
@@ -391,7 +391,7 @@ export class PostgresStorage implements Storage, KvStore, VectorStore {
           SELECT $1, c.id, n.video_id,
             (coalesce((SELECT max(position) FROM ${S}.collection_items WHERE tenant_id = $1 AND collection_id = $2), -1) + n.ord)::integer
           FROM ${S}.collections c,
-            (SELECT value AS video_id, min(ordinality) AS ord FROM jsonb_array_elements_text($3::jsonb) WITH ORDINALITY GROUP BY value) n
+            (SELECT value AS video_id, min(ordinality) AS ord FROM jsonb_array_elements_text($3::text::jsonb) WITH ORDINALITY GROUP BY value) n
           WHERE c.tenant_id = $1 AND c.id = $2
           ON CONFLICT (tenant_id, collection_id, video_id) DO NOTHING`,
         params: [this.tenant, id, JSON.stringify(videoIds)],
@@ -409,7 +409,7 @@ export class PostgresStorage implements Storage, KvStore, VectorStore {
     const [, , rows] = await this.tx([
       {
         text: `DELETE FROM ${S}.collection_items WHERE tenant_id = $1 AND collection_id = $2
-          AND video_id IN (SELECT jsonb_array_elements_text($3::jsonb))`,
+          AND video_id IN (SELECT jsonb_array_elements_text($3::text::jsonb))`,
         params: [this.tenant, id, JSON.stringify(videoIds)],
       },
       { text: `UPDATE ${S}.collections SET updated_at = now() WHERE tenant_id = $1 AND id = $2`, params: [this.tenant, id] },
@@ -446,7 +446,7 @@ export class PostgresStorage implements Storage, KvStore, VectorStore {
     }
     if (query.videoIds !== undefined) {
       params.push(JSON.stringify(query.videoIds));
-      filter += ` AND s.video_id IN (SELECT jsonb_array_elements_text($${params.length}::jsonb))`;
+      filter += ` AND s.video_id IN (SELECT jsonb_array_elements_text($${params.length}::text::jsonb))`;
     }
     const rows = await this.q<{
       video_id: string;
@@ -510,7 +510,7 @@ export class PostgresStorage implements Storage, KvStore, VectorStore {
     const ttl = opts.ttlSec && opts.ttlSec > 0 ? opts.ttlSec : null;
     await this.q(
       `INSERT INTO ${this.S}.kv (tenant_id, key, value, expires_at, updated_at)
-       VALUES ($1, $2, $3::jsonb, CASE WHEN $4::double precision IS NULL THEN NULL ELSE now() + make_interval(secs => $4::double precision) END, now())
+       VALUES ($1, $2, $3::text::jsonb, CASE WHEN $4::double precision IS NULL THEN NULL ELSE now() + make_interval(secs => $4::double precision) END, now())
        ON CONFLICT (tenant_id, key) DO UPDATE SET value = excluded.value, expires_at = excluded.expires_at, updated_at = now()`,
       [this.tenant, key, json, ttl],
     );
@@ -650,7 +650,7 @@ export class PostgresStorage implements Storage, KvStore, VectorStore {
         statements.push({
           text: `INSERT INTO ${this.S}.vectors (tenant_id, model, id, video_id, start_sec, end_sec, text, embedding, updated_at)
             SELECT $1, $2, r.id, r.video_id, r.start_sec, r.end_sec, r.text, r.embedding::vector, now()
-            FROM jsonb_to_recordset($3::jsonb) AS r(id text, video_id text, start_sec double precision, end_sec double precision, text text, embedding text)
+            FROM jsonb_to_recordset($3::text::jsonb) AS r(id text, video_id text, start_sec double precision, end_sec double precision, text text, embedding text)
             ON CONFLICT (tenant_id, model, id) DO UPDATE SET video_id = excluded.video_id, start_sec = excluded.start_sec,
               end_sec = excluded.end_sec, text = excluded.text, embedding = excluded.embedding, updated_at = now()`,
           params: [this.tenant, model, JSON.stringify(chunk)],
@@ -677,7 +677,7 @@ export class PostgresStorage implements Storage, KvStore, VectorStore {
     let filter = '';
     if (query.videoIds !== undefined) {
       params.push(JSON.stringify(query.videoIds));
-      filter = ` AND video_id IN (SELECT jsonb_array_elements_text($4::jsonb))`;
+      filter = ` AND video_id IN (SELECT jsonb_array_elements_text($4::text::jsonb))`;
     }
     const cols = 'id, video_id, start_sec, end_sec, text';
     const where = `tenant_id = $1 AND model = ${quoteLiteral(query.model)}${filter}`;
