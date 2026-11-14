@@ -11,8 +11,13 @@ import { cli, findAll, isMain } from './lib.mjs';
 export const BYTE_EXACT = new Set([
   // Wikimedia Commons subtitle track, replayed byte for byte.
   'packages/core/test/chunk/fixtures/commons-ap11-final-approach.en.srt',
-  // Recorded YouTube innertube player response.
+  // Recorded YouTube innertube responses.
   'providers/youtube/test/fixtures/player-age-restricted-HtVdAasjOgU.json',
+  'providers/youtube/test/fixtures/comments-Pqdv2ql971M-top-2.json',
+  // Recorded podcast feeds, captions and chapters from their publishers.
+  'providers/podcast/test/fixtures/cre-atom.xml',
+  'providers/podcast/test/fixtures/pc20-278-captions.srt',
+  'providers/podcast/test/fixtures/pc20-278-chapters.json',
 ]);
 
 const DASH = /[\u2013\u2014]/g;

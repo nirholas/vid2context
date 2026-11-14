@@ -10,7 +10,7 @@ export const RULE_FILES = new Set(['AGENTS.md', 'tooling/checks/no-todo.mjs']);
 const RULE_DIRS = ['docs/prompts/'];
 
 const WORD = '(?:TODO|FIXME|XXX)';
-const AFTER_COMMENT = new RegExp(`(?:\\/\\/|\\/\\*|<!--|(?:^|\\s)#|^\\s*\\*|(?:^|\\s)--)\\s*${WORD}\\b`, 'gm');
+const AFTER_COMMENT = new RegExp(`(?:\\/\\/|\\/\\*|<!--|(?<!\\S)#|^\\s*\\*|(?<!\\S)--)\\s*${WORD}\\b`, 'gm');
 const WITH_PUNCT = new RegExp(`\\b${WORD}\\b\\s*[:(]`, 'g');
 
 export const name = 'no-todo';

@@ -1,0 +1,83 @@
+# Cloud Build: release on a version tag (v1.2.3). Runs the full CI (which
+# builds the npm bundles), then writes their SBOMs and publishes them with the
+# npm token from Secret Manager. The trigger's tag filter is the first gate;
+# check-tag and the release script refuse anything but v<version> of every
+# bundle. Setup: docs/ci.md. Process: docs/releasing.md.
+#
+# npm provenance needs GitHub Actions or GitLab CI, so these releases publish
+# without provenance.
+steps:
+  - id: git-index
+    name: node:24
+    entrypoint: bash
+    args:
+      - -ceu
+      - |
+        git config --global --add safe.directory /workspace
+        if [ ! -d .git ]; then
+          git init -q
+          git add -A
+        fi
+
+  - id: check-tag
+    name: node:24
+    entrypoint: bash
+    args:
+      - -ceu
+      - |
+        case "${TAG_NAME}" in
+          v[0-9]*.[0-9]*.[0-9]*) echo "releasing ${TAG_NAME}" ;;
+          *) echo "release.yaml runs only for version tags (got '${TAG_NAME}')" >&2; exit 1 ;;
+        esac
+
+  - id: install
+    name: node:24
+    entrypoint: npm
+    args: [ci, --no-audit, --no-fund]
+
+  - id: ci
+    name: node:24
+    entrypoint: npm
+    args: [run, ci]
+
+  # The token reaches npm only through the environment: .npmrc holds the
+  # literal ${NPM_TOKEN} reference, which npm expands when it reads the file.
+  # Every bundle must pass `npm publish --dry-run` before any is published.
+  - id: publish
+    name: node:24
+    entrypoint: bash
+    secretEnv: [NPM_TOKEN]
+    args:
+      - -ceu
+      - |
+        printf '%s\n' '//registry.npmjs.org/:_authToken=$${NPM_TOKEN}' > /builder/home/.npmrc
+        node tooling/release/release.mjs --no-build --publish --tag "${TAG_NAME}"
+
+  - id: upload-sboms
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    entrypoint: bash
+    args:
+      - -ceu
+      - |
+        if [ -n "${_ARTIFACT_BUCKET}" ]; then
+          for f in packages/discovery/dist/npm/*/sbom.cdx.json; do
+            name=$$(basename "$$(dirname "$$f")")
+            gcloud storage cp "$$f" "gs://${_ARTIFACT_BUCKET}/releases/${TAG_NAME}/$${name}.sbom.cdx.json"
+          done
+        else
+          echo "_ARTIFACT_BUCKET not set: SBOMs stay in the build only"
+        fi
+
+availableSecrets:
+  secretManager:
+    - versionName: projects/${PROJECT_ID}/secrets/npm-token/versions/latest
+      env: NPM_TOKEN
+
+substitutions:
+  _ARTIFACT_BUCKET: ''
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+  machineType: E2_HIGHCPU_8
+
+timeout: 2400s

@@ -1,0 +1,4 @@
+#!/bin/sh
+# Hygiene checks on the staged contents only, so a commit is judged by what
+# it contains. Bypass once with `git commit --no-verify`.
+exec node tooling/checks/run.mjs --staged

@@ -5,7 +5,7 @@
  * to a Node condition (for example `"default": "./src/node.ts"` next to a
  * `"browser"` condition) is the Node build of the package and is exempt.
  */
-import { readdirSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { builtinModules } from 'node:module';
 import { join } from 'node:path';
 import { CODE_EXT, cli, isMain, position, ROOT, stripCode } from './lib.mjs';
@@ -34,7 +34,8 @@ export function nodeOnlyFiles(exportsField) {
 export function scope(root = ROOT) {
   const dirs = ['packages/core/src/'];
   const exempt = new Set();
-  for (const dir of readdirSync(join(root, 'providers'))) {
+  const providers = join(root, 'providers');
+  for (const dir of existsSync(providers) ? readdirSync(providers) : []) {
     let pkg;
     try {
       pkg = JSON.parse(readFileSync(join(root, 'providers', dir, 'package.json'), 'utf8'));

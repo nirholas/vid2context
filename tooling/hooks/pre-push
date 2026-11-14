@@ -1,0 +1,4 @@
+#!/bin/sh
+# Full local CI before anything leaves the machine. Bypass once with
+# `git push --no-verify`.
+exec npm run ci

@@ -200,8 +200,11 @@ export function groupOf(path) {
   return parts.length > 1 ? parts[0] : '.';
 }
 
-/** Human report, grouped by directory so each owner sees their own findings. */
-export function formatReport(findings) {
+/**
+ * Human report, grouped by directory so each owner sees their own findings.
+ * At most `perFile` lines per file and check; the rest are counted.
+ */
+export function formatReport(findings, { perFile = 5 } = {}) {
   const groups = new Map();
   for (const f of findings) {
     const g = groupOf(f.path);
@@ -211,7 +214,18 @@ export function formatReport(findings) {
   const lines = [];
   for (const g of [...groups.keys()].sort()) {
     lines.push(`${g}/`);
-    for (const f of groups.get(g)) lines.push(`  ${f.path}:${f.line}:${f.column}  [${f.check}] ${f.message}`);
+    const shown = new Map();
+    for (const f of groups.get(g)) {
+      const key = `${f.path}\0${f.check}`;
+      const count = (shown.get(key) ?? 0) + 1;
+      shown.set(key, count);
+      if (count <= perFile) lines.push(`  ${f.path}:${f.line}:${f.column}  [${f.check}] ${f.message}`);
+    }
+    for (const [key, count] of shown) {
+      if (count <= perFile) continue;
+      const [path, check] = key.split('\0');
+      lines.push(`  ${path}  [${check}] ...and ${count - perFile} more`);
+    }
   }
   return lines.join('\n');
 }
