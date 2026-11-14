@@ -61,7 +61,11 @@ async function record(name: string, env: Record<string, string>, request: ChatAp
 }
 
 const question = 'Which engine does the 2000 G500 have, and why do the hosts call it reliable? Cite the moments.';
-await record('ovh-gpt-oss', {}, { messages: [{ role: 'user', content: question }], model: { rung: 'llm/ovh/gpt-oss-120b', strict: true } });
+await record(
+  'ovh-gpt-oss',
+  {},
+  { messages: [{ role: 'user', content: question }], model: { rung: 'llm/ovh/gpt-oss-120b', strict: true } },
+);
 await record(
   'groq-bad-key',
   { GROQ_API_KEY: 'invalid-key-for-fixture' },

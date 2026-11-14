@@ -26,7 +26,7 @@ export async function expectCitedAnswer(page: Page): Promise<void> {
   await expect(answer).toHaveAttribute('data-status', 'done');
   const chips = answer.locator('[data-cite]');
   await expect(chips.first()).toBeVisible();
-  const label = (await chips.first().innerText()).trim();
+  const label = ((await chips.first().textContent()) ?? '').trim();
   const m = /@ (\d+):(\d\d)$/.exec(label);
   expect(m, label).not.toBeNull();
   await chips.first().click();
