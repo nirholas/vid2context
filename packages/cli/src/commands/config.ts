@@ -4,7 +4,6 @@
  * covers the environment alone when there is no config file.
  */
 import { explain, type TraceEntry, trace } from '@vid2context/config';
-import { findConfigFile, loadConfigFile, selectProfile } from '@vid2context/config/node';
 import { type Env, type Registry, Vid2ContextError } from '@vid2context/core';
 import { str } from '../args.ts';
 import type { CommandContext } from '../runtime.ts';
@@ -38,6 +37,8 @@ export async function configReport(
   cwd: string,
   profile?: string,
 ): Promise<{ report: ConfigReport; text: string }> {
+  // Loaded lazily: @vid2context/config/node pulls in the full provider registry.
+  const { findConfigFile, loadConfigFile, selectProfile } = await import('@vid2context/config/node');
   const where = findConfigFile(env, cwd);
   const config = where.path ? await loadConfigFile(where.path) : undefined;
   if (profile && !config) {

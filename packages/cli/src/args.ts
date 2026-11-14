@@ -78,7 +78,10 @@ function looksLikeCommandTypo(word: string): string | undefined {
 
 export function parseCli(argv: string[]): ParsedArgs {
   const options = Object.fromEntries(
-    Object.values(FLAGS).map((f) => [f.name, { type: f.type, short: f.short, multiple: f.multiple }]),
+    Object.values(FLAGS).map((f) => [
+      f.name,
+      { type: f.type, ...(f.short ? { short: f.short } : {}), ...(f.multiple ? { multiple: true } : {}) },
+    ]),
   ) as NonNullable<Parameters<typeof parseArgs>[0]>['options'];
   let parsed: ReturnType<typeof parseArgs>;
   try {
