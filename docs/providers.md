@@ -61,24 +61,11 @@ Every free and paid lane takes `<PROVIDER>_FALLBACK_KEYS` (one extra rung per ke
 | `VID2CONTEXT_KEYLESS=0` | turn off keyless rungs (they send data to third parties without an account) |
 | `VID2CONTEXT_SKIP=svc1,svc2` | drop rungs by id, service or provider, e.g. `pollinations,ovh` |
 | `VID2CONTEXT_LOG_LEVEL` | `debug`, `info`, `warn` (default), `error`, `silent`; logs go to stderr |
+| `VID2CONTEXT_LOG_FORMAT=json` | one JSON object per log line, with `trace_id` and `span_id` inside a span |
+| `VID2CONTEXT_MAX_PAID_USD_PER_DAY` | per process and UTC day: skip paid rungs (reason `budget`) once estimated spend reaches it; needs telemetry ([observability.md](observability.md)) |
+| `VID2CONTEXT_PRICE_<RUNG_ID>` | price used to estimate paid spend: `in,out` USD per million tokens, or USD per audio minute |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` and other `OTEL_*` | OpenTelemetry export of traces and metrics; see [observability.md](observability.md) |
 | `VID2CONTEXT_ENV_FILE` | an env file to load before `./.env` (shell variables always win) |
-
-## Library storage
-
-The library (saved contexts, collections, search, key-value state, vectors) uses the enabled storage backend with the lowest priority. Guide: [guides/library-sqlite.md](guides/library-sqlite.md).
-
-| Priority | Backend | Runtime | Enabled when |
-|---|---|---|---|
-| lower than 50 | Postgres (`storage-postgres`) | node | a database URL is set (see that provider's rows) |
-| 50 | SQLite (`storage-sqlite`), FTS5 search, one local file | node (22.13+) | by default, unless `VID2CONTEXT_STORAGE` names another backend |
-| none | in-process `MemoryStorage`, lost on exit | any | no backend is enabled, or `VID2CONTEXT_STORAGE=memory` |
-
-| Env var | Used by | Notes |
-|---|---|---|
-| `VID2CONTEXT_STORAGE` | storage providers | pick one backend: `sqlite`, `postgres`, `cloudflare`, or `memory` (no persistent backend). Unset: the priority order above |
-| `VID2CONTEXT_DB` | `storage-sqlite` | path of the SQLite file, or `:memory:`; default `<VID2CONTEXT_HOME>/library.db` |
-| `VID2CONTEXT_HOME` | `storage-sqlite` and other local data | data directory; default `.vid2context` in the working directory |
-| `VID2CONTEXT_DB_BUSY_TIMEOUT_MS` | `storage-sqlite` | how long a write waits for another process holding the file; default 5000 |
 
 ## Exports
 
@@ -96,27 +83,6 @@ Obsidian exports need no variable: they are local files.
 | `VID2CONTEXT_SPONSORBLOCK` | `@vid2context/skips` (`get_skip_segments`, `GET /skips`, `skip=`) | `0` turns SponsorBlock lookups off. SponsorBlock is free and keyless; only a 4-character hash prefix of the video id is sent. Data is CC BY-NC-SA 4.0: non-commercial, with attribution |
 | `SPONSORBLOCK_API_URL` | `@vid2context/skips` | base URL of a self-hosted SponsorBlock mirror, default `https://sponsor.ajay.app`. Lookups time out after 5 seconds |
 | `VID2CONTEXT_SKIP_CATEGORIES` | `@vid2context/skips` | default categories, comma-separated; default `sponsor,selfpromo,interaction,intro,outro,preview,filler` |
-
-## Hosted mode
-
-Accounts, quotas, a shared transcript cache and abuse protection for a public instance, from `@vid2context/accounts`. Everything is off unless `VID2CONTEXT_HOSTED=1`. GitHub OAuth and Cloudflare Turnstile are free. See `packages/accounts/README.md`.
-
-| Env var | Used by | Notes |
-|---|---|---|
-| `VID2CONTEXT_HOSTED` | `@vid2context/accounts` | `1` turns on sign-in, sessions, API keys, plans and the per-IP limiter for every route under `/api/v1` except `/health`, `/auth/*` and `/bots/*` |
-| `VID2CONTEXT_SESSION_SECRET` | `@vid2context/accounts` | required in hosted mode, 32 characters or more: signs session cookies and keys the IP hashes. Changing it signs everyone out |
-| `VID2CONTEXT_SESSION_TTL_DAYS` | `@vid2context/accounts` | session lifetime, default `30` |
-| `GITHUB_OAUTH_CLIENT_ID`, `GITHUB_OAUTH_CLIENT_SECRET` | `@vid2context/accounts` | a GitHub OAuth app; the scope is empty, so only the numeric id, login and avatar are read, never an email |
-| `GITHUB_OAUTH_REDIRECT_URI` | `@vid2context/accounts` | exact callback URL registered on the app, when a proxy changes the host or scheme; default `<request origin>/api/v1/auth/github/callback` |
-| `VID2CONTEXT_PLANS` | `@vid2context/accounts` | JSON of daily limits per plan (`requestsPerDay`, `sttMinutesPerDay`, `llmCallsPerDay`, `maxCollectionSize`); defaults `free` 500, 60, 100, 200 and `anonymous` 50, 10, 10, 25 |
-| `VID2CONTEXT_DEFAULT_PLAN` | `@vid2context/accounts` | plan for new accounts, default `free` |
-| `VID2CONTEXT_ANONYMOUS` | `@vid2context/accounts` | `1` serves callers without a session or key on the `anonymous` plan, counted per IP |
-| `TURNSTILE_SECRET` | `@vid2context/accounts` | Cloudflare Turnstile secret key; anonymous requests that can start speech-to-text must send a token in `X-Turnstile-Token`. Unset with anonymous on: those requests are refused |
-| `VID2CONTEXT_SHARED_CACHE_TTL_DAYS` | `@vid2context/accounts` | how long a public video's transcript is shared across users, default `30` |
-| `VID2CONTEXT_SHARED_CACHE_PLATFORMS` | `@vid2context/accounts` | platforms whose videos are shared, comma-separated, default `youtube`. Files and uploads are never shared |
-| `VID2CONTEXT_IP_BURST`, `VID2CONTEXT_IP_PER_MINUTE` | `@vid2context/accounts` | per-IP token bucket in front of every guarded route, default `60` burst and `120` per minute. On Workers also a soft KV window (eventually consistent) |
-| `VID2CONTEXT_IP_HEADER` | `@vid2context/accounts` | header with the client IP behind a trusted proxy, for example `x-forwarded-for` (its last address is used). Workers use `CF-Connecting-IP` |
-| `VID2CONTEXT_POST_LOGIN_PATH` | `@vid2context/accounts` | where the browser lands after sign-in when no `return_to` is given, default `/app/` |
 
 ## Planned (see ROADMAP.md)
 

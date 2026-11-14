@@ -3,7 +3,6 @@ import { join } from 'node:path';
 import llmProvider from '@vid2context/provider-llm-openai-compatible';
 import mediaFile from '@vid2context/provider-media-file';
 import sttProvider from '@vid2context/provider-stt-openai-compatible';
-import { youtubeCaptions, youtubeSource } from '@vid2context/provider-youtube';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   attemptsOf,
@@ -29,11 +28,10 @@ import {
 } from '../../src/telemetry/index.ts';
 import { type RecordedCall, replayFetch, testContext } from '../../src/testing.ts';
 
-// Real recordings only: YouTube and OVH fixtures from the provider packages
+// Real recordings only: OVH fixtures from the provider packages
 // (see their test/fixtures/README.md), the shared Apollo 11 clip, and a real
 // OpenTelemetry Collector response (test/telemetry/fixtures/README.md).
 const root = join(import.meta.dirname, '../../../..');
-const ytFixture = (name: string) => readFileSync(join(root, 'providers/youtube/test/fixtures', name), 'utf8');
 const sttFixture = (name: string) => readFileSync(join(root, 'providers/stt-openai-compatible/test/fixtures', name), 'utf8');
 const llmFixture = (name: string) => readFileSync(join(root, 'providers/llm-openai-compatible/test/fixtures', name), 'utf8');
 const collector = JSON.parse(readFileSync(join(import.meta.dirname, 'fixtures/otlp-collector-200.json'), 'utf8')) as {
@@ -42,28 +40,9 @@ const collector = JSON.parse(readFileSync(join(import.meta.dirname, 'fixtures/ot
   body: string;
 };
 const APOLLO = join(root, 'tests/fixtures/media/apollo11-small-step.mp3');
-const PLAYER_URL = 'https://www.youtube.com/youtubei/v1/player?prettyPrint=false';
 const OVH_STT = 'https://oai.endpoints.kepler.ai.cloud.ovh.net/v1/audio/transcriptions';
 const OVH_CHAT = 'https://oai.endpoints.kepler.ai.cloud.ovh.net/v1/chat/completions';
-const ZOO = 'https://www.youtube.com/watch?v=jNQXAC9IVRw';
 
-function youtubeReplay() {
-  return replayFetch([
-    {
-      method: 'POST',
-      url: PLAYER_URL,
-      response: (call: RecordedCall) => {
-        const { videoId } = JSON.parse(String(call.body)) as { videoId: string };
-        const name = videoId === 'jNQXAC9IVRw' ? videoId : 'unavailable';
-        return { body: ytFixture(`player-${name}.json`), headers: { 'content-type': 'application/json' } };
-      },
-    },
-    { url: /timedtext\?v=jNQXAC9IVRw.*lang=en.*fmt=srv3/, response: { body: ytFixture('timedtext-jNQXAC9IVRw-en.srv3.xml') } },
-    { url: /timedtext\?v=jNQXAC9IVRw.*lang=de.*fmt=srv3/, response: { body: ytFixture('timedtext-jNQXAC9IVRw-de.srv3.xml') } },
-  ]);
-}
-
-const youtube = new Registry([youtubeSource, youtubeCaptions], 'node');
 const files = new Registry([mediaFile, sttProvider], 'node');
 
 function withTelemetry(fetch: typeof globalThis.fetch, env: Record<string, string> = {}, telFetch = replayFetch([])) {
@@ -94,42 +73,6 @@ function assertNoText(spans: SpanData[], texts: string[]) {
 }
 
 afterEach(() => clearCooldowns());
-
-describe('pipeline spans on recorded YouTube captions', () => {
-  it('nests stage spans under one request span and changes nothing in the result', async () => {
-    const plain = await getVideoContext(youtube, ZOO, {}, testContext({ fetch: youtubeReplay() }));
-    const { memory, telemetry, ctx } = withTelemetry(youtubeReplay());
-    const traced = await getVideoContext(youtube, ZOO, {}, ctx);
-
-    expect(stable(traced)).toEqual(stable(plain));
-
-    const request = only(memory.spans, 'vid2context.get_context');
-    expect(request.parentSpanId).toBeUndefined();
-    expect(memory.children(request).map((s) => s.name)).toEqual([
-      'vid2context.resolve',
-      'vid2context.metadata',
-      'vid2context.captions',
-    ]);
-    for (const s of memory.spans) expect(s.traceId).toBe(request.traceId);
-    const captions = only(memory.spans, 'vid2context.captions');
-    expect(captions.attributes).toMatchObject({
-      'vid2context.stage': 'captions',
-      'vid2context.ref': 'youtube:jNQXAC9IVRw',
-      'vid2context.platform': 'youtube',
-      'vid2context.outcome': 'ok',
-    });
-    expect(captions.endMs).toBeGreaterThanOrEqual(captions.startMs);
-
-    const stages = telemetry.metrics.histograms.get('vid2context.stage.duration');
-    expect([...(stages?.values() ?? [])].map((p) => [p.attrs.stage, p.attrs.outcome, p.count])).toEqual([
-      ['resolve', 'ok', 1],
-      ['metadata', 'ok', 1],
-      ['captions', 'ok', 1],
-    ]);
-
-    assertNoText(memory.spans, [...traced.transcript.segments.map((s) => s.text), traced.metadata.title, ZOO]);
-  });
-});
 
 describe('rung spans on recorded OVH speech to text', () => {
   it('puts the rung span inside the stt stage and records audio seconds', async () => {
@@ -317,8 +260,11 @@ describe('OTLP/HTTP JSON export', () => {
     const sink = replayFetch([
       { method: 'POST', url: /^http:\/\/collector\.test:4318\/v1\/(traces|metrics)$/, response: collector },
     ]);
-    const { telemetry, ctx } = withTelemetry(youtubeReplay(), env, sink);
-    await getVideoContext(youtube, ZOO, {}, ctx);
+    const ovh = replayFetch([
+      { method: 'POST', url: OVH_STT, response: { body: sttFixture('ovh-whisper-large-v3-turbo.verbose.json') } },
+    ]);
+    const { telemetry, ctx } = withTelemetry(ovh, env, sink);
+    await getVideoContext(files, APOLLO, { mode: 'stt' }, ctx);
     await telemetry.flush();
 
     expect(sink.calls.map((c) => c.url)).toEqual([
@@ -326,6 +272,7 @@ describe('OTLP/HTTP JSON export', () => {
       'http://collector.test:4318/v1/metrics',
     ]);
     const [tracesCall, metricsCall] = sink.calls as [RecordedCall, RecordedCall];
+    expect(tracesCall.method).toBe('POST');
     expect(tracesCall.headers['content-type']).toBe('application/json');
     expect(tracesCall.headers['x-tenant']).toBe('team a');
 
@@ -337,53 +284,85 @@ describe('OTLP/HTTP JSON export', () => {
       { key: 'service.version', value: { stringValue: '1.2.3' } },
     ]);
     expect(rs.scopeSpans[0].scope).toEqual({ name: 'vid2context' });
-    const spans = rs.scopeSpans[0].spans as Record<string, unknown>[];
+    type OtlpSpan = {
+      name: string;
+      traceId: string;
+      spanId: string;
+      parentSpanId?: string;
+      kind: number;
+      startTimeUnixNano: string;
+      endTimeUnixNano: string;
+      attributes: unknown[];
+    };
+    const spans = rs.scopeSpans[0].spans as OtlpSpan[];
+    // Spans are exported in the order they end.
     expect(spans.map((s) => s.name)).toEqual([
       'vid2context.resolve',
       'vid2context.metadata',
-      'vid2context.captions',
+      'vid2context.audio',
+      'vid2context.rung',
+      'vid2context.stt',
       'vid2context.get_context',
     ]);
-    const requestSpan = spans[3] as Record<string, unknown>;
+    const byName = Object.fromEntries(spans.map((s) => [s.name, s])) as Record<string, OtlpSpan>;
+    const request = byName['vid2context.get_context'] as OtlpSpan;
     for (const s of spans) {
+      expect(s.traceId).toBe(request.traceId);
       expect(s.traceId).toMatch(/^[0-9a-f]{32}$/);
       expect(s.spanId).toMatch(/^[0-9a-f]{16}$/);
       expect(s.startTimeUnixNano).toMatch(/^\d{19}$/);
       expect(s.endTimeUnixNano).toMatch(/^\d{19}$/);
-      expect(BigInt(s.endTimeUnixNano as string) >= BigInt(s.startTimeUnixNano as string)).toBe(true);
+      expect(BigInt(s.endTimeUnixNano) >= BigInt(s.startTimeUnixNano)).toBe(true);
       expect(s.kind).toBe(1);
-      if (s !== requestSpan) expect(s.parentSpanId).toBe(requestSpan.spanId);
     }
-    expect(requestSpan.parentSpanId).toBeUndefined();
-    expect((spans[2] as { attributes: unknown[] }).attributes).toContainEqual({
-      key: 'vid2context.ref',
-      value: { stringValue: 'youtube:jNQXAC9IVRw' },
+    expect(request.parentSpanId).toBeUndefined();
+    expect(byName['vid2context.stt']?.parentSpanId).toBe(request.spanId);
+    expect(byName['vid2context.rung']?.parentSpanId).toBe(byName['vid2context.stt']?.spanId);
+    expect(byName['vid2context.rung']?.attributes).toContainEqual({
+      key: 'vid2context.rung.id',
+      value: { stringValue: 'stt/ovh/whisper-large-v3-turbo' },
     });
+    expect(byName['vid2context.rung']?.attributes).toContainEqual({
+      key: 'vid2context.usage.audio_seconds',
+      value: { doubleValue: 23.06 },
+    });
+    expect(String(tracesCall.body)).not.toContain('small step');
 
     const metrics = JSON.parse(String(metricsCall.body));
-    type HistogramMetric = {
+    type OtlpMetric = {
       name: string;
       unit: string;
-      histogram: {
+      sum?: {
+        aggregationTemporality: number;
+        isMonotonic: boolean;
+        dataPoints: { asInt?: string; asDouble?: number; attributes: unknown[] }[];
+      };
+      histogram?: {
         aggregationTemporality: number;
         dataPoints: {
           count: string;
           bucketCounts: string[];
           explicitBounds: number[];
           startTimeUnixNano: string;
+          timeUnixNano: string;
           attributes: unknown[];
         }[];
       };
     };
-    const list = metrics.resourceMetrics[0].scopeMetrics[0].metrics as HistogramMetric[];
+    const list = metrics.resourceMetrics[0].scopeMetrics[0].metrics as OtlpMetric[];
+    const attemptsMetric = list.find((m) => m.name === 'vid2context.rung.attempts');
+    expect(attemptsMetric?.sum).toMatchObject({ aggregationTemporality: 2, isMonotonic: true });
+    expect(attemptsMetric?.sum?.dataPoints[0]?.asInt).toBe('1');
+    expect(list.find((m) => m.name === 'vid2context.stt.audio_seconds')?.sum?.dataPoints[0]?.asDouble).toBe(23.06);
     const stage = list.find((m) => m.name === 'vid2context.stage.duration');
     expect(stage?.unit).toBe('ms');
-    expect(stage?.histogram.aggregationTemporality).toBe(2);
-    const point = stage?.histogram.dataPoints[0];
+    expect(stage?.histogram?.aggregationTemporality).toBe(2);
+    const point = stage?.histogram?.dataPoints[0];
     expect(point?.count).toBe('1');
     expect(point?.bucketCounts).toHaveLength((point?.explicitBounds.length ?? 0) + 1);
     expect(point?.bucketCounts.every((c) => typeof c === 'string')).toBe(true);
     expect(point?.startTimeUnixNano).toMatch(/^\d{19}$/);
+    expect(BigInt(point?.timeUnixNano ?? '0') >= BigInt(point?.startTimeUnixNano ?? '0')).toBe(true);
     expect(point?.attributes).toContainEqual({ key: 'stage', value: { stringValue: 'resolve' } });
   });
 

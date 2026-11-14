@@ -146,6 +146,14 @@ How a provider adds streaming:
 - When the named binding is missing or has the wrong shape, throw a `Vid2ContextError` whose hint names the binding and the `wrangler.jsonc` entry that creates it.
 - Never copy bindings into logs, attempts or error messages.
 
+## Telemetry (`ctx.telemetry`)
+
+`ctx.telemetry` is an optional `Telemetry` from [packages/core/src/telemetry/types.ts](../../packages/core/src/telemetry/types.ts): spans, counters, histograms, events and an optional usage ledger. The chain and the pipeline already record a span per stage and per rung attempt, so providers need do nothing.
+
+- Treat it as optional. When it is absent, do nothing and allocate nothing.
+- A provider may add detail with `ctx.telemetry?.event(name, attrs)` inside its call. Attribute values are ids, counts and flags only: never transcript text, prompts, URLs with query strings, keys or any env value.
+- Report usage on the result, not through telemetry: LLM rungs fill `ChatResult.usage`; the chain turns it into token counters and paid cost.
+
 ## Storage providers (`kind: 'storage'`)
 
 `isEnabled(env)` decides from env alone; the enabled backend with the lowest `priority` wins. `create(ctx)` returns an object implementing `Storage` from [packages/core/src/storage.ts](../../packages/core/src/storage.ts). Unknown ids throw `Vid2ContextError('not-found')`. Raw transcripts are always stored; summaries and briefs are stored next to them, never instead of them.
