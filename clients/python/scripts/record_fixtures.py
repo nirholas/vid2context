@@ -59,6 +59,24 @@ CALLS: list[tuple[str, str, dict[str, str], int]] = [
     ("transcript-apollo11-text", "/api/v1/transcript", {"url": APOLLO}, 200),
     ("transcript-apollo11-timestamps", "/api/v1/transcript", {"url": APOLLO, "timestamps": "1"}, 200),
     ("context-apollo11", "/api/v1/context", {"url": APOLLO}, 200),
+    ("formats", "/api/v1/formats", {}, 200),
+    ("metadata-jNQXAC9IVRw", "/api/v1/metadata", {"url": "https://youtu.be/jNQXAC9IVRw"}, 200),
+    ("outline-jNQXAC9IVRw", "/api/v1/outline", {"url": "https://youtu.be/jNQXAC9IVRw"}, 200),
+    ("items-jNQXAC9IVRw", "/api/v1/items", {"url": "https://youtu.be/jNQXAC9IVRw"}, 200),
+    (
+        "items-playlist",
+        "/api/v1/items",
+        {"url": "https://www.youtube.com/playlist?list=PL59FEE129ADFF2B12", "limit": "3"},
+        200,
+    ),
+    ("section-jNQXAC9IVRw-chapter", "/api/v1/section", {"url": "https://youtu.be/jNQXAC9IVRw", "chapter": "1"}, 200),
+    (
+        "section-jNQXAC9IVRw-range",
+        "/api/v1/section",
+        {"url": "https://youtu.be/jNQXAC9IVRw", "from": "0:05", "to": "0:17", "timestamps": "1"},
+        200,
+    ),
+    ("section-missing-selector", "/api/v1/section", {"url": "https://youtu.be/jNQXAC9IVRw"}, 400),
 ]
 RETRIES = 4
 

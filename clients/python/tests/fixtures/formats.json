@@ -1,0 +1,13 @@
+{
+  "recorded": "2026-11-14",
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/formats",
+    "query": {}
+  },
+  "status": 200,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": "{\"formats\":[{\"id\":\"text\",\"description\":\"Plain transcript text. With timestamps, one \\\"[m:ss] line\\\" per caption.\",\"mimeType\":\"text/plain; charset=utf-8\",\"extension\":\"txt\"},{\"id\":\"json\",\"description\":\"The full VideoContext as JSON: metadata, chapters, timed segments, and how it was produced.\",\"mimeType\":\"application/json\",\"extension\":\"json\"},{\"id\":\"markdown\",\"description\":\"Markdown transcript: title and metadata, chapters as headings, paragraphs prefixed with timestamp links. Options: linkTimestamps, includeComments, includeVisual.\",\"mimeType\":\"text/markdown; charset=utf-8\",\"extension\":\"md\"},{\"id\":\"srt\",\"description\":\"SubRip (.srt) captions: at most 2 lines of 42 characters per cue, no overlaps, for players and editors.\",\"mimeType\":\"application/x-subrip; charset=utf-8\",\"extension\":\"srt\"},{\"id\":\"vtt\",\"description\":\"WebVTT (.vtt) captions for the HTML <track> element, with speaker voice tags when known.\",\"mimeType\":\"text/vtt; charset=utf-8\",\"extension\":\"vtt\"},{\"id\":\"pack\",\"description\":\"Context pack: one Markdown file for one or many videos, written for an AI model to read, with citation instructions. Options: maxTokens, includeComments, includeVisual, linkTimestamps.\",\"mimeType\":\"text/markdown; charset=utf-8\",\"extension\":\"md\"}]}"
+}

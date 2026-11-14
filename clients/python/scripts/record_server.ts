@@ -11,7 +11,8 @@ import stt from '@vid2context/provider-stt-openai-compatible';
 import youtube from '@vid2context/provider-youtube';
 import { createApp } from '@vid2context/server';
 
-const providers: Provider[] = [...youtube, mediaFile, stt];
+// Each package's default export is one provider or an array of them; accept both.
+const providers: Provider[] = [youtube, mediaFile, stt].flat() as Provider[];
 const app = createApp({
   registry: new Registry(providers, 'node'),
   makeCtx: (req) => createContext({ runtime: 'node', env: process.env as Env, signal: req.signal }),
