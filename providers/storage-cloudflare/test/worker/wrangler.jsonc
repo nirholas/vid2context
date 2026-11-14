@@ -1,0 +1,17 @@
+// Test Worker for providers/storage-cloudflare/test/live.test.ts (LIVE=1 only). Local D1, R2 and KV; not deployed.
+{
+  "name": "vid2context-storage-test",
+  "main": "worker.ts",
+  "compatibility_date": "2026-10-01",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "vid2context-storage-test",
+      "database_id": "00000000-0000-4000-8000-000000000020",
+      "migrations_dir": "../../migrations"
+    }
+  ],
+  "r2_buckets": [{ "binding": "MEDIA", "bucket_name": "vid2context-storage-test" }],
+  "kv_namespaces": [{ "binding": "KV", "id": "vid2context-storage-test" }],
+  "vars": { "VID2CONTEXT_D1": "DB", "VID2CONTEXT_R2": "MEDIA", "VID2CONTEXT_KV": "KV" }
+}

@@ -36,6 +36,8 @@ export interface CloudflareStorageOptions {
   db: D1Database;
   r2?: R2Bucket;
   kv?: KVNamespace;
+  /** Contexts larger than this many bytes of JSON go to R2 when a bucket is bound. Default R2_THRESHOLD_BYTES. */
+  r2ThresholdBytes?: number;
 }
 
 const migrated = new WeakSet<object>();
@@ -164,11 +166,13 @@ export class CloudflareStorage implements Storage, KvStore {
   protected readonly db: D1Database;
   protected readonly r2?: R2Bucket;
   protected readonly kv?: KVNamespace;
+  private readonly r2Threshold: number;
 
   constructor(opts: CloudflareStorageOptions) {
     this.db = opts.db;
     this.r2 = opts.r2;
     this.kv = opts.kv;
+    this.r2Threshold = opts.r2ThresholdBytes ?? R2_THRESHOLD_BYTES;
   }
 
   // ------------------------------------------------------------ contexts
@@ -197,7 +201,7 @@ export class CloudflareStorage implements Storage, KvStore {
 
     let inline: string | null = json;
     let r2Key: string | null = null;
-    if (bytes > R2_THRESHOLD_BYTES && this.r2) {
+    if (bytes > this.r2Threshold && this.r2) {
       r2Key = r2KeyFor(id);
       await this.r2.put(r2Key, json, { httpMetadata: { contentType: 'application/json' } });
       inline = null;
