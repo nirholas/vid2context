@@ -5,6 +5,7 @@
  * Optional: VID2CONTEXT_R2 (bucket for large contexts and uploaded media) and
  * VID2CONTEXT_KV (namespace for KvStore; without it KV rows live in a D1 table).
  * The bindings themselves are read from ctx.bindings when create() runs.
+ * VID2CONTEXT_STORAGE=memory (or another backend's name) turns it off.
  */
 import { type Ctx, defineProvider, type Env, type Storage, type StorageProvider } from '@vid2context/core';
 import { binding, type D1Database, type KVNamespace, type R2Bucket } from './bindings.ts';
@@ -33,6 +34,16 @@ export async function createCloudflareStorage(ctx: Ctx): Promise<CloudflareStora
   return new CloudflareStorage({ db, r2, kv });
 }
 
+/** Names VID2CONTEXT_STORAGE accepts for this backend. */
+const NAMES = new Set(['cloudflare', 'storage-cloudflare', 'd1']);
+
+/** True when VID2CONTEXT_D1 names a binding, unless VID2CONTEXT_STORAGE picks another backend. */
+export function cloudflareStorageEnabled(env: Env): boolean {
+  const chosen = env.VID2CONTEXT_STORAGE?.trim().toLowerCase();
+  if (chosen && !NAMES.has(chosen)) return false;
+  return Boolean(env.VID2CONTEXT_D1);
+}
+
 const provider: StorageProvider = defineProvider({
   id: 'storage-cloudflare',
   kind: 'storage',
@@ -40,7 +51,7 @@ const provider: StorageProvider = defineProvider({
   runtimes: ['workers'],
   // Ahead of MemoryStorage, the fallback when no persistent backend is enabled.
   priority: 20,
-  isEnabled: (env: Env) => Boolean(env.VID2CONTEXT_D1),
+  isEnabled: cloudflareStorageEnabled,
   create: (ctx: Ctx): Promise<Storage> => createCloudflareStorage(ctx),
 });
 

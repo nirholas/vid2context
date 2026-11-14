@@ -3,23 +3,23 @@
   "model": "onnx-community/whisper-base",
   "device": "cpu",
   "dtype": {
-    "encoder_model": "q8",
+    "encoder_model": "fp32",
     "decoder_model_merged": "fp32"
   },
   "runtime": "node",
   "input": "apollo",
-  "durationSec": 24.1229375,
+  "durationSec": 24.1126875,
   "detectedLanguage": "en",
-  "ms": 3324,
+  "ms": 5582,
   "output": {
-    "text": " And they'll stay apart the land now. It's one small step for man. One by a three for man.",
+    "text": " And I'll step off the land now. It's one small step for man. One by a three for man.",
     "chunks": [
       {
         "timestamp": [
           0,
           7
         ],
-        "text": " And they'll stay apart the land now."
+        "text": " And I'll step off the land now."
       },
       {
         "timestamp": [

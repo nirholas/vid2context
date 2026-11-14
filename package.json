@@ -27,8 +27,8 @@
     "dev:server": "tsx watch packages/server/src/node.ts",
     "start:server": "tsx packages/server/src/node.ts",
     "build:site": "cp llms.txt llms-full.txt site/",
-    "dev:worker": "npm run gen && npm run build:site && wrangler dev",
-    "deploy": "npm run gen && npm run build:site && wrangler deploy",
+    "dev:worker": "npm run gen && npm run build:site && npm run build:assets && wrangler dev",
+    "deploy": "npm run gen && npm run build:site && npm run build:assets -- --strict && wrangler deploy",
     "discovery:gen": "tsx packages/discovery/src/cli.ts gen",
     "discovery:logo": "tsx packages/discovery/src/cli.ts logo",
     "build:npm": "npm run gen && tsx packages/discovery/src/cli.ts build",
@@ -37,7 +37,11 @@
     "ci": "node tooling/ci/run.mjs",
     "hygiene": "node tooling/checks/run.mjs",
     "release:dry": "node tooling/release/release.mjs",
-    "hooks:install": "node tooling/hooks/install.mjs"
+    "hooks:install": "node tooling/hooks/install.mjs",
+    "eval": "npm run gen && tsx packages/evals/src/run.ts",
+    "build:assets": "node deploy/serverless/build-assets.mjs",
+    "build:vercel": "npm run gen && npm run build:site && node deploy/serverless/vercel/build.mjs",
+    "deploy:pages": "npm run gen && npm run build:site && node deploy/serverless/github-pages/publish.mjs"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.6.7",

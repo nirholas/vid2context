@@ -126,12 +126,13 @@ const DTYPES = ['fp32', 'fp16', 'q8', 'int8', 'uint8', 'q4', 'bnb4', 'q4f16'];
  * Weight precision for the encoder and decoder. TRANSFORMERS_DTYPE overrides:
  * one value for both ('fp32') or 'encoder=<dtype>,decoder=<dtype>'.
  *
- * Defaults, chosen from runs on the Apollo clip: the 8-bit decoder of the
- * small models falls into repetition loops ("4-4-4-..."), so on CPU and WASM
- * tiny, base and small use an 8-bit encoder with a full-precision decoder.
- * Large and turbo models tolerate a 4-bit decoder, which keeps their download
- * reasonable. GPUs get a full-precision encoder (fp16 for the large ones) and
- * a 4-bit decoder.
+ * Defaults, chosen from runs on the Apollo clip: with 8-bit weights the
+ * small models fall into repetition loops ("4-4-4-...", decoder) and mishear
+ * words on WASM ("small stem for land", encoder), while full precision was
+ * both the most accurate and no slower. So on CPU and WASM tiny, base and
+ * small run in fp32 (about 290 MB for base). Large and turbo models use an
+ * 8-bit encoder and a 4-bit decoder to keep the download reasonable. GPUs get
+ * a full-precision encoder (fp16 for the large ones) and a 4-bit decoder.
  */
 export function chooseDtype(device: TransformersDevice, model: string, override?: string): Dtype {
   const want = override?.trim();
@@ -140,7 +141,7 @@ export function chooseDtype(device: TransformersDevice, model: string, override?
   if (device === 'webgpu' || device === 'cuda' || device === 'dml') {
     return { encoder_model: large ? 'fp16' : 'fp32', decoder_model_merged: 'q4' };
   }
-  return { encoder_model: 'q8', decoder_model_merged: large ? 'q4' : 'fp32' };
+  return large ? { encoder_model: 'q8', decoder_model_merged: 'q4' } : { encoder_model: 'fp32', decoder_model_merged: 'fp32' };
 }
 
 function parseDtype(value: string): Dtype {

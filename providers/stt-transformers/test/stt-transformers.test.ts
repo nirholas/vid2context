@@ -139,9 +139,9 @@ describe('device and dtype selection', () => {
     expect(() => chooseDevice('node', 'wasm', false)).toThrow(/not supported on node/);
   });
 
-  it('keeps the decoder at full precision for small models on CPU and WASM', () => {
-    expect(chooseDtype('cpu', DEFAULT_MODEL)).toEqual({ encoder_model: 'q8', decoder_model_merged: 'fp32' });
-    expect(chooseDtype('wasm', DEFAULT_MODEL)).toEqual({ encoder_model: 'q8', decoder_model_merged: 'fp32' });
+  it('runs small models at full precision on CPU and WASM', () => {
+    expect(chooseDtype('cpu', DEFAULT_MODEL)).toEqual({ encoder_model: 'fp32', decoder_model_merged: 'fp32' });
+    expect(chooseDtype('wasm', 'onnx-community/whisper-small')).toEqual({ encoder_model: 'fp32', decoder_model_merged: 'fp32' });
     expect(chooseDtype('cpu', TURBO_MODEL)).toEqual({ encoder_model: 'q8', decoder_model_merged: 'q4' });
     expect(chooseDtype('webgpu', DEFAULT_MODEL)).toEqual({ encoder_model: 'fp32', decoder_model_merged: 'q4' });
     expect(chooseDtype('webgpu', TURBO_MODEL)).toEqual({ encoder_model: 'fp16', decoder_model_merged: 'q4' });
@@ -216,7 +216,7 @@ describe.skipIf(!process.env.LIVE)('live: Whisper on onnxruntime-node', () => {
     expect(result?.segments.map((s) => s.text).join(' ')).toMatch(/small step/i);
     expectMonotonic(result?.segments ?? [], 24.2);
     const cached = spawnSync('find', [join(home, 'models', 'transformers'), '-name', '*.onnx']).stdout.toString();
-    expect(cached).toMatch(/encoder_model_quantized\.onnx/);
+    expect(cached).toMatch(/encoder_model\.onnx/);
     expect(cached).toMatch(/decoder_model_merged\.onnx/);
   }, 300_000);
 });

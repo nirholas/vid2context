@@ -5,9 +5,9 @@
  *   binding  Inside a Worker, through the AI binding. Enabled by CLOUDFLARE_AI_BINDING
  *            (the binding name, usually AI); the binding is read from ctx.bindings at call time.
  *            stt/cloudflare-binding/<model>, llm/cloudflare-binding/<model>, embed/cloudflare-binding/<model>
- *   rest     Anywhere, with CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN.
- *            stt/cloudflare/<model>, embed/cloudflare/<model>
- *            (the REST LLM rung lives in the free LLM catalog through Cloudflare's OpenAI-compatible endpoint)
+ *   rest     Anywhere, with CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN: stt/cloudflare/<model>.
+ *            The REST LLM and embedding rungs live in providers/llm-free-catalog and providers/embed
+ *            (Cloudflare's OpenAI-compatible routes), so they are not duplicated here.
  *
  * Model lists: CLOUDFLARE_STT_MODEL, CLOUDFLARE_EMBED_MODEL, CLOUDFLARE_BINDING_MODEL (comma-separated, in order).
  */
@@ -143,30 +143,35 @@ export function llmRungs(env: Env): LlmRung[] {
   });
 }
 
+/**
+ * Binding embeddings only. The REST rung embed/cloudflare/<model> belongs to
+ * providers/embed (Workers AI's OpenAI-compatible route), which reads the same
+ * CLOUDFLARE_EMBED_MODEL, so both lanes embed with the same model.
+ */
 export function embedRungs(env: Env): EmbedRung[] {
   const model = env.CLOUDFLARE_EMBED_MODEL?.trim() || DEFAULT_EMBED_MODEL;
   const known = EMBED_DIMENSIONS[model];
   const override = Number(env.CLOUDFLARE_EMBED_DIMENSIONS);
   const dimensions = known ?? (Number.isInteger(override) && override > 0 ? override : 0);
-  // An unknown model needs CLOUDFLARE_EMBED_DIMENSIONS so vectors are never stored with a wrong size.
-  const extra = known ? [] : ['CLOUDFLARE_EMBED_DIMENSIONS'];
-  const make = (service: string, t: Transport, priority: number, requires: string[], enabled: boolean): EmbedRung => ({
-    id: `embed/${service}/${model}`,
-    provider: 'cloudflare-ai-embed',
-    service,
-    model,
-    tier: 'free',
-    priority,
-    quality: 4,
-    capabilities: [],
-    requires: [...requires, ...extra],
-    isEnabled: () => enabled && dimensions > 0,
-    dimensions,
-    embed: (texts, ctx) => embedTexts(t, model, texts, ctx, `${service} ${model}`),
-  });
+  const enabled = bindingEnabled(env);
+  const t = bindingTransport(env);
+  const label = `${BINDING_SERVICE} ${model}`;
   return [
-    make(BINDING_SERVICE, bindingTransport(env), 20, ['CLOUDFLARE_AI_BINDING'], bindingEnabled(env)),
-    make(REST_SERVICE, restTransport(env), 40, REST_REQUIRES, restEnabled(env)),
+    {
+      id: `embed/${BINDING_SERVICE}/${model}`,
+      provider: 'cloudflare-ai-embed',
+      service: BINDING_SERVICE,
+      model,
+      tier: 'free',
+      priority: 20,
+      quality: 4,
+      capabilities: [],
+      // An unknown model needs CLOUDFLARE_EMBED_DIMENSIONS so vectors are never stored with a wrong size.
+      requires: known ? ['CLOUDFLARE_AI_BINDING'] : ['CLOUDFLARE_AI_BINDING', 'CLOUDFLARE_EMBED_DIMENSIONS'],
+      isEnabled: () => enabled && dimensions > 0,
+      dimensions,
+      embed: (texts, ctx) => embedTexts(t, model, texts, ctx, label),
+    },
   ];
 }
 

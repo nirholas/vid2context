@@ -59,9 +59,11 @@ function workersCtx(env: Record<string, string>, withBindings = true): Ctx {
 }
 
 describe('provider', () => {
-  it('is enabled by VID2CONTEXT_D1 alone and runs only on workers', () => {
+  it('is enabled by VID2CONTEXT_D1 unless VID2CONTEXT_STORAGE picks another backend, and runs only on workers', () => {
     expect(provider.isEnabled({})).toBe(false);
     expect(provider.isEnabled({ VID2CONTEXT_D1: 'DB' })).toBe(true);
+    expect(provider.isEnabled({ VID2CONTEXT_D1: 'DB', VID2CONTEXT_STORAGE: 'cloudflare' })).toBe(true);
+    expect(provider.isEnabled({ VID2CONTEXT_D1: 'DB', VID2CONTEXT_STORAGE: 'memory' })).toBe(false);
     expect(provider.runtimes).toEqual(['workers']);
   });
 

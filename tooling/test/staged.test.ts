@@ -6,7 +6,7 @@ import { describe, expect, it } from 'vitest';
 import { ROOT, runChecks } from '../checks/lib.mjs';
 import * as noDashes from '../checks/no-dashes.mjs';
 
-const EM = '—';
+const EM = '\u2014';
 
 /** A throwaway git repo with this repo's tooling/ copied in, so hooks can run against it. */
 function tempRepo() {

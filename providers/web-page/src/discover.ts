@@ -74,7 +74,7 @@ const text = (v: unknown): string | undefined => {
 };
 
 function firstUrlOf(v: JsonValue | undefined): string | undefined {
-  if (typeof v === 'string') return v;
+  if (typeof v === 'string') return decodeHTML(v).trim() || undefined;
   if (Array.isArray(v)) {
     for (const x of v) {
       const u = firstUrlOf(x);

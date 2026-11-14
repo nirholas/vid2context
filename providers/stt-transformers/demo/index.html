@@ -25,7 +25,7 @@
         <label>Device (TRANSFORMERS_DEVICE)
           <select id="device"><option value="auto">auto</option><option value="wasm">wasm</option><option value="webgpu">webgpu</option></select>
         </label>
-        <label>Precision (TRANSFORMERS_DTYPE, blank for the default) <input id="dtype" placeholder="encoder=q8,decoder=fp32" /></label>
+        <label>Precision (TRANSFORMERS_DTYPE, blank for the default) <input id="dtype" placeholder="encoder=fp32,decoder=q4" /></label>
         <label>Language (blank to detect) <input id="language" placeholder="en" /></label>
         <button id="run" type="submit">Transcribe</button>
       </fieldset>
