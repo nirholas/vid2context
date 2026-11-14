@@ -1,0 +1,9 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/jobs/job_f3vwLWc0L-_Yw7bNbgGEaQ/events"
+  },
+  "status": 200,
+  "contentType": "text/event-stream; charset=utf-8",
+  "body": "id: 3\nevent: error\ndata: {\"code\":\"not-found\",\"message\":\"YouTube xxxxxxxxxxx: ERROR (This video is unavailable)\",\"hint\":\"The video does not exist or was removed. Check the video id or URL.\"}\n\n"
+}

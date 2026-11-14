@@ -1,0 +1,929 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/health"
+  },
+  "status": 200,
+  "contentType": "application/json",
+  "body": {
+    "ok": true,
+    "name": "vid2context",
+    "version": "0.1.0",
+    "runtime": "node",
+    "formats": [
+      {
+        "id": "text",
+        "description": "Plain transcript text. With timestamps, one \"[m:ss] line\" per caption.",
+        "mimeType": "text/plain; charset=utf-8"
+      },
+      {
+        "id": "json",
+        "description": "The full VideoContext as JSON: metadata, chapters, timed segments, and how it was produced.",
+        "mimeType": "application/json"
+      },
+      {
+        "id": "markdown",
+        "description": "Markdown transcript: title and metadata, chapters as headings, paragraphs prefixed with timestamp links. Options: linkTimestamps, includeComments, includeVisual.",
+        "mimeType": "text/markdown; charset=utf-8"
+      },
+      {
+        "id": "srt",
+        "description": "SubRip (.srt) captions: at most 2 lines of 42 characters per cue, no overlaps, for players and editors.",
+        "mimeType": "application/x-subrip; charset=utf-8"
+      },
+      {
+        "id": "vtt",
+        "description": "WebVTT (.vtt) captions for the HTML <track> element, with speaker voice tags when known.",
+        "mimeType": "text/vtt; charset=utf-8"
+      },
+      {
+        "id": "pack",
+        "description": "Context pack: one Markdown file for one or many videos, written for an AI model to read, with citation instructions. Options: maxTokens, includeComments, includeVisual, linkTimestamps.",
+        "mimeType": "text/markdown; charset=utf-8"
+      }
+    ],
+    "providers": [
+      {
+        "id": "bilibili",
+        "kind": "source",
+        "name": "Bilibili",
+        "enabled": true
+      },
+      {
+        "id": "bilibili-captions",
+        "kind": "captions",
+        "name": "Bilibili subtitles",
+        "enabled": true
+      },
+      {
+        "id": "cloudflare-ai-stt",
+        "kind": "stt",
+        "name": "Cloudflare Workers AI speech-to-text",
+        "rungs": [
+          {
+            "id": "stt/cloudflare-binding/@cf/openai/whisper-large-v3-turbo",
+            "service": "cloudflare-binding",
+            "model": "@cf/openai/whisper-large-v3-turbo",
+            "tier": "free",
+            "enabled": false,
+            "requires": [
+              "CLOUDFLARE_AI_BINDING"
+            ]
+          },
+          {
+            "id": "stt/cloudflare-binding/@cf/openai/whisper",
+            "service": "cloudflare-binding",
+            "model": "@cf/openai/whisper",
+            "tier": "free",
+            "enabled": false,
+            "requires": [
+              "CLOUDFLARE_AI_BINDING"
+            ]
+          },
+          {
+            "id": "stt/cloudflare/@cf/openai/whisper-large-v3-turbo",
+            "service": "cloudflare",
+            "model": "@cf/openai/whisper-large-v3-turbo",
+            "tier": "free",
+            "enabled": true,
+            "requires": [
+              "CLOUDFLARE_ACCOUNT_ID",
+              "CLOUDFLARE_API_TOKEN"
+            ]
+          },
+          {
+            "id": "stt/cloudflare/@cf/openai/whisper",
+            "service": "cloudflare",
+            "model": "@cf/openai/whisper",
+            "tier": "free",
+            "enabled": true,
+            "requires": [
+              "CLOUDFLARE_ACCOUNT_ID",
+              "CLOUDFLARE_API_TOKEN"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "cloudflare-ai-llm",
+        "kind": "llm",
+        "name": "Cloudflare Workers AI chat (binding)",
+        "rungs": [
+          {
+            "id": "llm/cloudflare-binding/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+            "service": "cloudflare-binding",
+            "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+            "tier": "free",
+            "enabled": false,
+            "requires": [
+              "CLOUDFLARE_AI_BINDING"
+            ]
+          },
+          {
+            "id": "llm/cloudflare-binding/@cf/openai/gpt-oss-120b",
+            "service": "cloudflare-binding",
+            "model": "@cf/openai/gpt-oss-120b",
+            "tier": "free",
+            "enabled": false,
+            "requires": [
+              "CLOUDFLARE_AI_BINDING"
+            ]
+          },
+          {
+            "id": "llm/cloudflare-binding/@cf/meta/llama-4-scout-17b-16e-instruct",
+            "service": "cloudflare-binding",
+            "model": "@cf/meta/llama-4-scout-17b-16e-instruct",
+            "tier": "free",
+            "enabled": false,
+            "requires": [
+              "CLOUDFLARE_AI_BINDING"
+            ]
+          },
+          {
+            "id": "llm/cloudflare-binding/@cf/mistralai/mistral-small-3.1-24b-instruct",
+            "service": "cloudflare-binding",
+            "model": "@cf/mistralai/mistral-small-3.1-24b-instruct",
+            "tier": "free",
+            "enabled": false,
+            "requires": [
+              "CLOUDFLARE_AI_BINDING"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "cloudflare-ai-embed",
+        "kind": "embed",
+        "name": "Cloudflare Workers AI embeddings",
+        "rungs": [
+          {
+            "id": "embed/cloudflare-binding/@cf/baai/bge-m3",
+            "service": "cloudflare-binding",
+            "model": "@cf/baai/bge-m3",
+            "tier": "free",
+            "enabled": false,
+            "requires": [
+              "CLOUDFLARE_AI_BINDING"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "embed",
+        "kind": "embed",
+        "name": "OpenAI-compatible embeddings",
+        "rungs": [
+          {
+            "id": "embed/ollama",
+            "service": "ollama",
+            "model": "",
+            "tier": "local",
+            "enabled": false,
+            "requires": [
+              "OLLAMA_EMBED_MODEL"
+            ]
+          },
+          {
+            "id": "embed/lmstudio",
+            "service": "lmstudio",
+            "model": "",
+            "tier": "local",
+            "enabled": false,
+            "requires": [
+              "LMSTUDIO_EMBED_MODEL"
+            ]
+          },
+          {
+            "id": "embed/local",
+            "service": "local",
+            "model": "",
+            "tier": "local",
+            "enabled": false,
+            "requires": [
+              "LOCAL_EMBED_MODEL",
+              "LOCAL_EMBED_BASE_URL"
+            ]
+          },
+          {
+            "id": "embed/gemini/gemini-embedding-2",
+            "service": "gemini",
+            "model": "gemini-embedding-2",
+            "tier": "free",
+            "enabled": false,
+            "requires": [
+              "GEMINI_API_KEY"
+            ]
+          },
+          {
+            "id": "embed/jina/jina-embeddings-v3",
+            "service": "jina",
+            "model": "jina-embeddings-v3",
+            "tier": "free",
+            "enabled": false,
+            "requires": [
+              "JINA_API_KEY"
+            ]
+          },
+          {
+            "id": "embed/cloudflare/@cf/baai/bge-m3",
+            "service": "cloudflare",
+            "model": "@cf/baai/bge-m3",
+            "tier": "free",
+            "enabled": true,
+            "requires": [
+              "CLOUDFLARE_API_TOKEN",
+              "CLOUDFLARE_ACCOUNT_ID"
+            ]
+          },
+          {
+            "id": "embed/mistral/mistral-embed",
+            "service": "mistral",
+            "model": "mistral-embed",
+            "tier": "free",
+            "enabled": false,
+            "requires": [
+              "MISTRAL_API_KEY"
+            ]
+          },
+          {
+            "id": "embed/ovh/bge-m3",
+            "service": "ovh",
+            "model": "bge-m3",
+            "tier": "keyless",
+            "enabled": true,
+            "requires": []
+          },
+          {
+            "id": "embed/ovh/Qwen3-Embedding-8B",
+            "service": "ovh",
+            "model": "Qwen3-Embedding-8B",
+            "tier": "keyless",
+            "enabled": true,
+            "requires": []
+          },
+          {
+            "id": "embed/openai/text-embedding-3-small",
+            "service": "openai",
+            "model": "text-embedding-3-small",
+            "tier": "paid",
+            "enabled": false,
+            "requires": [
+              "OPENAI_API_KEY"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "embed-transformers",
+        "kind": "embed",
+        "name": "Transformers.js local embeddings",
+        "rungs": [
+          {
+            "id": "embed/transformers/Xenova/multilingual-e5-small",
+            "service": "transformers",
+            "model": "Xenova/multilingual-e5-small",
+            "tier": "local",
+            "enabled": false,
+            "requires": [
+              "TRANSFORMERS_EMBED_MODEL"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "llm-free-catalog",
+        "kind": "llm",
+        "name": "Free LLM catalog (Kilo, NVIDIA, SambaNova, Cloudflare, Zhipu, SiliconFlow)",
+        "rungs": [
+          {
+            "id": "llm/kilo/nvidia/nemotron-3-ultra-550b-a55b:free",
+            "service": "kilo",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "tier": "keyless",
+            "enabled": true,
+            "requires": []
+          },
+          {
+            "id": "llm/kilo/nvidia/nemotron-3.5-super-vl:free",
+            "service": "kilo",
+            "model": "nvidia/nemotron-3.5-super-vl:free",
+            "tier": "keyless",
+            "enabled": true,
+            "requires": []
+          },
+          {
+            "id": "llm/kilo/nvidia/nemotron-3.5-lightning:free",
+            "service": "kilo",
+            "model": "nvidia/nemotron-3.5-lightning:free",
+            "tier": "keyless",
+            "enabled": true,
+            "requires": []
+          },
+          {
+            "id": "llm/nvidia/nvidia/nemotron-3-super-120b-a12b",
+            "service": "nvidia",
+            "model": "nvidia/nemotron-3-super-120b-a12b",
+            "tier": "free",
+            "enabled": false,
+            "requires": [
+              "NVIDIA_API_KEY"
+            ]
+          },
+          {
+            "id": "llm/sambanova/Meta-Llama-3.3-70B-Instruct",
+            "service": "sambanova",
+            "model": "Meta-Llama-3.3-70B-Instruct",
+            "tier": "free",
+            "enabled": false,
+            "requires": [
+              "SAMBANOVA_API_KEY"
+            ]
+          },
+          {
+            "id": "llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+            "service": "cloudflare",
+            "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+            "tier": "free",
+            "enabled": true,
+            "requires": [
+              "CLOUDFLARE_ACCOUNT_ID",
+              "CLOUDFLARE_API_TOKEN"
+            ]
+          },
+          {
+            "id": "llm/zhipu/glm-4.7-flash",
+            "service": "zhipu",
+            "model": "glm-4.7-flash",
+            "tier": "free",
+            "enabled": false,
+            "requires": [
+              "ZHIPU_API_KEY"
+            ]
+          },
+          {
+            "id": "llm/siliconflow/Qwen/Qwen3-8B",
+            "service": "siliconflow",
+            "model": "Qwen/Qwen3-8B",
+            "tier": "free",
+            "enabled": false,
+            "requires": [
+              "SILICONFLOW_API_KEY"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "llm-local",
+        "kind": "llm",
+        "name": "Local LLM servers (Ollama, LM Studio, llama.cpp, vLLM, Jan, LocalAI)",
+        "rungs": [
+          {
+            "id": "llm/ollama",
+            "service": "ollama",
+            "model": "",
+            "tier": "local",
+            "enabled": false,
+            "requires": [
+              "OLLAMA_MODEL"
+            ]
+          },
+          {
+            "id": "llm/lmstudio",
+            "service": "lmstudio",
+            "model": "",
+            "tier": "local",
+            "enabled": false,
+            "requires": [
+              "LMSTUDIO_MODEL"
+            ]
+          },
+          {
+            "id": "llm/llamacpp",
+            "service": "llamacpp",
+            "model": "",
+            "tier": "local",
+            "enabled": false,
+            "requires": [
+              "LLAMACPP_MODEL"
+            ]
+          },
+          {
+            "id": "llm/vllm",
+            "service": "vllm",
+            "model": "",
+            "tier": "local",
+            "enabled": false,
+            "requires": [
+              "VLLM_MODEL"
+            ]
+          },
+          {
+            "id": "llm/jan",
+            "service": "jan",
+            "model": "",
+            "tier": "local",
+            "enabled": false,
+            "requires": [
+              "JAN_MODEL"
+            ]
+          },
+          {
+            "id": "llm/localai",
+            "service": "localai",
+            "model": "",
+            "tier": "local",
+            "enabled": false,
+            "requires": [
+              "LOCALAI_MODEL"
+            ]
+          },
+          {
+            "id": "llm/local",
+            "service": "local",
+            "model": "",
+            "tier": "local",
+            "enabled": false,
+            "requires": [
+              "LOCAL_LLM_MODEL",
+              "LOCAL_LLM_BASE_URL"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "llm-native",
+        "kind": "llm",
+        "name": "Native Anthropic and Gemini (with Vertex AI)",
+        "rungs": [
+          {
+            "id": "llm/gemini-native/gemini-3.8-flash",
+            "service": "gemini-native",
+            "model": "gemini-3.8-flash",
+            "tier": "free",
+            "enabled": false,
+            "requires": [
+              "GEMINI_API_KEY"
+            ]
+          },
+          {
+            "id": "llm/gemini-native/gemini-3.5-flash-lite",
+            "service": "gemini-native",
+            "model": "gemini-3.5-flash-lite",
+            "tier": "free",
+            "enabled": false,
+            "requires": [
+              "GEMINI_API_KEY"
+            ]
+          },
+          {
+            "id": "llm/anthropic/claude-haiku-5-5",
+            "service": "anthropic",
+            "model": "claude-haiku-5-5",
+            "tier": "paid",
+            "enabled": false,
+            "requires": [
+              "ANTHROPIC_API_KEY"
+            ]
+          },
+          {
+            "id": "llm/anthropic/claude-sonnet-5-5",
+            "service": "anthropic",
+            "model": "claude-sonnet-5-5",
+            "tier": "paid",
+            "enabled": false,
+            "requires": [
+              "ANTHROPIC_API_KEY"
+            ]
+          },
+          {
+            "id": "llm/vertex-gemini/gemini-3.8-flash",
+            "service": "vertex-gemini",
+            "model": "gemini-3.8-flash",
+            "tier": "paid",
+            "enabled": false,
+            "requires": [
+              "GOOGLE_CLOUD_PROJECT",
+              "GOOGLE_ACCESS_TOKEN"
+            ]
+          },
+          {
+            "id": "llm/vertex-anthropic/claude-haiku-5-5",
+            "service": "vertex-anthropic",
+            "model": "claude-haiku-5-5",
+            "tier": "paid",
+            "enabled": false,
+            "requires": [
+              "GOOGLE_CLOUD_PROJECT",
+              "GOOGLE_ACCESS_TOKEN"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "llm-openai-compatible",
+        "kind": "llm",
+        "name": "OpenAI-compatible chat completions",
+        "rungs": [
+          {
+            "id": "llm/groq/qwen/qwen3.8-27b",
+            "service": "groq",
+            "model": "qwen/qwen3.8-27b",
+            "tier": "free",
+            "enabled": false,
+            "requires": [
+              "GROQ_API_KEY"
+            ]
+          },
+          {
+            "id": "llm/groq/openai/gpt-oss-120b",
+            "service": "groq",
+            "model": "openai/gpt-oss-120b",
+            "tier": "free",
+            "enabled": false,
+            "requires": [
+              "GROQ_API_KEY"
+            ]
+          },
+          {
+            "id": "llm/groq/openai/gpt-oss-20b",
+            "service": "groq",
+            "model": "openai/gpt-oss-20b",
+            "tier": "free",
+            "enabled": false,
+            "requires": [
+              "GROQ_API_KEY"
+            ]
+          },
+          {
+            "id": "llm/cerebras/gpt-oss-120b",
+            "service": "cerebras",
+            "model": "gpt-oss-120b",
+            "tier": "free",
+            "enabled": false,
+            "requires": [
+              "CEREBRAS_API_KEY"
+            ]
+          },
+          {
+            "id": "llm/cerebras/llama-3.3-70b",
+            "service": "cerebras",
+            "model": "llama-3.3-70b",
+            "tier": "free",
+            "enabled": false,
+            "requires": [
+              "CEREBRAS_API_KEY"
+            ]
+          },
+          {
+            "id": "llm/mistral/mistral-small-latest",
+            "service": "mistral",
+            "model": "mistral-small-latest",
+            "tier": "free",
+            "enabled": false,
+            "requires": [
+              "MISTRAL_API_KEY"
+            ]
+          },
+          {
+            "id": "llm/github/meta/Llama-3.3-70B-Instruct",
+            "service": "github",
+            "model": "meta/Llama-3.3-70B-Instruct",
+            "tier": "free",
+            "enabled": false,
+            "requires": [
+              "GITHUB_TOKEN"
+            ]
+          },
+          {
+            "id": "llm/gemini/gemini-2.5-flash-lite",
+            "service": "gemini",
+            "model": "gemini-2.5-flash-lite",
+            "tier": "free",
+            "enabled": false,
+            "requires": [
+              "GEMINI_API_KEY"
+            ]
+          },
+          {
+            "id": "llm/ovh/Meta-Llama-3_3-70B-Instruct",
+            "service": "ovh",
+            "model": "Meta-Llama-3_3-70B-Instruct",
+            "tier": "keyless",
+            "enabled": true,
+            "requires": []
+          },
+          {
+            "id": "llm/ovh/gpt-oss-120b",
+            "service": "ovh",
+            "model": "gpt-oss-120b",
+            "tier": "keyless",
+            "enabled": true,
+            "requires": []
+          },
+          {
+            "id": "llm/pollinations/openai-fast",
+            "service": "pollinations",
+            "model": "openai-fast",
+            "tier": "keyless",
+            "enabled": true,
+            "requires": []
+          },
+          {
+            "id": "llm/openai/gpt-5.4-nano",
+            "service": "openai",
+            "model": "gpt-5.4-nano",
+            "tier": "paid",
+            "enabled": false,
+            "requires": [
+              "OPENAI_API_KEY"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "llm-openrouter",
+        "kind": "llm",
+        "name": "OpenRouter (live free-model picker)",
+        "rungs": [
+          {
+            "id": "llm/openrouter/free-auto",
+            "service": "openrouter",
+            "model": "free-auto",
+            "tier": "free",
+            "enabled": false,
+            "requires": [
+              "OPENROUTER_API_KEY"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "media-file",
+        "kind": "source",
+        "name": "Local media file",
+        "enabled": true
+      },
+      {
+        "id": "media-file-captions",
+        "kind": "captions",
+        "name": "Subtitles of a local file (sidecar and embedded)",
+        "enabled": true
+      },
+      {
+        "id": "media-stream",
+        "kind": "source",
+        "name": "HLS and DASH streams (ffmpeg)",
+        "enabled": true
+      },
+      {
+        "id": "media-url",
+        "kind": "source",
+        "name": "Direct media URL",
+        "enabled": true
+      },
+      {
+        "id": "vimeo",
+        "kind": "source",
+        "name": "Vimeo",
+        "enabled": true
+      },
+      {
+        "id": "vimeo-captions",
+        "kind": "captions",
+        "name": "Vimeo captions",
+        "enabled": true
+      },
+      {
+        "id": "loom",
+        "kind": "source",
+        "name": "Loom",
+        "enabled": true
+      },
+      {
+        "id": "loom-captions",
+        "kind": "captions",
+        "name": "Loom captions",
+        "enabled": true
+      },
+      {
+        "id": "wistia",
+        "kind": "source",
+        "name": "Wistia",
+        "enabled": true
+      },
+      {
+        "id": "wistia-captions",
+        "kind": "captions",
+        "name": "Wistia captions",
+        "enabled": true
+      },
+      {
+        "id": "share-links",
+        "kind": "source",
+        "name": "Cloud share links (Google Drive, Dropbox, OneDrive)",
+        "enabled": true
+      },
+      {
+        "id": "storage-postgres",
+        "kind": "storage",
+        "name": "Postgres + pgvector",
+        "enabled": false
+      },
+      {
+        "id": "storage-sqlite",
+        "kind": "storage",
+        "name": "SQLite library (local file)",
+        "enabled": true
+      },
+      {
+        "id": "stt-openai-compatible",
+        "kind": "stt",
+        "name": "OpenAI-compatible speech-to-text",
+        "rungs": [
+          {
+            "id": "stt/local",
+            "service": "local",
+            "model": "",
+            "tier": "local",
+            "enabled": false,
+            "requires": [
+              "LOCAL_STT_BASE_URL",
+              "LOCAL_STT_MODEL"
+            ]
+          },
+          {
+            "id": "stt/groq/whisper-large-v3-turbo",
+            "service": "groq",
+            "model": "whisper-large-v3-turbo",
+            "tier": "free",
+            "enabled": false,
+            "requires": [
+              "GROQ_API_KEY"
+            ]
+          },
+          {
+            "id": "stt/mistral/voxtral-mini-transcribe-3",
+            "service": "mistral",
+            "model": "voxtral-mini-transcribe-3",
+            "tier": "free",
+            "enabled": false,
+            "requires": [
+              "MISTRAL_API_KEY"
+            ]
+          },
+          {
+            "id": "stt/ovh/whisper-large-v3-turbo",
+            "service": "ovh",
+            "model": "whisper-large-v3-turbo",
+            "tier": "keyless",
+            "enabled": true,
+            "requires": []
+          },
+          {
+            "id": "stt/deepinfra/openai/whisper-large-v3-turbo",
+            "service": "deepinfra",
+            "model": "openai/whisper-large-v3-turbo",
+            "tier": "paid",
+            "enabled": false,
+            "requires": [
+              "DEEPINFRA_API_KEY"
+            ]
+          },
+          {
+            "id": "stt/together/openai/whisper-large-v3",
+            "service": "together",
+            "model": "openai/whisper-large-v3",
+            "tier": "paid",
+            "enabled": false,
+            "requires": [
+              "TOGETHER_API_KEY"
+            ]
+          },
+          {
+            "id": "stt/openai/whisper-1",
+            "service": "openai",
+            "model": "whisper-1",
+            "tier": "paid",
+            "enabled": false,
+            "requires": [
+              "OPENAI_API_KEY"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "stt-transformers",
+        "kind": "stt",
+        "name": "Whisper on Transformers.js (offline)",
+        "rungs": [
+          {
+            "id": "stt/transformers/onnx-community/whisper-base",
+            "service": "transformers",
+            "model": "onnx-community/whisper-base",
+            "tier": "local",
+            "enabled": false,
+            "requires": [
+              "TRANSFORMERS_STT_MODEL"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "stt-whisper-cpp",
+        "kind": "stt",
+        "name": "whisper.cpp (local speech-to-text)",
+        "rungs": [
+          {
+            "id": "stt/whisper-cpp",
+            "service": "whisper-cpp",
+            "model": "",
+            "tier": "local",
+            "enabled": false,
+            "requires": [
+              "WHISPER_CPP_MODEL"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "visual-frames",
+        "kind": "visual",
+        "name": "Frames: OCR and vision models",
+        "rungs": [
+          {
+            "id": "visual/ollama/",
+            "service": "ollama",
+            "model": "",
+            "tier": "local",
+            "enabled": false,
+            "requires": [
+              "OLLAMA_VISION_MODEL"
+            ]
+          },
+          {
+            "id": "visual/gemini/gemini-2.5-flash-lite",
+            "service": "gemini",
+            "model": "gemini-2.5-flash-lite",
+            "tier": "free",
+            "enabled": false,
+            "requires": [
+              "GEMINI_API_KEY"
+            ]
+          },
+          {
+            "id": "visual/ovh/Qwen2.5-VL-72B-Instruct",
+            "service": "ovh",
+            "model": "Qwen2.5-VL-72B-Instruct",
+            "tier": "keyless",
+            "enabled": true,
+            "requires": []
+          },
+          {
+            "id": "visual/tesseract/eng",
+            "service": "tesseract",
+            "model": "eng",
+            "tier": "local",
+            "enabled": true,
+            "requires": []
+          }
+        ]
+      },
+      {
+        "id": "web-page",
+        "kind": "source",
+        "name": "Web page videos",
+        "enabled": true
+      },
+      {
+        "id": "web-page-transcript",
+        "kind": "captions",
+        "name": "Transcript published in the page (JSON-LD)",
+        "enabled": true
+      },
+      {
+        "id": "youtube",
+        "kind": "source",
+        "name": "YouTube",
+        "enabled": true
+      },
+      {
+        "id": "youtube-captions",
+        "kind": "captions",
+        "name": "YouTube captions",
+        "enabled": true
+      },
+      {
+        "id": "ytdlp",
+        "kind": "source",
+        "name": "yt-dlp (any site)",
+        "enabled": true
+      },
+      {
+        "id": "ytdlp-captions",
+        "kind": "captions",
+        "name": "yt-dlp subtitles",
+        "enabled": true
+      }
+    ]
+  }
+}

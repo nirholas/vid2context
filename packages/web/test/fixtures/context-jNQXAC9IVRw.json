@@ -1,0 +1,151 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/context?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DjNQXAC9IVRw"
+  },
+  "status": 200,
+  "contentType": "application/json",
+  "body": {
+    "metadata": {
+      "ref": {
+        "input": "https://www.youtube.com/watch?v=jNQXAC9IVRw",
+        "platform": "youtube",
+        "kind": "video",
+        "id": "youtube:jNQXAC9IVRw",
+        "nativeId": "jNQXAC9IVRw",
+        "url": "https://www.youtube.com/watch?v=jNQXAC9IVRw"
+      },
+      "title": "Me at the zoo",
+      "description": "Microplastics are accumulating in human brains at an alarming rate\nhttps://www.youtube.com/watch?v=0PT5c1z3LL8\n\n“Nanoplastics and Human Health” with Matthew J Campen, PhD, MSPH\nhttps://www.youtube.com/watch?v=RRBN_4L09Mg\n\n00:00 Intro\n00:05 The cool thing\n00:17 End",
+      "durationSec": 19,
+      "thumbnailUrl": "https://i.ytimg.com/vi/jNQXAC9IVRw/hqdefault.jpg?sqp=-oaymwEmCOADEOgC8quKqQMa8AEB-AG-AoAC8AGKAgwIABABGFUgWShlMA8=&rs=AOn4CLA9eLBatYv9WbkD4BbZ2Im-biSPTw",
+      "tags": [
+        "me at the zoo",
+        "jawed karim",
+        "first youtube video"
+      ],
+      "chapters": [
+        {
+          "title": "Intro",
+          "startSec": 0,
+          "endSec": 5
+        },
+        {
+          "title": "The cool thing",
+          "startSec": 5,
+          "endSec": 17
+        },
+        {
+          "title": "End",
+          "startSec": 17,
+          "endSec": 19
+        }
+      ],
+      "isLive": false,
+      "extra": {
+        "viewCount": 448531048,
+        "isShort": false,
+        "isLive": false,
+        "isUpcoming": false,
+        "isLiveContent": false,
+        "ageRestricted": false,
+        "membersOnly": false,
+        "playability": "OK",
+        "chapterSource": "description",
+        "links": [
+          "https://www.youtube.com/watch?v=0PT5c1z3LL8",
+          "https://www.youtube.com/watch?v=RRBN_4L09Mg"
+        ]
+      },
+      "channel": {
+        "name": "jawed",
+        "id": "UC4QobU6STFB0P71PMvOGN5A",
+        "url": "https://www.youtube.com/channel/UC4QobU6STFB0P71PMvOGN5A"
+      }
+    },
+    "transcript": {
+      "ref": {
+        "input": "https://www.youtube.com/watch?v=jNQXAC9IVRw",
+        "platform": "youtube",
+        "kind": "video",
+        "id": "youtube:jNQXAC9IVRw",
+        "nativeId": "jNQXAC9IVRw",
+        "url": "https://www.youtube.com/watch?v=jNQXAC9IVRw"
+      },
+      "language": "en",
+      "origin": "stt",
+      "producer": "stt/cloudflare/@cf/openai/whisper-large-v3-turbo",
+      "model": "@cf/openai/whisper-large-v3-turbo",
+      "segments": [
+        {
+          "startSec": 0.9800000000000022,
+          "endSec": 3.26,
+          "text": "Alright, so here we are, one of the elephants."
+        },
+        {
+          "startSec": 4.780000000000002,
+          "endSec": 7.52,
+          "text": "The cool thing about these guys is that they have"
+        },
+        {
+          "startSec": 7.52,
+          "endSec": 10.46,
+          "text": "really, really, really long"
+        },
+        {
+          "startSec": 11.960000000000003,
+          "endSec": 13.66,
+          "text": "trunks, and that's cool."
+        },
+        {
+          "startSec": 16.62,
+          "endSec": 18.4,
+          "text": "And that's pretty much all there is to say."
+        }
+      ],
+      "createdAt": "2026-11-14T17:26:02.864Z"
+    },
+    "attempts": [
+      {
+        "id": "youtube",
+        "stage": "resolve",
+        "outcome": "ok",
+        "detail": "youtube:jNQXAC9IVRw"
+      },
+      {
+        "id": "youtube",
+        "stage": "metadata",
+        "outcome": "ok",
+        "ms": 501
+      },
+      {
+        "id": "youtube-captions",
+        "stage": "captions",
+        "outcome": "error",
+        "reason": "blocked",
+        "detail": "YouTube captions en: YouTube answered HTTP 429 (automated-traffic block).",
+        "ms": 431
+      },
+      {
+        "id": "ytdlp-captions",
+        "stage": "captions",
+        "outcome": "error",
+        "reason": "rate-limited",
+        "detail": "yt-dlp captions: Unable to download video subtitles for 'en': HTTP Error 429: Too Many Requests",
+        "ms": 18010
+      },
+      {
+        "id": "ytdlp",
+        "stage": "audio",
+        "outcome": "ok",
+        "ms": 7815
+      },
+      {
+        "id": "stt/cloudflare/@cf/openai/whisper-large-v3-turbo",
+        "stage": "stt",
+        "outcome": "ok",
+        "ms": 1224
+      }
+    ]
+  }
+}

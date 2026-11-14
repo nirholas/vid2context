@@ -1,0 +1,66 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/context?url=upload%3A9dd76462aaf0e20bd4984c7cb49f092d667ea7bbcb065d46814d570460ec89d7"
+  },
+  "status": 200,
+  "contentType": "application/json",
+  "body": {
+    "metadata": {
+      "ref": {
+        "input": "upload:9dd76462aaf0e20bd4984c7cb49f092d667ea7bbcb065d46814d570460ec89d7",
+        "platform": "upload",
+        "kind": "video",
+        "id": "upload:9dd76462aaf0e20bd4984c7cb49f092d667ea7bbcb065d46814d570460ec89d7",
+        "nativeId": "9dd76462aaf0e20bd4984c7cb49f092d667ea7bbcb065d46814d570460ec89d7"
+      },
+      "title": "apollo11-small-step",
+      "chapters": [],
+      "extra": {
+        "filename": "apollo11-small-step.mp3",
+        "bytes": 145412,
+        "mimeType": "audio/mpeg"
+      }
+    },
+    "transcript": {
+      "ref": {
+        "input": "upload:9dd76462aaf0e20bd4984c7cb49f092d667ea7bbcb065d46814d570460ec89d7",
+        "platform": "upload",
+        "kind": "video",
+        "id": "upload:9dd76462aaf0e20bd4984c7cb49f092d667ea7bbcb065d46814d570460ec89d7",
+        "nativeId": "9dd76462aaf0e20bd4984c7cb49f092d667ea7bbcb065d46814d570460ec89d7"
+      },
+      "language": "en",
+      "origin": "stt",
+      "producer": "stt/cloudflare/@cf/openai/whisper-large-v3-turbo",
+      "model": "@cf/openai/whisper-large-v3-turbo",
+      "segments": [
+        {
+          "startSec": 3.3600000000000017,
+          "endSec": 5.16,
+          "text": "I'm going to step off the limb now."
+        },
+        {
+          "startSec": 15.100000000000001,
+          "endSec": 23.04,
+          "text": "That's one small step for man, one giant leap for mankind."
+        }
+      ],
+      "createdAt": "2026-11-14T17:40:46.516Z"
+    },
+    "attempts": [
+      {
+        "id": "uploads",
+        "stage": "resolve",
+        "outcome": "ok",
+        "detail": "upload:9dd76462aaf0e20bd4984c7cb49f092d667ea7bbcb065d46814d570460ec89d7"
+      },
+      {
+        "id": "stt/cloudflare/@cf/openai/whisper-large-v3-turbo",
+        "stage": "stt",
+        "outcome": "ok",
+        "ms": 5890
+      }
+    ]
+  }
+}

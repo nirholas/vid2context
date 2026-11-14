@@ -1,0 +1,15 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/jobs"
+  },
+  "status": 202,
+  "contentType": "application/json",
+  "body": {
+    "id": "job_Tqd4ETOFQqR7qWmrJgbY8A",
+    "kind": "context",
+    "status": "queued",
+    "createdAt": "2026-11-14T17:43:11.425Z",
+    "updatedAt": "2026-11-14T17:43:11.425Z"
+  }
+}

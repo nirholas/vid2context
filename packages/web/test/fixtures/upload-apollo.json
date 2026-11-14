@@ -1,0 +1,15 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/uploads"
+  },
+  "status": 201,
+  "contentType": "application/json",
+  "body": {
+    "input": "upload:9dd76462aaf0e20bd4984c7cb49f092d667ea7bbcb065d46814d570460ec89d7",
+    "filename": "apollo11-small-step.mp3",
+    "bytes": 145412,
+    "mimeType": "audio/mpeg",
+    "expiresAt": "2026-11-14T18:43:11.455Z"
+  }
+}

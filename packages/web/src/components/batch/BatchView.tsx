@@ -1,16 +1,18 @@
 /**
  * Playlists, channels and feeds: GET /items expands the list, the user picks
- * videos, they run through GET /context a few at a time, and the finished
- * ones become one combined bundle. Loaded on demand.
+ * videos, each runs as a `context` job (POST /jobs plus its event stream, or
+ * GET /context when the server has no jobs) a few at a time, and the
+ * finished ones become one combined bundle. Loaded on demand.
  */
 import { agentPrompt, type Bundle, type VideoContext, type VideoRef } from '@vid2context/core';
 import { Bot, CircleCheck, CircleX, FileArchive, ListVideo, Play } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { getContext, getItems } from '../../lib/api.ts';
+import { getItems } from '../../lib/api.ts';
 import { resultBundle } from '../../lib/bundle.ts';
 import { saveBlob, streamToBlob } from '../../lib/download.ts';
 import { type AppError, isAbort, toAppError } from '../../lib/errors.ts';
 import { putEntry, summarize } from '../../lib/history.ts';
+import { contextViaJob } from '../../lib/jobs.ts';
 import { appHref, onAppLinkClick, type RunParams, runSearch } from '../../lib/route.ts';
 import { runPool } from '../../lib/pool.ts';
 import { ErrorPanel } from '../ErrorPanel.tsx';
@@ -22,7 +24,7 @@ export const CONCURRENCY = 3;
 type ItemState =
   | { status: 'idle' }
   | { status: 'queued' }
-  | { status: 'running' }
+  | { status: 'running'; message?: string }
   | { status: 'done'; context: VideoContext }
   | { status: 'error'; error: AppError };
 
@@ -114,7 +116,12 @@ export function BatchView({ params }: { params: RunParams }) {
         setStates((s) => ({ ...s, [ref.id]: { status: 'running' } }));
         try {
           const input = refInput(ref);
-          const context = await getContext(input, { mode: params.mode, lang: params.lang || undefined }, { signal: ac.signal });
+          const context = await contextViaJob(
+            input,
+            { mode: params.mode, lang: params.lang || undefined, comments: params.comments },
+            (p) => setStates((s) => ({ ...s, [ref.id]: { status: 'running', message: p.message } })),
+            { signal: ac.signal },
+          );
           setStates((s) => ({ ...s, [ref.id]: { status: 'done', context } }));
           const b = await resultBundle([context]);
           await putEntry(summarize(context, { input, mode: params.mode, lang: params.lang }, b.files.length)).catch((err) =>
@@ -230,7 +237,7 @@ export function BatchView({ params }: { params: RunParams }) {
                       {s.status === 'queued' && 'Waiting'}
                       {s.status === 'running' && (
                         <>
-                          <Spinner /> Working
+                          <Spinner /> {s.message ? <span className="max-w-48 truncate">{s.message}</span> : 'Working'}
                         </>
                       )}
                       {s.status === 'done' && (
