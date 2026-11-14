@@ -21,13 +21,21 @@ const KEEP_HEADERS = ['content-type', 'retry-after'];
 function recorder(calls: RecordedExchange[]): typeof fetch {
   return async (input, init) => {
     const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
-    const res = await globalThis.fetch(input, init);
-    const body = await res.text();
     let model = '';
     try {
       model = (JSON.parse(String(init?.body)) as { model?: string }).model ?? '';
     } catch {
       model = '';
+    }
+    let res: Response;
+    let body: string;
+    try {
+      res = await globalThis.fetch(input, init);
+      body = await res.text();
+    } catch (err) {
+      const e = err as Error;
+      calls.push({ url, model, status: 0, headers: {}, body: e.message, error: e.name });
+      throw err;
     }
     const headers: Record<string, string> = {};
     for (const h of KEEP_HEADERS) {

@@ -3,7 +3,8 @@
  * the YouTube source and the OpenAI-compatible LLM rungs, and replay of
  * recorded LLM exchanges. Recorded calls are served in order, matched by URL
  * and the model named in the request body, so a fallback replays exactly as
- * it happened when recorded.
+ * it happened when recorded. A request that got no response (a timeout)
+ * was recorded as its error and is replayed by rejecting with it.
  */
 import { readFileSync } from 'node:fs';
 import { type Collection, MemoryStorage, Registry, type VideoContext } from '@vid2context/core';
@@ -36,9 +37,12 @@ export interface RecordedExchange {
   url: string;
   /** The `model` field of the request body. */
   model: string;
+  /** 0 when the request failed without a response. */
   status: number;
   headers: Record<string, string>;
   body: string;
+  /** Name of the error the fetch rejected with (TimeoutError, AbortError, TypeError), when it got no response. */
+  error?: string;
 }
 
 export interface Recording {
@@ -71,6 +75,7 @@ export function replayRecording(rec: Recording): ReplayFetch {
         if (i === -1) throw new Error(`replay: no recorded exchange left for ${call.url} model ${modelOf(call)}`);
         const [hit] = left.splice(i, 1);
         if (!hit) throw new Error('replay: exchange vanished');
+        if (hit.error) throw new DOMException(hit.body || 'recorded network failure', hit.error);
         return { status: hit.status, headers: hit.headers, body: hit.body };
       },
     },
