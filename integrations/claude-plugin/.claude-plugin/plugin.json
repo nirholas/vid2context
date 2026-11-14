@@ -1,0 +1,19 @@
+{
+  "name": "vid2context",
+  "version": "0.1.0",
+  "description": "Turn any video into context for Claude: transcripts, metadata and chapters with timestamps to cite. Adds the vid2context MCP server and a skill that reads long videos outline first and cites every claim.",
+  "author": {
+    "name": "nirholas",
+    "url": "https://github.com/nirholas"
+  },
+  "homepage": "https://github.com/nirholas/vid2context",
+  "repository": "https://github.com/nirholas/vid2context",
+  "license": "Apache-2.0",
+  "keywords": ["video", "youtube", "transcript", "captions", "podcast", "research", "mcp"],
+  "mcpServers": {
+    "vid2context": {
+      "command": "npx",
+      "args": ["-y", "vid2context-mcp"]
+    }
+  }
+}

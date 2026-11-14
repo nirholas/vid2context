@@ -1,0 +1,16 @@
+{
+  "name": "vid2context",
+  "owner": {
+    "name": "nirholas"
+  },
+  "description": "vid2context for Claude Code: turn any video into cited context for agents.",
+  "plugins": [
+    {
+      "name": "vid2context",
+      "source": "./integrations/claude-plugin",
+      "description": "The vid2context MCP server plus a skill for reading videos outline first and citing timestamps.",
+      "category": "productivity",
+      "tags": ["video", "youtube", "transcript", "research", "mcp"]
+    }
+  ]
+}
