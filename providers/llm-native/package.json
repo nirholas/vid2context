@@ -1,0 +1,20 @@
+{
+  "name": "@vid2context/provider-llm-native",
+  "version": "0.1.0",
+  "description": "Native Anthropic Messages and Gemini generateContent chat rungs, plus Claude and Gemini on Vertex AI: native streaming, JSON output and prompt caching for long transcripts.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "vid2context": {
+    "runtimes": [
+      "node",
+      "workers",
+      "browser"
+    ]
+  },
+  "dependencies": {
+    "@vid2context/core": "*"
+  }
+}
