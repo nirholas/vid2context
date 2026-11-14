@@ -1,6 +1,8 @@
 /**
  * LIVE=1 only: starts src/node.ts on a random port and asks it for a real
- * YouTube transcript, then checks graceful shutdown on SIGTERM.
+ * YouTube transcript, then checks graceful shutdown on SIGTERM. The library
+ * is in memory (VID2CONTEXT_STORAGE=memory), so the transcript is fetched
+ * from YouTube, never served from a saved copy.
  */
 import { type ChildProcess, spawn } from 'node:child_process';
 import { join } from 'node:path';
@@ -21,7 +23,7 @@ describe.skipIf(!process.env.LIVE)('node server (live)', () => {
   it('serves a real YouTube transcript and openapi.json, then shuts down cleanly', async () => {
     child = spawn(join(repo, 'node_modules', '.bin', 'tsx'), [join(repo, 'packages', 'server', 'src', 'node.ts')], {
       cwd: repo,
-      env: { ...process.env, PORT: String(port), HOST: '127.0.0.1', VID2CONTEXT_ACCESS_LOG: '1' },
+      env: { ...process.env, PORT: String(port), HOST: '127.0.0.1', VID2CONTEXT_ACCESS_LOG: '1', VID2CONTEXT_STORAGE: 'memory' },
       stdio: ['ignore', 'ignore', 'pipe'],
     });
     child.stderr?.on('data', (d) => {
@@ -34,7 +36,7 @@ describe.skipIf(!process.env.LIVE)('node server (live)', () => {
     }
 
     const res = await fetch(`${base}/transcript?url=${encodeURIComponent('https://youtu.be/jNQXAC9IVRw')}`);
-    expect(res.status).toBe(200);
+    if (res.status !== 200) throw new Error(`live transcript failed: ${res.status} ${await res.text()}`);
     expect(await res.text()).toContain('elephants');
 
     const doc = await (await fetch(`${base}/openapi.json`)).json();
