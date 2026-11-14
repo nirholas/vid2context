@@ -122,6 +122,13 @@ describe('links', () => {
     expect(external.size).toBeGreaterThan(0);
   });
 
+  it('llms.txt keeps the repo copy and has one Docs section', () => {
+    const site = read(join(DIST, 'llms.txt'));
+    const repo = read(join(SITE, '..', 'llms.txt'));
+    expect(site.match(/^## Docs$/gm)).toHaveLength(1);
+    for (const line of repo.split('\n').filter((l) => l.trim())) expect(site).toContain(line);
+  });
+
   it('every page in llms.txt has its Markdown twin', () => {
     const urls = [...read(join(DIST, 'llms.txt')).matchAll(/\((https:\/\/vid2context\.com\/[^)]+\.md)\)/g)].map(
       (m) => m[1] ?? '',
