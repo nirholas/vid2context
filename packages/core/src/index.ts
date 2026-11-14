@@ -11,3 +11,4 @@ export * from './storage.ts';
 export * from './types.ts';
 export * from './storage-ext.ts';
 export * from './tokens.ts';
+export * from './audio-split.ts';
