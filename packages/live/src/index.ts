@@ -7,6 +7,7 @@ export * from './format.ts';
 export * from './hls.ts';
 export * from './http.ts';
 export * from './mcp.ts';
+export * from './mpegts.ts';
 export * from './overlap.ts';
 export * from './resolve.ts';
 export * from './types.ts';

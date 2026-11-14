@@ -29,6 +29,7 @@ import {
   Vid2ContextError,
 } from '@vid2context/core';
 import { type MediaPlaylist, type MediaSegment, parsePlaylist } from './hls.ts';
+import { stripServiceTables } from './mpegts.ts';
 import { dedupeOverlap, wordsOf } from './overlap.ts';
 import { type LiveSource, resolveLive } from './resolve.ts';
 import type { ChunkMedia, LiveDeps, LiveEvent, LiveStatusCode, WatchLiveOptions } from './types.ts';
@@ -44,6 +45,8 @@ const SEGMENT_RETRIES = 2;
 const MIN_TAIL_SEC = 1;
 /** Words of already emitted text kept for overlap matching. */
 const TAIL_WORDS = 24;
+/** Tolerance for comparing sums of segment durations. */
+const EPSILON = 0.01;
 
 type DoneReason = Extract<LiveEvent, { type: 'done' }>['reason'];
 
@@ -272,8 +275,13 @@ export async function* watchLive(input: string, opts: WatchLiveOptions, deps: Li
     const from = cursor ?? buffer[0]?.startSec;
     const head = from === undefined ? undefined : Math.max(from, inflightEnd ?? from);
     if (end === null || head === undefined || end - head <= maxLagSec) return;
-    const target = end - chunkSec;
-    while (buffer.length > 1 && endOf(buffer[0] as Buffered) <= target) buffer.shift();
+    // Keep the newest segments that hold at least one chunk, so the next window starts on a segment boundary.
+    let keep = buffer.length - 1;
+    while (keep > 0 && end - (buffer[keep] as Buffered).startSec < chunkSec - EPSILON) keep--;
+    const target = (buffer[keep] as Buffered).startSec;
+    // No segment boundary to jump to yet; the next segment will bring one.
+    if (target <= head + EPSILON) return;
+    buffer.splice(0, keep);
     pushStatus(
       'skipped',
       `Transcription fell ${Math.round(end - head)} s behind the live edge (limit ${maxLagSec} s); skipped ${span(head, target)} to catch up.`,
@@ -500,7 +508,7 @@ export async function* watchLive(input: string, opts: WatchLiveOptions, deps: Li
       if (cursor === null && buffer[0]) cursor = buffer[0].startSec;
       const end = bufferEnd();
       const avail = end !== null && cursor !== null ? end - cursor : 0;
-      if (!(avail >= chunkSec || (finished !== null && avail >= MIN_TAIL_SEC))) {
+      if (!(avail >= chunkSec - EPSILON || (finished !== null && avail >= MIN_TAIL_SEC))) {
         if (finished) {
           reason = finished;
           break;
@@ -518,7 +526,7 @@ export async function* watchLive(input: string, opts: WatchLiveOptions, deps: Li
       const firstPart = parts[0] as Buffered;
       const init = firstPart.initUri ? inits.get(firstPart.initUri) : undefined;
       const media: ChunkMedia = {
-        data: concat([...(init ? [init] : []), ...parts.map((p) => p.data)]),
+        data: stripServiceTables(concat([...(init ? [init] : []), ...parts.map((p) => p.data)])),
         offsetSec: chunkStart - firstPart.startSec,
         durationSec: chunkEnd - chunkStart,
         filename: `live-${firstPart.sequence}.wav`,

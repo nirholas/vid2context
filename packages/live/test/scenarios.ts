@@ -118,11 +118,9 @@ export interface Scenario {
   input: string;
   routes: () => Route[];
   opts: WatchLiveOptions;
-  /** Stop (abort) once this returns true for an event; omit to run until `done`. */
-  stopWhen?: (e: LiveEvent, seen: LiveEvent[]) => boolean;
+  /** Stop (abort) right after this many successful speech-to-text responses; omit to run until `done`. */
+  stopAfterStt?: number;
 }
-
-const rungs = (seen: LiveEvent[]) => seen.filter((e) => e.type === 'status' && e.code === 'rung').length;
 
 export const SCENARIOS: Record<string, Scenario> = {
   nasaSequence: {
@@ -130,21 +128,21 @@ export const SCENARIOS: Record<string, Scenario> = {
     input: NASA_URL,
     routes: nasaRoutes,
     opts: { fromSequence: 323509, chunkSec: 15, catchUpChunks: 1 },
-    stopWhen: (_e, seen) => rungs(seen) >= 1,
+    stopAfterStt: 1,
   },
   nasaBackpressure: {
     name: 'nasa-backpressure',
     input: NASA_URL,
     routes: nasaRoutes,
     opts: { fromSequence: 323509, chunkSec: 5, maxLagSec: 6, catchUpChunks: 1 },
-    stopWhen: (_e, seen) => rungs(seen) >= 2,
+    stopAfterStt: 2,
   },
   nasaResume: {
     name: 'nasa-resume',
     input: NASA_URL,
     routes: nasaRoutes,
     opts: { fromSequence: 323510, chunkSec: 10, catchUpChunks: 1 },
-    stopWhen: (_e, seen) => rungs(seen) >= 1,
+    stopAfterStt: 1,
   },
   apolloOverlap: {
     name: 'apollo-overlap',
@@ -161,6 +159,13 @@ export const SCENARIOS: Record<string, Scenario> = {
 };
 
 /**
+ * Recorded once when an earlier run had used up the keyless quota: a 429 with
+ * Retry-After, then a 200. Kept out of SCENARIOS so re-recording never
+ * overwrites it (a fresh quota would not reproduce the 429).
+ */
+export const RATELIMIT_SCENARIO: Scenario = { ...(SCENARIOS.nasaSequence as Scenario), name: 'nasa-ratelimit' };
+
+/**
  * Playlist polls wait at most 5 ms in tests instead of the target duration. A
  * real (short) timer, so the event loop still runs ffmpeg's I/O in between.
  */
@@ -170,18 +175,31 @@ export const fastSleep = (ms: number, signal?: AbortSignal) => abortableSleep(Ma
 export async function runScenario(
   s: Scenario,
   responder: SttResponder,
+  opts: { onEvent?: (e: LiveEvent) => void; limitMs?: number } = {},
 ): Promise<{ events: LiveEvent[]; fetch: ReturnType<typeof replayFetch> }> {
   const stop = new AbortController();
-  const { ctx, fetch } = liveContext([...s.routes(), sttRoute(responder)]);
+  const limit = setTimeout(() => stop.abort(), opts.limitMs ?? 50_000);
+  let ok = 0;
+  // Aborting inside the response leaves that chunk's transcription intact: the watcher emits its lines, then stops.
+  const counted: SttResponder = async (call) => {
+    const res = await responder(call);
+    if ((res.status ?? 200) === 200 && s.stopAfterStt !== undefined && ++ok >= s.stopAfterStt) stop.abort();
+    return res;
+  };
+  const { ctx, fetch } = liveContext([...s.routes(), sttRoute(counted)]);
   const events: LiveEvent[] = [];
   const watcher = watchLive(
     s.input,
     { ...s.opts, signal: stop.signal },
     { registry: sttRegistry(), ctx, extractAudio: createFfmpegExtractor({ env: ctx.env }), sleep: fastSleep },
   );
-  for await (const e of watcher) {
-    events.push(e);
-    if (s.stopWhen?.(e, events)) stop.abort();
+  try {
+    for await (const e of watcher) {
+      events.push(e);
+      opts.onEvent?.(e);
+    }
+  } finally {
+    clearTimeout(limit);
   }
   return { events, fetch };
 }
