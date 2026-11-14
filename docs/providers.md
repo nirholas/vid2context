@@ -60,6 +60,15 @@ Every free and paid lane takes `<PROVIDER>_FALLBACK_KEYS` (one extra rung per ke
 | `VID2CONTEXT_LOG_LEVEL` | `debug`, `info`, `warn` (default), `error`, `silent`; logs go to stderr |
 | `VID2CONTEXT_ENV_FILE` | an env file to load before `./.env` (shell variables always win) |
 
+## Exports
+
+| Env var | Used by | Notes |
+|---|---|---|
+| `NOTION_TOKEN` | `@vid2context/exporters` (`export_notion`, `POST /exports/notion`) | secret of an internal integration (free) from https://www.notion.so/profile/integrations; share the parent page with it (page menu, Connections). Requests are paced to about 3 per second and use `Notion-Version: 2026-03-11` |
+| `NOTION_PARENT_PAGE_ID` | `@vid2context/exporters` | id or link of the Notion page the video pages go under; a per-call `parentPageId` wins |
+
+Obsidian exports need no variable: they are local files.
+
 ## Planned (see ROADMAP.md)
 
 | Kind | Provider | Tier | Enabled by | Known limits |

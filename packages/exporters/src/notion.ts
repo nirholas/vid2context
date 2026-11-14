@@ -17,7 +17,7 @@
  * in the first block, a gray paragraph reading
  *
  *   vid2context-id: youtube:cCPsdFdlshc
- *   vid2context-digest: 0123456789abcdef
+ *   vid2context-digest: 7a5c2cd11605b19c
  *
  * A later export lists the parent's child pages, reads each one's first block
  * and updates the page with the same id instead of creating a duplicate. The

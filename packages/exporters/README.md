@@ -59,7 +59,7 @@ Idempotency: pages under a page only have a title property, so the first block o
 
 ```
 vid2context-id: youtube:cCPsdFdlshc
-vid2context-digest: 3b1f0c9e5a7d2468
+vid2context-digest: 7a5c2cd11605b19c
 ```
 
 An export lists the parent's child pages, reads each one's first block (once per export) and, when one carries the same id, updates that page instead of creating another: it renames it, clears its content (`erase_content`) and appends the new blocks. The digest is a SHA-256 of the planned title and blocks; a page whose digest matches is left alone and reported as `unchanged`. While a write that needs several requests is in progress, the marker reads `vid2context-digest: incomplete`, so an interrupted export is rewritten on the next run. Keep the marker as the first block if you edit an exported page; anything you add to the page is replaced on the next changed export.
