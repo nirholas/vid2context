@@ -232,4 +232,13 @@ describe.skipIf(!process.env.LIVE)('live', () => {
     if (res.via === 'llm') assertTimingsKept(res.transcript, context.transcript);
     console.error(res.via, res.producer, JSON.stringify(res.transcript.segments, null, 2));
   });
+
+  it('translates a real transcript with the live LLM chain (no YouTube call)', async () => {
+    const { createNodeContext, createRegistry } = await import('@vid2context/registry/node');
+    const ctx = createNodeContext();
+    const res = await translateContext(createRegistry(), zoo, { language: 'fr', platform: false }, ctx);
+    expect(res.via).toBe('llm');
+    assertTimingsKept(res.transcript, zoo.transcript);
+    console.error(res.producer, JSON.stringify(res.report), JSON.stringify(res.transcript.segments, null, 2));
+  });
 });
