@@ -30,6 +30,11 @@ export function apiBase(): string {
   return normalizeApiBase(saved?.trim() ? saved : DEFAULT_API_BASE);
 }
 
+/** True when the user saved an API base in Settings. */
+export function hasApiOverride(): boolean {
+  return !!readStorage(API_BASE_KEY)?.trim();
+}
+
 /** Save an override, or clear it with an empty value. */
 export function setApiBase(value: string): void {
   const v = normalizeApiBase(value);
