@@ -1,0 +1,82 @@
+{
+  "recordedAt": "2026-11-14",
+  "model": "onnx-community/whisper-base",
+  "device": "cpu",
+  "dtype": {
+    "encoder_model": "fp32",
+    "decoder_model_merged": "fp32"
+  },
+  "runtime": "node",
+  "input": "apollo-x3",
+  "durationSec": 72.4041875,
+  "detectedLanguage": "en",
+  "ms": 6441,
+  "output": {
+    "text": " have no step off the land now. It's one small step for man. One by a fleet per man time. And I'll step off the land now. That's one small spare per man. One tire free per man one by a three per man time and a spare part per man now That's one small step for man. One by a fleet for man, tell me.",
+    "chunks": [
+      {
+        "timestamp": [
+          0,
+          7
+        ],
+        "text": " have no step off the land now."
+      },
+      {
+        "timestamp": [
+          7,
+          18
+        ],
+        "text": " It's one small step for man."
+      },
+      {
+        "timestamp": [
+          18,
+          27
+        ],
+        "text": " One by a fleet per man time."
+      },
+      {
+        "timestamp": [
+          27,
+          32
+        ],
+        "text": " And I'll step off the land now."
+      },
+      {
+        "timestamp": [
+          32,
+          42
+        ],
+        "text": " That's one small spare per man."
+      },
+      {
+        "timestamp": [
+          42,
+          47
+        ],
+        "text": " One tire free per man one by a three per man time"
+      },
+      {
+        "timestamp": [
+          52,
+          59
+        ],
+        "text": " and a spare part per man now"
+      },
+      {
+        "timestamp": [
+          59,
+          67
+        ],
+        "text": " That's one small step for man."
+      },
+      {
+        "timestamp": [
+          67,
+          72
+        ],
+        "text": " One by a fleet for man, tell me."
+      }
+    ]
+  }
+}
