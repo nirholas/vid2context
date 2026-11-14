@@ -1,16 +1,16 @@
 {
   "scenario": "extract-repair",
-  "recordedAt": "2026-11-14T17:38:10.245Z",
+  "recordedAt": "2026-11-14T18:38:24.168Z",
   "note": "Recorded LIVE with packages/insights/scripts/record-llm.ts from the keyless chain (no keys). Responses are verbatim.",
   "exchanges": [
     {
-      "atMs": 8,
+      "atMs": 11,
       "url": "https://oai.endpoints.kepler.ai.cloud.ovh.net/v1/chat/completions",
       "method": "POST",
       "model": "Meta-Llama-3_3-70B-Instruct",
       "status": 200,
       "contentType": "application/json",
-      "body": "{\"id\":\"chatcmpl-89928cdc6a60d118\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"data\\\": {\\\"bestYears\\\": [\\\"2002-2010\\\"], \\\"problems\\\": [{\\\"name\\\": \\\"Oil\\\", \\\"fixCost\\\": \\\"$100\\\"}, {\\\"name\\\": \\\"Turbo\\\", \\\"fixCost\\\": \\\"$500\\\"}, {\\\"name\\\": \\\"Leaks\\\", \\\"fixCost\\\": \\\"$200\\\"}]}, \\\"citations\\\": [{\\\"path\\\": \\\"/data/bestYears/0\\\", \\\"videoId\\\": \\\"V1\\\", \\\"startSec\\\": 504, \\\"quote\\\": \\\"2002 through 2010\\\"}, {\\\"path\\\": \\\"/data/problems/0/name\\\", \\\"videoId\\\": \\\"V1\\\", \\\"startSec\\\": 302, \\\"quote\\\": \\\"they drink a little oil\\\"}, {\\\"path\\\": \\\"/data/problems/1/name\\\", \\\"videoId\\\": \\\"V1\\\", \\\"startSec\\\": 952, \\\"quote\\\": \\\"extra coolers\\\"}, {\\\"path\\\": \\\"/data/problems/2/name\\\", \\\"videoId\\\": \\\"V1\\\", \\\"startSec\\\": 985, \\\"quote\\\": \\\"exhaust\\\"}]}\"},\"finish_reason\":\"stop\"}],\"created\":1794677890,\"model\":\"Meta-Llama-3_3-70B-Instruct\",\"object\":\"chat.completion\",\"usage\":{\"prompt_tokens\":5450,\"completion_tokens\":201,\"total_tokens\":5651}}"
+      "body": "{\"id\":\"chatcmpl-a314c98d92991ed2\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"data\\\": {\\\"bestYears\\\": [\\\"2002-2010\\\"], \\\"problems\\\": [{\\\"name\\\": \\\"Leaks\\\", \\\"fixCost\\\": \\\"$500\\\"}, {\\\"name\\\": \\\"Noise\\\", \\\"fixCost\\\": \\\"$200\\\"}, {\\\"name\\\": \\\"Vibes\\\", \\\"fixCost\\\": \\\"$300\\\"}]}, \\\"citations\\\": [{\\\"path\\\": \\\"/data/bestYears\\\", \\\"videoId\\\": \\\"V1\\\", \\\"startSec\\\": 504, \\\"quote\\\": \\\"this model the G500 2002 through 2010\\\"}, {\\\"path\\\": \\\"/data/problems/0\\\", \\\"videoId\\\": \\\"V1\\\", \\\"startSec\\\": 302, \\\"quote\\\": \\\"they drink a little oil\\\"}, {\\\"path\\\": \\\"/data/problems/1\\\", \\\"videoId\\\": \\\"V1\\\", \\\"startSec\\\": 313, \\\"quote\\\": \\\"I my 2018 Audi Q7 drink about a court\\\"}, {\\\"path\\\": \\\"/data/problems/2\\\", \\\"videoId\\\": \\\"V1\\\", \\\"startSec\\\": 985, \\\"quote\\\": \\\"there's I really prefer the naturally aspirated engine\\\"}]}\"},\"finish_reason\":\"stop\"}],\"created\":1794681505,\"model\":\"Meta-Llama-3_3-70B-Instruct\",\"object\":\"chat.completion\",\"usage\":{\"prompt_tokens\":5455,\"completion_tokens\":220,\"total_tokens\":5675}}"
     }
   ]
 }

@@ -25,7 +25,7 @@ console.log(brief.markdown);
 ```
 
 1. Budget. The source budget per call comes from the first rung the chain would try: 75 percent of its `contextTokens`, minus the answer and the prompt, capped at 24k tokens (keyless hosts are slow on huge prompts). `maxChunkTokens` lowers it.
-2. Single pass. When every source fits, one call returns the claims and their organization into topics and points.
+2. Single pass. When every source fits, one call returns the claims and their organization into topics and points. It does the reduce step's work, so it runs on the reduce chain (policy `quality` by default).
 3. Map. Otherwise each video is cut at line boundaries (lines are about 10 s of segments) into chunks that fit, and each chunk becomes claims JSON: `{ claim, quote, videoId, startSec, topic, stance? }`.
 4. Verify. Every claim's quote is checked against its transcript (rules below). Only verified claims go on.
 5. Reduce. Claims are grouped by normalized topic (lowercase, stop words and simple plurals folded) and packed into batches; an LLM merges topics that mean the same thing and groups claims into points with `support`, `oppose` and a `counter` sentence. By default the reduce step uses policy `quality` (unless you set a policy), so it prefers the strongest rung you have.
@@ -73,4 +73,31 @@ The model answers `{ data, citations }`: `data` matches your schema and each cit
 
 ## Walkthrough: which G-Wagon to buy
 
-WALKTHROUGH
+Four parts of the Alliance Motorworks G-Wagon buyer's series (about 23k tokens of transcript, so one pass), question "Which G-Wagon should I buy: model, year range and mileage, and what should I check before buying?", buyer-guide template, no keys set. This is the recorded run in `packages/insights/test/fixtures/llm/brief-single.json`; rerun it live with `npx tsx packages/insights/examples/brief.ts`.
+
+What happened, from `rungs` and `attempts`: the single pass runs on the reduce chain (policy `quality`), so gpt-oss-120b on OVH went first. It spent its whole 4000-token output budget on reasoning and returned empty content (`finish_reason: length`), so the chain moved on to Llama 3.3 70B, which answered in 34 s. Llama wrote timestamps as `[55]`, copying the line tags; `parseSeconds` accepts that form. It proposed 10 claims: 7 passed verification and 3 did not. Excerpt of the Markdown:
+
+```md
+## Engines
+
+- The 2000 G500 has a reliable M113 V8 engine
+  - [Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked! @ 1:09](https://www.youtube.com/watch?v=cCPsdFdlshc&t=69s): "this one has what we know the legendary m113 V8"
+- The 2012 G55 AMG has a supercharged engine with 490 horsepower
+  - [Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked! @ 4:47](https://www.youtube.com/watch?v=cCPsdFdlshc&t=287s): "491 horsepower of German ponies"
+
+## Maintenance costs
+
+- The cost of maintaining a G-Wagon is comparable to other German vehicles
+  - [G-Wagon Mechanic Reveals The Truth: Are They Ridiculously Expensive To Maintain? @ 10:07](https://www.youtube.com/watch?v=ovIkN7UgbgE&t=607s): "you're going to pay more for is labor"
+
+## Appendix: unverified claims
+
+| Claim | Video | Reason |
+|---|---|---|
+| The G55 AMG is a good choice for someone who wants a lot of power and fun | youtube:cCPsdFdlshc @ 8:57 | quote-not-found: Best match near 8:57 covers 78% of the quote's words (needs 80%). |
+| The G-Wagon is not ridiculously expensive to maintain | youtube:ovIkN7UgbgE @ 8:27 | quote-not-found: Best match near 8:27 covers 57% of the quote's words (needs 80%). |
+```
+
+Two things to notice. Every link opens the video where the quoted words are spoken: the model said 0:55 for the M113 quote, and verification moved it to 1:09, where the words start. And the claim about the G55 is in the appendix, not the brief, because the model's quote was only 78 percent the transcript's words.
+
+The run also shows the limits of the keyless fallback. With 10 claims and no claim made by two videos, the brief has no consensus points, and Llama filed fuel economy under "Prices". A local model or a free-tier key (`docs/providers.md`) gives the single pass a stronger first rung; agent-side synthesis with `briefPrompt` uses whatever model the agent runs.

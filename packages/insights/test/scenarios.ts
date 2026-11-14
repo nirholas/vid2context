@@ -7,7 +7,13 @@ import type { BriefOptions, ExtractOptions, JsonSchema } from '../src/index.ts';
 
 export const QUESTION = 'Which G-Wagon should I buy: model, year range and mileage, and what should I check before buying?';
 
-/** Short strings and few items: a schema real models often break on the first try. */
+/**
+ * A strict custom schema: exact name lengths and whole-dollar costs. It was
+ * meant to provoke a repair, but the recorded answer met it on the first try,
+ * so this scenario covers the no-repair path for custom schemas. The repair
+ * path is covered by `extract-buyer`, whose recorded first answer broke the
+ * buyer-guide schema.
+ */
 export const REPAIR_SCHEMA: JsonSchema = {
   type: 'object',
   properties: {
@@ -18,7 +24,10 @@ export const REPAIR_SCHEMA: JsonSchema = {
       maxItems: 3,
       items: {
         type: 'object',
-        properties: { name: { type: 'string', maxLength: 10 }, fixCost: { type: 'string', pattern: '^\\$[0-9]' } },
+        properties: {
+          name: { type: 'string', minLength: 5, maxLength: 5 },
+          fixCost: { type: 'string', pattern: '^\\$[0-9]+$' },
+        },
         required: ['name', 'fixCost'],
         additionalProperties: false,
       },

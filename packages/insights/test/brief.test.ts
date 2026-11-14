@@ -170,35 +170,46 @@ describe('classify', () => {
 });
 
 describe('extract (replayed)', () => {
-  it('fills the buyer-guide template with verified citations only', async () => {
+  it('fills the buyer-guide template, repairs the broken first answer once, and keeps verified citations only', async () => {
     const s = SCENARIOS['extract-buyer'];
     const contexts = contextsFor(s.videos);
     const fetch = replayRecording(loadRecording('extract-buyer'));
     const r = await extract(contexts, { ...s.options, sleep: noWait }, { registry, ctx: testContext({ fetch }) });
     expect(fetch.remaining()).toBe(0);
     expect(r.template).toBe('buyer-guide');
-    expect(r.citations.length).toBeGreaterThan(3);
-    const byId = new Map(contexts.map((c) => [c.metadata.ref.id, c]));
-    for (const c of r.citations) {
-      expect(verifyQuote(byId.get(c.videoId) as VideoContext, c.quote, c.startSec).ok).toBe(true);
-      expect(c.url).toMatch(/&t=\d+s$/);
-    }
-    // No citation object left in the data is unverified: each one carries a url and title.
-    const raw = JSON.stringify(r.data);
-    expect(raw.match(/"quote"/g)?.length ?? 0).toBe(r.citations.length);
-  });
-
-  it('sends exactly one repair call when the answer breaks the schema', async () => {
-    const s = SCENARIOS['extract-repair'];
-    const rec = loadRecording('extract-repair');
-    const fetch = replayRecording(rec);
-    const r = await extract(contextsFor(s.videos), { ...s.options, sleep: noWait }, { registry, ctx: testContext({ fetch }) });
-    expect(fetch.remaining()).toBe(0);
+    // The recorded first answer broke the template schema; exactly one repair call followed.
     expect(r.repaired).toBe(true);
     expect(r.rungs.map((x) => x.step)).toEqual(['extract', 'repair']);
     const repairBody = JSON.parse(String(fetch.calls.at(-1)?.body)) as { messages: { role: string; content: string }[] };
     expect(repairBody.messages.at(-1)?.content).toContain('does not match the schema');
     expect(repairBody.messages.at(-2)?.role).toBe('assistant');
-    expect(r.uncited).toBeDefined();
+
+    expect(r.citations.length).toBeGreaterThan(0);
+    const byId = new Map(contexts.map((c) => [c.metadata.ref.id, c]));
+    for (const c of r.citations) {
+      expect(verifyQuote(byId.get(c.videoId) as VideoContext, c.quote, c.startSec).ok).toBe(true);
+      expect(c.url).toMatch(/&t=\d+s$/);
+    }
+    // The model cited V1 for quotes spoken in other videos or at other times; those are removed, not shown.
+    expect(r.unverified.length).toBeGreaterThan(0);
+    expect(r.unverified.every((u) => u.reason !== undefined && u.path?.startsWith('/'))).toBe(true);
+    // No citation object left in the data is unverified: the only quotes in it are the verified ones.
+    const raw = JSON.stringify(r.data);
+    expect(raw.match(/"quote"/g)?.length ?? 0).toBe(r.citations.length);
+  });
+
+  it('accepts a valid first answer for a custom schema without a repair call, and reports uncited values', async () => {
+    const s = SCENARIOS['extract-repair'];
+    const fetch = replayRecording(loadRecording('extract-repair'));
+    const r = await extract(contextsFor(s.videos), { ...s.options, sleep: noWait }, { registry, ctx: testContext({ fetch }) });
+    expect(fetch.remaining()).toBe(0);
+    expect(fetch.calls.length).toBe(1);
+    expect(r.repaired).toBe(false);
+    expect(r.rungs.map((x) => x.step)).toEqual(['extract']);
+    expect(r.template).toBeUndefined();
+    // Citation paths point into the unwrapped data, and every value no verified citation covers is listed.
+    for (const c of r.citations) expect(c.path.startsWith('/data')).toBe(false);
+    const covered = (p: string) => r.citations.some((c) => p === c.path || p.startsWith(`${c.path}/`));
+    expect(r.uncited?.every((p) => !covered(p))).toBe(true);
   });
 });
