@@ -169,3 +169,28 @@ interface Job {
 - When `VID2CONTEXT_API_KEYS` is set (comma-separated), every route except `/health` requires `Authorization: Bearer <key>`; otherwise the server is open and binds to 127.0.0.1 by default.
 - Rate limiting is per key (or per IP when open), answering `429` with `Retry-After` and the standard error body (`code: rate-limited`).
 - CORS is off by default; `VID2CONTEXT_CORS_ORIGINS` lists allowed origins for the web app and the extension.
+
+## Wave 2 routes (prompts 51 to 62)
+
+Same conventions as above. Each package exports a Hono sub-app factory from its own `src/http.ts`; item 46, or the integration pass, mounts it under `/api/v1`.
+
+| Method and path | Owner | Request | Response |
+|---|---|---|---|
+| `GET /skips?url=&categories=` | 53 | `categories` comma-separated | `{ segments: SkipSegment[], coveredSec, source: 'sponsorblock', attribution }` |
+| `GET /transcript?...&skip=sponsor,selfpromo` | 53 (option), 46 (route) | | the transcript with those segments removed; the raw transcript stays stored |
+| `POST /research` | 54 | `{ urls: string[], query, contextSec?, maxExcerpts? }` | `{ results: { videoId, title, excerpts: { startSec, endSec, text, context, url? }[] }[] }` |
+| `GET /caption-languages?url=` | 54 | | `{ tracks: CaptionTrackInfo[], translationTargets: { language, name }[] }` |
+| `GET /key-moments?url=&count=` | 54 | | `{ moments: { startSec, title, why, url? }[], rung }` |
+| `POST /bots/telegram` | 56 | Telegram update; `X-Telegram-Bot-Api-Secret-Token` checked | `200` |
+| `POST /bots/discord` | 56 | Discord interaction; Ed25519 signature checked | interaction response |
+| `POST /bots/slack/events`, `POST /bots/slack/commands` | 56 | Slack payloads; signing secret checked | `200` within 3 seconds |
+| `POST /exports/notion` | 57 | `{ inputs?, collectionId?, parentPageId? }` | `{ pages: { videoId, url }[] }` |
+| `POST /exports/obsidian` | 57 | `{ inputs?, collectionId? }` | `{ files: { path, content }[] }` (the caller writes them, or 15 zips them) |
+| `GET /auth/github/login`, `GET /auth/github/callback`, `POST /auth/logout` | 58 | | session cookie; only the GitHub id and login are stored |
+| `GET /me`, `GET /me/usage` | 58 | | `{ id, login, plan }`, `{ period, used, limits }` |
+| `GET /me/keys`, `POST /me/keys`, `DELETE /me/keys/:id` | 58 | `{ name }` on POST | the key is shown once on creation, stored hashed |
+| `GET /webhooks`, `POST /webhooks`, `DELETE /webhooks/:id`, `POST /webhooks/:id/test` | 59 | `{ url, events: string[] }` on POST | `Webhook` (the signing secret is shown once) |
+| `GET /live?url=&maxMinutes=` | 61 | | `text/event-stream`: `segment`, `status`, `done`, `error` |
+| `POST /duplicates` | 62 | `{ inputs?, collectionId? }` | `{ groups: { kind: 'reupload' \| 'clip', members: { videoId, offsetSec? }[], evidence }[] }` |
+
+Hosted mode (58): when `VID2CONTEXT_HOSTED=1`, the accounts middleware runs in front of every route except `/health`, `/auth/*` and `/bots/*`, enforcing sessions or API keys, per-account quotas and per-IP limits.

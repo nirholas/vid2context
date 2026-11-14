@@ -16,7 +16,7 @@ Four small files in `packages/core/src/` are needed by several prompts that run 
 
 | File | Needed by prompts | Who may change it later |
 |---|---|---|
-| `storage-ext.ts` | 04, 20, 34, 37, 39, 40, 41, 42, 45, 46 | additive only; storage backends implement its interfaces |
+| `storage-ext.ts` | 04, 20, 34, 37, 39, 40, 41, 42, 45, 46, 58, 59 | additive only; storage backends implement its interfaces |
 | `llm-stream.ts` | 19, 25, 26, 27, 28, 34, 46 | additive only; prompt 25 owns streaming |
 | `audio-split.ts` | 04, 12 | additive only |
 | `tokens.ts` | 01, 03, 15, 28, 32, 34, 35, 44, 46 | prompt 03 may improve accuracy, never the signature |
@@ -586,7 +586,7 @@ Everything not listed belongs to exactly one prompt (see the index in `docs/prom
 | `packages/server/` | 46 only. Everyone else exports a Hono sub-app factory from their own `src/http.ts` |
 | `packages/mcp/` | 44 only. Everyone else exports `register<Name>Tools` from their own `src/mcp.ts` |
 | root `package.json` | 23, 24, 33, 36, 38, 50: add `scripts` entries only (and 38 its devDependencies) |
-| root `tsconfig.json` | 28, 36: add their package to `exclude` (as `packages/web` and `packages/extension` already are) |
+| root `tsconfig.json` | 28, 36, 55: add their package to `exclude` (as `packages/web` and `packages/extension` already are) |
 | root `wrangler.jsonc` | 50 only (36 may change the assets directory if the site build output moves) |
 | `docs/providers.md`, `.env.example` | every prompt that adds env vars or rungs: add or update only its own rows and variables |
 | `docs/contracts/*.md` | the surface owner: 44 (`mcp-tools.md`), 45 (transport section of `mcp-tools.md`), 46 (`http-api.md`), 34 (the `/chat` and `/ask` rows), 20, 21 and 25 (`providers.md`) |

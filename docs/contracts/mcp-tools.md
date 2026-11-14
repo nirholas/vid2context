@@ -86,3 +86,23 @@ Item 44 calls every registration function that exists when it runs; one that lan
 | `vid2context://video/{id}` | 44 | the saved `VideoContext` as JSON (`id` is the ref id, URL-encoded) |
 | `vid2context://video/{id}/transcript` | 44 | the text transcript with timestamps |
 | `vid2context://collection/{id}` | 44 | the collection with video summaries |
+
+## Wave 2 tools (prompts 51 to 62)
+
+Same rules as above. Each package registers its tools from its own `src/mcp.ts` (`register<Name>Tools(server, deps)`); item 44, or the integration pass, wires them into `createServer`. The package owner is the prompt number.
+
+| Tool, prompt or resource | Owner | Input | Returns |
+|---|---|---|---|
+| `digest_videos` | 51 | `{ urls?, collection?, question?, maxTokensPerVideo? }` | A cited digest built with MCP sampling (the client's own model, no server key). Without client sampling support: a chunk plan plus instructions for the agent to digest the chunks itself, never an error |
+| `choose_caption_track` | 51 | `{ url }` | Lists caption tracks and asks the user to pick one through MCP elicitation, then returns that transcript; without elicitation support, returns the track list |
+| prompt `digest` | 51 | `collection` or `urls` (with argument completions), optional `question` | Messages that drive `digest_videos` |
+| resource `vid2context://collection/{id}/latest` | 51 | | The newest items of a collection; subscribable, updated through `notifyCollectionUpdated(id)` |
+| `open_transcript_viewer` | 52 | `{ url }` | `structuredContent` (metadata, chapters, segments) plus an MCP Apps UI resource `ui://vid2context/transcript-viewer`; text fallback for clients without MCP Apps |
+| `get_skip_segments` | 53 | `{ url, categories? }` | SponsorBlock segments (sponsor, self-promotion, intro, outro, interaction reminders, ...) with times, and the transcript share each covers |
+| `research_videos` | 54 | `{ urls (1 to 10), query, contextSec?, maxExcerpts? }` | Ranked excerpts per video with surrounding context, `[m:ss]` and timestamp URLs; works without a saved library |
+| `list_caption_languages` | 54 | `{ url }` | Caption tracks (language, name, creator or auto) and YouTube translation targets |
+| `get_key_moments` | 54 | `{ url, count? }` | Key moments chosen by the LLM chain, each with a timestamp verified against real segments |
+| `export_obsidian` | 57 | `{ urls?, collection?, vaultPath }` (stdio only: writes files on the user's machine) | Paths written: one note per video plus a collection index note |
+| `export_notion` | 57 | `{ urls?, collection?, parentPageId? }` | Notion page URLs created |
+| `watch_live` | 61 | `{ url, maxMinutes? }` | A rolling transcript of a live stream, streamed as progress notifications, final text at the end |
+| `find_duplicates` | 62 | `{ urls?, collection? }` | Groups of reuploads and clips with evidence (overlap, time offset), so briefs count independent sources once |

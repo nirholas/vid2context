@@ -103,6 +103,25 @@ Shared surfaces have a single owner: only item 46 edits `packages/server` and on
 | 49 | Container deploys: Docker image (Node, yt-dlp, deno, ffmpeg, optional whisper.cpp), Railway, Cloud Run, Alibaba Cloud | `deploy/containers` |
 | 50 | Serverless and static deploys: Cloudflare Workers and Pages, Vercel, GitHub Pages client-only | `deploy/serverless` |
 
+### Wave 2: gaps found by the prior-art review
+
+See `docs/prior-art.md` and `docs/prompts/README.md` for details.
+
+| # | Item | Directory |
+|---|---|---|
+| 51 | MCP sampling (client-model map-reduce), elicitation, completions, resource subscriptions | `packages/mcp-agentic` |
+| 52 | MCP Apps transcript viewer for ChatGPT and Claude | `packages/mcp-apps` |
+| 53 | SponsorBlock segment skipping | `packages/skips` |
+| 54 | Research tools: cited excerpts across videos, caption languages, key moments | `packages/research` |
+| 55 | Python client, LangChain and LlamaIndex loaders | `clients/python`, `packages/langchain` |
+| 56 | Telegram, Discord and Slack bots | `packages/bots` |
+| 57 | Obsidian and Notion exports | `packages/exporters` |
+| 58 | Hosted mode: accounts, quotas, shared cache, abuse protection | `packages/accounts` |
+| 59 | Signed outbound webhooks and an n8n node | `packages/webhooks`, `packages/n8n-nodes` |
+| 60 | Cloud share links (Drive, Dropbox, OneDrive) and Bilibili | `providers/share-links`, `providers/bilibili` |
+| 61 | Live streams transcribed while running | `packages/live` |
+| 62 | Duplicate, reupload and clip detection for honest consensus | `packages/dedupe` |
+
 ## Open items for the owner
 
 - Domain: vid2context.com, with vidtocontext.com redirecting (Namecheap, DNS on Cloudflare).

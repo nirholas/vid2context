@@ -1,6 +1,6 @@
 # vid2context build prompts
 
-Fifty self-contained prompts that take vid2context from its foundation to an enterprise-grade product: the core pipeline and its quality bones first, then every source, speech-to-text and LLM option (free first), the research library, and the surfaces people use (CLI, MCP, HTTP API, web app, chat, landing site, extension). Each prompt is written for its own Claude Code chat, and all fifty can run at the same time in this one working folder.
+Fifty self-contained prompts (plus twelve in wave 2, below) that take vid2context from its foundation to an enterprise-grade product: the core pipeline and its quality bones first, then every source, speech-to-text and LLM option (free first), the research library, and the surfaces people use (CLI, MCP, HTTP API, web app, chat, landing site, extension). Each prompt is written for its own Claude Code chat, and all fifty can run at the same time in this one working folder.
 
 ## How to run the wave
 
@@ -68,6 +68,27 @@ Numbers match `docs/ROADMAP.md` and the owner columns in `docs/contracts/`. Ever
 | 48 | [Browser extension](48-extension.md) | `packages/extension/` | H. Surfaces |
 | 49 | [Docker image and container deploys](49-containers.md) | `deploy/containers/` | I. Deploy and quality |
 | 50 | [Serverless and static deploys](50-serverless-static.md) | `deploy/serverless/`, `wrangler.jsonc` | I. Deploy and quality |
+
+## Wave 2: gaps found after wave 1 was written
+
+A review of wave 1 against popular open-source projects (`docs/prior-art.md`) found features no wave-1 prompt covers. Wave 2 adds them under the same rules: each prompt owns new directories, depends only on the foundation, and exports `src/mcp.ts` and `src/http.ts` factories instead of editing `packages/mcp` or `packages/server`. Contracts: the "Wave 2" sections of `docs/contracts/mcp-tools.md` and `docs/contracts/http-api.md`.
+
+| # | Prompt | Owns | Track |
+|---|---|---|---|
+| 51 | [MCP sampling, elicitation, completions and subscriptions](51-mcp-agentic.md) | `packages/mcp-agentic/` | J. Agent experience |
+| 52 | [MCP Apps: interactive transcript viewer in ChatGPT and Claude](52-mcp-apps.md) | `packages/mcp-apps/` | J. Agent experience |
+| 53 | [SponsorBlock: skip sponsor reads, intros and self-promotion](53-sponsorblock.md) | `packages/skips/` | K. Content quality |
+| 54 | [Research tools: cited excerpts, caption languages, key moments](54-research-tools.md) | `packages/research/` | J. Agent experience |
+| 55 | [Client libraries: Python, LangChain and LlamaIndex](55-client-libraries.md) | `clients/python/`, `packages/langchain/` | L. Reach |
+| 56 | [Chat bots: Telegram, Discord and Slack](56-chat-bots.md) | `packages/bots/` | L. Reach |
+| 57 | [Note exports: Obsidian vaults and Notion pages](57-note-exports.md) | `packages/exporters/` | L. Reach |
+| 58 | [Hosted mode: accounts, quotas, shared cache, abuse protection](58-hosted-accounts.md) | `packages/accounts/` | M. Hosting |
+| 59 | [Outbound webhooks and an n8n node](59-webhooks-n8n.md) | `packages/webhooks/`, `packages/n8n-nodes/` | L. Reach |
+| 60 | [More sources: cloud share links and Bilibili](60-share-links-bilibili.md) | `providers/share-links/`, `providers/bilibili/` | N. Sources |
+| 61 | [Live streams: transcribe while the stream runs](61-live-streams.md) | `packages/live/` | N. Sources |
+| 62 | [Duplicate, reupload and clip detection](62-dedupe.md) | `packages/dedupe/` | K. Content quality |
+
+Wave 2 was started on 2026-11-14 by the owner's coordinating session as background agents, one per prompt. Do not open chats for 51 to 62 unless that session reports one of them failed.
 
 ## What every prompt repeats
 
