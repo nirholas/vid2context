@@ -6,7 +6,13 @@
  *
  *   select = first frame
  *          + (t - last selected >= maxIntervalSec)
- *          + (scene score > sceneThreshold) * (t - last selected >= minIntervalSec)
+ *          + (a scene change is pending) * (t - change >= settleSec) * (t - last selected >= minIntervalSec)
+ *
+ * A scene change (scene score > sceneThreshold) is not taken at once: the
+ * first frame over the threshold is often half way through a dissolve, which
+ * no OCR can read. The expression remembers the time of the latest frame over
+ * the threshold (ffmpeg's st/ld variables persist between frames) and selects
+ * the frame `settleSec` after it, when the new picture has settled.
  *
  * Each selected frame is written twice: a JPEG scaled to `width` (what a rung
  * reads) and a THUMB_WIDTH x THUMB_HEIGHT grayscale copy on stdout (what
@@ -27,6 +33,8 @@ export interface SampleOptions {
   minIntervalSec?: number;
   /** At least one frame this often, even without a scene change. Default 30 s. */
   maxIntervalSec?: number;
+  /** Take the frame this long after a scene change, once a dissolve has finished. Default 1 s; 0 takes the change frame itself. */
+  settleSec?: number;
   /** JPEG width in pixels (never upscaled). Default 1024. */
   width?: number;
   /** JPEG quality, 2 (best) to 31. Default 3. */
@@ -39,6 +47,7 @@ export const SAMPLE_DEFAULTS = {
   sceneThreshold: 0.3,
   minIntervalSec: 2,
   maxIntervalSec: 30,
+  settleSec: 1,
   width: 1024,
   quality: 3,
 } as const;
@@ -59,6 +68,7 @@ export function resolveSampleOptions(o: SampleOptions = {}): Required<Omit<Sampl
     sceneThreshold: o.sceneThreshold ?? SAMPLE_DEFAULTS.sceneThreshold,
     minIntervalSec: o.minIntervalSec ?? SAMPLE_DEFAULTS.minIntervalSec,
     maxIntervalSec: o.maxIntervalSec ?? SAMPLE_DEFAULTS.maxIntervalSec,
+    settleSec: o.settleSec ?? SAMPLE_DEFAULTS.settleSec,
     width: Math.round(o.width ?? SAMPLE_DEFAULTS.width),
     quality: Math.round(o.quality ?? SAMPLE_DEFAULTS.quality),
     timeoutMs: o.timeoutMs ?? 30 * 60_000,
@@ -76,20 +86,39 @@ export function resolveSampleOptions(o: SampleOptions = {}): Required<Omit<Sampl
     r.maxIntervalSec > 0 && r.maxIntervalSec >= r.minIntervalSec,
     'Use more seconds than minIntervalSec; the default is 30.',
   );
+  check('settleSec', r.settleSec, r.settleSec >= 0 && r.settleSec <= 10, 'Use 0 to 10 seconds; the default is 1.');
   check('width', r.width, r.width >= 64 && r.width <= 4096, 'Use a width between 64 and 4096 pixels; the default is 1024.');
   check('quality', r.quality, r.quality >= 2 && r.quality <= 31, 'Use a JPEG quality between 2 (best) and 31.');
   return r;
 }
 
-/** The ffmpeg select expression (commas are safe inside the quoted filter option). */
-export function selectExpression(o: { sceneThreshold: number; minIntervalSec: number; maxIntervalSec: number }): string {
-  return `gt(isnan(prev_selected_t)+gte(t-prev_selected_t,${o.maxIntervalSec})+gt(scene,${o.sceneThreshold})*gte(t-prev_selected_t,${o.minIntervalSec}),0)`;
+interface SelectParams {
+  sceneThreshold: number;
+  minIntervalSec: number;
+  maxIntervalSec: number;
+  settleSec: number;
+}
+
+/**
+ * The ffmpeg select expression. Statements are separated by `;` and only the
+ * last one's value counts. Variable 0 holds (time of the pending scene change
+ * + 1), or 0 when none is pending; variable 2 is this frame's decision.
+ * Commas and semicolons are safe inside the quoted filter option.
+ */
+export function selectExpression(o: SelectParams): string {
+  const pendingSince = 't-(ld(0)-1)';
+  return [
+    `if(gt(scene,${o.sceneThreshold}),st(0,t+1))`,
+    `st(2,isnan(prev_selected_t)+gte(t-prev_selected_t,${o.maxIntervalSec})+gt(ld(0),0)*gte(${pendingSince},${o.settleSec})*gte(t-prev_selected_t,${o.minIntervalSec}))`,
+    `if(ld(2)*gte(${pendingSince},${o.settleSec}),st(0,0))`,
+    'gt(ld(2),0)',
+  ].join(';');
 }
 
 export function samplingArgs(
   input: string,
   outDir: string,
-  o: { sceneThreshold: number; minIntervalSec: number; maxIntervalSec: number; width: number; quality: number },
+  o: SelectParams & { width: number; quality: number },
   ffmpegMajor?: number,
 ): string[] {
   const vfr = ffmpegMajor !== undefined && ffmpegMajor < 5 ? ['-vsync', 'vfr'] : ['-fps_mode', 'vfr'];
