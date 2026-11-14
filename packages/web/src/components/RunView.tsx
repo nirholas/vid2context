@@ -93,11 +93,11 @@ export function RunView({ params }: { params: RunParams }) {
       }
       setState({ kind: 'loading', startedAt: Date.now() });
       try {
-        let context = await getContext(params.url, { mode: params.mode, lang: params.lang || undefined }, ac.signal);
+        let context = await getContext(params.url, { mode: params.mode, lang: params.lang || undefined }, { signal: ac.signal });
         let notice: AppError | undefined;
         if (params.comments && !context.comments) {
           try {
-            context = { ...context, comments: await getComments(params.url, ac.signal) };
+            context = { ...context, comments: await getComments(params.url, { signal: ac.signal }) };
           } catch (err) {
             if (isAbort(err)) throw err;
             notice = toAppError(err);

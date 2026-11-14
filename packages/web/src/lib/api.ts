@@ -72,11 +72,19 @@ export function apiUrl(path: string, params: Record<string, string | undefined> 
   return `${base}${path}${qs ? `?${qs}` : ''}`;
 }
 
-async function getJson<T>(path: string, params: Record<string, string | undefined>, signal?: AbortSignal): Promise<T> {
-  const base = apiBase();
+/** Per-call overrides: an abort signal, another base, or a fetch implementation (tests replay recorded responses). */
+export interface CallOptions {
+  signal?: AbortSignal;
+  base?: string;
+  fetch?: typeof fetch;
+}
+
+async function getJson<T>(path: string, params: Record<string, string | undefined>, call: CallOptions = {}): Promise<T> {
+  const base = call.base ?? apiBase();
+  const doFetch = call.fetch ?? globalThis.fetch.bind(globalThis);
   let res: Response;
   try {
-    res = await fetch(apiUrl(path, params, base), { signal, headers: { accept: 'application/json' } });
+    res = await doFetch(apiUrl(path, params, base), { signal: call.signal, headers: { accept: 'application/json' } });
   } catch (err) {
     if (isAbort(err)) throw err;
     throw unreachable(base, err);
@@ -99,21 +107,20 @@ export interface RunOptions {
   lang?: string;
 }
 
-export function getContext(input: string, opts: RunOptions = {}, signal?: AbortSignal): Promise<VideoContext> {
-  return getJson<VideoContext>('/context', { url: input, mode: opts.mode, lang: opts.lang }, signal);
+/** GET /context: the full VideoContext for one video. */
+export function getContext(input: string, opts: RunOptions = {}, call: CallOptions = {}): Promise<VideoContext> {
+  return getJson<VideoContext>('/context', { url: input, mode: opts.mode, lang: opts.lang }, call);
 }
 
-export async function getItems(input: string, signal?: AbortSignal, limit = 200): Promise<VideoRef[]> {
-  const res = await getJson<{ items: VideoRef[] }>('/items', { url: input, limit: String(limit) }, signal);
+/** GET /items: a playlist, channel, feed or page expanded to video refs. */
+export async function getItems(input: string, call: CallOptions = {}, limit = 200): Promise<VideoRef[]> {
+  const res = await getJson<{ items: VideoRef[] }>('/items', { url: input, limit: String(limit) }, call);
   return res.items;
 }
 
-export async function getComments(input: string, signal?: AbortSignal, limit = 100): Promise<VideoContext['comments']> {
-  const res = await getJson<{ comments: NonNullable<VideoContext['comments']> }>(
-    '/comments',
-    { url: input, limit: String(limit) },
-    signal,
-  );
+/** GET /comments. */
+export async function getComments(input: string, call: CallOptions = {}, limit = 100): Promise<VideoContext['comments']> {
+  const res = await getJson<{ comments: NonNullable<VideoContext['comments']> }>('/comments', { url: input, limit: String(limit) }, call);
   return res.comments;
 }
 
@@ -125,22 +132,11 @@ export interface Health {
   formats: { id: string; description: string; mimeType: string }[];
 }
 
-export async function getHealth(signal?: AbortSignal, base = apiBase()): Promise<Health> {
-  let res: Response;
-  try {
-    res = await fetch(`${base}/health`, { signal, headers: { accept: 'application/json' } });
-  } catch (err) {
-    if (isAbort(err)) throw err;
-    throw unreachable(base, err);
-  }
-  let body: unknown;
-  try {
-    body = await res.json();
-  } catch {
-    throw notAnApi(base, res.status);
-  }
-  const h = body as Partial<Health>;
-  if (!res.ok || h.name !== 'vid2context') throw notAnApi(base, res.status);
+/** GET /health. Throws unless the answer really comes from a vid2context server. */
+export async function getHealth(call: CallOptions = {}): Promise<Health> {
+  const base = call.base ?? apiBase();
+  const h = await getJson<Partial<Health>>('/health', {}, { ...call, base });
+  if (h.name !== 'vid2context' || !Array.isArray(h.formats)) throw notAnApi(base, 200);
   return h as Health;
 }
 

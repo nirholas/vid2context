@@ -38,7 +38,7 @@ function ApiSection() {
     setValue(apiBase());
     setTest({ status: 'testing' });
     try {
-      const h = await getHealth(AbortSignal.timeout(8000), normalizeApiBase(value) || DEFAULT_API_BASE);
+      const h = await getHealth({ signal: AbortSignal.timeout(8000), base: normalizeApiBase(value) || DEFAULT_API_BASE });
       setTest({ status: 'ok', detail: `${h.name} ${h.version} on ${h.runtime}, ${h.formats.length} formats` });
     } catch (err) {
       setTest({ status: 'error', error: err });

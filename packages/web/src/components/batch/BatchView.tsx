@@ -44,7 +44,7 @@ export function BatchView({ params }: { params: RunParams }) {
     const ac = new AbortController();
     setItems(undefined);
     setLoadError(undefined);
-    getItems(params.url, ac.signal).then(
+    getItems(params.url, { signal: ac.signal }).then(
       (list) => {
         setItems(list);
         setSelected(new Set(list.map((r) => r.id)));
@@ -114,7 +114,7 @@ export function BatchView({ params }: { params: RunParams }) {
         setStates((s) => ({ ...s, [ref.id]: { status: 'running' } }));
         try {
           const input = refInput(ref);
-          const context = await getContext(input, { mode: params.mode, lang: params.lang || undefined }, ac.signal);
+          const context = await getContext(input, { mode: params.mode, lang: params.lang || undefined }, { signal: ac.signal });
           setStates((s) => ({ ...s, [ref.id]: { status: 'done', context } }));
           const b = await resultBundle([context]);
           await putEntry(summarize(context, { input, mode: params.mode, lang: params.lang }, b.files.length)).catch((err) =>

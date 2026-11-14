@@ -40,7 +40,7 @@ export function ApiStatusProvider({ children, initial }: { children: ReactNode; 
     const base = apiBase();
     setState({ status: 'checking', base });
     try {
-      const health = await getHealth(AbortSignal.timeout(PROBE_TIMEOUT_MS), base);
+      const health = await getHealth({ signal: AbortSignal.timeout(PROBE_TIMEOUT_MS), base });
       setState({ status: 'online', base, health });
     } catch (err) {
       setState({ status: 'offline', base, error: err as AppError });
