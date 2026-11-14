@@ -44,7 +44,7 @@ export { framesFromThumbs, parseDuration, resolveSampleOptions, SAMPLE_DEFAULTS,
 export interface ExtractVisualOptions extends SampleOptions {
   /** Most frames sent to rungs. Default 40. */
   maxFrames?: number;
-  /** dHash Hamming distance (of 64 bits) at or under which consecutive frames are the same picture. Default 10. */
+  /** dHash Hamming distance (of 64 bits) at or under which consecutive frames are the same picture. Default 12. */
   hashThreshold?: number;
   /** Chain options for the visual rungs (policy, only, skip, needs). */
   chain?: ChainOptions;
@@ -111,7 +111,7 @@ export async function extractVisualNotes(input: string, opts: ExtractVisualOptio
   }
   const hashThreshold = opts.hashThreshold ?? DEFAULT_HASH_THRESHOLD;
   if (!Number.isInteger(hashThreshold) || hashThreshold < 0 || hashThreshold > 64) {
-    throw new Vid2ContextError('bad-request', `hashThreshold must be an integer from 0 to 64, got ${hashThreshold}.`, { hint: 'The default is 10.' });
+    throw new Vid2ContextError('bad-request', `hashThreshold must be an integer from 0 to 64, got ${hashThreshold}.`, { hint: 'The default is 12.' });
   }
   const sample = resolveSampleOptions(opts);
   const chain = opts.chain ?? {};

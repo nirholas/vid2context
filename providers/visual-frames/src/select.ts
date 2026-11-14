@@ -34,8 +34,13 @@ export interface DistinctFrame {
   runLength: number;
 }
 
-/** Default Hamming threshold: frames within 10 of 64 bits count as the same picture. */
-export const DEFAULT_HASH_THRESHOLD = 10;
+/**
+ * Default Hamming threshold: frames within 12 of 64 bits count as the same picture.
+ * Measured on the fixture talk: the same slide with different burned-in subtitles
+ * differs by 5 to 6 bits, an animated code screen drifts by up to 11, and
+ * different slides differ by 23 or more.
+ */
+export const DEFAULT_HASH_THRESHOLD = 12;
 
 export function dedupeFrames(frames: SampledFrame[], threshold = DEFAULT_HASH_THRESHOLD): DistinctFrame[] {
   const out: DistinctFrame[] = [];

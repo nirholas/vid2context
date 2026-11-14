@@ -1,0 +1,21 @@
+{
+  "id": "chatcmpl-850d0c7bc9a4862c",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"kind\": \"code\",\n    \"text\": \"{Různé významy|tento=českém králi}}\\n{{Infobox - panovník\\n| jméno = Václav I.\\n| titul = Král český\\n| obrázek = Václav I..jpg\\n| popisek = Václav I. (barokní představa)\\n| vláda = [[1230]]\u2013[[1253]]\\n| datum korunovace = [[1228]]\\n| tituly = \\n| celé jméno = \\n| předchůdce = [[Přemysl Otakar I.]]\\n| následník = [[Přemysl Otakar II.]]\\n| typ dědice = \\n| dědic = \\n| Královna = \\n| král = \\n| partner1 = [[Kunhuta Štaufská]] (1224\u201348)\\n| potomstvo = [[Vladislav Český]]<br />[[Přemysl Otakar II.]]\\n| rod = \\n| dynastie = [[Přemyslovci]]\\n| hymna = \\n| motto = \\n| otec = [[Přemysl Otakar I.]]\\n| matka = [[Konstancie Babenberská]]\\n| datum narození = [[1205]]\\n\",\n    \"description\": \"\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "created": 1794677781,
+  "model": "Qwen2.5-VL-72B-Instruct",
+  "object": "chat.completion",
+  "usage": {
+    "prompt_tokens": 899,
+    "completion_tokens": 370,
+    "total_tokens": 1269
+  }
+}

@@ -9,6 +9,6 @@ import { createVisualProvider } from './provider.ts';
 import { cdnLangSource } from './tesseract.ts';
 
 export * from './shared.ts';
-export { cdnLangSource, DEFAULT_MIN_CONFIDENCE, MIN_TEXT_CHARS, type TesseractLang, type TesseractLangSource, tesseractEnabled, tesseractLangs, tesseractRungs, terminateTesseract, textFromBlocks } from './tesseract.ts';
+export { cdnLangSource, DEFAULT_MIN_CONFIDENCE, MIN_TEXT_CHARS, type TesseractLangSource, tesseractEnabled, tesseractLangs, tesseractRungs, terminateTesseract, textFromBlocks } from './tesseract.ts';
 
 export default createVisualProvider(cdnLangSource);

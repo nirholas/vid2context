@@ -1,0 +1,21 @@
+{
+  "id": "chatcmpl-ac787b59c7156100",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"kind\": \"chart\",\n    \"text\": \"editorů za měsíc\\n250\\n200\\n150\\n100\\n50\\n0\\n2006   2008   2010   2012   2014   2016\\nNoví aktivní editoři\",\n    \"description\": \"\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "created": 1794677740,
+  "model": "Qwen2.5-VL-72B-Instruct",
+  "object": "chat.completion",
+  "usage": {
+    "prompt_tokens": 899,
+    "completion_tokens": 93,
+    "total_tokens": 992
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "id": "chatcmpl-869e2cad45d2299f",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"kind\": \"slide\",\n    \"text\": \"Jak může výzkum přispět ke zlepšení\\nprvních zkušeností nových editorů?\",\n    \"description\": \"\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "created": 1794677450,
+  "model": "Qwen2.5-VL-72B-Instruct",
+  "object": "chat.completion",
+  "usage": {
+    "prompt_tokens": 899,
+    "completion_tokens": 52,
+    "total_tokens": 951
+  }
+}

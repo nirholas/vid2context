@@ -1,64 +1,88 @@
 /**
  * Node entry (package.json condition `node`): the vision rungs plus local OCR
- * with tesseract.js reading bundled language data.
+ * with tesseract.js reading language data from disk.
  *
- * For each language in TESSERACT_LANGS, an installed `@tesseract.js-data/<lang>`
- * package is read straight from disk (eng ships as a dependency, so English
- * OCR works offline). Other languages are downloaded once by tesseract.js and
- * cached under <VID2CONTEXT_HOME or ./.vid2context>/models/tesseract.
- * TESSERACT_LANG_PATH points every language at your own directory or URL.
+ *   TESSERACT_LANG_PATH set   tesseract.js reads <lang>.traineddata.gz from that directory or URL
+ *   one bundled language      read straight from the installed @tesseract.js-data/<lang> package
+ *                             (eng ships as a dependency, so English OCR works offline, nothing written)
+ *   otherwise                 <VID2CONTEXT_HOME or ./.vid2context>/models/tesseract is filled once:
+ *                             bundled languages are copied, others downloaded from the jsDelivr CDN
+ *                             through ctx.fetch, then every language is read from there
  */
-import { mkdir, readFile } from 'node:fs/promises';
+import { copyFile, mkdir, rename, stat, writeFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import { dirname, join } from 'node:path';
+import { type Ctx, type Env, fetchWithTimeout, Vid2ContextError } from '@vid2context/core';
 import { dataHome } from '@vid2context/ffmpeg';
 import { createVisualProvider } from './provider.ts';
-import type { TesseractLang, TesseractLangSource } from './tesseract.ts';
+import type { TesseractLangSource } from './tesseract.ts';
 
 export * from './shared.ts';
-export { cdnLangSource, DEFAULT_MIN_CONFIDENCE, MIN_TEXT_CHARS, type TesseractLang, type TesseractLangSource, tesseractEnabled, tesseractLangs, tesseractRungs, terminateTesseract, textFromBlocks } from './tesseract.ts';
+export { cdnLangSource, DEFAULT_MIN_CONFIDENCE, MIN_TEXT_CHARS, type TesseractLangSource, tesseractEnabled, tesseractLangs, tesseractRungs, terminateTesseract, textFromBlocks } from './tesseract.ts';
 
 const require = createRequire(import.meta.url);
 
-/** Bytes of the LSTM traineddata from an installed @tesseract.js-data/<lang> package, or null when it is not installed. */
-export async function bundledTraineddata(lang: string): Promise<Uint8Array | null> {
-  let dir: string;
+/** The LSTM model directory tesseract.js uses with OEM 1. */
+const MODEL_DIR = '4.0.0_best_int';
+
+/** Directory holding <lang>.traineddata.gz in an installed @tesseract.js-data/<lang> package, or null. */
+export async function bundledLangDir(lang: string): Promise<string | null> {
+  let pkg: string;
   try {
-    dir = dirname(require.resolve(`@tesseract.js-data/${lang}/package.json`));
+    pkg = require.resolve(`@tesseract.js-data/${lang}/package.json`);
   } catch {
     return null;
   }
-  try {
-    return new Uint8Array(await readFile(join(dir, '4.0.0_best_int', `${lang}.traineddata.gz`)));
-  } catch {
-    return null;
-  }
+  const dir = join(dirname(pkg), MODEL_DIR);
+  return (await exists(join(dir, `${lang}.traineddata.gz`))) ? dir : null;
 }
 
-export function tesseractCacheDir(env: Record<string, string | undefined>): string {
+export function tesseractCacheDir(env: Env): string {
   return join(dataHome(env), 'models', 'tesseract');
 }
 
+export function cdnTraineddataUrl(lang: string): string {
+  return `https://cdn.jsdelivr.net/npm/@tesseract.js-data/${lang}/${MODEL_DIR}/${lang}.traineddata.gz`;
+}
+
+async function exists(path: string): Promise<boolean> {
+  try {
+    return (await stat(path)).size > 0;
+  } catch {
+    return false;
+  }
+}
+
+async function download(lang: string, target: string, ctx: Ctx): Promise<void> {
+  const url = cdnTraineddataUrl(lang);
+  ctx.log.info('tesseract: downloading language data once', { lang, url });
+  const res = await fetchWithTimeout(ctx, url, {}, 5 * 60_000);
+  if (!res.ok) {
+    throw new Vid2ContextError(res.status === 404 ? 'bad-request' : 'upstream', `No tesseract language data for "${lang}" (HTTP ${res.status}).`, {
+      hint: 'Use tesseract language codes in TESSERACT_LANGS (eng, deu, fra, ces, chi_sim, ...), or set TESSERACT_LANG_PATH.',
+    });
+  }
+  const tmp = `${target}.${process.pid}.part`;
+  await writeFile(tmp, new Uint8Array(await res.arrayBuffer()));
+  await rename(tmp, target);
+}
+
 export const nodeLangSource: TesseractLangSource = async (langs, ctx) => {
-  const cachePath = tesseractCacheDir(ctx.env);
-  if (ctx.env.TESSERACT_LANG_PATH) {
-    await mkdir(cachePath, { recursive: true });
-    return { langs, options: { langPath: ctx.env.TESSERACT_LANG_PATH, cachePath } };
+  if (ctx.env.TESSERACT_LANG_PATH) return { options: { langPath: ctx.env.TESSERACT_LANG_PATH, cacheMethod: 'none' } };
+  const bundled = await Promise.all(langs.map(bundledLangDir));
+  const only = bundled[0];
+  if (langs.length === 1 && only) return { options: { langPath: only, cacheMethod: 'none' } };
+
+  const dir = tesseractCacheDir(ctx.env);
+  await mkdir(dir, { recursive: true });
+  for (const [i, lang] of langs.entries()) {
+    const target = join(dir, `${lang}.traineddata.gz`);
+    if (await exists(target)) continue;
+    const from = bundled[i];
+    if (from) await copyFile(join(from, `${lang}.traineddata.gz`), target);
+    else await download(lang, target, ctx);
   }
-  const out: TesseractLang[] = [];
-  let downloads = false;
-  for (const code of langs) {
-    const data = await bundledTraineddata(code);
-    if (data) out.push({ code, data });
-    else {
-      out.push(code);
-      downloads = true;
-    }
-  }
-  if (!downloads) return { langs: out, options: { cacheMethod: 'none' } };
-  await mkdir(cachePath, { recursive: true });
-  ctx.log.info('tesseract: languages without a bundled package are downloaded once and cached', { cachePath });
-  return { langs: out, options: { cachePath, cacheMethod: 'write' } };
+  return { options: { langPath: dir, cacheMethod: 'none' } };
 };
 
 export default createVisualProvider(nodeLangSource);

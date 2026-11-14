@@ -15,17 +15,16 @@
 import { type Ctx, type Env, Vid2ContextError, type VisualNote, type VisualRung } from '@vid2context/core';
 import type { Frame } from './vision.ts';
 
-export type TesseractLang = string | { code: string; data: Uint8Array };
-
-/** Turns language codes into what tesseract.js createWorker takes, plus worker options (langPath, cachePath, cacheMethod). */
-export type TesseractLangSource = (
-  langs: string[],
-  ctx: Ctx,
-) => Promise<{ langs: TesseractLang[]; options: Record<string, unknown> }>;
+/**
+ * Prepares language data and returns tesseract.js worker options (langPath,
+ * cachePath, cacheMethod). Language codes are always passed as strings:
+ * tesseract.js 7 joins the `data` field instead of `code` when initializing
+ * with `{ code, data }` objects, so that form cannot be used.
+ */
+export type TesseractLangSource = (langs: string[], ctx: Ctx) => Promise<{ options: Record<string, unknown> }>;
 
 /** Default source: language codes fetched by tesseract.js (from TESSERACT_LANG_PATH when set, else its CDN). */
-export const cdnLangSource: TesseractLangSource = async (langs, ctx) => ({
-  langs,
+export const cdnLangSource: TesseractLangSource = async (_langs, ctx) => ({
   options: ctx.env.TESSERACT_LANG_PATH ? { langPath: ctx.env.TESSERACT_LANG_PATH } : {},
 });
 
@@ -89,7 +88,7 @@ interface TessWorker {
   terminate(): Promise<unknown>;
 }
 interface TessModule {
-  createWorker(langs: TesseractLang[], oem: number, options: Record<string, unknown>): Promise<TessWorker>;
+  createWorker(langs: string[], oem: number, options: Record<string, unknown>): Promise<TessWorker>;
 }
 
 interface PoolEntry {
@@ -120,9 +119,9 @@ function getWorker(langs: string[], source: TesseractLangSource, ctx: Ctx): Pool
   const entry: PoolEntry = {
     worker: (async () => {
       const T = await loadTesseract();
-      const { langs: data, options } = await source(langs, ctx);
+      const { options } = await source(langs, ctx);
       // OEM 1 = LSTM only, the model the 4.0.0_best_int traineddata is built for.
-      return T.createWorker(data, 1, { ...options, errorHandler: (e: unknown) => ctx.log.debug('tesseract worker error', { error: String(e) }) });
+      return T.createWorker(langs, 1, { ...options, errorHandler: (e: unknown) => ctx.log.debug('tesseract worker error', { error: String(e) }) });
     })(),
   };
   entry.worker.catch(() => {

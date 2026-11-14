@@ -1,0 +1,22 @@
+{
+  "id": "chatcmpl-a40ca1490f3eab94",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"kind\": \"ocr\",\n    \"text\": \"Václav I.\\n\\nTento článek je o českém králi. Další významy jsou uvedeny na stránce Václav I. (rozcestník).\\n\\nVáclav I. (1205 \u2013 23. září 1253 Počaply u Berouna), zvaný též Jednooký, byl čtvrtý český král z rodu Přemyslovců, druhorozený syn Přemysla Otakara I. a jeho druhé manželky Konstance Uherské.\\n\\nPůvod\\nPotomci Přemysla a Konstance projevovali v přemyslovském rodu až nezvyklou rodinnou soudržnost (přesto mezi sourozenci vzniklo několik sporů, které se řešily vojensky). Václavovými sestrami byly Anežka Přemyslovna \u2013 později svatá Anežka Česká, polská kněžna Anna Lehnická a korutanská vévodkyně Judita; jeho bratři byli moravskými markrabaty, nejdříve Vladislav a poté Přemysl.\\n\\nKorunovace\\nPřemysl Otakar I. chtěl zajistit ještě za svého života titul krále pro svého syna Václava tak, aby nevznikaly pochyby o legitimitu Václavovy volby. Celý plán spočíval v tom, že na pražském shromáždění české šlechty v červnu 1216 někdo navrhne zvolení Václava coby českého krále, k čemuž se měl připojit i bratr Přemysla, moravský markrabě Vladislav Jindřich. Jakoby překvapený král bude s tímto záměrem souhlasit. Šlo o to, aby tento akt nepopudil šlechtu, která jako jediná mohla volit českého krále.\\nPlán do něsměna vrazil a hořd dalšího dne wesel král za rieaam Frirricham II. onela, kterýai o tom informoval Clea\\nPo mnoha letech vývoje jsme přišli s tímto: vizuální editor\\nVáclav I.\\nKrál český\\nVáclav I. (barokní představa)\\nDoba vlády 1230-1253\\nKorunovace 1228\\n\",\n    \"description\": \"\"\n}",
+        "tool_calls": []
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "created": 1794677613,
+  "model": "Qwen2.5-VL-72B-Instruct",
+  "object": "chat.completion",
+  "usage": {
+    "prompt_tokens": 899,
+    "completion_tokens": 717,
+    "total_tokens": 1616
+  }
+}
