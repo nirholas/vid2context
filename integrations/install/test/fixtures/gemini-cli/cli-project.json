@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "sentry": {
+      "url": "https://mcp.sentry.dev/mcp",
+      "type": "http",
+      "headers": {
+        "X-Example": "1"
+      }
+    },
+    "everything": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-everything"
+      ]
+    }
+  }
+}

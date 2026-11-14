@@ -1,0 +1,7 @@
+[mcp_servers.everything]
+command = "npx"
+args = ["-y", "@modelcontextprotocol/server-everything"]
+
+[mcp_servers.sentry]
+url = "https://mcp.sentry.dev/mcp"
+bearer_token_env_var = "SENTRY_TOKEN"

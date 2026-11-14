@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "httpServerWithAuth": {
+      "httpUrl": "http://localhost:3000/mcp",
+      "headers": {
+        "Authorization": "Bearer your-api-token",
+        "X-Custom-Header": "custom-value",
+        "Content-Type": "application/json"
+      },
+      "timeout": 5000
+    }
+  }
+}

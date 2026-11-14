@@ -1,0 +1,20 @@
+{
+  "mcpServers": {
+    "everything": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-everything"
+      ],
+      "env": {}
+    },
+    "sentry": {
+      "type": "http",
+      "url": "https://mcp.sentry.dev/mcp",
+      "headers": {
+        "X-Example": "1"
+      }
+    }
+  }
+}
