@@ -4,7 +4,7 @@
  * are kept, the theme, and the keyboard shortcuts.
  */
 import { KeyRound, ShieldAlert } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { Theme } from '../lib/settings.ts';
 import { loadProviderKeys, loadServerApiKey } from '../lib/store.ts';
 import { Button, Dialog } from './ui.tsx';
@@ -25,6 +25,8 @@ export interface SettingsDialogProps {
   onTheme: (t: Theme) => void;
   onSaveConnection: (apiBase: string, serverApiKey: string) => Promise<void>;
   onSaveKeys: (keys: Record<string, string>) => Promise<void>;
+  /** Open scrolled to this section ("Manage providers" in the model picker opens the keys). */
+  section?: 'keys';
 }
 
 const inputClass =
@@ -60,6 +62,15 @@ export function SettingsDialog(props: SettingsDialogProps) {
   }, [props.open, props.apiBase]);
 
   const keylessOff = keys.VID2CONTEXT_KEYLESS === '0';
+  const keysRef = useRef<HTMLElement>(null);
+
+  // Runs after the dialog's own first-field focus, so the keys section wins when asked for.
+  useEffect(() => {
+    if (!props.open || props.section !== 'keys') return;
+    const node = keysRef.current;
+    node?.scrollIntoView?.({ block: 'start' });
+    node?.querySelector<HTMLElement>('input,button,a[href]')?.focus();
+  }, [props.open, props.section]);
 
   return (
     <Dialog open={props.open} title="Settings" onClose={props.onClose} wide>
@@ -110,7 +121,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
         </div>
       </section>
 
-      <section aria-labelledby="set-keys" className="mb-6">
+      <section ref={keysRef} aria-labelledby="set-keys" className="mb-6 scroll-mt-4">
         <h3 id="set-keys" className="mb-1 flex items-center gap-2 text-sm font-semibold">
           <KeyRound size={15} aria-hidden /> Provider keys for client-only mode
         </h3>

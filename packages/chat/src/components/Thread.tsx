@@ -12,7 +12,7 @@ import { modelLabel, serviceLabel } from '../lib/models.ts';
 import type { ChatSource, MessageRecord, ModelRow } from '../lib/types.ts';
 import { CitationContext, TextWithCitations } from './CitationChip.tsx';
 import { ErrorCard } from './ErrorCard.tsx';
-import { Button, copyText, cx, IconButton, Spinner } from './ui.tsx';
+import { BrandMark, Button, copyText, cx, IconButton, Spinner } from './ui.tsx';
 
 const Markdown = lazy(() => import('./Markdown.tsx'));
 
@@ -53,7 +53,7 @@ export function Thread(props: ThreadProps) {
       aria-busy={last?.status === 'streaming'}
     >
       <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-6 sm:px-6">
-        {props.messages.map((m) =>
+        {props.messages.map((m, i) =>
           m.role === 'user' ? (
             <UserMessage key={m.id} message={m} busy={props.busy} onEditResend={props.onEditResend} />
           ) : (
@@ -62,6 +62,7 @@ export function Thread(props: ThreadProps) {
               message={m}
               rows={props.rows}
               busy={props.busy}
+              last={i === props.messages.length - 1}
               onOpenSource={props.onOpenSource}
               onRegenerate={props.onRegenerate}
             />
@@ -70,6 +71,19 @@ export function Thread(props: ThreadProps) {
       </div>
     </div>
   );
+}
+
+const RELATIVE = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+
+/** "a few seconds ago", "5 minutes ago", "yesterday", then the date. */
+export function relativeTime(at: number, now = Date.now()): string {
+  const sec = Math.round((at - now) / 1000);
+  const abs = Math.abs(sec);
+  if (abs < 45) return 'a few seconds ago';
+  if (abs < 3600) return RELATIVE.format(Math.round(sec / 60), 'minute');
+  if (abs < 86_400) return RELATIVE.format(Math.round(sec / 3600), 'hour');
+  if (abs < 7 * 86_400) return RELATIVE.format(Math.round(sec / 86_400), 'day');
+  return new Date(at).toLocaleDateString();
 }
 
 function CopyButton(props: { text: string; label: string }) {
@@ -122,7 +136,7 @@ function UserMessage(props: { message: MessageRecord; busy: boolean; onEditResen
                 }
               }
             }}
-            className="w-full resize-y rounded-lg border border-border-strong bg-surface-2 px-4 py-3 text-[0.95rem] outline-none focus:border-accent"
+            className="w-full resize-y rounded-[18px] border border-border-strong bg-surface-2 px-4 py-3 text-[15px] outline-none focus:border-accent"
           />
         </label>
         <div className="flex gap-2">
@@ -146,10 +160,10 @@ function UserMessage(props: { message: MessageRecord; busy: boolean; onEditResen
 
   return (
     <div className="group flex flex-col items-end gap-1" data-role="user">
-      <div className="max-w-[85%] whitespace-pre-wrap break-words rounded-lg rounded-br-sm bg-surface-3 px-4 py-2.5 text-[0.95rem]">
+      <div className="max-w-[85%] whitespace-pre-wrap break-words rounded-[18px] bg-surface-2 px-4 py-2.5 text-[15px]">
         {message.content}
       </div>
-      <div className="flex gap-0.5 opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100">
+      <div className="flex gap-0.5 rounded-v2c-sm bg-surface opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100">
         <CopyButton text={message.content} label="Copy message" />
         <IconButton
           label="Edit and resend"
@@ -198,10 +212,13 @@ function AssistantMessage(props: {
   message: MessageRecord;
   rows: ModelRow[] | null;
   busy: boolean;
+  /** The last message keeps its actions visible; the others show them on hover or focus. */
+  last: boolean;
   onOpenSource: (source: ChatSource, sources: ChatSource[]) => void;
   onRegenerate: (id: string) => void;
 }) {
   const { message } = props;
+  const [errorHidden, setErrorHidden] = useState(false);
   const streaming = message.status === 'streaming';
   const tag = modelTag(message, props.rows);
   const sources = refineSources(message);
@@ -213,8 +230,15 @@ function AssistantMessage(props: {
 
   return (
     <div className="group flex flex-col gap-2" data-role="assistant" data-status={message.status}>
+      <div className="flex items-center gap-2.5 text-sm">
+        <BrandMark size="sm" />
+        <span className="font-medium text-fg">vid2context</span>
+        <time className="text-xs text-subtle" dateTime={new Date(message.createdAt).toISOString()}>
+          {relativeTime(message.createdAt)}
+        </time>
+      </div>
       {message.reasoning ? (
-        <details className="rounded-md border border-border bg-surface text-sm">
+        <details className="rounded-v2c border border-border bg-surface text-sm">
           <summary className="flex cursor-pointer select-none items-center gap-2 px-3 py-2 text-muted">
             <Brain size={14} aria-hidden />
             {streaming && !message.content ? 'Thinking…' : 'Thinking'}
@@ -225,7 +249,7 @@ function AssistantMessage(props: {
 
       {message.content ? (
         <CitationContext.Provider value={scope}>
-          <div className={cx('text-[0.95rem]', streaming && 'v2c-streaming')}>
+          <div className={cx('text-[15px]', streaming && 'v2c-streaming')}>
             <Suspense
               fallback={
                 <div className="whitespace-pre-wrap">
@@ -248,8 +272,12 @@ function AssistantMessage(props: {
           Removed citations that matched no source: {message.unverified.map((n) => `[${n}]`).join(' ')}
         </p>
       ) : null}
-      {message.status === 'error' && message.error ? (
-        <ErrorCard error={message.error} onRetry={props.busy ? undefined : () => props.onRegenerate(message.id)} />
+      {message.status === 'error' && message.error && !errorHidden ? (
+        <ErrorCard
+          error={message.error}
+          onRetry={props.busy ? undefined : () => props.onRegenerate(message.id)}
+          onDismiss={() => setErrorHidden(true)}
+        />
       ) : null}
 
       {!streaming ? (
@@ -261,12 +289,17 @@ function AssistantMessage(props: {
             </span>
           ) : null}
           {tag?.fallbackFrom ? <span>fell back from {tag.fallbackFrom}</span> : null}
-          {message.content ? (
-            <span className="flex gap-0.5">
-              <CopyButton text={message.content} label="Copy answer" />
+          {message.content || message.status === 'error' ? (
+            <span
+              className={cx(
+                'order-first flex gap-0.5 rounded-v2c-sm bg-surface p-0.5 transition-opacity',
+                !props.last && 'sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100',
+              )}
+            >
               <IconButton label="Regenerate" disabled={props.busy} onClick={() => props.onRegenerate(message.id)}>
                 <RefreshCw size={15} aria-hidden />
               </IconButton>
+              {message.content ? <CopyButton text={message.content} label="Copy answer" /> : null}
             </span>
           ) : null}
         </div>
@@ -277,8 +310,15 @@ function AssistantMessage(props: {
 
 export function StopButton(props: { onStop: () => void }) {
   return (
-    <Button onClick={props.onStop} aria-keyshortcuts="Escape">
-      <Square size={12} fill="currentColor" aria-hidden /> Stop
-    </Button>
+    <button
+      type="button"
+      aria-label="Stop"
+      title="Stop (Esc)"
+      onClick={props.onStop}
+      aria-keyshortcuts="Escape"
+      className="inline-flex size-9 items-center justify-center rounded-full bg-accent text-accent-fg transition-opacity hover:opacity-90"
+    >
+      <Square size={13} fill="currentColor" aria-hidden />
+    </button>
   );
 }

@@ -4,6 +4,8 @@
 /* Map the shared design tokens onto Tailwind utilities: bg-surface, text-muted, border-border, ... */
 @theme inline {
   --color-bg: var(--v2c-bg);
+  --color-sidebar: var(--v2c-sidebar);
+  --color-panel: var(--v2c-panel);
   --color-surface: var(--v2c-surface);
   --color-surface-2: var(--v2c-surface-2);
   --color-surface-3: var(--v2c-surface-3);
@@ -29,6 +31,10 @@
   --font-sans: var(--v2c-font-sans);
   --font-mono: var(--v2c-font-mono);
   --shadow-pop: var(--v2c-shadow);
+  --shadow-v2c: var(--v2c-shadow);
+  --radius-v2c-sm: var(--v2c-radius-sm);
+  --radius-v2c: var(--v2c-radius);
+  --radius-v2c-lg: var(--v2c-radius-lg);
 }
 
 @layer base {
@@ -39,7 +45,7 @@
   }
   body {
     margin: 0;
-    background: var(--v2c-bg);
+    background: var(--v2c-sidebar);
     color: var(--v2c-text);
     font-family: var(--v2c-font-sans);
     -webkit-font-smoothing: antialiased;

@@ -186,3 +186,21 @@ export async function copyText(text: string): Promise<boolean> {
     return false;
   }
 }
+
+/** The vid2context mark: a play triangle on the accent, shared with the web app's shell. */
+export function BrandMark(props: { size?: 'sm' | 'md' }) {
+  const small = props.size === 'sm';
+  return (
+    <span
+      aria-hidden
+      className={cx(
+        'inline-flex shrink-0 items-center justify-center bg-accent text-accent-fg',
+        small ? 'size-6 rounded-[6px]' : 'size-7 rounded-v2c-sm',
+      )}
+    >
+      <svg viewBox="0 0 16 16" className={small ? 'size-3' : 'size-3.5'} fill="currentColor" aria-hidden>
+        <path d="M5 3.5v9l7-4.5z" />
+      </svg>
+    </span>
+  );
+}

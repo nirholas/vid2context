@@ -4,7 +4,7 @@
  * Enter sends, Shift+Enter adds a newline, and IME composition is respected.
  */
 import { AlertCircle, ArrowUp, Film, Folder, Paperclip, X } from 'lucide-react';
-import { type RefObject, useLayoutEffect } from 'react';
+import { type ReactNode, type RefObject, useLayoutEffect } from 'react';
 import { formatTokens } from '../lib/meter.ts';
 import type { AttachedContext } from '../lib/types.ts';
 import { StopButton } from './Thread.tsx';
@@ -22,6 +22,10 @@ export interface ComposerProps {
   textareaRef: RefObject<HTMLTextAreaElement | null>;
   /** Why sending is blocked, e.g. while an attachment still loads. */
   blockedReason?: string;
+  /** Extra toolbar controls shown first, before the attach button (the workspace puts the model picker here). */
+  tools?: ReactNode;
+  /** Hide the note under the box (the empty state shows its own pills there). */
+  hideNote?: boolean;
 }
 
 export function ContextChip(props: { context: AttachedContext; onRemove: () => void }) {
@@ -30,7 +34,7 @@ export function ContextChip(props: { context: AttachedContext; onRemove: () => v
   return (
     <li
       className={cx(
-        'flex min-w-0 max-w-full items-center gap-2 rounded-md border bg-surface-2 py-1 pl-1 pr-1 text-xs sm:max-w-[280px]',
+        'flex min-w-0 max-w-full items-center gap-2 rounded-v2c border bg-surface-2 py-1 pl-1 pr-1 text-xs sm:max-w-[280px]',
         c.status === 'error' ? 'border-danger/60' : 'border-border',
       )}
       data-context={c.key}
@@ -87,8 +91,8 @@ export function Composer(props: ComposerProps) {
   const canSend = value.trim().length > 0 && !props.streaming && !props.blockedReason;
 
   return (
-    <div className="mx-auto w-full max-w-3xl px-3 pb-3 sm:px-6 sm:pb-5">
-      <div className="rounded-lg border border-border-strong bg-surface transition-colors focus-within:border-accent">
+    <div className="mx-auto w-full max-w-3xl px-3 pb-3 sm:px-6 sm:pb-4">
+      <div className="rounded-[20px] border border-border bg-surface shadow-v2c transition-colors focus-within:border-border-strong">
         {props.contexts.length > 0 ? (
           <ul className="flex flex-wrap gap-2 px-3 pt-3" aria-label="Attached context">
             {props.contexts.map((c) => (
@@ -96,15 +100,15 @@ export function Composer(props: ComposerProps) {
             ))}
           </ul>
         ) : null}
-        <label className="block px-4 pt-3">
+        <label className="block px-4 pt-4">
           <span className="v2c-sr-only">Message</span>
           <textarea
             ref={textareaRef}
             value={value}
-            rows={1}
-            placeholder="Ask about your videos..."
+            rows={2}
+            placeholder="Ask about your videos. Enter sends, Shift+Enter adds a line."
             aria-keyshortcuts="/"
-            className="block max-h-[260px] w-full resize-none bg-transparent text-[0.95rem] leading-relaxed outline-none placeholder:text-subtle"
+            className="block max-h-[260px] min-h-12 w-full resize-none bg-transparent text-[15px] leading-relaxed outline-none placeholder:text-subtle"
             onChange={(e) => props.onChange(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) {
@@ -114,12 +118,17 @@ export function Composer(props: ComposerProps) {
             }}
           />
         </label>
-        <div className="flex items-center justify-between gap-2 px-2 pb-2 pt-1">
-          <IconButton label="Attach videos or transcripts" onClick={props.onAttach}>
-            <Paperclip size={17} aria-hidden />
+        <div className="flex items-center gap-1 px-2.5 pb-2.5 pt-1">
+          {props.tools}
+          <IconButton
+            label="Attach videos or transcripts"
+            className="size-9 rounded-full hover:bg-surface-3"
+            onClick={props.onAttach}
+          >
+            <Paperclip size={18} strokeWidth={1.75} aria-hidden />
           </IconButton>
-          <div className="flex items-center gap-2">
-            {props.blockedReason ? <span className="text-xs text-muted">{props.blockedReason}</span> : null}
+          <div className="ml-auto flex min-w-0 items-center gap-2">
+            {props.blockedReason ? <span className="truncate text-xs text-muted">{props.blockedReason}</span> : null}
             {props.streaming ? (
               <StopButton onStop={props.onStop} />
             ) : (
@@ -128,17 +137,19 @@ export function Composer(props: ComposerProps) {
                 aria-label="Send"
                 disabled={!canSend}
                 onClick={props.onSend}
-                className="v2c-gradient inline-flex h-8 w-8 items-center justify-center rounded-full transition-opacity disabled:opacity-30"
+                className="inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-accent text-accent-fg transition-opacity hover:opacity-90 disabled:opacity-40 disabled:hover:opacity-40"
               >
-                <ArrowUp size={17} aria-hidden />
+                <ArrowUp size={18} aria-hidden />
               </button>
             )}
           </div>
         </div>
       </div>
-      <p className="mt-2 text-center text-[11px] text-muted">
-        Answers cite the videos. Check important claims against the cited moment.
-      </p>
+      {props.hideNote ? null : (
+        <p className="mt-2 text-center text-[11px] text-subtle">
+          Answers cite the videos. Check important claims against the cited moment.
+        </p>
+      )}
     </div>
   );
 }

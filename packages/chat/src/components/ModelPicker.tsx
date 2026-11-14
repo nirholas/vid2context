@@ -1,5 +1,5 @@
 /**
- * The model picker: a button in the thread header that opens a popover with
+ * The model picker: a round button in the composer toolbar that opens a popover (above it) with
  * a search box (an ARIA combobox) over a listbox of models. "Auto" comes
  * first, then favorites, then tiers in free-first order (Local, Free,
  * Keyless, Paid) with models grouped by service. Each row shows the label,
@@ -9,7 +9,7 @@
  * Keyboard: arrows, Home and End move; Enter picks; Escape closes; Alt+S
  * stars the highlighted model. Focus stays in the search box throughout.
  */
-import { Box, Braces, Brain, Check, ChevronDown, Eye, FileJson, Film, Search, Sparkles, Star, Wrench, Zap } from 'lucide-react';
+import { ArrowRight, Box, Braces, Brain, Check, Eye, FileJson, Film, Search, Settings, Sparkles, Star, Wrench, Zap } from 'lucide-react';
 import { type KeyboardEvent, type ReactNode, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { CAPABILITY_LABEL, filterModels, formatContextTokens, groupModels, serviceLabel, TIER_LABEL } from '../lib/models.ts';
 import type { ChatErrorData, ModelChoice, ModelRow } from '../lib/types.ts';
@@ -49,6 +49,8 @@ export interface ModelPickerProps {
   onStrictChange: (strict: boolean) => void;
   /** A disabled row was activated: open settings (client-only) or the provider docs (server). */
   onUnavailable: (row: ModelRow) => void;
+  /** Shows a "Manage providers" row in the footer that opens the settings. */
+  onManageProviders?: () => void;
 }
 
 type Item = { key: string; kind: 'auto' } | { key: string; kind: 'model'; row: ModelRow };
@@ -59,6 +61,9 @@ interface Section {
   tier?: ModelRow['tier'];
   services: { label?: string; items: Item[] }[];
 }
+
+const CHIP =
+  'inline-flex h-6 w-6 items-center justify-center rounded-md bg-surface-3 text-muted group-data-[active=true]:bg-border-strong/60';
 
 const AUTO_TERMS = 'auto recommended free-first free first local keyless default';
 
@@ -217,18 +222,18 @@ export function ModelPicker(props: ModelPickerProps) {
           role="option"
           aria-selected={selected}
           tabIndex={-1}
-          className={cx('flex cursor-pointer items-start gap-3 rounded-md px-3 py-2.5', isActive && 'bg-surface-3')}
+          className={cx('flex cursor-pointer items-start gap-3 rounded-v2c-sm px-3 py-2.5', isActive && 'bg-surface-3')}
           onMouseDown={(e) => e.preventDefault()}
           onMouseMove={() => setActive(i)}
           onClick={() => activate(item)}
         >
-          <span className="v2c-gradient mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-sm">
+          <span className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-v2c-sm bg-accent text-accent-fg">
             <Sparkles size={15} aria-hidden />
           </span>
           <span className="min-w-0 flex-1">
             <span className="flex items-center gap-2">
               <span className="font-medium">Auto</span>
-              <span className="rounded-pill border border-accent/50 px-1.5 py-px text-[11px] font-medium text-fg">
+              <span className="rounded-md bg-surface-3 px-1.5 py-px text-[11px] font-medium text-fg">
                 Recommended
               </span>
             </span>
@@ -257,7 +262,8 @@ export function ModelPicker(props: ModelPickerProps) {
         aria-disabled={!row.enabled || undefined}
         aria-label={name}
         tabIndex={-1}
-        className={cx('group flex cursor-pointer items-start gap-3 rounded-md px-3 py-2', isActive && 'bg-surface-3')}
+        data-active={isActive}
+        className={cx('group flex cursor-pointer items-start gap-3 rounded-v2c-sm px-3 py-2', isActive && 'bg-surface-3')}
         onMouseDown={(e) => e.preventDefault()}
         onMouseMove={() => setActive(i)}
         onClick={() => activate(item)}
@@ -283,21 +289,19 @@ export function ModelPicker(props: ModelPickerProps) {
             <span className="mt-0.5 block text-xs text-muted">{row.note}</span>
           ) : null}
         </span>
-        <span className="flex shrink-0 items-center gap-1.5 text-muted">
+        <span className="flex shrink-0 items-center gap-1 text-muted">
           {caps.map((c) => (
             <Tip key={c} text={CAPABILITY_LABEL[c] ?? c}>
-              {CAP_ICON[c]}
+              <span className={CHIP}>{CAP_ICON[c]}</span>
             </Tip>
           ))}
-          {ctx ? (
-            <span className="rounded-pill border border-border px-1.5 py-px font-mono text-[11px] text-muted">{ctx}</span>
-          ) : null}
+          {ctx ? <span className={cx(CHIP, 'w-auto px-1.5 font-mono text-[11px]')}>{ctx}</span> : null}
           <span
             aria-hidden
             title={fav ? 'Unstar' : 'Star'}
             className={cx(
               'inline-flex h-6 w-6 items-center justify-center rounded-sm hover:bg-surface-2',
-              fav ? 'text-warning' : 'text-subtle opacity-0 group-hover:opacity-100',
+              fav ? 'text-fg' : 'text-subtle opacity-0 group-hover:opacity-100',
               isActive && 'opacity-100',
             )}
             onClick={(e) => {
@@ -315,36 +319,50 @@ export function ModelPicker(props: ModelPickerProps) {
 
   return (
     <div className="relative">
-      <button
-        ref={buttonRef}
-        type="button"
-        aria-haspopup="dialog"
-        aria-expanded={open}
-        aria-label={`Model: ${buttonLabel}${props.strict ? ', strict' : ''}. Change model`}
-        className="inline-flex max-w-[52vw] items-center gap-2 rounded-pill border border-border px-3 py-1.5 text-sm hover:bg-surface-3 sm:max-w-xs"
-        onClick={() => onOpenChange(!open)}
-      >
-        {props.choice.kind === 'auto' ? (
-          <Sparkles size={14} className="shrink-0 text-accent" aria-hidden />
-        ) : chosenRow ? (
-          <span className={cx('h-2 w-2 shrink-0 rounded-full', TIER_DOT[chosenRow.tier])} aria-hidden />
-        ) : (
-          <Box size={14} className="shrink-0 text-muted" aria-hidden />
-        )}
-        <span className="truncate font-medium">{buttonLabel}</span>
-        {props.strict && props.choice.kind === 'rung' ? <span className="text-xs text-muted">strict</span> : null}
-        <ChevronDown size={14} className="shrink-0 text-muted" aria-hidden />
-      </button>
+      <span className="group/tip relative inline-flex">
+        <button
+          ref={buttonRef}
+          type="button"
+          aria-haspopup="dialog"
+          aria-expanded={open}
+          aria-label={`Model: ${buttonLabel}${props.strict ? ', strict' : ''}. Change model`}
+          aria-keyshortcuts="Alt+M"
+          className={cx(
+            'relative inline-flex size-9 items-center justify-center rounded-full text-muted transition-colors hover:bg-surface-3 hover:text-fg',
+            open && 'bg-surface-3 text-fg',
+          )}
+          onClick={() => onOpenChange(!open)}
+        >
+          {props.choice.kind === 'auto' ? (
+            <Sparkles size={18} strokeWidth={1.75} aria-hidden />
+          ) : (
+            <Box size={18} strokeWidth={1.75} aria-hidden />
+          )}
+          {chosenRow ? (
+            <span
+              className={cx('absolute right-1.5 bottom-1.5 h-2 w-2 rounded-full ring-2 ring-surface', TIER_DOT[chosenRow.tier])}
+              aria-hidden
+            />
+          ) : null}
+        </button>
+        <span
+          aria-hidden
+          className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-1.5 -translate-x-1/2 whitespace-nowrap rounded-sm border border-border bg-surface-3 px-2 py-1 text-xs text-fg opacity-0 shadow-pop transition-opacity group-hover/tip:opacity-100 group-focus-within/tip:opacity-100"
+        >
+          {buttonLabel}
+          {props.strict && props.choice.kind === 'rung' ? ' (strict)' : ''}
+        </span>
+      </span>
 
       {open ? (
         <div
           ref={popRef}
           role="dialog"
           aria-label="Choose a model"
-          className="fixed inset-x-2 top-14 z-40 flex max-h-[min(70vh,560px)] flex-col overflow-hidden rounded-lg border border-border bg-surface shadow-pop sm:absolute sm:inset-x-auto sm:left-0 sm:top-full sm:mt-2 sm:w-[440px]"
+          className="fixed inset-x-2 bottom-28 z-40 flex max-h-[min(62vh,540px)] flex-col overflow-hidden rounded-v2c-lg border border-border bg-surface-2 shadow-v2c sm:absolute sm:inset-x-auto sm:bottom-full sm:-left-1 sm:mb-3 sm:w-[min(34rem,calc(100vw-2rem))]"
         >
-          <div className="flex items-center gap-2 border-b border-border px-3 py-2">
-            <Search size={15} className="shrink-0 text-muted" aria-hidden />
+          <div className="flex items-center gap-2 border-b border-border px-3.5 py-2.5">
+            <Search size={16} className="shrink-0 text-muted" aria-hidden />
             <input
               ref={inputRef}
               role="combobox"
@@ -353,7 +371,7 @@ export function ModelPicker(props: ModelPickerProps) {
               aria-autocomplete="list"
               aria-activedescendant={items.length ? optionId(active) : undefined}
               aria-label="Search models by name, service or capability"
-              placeholder="Search models, services, capabilities"
+              placeholder="Search models..."
               className="min-w-0 flex-1 bg-transparent py-1 text-sm outline-none placeholder:text-subtle"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
@@ -374,7 +392,7 @@ export function ModelPicker(props: ModelPickerProps) {
                 <div key={section.id} role="group" aria-labelledby={`${baseId}-${section.id}`} className="mt-1.5">
                   <div
                     id={`${baseId}-${section.id}`}
-                    className="flex items-center gap-2 px-3 pb-1 pt-2 text-xs font-semibold text-muted"
+                    className="flex items-center gap-2 px-3 pb-1 pt-2 text-[11px] font-semibold uppercase tracking-wide text-subtle"
                   >
                     {section.tier ? (
                       <span className={cx('h-1.5 w-1.5 rounded-full', TIER_DOT[section.tier])} aria-hidden />
@@ -385,7 +403,7 @@ export function ModelPicker(props: ModelPickerProps) {
                   {section.services.map((s) => (
                     <div key={s.label ?? 'all'} role="presentation">
                       {s.label && section.tier ? (
-                        <div role="presentation" className="px-3 pb-0.5 pt-1 text-[11px] uppercase tracking-wide text-subtle">
+                        <div role="presentation" className="px-3 pb-1 pt-2 text-sm text-subtle">
                           {s.label}
                         </div>
                       ) : null}
@@ -416,7 +434,7 @@ export function ModelPicker(props: ModelPickerProps) {
             ) : null}
           </div>
 
-          <div className="flex items-center justify-between gap-3 border-t border-border px-3 py-2 text-xs text-muted">
+          <div className="flex items-center justify-between gap-3 border-t border-border px-3.5 py-2 text-xs text-muted">
             <div className="inline-flex items-center gap-2">
               <input
                 type="checkbox"
@@ -425,13 +443,26 @@ export function ModelPicker(props: ModelPickerProps) {
                 aria-checked={props.strict}
                 aria-label="Strict: only the chosen model answers, no fallback"
                 onChange={(e) => props.onStrictChange(e.target.checked)}
-                className="relative h-4 w-7 cursor-pointer appearance-none rounded-pill bg-surface-3 ring-1 ring-border-strong transition-colors before:absolute before:left-0.5 before:top-0.5 before:h-3 before:w-3 before:rounded-full before:bg-white before:transition-transform before:content-[''] checked:bg-accent checked:ring-accent checked:before:translate-x-3"
+                className="relative h-4 w-7 cursor-pointer appearance-none rounded-pill bg-surface-3 ring-1 ring-border-strong transition-colors before:absolute before:left-0.5 before:top-0.5 before:h-3 before:w-3 before:rounded-full before:bg-muted before:transition-transform before:content-[''] checked:bg-accent checked:ring-accent checked:before:translate-x-3 checked:before:bg-accent-fg"
               />
               <span>
                 Strict <span className="text-subtle">(no fallback)</span>
               </span>
             </div>
-            <span className="hidden sm:inline">Alt+S stars the highlighted model</span>
+            {props.onManageProviders ? (
+              <button
+                type="button"
+                className="inline-flex items-center gap-2 rounded-v2c-sm px-2 py-1 text-sm text-fg hover:bg-surface-3"
+                onClick={() => {
+                  close(false);
+                  props.onManageProviders?.();
+                }}
+              >
+                <Settings size={14} aria-hidden /> Manage providers <ArrowRight size={14} className="text-muted" aria-hidden />
+              </button>
+            ) : (
+              <span className="hidden sm:inline">Alt+S stars the highlighted model</span>
+            )}
           </div>
         </div>
       ) : null}

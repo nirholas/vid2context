@@ -90,7 +90,7 @@ export default function SourcePanel(props: SourcePanelProps) {
   return (
     <aside
       aria-label={`Source: ${source.title}`}
-      className="flex h-full min-h-0 flex-col border-l border-border bg-surface"
+      className="flex h-full min-h-0 flex-col border-l border-border bg-panel"
       onKeyDown={(e) => {
         if (e.key === 'Escape') {
           e.stopPropagation();

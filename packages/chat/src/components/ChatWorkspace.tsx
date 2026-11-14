@@ -6,7 +6,7 @@
  * keyboard shortcuts and the ?input= / ?collection= hand-off.
  */
 import type { VideoContext, VideoSummary } from '@vid2context/core';
-import { Download, Menu, PanelLeftClose, PanelLeftOpen, Paperclip, Settings, Sparkles, X } from 'lucide-react';
+import { Download, Menu, PanelLeftClose, PanelLeftOpen, Paperclip, Settings, X } from 'lucide-react';
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { toErrorData } from '../lib/api.ts';
 import { type Backend, requestContext } from '../lib/backend.ts';
@@ -32,7 +32,7 @@ import { type KeyField, SettingsDialog } from './SettingsDialog.tsx';
 import { Sidebar } from './Sidebar.tsx';
 import { Thread } from './Thread.tsx';
 import { TokenMeter } from './TokenMeter.tsx';
-import { Button, cx, IconButton, Spinner } from './ui.tsx';
+import { BrandMark, Button, cx, IconButton, Spinner } from './ui.tsx';
 
 const SourcePanel = lazy(() => import('./SourcePanel.tsx'));
 
@@ -582,6 +582,9 @@ export function ChatWorkspace(props: ChatWorkspaceProps) {
   }, [rows]);
 
   const loadingContext = current.contexts.some((c) => c.status === 'loading');
+  // Answers are grounded in attached videos (the server refuses a chat with nothing attached).
+  const hasContext = current.contexts.some((c) => c.status === 'ready');
+  const blockedReason = loadingContext ? 'Waiting for the transcript…' : !hasContext ? 'Attach a video to ask about it' : undefined;
 
   const exportMarkdown = useCallback(() => {
     const md = conversationToMarkdown(currentRef.current, messagesRef.current);
@@ -649,9 +652,9 @@ export function ChatWorkspace(props: ChatWorkspaceProps) {
   );
 
   return (
-    <div className="flex h-full min-h-0 w-full overflow-hidden bg-bg text-fg">
+    <div className="flex h-full min-h-0 w-full overflow-hidden bg-sidebar text-fg">
       {/* Sidebar: drawer below md, collapsible column from md up. */}
-      <div className={cx('hidden w-72 shrink-0 border-r border-border bg-surface', sidebarOpen && 'md:block')}>{sidebar}</div>
+      <div className={cx('hidden w-72 shrink-0 border-r border-border bg-sidebar', sidebarOpen && 'md:block')}>{sidebar}</div>
       {drawerOpen ? (
         <div className="fixed inset-0 z-40 md:hidden">
           <button
@@ -660,7 +663,7 @@ export function ChatWorkspace(props: ChatWorkspaceProps) {
             className="absolute inset-0 bg-black/60"
             onClick={() => setDrawerOpen(false)}
           />
-          <div className="relative h-full w-[85vw] max-w-80 border-r border-border bg-surface shadow-pop">
+          <div className="relative h-full w-[85vw] max-w-80 border-r border-border bg-sidebar shadow-pop">
             <div className="absolute right-2 top-2 z-10">
               <IconButton label="Close conversations" onClick={() => setDrawerOpen(false)}>
                 <X size={18} aria-hidden />
@@ -671,7 +674,7 @@ export function ChatWorkspace(props: ChatWorkspaceProps) {
         </div>
       ) : null}
 
-      <main className="flex min-w-0 flex-1 flex-col" aria-label="Chat">
+      <main className="flex min-w-0 flex-1 flex-col bg-panel" aria-label="Chat">
         <header className="flex items-center gap-2 border-b border-border px-2 py-2 sm:px-3">
           <span className="md:hidden">
             <IconButton label="Conversations" onClick={() => setDrawerOpen(true)}>
@@ -775,12 +778,12 @@ export function ChatWorkspace(props: ChatWorkspaceProps) {
           onRemoveContext={removeContext}
           onAttach={() => setAttachOpen(true)}
           textareaRef={textareaRef}
-          {...(loadingContext ? { blockedReason: 'Waiting for the transcript…' } : {})}
+          {...(blockedReason ? { blockedReason } : {})}
         />
       </main>
 
       {panel ? (
-        <div className="fixed inset-0 z-30 bg-bg lg:static lg:z-auto lg:w-[420px] lg:shrink-0">
+        <div className="fixed inset-0 z-30 bg-panel lg:static lg:z-auto lg:w-[420px] lg:shrink-0">
           <Suspense
             fallback={
               <div className="p-4">
@@ -839,9 +842,7 @@ function EmptyState(props: { mode: 'server' | 'client'; onAttach: () => void; ha
   }
   return (
     <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-4 overflow-y-auto px-6 py-10 text-center">
-      <span className="v2c-gradient inline-flex h-12 w-12 items-center justify-center rounded-lg">
-        <Sparkles size={22} aria-hidden />
-      </span>
+      <BrandMark />
       <h1 className="text-2xl font-semibold tracking-tight">Talk to your videos</h1>
       <p className="max-w-md text-sm text-muted">
         {props.hasContext
