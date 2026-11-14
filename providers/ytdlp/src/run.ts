@@ -6,7 +6,7 @@
  */
 import { type Ctx, type Env, Vid2ContextError, type VideoRef } from '@vid2context/core';
 import { configFrom, metadataArgs, type RunConfig } from './args.ts';
-import { ensureYtDlp, type YtDlpInfo as BinaryInfo } from './binary.ts';
+import { type YtDlpInfo as BinaryInfo, ensureYtDlp } from './binary.ts';
 import { errorFromStderr } from './errors.ts';
 import type { YtDlpInfo } from './info.ts';
 import { run } from './process.ts';

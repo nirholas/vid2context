@@ -72,7 +72,10 @@ function streamError(label: string, err: NonNullable<StreamChunk['error']>): Vid
     return new Vid2ContextError('rate-limited', msg, { status });
   }
   if (status === 401 || status === 403 || tag.includes('auth')) return new Vid2ContextError('auth', msg, { status });
-  return new Vid2ContextError('upstream', msg, { status, hint: 'The service ended the stream with an error; try again or pick another model.' });
+  return new Vid2ContextError('upstream', msg, {
+    status,
+    hint: 'The service ended the stream with an error; try again or pick another model.',
+  });
 }
 
 /**

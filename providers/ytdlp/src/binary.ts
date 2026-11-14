@@ -266,9 +266,13 @@ export async function installManaged(ctx: Ctx, tag?: string): Promise<ManagedMet
   const bytes = await download(ctx, `${base}/${asset}`);
   const actual = createHash('sha256').update(bytes).digest('hex');
   if (actual !== expected) {
-    throw new Vid2ContextError('upstream', `yt-dlp ${asset} failed checksum verification (expected ${expected}, got ${actual}).`, {
-      hint: 'The download was corrupted or tampered with. Retry; if it keeps failing, install yt-dlp yourself and set YTDLP_PATH.',
-    });
+    throw new Vid2ContextError(
+      'upstream',
+      `yt-dlp ${asset} failed checksum verification (expected ${expected}, got ${actual}).`,
+      {
+        hint: 'The download was corrupted or tampered with. Retry; if it keeps failing, install yt-dlp yourself and set YTDLP_PATH.',
+      },
+    );
   }
   const target = managedPath(ctx.env);
   await mkdir(dirname(target), { recursive: true });

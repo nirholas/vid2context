@@ -1,3 +1,5 @@
+import type { Telemetry } from './telemetry/types.ts';
+
 /**
  * Shared data model for vid2context. Every provider, surface and storage
  * backend speaks these types. Changing a field here is a contract change:
@@ -175,4 +177,6 @@ export interface Ctx {
   signal?: AbortSignal;
   /** Platform objects such as Cloudflare bindings (AI, D1, R2, KV). Providers must treat them as optional. */
   bindings?: Record<string, unknown>;
+  /** Optional tracing, metrics and usage ledger. Absent means no instrumentation at all (docs/observability.md). */
+  telemetry?: Telemetry;
 }

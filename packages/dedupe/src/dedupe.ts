@@ -161,7 +161,12 @@ export function findDuplicates(contexts: VideoContext[], options: DedupeOptions 
   }
 
   const { pairs: candidates, windows } = candidatePairs(docs, o);
-  const alignOpts = { shingleSize: o.shingleSize, maxGap: o.maxGap, minRunMatches: o.minRunMatches, maxOccurrences: o.maxOccurrences };
+  const alignOpts = {
+    shingleSize: o.shingleSize,
+    maxGap: o.maxGap,
+    minRunMatches: o.minRunMatches,
+    maxOccurrences: o.maxOccurrences,
+  };
 
   const metaSupport = (x: number, y: number): boolean =>
     sameChannel(docCtx[x] as VideoContext, docCtx[y] as VideoContext) ||
@@ -271,7 +276,8 @@ export function findDuplicates(contexts: VideoContext[], options: DedupeOptions 
     if (!(durB > durA)) continue;
     const current = parent.get(ca);
     const curDur = current ? (docs[repOf(current.pair.b)] as ShingledDoc).durationSec : -1;
-    if (!current || durB > curDur || (durB === curDur && p.al.overlapA > current.pair.al.overlapA)) parent.set(ca, { cluster: cb, pair: p });
+    if (!current || durB > curDur || (durB === curDur && p.al.overlapA > current.pair.al.overlapA))
+      parent.set(ca, { cluster: cb, pair: p });
   }
   const pathToRoot = (cluster: number): number[] => {
     const path = [cluster];
@@ -372,7 +378,8 @@ export function findDuplicates(contexts: VideoContext[], options: DedupeOptions 
     if (members.length < 2) continue;
     const r = rep.get(root) as number;
     const out: GroupMember[] = [{ videoId: (docs[r] as ShingledDoc).videoId }];
-    for (const m of members) if (m !== r) out.push({ videoId: (docs[m] as ShingledDoc).videoId, evidence: reuploadEvidence(m, r) });
+    for (const m of members)
+      if (m !== r) out.push({ videoId: (docs[m] as ShingledDoc).videoId, evidence: reuploadEvidence(m, r) });
     groups.push({
       first: Math.min(...members),
       kindOrder: 0,
@@ -410,8 +417,9 @@ export function findDuplicates(contexts: VideoContext[], options: DedupeOptions 
   // Independence: each video counts as the original at the root of its clip path.
   for (let i = 0; i < docs.length; i++) {
     const path = pathToRoot(uf.find(i));
-    representativeOf[(docs[i] as ShingledDoc).videoId] = (docs[rep.get(path[path.length - 1] as number) as number] as ShingledDoc)
-      .videoId;
+    representativeOf[(docs[i] as ShingledDoc).videoId] = (
+      docs[rep.get(path[path.length - 1] as number) as number] as ShingledDoc
+    ).videoId;
   }
 
   const related: RelatedPair[] = [];
@@ -438,4 +446,56 @@ export function findDuplicates(contexts: VideoContext[], options: DedupeOptions 
       sharedSpans: swap ? spans.map((s) => ({ a: s.b, b: s.a, words: s.words })) : spans,
     });
   }
-  related.sort((x, y) => (x
+  related.sort((x, y) => (x.a === y.a ? (x.b < y.b ? -1 : 1) : x.a < y.a ? -1 : 1));
+
+  for (const s of skipped) {
+    if (s.reason === 'duplicate-input') representativeOf[s.videoId] ??= s.videoId;
+  }
+
+  return {
+    groups: groups.map((g) => g.group),
+    related,
+    representativeOf,
+    skipped,
+    stats: { videos: docs.length, windows, candidatePairs: candidates.length },
+  };
+}
+
+function rangeOf(doc: ShingledDoc, fromWord: number, toWord: number): TimeRange {
+  return {
+    startSec: round2(doc.wordStart[fromWord] as number),
+    endSec: round2(doc.wordEnd[Math.min(doc.words - 1, toWord)] as number),
+  };
+}
+
+/** The span of video `side` (one of the pair) that the pair's matched runs cover, in that video's own time. */
+function matchedRangeOn(p: Pair, side: number, docs: ShingledDoc[], k: number): TimeRange | undefined {
+  const first = p.al.runs[0];
+  const last = p.al.runs[p.al.runs.length - 1];
+  if (!first || !last) return undefined;
+  const doc = docs[side] as ShingledDoc;
+  return side === p.a ? rangeOf(doc, first.aFrom, last.aTo + k - 1) : rangeOf(doc, first.bFrom, last.bTo + k - 1);
+}
+
+function roundRange(r: TimeRange | undefined): TimeRange | undefined {
+  return r ? { startSec: round2(r.startSec), endSec: round2(r.endSec) } : undefined;
+}
+
+/**
+ * One context per independent source: every video that is in no group, plus
+ * the original of each group, in input order. Use this (or
+ * `representativeOf` from findDuplicates) so a brief never counts a clip or a
+ * reupload as a second source agreeing with its original.
+ */
+export function independentSources(contexts: VideoContext[], options: DedupeOptions = {}): VideoContext[] {
+  const { representativeOf } = findDuplicates(contexts, options);
+  const seen = new Set<string>();
+  const out: VideoContext[] = [];
+  for (const c of contexts) {
+    const id = c.metadata.ref.id;
+    if (seen.has(id)) continue;
+    seen.add(id);
+    if (representativeOf[id] === id) out.push(c);
+  }
+  return out;
+}

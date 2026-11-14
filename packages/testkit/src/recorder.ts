@@ -10,7 +10,7 @@
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { RecordedResponse, Route } from '@vid2context/core/testing';
-import { mergeReports, REDACTED, REDACTED_URL, type ScrubOptions, type ScrubReport, Scrubber, SECRET_HEADERS } from './scrub.ts';
+import { mergeReports, REDACTED, REDACTED_URL, Scrubber, type ScrubOptions, type ScrubReport, SECRET_HEADERS } from './scrub.ts';
 
 /** Request headers worth keeping in a fixture. Secret headers are kept too, with their value replaced. */
 export const REQUEST_HEADER_ALLOWLIST = [

@@ -1,5 +1,5 @@
-import { mkdtemp, readFile, rm, stat } from 'node:fs/promises';
 import { readFileSync } from 'node:fs';
+import { mkdtemp, readFile, rm, stat } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createContext, Vid2ContextError } from '@vid2context/core';
@@ -31,7 +31,11 @@ const DENO: RunConfig = { jsRuntime: { name: 'deno', path: '/usr/local/bin/deno'
 
 describe('matchUrl', () => {
   it('gives YouTube URLs the same ref as the YouTube provider', () => {
-    for (const url of ['https://www.youtube.com/watch?v=jNQXAC9IVRw', 'https://youtu.be/jNQXAC9IVRw', 'https://www.youtube.com/shorts/jNQXAC9IVRw']) {
+    for (const url of [
+      'https://www.youtube.com/watch?v=jNQXAC9IVRw',
+      'https://youtu.be/jNQXAC9IVRw',
+      'https://www.youtube.com/shorts/jNQXAC9IVRw',
+    ]) {
       expect(matchUrl(url)).toEqual(matchYouTube(url));
       expect(matchUrl(url)?.id).toBe('youtube:jNQXAC9IVRw');
     }
@@ -114,7 +118,15 @@ describe('argument building', () => {
   });
 
   it('builds playlist, comments, subtitle and audio argv', () => {
-    expect(playlistArgs(url, DENO, 5).slice(3)).toEqual(['--flat-playlist', '-J', '--no-warnings', '--playlist-end', '5', '--', url]);
+    expect(playlistArgs(url, DENO, 5).slice(3)).toEqual([
+      '--flat-playlist',
+      '-J',
+      '--no-warnings',
+      '--playlist-end',
+      '5',
+      '--',
+      url,
+    ]);
     expect(commentsArgs(url, DENO, 20).slice(3)).toEqual([
       '-J',
       '--no-download',
@@ -164,7 +176,12 @@ describe('argument building', () => {
   });
 
   it('always ends with -- and the URL', () => {
-    for (const args of [metadataArgs(url, NODE), playlistArgs(url, NODE), commentsArgs(url, NODE, 1), audioArgs(url, NODE, 'o')]) {
+    for (const args of [
+      metadataArgs(url, NODE),
+      playlistArgs(url, NODE),
+      commentsArgs(url, NODE, 1),
+      audioArgs(url, NODE, 'o'),
+    ]) {
       expect(args.at(-2)).toBe('--');
       expect(args.at(-1)).toBe(url);
       expect(args.filter((a) => a === '--')).toHaveLength(1);
@@ -192,7 +209,11 @@ describe('metadata mapping', () => {
     const m = toMetadata(r, info('info-youtube-jNQXAC9IVRw.json'));
     expect(m.ref).toBe(r);
     expect(m.title).toBe('Me at the zoo');
-    expect(m.channel).toEqual({ name: 'jawed', id: 'UC4QobU6STFB0P71PMvOGN5A', url: 'https://www.youtube.com/channel/UC4QobU6STFB0P71PMvOGN5A' });
+    expect(m.channel).toEqual({
+      name: 'jawed',
+      id: 'UC4QobU6STFB0P71PMvOGN5A',
+      url: 'https://www.youtube.com/channel/UC4QobU6STFB0P71PMvOGN5A',
+    });
     expect(m.durationSec).toBe(19);
     expect(m.publishedAt).toBe('2005-04-24T03:31:52.000Z');
     expect(m.chapters).toHaveLength(3);
@@ -201,7 +222,11 @@ describe('metadata mapping', () => {
     expect(m.thumbnailUrl).toMatch(/^https:\/\/i\.ytimg\.com\/vi\/jNQXAC9IVRw\//);
     expect(m.tags).toHaveLength(3);
     expect(m.isLive).toBe(false);
-    expect(m.extra).toMatchObject({ extractor: 'Youtube', webpageUrl: 'https://www.youtube.com/watch?v=jNQXAC9IVRw', extractorId: 'jNQXAC9IVRw' });
+    expect(m.extra).toMatchObject({
+      extractor: 'Youtube',
+      webpageUrl: 'https://www.youtube.com/watch?v=jNQXAC9IVRw',
+      extractorId: 'jNQXAC9IVRw',
+    });
   });
 
   it('maps a Vimeo -J dump', () => {
@@ -214,7 +239,11 @@ describe('metadata mapping', () => {
     expect(m.chapters).toEqual([]);
     expect(m.publishedAt).toBeUndefined();
     expect(m.thumbnailUrl).toMatch(/^https:\/\/i\.vimeocdn\.com\//);
-    expect(m.extra).toMatchObject({ extractor: 'Vimeo', webpageUrl: 'https://player.vimeo.com/video/76979871', extractorId: '76979871' });
+    expect(m.extra).toMatchObject({
+      extractor: 'Vimeo',
+      webpageUrl: 'https://player.vimeo.com/video/76979871',
+      extractorId: '76979871',
+    });
   });
 
   it('maps a TED -J dump, with upload_date as an ISO date', () => {
@@ -322,14 +351,19 @@ describe('binary management (no network)', () => {
     expect(assetName('darwin', 'arm64')).toBe('yt-dlp_macos');
     expect(assetName('win32', 'x64')).toBe('yt-dlp.exe');
     expect(assetName('freebsd', 'x64')).toBeNull();
-    for (const a of ['yt-dlp_linux', 'yt-dlp_linux_aarch64', 'yt-dlp_macos', 'yt-dlp.exe', 'yt-dlp_arm64.exe']) expect(sums.has(a)).toBe(true);
+    for (const a of ['yt-dlp_linux', 'yt-dlp_linux_aarch64', 'yt-dlp_macos', 'yt-dlp.exe', 'yt-dlp_arm64.exe'])
+      expect(sums.has(a)).toBe(true);
   });
 
   it('reads the latest tag from the recorded releases/latest redirect', async () => {
     const head = fixture('releases-latest-head.txt');
     const location = /location: (\S+)/.exec(head)?.[1] ?? '';
     const fetch = replayFetch([
-      { method: 'HEAD', url: 'https://github.com/yt-dlp/yt-dlp/releases/latest', response: { status: 302, headers: { location }, body: '' } },
+      {
+        method: 'HEAD',
+        url: 'https://github.com/yt-dlp/yt-dlp/releases/latest',
+        response: { status: 302, headers: { location }, body: '' },
+      },
     ]);
     expect(await latestTag(testContext({ fetch }))).toBe('2026.10.26');
   });
@@ -399,7 +433,9 @@ describe('process runner', () => {
 
   it('times out and kills the child', async () => {
     const started = Date.now();
-    await expect(run(node, ['-e', 'setTimeout(() => {}, 60000)'], testContext(), { timeoutMs: 300, label: 'test' })).rejects.toMatchObject({
+    await expect(
+      run(node, ['-e', 'setTimeout(() => {}, 60000)'], testContext(), { timeoutMs: 300, label: 'test' }),
+    ).rejects.toMatchObject({
       code: 'timeout',
     });
     expect(Date.now() - started).toBeLessThan(5000);
@@ -432,7 +468,9 @@ describe('process runner', () => {
   });
 
   it('reports a missing binary as no-provider', async () => {
-    await expect(run('/nonexistent/yt-dlp', ['--version'], testContext(), { timeoutMs: 5000, label: 'test' })).rejects.toMatchObject({
+    await expect(
+      run('/nonexistent/yt-dlp', ['--version'], testContext(), { timeoutMs: 5000, label: 'test' }),
+    ).rejects.toMatchObject({
       code: 'no-provider',
     });
   });
@@ -453,7 +491,11 @@ describe.skipIf(!process.env.LIVE)('live', () => {
       expect(a.version).toMatch(/^\d{4}\.\d{2}\.\d{2}/);
       const meta = JSON.parse(await readFile(join(home, 'bin', 'yt-dlp.json'), 'utf8'));
       const { createHash } = await import('node:crypto');
-      expect(createHash('sha256').update(await readFile(a.path)).digest('hex')).toBe(meta.sha256);
+      expect(
+        createHash('sha256')
+          .update(await readFile(a.path))
+          .digest('hex'),
+      ).toBe(meta.sha256);
       await expect(stat(join(home, 'locks', 'ytdlp'))).rejects.toThrow();
     } finally {
       await rm(home, { recursive: true, force: true });

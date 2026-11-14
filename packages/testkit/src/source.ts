@@ -46,7 +46,8 @@ export interface SourceCases {
 /** Problems with a ref, per docs/contracts/providers.md (empty when well-formed). */
 export function refProblems(ref: VideoRef, input: string): string[] {
   const p: string[] = [];
-  if (!ref.platform || !/^[a-z0-9][a-z0-9-]*$/.test(ref.platform)) p.push(`platform "${ref.platform}" is not a short lowercase slug`);
+  if (!ref.platform || !/^[a-z0-9][a-z0-9-]*$/.test(ref.platform))
+    p.push(`platform "${ref.platform}" is not a short lowercase slug`);
   if (!REF_KINDS.includes(ref.kind)) p.push(`kind "${ref.kind}" is not one of ${REF_KINDS.join(', ')}`);
   if (!ref.nativeId) p.push('nativeId is empty');
   const want = ref.kind === 'video' ? `${ref.platform}:${ref.nativeId}` : `${ref.platform}:${ref.kind}:${ref.nativeId}`;
@@ -72,13 +73,16 @@ export function metadataProblems(meta: VideoMetadata, ref: VideoRef): string[] {
   else {
     for (let i = 0; i < meta.chapters.length; i++) {
       const c = meta.chapters[i];
-      if (!c || typeof c.title !== 'string' || !Number.isFinite(c.startSec) || c.startSec < 0) p.push(`chapter ${i} is malformed`);
+      if (!c || typeof c.title !== 'string' || !Number.isFinite(c.startSec) || c.startSec < 0)
+        p.push(`chapter ${i} is malformed`);
       const prev = meta.chapters[i - 1];
       if (c && prev && c.startSec < prev.startSec) p.push(`chapter ${i} starts before chapter ${i - 1}`);
     }
   }
-  if (meta.durationSec !== undefined && !(Number.isFinite(meta.durationSec) && meta.durationSec >= 0)) p.push('durationSec is not a non-negative number');
-  if (meta.publishedAt !== undefined && Number.isNaN(Date.parse(meta.publishedAt))) p.push(`publishedAt "${meta.publishedAt}" is not ISO 8601`);
+  if (meta.durationSec !== undefined && !(Number.isFinite(meta.durationSec) && meta.durationSec >= 0))
+    p.push('durationSec is not a non-negative number');
+  if (meta.publishedAt !== undefined && Number.isNaN(Date.parse(meta.publishedAt)))
+    p.push(`publishedAt "${meta.publishedAt}" is not ISO 8601`);
   if (meta.language !== undefined && !BCP47.test(meta.language)) p.push(`language "${meta.language}" is not BCP-47`);
   return p;
 }

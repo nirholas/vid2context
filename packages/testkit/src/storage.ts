@@ -4,7 +4,7 @@
  * a fresh backend from the factory and uses the real VideoContext fixtures in
  * tests/fixtures/contexts.
  */
-import { hasKv, hasVectors, type Storage, type VectorRecord, type VideoContext, Vid2ContextError } from '@vid2context/core';
+import { hasKv, hasVectors, type Storage, type VectorRecord, Vid2ContextError, type VideoContext } from '@vid2context/core';
 import { describe, expect, it } from 'vitest';
 import { loadContextFixture } from './fixtures.ts';
 
@@ -105,7 +105,11 @@ export function describeStorage(factory: StorageFactory, opts: StorageSuiteOptio
             expect(item.ref.id).toBe(item.id);
           }
           const zooSummary = all.items.find((i) => i.id === a.metadata.ref.id);
-          expect(zooSummary).toMatchObject({ title: a.metadata.title, origin: a.transcript.origin, language: a.transcript.language });
+          expect(zooSummary).toMatchObject({
+            title: a.metadata.title,
+            origin: a.transcript.origin,
+            language: a.transcript.language,
+          });
 
           const first = await s.listContexts({ limit: 1 });
           expect(first.items).toHaveLength(1);
@@ -276,7 +280,12 @@ export function describeStorage(factory: StorageFactory, opts: StorageSuiteOptio
           expect(hits[0]?.score).toBeCloseTo(1, 5);
           for (let i = 1; i < hits.length; i++) expect(hits[i]?.score ?? 0).toBeLessThanOrEqual(hits[i - 1]?.score ?? 0);
           for (const h of hits) expect(h.score >= -1 - 1e-9 && h.score <= 1 + 1e-9).toBe(true);
-          expect(hits[0]).toMatchObject({ videoId: target.videoId, startSec: target.startSec, endSec: target.endSec, text: target.text });
+          expect(hits[0]).toMatchObject({
+            videoId: target.videoId,
+            startSec: target.startSec,
+            endSec: target.endSec,
+            text: target.text,
+          });
         }));
 
       it('overwrites on upsert with the same id and model', (t) =>

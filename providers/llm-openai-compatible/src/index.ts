@@ -10,8 +10,18 @@
  * <PROVIDER>_MODEL replaces a lane's model list (comma-separated, in order).
  * <PROVIDER>_FALLBACK_KEYS adds one rung per extra key.
  */
-import { defineProvider, type Env, keyPool, type LlmProvider, type LlmRung, pooledService, type Tier } from '@vid2context/core';
-import { type ChatEndpoint, chatWith } from './client.ts';
+import {
+  defineProvider,
+  type Env,
+  keyPool,
+  type LlmProvider,
+  type LlmRung,
+  pooledService,
+  type StreamingLlmRung,
+  streamOpenAiChat,
+  type Tier,
+} from '@vid2context/core';
+import { buildBody, type ChatEndpoint, chatWith } from './client.ts';
 
 export { answerText, buildBody, chatWith } from './client.ts';
 
@@ -201,7 +211,7 @@ function makeRung(
     jsonSchema: lane.jsonSchema,
   };
   const capabilities = [...(lane.json ? ['json'] : []), ...(lane.jsonSchema ? ['json-schema'] : [])];
-  return {
+  const rung: StreamingLlmRung = {
     id: model.id ? `llm/${opts.service}/${model.id}` : `llm/${opts.service}`,
     provider: 'llm-openai-compatible',
     service: opts.service,
@@ -214,7 +224,22 @@ function makeRung(
     isEnabled: () => opts.enabled,
     contextTokens: model.contextTokens,
     chat: (req, ctx) => chatWith(ep, req, ctx),
+    // Same endpoint, key and request body as chat(), plus the streaming fields.
+    stream: (req, ctx) =>
+      streamOpenAiChat(
+        {
+          url: ep.url,
+          model: ep.model,
+          key: ep.key,
+          label: ep.label,
+          body: (r) => buildBody(ep, r),
+          idleTimeoutMs: ep.timeoutMs,
+        },
+        req,
+        ctx,
+      ),
   };
+  return rung;
 }
 
 function laneRungs(lane: Lane, env: Env): LlmRung[] {

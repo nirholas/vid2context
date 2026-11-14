@@ -32,13 +32,15 @@ export function rungProblems(rung: Rung, kind: RungKind): string[] {
   if (!Array.isArray(rung.requires)) p.push('requires is not an array');
   else {
     for (const r of rung.requires) if (!ENV_NAME.test(r)) p.push(`requires entry "${r}" is not an UPPER_SNAKE env var name`);
-    if (rung.tier === 'keyless' && rung.requires.length > 0) p.push(`keyless rung requires ${rung.requires.join(', ')}; keyless rungs need no env`);
+    if (rung.tier === 'keyless' && rung.requires.length > 0)
+      p.push(`keyless rung requires ${rung.requires.join(', ')}; keyless rungs need no env`);
     if ((rung.tier === 'free' || rung.tier === 'paid') && rung.requires.length === 0) {
       p.push(`${rung.tier} rung has empty requires; free and paid rungs need at least one key`);
     }
   }
   if (!Number.isFinite(rung.priority)) p.push(`priority ${String(rung.priority)} is not a finite number`);
-  if (!Number.isInteger(rung.quality) || rung.quality < 1 || rung.quality > 5) p.push(`quality ${String(rung.quality)} is not an integer 1..5`);
+  if (!Number.isInteger(rung.quality) || rung.quality < 1 || rung.quality > 5)
+    p.push(`quality ${String(rung.quality)} is not an integer 1..5`);
   if (!Array.isArray(rung.capabilities) || rung.capabilities.some((c) => typeof c !== 'string' || !c)) {
     p.push('capabilities is not an array of non-empty strings');
   }

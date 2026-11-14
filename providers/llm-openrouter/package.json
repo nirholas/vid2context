@@ -1,0 +1,21 @@
+{
+  "name": "@vid2context/provider-llm-openrouter",
+  "version": "0.1.0",
+  "description": "OpenRouter rungs that always pick a live free model from the catalog, plus explicit OPENROUTER_MODEL rungs.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "vid2context": {
+    "runtimes": [
+      "node",
+      "workers",
+      "browser"
+    ]
+  },
+  "dependencies": {
+    "@vid2context/core": "*",
+    "@vid2context/provider-llm-free-catalog": "*"
+  }
+}

@@ -15,7 +15,8 @@ const ctx = createContext({ runtime: 'node', env: { VID2CONTEXT_LOG_LEVEL: 'info
 try {
   const info = await ensureYtDlp(ctx);
   process.stdout.write(`${JSON.stringify(info, null, 2)}\n`);
-  if (!info.ffmpeg) console.error('ffmpeg was not found: metadata and captions work, audio extraction needs ffmpeg (or FFMPEG_PATH).');
+  if (!info.ffmpeg)
+    console.error('ffmpeg was not found: metadata and captions work, audio extraction needs ffmpeg (or FFMPEG_PATH).');
 } catch (err) {
   const e = err as { message?: string; hint?: string };
   console.error(`yt-dlp setup failed: ${e.message ?? String(err)}`);

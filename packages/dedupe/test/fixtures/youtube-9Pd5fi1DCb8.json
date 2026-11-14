@@ -1,0 +1,106 @@
+{
+  "metadata": {
+    "ref": {
+      "input": "https://www.youtube.com/watch?v=9Pd5fi1DCb8",
+      "platform": "youtube",
+      "kind": "video",
+      "id": "youtube:9Pd5fi1DCb8",
+      "nativeId": "9Pd5fi1DCb8",
+      "url": "https://www.youtube.com/watch?v=9Pd5fi1DCb8"
+    },
+    "title": "Me At The Zoo (REUPLOAD)",
+    "description": "The Original Description: The First Video Of YouTube: Shout-out To Kelsey, making awesome content over at @74Gear \nThe Original Channel: jawed \nOriginal Date: April 23rd, 2005\n\nNo Copyright Infringement Intended",
+    "durationSec": 20,
+    "thumbnailUrl": "https://i.ytimg.com/vi_webp/9Pd5fi1DCb8/sddefault.webp",
+    "language": "en",
+    "chapters": [],
+    "isLive": false,
+    "extra": {
+      "viewCount": 56,
+      "isLiveContent": false,
+      "playability": "OK"
+    },
+    "channel": {
+      "name": "Evan The Roblox, SBTB and Minecraft Fan",
+      "id": "UCG3eaSzc0U1QMpRdp52l25w",
+      "url": "https://www.youtube.com/channel/UCG3eaSzc0U1QMpRdp52l25w"
+    }
+  },
+  "transcript": {
+    "ref": {
+      "input": "https://www.youtube.com/watch?v=9Pd5fi1DCb8",
+      "platform": "youtube",
+      "kind": "video",
+      "id": "youtube:9Pd5fi1DCb8",
+      "nativeId": "9Pd5fi1DCb8",
+      "url": "https://www.youtube.com/watch?v=9Pd5fi1DCb8"
+    },
+    "language": "en",
+    "origin": "auto-captions",
+    "producer": "youtube-captions",
+    "segments": [
+      {
+        "startSec": 0.08,
+        "endSec": 3.76,
+        "text": "so here we are one of the elephants"
+      },
+      {
+        "startSec": 3.76,
+        "endSec": 5.92,
+        "text": "cool thing about these guys is that they"
+      },
+      {
+        "startSec": 5.92,
+        "endSec": 7.68,
+        "text": "have really"
+      },
+      {
+        "startSec": 7.68,
+        "endSec": 10.559,
+        "text": "really really long um"
+      },
+      {
+        "startSec": 10.559,
+        "endSec": 13.02,
+        "text": "fronts and that's that's cool"
+      },
+      {
+        "startSec": 13.02,
+        "endSec": 15.44,
+        "text": "[Music]"
+      },
+      {
+        "startSec": 15.44,
+        "endSec": 16.72,
+        "text": "and that's pretty much all there is to"
+      },
+      {
+        "startSec": 16.72,
+        "endSec": 19.72,
+        "text": "say"
+      }
+    ],
+    "createdAt": "2026-11-14T16:57:20.580Z"
+  },
+  "attempts": [
+    {
+      "id": "youtube",
+      "stage": "resolve",
+      "outcome": "ok",
+      "detail": "youtube:9Pd5fi1DCb8"
+    },
+    {
+      "id": "youtube",
+      "stage": "metadata",
+      "outcome": "ok",
+      "ms": 304
+    },
+    {
+      "id": "youtube-captions",
+      "stage": "captions",
+      "outcome": "ok",
+      "detail": "auto-captions",
+      "ms": 275
+    }
+  ]
+}

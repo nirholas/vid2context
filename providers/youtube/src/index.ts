@@ -6,11 +6,13 @@
  */
 import { type CaptionsProvider, defineProvider, type SourceProvider, type Transcript } from '@vid2context/core';
 import { choose, fetchTrack, trackInfo, tracksOf } from './captions.ts';
+import { getYouTubeComments } from './comments/index.ts';
 import { getPlayer, playabilityError } from './innertube.ts';
 import { toMetadata } from './metadata.ts';
 import { matchYouTube } from './url.ts';
 
 export { chooseTrack, spokenLanguage } from './captions.ts';
+export { type CommentOptions, type CommentSort, getYouTubeComments } from './comments/index.ts';
 export { parseDescriptionChapters } from './metadata.ts';
 export { parseSrv1, parseSrv3, parseTimedText } from './timedtext.ts';
 export { matchYouTube } from './url.ts';
@@ -30,6 +32,7 @@ export const youtubeSource: SourceProvider = defineProvider({
     }
     return toMetadata(ref, player);
   },
+  getComments: (ref, ctx, opts) => getYouTubeComments(ref, ctx, opts),
   // Audio for YouTube comes from a source that downloads media (the yt-dlp provider).
   canProvideAudio: () => false,
 });

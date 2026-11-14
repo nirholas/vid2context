@@ -1,0 +1,21 @@
+{
+  "name": "@vid2context/provider-storage-cloudflare",
+  "version": "0.1.0",
+  "description": "Storage backend for the vid2context Worker: D1 (with FTS5 search), R2 for large contexts and uploaded media, Workers KV for small JSON state.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "vid2context": {
+    "runtimes": [
+      "workers"
+    ]
+  },
+  "dependencies": {
+    "@vid2context/core": "*"
+  },
+  "devDependencies": {
+    "miniflare": "^5.20261023.3-beta"
+  }
+}

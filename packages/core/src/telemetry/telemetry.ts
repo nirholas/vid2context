@@ -241,6 +241,5 @@ export function createTelemetry(
     await tel.flush();
     await Promise.all(exporters.map((e) => e.shutdown?.().catch(() => undefined)));
   };
-  if (otlp) otlp.attach(tel);
   return tel;
 }

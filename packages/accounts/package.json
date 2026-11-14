@@ -14,6 +14,7 @@
     "hono": "^4.13.18"
   },
   "devDependencies": {
+    "@vid2context/provider-llm-openai-compatible": "*",
     "@vid2context/provider-media-file": "*",
     "@vid2context/provider-stt-openai-compatible": "*",
     "@vid2context/provider-youtube": "*"

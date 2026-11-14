@@ -9,9 +9,17 @@
  */
 import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { type GetContextOptions, getVideoContext, type TranscriptMode, type VideoContext } from '@vid2context/core';
+import {
+  clearCooldowns,
+  createContext,
+  type Env,
+  type GetContextOptions,
+  getVideoContext,
+  type TranscriptMode,
+  type VideoContext,
+} from '@vid2context/core';
 import { replayFetch } from '@vid2context/core/testing';
-import { createNodeContext, createRegistry, loadEnvFiles } from '@vid2context/registry/node';
+import { createRegistry, loadEnvFiles } from '@vid2context/registry/node';
 import { fixtureRoutes, recordingFetch } from './recorder.ts';
 
 const USAGE =
@@ -60,7 +68,11 @@ function slug(input: string): string {
   );
 }
 
-const transcriptOf = (c: VideoContext) => ({ language: c.transcript.language, origin: c.transcript.origin, segments: c.transcript.segments });
+const transcriptOf = (c: VideoContext) => ({
+  language: c.transcript.language,
+  origin: c.transcript.origin,
+  segments: c.transcript.segments,
+});
 
 async function main(): Promise<number> {
   let args: Args;
@@ -72,23 +84,28 @@ async function main(): Promise<number> {
   }
   loadEnvFiles();
   const name = args.name ?? slug(args.input);
-  const env = process.env as Record<string, string | undefined>;
+  const env = process.env as Env;
   const rec = recordingFetch(globalThis.fetch.bind(globalThis), { dir: args.out, name, scrub: { env } });
   const registry = createRegistry();
 
   let live: VideoContext;
   try {
-    live = await getVideoContext(registry, args.input, args.opts, createNodeContext({ env }));
+    live = await getVideoContext(registry, args.input, args.opts, createContext({ runtime: 'node', env, fetch: rec }));
   } catch (err) {
     console.error(`record: the live run failed: ${(err as Error).message}`);
     if (rec.files.length > 0) console.error(`record: ${rec.files.length} exchange(s) were still written to ${args.out}`);
     return 1;
   }
-  // The recorder wraps fetch through the ctx, so build a ctx that uses it. Done above via createNodeContext? No: pass it explicitly.
-  return finish(args, name, rec, live);
+  return finish(args, name, env, rec, live);
 }
 
-async function finish(args: Args, name: string, rec: ReturnType<typeof recordingFetch>, live: VideoContext): Promise<number> {
+async function finish(
+  args: Args,
+  name: string,
+  env: Env,
+  rec: ReturnType<typeof recordingFetch>,
+  live: VideoContext,
+): Promise<number> {
   const out: string[] = [];
   out.push(`Recorded ${rec.files.length} exchange(s) into ${args.out}:`);
   for (const f of rec.files) out.push(`  ${f}`);
@@ -99,19 +116,30 @@ async function finish(args: Args, name: string, rec: ReturnType<typeof recording
   for (const f of report.findings) out.push(`  ${f.where}: ${f.what} x${f.count}`);
   for (const w of report.warnings) out.push(`  warning: ${w}`);
 
-  // Replay the files just written and compare transcripts.
+  // Replay the files just written through a fresh registry and ctx, and compare transcripts.
+  clearCooldowns();
   const replay = replayFetch(fixtureRoutes(args.out, { name }));
   let same = false;
   try {
-    const again = await getVideoContext(createRegistry(), args.input, args.opts, createNodeContext({ env: {} }), replay);
+    const again = await getVideoContext(
+      createRegistry(),
+      args.input,
+      args.opts,
+      createContext({ runtime: 'node', env, fetch: replay }),
+    );
     same = JSON.stringify(transcriptOf(again)) === JSON.stringify(transcriptOf(live));
-    out.push('', same ? 'Replay: the fixtures reproduce the same transcript.' : 'Replay: MISMATCH, the replayed transcript differs.');
+    out.push(
+      '',
+      same ? 'Replay: the fixtures reproduce the same transcript.' : 'Replay: MISMATCH, the replayed transcript differs.',
+    );
   } catch (err) {
     out.push('', `Replay: failed: ${(err as Error).message}`);
   }
   const contextFile = join(args.out, `${name}.context.json`);
   writeFileSync(contextFile, `${JSON.stringify(live, null, 2)}\n`);
-  out.push(`Live VideoContext written to ${contextFile} (${live.transcript.segments.length} segments, ${live.transcript.origin}).`);
+  out.push(
+    `Live VideoContext written to ${contextFile} (${live.transcript.segments.length} segments, ${live.transcript.origin}).`,
+  );
   process.stdout.write(`${out.join('\n')}\n`);
   return same ? 0 : 1;
 }

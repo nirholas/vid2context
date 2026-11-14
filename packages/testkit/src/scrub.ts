@@ -13,7 +13,15 @@ export const REDACTED = '[redacted]';
 export const REDACTED_URL = 'REDACTED';
 
 /** Request and response headers that carry credentials. Their values are always replaced. */
-export const SECRET_HEADERS = ['authorization', 'cookie', 'set-cookie', 'x-api-key', 'api-key', 'x-goog-api-key', 'proxy-authorization'];
+export const SECRET_HEADERS = [
+  'authorization',
+  'cookie',
+  'set-cookie',
+  'x-api-key',
+  'api-key',
+  'x-goog-api-key',
+  'proxy-authorization',
+];
 
 /** Query parameters that carry credentials. */
 export const SECRET_PARAMS = ['key', 'api_key', 'apikey', 'token', 'access_token', 'refresh_token', 'client_secret'];
@@ -130,7 +138,9 @@ export class Scrubber {
       });
       if (changed) {
         this.note(where, 'stream-url-ip');
-        this.warn(`A media stream URL in ${where} embedded an IP address or signature; it was scrubbed. Grep the fixture for your public IP before committing.`);
+        this.warn(
+          `A media stream URL in ${where} embedded an IP address or signature; it was scrubbed. Grep the fixture for your public IP before committing.`,
+        );
       }
       return out;
     });

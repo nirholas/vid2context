@@ -10,7 +10,7 @@ export const REDACTED = '[redacted]';
 
 /** Header and field names whose whole value is a credential. */
 const SECRET_FIELD =
-  /^(authorization|proxy-authorization|cookie|set-cookie|x-api-key|api-key|x-goog-api-key|x-auth-token|x-access-token|api_?key|apikey|access_?token|refresh_?token|id_?token|client_?secret|password|passwd|secret|private_?key)$/i;
+  /^(authorization|proxy-authorization|cookie|set-cookie|x-api-key|api-key|x-goog-api-key|x-auth-token|x-access-token|api_?key|apikey|token|access_?token|refresh_?token|id_?token|client_?secret|password|passwd|secret|private_?key)$/i;
 
 /** Env var names (and object keys) that hold secrets. */
 const SECRET_ENV_NAME = /_(KEY|KEYS|TOKEN|SECRET|PASSWORD|COOKIE)$/i;

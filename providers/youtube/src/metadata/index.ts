@@ -1,0 +1,172 @@
+/**
+ * YouTube metadata: one player response (shared with captions through the
+ * player cache), at most one `next` request for the watch-page fields, and
+ * one HEAD request to the image CDN for the maxres thumbnail, the last two
+ * in parallel. Metadata succeeds whenever the player returns videoDetails,
+ * including age-restricted, members-only, live and upcoming videos; those
+ * states land in `extra` and the transcript stage reports them as errors.
+ *
+ * Every field and its source is listed in docs/guides/youtube.md,
+ * "Metadata and chapters".
+ */
+import { type Chapter, type Ctx, type VideoMetadata, type VideoRef, Vid2ContextError } from '@vid2context/core';
+import { playabilityError } from '../resilience/errors.ts';
+import { getPlayer, type PlayerResponse } from '../resilience/player.ts';
+import { type ChapterSource, parseDescriptionChapters, withEnds } from './chapters.ts';
+import { extractLinks } from './links.ts';
+import { fetchNext } from './next.ts';
+import { findMaxres, largestThumbnail } from './thumbnail.ts';
+import { parseWatch, type WatchInfo } from './watch.ts';
+
+export { type ChapterSource, cleanTitle, parseChapterLine, parseClock, parseDescriptionChapters, withEnds } from './chapters.ts';
+export { extractLinks } from './links.ts';
+export { DEFAULT_WEB_VERSION, fetchNext, webClient } from './next.ts';
+export { findMaxres, largestThumbnail, maxresUrl } from './thumbnail.ts';
+export { parseDateText, parseWatch, type WatchInfo } from './watch.ts';
+
+/** Player fields metadata reads beyond the shared PlayerResponse type. */
+type Player = PlayerResponse & {
+  streamingData?: {
+    formats?: { width?: number; height?: number }[];
+    adaptiveFormats?: { width?: number; height?: number }[];
+  };
+};
+
+/** YouTube Shorts are at most 3 minutes long (since October 2024). */
+const SHORT_MAX_SEC = 180;
+
+/**
+ * A Short: the input used the /shorts/ URL form, or the video is vertical
+ * (every video stream taller than wide) and at most 3 minutes long. Neither
+ * the player nor the WEB `next` response flags Shorts directly (checked on
+ * 2026-11-14 with 0U0O-P43MNQ), so these are the two signals relied on.
+ */
+export function detectShort(ref: VideoRef, player: Player, durationSec: number | undefined): boolean {
+  if (/\/shorts\//i.test(ref.input)) return true;
+  if (!durationSec || durationSec > SHORT_MAX_SEC || player.videoDetails?.isLiveContent) return false;
+  const streams = [...(player.streamingData?.formats ?? []), ...(player.streamingData?.adaptiveFormats ?? [])].filter(
+    (f) => f.width && f.height,
+  );
+  return streams.length > 0 && streams.every((f) => (f.height ?? 0) > (f.width ?? 0));
+}
+
+/** The scheduled start of an upcoming live stream or premiere, ISO 8601. */
+function scheduledStart(player: Player): string | undefined {
+  const raw = player.playabilityStatus?.liveStreamability?.liveStreamabilityRenderer?.offlineSlate?.liveStreamOfflineSlateRenderer?.scheduledStartTime;
+  const sec = Number(raw);
+  return raw && Number.isFinite(sec) && sec > 0 ? new Date(sec * 1000).toISOString() : undefined;
+}
+
+const AGE_REASON = /inappropriate|age.?restrict|confirm your age/i;
+const MEMBERS_REASON = /members|join this channel/i;
+
+/** Chapters by precedence: creator timestamps in the description, then YouTube's chapter markers, then auto key moments. */
+export function pickChapters(
+  description: string | undefined,
+  durationSec: number | undefined,
+  watch: WatchInfo | undefined,
+): { chapters: Chapter[]; source?: ChapterSource } {
+  const fromDescription = parseDescriptionChapters(description, durationSec);
+  if (fromDescription.length > 0) return { chapters: fromDescription, source: 'description' };
+  if (watch && watch.descriptionMarkers.length > 0) return { chapters: withEnds(watch.descriptionMarkers, durationSec), source: 'markers' };
+  if (watch && watch.autoChapters.length > 0) return { chapters: withEnds(watch.autoChapters, durationSec), source: 'key-moments' };
+  return { chapters: [] };
+}
+
+/** Drop undefined values so JSON output stays clean. */
+function compact(o: Record<string, unknown>): Record<string, unknown> {
+  return Object.fromEntries(Object.entries(o).filter(([, v]) => v !== undefined));
+}
+
+export interface MetadataExtras {
+  /** The parsed `next` response, when that request succeeded. */
+  watch?: WatchInfo;
+  /** The maxresdefault URL, when the CDN confirmed it exists. */
+  maxresThumbnail?: string;
+}
+
+/** Build VideoMetadata from a player response plus the optional watch-page data. Pure: no I/O. */
+export function toMetadata(ref: VideoRef, player: Player, extras: MetadataExtras = {}): VideoMetadata {
+  const d = player.videoDetails;
+  const { watch } = extras;
+  const status = player.playabilityStatus?.status;
+  const reason = player.playabilityStatus?.reason ?? '';
+  const durationSec = Number(d?.lengthSeconds) || undefined;
+  const isLive = d?.isLive === true;
+  const isUpcoming = d?.isUpcoming === true;
+  const tracks = player.captions?.playerCaptionsTracklistRenderer?.captionTracks ?? [];
+  const { chapters, source } = pickChapters(d?.shortDescription, durationSec, watch);
+  const links = extractLinks(d?.shortDescription);
+  const channelId = d?.channelId ?? watch?.channelId;
+  const channelName = d?.author ?? watch?.channelName;
+  const viewCount = Number(d?.viewCount);
+
+  const meta: VideoMetadata = {
+    ref,
+    title: d?.title ?? ref.url ?? ref.input,
+    description: d?.shortDescription,
+    durationSec,
+    publishedAt: watch?.publishedAt,
+    thumbnailUrl: extras.maxresThumbnail ?? largestThumbnail(d?.thumbnail?.thumbnails),
+    language: tracks.find((t) => t.kind === 'asr')?.languageCode,
+    tags: d?.keywords,
+    chapters,
+    isLive,
+    extra: compact({
+      viewCount: d?.viewCount !== undefined && Number.isFinite(viewCount) ? viewCount : undefined,
+      likeCount: watch?.likeCount,
+      liveViewers: watch?.liveViewers,
+      dateText: watch?.dateText,
+      channelHandle: watch?.channelHandle,
+      channelHandleUrl: watch?.channelHandle ? `https://www.youtube.com/${watch.channelHandle}` : undefined,
+      subscriberCountText: watch?.subscriberCountText,
+      isShort: detectShort(ref, player, durationSec),
+      isLive,
+      isUpcoming,
+      premiereAt: isUpcoming ? scheduledStart(player) : undefined,
+      isLiveContent: d?.isLiveContent,
+      ageRestricted: status !== 'OK' && AGE_REASON.test(reason),
+      membersOnly: (status !== 'OK' && MEMBERS_REASON.test(reason)) || watch?.membersOnly === true,
+      playability: status,
+      chapterSource: source,
+      links: links.length > 0 ? links : undefined,
+    }),
+  };
+  if (channelName) {
+    meta.channel = {
+      name: channelName,
+      id: channelId,
+      url: channelId ? `https://www.youtube.com/channel/${channelId}` : undefined,
+    };
+  }
+  return meta;
+}
+
+async function loadWatch(videoId: string, ctx: Ctx): Promise<WatchInfo | undefined> {
+  try {
+    return parseWatch(await fetchNext(videoId, ctx));
+  } catch (err) {
+    const code = err instanceof Vid2ContextError ? err.code : undefined;
+    ctx.log.warn('youtube: next request failed; returning player metadata only', {
+      videoId,
+      code,
+      error: err instanceof Error ? err.message.slice(0, 200) : String(err),
+    });
+    return undefined;
+  }
+}
+
+/** youtube.getMetadata: throws only when the player gives no videoDetails (removed, private, blocked). */
+export async function getYouTubeMetadata(ref: VideoRef, ctx: Ctx): Promise<VideoMetadata> {
+  const player = (await getPlayer(ref.nativeId, ctx)) as Player;
+  if (!player.videoDetails) {
+    throw (
+      playabilityError(player, ref.nativeId) ??
+      new Vid2ContextError('not-found', `YouTube ${ref.nativeId}: the player returned no video details.`, {
+        hint: 'Check the video id or URL; the video may have been removed.',
+      })
+    );
+  }
+  const [watch, maxresThumbnail] = await Promise.all([loadWatch(ref.nativeId, ctx), findMaxres(ref.nativeId, ctx)]);
+  return toMetadata(ref, player, { watch, maxresThumbnail });
+}

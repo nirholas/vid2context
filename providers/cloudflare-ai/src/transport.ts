@@ -24,7 +24,9 @@ export type Transport =
 export const REST_BASE_URL = 'https://api.cloudflare.com/client/v4';
 
 /** What to send: a JSON body, or raw bytes with a content type (legacy whisper over REST). */
-export type RunInput = { json: Record<string, unknown> } | { bytes: Uint8Array; contentType: string; json: Record<string, unknown> };
+export type RunInput =
+  | { json: Record<string, unknown> }
+  | { bytes: Uint8Array; contentType: string; json: Record<string, unknown> };
 
 interface CfError {
   code?: number;
@@ -38,12 +40,11 @@ export function secondsUntilUtcMidnight(now = Date.now()): number {
   return Math.max(1, Math.ceil((next - now) / 1000));
 }
 
-const MODELS_HINT = 'Check the model id against https://developers.cloudflare.com/workers-ai/models/ and fix CLOUDFLARE_STT_MODEL, CLOUDFLARE_EMBED_MODEL or CLOUDFLARE_BINDING_MODEL.';
+const MODELS_HINT =
+  'Check the model id against https://developers.cloudflare.com/workers-ai/models/ and fix CLOUDFLARE_STT_MODEL, CLOUDFLARE_EMBED_MODEL or CLOUDFLARE_BINDING_MODEL.';
 
 /** Map a Workers AI error code (https://developers.cloudflare.com/workers-ai/platform/errors/) to our taxonomy. */
-export function mapCloudflareCode(
-  code: number,
-): { code: ErrorCode; hint?: string; retryAfterSec?: number } | null {
+export function mapCloudflareCode(code: number): { code: ErrorCode; hint?: string; retryAfterSec?: number } | null {
   switch (code) {
     case 3036:
       return {
@@ -52,7 +53,11 @@ export function mapCloudflareCode(
         retryAfterSec: secondsUntilUtcMidnight(),
       };
     case 3040:
-      return { code: 'rate-limited', hint: 'Workers AI is out of capacity for this model right now; retry in a minute.', retryAfterSec: 60 };
+      return {
+        code: 'rate-limited',
+        hint: 'Workers AI is out of capacity for this model right now; retry in a minute.',
+        retryAfterSec: 60,
+      };
     case 7000:
     case 5007:
     case 3042:
@@ -115,10 +120,16 @@ export function getAiBinding(ctx: Ctx, name: string): AiBinding {
   return b as AiBinding;
 }
 
-async function runRest(ctx: Ctx, t: Extract<Transport, { kind: 'rest' }>, model: string, input: RunInput, label: string, timeoutMs: number) {
+async function runRest(
+  ctx: Ctx,
+  t: Extract<Transport, { kind: 'rest' }>,
+  model: string,
+  input: RunInput,
+  timeoutMs: number,
+): Promise<Response> {
   const url = `${t.baseUrl}/accounts/${encodeURIComponent(t.accountId)}/ai/run/${model}`;
   const raw = 'bytes' in input;
-  const res = await fetchWithTimeout(
+  return fetchWithTimeout(
     ctx,
     url,
     {
@@ -128,7 +139,6 @@ async function runRest(ctx: Ctx, t: Extract<Transport, { kind: 'rest' }>, model:
     },
     timeoutMs,
   );
-  return { res, url };
 }
 
 async function envelopeError(res: Response, label: string): Promise<Vid2ContextError> {
@@ -164,7 +174,7 @@ export async function runModel(
       throw errorFromBinding(opts.label, err);
     }
   }
-  const { res } = await runRest(ctx, t, model, input, opts.label, opts.timeoutMs ?? 120_000);
+  const res = await runRest(ctx, t, model, input, opts.timeoutMs ?? 120_000);
   if (!res.ok) throw await envelopeError(res, opts.label);
   const body = (await res.json()) as { success?: boolean; result?: unknown; errors?: CfError[] };
   if (body.success === false) {
@@ -197,7 +207,7 @@ export async function runModelStream(
     if (out instanceof ReadableStream) return out as ReadableStream<Uint8Array>;
     throw new Vid2ContextError('upstream', `${opts.label}: the binding did not return a stream.`);
   }
-  const { res } = await runRest(ctx, t, model, { json: body }, opts.label, opts.timeoutMs ?? 300_000);
+  const res = await runRest(ctx, t, model, { json: body }, opts.timeoutMs ?? 300_000);
   if (!res.ok) throw await envelopeError(res, opts.label);
   if (!res.body) throw new Vid2ContextError('upstream', `${opts.label}: empty stream.`);
   return res.body;

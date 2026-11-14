@@ -90,7 +90,10 @@ function utcDay(ms: number): string {
   return new Date(ms).toISOString().slice(0, 10);
 }
 
-export function costOf(price: Price | undefined, u: Pick<UsageRecord, 'tokensIn' | 'tokensOut' | 'audioSec'>): number | undefined {
+export function costOf(
+  price: Price | undefined,
+  u: Pick<UsageRecord, 'tokensIn' | 'tokensOut' | 'audioSec'>,
+): number | undefined {
   if (!price) return undefined;
   if (price.kind === 'tokens') {
     if (u.tokensIn === undefined && u.tokensOut === undefined) return undefined;

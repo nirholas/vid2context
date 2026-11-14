@@ -94,7 +94,9 @@ export const ytdlpSource: SourceProvider = defineProvider({
     const url = await workingUrl(ref, ctx);
     const dir = await mkdtemp(join(tmpdir(), 'vid2context-ytdlp-audio-'));
     try {
-      const stdout = await withFallbackUrl(ctx, url, (u) => ytdlp(ctx, bin.path, audioArgs(u, cfg, join(dir, 'audio.%(ext)s')), 'audio', dir));
+      const stdout = await withFallbackUrl(ctx, url, (u) =>
+        ytdlp(ctx, bin.path, audioArgs(u, cfg, join(dir, 'audio.%(ext)s')), 'audio', dir),
+      );
       const file = (await readdir(dir)).find((f) => f.endsWith('.mp3'));
       if (!file) {
         throw new Vid2ContextError('upstream', 'yt-dlp finished but wrote no mp3 file.', {

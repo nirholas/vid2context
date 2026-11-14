@@ -1,6 +1,5 @@
-import { MemoryStorage } from '@vid2context/core';
+import { MemoryStorage, Registry } from '@vid2context/core';
 import { testContext } from '@vid2context/core/testing';
-import { createRegistry } from '@vid2context/registry/node';
 import { createApp } from '@vid2context/server';
 import { afterEach, describe, expect, it } from 'vitest';
 import { webhookRoutes } from '../src/http.ts';
@@ -8,11 +7,12 @@ import { verifyWebhook } from '../src/signing.ts';
 import { type Receiver, startReceiver } from './receiver.ts';
 
 // The real HTTP app from packages/server with this package's routes mounted
-// the way the server mounts sub-apps, so errors get the standard body.
+// the way the server mounts sub-apps, so errors get the standard body. No
+// providers are needed: these routes never fetch a video.
 function makeApp(env: Record<string, string>) {
   const storage = new MemoryStorage();
   const makeCtx = () => testContext({ env, fetch: globalThis.fetch });
-  const app = createApp({ registry: createRegistry(), makeCtx });
+  const app = createApp({ registry: new Registry([], 'node'), makeCtx });
   app.route('/api/v1', webhookRoutes({ makeCtx, storage: async () => storage }));
   return app;
 }

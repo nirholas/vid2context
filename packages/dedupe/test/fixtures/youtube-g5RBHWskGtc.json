@@ -1,0 +1,106 @@
+{
+  "metadata": {
+    "ref": {
+      "input": "https://www.youtube.com/watch?v=g5RBHWskGtc",
+      "platform": "youtube",
+      "kind": "video",
+      "id": "youtube:g5RBHWskGtc",
+      "nativeId": "g5RBHWskGtc",
+      "url": "https://www.youtube.com/watch?v=g5RBHWskGtc"
+    },
+    "title": "Me at the zoo (reupload)",
+    "description": "",
+    "durationSec": 19,
+    "thumbnailUrl": "https://i.ytimg.com/vi/g5RBHWskGtc/hqdefault.jpg?sqp=-oaymwEmCOADEOgC8quKqQMa8AEB-AG-AoAC8AGKAgwIABABGFQgVyhlMA8=&rs=AOn4CLD1LYqsFIgi_ZjwYi2H9EA8aT7U3A",
+    "language": "en",
+    "chapters": [],
+    "isLive": false,
+    "extra": {
+      "viewCount": 29,
+      "isLiveContent": false,
+      "playability": "OK"
+    },
+    "channel": {
+      "name": "RetroYTVideos",
+      "id": "UCo5PtVg8NMVdRlyHDJKhsYA",
+      "url": "https://www.youtube.com/channel/UCo5PtVg8NMVdRlyHDJKhsYA"
+    }
+  },
+  "transcript": {
+    "ref": {
+      "input": "https://www.youtube.com/watch?v=g5RBHWskGtc",
+      "platform": "youtube",
+      "kind": "video",
+      "id": "youtube:g5RBHWskGtc",
+      "nativeId": "g5RBHWskGtc",
+      "url": "https://www.youtube.com/watch?v=g5RBHWskGtc"
+    },
+    "language": "en",
+    "origin": "auto-captions",
+    "producer": "youtube-captions",
+    "segments": [
+      {
+        "startSec": 1.32,
+        "endSec": 2.88,
+        "text": "All right, so here we are on one of the"
+      },
+      {
+        "startSec": 2.88,
+        "endSec": 5.24,
+        "text": "uh elephants."
+      },
+      {
+        "startSec": 5.24,
+        "endSec": 7.12,
+        "text": "Cool thing about these guys is that is"
+      },
+      {
+        "startSec": 7.12,
+        "endSec": 9.12,
+        "text": "that they have really"
+      },
+      {
+        "startSec": 9.12,
+        "endSec": 12.04,
+        "text": "really really long um"
+      },
+      {
+        "startSec": 12.04,
+        "endSec": 15.8,
+        "text": "trunks. And that's that's cool."
+      },
+      {
+        "startSec": 16.96,
+        "endSec": 18.2,
+        "text": "And that's pretty much all there is to"
+      },
+      {
+        "startSec": 18.2,
+        "endSec": 20.56,
+        "text": "say."
+      }
+    ],
+    "createdAt": "2026-11-14T16:57:21.615Z"
+  },
+  "attempts": [
+    {
+      "id": "youtube",
+      "stage": "resolve",
+      "outcome": "ok",
+      "detail": "youtube:g5RBHWskGtc"
+    },
+    {
+      "id": "youtube",
+      "stage": "metadata",
+      "outcome": "ok",
+      "ms": 323
+    },
+    {
+      "id": "youtube-captions",
+      "stage": "captions",
+      "outcome": "ok",
+      "detail": "auto-captions",
+      "ms": 315
+    }
+  ]
+}

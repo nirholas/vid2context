@@ -39,7 +39,11 @@ export function cleanAttrs(attrs: Attrs): Record<string, AttrValue> {
 }
 
 function keyOf(attrs: Record<string, AttrValue>): string {
-  return JSON.stringify(Object.keys(attrs).sort().map((k) => [k, attrs[k]]));
+  return JSON.stringify(
+    Object.keys(attrs)
+      .sort()
+      .map((k) => [k, attrs[k]]),
+  );
 }
 
 export class MetricStore {
@@ -53,7 +57,10 @@ export class MetricStore {
     const clean = cleanAttrs(attrs);
     const key = keyOf(clean);
     let series = this.counters.get(name);
-    if (!series) this.counters.set(name, (series = new Map()));
+    if (!series) {
+      series = new Map();
+      this.counters.set(name, series);
+    }
     const point = series.get(key);
     if (point) point.value += value;
     else series.set(key, { attrs: clean, value });
@@ -65,7 +72,10 @@ export class MetricStore {
     const clean = cleanAttrs(attrs);
     const key = keyOf(clean);
     let series = this.histograms.get(name);
-    if (!series) this.histograms.set(name, (series = new Map()));
+    if (!series) {
+      series = new Map();
+      this.histograms.set(name, series);
+    }
     let point = series.get(key);
     if (!point) {
       point = { attrs: clean, count: 0, sum: 0, min: value, max: value, buckets: new Array(bounds.length + 1).fill(0) };

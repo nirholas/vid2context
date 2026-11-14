@@ -1,0 +1,20 @@
+{
+  "name": "@vid2context/provider-embed",
+  "version": "0.1.0",
+  "description": "Embedding rungs for any OpenAI-compatible API, free first: Ollama, LM Studio, Gemini, Jina, Cloudflare Workers AI, Mistral, OVH keyless bge-m3 and Qwen3-Embedding-8B, OpenAI paid. Plus helpers that pin one model per index.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "vid2context": {
+    "runtimes": [
+      "node",
+      "workers",
+      "browser"
+    ]
+  },
+  "dependencies": {
+    "@vid2context/core": "*"
+  }
+}

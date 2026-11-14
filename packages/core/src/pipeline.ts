@@ -11,10 +11,11 @@
  */
 import { attemptsOf, runChain } from './chain.ts';
 import { Vid2ContextError } from './errors.ts';
-import { enforceInputPolicy } from './security/input.ts';
 import type { ChainOptions, ChatRequest, ChatResult, LlmRung, SourceProvider, SttOptions, SttRung } from './provider.ts';
 import type { Registry } from './registry.ts';
+import { enforceInputPolicy } from './security/input.ts';
 import type { Storage } from './storage.ts';
+import { tracedStage } from './telemetry/instrument.ts';
 import type { Attempt, AudioInput, Ctx, Transcript, VideoContext, VideoMetadata, VideoRef } from './types.ts';
 
 export type TranscriptMode = 'auto' | 'captions' | 'stt' | 'video';
@@ -207,10 +208,25 @@ export async function getVideoContext(
   opts: GetContextOptions,
   ctx: Ctx,
 ): Promise<VideoContext> {
+  const tel = ctx.telemetry;
+  if (!tel) return buildVideoContext(registry, input, opts, ctx);
+  return tel.span('vid2context.get_context', { 'vid2context.mode': opts.mode ?? 'auto' }, () =>
+    buildVideoContext(registry, input, opts, ctx),
+  );
+}
+
+async function buildVideoContext(registry: Registry, input: string, opts: GetContextOptions, ctx: Ctx): Promise<VideoContext> {
   const attempts: Attempt[] = [];
   const mode = opts.mode ?? 'auto';
+  const tel = ctx.telemetry;
   await enforceInputPolicy(input, ctx);
-  const { source, ref } = registry.resolve(input);
+  const { source, ref } = tel
+    ? await tracedStage(tel, 'resolve', undefined, async (span) => {
+        const resolved = registry.resolve(input);
+        span.setAttributes({ 'vid2context.ref': resolved.ref.id, 'vid2context.platform': resolved.ref.platform });
+        return resolved;
+      })
+    : registry.resolve(input);
   attempts.push({ id: source.id, stage: 'resolve', outcome: 'ok', detail: ref.id });
   if (ref.kind !== 'video') {
     throw new Vid2ContextError('unsupported-input', `"${input}" is a ${ref.kind}, not a single video.`, {
@@ -226,7 +242,7 @@ export async function getVideoContext(
   let metadata: VideoMetadata;
   const mStart = Date.now();
   try {
-    metadata = await source.getMetadata(ref, ctx);
+    metadata = await (tel ? tracedStage(tel, 'metadata', ref, () => source.getMetadata(ref, ctx)) : source.getMetadata(ref, ctx));
     attempts.push({ id: source.id, stage: 'metadata', outcome: 'ok', ms: Date.now() - mStart });
   } catch (err) {
     if (err instanceof Vid2ContextError && (err.code === 'not-found' || err.code === 'unavailable' || err.code === 'blocked')) {
@@ -244,13 +260,9 @@ export async function getVideoContext(
   if (mode === 'video') {
     const rungs = registry.videoRungs(ctx.env).filter((r) => r.supports(ref));
     try {
-      const res = await runChain(
-        'video',
-        rungs,
-        (r) => r.understand(ref, { language: opts.language }, ctx),
-        opts.chain ?? {},
-        ctx,
-      );
+      const run = () =>
+        runChain('video', rungs, (r) => r.understand(ref, { language: opts.language }, ctx), opts.chain ?? {}, ctx);
+      const res = await (tel ? tracedStage(tel, 'video', ref, run) : run());
       attempts.push(...res.attempts);
       transcript = res.value.transcript ?? null;
       visual = res.value.visual;
@@ -260,14 +272,20 @@ export async function getVideoContext(
   }
 
   if (!transcript && (mode === 'auto' || mode === 'captions')) {
-    transcript = await fetchCaptions(registry, ref, opts, ctx, attempts);
+    transcript = await (tel
+      ? tracedStage(tel, 'captions', ref, () => fetchCaptions(registry, ref, opts, ctx, attempts))
+      : fetchCaptions(registry, ref, opts, ctx, attempts));
   }
 
   if (!transcript && (mode === 'auto' || mode === 'stt')) {
-    const audio = await fetchAudio(registry, source, ref, ctx, attempts);
+    const audio = await (tel
+      ? tracedStage(tel, 'audio', ref, () => fetchAudio(registry, source, ref, ctx, attempts))
+      : fetchAudio(registry, source, ref, ctx, attempts));
     if (audio) {
       try {
-        const res = await transcribe(registry, ref, audio, opts, ctx);
+        const res = await (tel
+          ? tracedStage(tel, 'stt', ref, () => transcribe(registry, ref, audio, opts, ctx))
+          : transcribe(registry, ref, audio, opts, ctx));
         attempts.push(...res.attempts);
         transcript = res.transcript;
       } catch (err) {
@@ -294,12 +312,16 @@ export async function getVideoContext(
   if (opts.comments && source.getComments) {
     try {
       const limit = typeof opts.comments === 'number' ? opts.comments : undefined;
-      context.comments = await source.getComments(ref, ctx, { limit });
+      const getComments = source.getComments.bind(source);
+      context.comments = await (tel
+        ? tracedStage(tel, 'comments', ref, () => getComments(ref, ctx, { limit }))
+        : getComments(ref, ctx, { limit }));
     } catch (err) {
       attempts.push({ id: source.id, stage: 'metadata', outcome: 'error', reason: 'comments', detail: errInfo(err).detail });
     }
   }
 
-  if (opts.storage) await opts.storage.putContext(context);
+  const storage = opts.storage;
+  if (storage) await (tel ? tracedStage(tel, 'save', ref, () => storage.putContext(context)) : storage.putContext(context));
   return context;
 }

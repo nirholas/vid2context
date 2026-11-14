@@ -43,7 +43,7 @@
   "devDependencies": {
     "@hono/node-server": "^2.1.8",
     "@vid2context/core": "*",
-    "@vid2context/registry": "*",
+    "@vid2context/provider-youtube": "*",
     "@vid2context/server": "*",
     "@vid2context/webhooks": "*",
     "n8n-workflow": "^2.47.2",

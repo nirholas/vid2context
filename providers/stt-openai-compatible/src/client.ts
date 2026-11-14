@@ -253,9 +253,12 @@ function bodyMessage(body: string): string {
 }
 
 const TOO_LARGE = /too large|too big|maximum (content |file |upload )?(size|length)|exceeds? .*(size|limit)|file size|payload/i;
-const MODEL_MISSING = /model_not_found|model\b.*\b(does not exist|not found|not exist|unknown|is not supported|not available)|unknown model|invalid model|no such model/i;
-const UNDECODABLE = /could not (decode|process|read|parse) (the )?(audio|file|media)|failed to (decode|load|read)( and convert)? (the )?(audio|file|media)|invalid data found when processing input|invalid (audio|media) file|corrupt|not a valid (audio|media)|unable to (decode|process) (the )?(audio|file)/i;
-const BAD_FORMAT = /extension .* not supported|unsupported (file )?(format|extension|media type)|invalid file format|file format .* not supported/i;
+const MODEL_MISSING =
+  /model_not_found|model\b.*\b(does not exist|not found|not exist|unknown|is not supported|not available)|unknown model|invalid model|no such model/i;
+const UNDECODABLE =
+  /could not (decode|process|read|parse) (the )?(audio|file|media)|failed to (decode|load|read)( and convert)? (the )?(audio|file|media)|invalid data found when processing input|invalid (audio|media) file|corrupt|not a valid (audio|media)|unable to (decode|process) (the )?(audio|file)/i;
+const BAD_FORMAT =
+  /extension .* not supported|unsupported (file )?(format|extension|media type)|invalid file format|file format .* not supported/i;
 
 /**
  * Turn a failed transcription response into a Vid2ContextError: the core
@@ -282,7 +285,10 @@ export async function sttErrorFromResponse(res: Response, ep: Endpoint): Promise
     return new Vid2ContextError(
       'rate-limited',
       base.message,
-      opts(`${ep.label} is rate limiting this ${ep.key ? 'key' : 'address'}. The chain moves to the next rung and retries this one later.`, retryAfterSec),
+      opts(
+        `${ep.label} is rate limiting this ${ep.key ? 'key' : 'address'}. The chain moves to the next rung and retries this one later.`,
+        retryAfterSec,
+      ),
     );
   }
   if (status === 401 || status === 403) {
@@ -366,13 +372,13 @@ export async function transcribeWith(ep: Endpoint, input: AudioInput, opts: SttO
   );
   if (!res.ok) throw await sttErrorFromResponse(res, ep);
   const raw = await res.text();
+  // Content-Type is unreliable here (OVH sends none for response_format=text), so try JSON first.
   let body: VerboseJson | string = raw;
-  if (!/^text\/plain/i.test(res.headers.get('content-type') ?? '')) {
-    try {
-      body = JSON.parse(raw) as VerboseJson;
-    } catch {
-      body = raw;
-    }
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) body = parsed as VerboseJson;
+  } catch {
+    body = raw;
   }
   const parsed = parseVerboseJson(body, opts.language, audio.durationSec);
   return { ...parsed, model: ep.model };

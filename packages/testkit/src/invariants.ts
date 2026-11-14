@@ -230,7 +230,9 @@ export async function checkInvariants(opts: CheckOptions = {}): Promise<Invarian
   const notes: string[] = [];
   const seenIds: Record<Runtime, string[]> = { node: [], workers: [], browser: [] };
   const v = (x: Violation) => {
-    if (!violations.some((y) => y.check === x.check && y.provider === x.provider && y.file === x.file && y.message === x.message)) {
+    if (
+      !violations.some((y) => y.check === x.check && y.provider === x.provider && y.file === x.file && y.message === x.message)
+    ) {
       violations.push(x);
     }
   };
@@ -285,19 +287,38 @@ export async function checkInvariants(opts: CheckOptions = {}): Promise<Invarian
     }
     for (const p of reg.providers) {
       const file = origins.get(p.id) ? relative(root, join(origins.get(p.id)?.dir ?? '', 'src/index.ts')) : undefined;
-      if (!KEBAB.test(p.id)) v({ check: 'kebab-provider-id', provider: p.id, runtime, file, message: `id "${p.id}" is not kebab-case` });
+      if (!KEBAB.test(p.id))
+        v({ check: 'kebab-provider-id', provider: p.id, runtime, file, message: `id "${p.id}" is not kebab-case` });
       if (!p.name) v({ check: 'provider-fields', provider: p.id, runtime, file, message: 'name is empty' });
       if (!p.runtimes?.includes(runtime)) {
-        v({ check: 'provider-fields', provider: p.id, runtime, file, message: `is in the ${runtime} registry but does not list it in runtimes` });
+        v({
+          check: 'provider-fields',
+          provider: p.id,
+          runtime,
+          file,
+          message: `is in the ${runtime} registry but does not list it in runtimes`,
+        });
       }
       if (p.kind === 'storage') {
         try {
           const { value, touched } = withoutNetwork(() => p.isEnabled(Object.freeze({})));
           if (typeof value !== 'boolean' || isPromiseLike(value) || touched.length > 0) {
-            v({ check: 'storage-is-enabled', provider: p.id, runtime, file, message: 'isEnabled must be a synchronous, offline boolean check on env' });
+            v({
+              check: 'storage-is-enabled',
+              provider: p.id,
+              runtime,
+              file,
+              message: 'isEnabled must be a synchronous, offline boolean check on env',
+            });
           }
         } catch (err) {
-          v({ check: 'storage-is-enabled', provider: p.id, runtime, file, message: `isEnabled threw on a frozen env: ${(err as Error).message}` });
+          v({
+            check: 'storage-is-enabled',
+            provider: p.id,
+            runtime,
+            file,
+            message: `isEnabled threw on a frozen env: ${(err as Error).message}`,
+          });
         }
       }
     }
@@ -320,7 +341,13 @@ export async function checkInvariants(opts: CheckOptions = {}): Promise<Invarian
           const run = withoutNetwork(() => [rungsOf(p, env), rungsOf(p, env)] as const);
           [first, second] = run.value;
           if (run.touched.length > 0) {
-            v({ check: 'rungs-offline', provider: p.id, runtime, file, message: `rungs(env) reached the network: ${run.touched[0]}` });
+            v({
+              check: 'rungs-offline',
+              provider: p.id,
+              runtime,
+              file,
+              message: `rungs(env) reached the network: ${run.touched[0]}`,
+            });
           }
         } catch (err) {
           v({ check: 'rungs-build', provider: p.id, runtime, file, message: `rungs(${label}) threw: ${(err as Error).message}` });
@@ -329,18 +356,36 @@ export async function checkInvariants(opts: CheckOptions = {}): Promise<Invarian
         const a = first.map((r) => r.id);
         const b = second.map((r) => r.id);
         if (JSON.stringify(a) !== JSON.stringify(b)) {
-          v({ check: 'rungs-deterministic', provider: p.id, runtime, file, message: `rungs(${label}) returned different ids on a second call` });
+          v({
+            check: 'rungs-deterministic',
+            provider: p.id,
+            runtime,
+            file,
+            message: `rungs(${label}) returned different ids on a second call`,
+          });
         }
         for (const r of first) {
           for (const problem of rungProblems(r, p.kind as RungKind)) {
             v({ check: 'rung-contract', provider: p.id, runtime, file, message: `${r.id}: ${problem}` });
           }
           if (r.provider && r.provider !== p.id) {
-            v({ check: 'rung-contract', provider: p.id, runtime, file, message: `${r.id}: rung.provider "${r.provider}" is not the provider id "${p.id}"` });
+            v({
+              check: 'rung-contract',
+              provider: p.id,
+              runtime,
+              file,
+              message: `${r.id}: rung.provider "${r.provider}" is not the provider id "${p.id}"`,
+            });
           }
           const prev = owner.get(r.id);
           if (prev !== undefined) {
-            v({ check: 'unique-rung-id', provider: p.id, runtime, file, message: `rung id ${r.id} is also produced by ${prev} (${label})` });
+            v({
+              check: 'unique-rung-id',
+              provider: p.id,
+              runtime,
+              file,
+              message: `rung id ${r.id} is also produced by ${prev} (${label})`,
+            });
           }
           owner.set(r.id, p.id);
         }
@@ -359,7 +404,13 @@ export async function checkInvariants(opts: CheckOptions = {}): Promise<Invarian
         if (checkedPortable.has(key)) continue;
         checkedPortable.add(key);
         for (const hit of scanPortable(pkg.dir, root)) {
-          v({ check: `portable-source:${hit.rule}`, provider: p.id, runtime, file: `${hit.file}:${hit.line}`, message: hit.message });
+          v({
+            check: `portable-source:${hit.rule}`,
+            provider: p.id,
+            runtime,
+            file: `${hit.file}:${hit.line}`,
+            message: hit.message,
+          });
         }
       }
     }
@@ -399,7 +450,9 @@ export async function checkInvariants(opts: CheckOptions = {}): Promise<Invarian
         if (hit) used.push(name);
       }
       if (used.length === 0) {
-        notes.push(`${p.id}: no documented *_MODEL variable changes its rungs; document them in docs/providers.md to make this checkable`);
+        notes.push(
+          `${p.id}: no documented *_MODEL variable changes its rungs; document them in docs/providers.md to make this checkable`,
+        );
       }
       for (const r of base) {
         if (!overridden.has(r.id)) {

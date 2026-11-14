@@ -21,7 +21,8 @@ describe('provider', () => {
 
   it('is a local rung with no upload limit, ordered by WHISPER_CPP_GPU', () => {
     const [cpu] = whisperCppRungs({ WHISPER_CPP_MODEL: 'small' });
-    expect(cpu).toMatchObject({ tier: 'local', priority: CPU_PRIORITY, quality: 3, maxBytes: undefined });
+    expect(cpu).toMatchObject({ tier: 'local', priority: CPU_PRIORITY, quality: 3 });
+    expect(cpu?.maxBytes).toBeUndefined();
     expect(cpu?.capabilities).toEqual(['segments', 'language-detect', 'prompt', 'translate']);
     const [gpu] = whisperCppRungs({ WHISPER_CPP_MODEL: 'large-v3-turbo', WHISPER_CPP_GPU: '1' });
     expect(gpu?.priority).toBe(GPU_PRIORITY);

@@ -116,9 +116,13 @@ export async function getCaptions(ref: VideoRef, opts: CaptionOptions, ctx: Ctx)
     const file = files.find((f) => extname(f) === '.vtt') ?? files.find((f) => extname(f) === '.srt');
     if (!file) {
       if (files.length === 0) return null;
-      throw new Vid2ContextError('upstream', `yt-dlp saved subtitles as ${files.map(extname).join(', ')}, which cannot be read.`, {
-        hint: 'Install ffmpeg (or set FFMPEG_PATH) so yt-dlp can convert the subtitles to WebVTT.',
-      });
+      throw new Vid2ContextError(
+        'upstream',
+        `yt-dlp saved subtitles as ${files.map(extname).join(', ')}, which cannot be read.`,
+        {
+          hint: 'Install ffmpeg (or set FFMPEG_PATH) so yt-dlp can convert the subtitles to WebVTT.',
+        },
+      );
     }
     const segments = parseVtt(await readFile(join(dir, file), 'utf8'));
     if (segments.length === 0) return null;

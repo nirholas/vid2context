@@ -9,6 +9,7 @@
 import { isInputError, Vid2ContextError } from './errors.ts';
 import type { ChainOptions, Rung } from './provider.ts';
 import { redact } from './security/redact.ts';
+import { budgetDetail, recordRungSkip, tracedRungCall } from './telemetry/instrument.ts';
 import type { Attempt, Ctx, Env, Policy, Tier } from './types.ts';
 
 const TIER_ORDER: Record<Tier, number> = { local: 0, free: 1, keyless: 2, paid: 3 };
@@ -130,16 +131,29 @@ export async function runChain<R extends Rung, T>(
   let tried = 0;
   for (const rung of ranked) {
     if (tried >= maxAttempts) break;
+    const tel = ctx.telemetry;
+    if (tel?.ledger && rung.tier === 'paid' && tel.ledger.overBudget()) {
+      attempts.push({
+        id: rung.id,
+        stage,
+        outcome: 'skipped',
+        reason: 'budget',
+        detail: budgetDetail(tel.ledger.maxPaidUsdPerDay()),
+      });
+      recordRungSkip(tel, stage, rung, 'budget');
+      continue;
+    }
     const until = cooldowns.get(rung.id);
     if (until && until > Date.now()) {
       attempts.push({ id: rung.id, stage, outcome: 'skipped', reason: 'cooldown' });
+      if (tel) recordRungSkip(tel, stage, rung, 'cooldown');
       continue;
     }
     if (ctx.signal?.aborted) break;
     tried++;
     const started = Date.now();
     try {
-      const value = await call(rung);
+      const value = await (tel ? tracedRungCall(tel, stage, rung, call, reasonFor) : call(rung));
       attempts.push({ id: rung.id, stage, outcome: 'ok', ms: Date.now() - started });
       return { value, rung, attempts };
     } catch (err) {

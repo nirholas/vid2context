@@ -60,20 +60,26 @@ export interface LlmRecording {
 
 /**
  * Serves the recorded summary completion, but only for the exact request it was
- * recorded with: a changed prompt fails loudly instead of replaying a stale answer.
+ * recorded with. A changed prompt (or a transcript that parses differently)
+ * is recorded in `state.mismatch`, so tests fail with a clear message instead
+ * of replaying a stale answer.
  */
-export function llmRoute(): Route {
+export function llmRoute(): { route: Route; state: { mismatch?: string; calls: number } } {
   const rec = fixtureJson<LlmRecording>(LLM_FIXTURE);
-  return {
+  const state: { mismatch?: string; calls: number } = { calls: 0 };
+  const route: Route = {
     method: 'POST',
     url: rec.url,
     response: (call) => {
+      state.calls++;
       const body = JSON.parse(String(call.body)) as LlmRecording['request'];
-      if (body.model !== rec.request.model) return { status: 503, body: '{"error":"not recorded for this model"}' };
+      if (body.model !== rec.request.model) throw new Error(`${LLM_FIXTURE} was recorded for ${rec.request.model}, not ${body.model}`);
       if (JSON.stringify(body.messages) !== JSON.stringify(rec.request.messages)) {
-        throw new Error(`The summary prompt changed since ${LLM_FIXTURE} was recorded. Re-record: LIVE=1 npm run -w packages/bots record`);
+        state.mismatch = `The summary request changed since ${LLM_FIXTURE} was recorded. Re-record: LIVE=1 npm run -w packages/bots record`;
+        throw new Error(state.mismatch);
       }
       return { status: rec.status, body: JSON.stringify(rec.response), headers: { 'content-type': 'application/json' } };
     },
   };
+  return { route, state };
 }

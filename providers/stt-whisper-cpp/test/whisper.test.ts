@@ -60,7 +60,7 @@ describe('buildCliArgs', () => {
 
   it('passes language, prompt and translate as separate arguments', () => {
     const args = buildCliArgs({ ...base, language: 'de', prompt: 'Apollo; Armstrong "quoted"', translate: true });
-    expect(args.slice(-5)).toEqual(['de', '--prompt', 'Apollo; Armstrong "quoted"', '-tr']);
+    expect(args.slice(-4)).toEqual(['de', '--prompt', 'Apollo; Armstrong "quoted"', '-tr']);
   });
 
   it('forces English and drops translate for English-only models', () => {

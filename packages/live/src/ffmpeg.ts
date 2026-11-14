@@ -7,7 +7,7 @@
  */
 import { spawn } from 'node:child_process';
 import { accessSync, constants } from 'node:fs';
-import { homedir } from 'node:os';
+import { homedir, platform } from 'node:os';
 import { delimiter, join } from 'node:path';
 import { type Env, Vid2ContextError } from '@vid2context/core';
 import type { AudioExtractor, ChunkMedia } from './types.ts';
@@ -34,7 +34,7 @@ export function findFfmpeg(env: Env, home = homedir()): string | null {
   const pathVar = env.PATH ?? env.Path ?? '';
   const configured = env.FFMPEG_PATH?.trim();
   if (configured) return executable(configured) ? configured : null;
-  const name = process.platform === 'win32' ? 'ffmpeg.exe' : 'ffmpeg';
+  const name = platform() === 'win32' ? 'ffmpeg.exe' : 'ffmpeg';
   const dirs = [...pathVar.split(delimiter).filter(Boolean), join(home, '.local', 'bin')];
   for (const dir of dirs) {
     const candidate = join(dir, name);

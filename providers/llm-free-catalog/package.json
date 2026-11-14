@@ -1,0 +1,21 @@
+{
+  "name": "@vid2context/provider-llm-free-catalog",
+  "version": "0.1.0",
+  "description": "More free LLM rungs: Kilo Code keyless, NVIDIA NIM, SambaNova, Cloudflare Workers AI, Zhipu GLM Flash and SiliconFlow, plus the check:llm logic.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "vid2context": {
+    "runtimes": [
+      "node",
+      "workers",
+      "browser"
+    ]
+  },
+  "dependencies": {
+    "@vid2context/core": "*",
+    "@vid2context/provider-llm-openai-compatible": "*"
+  }
+}

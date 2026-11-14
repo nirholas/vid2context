@@ -178,6 +178,11 @@ describe('error bodies', () => {
 describe('chunkContext', () => {
   it('rejects unknown modes', () => {
     const ctx = JSON.parse(load('context-jNQXAC9IVRw').body);
-    expect(() => chunkContext(ctx, 'pages' as 'window')).toThrow('Use one of');
+    expect(() => chunkContext(ctx, 'pages' as 'window')).toThrow('Unknown chunking "pages".');
+    try {
+      chunkContext(ctx, 'pages' as 'window');
+    } catch (e) {
+      expect((e as Vid2ContextApiError).hint).toBe('Use one of: chapters, segments, window.');
+    }
   });
 });

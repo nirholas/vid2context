@@ -57,7 +57,8 @@ export function windowSignatures(doc: ShingledDoc, seeds: Uint32Array, blockShin
   if (blocks.length <= 2) {
     if (blocks.length === 0) return [];
     const sig = Uint32Array.from(blocks[0] as Uint32Array);
-    if (blocks[1]) for (let i = 0; i < sig.length; i++) sig[i] = Math.min(sig[i] as number, (blocks[1] as Uint32Array)[i] as number);
+    if (blocks[1])
+      for (let i = 0; i < sig.length; i++) sig[i] = Math.min(sig[i] as number, (blocks[1] as Uint32Array)[i] as number);
     return [sig];
   }
   const windows: Uint32Array[] = [];
