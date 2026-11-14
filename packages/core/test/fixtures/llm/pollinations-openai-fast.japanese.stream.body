@@ -1,0 +1,570 @@
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","content":""}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"User","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" says","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":":","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" \"","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"Translate","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" into","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" Japanese","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":",","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" reply with the","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" translation only:","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" That is one","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" small step for","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" man, one","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" giant leap for","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" mankind.\"\n\n","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"So","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" they","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" want","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" a","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" Japanese","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" translation","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":".","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" The","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" translation","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" is","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":":","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" \"","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"それ","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"は","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"人","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"類","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"に","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"と","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"って","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"の","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"小","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"さ","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"な","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"一","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"歩","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"だ","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"が","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"、人","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"類","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"に","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"と","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"って","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"の大","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"き","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"な","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"飛","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"躍","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"だ","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"。\"","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" Actually","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" the","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" original","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" phrase","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" is","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" \"","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"That's","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" one","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" small","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" step","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" for","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" [","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"a","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"]","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" man","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":",","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" one","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" giant","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" leap for mankind","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":".\"","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" Or","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" \"","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"それ","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"は","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"人","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"類にと","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"って小","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"さ","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"な","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"一","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"歩だが","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"、人類に","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"とっては","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"大","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"き","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"な","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"飛","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"躍で","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"ある","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":".\"","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" Or","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" \"","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"それ","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"は人間","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"に","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"と","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"って","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"の","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"小さな","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"一歩だ","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"が、人類","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"にとって","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"の大","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"きな飛","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"躍だ","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":".\"","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" Many","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" options","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":".","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" I'd","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" provide","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" a","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" standard","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" translation","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":".","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" Probably","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" the","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" most","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" faithful","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":":","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" \"","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"それ","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"は","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"人類に","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"とって小","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"さな一","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"歩だが","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"、人類に","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"とっては","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"大きな","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"飛躍","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"だ.\"","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" But","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" the","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" \"","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"for","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" man","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"\"","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" may","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" clarify","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" it's","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" \"","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"a","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" small","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" step","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" for","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" a","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" man","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":".\"","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" In","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" Japanese","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":",","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" \"","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"それ","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"は","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"[","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"人","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"間","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"に","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"と","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"って]","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"小","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"さ","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"な","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"一","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"歩だが","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"、人類に","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"とっては","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"大きな","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"飛躍","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"だ.\"","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" The","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" best","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":":","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" \"","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"それ","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"は","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"人類に","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"とって小","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"さな一","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"歩だが","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"、それ","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"は","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"人","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"類","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"に","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"とって大","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"き","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"な","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"飛","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"躍だ","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":".\"","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" Actually","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" the","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" correct","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" translation","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":":","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" \"","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"それ","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"は","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"人類に","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"とって小","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"さな一","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"歩だが","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"、人類は","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"大","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"き","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"な","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"飛躍","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"を","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"遂","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"げ","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"た","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":".\"","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" No","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":",","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" they","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" want","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" direct","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" translation","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":".","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" The","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" official","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":":","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" \"","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"それ","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"は","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"人間","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"にとって","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"小","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"さな一","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"歩だが","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"、人類に","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"とっては","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"大きな","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"飛躍","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"だ.\"","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" That","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" is","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" okay","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":".\n\n","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"Better","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":":","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" \"","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"それ","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"は","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"人間","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"にとって","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"小","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"さな一","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"歩だが","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"、人類に","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"とっては","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"大きな","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"飛躍","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":"だ.\"","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" I'm","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" going","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" to","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" reply","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" with","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":" that","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","reasoning":".","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","content":"","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","content":"それ","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","content":"は","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","content":"人","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","content":"間","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","content":"にとって","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","content":"小","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","content":"さな一","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","content":"歩だが","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","content":"、人類に","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","content":"とっては","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","content":"大きな","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","content":"飛躍","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","content":"だ。","name":"assistant"}}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[{"index":0,"delta":{"role":"assistant","name":"assistant"},"finish_reason":"stop"}],"created":1794676608,"model":"gpt-oss-20b","object":"chat.completion.chunk"}
+
+data: {"id":"chatcmpl-9eb488051caadd4f","choices":[],"created":1794676608,"model":"gpt-oss-20b","system_fingerprint":"vllm-0.22.0-c5b47383","object":"chat.completion.chunk","usage":{"prompt_tokens":332,"completion_tokens":433,"total_tokens":765}}
+
+data: [DONE]
+

@@ -96,7 +96,10 @@ export async function* parseSSE(body: ReadableStream<Uint8Array>, signal?: Abort
         const msg = line(buffer.slice(start, i));
         if (c === 13 && buffer.charCodeAt(i + 1) === 10) i++;
         start = i + 1;
-        if (msg) yield msg;
+        if (msg) {
+          yield msg;
+          if (signal?.aborted) throw abortError(signal);
+        }
       }
       buffer = buffer.slice(start);
       if (done) {

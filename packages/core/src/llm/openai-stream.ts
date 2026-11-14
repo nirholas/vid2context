@@ -181,6 +181,7 @@ export async function* streamOpenAiChat(ep: StreamEndpoint, req: ChatRequest, ct
   let model = ep.model;
   let usage: { inputTokens?: number; outputTokens?: number } | undefined;
   let finish: string | undefined;
+  let sawDone = false;
   const think = new ThinkSplitter();
 
   // Leading whitespace before any visible text is dropped, like the non-streaming client's trim.
@@ -206,7 +207,10 @@ export async function* streamOpenAiChat(ep: StreamEndpoint, req: ChatRequest, ct
       for await (const msg of parseSSE(res.body as ReadableStream<Uint8Array>, controller.signal)) {
         arm();
         const data = msg.data.trim();
-        if (data === '[DONE]') break;
+        if (data === '[DONE]') {
+          sawDone = true;
+          break;
+        }
         if (data === '') continue;
         let chunk: StreamChunk;
         try {
@@ -232,6 +236,12 @@ export async function* streamOpenAiChat(ep: StreamEndpoint, req: ChatRequest, ct
     } catch (err) {
       if (timedOut) throw new Vid2ContextError('timeout', `${label} chat stream: no data for ${idleMs} ms.`, { cause: err });
       throw err;
+    }
+    // A body that stops with neither [DONE] nor a finish_reason was cut off (connection dropped).
+    if (!sawDone && !finish) {
+      throw new Vid2ContextError('upstream', `${label} chat stream: the connection closed before the answer finished.`, {
+        hint: 'Try again; if it keeps happening, pick another model.',
+      });
     }
     yield* emit(think.flush());
     if (!text) {
