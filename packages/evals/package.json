@@ -1,0 +1,15 @@
+{
+  "name": "@vid2context/evals",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Evaluation harness for vid2context: word error rate per speech-to-text rung against creator captions, auto-caption and cleanup quality, citation accuracy, retrieval quality, latency and cost, on real public videos.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@vid2context/core": "*",
+    "@vid2context/registry": "*"
+  }
+}
