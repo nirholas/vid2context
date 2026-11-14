@@ -7,8 +7,19 @@
  *
  * A hit is relevant when its time range overlaps an expected range of the
  * same video. Precision@5 divides by 5 even when fewer hits come back, so
- * queries with one relevant passage cap at 0.2 (merging neighbouring chunks
- * into one range makes that common); compare the columns with each other.
+ * queries with one relevant passage cap at 0.2; compare the columns with
+ * each other. Two precision figures are reported:
+ *
+ *   P@5 (raw)       every relevant hit counts, so three overlapping hits on
+ *                   the same passage count three times
+ *   P@5 (distinct)  each expected passage is credited once, to the first hit
+ *                   that covers it; repeats of a passage already shown count
+ *                   as not relevant
+ *
+ * Hybrid merges neighbouring chunks into one range, so a passage both sides
+ * found comes back once; raw precision rewards a method for returning the
+ * same passage several times, which is why the assertion uses the distinct
+ * figure and MRR, and the table shows both.
  */
 import { clearCooldowns } from '@vid2context/core';
 import { replayFetch, testContext } from '@vid2context/core/testing';
@@ -33,24 +44,41 @@ const K = 5;
 
 interface Scores {
   p5: number;
+  p5distinct: number;
   mrr: number;
   hit5: number;
 }
 
-function judge(q: EvalQuery, hits: { videoId: string; startSec: number; endSec: number }[]): boolean[] {
-  return hits.map((h) => q.expect.some((e) => e.videoId === h.videoId && h.startSec <= e.endSec && e.startSec <= h.endSec));
-}
+type Hit = { videoId: string; startSec: number; endSec: number };
 
-function score(rel: boolean[]): Scores {
-  const top = rel.slice(0, K);
-  const first = top.indexOf(true);
-  return { p5: top.filter(Boolean).length / K, mrr: first < 0 ? 0 : 1 / (first + 1), hit5: first < 0 ? 0 : 1 };
+function score(q: EvalQuery, hits: Hit[]): Scores {
+  const top = hits.slice(0, K);
+  const covers = (h: Hit, e: EvalQuery['expect'][number]) =>
+    e.videoId === h.videoId && h.startSec <= e.endSec && e.startSec <= h.endSec;
+  const rel = top.map((h) => q.expect.some((e) => covers(h, e)));
+  const credited = new Set<number>();
+  let distinct = 0;
+  for (const h of top) {
+    const i = q.expect.findIndex((e, j) => !credited.has(j) && covers(h, e));
+    if (i >= 0) {
+      credited.add(i);
+      distinct++;
+    }
+  }
+  const first = rel.indexOf(true);
+  return {
+    p5: rel.filter(Boolean).length / K,
+    p5distinct: distinct / K,
+    mrr: first < 0 ? 0 : 1 / (first + 1),
+    hit5: first < 0 ? 0 : 1,
+  };
 }
 
 function mean(list: Scores[]): Scores {
   const n = list.length || 1;
   return {
     p5: list.reduce((s, x) => s + x.p5, 0) / n,
+    p5distinct: list.reduce((s, x) => s + x.p5distinct, 0) / n,
     mrr: list.reduce((s, x) => s + x.mrr, 0) / n,
     hit5: list.reduce((s, x) => s + x.hit5, 0) / n,
   };
@@ -76,7 +104,7 @@ describe('evaluation: keyword vs vector vs hybrid', () => {
       for (const q of queries) {
         const out = await engine.search({ query: q.query, mode, limit: K });
         if (mode !== 'keyword') expect(out.meta.vector, `${q.id} (${mode})`).toBe('ok');
-        perQuery.set(q.id, score(judge(q, out.hits)));
+        perQuery.set(q.id, score(q, out.hits));
       }
       results.set(mode, perQuery);
     }
@@ -95,13 +123,16 @@ describe('evaluation: keyword vs vector vs hybrid', () => {
       ['negation', queries.filter((q) => q.type === 'negation')],
     ];
     const overall = new Map<Mode, Scores>();
-    const rows: string[] = [`| Queries | n | Method | Precision@5 | MRR | Hit@5 |`, `|---|---|---|---|---|---|`];
+    const rows: string[] = [
+      '| Queries | n | Method | P@5 (distinct) | P@5 (raw) | MRR | Hit@5 |',
+      '|---|---|---|---|---|---|---|',
+    ];
     for (const [name, qs] of groups) {
       for (const mode of MODES) {
         const per = results.get(mode) as Map<string, Scores>;
         const m = mean(qs.map((q) => per.get(q.id) as Scores));
         if (name === 'all') overall.set(mode, m);
-        rows.push(`| ${name} | ${qs.length} | ${mode} | ${f(m.p5)} | ${f(m.mrr)} | ${f(m.hit5)} |`);
+        rows.push(`| ${name} | ${qs.length} | ${mode} | ${f(m.p5distinct)} | ${f(m.p5)} | ${f(m.mrr)} | ${f(m.hit5)} |`);
       }
     }
     const misses = MODES.map((mode) => {
@@ -115,6 +146,6 @@ describe('evaluation: keyword vs vector vs hybrid', () => {
     const vec = overall.get('vector') as Scores;
     const hyb = overall.get('hybrid') as Scores;
     expect(hyb.mrr).toBeGreaterThanOrEqual(Math.max(kw.mrr, vec.mrr));
-    expect(hyb.p5).toBeGreaterThanOrEqual(Math.max(kw.p5, vec.p5));
+    expect(hyb.p5distinct).toBeGreaterThanOrEqual(Math.max(kw.p5distinct, vec.p5distinct));
   });
 });
