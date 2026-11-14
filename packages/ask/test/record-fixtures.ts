@@ -151,7 +151,12 @@ const scenarios: Record<string, Scenario> = {
       'Both OVH rungs called repeatedly until they answered 429, Pollinations skipped by env (VID2CONTEXT_SKIP=pollinations), then ask() over the G-Wagon video: every rung fails.',
     env: { VID2CONTEXT_SKIP: 'pollinations' },
     run: async (ctx, storage) => {
-      await Promise.all([hammer('Meta-Llama-3_3-70B-Instruct'), hammer('gpt-oss-120b')]);
+      // Until both answer 429 in the same round, so neither window resets before the ask.
+      for (let round = 0; round < 6; round++) {
+        await Promise.all([hammer('Meta-Llama-3_3-70B-Instruct'), hammer('gpt-oss-120b')]);
+        const now = await Promise.all([probe('Meta-Llama-3_3-70B-Instruct'), probe('gpt-oss-120b')]);
+        if (now.every((c) => c === 429)) break;
+      }
       return ask(registry, { question: 'Which years have timing chains?', inputs: [GWAGON_URL], storage }, ctx).catch(
         (e: unknown) => ({
           error: e instanceof Error ? e.message : String(e),
@@ -161,8 +166,20 @@ const scenarios: Record<string, Scenario> = {
   },
 };
 
+/** One unrecorded request to an OVH model; returns the status. */
+async function probe(model: string): Promise<number> {
+  const res = await globalThis.fetch('https://oai.endpoints.kepler.ai.cloud.ovh.net/v1/chat/completions', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ model, messages: [{ role: 'user', content: 'Say OK.' }], max_tokens: 5 }),
+  });
+  await res.text();
+  console.error(`probe ${model}: ${res.status}`);
+  return res.status;
+}
+
 /** Call one OVH model until it answers 429 (at most 12 tries). These calls are not recorded. */
-async function hammer(model: string): Promise<void> {
+async function hammer(model: string): Promise<number> {
   for (let i = 0; i < 12; i++) {
     const res = await globalThis.fetch('https://oai.endpoints.kepler.ai.cloud.ovh.net/v1/chat/completions', {
       method: 'POST',
@@ -171,8 +188,9 @@ async function hammer(model: string): Promise<void> {
     });
     await res.text();
     console.error(`hammer ${model}: ${res.status}`);
-    if (res.status === 429) return;
+    if (res.status === 429) return 429;
   }
+  return 200;
 }
 
 /**
@@ -182,7 +200,7 @@ async function hammer(model: string): Promise<void> {
  * exchanges of the try that succeeded are saved.
  */
 function succeeded(name: string, result: unknown): boolean {
-  if (name === 'all-429') return true;
+  if (name === 'all-429') return typeof result === 'object' && result !== null && 'error' in result;
   if (typeof result === 'string') return result.includes('event: done');
   return true;
 }
