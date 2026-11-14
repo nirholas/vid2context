@@ -16,6 +16,8 @@ The examples below use:
 API=http://127.0.0.1:8787/api/v1
 ```
 
+To try routes without writing curl, open the web app's API page at `/app/?view=api` (on the same server, or through `npm run dev -w @vid2context/web`). Paste a YouTube link or pick a recommended one, and every route's parameters and example body fill in from it. Send shows the status, timing, headers and body (streams live for `/chat` and job events, a download for `.zip`), Copy curl gives the same request for a terminal, and Test all runs every read-only video route once. The list comes from the server's `openapi.json`, so routes a server does not serve are marked. An API key, when the server needs one, is kept in the browser tab only.
+
 On `SIGTERM` or `SIGINT` the server stops accepting connections, lets running requests finish (up to `VID2CONTEXT_SHUTDOWN_TIMEOUT_MS`, 10 s by default), closes MCP sessions and the jobs queue, then exits.
 
 ## Videos

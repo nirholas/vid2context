@@ -36,6 +36,7 @@ async function record(name: string, method: string, path: string, init: RequestI
 
 const q = (u: string) => encodeURIComponent(u);
 await record('health.json', 'GET', '/health');
+await record('openapi.json', 'GET', '/openapi.json');
 await record('context-jNQXAC9IVRw.json', 'GET', `/context?url=${q(VIDEO)}`);
 await record('context-not-found.json', 'GET', `/context?url=${q(MISSING)}`);
 await record('context-playlist.json', 'GET', `/context?url=${q(PLAYLIST)}`);

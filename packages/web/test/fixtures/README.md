@@ -11,6 +11,7 @@ Each file is `{ request: { method, path }, status, contentType, body }`, with th
 | File | Request | What it shows |
 |---|---|---|
 | `health.json` | `GET /health` | Name, version, runtime and formats. The `providers` array is removed because it lists which keys this machine has set. |
+| `openapi.json` | `GET /openapi.json` | The OpenAPI 3.1 document of a Node server with every sub-app mounted (recorded 2026-11-14). The API page merges it into its catalog and marks routes a server does not serve. |
 | `context-jNQXAC9IVRw.json` | `GET /context?url=https://www.youtube.com/watch?v=jNQXAC9IVRw` | "Me at the zoo". YouTube answered the caption requests with HTTP 429 from this IP, so the attempts show captions blocked, yt-dlp audio, then Whisper on Cloudflare Workers AI. |
 | `context-not-found.json` | `GET /context?url=https://www.youtube.com/watch?v=xxxxxxxxxxx` | 404 `not-found` error body with hint and attempts. |
 | `context-playlist.json` | `GET /context?url=<playlist>` | 400 `unsupported-input`: the input is a playlist, so the app expands it with `/items`. |
