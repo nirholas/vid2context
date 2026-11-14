@@ -125,6 +125,15 @@ Accounts, quotas, a shared transcript cache and abuse protection for a public in
 | `VID2CONTEXT_IP_HEADER` | `@vid2context/accounts` | header with the client IP behind a trusted proxy, for example `x-forwarded-for` (its last address is used). Workers use `CF-Connecting-IP` |
 | `VID2CONTEXT_POST_LOGIN_PATH` | `@vid2context/accounts` | where the browser lands after sign-in when no `return_to` is given, default `/app/` |
 
+## Webhooks
+
+Outbound, signed Standard Webhooks from `@vid2context/webhooks` (`GET/POST /webhooks`, `DELETE /webhooks/:id`, `POST /webhooks/:id/test`). No key or service needed. See `packages/webhooks/README.md`.
+
+| Env var | Used by | Notes |
+|---|---|---|
+| `VID2CONTEXT_WEBHOOKS_ALLOW_LOCAL` | `@vid2context/webhooks` | `1` allows `http:` targets and hosts on loopback or private networks (self-hosted n8n). Default off: public `https:` only. Link-local and cloud metadata addresses are always refused |
+| `VID2CONTEXT_WEBHOOKS_BASE_URL` | `@vid2context/webhooks` | public base URL of the API, so payload links are absolute; unset, links are `/api/v1/...` paths |
+
 ## Planned (see ROADMAP.md)
 
 | Kind | Provider | Tier | Enabled by | Known limits |
