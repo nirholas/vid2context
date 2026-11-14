@@ -11,11 +11,13 @@ import { registerAskTools } from '@vid2context/ask/mcp';
 import type { Ctx, Registry, Storage } from '@vid2context/core';
 import { registerDedupeTools } from '@vid2context/dedupe/mcp';
 import { registerExporterTools } from '@vid2context/exporters/mcp';
+import { registerInsightsTools } from '@vid2context/insights/mcp';
 import { registerLibraryTools } from '@vid2context/library/mcp';
 import { type AudioExtractor, registerLiveTools } from '@vid2context/live';
 import { registerAgenticFeatures } from '@vid2context/mcp-agentic/mcp';
 import { registerAppsTools } from '@vid2context/mcp-apps/mcp';
 import { registerResearchTools } from '@vid2context/research/mcp';
+import { registerSearchTools } from '@vid2context/search/mcp';
 import { registerSkipsTools } from '@vid2context/skips/mcp';
 
 export interface PackageToolDeps {
@@ -28,6 +30,10 @@ export interface PackageToolDeps {
 
 export function registerPackageTools(server: McpServer, deps: PackageToolDeps): void {
   const { registry, ctx, storage } = deps;
+  // search_transcript: keyword and embedding search over saved transcripts (item 40)
+  registerSearchTools(server, { registry, ctx, storage });
+  // extract and build_brief: server-side structured extraction and cited briefs (items 32 and 33)
+  registerInsightsTools(server, { registry, ctx, storage });
   // list_collections, create_collection, add_to_collection, get_collection (item 41)
   registerLibraryTools(server, { registry, ctx, storage });
   // ask: server-side answers with timestamp citations (item 34)

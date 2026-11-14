@@ -34,12 +34,11 @@ Every tool has a JSON Schema input with a description per field, annotations (`r
 | `get_outline` | `{ url, mode?, language? }` | structured `{ title, url?, durationSec, transcript: { origin, language, producer }, sections: "chapters" \| "time", totalTokens, chapters: { index, title, startSec, endSec?, start, tokens, url? }[], metadata, next }`. Videos without chapters get sections of about five minutes (`transcriptOutline` from core) |
 | `get_section` | `{ url, from?, to?, chapter?, format?, timestamps?, mode?, language? }` | One chapter (index or title: exact, prefix, then substring) or time range (`from`/`to` as seconds, `m:ss` or `h:mm:ss`), with the header and a `Section "title": m:ss to m:ss, about N tokens` line in text format |
 | `list_items` | `{ url, limit? }` | structured `{ input, count, items: { id, platform, kind, nativeId, url? }[] }` through `expandInput`. Default limit 50, max 500 |
-| `search_transcript` | `{ query, collection?, urls?, limit? }` | structured `{ query, count, hits: { videoId, title, at, startSec, endSec, text, context, url?, score }[], failed?, note? }` over `Storage.search`. `urls` are fetched and saved first; `context` is the text within 8 seconds of the hit; `note` explains coverage when nothing matches |
 | `get_comments` | `{ url, limit? }` | structured `{ title, url?, count, comments: Comment[] }`. Read straight from the source's `getComments` (a video without a transcript still has comments), reusing a saved context that already holds enough comments. `unsupported-input` for sources without comments |
 | `export_context_pack` | `{ urls?, collection?, maxTokens?, limit? }` | The `pack` Markdown through `renderMany`; inputs that could not be read are listed under "Not included" |
 | `list_models` | `{ kind? }` | structured `{ models: ModelInfo[], defaultPolicy }` (`ModelInfo` in docs/prompts/SHARED-CONTRACTS.md section 3): every rung of `registry.llmRungs(env)` and the other getters, capabilities plus `stream` when `canStream` is true. Env var names only, never values |
 
-Long operations over many videos (`search_transcript` and `export_context_pack` with list `urls`) send `notifications/progress` per video when the client sends a progress token. One failing video never fails the batch: it is reported in `failed`.
+Long operations over many videos (`export_context_pack` with list `urls`) send `notifications/progress` per video when the client sends a progress token. One failing video never fails the batch: it is reported in `failed`.
 
 ### Wired from other packages
 
@@ -47,6 +46,8 @@ Long operations over many videos (`search_transcript` and `export_context_pack` 
 
 | Tools | Package (item) | Registration function |
 |---|---|---|
+| `search_transcript` | `@vid2context/search` (40) | `registerSearchTools` |
+| `extract`, `build_brief` | `@vid2context/insights` (32, 33) | `registerInsightsTools` |
 | `list_collections`, `create_collection`, `add_to_collection`, `get_collection` | `@vid2context/library` (41) | `registerLibraryTools` |
 | `ask` | `@vid2context/ask` (34) | `registerAskTools` |
 | `research_videos`, `list_caption_languages`, `get_key_moments` | `@vid2context/research` (54) | `registerResearchTools` |
@@ -59,7 +60,7 @@ Long operations over many videos (`search_transcript` and `export_context_pack` 
 
 The rows for these tools in the tables below describe their inputs and outputs. `ask` returns `[n] Title @ m:ss <timestamp URL>` source lines after the answer, and its error body nests the code as `{ error: { code, message, hint }, attempts }`.
 
-## Planned tools
+## Adding a tool from another package
 
 The Owner column names the work item (see `docs/ROADMAP.md`) that implements the tool.
 
@@ -72,14 +73,15 @@ import type { Ctx, Registry } from '@vid2context/core';
 export function registerAskTools(server: McpServer, deps: { registry: Registry; ctx: Ctx }): void { /* server.registerTool('ask', ...) */ }
 ```
 
-A registration function that lands later is wired with a one-line additive change to `packages/mcp/src/wire.ts`. Item 45 (`packages/mcp-http`) serves the same `createServer()` over Streamable HTTP and never defines tools of its own. "uses NN" below means the tool's logic comes from item NN's package.
+A registration function that lands later is wired with a one-line additive change to `packages/mcp/src/wire.ts`. Item 45 (`packages/mcp-http`) serves the same `createServer()` over Streamable HTTP and never defines tools of its own. 
+
+Every tool in the original plan is now implemented or wired. These are the inputs the wired tools take:
 
 | Tool | Owner | Input | Returns |
 |---|---|---|---|
-| `extract` | 44 (uses 33) | `{ template? , schema?, urls?, collection? }` | structured JSON with citations |
-| `build_brief` | 44 (uses 32) | `{ collection?, urls?, question? }` | a server-side cited brief (map-reduce on a free model) |
-
-When item 40 ships `registerSearchTools` in `@vid2context/search`, it replaces the `search_transcript` defined here (same name, input and output).
+| `search_transcript` | 40 | `{ query, collection?, urls?, limit?, rerank? }` | hits with title, `[m:ss]`, text and timestamp URL, as text |
+| `extract` | 33 | `{ template? , schema?, urls?, collection? }` | structured JSON with citations |
+| `build_brief` | 32 | `{ collection?, urls?, question? }` | a server-side cited brief (map-reduce on a free model) |
 
 ## Collection tools (item 41)
 

@@ -1,8 +1,8 @@
 /**
- * Tools over many videos and the saved library: list_items,
- * search_transcript and export_context_pack. The collection tools come from
- * @vid2context/library (see wire.ts); collectionView here backs the
- * vid2context://collection/{id} resource.
+ * Tools over many videos and the saved library: list_items and
+ * export_context_pack. search_transcript comes from @vid2context/search and
+ * the collection tools from @vid2context/library (see wire.ts);
+ * collectionView here backs the vid2context://collection/{id} resource.
  *
  * Every video read through any tool is saved to the server's storage, so the
  * library grows as the agent works and search covers everything read so far.
@@ -13,13 +13,10 @@ import {
   type Ctx,
   estimateTokens,
   expandInput,
-  formatTimestamp,
   getVideoContext,
   renderMany,
   type Storage,
   segmentsToText,
-  sliceSegments,
-  timestampUrl,
   Vid2ContextError,
   type VideoContext,
 } from '@vid2context/core';
@@ -107,8 +104,6 @@ const limitInput = z
   .optional()
   .describe(`Most videos taken from each playlist, channel or feed. Default: ${LIST_LIMIT}`);
 
-const failedShape = z.array(z.object({ input: z.string(), error: z.string(), message: z.string(), hint: z.string().optional() }));
-
 function collectionInfo(c: Collection) {
   return {
     id: c.id,
@@ -186,92 +181,6 @@ export function registerListTools(server: McpServer, deps: ToolDeps): void {
             nativeId: r.nativeId,
             ...(r.url ? { url: r.url } : {}),
           })),
-        });
-      } catch (err) {
-        return toolError(err);
-      }
-    },
-  );
-
-  server.registerTool(
-    'search_transcript',
-    {
-      title: 'Search transcripts',
-      description:
-        'Keyword search across saved transcripts (every video read so far, a collection, or the given urls, which are fetched and saved first). ' +
-        'Each hit has the video title, [m:ss] start, the matching caption line, a little surrounding text, and a timestamp link to cite. ' +
-        'Use it to find where topics are discussed before reading sections. Cost: about 100 tokens per hit; limit defaults to 20.',
-      inputSchema: {
-        query: z.string().min(1).describe('Words to look for; hits matching more of them rank first'),
-        collection: z.string().optional().describe('Search only this collection (id or name)'),
-        urls: urlsInput.optional().describe('Search only these videos (fetched and saved first if needed)'),
-        limit: z.number().int().min(1).max(200).optional().describe('Most hits to return. Default: 20'),
-      },
-      outputSchema: {
-        query: z.string(),
-        count: z.number(),
-        hits: z.array(
-          z.object({
-            videoId: z.string(),
-            title: z.string(),
-            at: z.string(),
-            startSec: z.number(),
-            endSec: z.number(),
-            text: z.string(),
-            context: z.string(),
-            url: z.string().optional(),
-            score: z.number(),
-          }),
-        ),
-        failed: failedShape.optional(),
-        note: z.string().optional(),
-      },
-      annotations: { readOnlyHint: true, openWorldHint: true, idempotentHint: true },
-    },
-    async (args, extra) => {
-      try {
-        const ctx = callCtx(deps.ctx, extra.signal);
-        let videoIds: string[] | undefined;
-        let failed: IngestFailure[] = [];
-        if (args.urls) {
-          const res = await ingest(deps, args.urls, ctx, extra);
-          videoIds = res.contexts.map((c) => c.metadata.ref.id);
-          failed = res.failed;
-        }
-        const collectionId = args.collection ? (await findCollection(storage, args.collection)).id : undefined;
-        const raw =
-          videoIds && videoIds.length === 0
-            ? []
-            : await storage.search({ text: args.query, collectionId, videoIds, limit: args.limit ?? 20 });
-        const contexts = new Map<string, VideoContext | null>();
-        const hits = [];
-        for (const h of raw) {
-          if (!contexts.has(h.videoId)) contexts.set(h.videoId, await storage.getContext(h.videoId));
-          const c = contexts.get(h.videoId);
-          const url = c ? timestampUrl(c.metadata.ref, h.startSec) : undefined;
-          const around = c ? segmentsToText(sliceSegments(c.transcript.segments, h.startSec - 8, h.endSec + 8)) : h.text;
-          hits.push({
-            videoId: h.videoId,
-            title: h.title,
-            at: formatTimestamp(h.startSec),
-            startSec: h.startSec,
-            endSec: h.endSec,
-            text: h.text,
-            context: around,
-            ...(url ? { url } : {}),
-            score: h.score,
-          });
-        }
-        const note =
-          hits.length === 0
-            ? 'No hits. Search covers saved videos only: videos are saved when read with get_transcript, get_outline or get_section, or added to a collection. Pass urls to search specific videos, or try other words.'
-            : undefined;
-        return structured({
-          query: args.query,
-          count: hits.length,
-          hits,
-          ...(failed.length > 0 ? { failed } : {}),
-          ...(note ? { note } : {}),
         });
       } catch (err) {
         return toolError(err);

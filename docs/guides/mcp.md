@@ -87,7 +87,6 @@ Arguments shown as JSON. A video input is always `url` (a URL, a YouTube id or a
 | `get_outline` | `{ "url": "https://www.youtube.com/watch?v=cCPsdFdlshc" }` | Chapters or 5-minute sections with `start`, `tokens` and `url`, plus `totalTokens` |
 | `get_section` | `{ "url": "...", "chapter": 1 }`, `{ "url": "...", "chapter": "engines" }`, `{ "url": "...", "from": "12:00", "to": "17:30" }` | That part of the transcript with the header |
 | `list_items` | `{ "url": "https://www.youtube.com/playlist?list=PL...", "limit": 20 }` | The videos in a playlist, channel, feed or page |
-| `search_transcript` | `{ "query": "timing chain", "collection": "g-wagon" }`, `{ "query": "rust", "urls": ["..."] }` | Hits with title, `at` (`m:ss`), the line, surrounding text and a timestamp link |
 | `get_comments` | `{ "url": "...", "limit": 20 }` | Top comments; pinned and creator comments flagged |
 | `export_context_pack` | `{ "collection": "g-wagon", "maxTokens": 60000 }` | One Markdown document for all the videos, trimmed to the budget |
 | `list_models` | `{ "kind": "llm" }` | Rungs with tier, quality, capabilities, enabled, and the env var names that enable them (never values) |
@@ -96,6 +95,9 @@ Arguments shown as JSON. A video input is always `url` (a URL, a YouTube id or a
 
 | Tool | Example call | Returns |
 |---|---|---|
+| `search_transcript` | `{ "query": "timing chain", "collection": "g-wagon-1a2b3c4d" }`, `{ "query": "rust", "urls": ["..."] }` | Hits with title, `[m:ss]`, the text and a timestamp link |
+| `build_brief` | `{ "collection": "g-wagon-1a2b3c4d", "question": "Which years to avoid?" }` | A server-side cited brief made on a free LLM rung (when the collection is too big for your context) |
+| `extract` | `{ "template": "buyer-guide", "collection": "g-wagon-1a2b3c4d" }` | Structured JSON with citations |
 | `list_collections` | `{}` | Collections with counts |
 | `create_collection` | `{ "name": "G-Wagon", "sources": ["https://www.youtube.com/@alliancemotorworks"] }` | The collection (sources are followed) |
 | `add_to_collection` | `{ "collection": "g-wagon-1a2b3c4d", "urls": ["https://youtu.be/..."] }` | The updated collection and what was added, skipped or failed |

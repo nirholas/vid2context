@@ -3,7 +3,7 @@ import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
 import { estimateTokens, formatters } from '@vid2context/core';
 import { describe, expect, it } from 'vitest';
-import { COMMENTS_VIDEO, call, connect, GWAGON, GWAGON_PLAYLIST, jsonOf, root, textOf, ZOO } from './helpers.ts';
+import { COMMENTS_VIDEO, call, connect, GWAGON, GWAGON_PLAYLIST, jsonOf, root, type TextResult, textOf, ZOO } from './helpers.ts';
 
 /** Tools this package defines. */
 const OWN_TOOLS = [
@@ -13,7 +13,6 @@ const OWN_TOOLS = [
   'get_outline',
   'get_section',
   'list_items',
-  'search_transcript',
   'get_comments',
   'export_context_pack',
   'list_models',
@@ -21,6 +20,9 @@ const OWN_TOOLS = [
 
 /** Tools other packages register through their src/mcp.ts (wire.ts). */
 const WIRED_TOOLS = [
+  'search_transcript',
+  'extract',
+  'build_brief',
   'list_collections',
   'create_collection',
   'add_to_collection',
@@ -68,7 +70,7 @@ describe('tool list', () => {
     const byName = Object.fromEntries(tools.map((t) => [t.name, t]));
     expect(byName.list_formats?.annotations?.openWorldHint).toBe(false);
     expect(byName.get_transcript?.annotations?.openWorldHint).toBe(true);
-    for (const name of ['get_outline', 'list_formats', 'list_models', 'list_items', 'search_transcript', 'get_comments']) {
+    for (const name of ['get_outline', 'list_formats', 'list_models', 'list_items', 'get_comments']) {
       expect(byName[name]?.outputSchema?.type, name).toBe('object');
     }
     // Collection writes are not read-only.
@@ -249,47 +251,6 @@ describe('list_items', () => {
   });
 });
 
-type Hits = {
-  count: number;
-  hits: { title: string; at: string; text: string; context: string; url?: string }[];
-  note?: string;
-  failed?: { input: string; error: string }[];
-};
-
-describe('search_transcript', () => {
-  it('finds moments in given videos with [m:ss] and timestamp links, reporting progress', async () => {
-    const { client } = await connect();
-    const progress: number[] = [];
-    const res = (await client.callTool(
-      { name: 'search_transcript', arguments: { query: 'elephants', urls: [ZOO, GWAGON, 'xxxxxxxxxxx'] } },
-      undefined,
-      { onprogress: (p) => progress.push(p.progress) },
-    )) as unknown as { structuredContent: Hits; isError?: boolean };
-    const out = res.structuredContent;
-    expect(res.isError).toBeFalsy();
-    expect(out.hits[0]).toMatchObject({
-      title: 'Me at the zoo',
-      at: expect.stringMatching(/^0:0\d$/),
-      url: expect.stringMatching(/^https:\/\/www\.youtube\.com\/watch\?v=jNQXAC9IVRw&t=\d+s$/),
-    });
-    expect(out.hits[0]?.text.toLowerCase()).toContain('elephants');
-    expect(out.failed).toEqual([expect.objectContaining({ input: expect.stringContaining('xxxxxxxxxxx'), error: 'not-found' })]);
-    expect(progress.length).toBeGreaterThanOrEqual(3);
-  });
-
-  it('searches everything read so far, and says what search covers when nothing matches', async () => {
-    const { client } = await connect();
-    const empty = (await call(client, 'search_transcript', { query: 'elephants' })).structuredContent as Hits;
-    expect(empty.count).toBe(0);
-    expect(empty.note).toContain('saved videos');
-    await call(client, 'get_outline', { url: GWAGON });
-    const found = (await call(client, 'search_transcript', { query: 'w463', limit: 3 })).structuredContent as Hits;
-    expect(found.count).toBeGreaterThan(0);
-    expect(found.hits.every((h) => h.title.startsWith('Best & Worst G-Wagon Years'))).toBe(true);
-    expect(found.hits[0]).toMatchObject({ at: '0:08', url: 'https://www.youtube.com/watch?v=cCPsdFdlshc&t=8s' });
-  });
-});
-
 describe('get_comments', () => {
   it('returns top comments with the pinned creator comment flagged', async () => {
     const { client, fetch } = await connect();
@@ -318,9 +279,10 @@ describe('collections and context packs', () => {
     const listed = jsonOf<{ collections: { id: string }[] }>(await call(client, 'list_collections'));
     expect(listed.collections.map((c) => c.id)).toContain(created.id);
 
-    const hits = (await call(client, 'search_transcript', { query: 'elephants', collection: created.id }))
-      .structuredContent as Hits;
-    expect(hits.hits[0]?.title).toBe('Me at the zoo');
+    // search_transcript is @vid2context/search's tool, wired in with the same storage.
+    const hits = textOf(await call(client, 'search_transcript', { query: 'elephants', collection: created.id }));
+    expect(hits).toContain('Me at the zoo');
+    expect(hits).toContain('jNQXAC9IVRw&t=');
 
     const pack = textOf(await call(client, 'export_context_pack', { collection: created.id }));
     expect(pack).toContain('Me at the zoo');
@@ -344,10 +306,19 @@ describe('collections and context packs', () => {
     expect(view.totalTokens).toBe(view.videos.reduce((s, v) => s + v.tokens, 0));
   });
 
-  it('packs urls directly and needs urls or a collection', async () => {
+  it('packs urls directly with progress, lists what it could not read, and needs urls or a collection', async () => {
     const { client } = await connect();
-    const pack = textOf(await call(client, 'export_context_pack', { urls: [ZOO] }));
+    const progress: number[] = [];
+    const res = (await client.callTool(
+      { name: 'export_context_pack', arguments: { urls: [ZOO, GWAGON, 'xxxxxxxxxxx'] } },
+      undefined,
+      { onprogress: (p) => progress.push(p.progress) },
+    )) as unknown as TextResult;
+    const pack = textOf(res);
+    expect(res.isError).toBeFalsy();
     expect(pack).toContain('Me at the zoo');
+    expect(pack).toMatch(/Not included:\n- Could not read .*xxxxxxxxxxx/);
+    expect(progress.length).toBeGreaterThanOrEqual(3);
     const none = await call(client, 'export_context_pack', {});
     expect(jsonOf(none)).toMatchObject({ error: 'bad-request', hint: expect.stringContaining('urls') });
   });
