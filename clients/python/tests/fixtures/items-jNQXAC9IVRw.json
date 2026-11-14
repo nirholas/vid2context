@@ -1,0 +1,15 @@
+{
+  "recorded": "2026-11-14",
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/items",
+    "query": {
+      "url": "https://youtu.be/jNQXAC9IVRw"
+    }
+  },
+  "status": 200,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": "{\"items\":[{\"input\":\"https://youtu.be/jNQXAC9IVRw\",\"platform\":\"youtube\",\"kind\":\"video\",\"id\":\"youtube:jNQXAC9IVRw\",\"nativeId\":\"jNQXAC9IVRw\",\"url\":\"https://www.youtube.com/watch?v=jNQXAC9IVRw\"}]}"
+}
