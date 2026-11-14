@@ -416,7 +416,7 @@ interface ModelInfo {
   model: string;
   tier: 'local' | 'free' | 'keyless' | 'paid';
   quality: number;
-  /** Rung capabilities plus 'streaming' when the rung streams natively. */
+  /** Rung capabilities plus 'stream' (the capability name in docs/contracts/providers.md) when the rung streams natively. */
   capabilities: string[];
   contextTokens?: number;
   enabled: boolean;
@@ -578,7 +578,7 @@ Everything not listed belongs to exactly one prompt (see the index in `docs/prom
 | `packages/core/src/index.ts` | any prompt adding a core subdirectory or a section 1 file: one `export *` line |
 | `packages/core/src/pipeline.ts` | 02 (repetition-loop guard on STT output), 04 (long-audio hook and `splitters` option), 10 (input policy check), 21 (stage spans), 22 (require `diarization` when asked), 42 (`onProgress` option) |
 | `packages/core/src/chain.ts` | 10 (redact secrets in attempt details), 21 (rung spans and usage) |
-| `packages/core/src/context.ts` | 10 (redacting logger), 21 (JSON log format, telemetry passthrough) |
+| `packages/core/src/context.ts` | 10 (redacting logger), 20 (pass `bindings` through `createContext`), 21 (JSON log format, telemetry passthrough) |
 | `packages/core/src/types.ts` | 20 (`Ctx.bindings?`), 21 (`Ctx.telemetry?`) |
 | `packages/registry/src/workers.ts` | 20 (pass non-string bindings through as `ctx.bindings`) |
 | `providers/youtube/src/index.ts` | 06, 07, 08, 09: only the wiring each one owns |
