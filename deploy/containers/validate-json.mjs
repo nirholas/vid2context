@@ -51,7 +51,8 @@ function check(value, schema, path) {
     const types = Array.isArray(schema.type) ? schema.type : [schema.type];
     if (!types.some((t) => matchesType(value, t))) return [`${path}: expected ${types.join(' or ')}, got ${typeOf(value)}`];
   }
-  if ('const' in schema && JSON.stringify(value) !== JSON.stringify(schema.const)) errors.push(`${path}: expected ${JSON.stringify(schema.const)}`);
+  if ('const' in schema && JSON.stringify(value) !== JSON.stringify(schema.const))
+    errors.push(`${path}: expected ${JSON.stringify(schema.const)}`);
   if (schema.enum && !schema.enum.some((e) => JSON.stringify(e) === JSON.stringify(value))) {
     errors.push(`${path}: expected one of ${JSON.stringify(schema.enum)}`);
   }
