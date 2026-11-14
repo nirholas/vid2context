@@ -11,7 +11,7 @@
  */
 import { writeFileSync } from 'node:fs';
 import { setTimeout as sleep } from 'node:timers/promises';
-import { clearCooldowns, type Ctx, createContext, type Storage } from '@vid2context/core';
+import { type Ctx, clearCooldowns, createContext, type Storage } from '@vid2context/core';
 import { ask } from '../src/engine.ts';
 import { askRoutes } from '../src/http.ts';
 import { GWAGON_URL, makeRegistry, makeStorage, type RecordedExchange, type Recording } from './helpers.ts';
@@ -45,17 +45,31 @@ function ctxFor(calls: RecordedExchange[], env: Record<string, string> = {}): Ct
 
 const registry = makeRegistry();
 
-type Scenario = { notes: string; run: (ctx: Ctx, storage: Storage, collectionId: string) => Promise<unknown>; env?: Record<string, string> };
+type Scenario = {
+  notes: string;
+  run: (ctx: Ctx, storage: Storage, collectionId: string) => Promise<unknown>;
+  env?: Record<string, string>;
+};
 
 const scenarios: Record<string, Scenario> = {
   'gwagon-g55': {
-    notes: 'ask() over the G-Wagon video, whole transcript fits: "How much horsepower does the G55 AMG compressor engine make, and does it have any known issues?"',
+    notes:
+      'ask() over the G-Wagon video, whole transcript fits: "How much horsepower does the G55 AMG compressor engine make, and does it have any known issues?"',
     run: (ctx, storage) =>
-      ask(registry, { question: 'How much horsepower does the G55 AMG compressor engine make, and does it have any known issues?', inputs: [GWAGON_URL], storage }, ctx),
+      ask(
+        registry,
+        {
+          question: 'How much horsepower does the G55 AMG compressor engine make, and does it have any known issues?',
+          inputs: [GWAGON_URL],
+          storage,
+        },
+        ctx,
+      ),
   },
   'gwagon-offtopic': {
     notes: 'ask() over the G-Wagon video with a question it does not cover: "What is the towing capacity of the electric G580?"',
-    run: (ctx, storage) => ask(registry, { question: 'What is the towing capacity of the electric G580?', inputs: [GWAGON_URL], storage }, ctx),
+    run: (ctx, storage) =>
+      ask(registry, { question: 'What is the towing capacity of the electric G580?', inputs: [GWAGON_URL], storage }, ctx),
   },
   'gwagon-followup': {
     notes:
@@ -82,18 +96,27 @@ const scenarios: Record<string, Scenario> = {
     run: (ctx, storage, collectionId) =>
       ask(
         registry,
-        { question: 'Why did they pick a naturally aspirated G550 for an off-road build instead of a biturbo?', collectionId, storage, maxSourceTokens: 1500 },
+        {
+          question: 'Why did they pick a naturally aspirated G550 for an off-road build instead of a biturbo?',
+          collectionId,
+          storage,
+          maxSourceTokens: 1500,
+        },
         ctx,
       ),
   },
   'chat-sse-designo': {
-    notes: 'POST /chat through askRoutes on a bare Hono app, question "Which years have the designo seats?" over the G-Wagon video.',
+    notes:
+      'POST /chat through askRoutes on a bare Hono app, question "Which years have the designo seats?" over the G-Wagon video.',
     run: async (ctx, storage) => {
       const app = askRoutes({ registry, makeCtx: () => ctx, storage: async () => storage });
       const res = await app.request('/chat', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ messages: [{ role: 'user', content: 'Which years have the designo seats?' }], context: { inputs: [GWAGON_URL] } }),
+        body: JSON.stringify({
+          messages: [{ role: 'user', content: 'Which years have the designo seats?' }],
+          context: { inputs: [GWAGON_URL] },
+        }),
       });
       return res.text();
     },
@@ -105,7 +128,12 @@ const scenarios: Record<string, Scenario> = {
       await hammer('Meta-Llama-3_3-70B-Instruct');
       return ask(
         registry,
-        { question: 'What does the 2000 G500 interior look like?', inputs: [GWAGON_URL], storage, model: { rung: 'llm/ovh/Meta-Llama-3_3-70B-Instruct' } },
+        {
+          question: 'What does the 2000 G500 interior look like?',
+          inputs: [GWAGON_URL],
+          storage,
+          model: { rung: 'llm/ovh/Meta-Llama-3_3-70B-Instruct' },
+        },
         ctx,
       );
     },
@@ -116,9 +144,11 @@ const scenarios: Record<string, Scenario> = {
     env: { VID2CONTEXT_SKIP: 'pollinations' },
     run: async (ctx, storage) => {
       await Promise.all([hammer('Meta-Llama-3_3-70B-Instruct'), hammer('gpt-oss-120b')]);
-      return ask(registry, { question: 'Which years have timing chains?', inputs: [GWAGON_URL], storage }, ctx).catch((e: unknown) => ({
-        error: e instanceof Error ? e.message : String(e),
-      }));
+      return ask(registry, { question: 'Which years have timing chains?', inputs: [GWAGON_URL], storage }, ctx).catch(
+        (e: unknown) => ({
+          error: e instanceof Error ? e.message : String(e),
+        }),
+      );
     },
   },
 };
@@ -137,18 +167,44 @@ async function hammer(model: string): Promise<void> {
   }
 }
 
+/**
+ * Other processes on this machine share the keyless rate limits (OVH: about
+ * 2 requests per minute per model per IP; Pollinations: one request at a time
+ * per IP), so a scenario that fails is retried after a pause. Only the
+ * exchanges of the try that succeeded are saved.
+ */
+function succeeded(name: string, result: unknown): boolean {
+  if (name === 'all-429') return true;
+  if (typeof result === 'string') return result.includes('event: done');
+  return true;
+}
+
 const wanted = process.argv.slice(2);
 const names = wanted.length > 0 ? wanted : Object.keys(scenarios);
 for (const [i, name] of names.entries()) {
   const s = scenarios[name];
   if (!s) throw new Error(`unknown scenario ${name}`);
-  if (i > 0) await sleep(65_000); // OVH allows about 2 requests per minute per model per IP.
-  clearCooldowns();
-  const calls: RecordedExchange[] = [];
-  const { storage, collection } = await makeStorage();
-  const result = await s.run(ctxFor(calls, s.env), storage, collection.id);
-  const rec: Recording = { scenario: name, recordedAt: new Date().toISOString(), notes: s.notes, calls };
-  writeFileSync(new URL(`./fixtures/${name}.json`, import.meta.url), `${JSON.stringify(rec, null, 2)}\n`);
-  console.error(`\n== ${name}: ${calls.map((c) => `${c.model}=${c.status}`).join(', ')}`);
-  console.error(typeof result === 'string' ? result : JSON.stringify(result, null, 2));
+  if (i > 0) await sleep(65_000);
+  for (let attempt = 1; ; attempt++) {
+    clearCooldowns();
+    const calls: RecordedExchange[] = [];
+    const { storage, collection } = await makeStorage();
+    let result: unknown;
+    let ok = false;
+    try {
+      result = await s.run(ctxFor(calls, s.env), storage, collection.id);
+      ok = succeeded(name, result);
+    } catch (err) {
+      result = err instanceof Error ? err.message : String(err);
+    }
+    console.error(`\n== ${name} try ${attempt}: ${calls.map((c) => `${c.model}=${c.status}`).join(', ')}`);
+    console.error(typeof result === 'string' ? result : JSON.stringify(result, null, 2));
+    if (ok) {
+      const rec: Recording = { scenario: name, recordedAt: new Date().toISOString(), notes: s.notes, calls };
+      writeFileSync(new URL(`./fixtures/${name}.json`, import.meta.url), `${JSON.stringify(rec, null, 2)}\n`);
+      break;
+    }
+    if (attempt >= 8) throw new Error(`${name}: gave up after ${attempt} tries`);
+    await sleep(90_000);
+  }
 }

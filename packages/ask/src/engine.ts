@@ -5,10 +5,10 @@
  *                 source budget to the model window, condense a follow-up into
  *                 a standalone query, retrieve numbered sources, build the prompt.
  *                 Throws Vid2ContextError on bad input (before any streaming).
- *   streamAnswer  generate through the rung chain, falling back to the next
- *                 rung only before the first event, filter citations as they
- *                 stream, then report verified citations. Never throws: a
- *                 failure is an `error` event.
+ *   streamAnswer  generate through core's chatStream (falls back to the next
+ *                 rung only before the first answer delta), filter citations
+ *                 as they stream, then report verified citations. Never
+ *                 throws: a failure is an `error` event.
  *   askStream     both, as one event stream.
  *   ask           the same, collected into one result.
  */
@@ -17,25 +17,24 @@ import {
   attemptsOf,
   type ChainOptions,
   type ChatRequest,
-  type ChatResult,
-  type ChatStreamEvent,
   type Ctx,
   chat,
+  chatStream,
+  type Env,
   type ErrorCode,
   getVideoContext,
-  isInputError,
   type LlmRung,
   type Registry,
   rankRungs,
-  runChain,
-  streamFromRung,
+  resolveModelChoice,
+  type StreamChainOptions,
   Vid2ContextError,
   type VideoContext,
 } from '@vid2context/core';
 import { buildCitations, CitationFilter } from './cite.ts';
 import { answerMessages, condenseMessages, messagesTokens, overheadTokens, PER_SOURCE_TOKENS } from './prompt.ts';
 import { defaultRetriever } from './retrieve.ts';
-import type { AskEvent, AskOptions, AskResult, HistoryMessage, ModelChoice, RetrievalScope, Source, Usage } from './types.ts';
+import type { AskEvent, AskOptions, AskResult, HistoryMessage, RetrievalScope, Source, Usage } from './types.ts';
 
 export const LIMITS = {
   questionChars: 4000,
@@ -52,12 +51,6 @@ const DEFAULT_WINDOW = 8192;
 /** Never send fewer source tokens than this, even to a tiny window. */
 const MIN_SOURCE_TOKENS = 1000;
 
-/** One runChain call: a group of rungs and how to order them. Groups run in sequence. */
-interface PlanStep {
-  rungs: LlmRung[];
-  opts: ChainOptions;
-}
-
 export interface PreparedAsk {
   question: string;
   /** The query used for retrieval: the question, or a standalone rewrite of a follow-up. */
@@ -65,7 +58,8 @@ export interface PreparedAsk {
   sources: Source[];
   contexts: VideoContext[];
   request: ChatRequest;
-  plan: PlanStep[];
+  /** Chain options from the model choice, with rungs whose window is too small skipped. */
+  chain: StreamChainOptions;
   promptTokens: number;
   /** Attempts made while preparing (the condense call, rungs skipped for a small window). */
   attempts: Attempt[];
@@ -145,52 +139,25 @@ async function resolveContexts(registry: Registry, opts: AskOptions, ctx: Ctx): 
   return unique;
 }
 
-/** Order rungs for the model choice. Pure: no network. */
-export function modelPlan(registry: Registry, choice: ModelChoice | undefined, ctx: Ctx): PlanStep[] {
-  const all = registry.llmRungs(ctx.env);
-  if (choice && 'rung' in choice) {
-    if (typeof choice.rung !== 'string' || !choice.rung)
-      throw bad('model.rung must be a rung id.', 'Use an id from GET /api/v1/models.');
-    const pinned = rankRungs(all, { only: [choice.rung] }, ctx.env).filter((r) => r.id === choice.rung);
-    if (pinned.length === 0 && choice.strict) {
-      throw new Vid2ContextError('no-provider', `Model ${choice.rung} is not available.`, {
-        hint: 'It is unknown, or its key is not set. GET /api/v1/models lists the enabled rungs; drop strict to fall back to the chain.',
-      });
-    }
-    const steps: PlanStep[] = [];
-    if (pinned.length > 0) steps.push({ rungs: pinned, opts: { only: [choice.rung] } });
-    if (!choice.strict) steps.push({ rungs: all.filter((r) => r.id !== choice.rung), opts: {} });
-    return steps;
-  }
-  if (choice && 'policy' in choice) {
-    if (!['free', 'quality', 'local-only'].includes(choice.policy)) {
-      throw bad(`Unknown policy "${String(choice.policy)}".`, 'Use free, quality or local-only.');
-    }
-    return [{ rungs: all, opts: { policy: choice.policy } }];
-  }
-  return [{ rungs: all, opts: {} }];
-}
-
 /** Chain options for the condense call: never wider than what the user allowed for the answer. */
-function condenseOptions(choice: ModelChoice | undefined): ChainOptions {
-  if (choice && 'rung' in choice && choice.strict) return { only: [choice.rung], maxAttempts: 1 };
-  if (choice && 'policy' in choice && choice.policy === 'local-only') return { policy: 'local-only', maxAttempts: 3 };
+function condenseOptions(chain: StreamChainOptions): ChainOptions {
+  if (chain.only) return { only: chain.only, maxAttempts: 1 };
+  if (chain.policy === 'local-only') return { policy: 'local-only', maxAttempts: 3 };
   return { policy: 'free', maxAttempts: 3 };
 }
 
-function firstRung(plan: PlanStep[], ctx: Ctx): LlmRung | undefined {
-  for (const step of plan) {
-    const ranked = rankRungs(step.rungs, step.opts, ctx.env);
-    if (ranked[0]) return ranked[0];
-  }
-  return undefined;
+/** The rung that will be tried first for these chain options: a preferred rung when eligible, else the head of the ranking. Pure. */
+export function firstRung(registry: Registry, chain: StreamChainOptions, env: Env): LlmRung | undefined {
+  const { prefer = [], ...opts } = chain;
+  const ranked = rankRungs(registry.llmRungs(env), opts, env);
+  return ranked.find((r) => prefer.includes(r.id)) ?? ranked[0];
 }
 
 async function condense(
   registry: Registry,
   question: string,
   history: HistoryMessage[],
-  choice: ModelChoice | undefined,
+  chain: StreamChainOptions,
   ctx: Ctx,
   attempts: Attempt[],
 ): Promise<string> {
@@ -198,7 +165,7 @@ async function condense(
     const res = await chat(
       registry,
       { messages: condenseMessages(question, history), maxTokens: 512, temperature: 0 },
-      condenseOptions(choice),
+      condenseOptions(chain),
       ctx,
     );
     attempts.push(...res.attempts);
@@ -220,12 +187,12 @@ export async function prepareAsk(registry: Registry, opts: AskOptions, ctx: Ctx)
   const history = validate(opts);
   const question = opts.question.trim();
   const contexts = await resolveContexts(registry, opts, ctx);
-  const plan = modelPlan(registry, opts.model, ctx);
+  const chain = resolveModelChoice(opts.model, registry, ctx.env);
   const maxTokens = opts.maxTokens ?? DEFAULT_MAX_TOKENS;
   const attempts: Attempt[] = [];
 
   // Size the source budget to the first rung's window, with room for the history, the answer and estimate error.
-  const first = firstRung(plan, ctx);
+  const first = firstRung(registry, chain, ctx.env);
   const window = first?.contextTokens ?? DEFAULT_WINDOW;
   const room = Math.floor(window * 0.9) - overheadTokens(question, history) - maxTokens;
   const cap = opts.maxSourceTokens ?? DEFAULT_MAX_SOURCE_TOKENS;
@@ -241,32 +208,28 @@ export async function prepareAsk(registry: Registry, opts: AskOptions, ctx: Ctx)
     ...(opts.collectionId ? { collectionId: opts.collectionId } : {}),
   };
   const needsQuery = retriever.needsQuery ? retriever.needsQuery(scope) : true;
-  const query =
-    history.length > 0 && needsQuery ? await condense(registry, question, history, opts.model, ctx, attempts) : question;
+  const query = history.length > 0 && needsQuery ? await condense(registry, question, history, chain, ctx, attempts) : question;
   const sources = await retriever.retrieve(query, scope, ctx);
 
   const messages = answerMessages(question, sources, history);
   const promptTokens = messagesTokens(messages);
   const need = promptTokens + maxTokens;
   // Skip rungs whose window cannot hold this prompt, like the pipeline skips speech rungs for audio that is too large.
-  const fitted = plan
-    .map((step) => ({
-      opts: step.opts,
-      rungs: step.rungs.filter((r) => {
-        if (r.contextTokens === undefined || r.contextTokens >= need) return true;
-        if (rankRungs([r], step.opts, ctx.env).length > 0) {
-          attempts.push({
-            id: r.id,
-            stage: 'llm',
-            outcome: 'skipped',
-            reason: 'too-large',
-            detail: `${need} > ${r.contextTokens} tokens`,
-          });
-        }
-        return false;
-      }),
-    }))
-    .filter((step) => step.rungs.length > 0);
+  const { prefer: _prefer, ...rankOpts } = chain;
+  const small = rankRungs(registry.llmRungs(ctx.env), rankOpts, ctx.env).filter(
+    (r) => r.contextTokens !== undefined && r.contextTokens < need,
+  );
+  for (const r of small) {
+    attempts.push({
+      id: r.id,
+      stage: 'llm',
+      outcome: 'skipped',
+      reason: 'too-large',
+      detail: `${need} > ${r.contextTokens} tokens`,
+    });
+  }
+  const fitted: StreamChainOptions =
+    small.length > 0 ? { ...chain, skip: [...(chain.skip ?? []), ...small.map((r) => r.id)] } : chain;
 
   return {
     question,
@@ -274,16 +237,10 @@ export async function prepareAsk(registry: Registry, opts: AskOptions, ctx: Ctx)
     sources,
     contexts,
     request: { messages, maxTokens, temperature: opts.temperature ?? DEFAULT_TEMPERATURE },
-    plan: fitted,
+    chain: fitted,
     promptTokens,
     attempts,
   };
-}
-
-interface Started {
-  rung: LlmRung;
-  iterator: AsyncIterator<ChatStreamEvent>;
-  first: ChatStreamEvent;
 }
 
 function errorEvent(err: unknown, attempts: Attempt[]): AskEvent {
@@ -298,111 +255,51 @@ function errorEvent(err: unknown, attempts: Attempt[]): AskEvent {
   };
 }
 
-async function start(prepared: PreparedAsk, ctx: Ctx, attempts: Attempt[]): Promise<Started> {
-  let lastErr: unknown;
-  for (const step of prepared.plan) {
-    try {
-      const res = await runChain<LlmRung, Omit<Started, 'rung'>>(
-        'llm',
-        step.rungs,
-        async (rung) => {
-          const iterator = streamFromRung(rung, prepared.request, ctx)[Symbol.asyncIterator]();
-          const next = await iterator.next();
-          if (next.done) throw new Vid2ContextError('upstream', `${rung.id}: the stream ended without any output.`);
-          return { iterator, first: next.value };
-        },
-        step.opts,
-        ctx,
-      );
-      attempts.push(...res.attempts);
-      return { rung: res.rung, ...res.value };
-    } catch (err) {
-      attempts.push(...attemptsOf(err));
-      if (isInputError(err)) throw err;
-      lastErr = err;
-    }
-  }
-  if (prepared.plan.length > 1 || lastErr === undefined) {
-    throw new Vid2ContextError(
-      lastErr === undefined ? 'no-provider' : 'all-rungs-failed',
-      lastErr === undefined
-        ? 'No LLM rung can take this prompt.'
-        : `Every llm rung failed (${attempts.filter((a) => a.stage === 'llm').length} tried).`,
-      {
-        hint:
-          lastErr === undefined
-            ? 'Every enabled rung was skipped (window too small or none configured). Ask about fewer videos, or enable a rung with a larger window (docs/providers.md).'
-            : 'See `attempts` for each failure. Adding a free key (docs/providers.md) adds more rungs.',
-      },
-    );
-  }
-  throw lastErr;
-}
-
-/** Generate the answer for a prepared request. Yields meta, reasoning*, delta+, then done; or error. Never throws. */
-export async function* streamAnswer(prepared: PreparedAsk, ctx: Ctx): AsyncGenerator<AskEvent> {
-  const attempts = [...prepared.attempts];
-  let started: Started;
-  try {
-    started = await start(prepared, ctx, attempts);
-  } catch (err) {
-    yield errorEvent(err, attempts);
-    return;
-  }
-  const { rung, iterator } = started;
-  yield {
-    type: 'meta',
-    rung: rung.id,
-    model: rung.model,
-    ...(rung.contextTokens !== undefined ? { contextTokens: rung.contextTokens } : {}),
-    promptTokens: prepared.promptTokens,
-    sources: prepared.sources.map(({ text: _text, ...ref }) => ref),
-  };
-
+/**
+ * Generate the answer for a prepared request through core's chatStream (the
+ * free-first chain; a rung that fails before its first answer delta is
+ * skipped). Yields meta, reasoning*, delta+, then done; or error. Never throws.
+ */
+export async function* streamAnswer(prepared: PreparedAsk, registry: Registry, ctx: Ctx): AsyncGenerator<AskEvent> {
+  const sources = prepared.sources.map(({ text: _text, ...ref }) => ref);
   const filter = new CitationFilter(new Set(prepared.sources.map((s) => s.n)));
-  let result: ChatResult | undefined;
-  let event: ChatStreamEvent | undefined = started.first;
   try {
-    while (event) {
-      if (event.type === 'delta') {
-        const out = filter.push(event.text);
+    for await (const ev of chatStream(registry, prepared.request, prepared.chain, ctx)) {
+      if (ev.type === 'meta') {
+        yield {
+          type: 'meta',
+          rung: ev.rung,
+          model: ev.model,
+          ...(ev.contextTokens !== undefined ? { contextTokens: ev.contextTokens } : {}),
+          promptTokens: prepared.promptTokens,
+          sources,
+          ...(ev.restart ? { restart: true } : {}),
+        };
+      } else if (ev.type === 'reasoning') {
+        if (ev.text) yield { type: 'reasoning', text: ev.text };
+      } else if (ev.type === 'delta') {
+        const out = filter.push(ev.text);
         if (out) yield { type: 'delta', text: out };
-      } else if (event.type === 'reasoning') {
-        if (event.text) yield { type: 'reasoning', text: event.text };
       } else {
-        result = event.result;
+        const tail = filter.end();
+        if (tail) yield { type: 'delta', text: tail };
+        const text = filter.state.text.trim();
+        const usage: Usage | undefined = ev.result.usage;
+        yield {
+          type: 'done',
+          text,
+          rung: ev.rung,
+          model: ev.result.model,
+          ...(usage ? { usage } : {}),
+          citations: buildCitations(text, filter.state.used, prepared.sources, prepared.contexts),
+          unverified: filter.state.unverified,
+          attempts: [...prepared.attempts, ...ev.attempts],
+        };
       }
-      if (ctx.signal?.aborted) throw ctx.signal.reason ?? new DOMException('Aborted', 'AbortError');
-      const next = await iterator.next();
-      event = next.done ? undefined : next.value;
     }
   } catch (err) {
-    await iterator.return?.();
-    attempts.push({
-      id: rung.id,
-      stage: 'llm',
-      outcome: 'error',
-      reason: 'stream-broken',
-      detail: err instanceof Error ? err.message.slice(0, 300) : String(err),
-    });
-    yield errorEvent(err, attempts);
-    return;
+    yield errorEvent(err, [...prepared.attempts, ...attemptsOf(err)]);
   }
-  const tail = filter.end();
-  if (tail) yield { type: 'delta', text: tail };
-
-  const text = filter.state.text.trim();
-  const usage: Usage | undefined = result?.usage;
-  yield {
-    type: 'done',
-    text,
-    rung: rung.id,
-    model: result?.model ?? rung.model,
-    ...(usage ? { usage } : {}),
-    citations: buildCitations(text, filter.state.used, prepared.sources, prepared.contexts),
-    unverified: filter.state.unverified,
-    attempts,
-  };
 }
 
 /** Prepare and answer as one stream. Preparation failures become an `error` event too. */
@@ -414,13 +311,13 @@ export async function* askStream(registry: Registry, opts: AskOptions, ctx: Ctx)
     yield errorEvent(err, attemptsOf(err));
     return;
   }
-  yield* streamAnswer(prepared, ctx);
+  yield* streamAnswer(prepared, registry, ctx);
 }
 
 /** Answer a question with verified citations. Throws Vid2ContextError (with `attempts`) on failure. */
 export async function ask(registry: Registry, opts: AskOptions, ctx: Ctx): Promise<AskResult> {
   const prepared = await prepareAsk(registry, opts, ctx);
-  for await (const ev of streamAnswer(prepared, ctx)) {
+  for await (const ev of streamAnswer(prepared, registry, ctx)) {
     if (ev.type === 'error') {
       throw Object.assign(new Vid2ContextError(ev.code as ErrorCode, ev.message, ev.hint ? { hint: ev.hint } : {}), {
         attempts: ev.attempts ?? [],

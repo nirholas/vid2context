@@ -20,7 +20,11 @@ describe('ask', () => {
     const { storage } = await makeStorage();
     const r = await ask(
       registry,
-      { question: 'How much horsepower does the G55 AMG compressor engine make, and does it have any known issues?', inputs: [GWAGON_URL], storage },
+      {
+        question: 'How much horsepower does the G55 AMG compressor engine make, and does it have any known issues?',
+        inputs: [GWAGON_URL],
+        storage,
+      },
       testContext({ fetch }),
     );
     expect(r.sources.map((s) => s.n)).toEqual(r.sources.map((_, i) => i + 1));
@@ -41,7 +45,11 @@ describe('ask', () => {
   it('says plainly when the sources do not cover the question', async () => {
     const fetch = replayRecording(loadRecording('gwagon-offtopic'));
     const { storage } = await makeStorage();
-    const r = await ask(registry, { question: 'What is the towing capacity of the electric G580?', inputs: [GWAGON_URL], storage }, testContext({ fetch }));
+    const r = await ask(
+      registry,
+      { question: 'What is the towing capacity of the electric G580?', inputs: [GWAGON_URL], storage },
+      testContext({ fetch }),
+    );
     expect(r.answer.toLowerCase()).toMatch(/not|no information|does not|doesn't/);
     expect(r.unverified).toEqual([]);
   });
@@ -102,7 +110,12 @@ describe('model choice', () => {
     const events: AskEvent[] = [];
     for await (const ev of askStream(
       registry,
-      { question: 'What does the 2000 G500 interior look like?', inputs: [GWAGON_URL], storage, model: { rung: pinned, strict: true } },
+      {
+        question: 'What does the 2000 G500 interior look like?',
+        inputs: [GWAGON_URL],
+        storage,
+        model: { rung: pinned, strict: true },
+      },
       testContext({ fetch }),
     )) {
       events.push(ev);

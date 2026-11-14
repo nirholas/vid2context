@@ -123,7 +123,7 @@ export function askRoutes(deps: RouteDeps): Hono {
         sse.write(': keep-alive\n\n').catch(() => controller.abort());
       }, HEARTBEAT_MS);
       try {
-        for await (const ev of streamAnswer(prepared, ctx)) {
+        for await (const ev of streamAnswer(prepared, deps.registry, ctx)) {
           if (sse.aborted || sse.closed) break;
           await sse.writeSSE({ event: ev.type, data: JSON.stringify(eventData(ev)) });
         }

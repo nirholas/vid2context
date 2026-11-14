@@ -16,7 +16,11 @@ beforeEach(() => clearCooldowns());
 async function connect(recording: string) {
   const { storage } = await makeStorage();
   const server = new McpServer({ name: 'ask-test', version: '0.0.0' });
-  registerAskTools(server, { registry: makeRegistry(), ctx: testContext({ fetch: replayRecording(loadRecording(recording)) }), storage });
+  registerAskTools(server, {
+    registry: makeRegistry(),
+    ctx: testContext({ fetch: replayRecording(loadRecording(recording)) }),
+    storage,
+  });
   const [a, b] = InMemoryTransport.createLinkedPair();
   const client = new Client({ name: 'test', version: '0.0.0' });
   await Promise.all([server.connect(a), client.connect(b)]);
@@ -30,12 +34,17 @@ describe('MCP ask tool', () => {
     expect(tools.map((t) => t.name)).toContain('ask');
     const res = await client.callTool({
       name: 'ask',
-      arguments: { question: 'How much horsepower does the G55 AMG compressor engine make, and does it have any known issues?', urls: [GWAGON_URL] },
+      arguments: {
+        question: 'How much horsepower does the G55 AMG compressor engine make, and does it have any known issues?',
+        urls: [GWAGON_URL],
+      },
     });
     expect(res.isError).toBeFalsy();
     const text = (res.content as { type: string; text: string }[])[0]?.text ?? '';
     expect(text).toContain('Sources:');
-    expect(text).toMatch(/\[\d+\] Best & Worst G-Wagon Years.* @ \d+:\d\d https:\/\/www\.youtube\.com\/watch\?v=cCPsdFdlshc&t=\d+s/);
+    expect(text).toMatch(
+      /\[\d+\] Best & Worst G-Wagon Years.* @ \d+:\d\d https:\/\/www\.youtube\.com\/watch\?v=cCPsdFdlshc&t=\d+s/,
+    );
   });
 
   it('returns a tool error with a hint when nothing is given to ground in', async () => {

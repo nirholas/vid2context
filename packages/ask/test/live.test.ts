@@ -3,7 +3,7 @@
  * chain. Run with LIVE=1. Checks that every citation opens the video where
  * the transcript contains words of the sentence that cites it.
  */
-import { clearCooldowns, createContext, sliceSegments, segmentsToText } from '@vid2context/core';
+import { clearCooldowns, createContext, segmentsToText, sliceSegments } from '@vid2context/core';
 import { describe, expect, it } from 'vitest';
 import { ask } from '../src/engine.ts';
 import { GWAGON_URL, loadContext, makeRegistry, makeStorage } from './helpers.ts';
@@ -15,7 +15,15 @@ describe.skipIf(!process.env.LIVE)('live ask over the keyless chain', () => {
     clearCooldowns();
     const { storage } = await makeStorage();
     const ctx = createContext({ runtime: 'node', env: { VID2CONTEXT_LOG_LEVEL: 'warn' } });
-    const r = await ask(makeRegistry(), { question: 'What engine and transmission does the 2015 G550 have, and how reliable is it?', inputs: [GWAGON_URL], storage }, ctx);
+    const r = await ask(
+      makeRegistry(),
+      {
+        question: 'What engine and transmission does the 2015 G550 have, and how reliable is it?',
+        inputs: [GWAGON_URL],
+        storage,
+      },
+      ctx,
+    );
     console.error(r.answer);
     for (const c of r.citations) console.error(`[${c.n}] ${c.url} "${c.quote}"`);
     expect(r.citations.length).toBeGreaterThan(0);

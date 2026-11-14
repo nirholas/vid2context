@@ -19,9 +19,19 @@ async function appFor(recording: string, env: Record<string, string> = {}) {
   const app = new Hono();
   app.onError((err, c) => {
     const e = err instanceof Vid2ContextError ? err : undefined;
-    return c.json({ error: { code: e?.code ?? 'internal', message: err.message, ...(e?.hint ? { hint: e.hint } : {}) }, attempts: [] }, e ? 400 : 500);
+    return c.json(
+      { error: { code: e?.code ?? 'internal', message: err.message, ...(e?.hint ? { hint: e.hint } : {}) }, attempts: [] },
+      e ? 400 : 500,
+    );
   });
-  app.route('/api/v1', askRoutes({ registry: makeRegistry(), makeCtx: (req) => testContext({ fetch, env, signal: req.signal }), storage: async () => storage }));
+  app.route(
+    '/api/v1',
+    askRoutes({
+      registry: makeRegistry(),
+      makeCtx: (req) => testContext({ fetch, env, signal: req.signal }),
+      storage: async () => storage,
+    }),
+  );
   return { app, fetch };
 }
 
@@ -40,7 +50,10 @@ describe('POST /chat', () => {
     const res = await app.request('/api/v1/chat', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ messages: [{ role: 'user', content: 'Which years have the designo seats?' }], context: { inputs: [GWAGON_URL] } }),
+      body: JSON.stringify({
+        messages: [{ role: 'user', content: 'Which years have the designo seats?' }],
+        context: { inputs: [GWAGON_URL] },
+      }),
     });
     expect(res.status).toBe(200);
     expect(res.headers.get('content-type')).toContain('text/event-stream');
@@ -74,7 +87,10 @@ describe('POST /chat', () => {
     const res = await app.request('/api/v1/chat', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ messages: [{ role: 'user', content: 'Which years have timing chains?' }], context: { inputs: [GWAGON_URL] } }),
+      body: JSON.stringify({
+        messages: [{ role: 'user', content: 'Which years have timing chains?' }],
+        context: { inputs: [GWAGON_URL] },
+      }),
     });
     expect(res.status).toBe(200);
     const events = parseSse(await res.text());
