@@ -7,10 +7,11 @@
  *
  * stdout: what was recorded and the scrub report. stderr: logs.
  */
+import { spawn } from 'node:child_process';
 import { existsSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {
-  clearCooldowns,
   createContext,
   type Env,
   type GetContextOptions,
@@ -44,6 +45,8 @@ const USAGE =
 
 interface Args {
   out: string;
+  /** Internal: replay `out` instead of recording (used by the verification child process). */
+  replay?: boolean;
   name?: string;
   input: string;
   opts: GetContextOptions;
@@ -55,8 +58,10 @@ function parse(argv: string[]): Args {
   const rest = sep === -1 ? [] : argv.slice(sep + 1);
   let out: string | undefined;
   let name: string | undefined;
+  let replay = false;
   for (let i = 0; i < own.length; i++) {
-    if (own[i] === '--out') out = own[++i];
+    if (own[i] === '--replay') replay = true;
+    else if (own[i] === '--out') out = own[++i];
     else if (own[i] === '--name') name = own[++i];
     else throw new Error(`unknown option ${own[i]}\n${USAGE}`);
   }
@@ -72,7 +77,7 @@ function parse(argv: string[]): Args {
     else throw new Error(`unexpected argument ${a}\n${USAGE}`);
   }
   if (!out || !input) throw new Error(USAGE);
-  return { out, name, input, opts };
+  return { out, name, input, opts, replay };
 }
 
 function slug(input: string): string {
@@ -101,6 +106,7 @@ async function main(): Promise<number> {
   }
   loadEnv();
   const name = args.name ?? slug(args.input);
+  if (args.replay) return replayOnly(args, name);
   const env = process.env as Env;
   const rec = recordingFetch(globalThis.fetch.bind(globalThis), { dir: args.out, name, scrub: { env } });
   const registry = await nodeRegistry();
@@ -113,16 +119,38 @@ async function main(): Promise<number> {
     if (rec.files.length > 0) console.error(`record: ${rec.files.length} exchange(s) were still written to ${args.out}`);
     return 1;
   }
-  return finish(args, name, env, registry, rec, live);
+  return finish(args, name, rec, live);
 }
 
-async function finish(
-  args: Args,
-  name: string,
-  env: Env,
-  rec: ReturnType<typeof recordingFetch>,
-  live: VideoContext,
-): Promise<number> {
+/** Replay mode (run in a child process, so circuit breakers and caches start fresh): print the replayed transcript as JSON. */
+async function replayOnly(args: Args, name: string): Promise<number> {
+  const registry = await nodeRegistry();
+  const replay = replayFetch(fixtureRoutes(args.out, { name }));
+  const ctx = createContext({ runtime: 'node', env: process.env as Env, fetch: replay });
+  const again = await getVideoContext(registry, args.input, args.opts, ctx);
+  process.stdout.write(`${JSON.stringify(transcriptOf(again))}\n`);
+  return 0;
+}
+
+/** Run this script again with --replay in a fresh process and return the transcript it printed. */
+function replayInChild(argv: string[]): Promise<{ ok: boolean; stdout: string; stderr: string }> {
+  return new Promise((done) => {
+    const child = spawn(process.execPath, [...process.execArgv, fileURLToPath(import.meta.url), '--replay', ...argv], {
+      stdio: ['ignore', 'pipe', 'pipe'],
+    });
+    let stdout = '';
+    let stderr = '';
+    child.stdout.on('data', (c: Buffer) => {
+      stdout += c.toString();
+    });
+    child.stderr.on('data', (c: Buffer) => {
+      stderr += c.toString();
+    });
+    child.on('close', (code) => done({ ok: code === 0, stdout, stderr }));
+  });
+}
+
+async function finish(args: Args, name: string, rec: ReturnType<typeof recordingFetch>, live: VideoContext): Promise<number> {
   const out: string[] = [];
   out.push(`Recorded ${rec.files.length} exchange(s) into ${args.out}:`);
   for (const f of rec.files) out.push(`  ${f}`);
@@ -133,30 +161,23 @@ async function finish(
   for (const f of report.findings) out.push(`  ${f.where}: ${f.what} x${f.count}`);
   for (const w of report.warnings) out.push(`  warning: ${w}`);
 
-  // Replay the files just written through a fresh registry and ctx, and compare transcripts.
-  clearCooldowns();
-  const replay = replayFetch(fixtureRoutes(args.out, { name }));
-  let same = false;
-  try {
-    const again = await getVideoContext(
-      createRegistry(),
-      args.input,
-      args.opts,
-      createContext({ runtime: 'node', env, fetch: replay }),
-    );
-    same = JSON.stringify(transcriptOf(again)) === JSON.stringify(transcriptOf(live));
-    out.push(
-      '',
-      same ? 'Replay: the fixtures reproduce the same transcript.' : 'Replay: MISMATCH, the replayed transcript differs.',
-    );
-  } catch (err) {
-    out.push('', `Replay: failed: ${(err as Error).message}`);
-  }
   const contextFile = join(args.out, `${name}.context.json`);
   writeFileSync(contextFile, `${JSON.stringify(live, null, 2)}\n`);
   out.push(
+    '',
     `Live VideoContext written to ${contextFile} (${live.transcript.segments.length} segments, ${live.transcript.origin}).`,
   );
+
+  // The pipeline part of the command line (input and options after --) goes to the child unchanged.
+  const raw = process.argv.slice(2);
+  const pipelineArgs = raw.includes('--') ? raw.slice(raw.indexOf('--') + 1) : [];
+  const child = await replayInChild(['--out', args.out, '--name', name, '--', ...pipelineArgs]);
+  let same = false;
+  if (!child.ok) out.push(`Replay: failed in a fresh process:\n${child.stderr.trim().split('\n').slice(-5).join('\n')}`);
+  else {
+    same = child.stdout.trim() === JSON.stringify(transcriptOf(live));
+    out.push(same ? 'Replay: the fixtures reproduce the same transcript.' : 'Replay: MISMATCH, the replayed transcript differs.');
+  }
   process.stdout.write(`${out.join('\n')}\n`);
   return same ? 0 : 1;
 }
