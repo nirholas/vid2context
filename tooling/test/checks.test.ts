@@ -92,7 +92,7 @@ describe('edge-safe', () => {
     expect(lines(found)).toEqual([1, 2, 3, 7, 8]);
   });
 
-  it('scopes core and providers declaring workers or browser, not Node-only providers', () => {
+  it('checks core whole and only the provider files that ship to edge runtimes', () => {
     const scope = edgeSafe.scope();
     expect(edgeSafe.select('packages/core/src/pipeline.ts', scope)).toBe(true);
     expect(edgeSafe.select('providers/youtube/src/index.ts', scope)).toBe(true);
@@ -100,12 +100,31 @@ describe('edge-safe', () => {
     expect(edgeSafe.select('packages/cli/src/bin.ts', scope)).toBe(false);
   });
 
-  it('exempts the file a package maps only to its Node condition', () => {
-    const pkg = JSON.parse(real('providers/stt-transformers/package.json'));
-    expect(edgeSafe.nodeOnlyFiles(pkg.exports)).toEqual(new Set(['src/node.ts']));
+  it('starts from edge conditions and plain exports, not node conditions or ./node subpaths', () => {
+    const transformers = JSON.parse(real('providers/stt-transformers/package.json')).exports;
+    expect(edgeSafe.edgeEntries(transformers)).toEqual(new Set(['src/browser.ts', 'src/index.ts']));
+    expect(edgeSafe.edgeEntries('./src/index.ts')).toEqual(new Set(['src/index.ts']));
+    const frames = {
+      '.': { workerd: './src/edge.ts', browser: './src/index.ts', node: './src/node-provider.ts', default: './src/index.ts' },
+      './node': './src/node/index.ts',
+    };
+    expect(edgeSafe.edgeEntries(frames)).toEqual(new Set(['src/edge.ts', 'src/index.ts']));
+  });
+
+  it('exempts the Node build of a package with a browser condition', () => {
     const scope = edgeSafe.scope();
+    expect(real('providers/stt-transformers/src/node.ts')).toMatch(/from 'node:/);
     expect(edgeSafe.select('providers/stt-transformers/src/node.ts', scope)).toBe(false);
     expect(edgeSafe.select('providers/stt-transformers/src/browser.ts', scope)).toBe(true);
+  });
+
+  it('lets type-only imports through, including multi-line ones', () => {
+    const text =
+      "import type {\n  Stats,\n} from 'node:fs';\nexport type { X } from 'node:os';\nimport { inspect } from 'node:util';\n";
+    expect(lines(edgeSafe.check('x.ts', text))).toEqual([5]);
+    expect(
+      edgeSafe.relativeImports("import type { A } from './a.ts';\nimport { b } from './b.ts';\nexport * from './c.ts';"),
+    ).toEqual(['./b.ts', './c.ts']);
   });
 
   it('passes the real YouTube provider entry', () => {
