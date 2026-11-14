@@ -18,7 +18,30 @@ Trimming, so nothing personal lands in this public repo:
 - Player responses keep only `playabilityStatus`, `captions` and `videoDetails`. `streamingData` and tracking fields were dropped because their URLs embed the requesting machine's IP address.
 - `player-cCPsdFdlshc.json` has a person's email and phone number in the description replaced with `[email redacted]` and `[phone redacted]`.
 
-To re-record, run the same requests (see `src/innertube.ts`), apply the same trimming, and grep the result for your public IP before committing.
+To re-record, run the same requests (see `src/resilience/transport.ts`), apply the same trimming, and grep the result for your public IP before committing.
+
+## Captions and blocks fixtures
+
+Recorded from this repo's VM on 2026-11-14 with `POST /youtubei/v1/player` (`hl=en`). ANDROID is client 20.10.38 and IOS 20.10.4, with the platform fields in `src/resilience/clients.ts`. Trimming is the same as above: only `playabilityStatus`, `videoDetails` and `captions` are kept, `contextParams` is dropped, and caption `baseUrl`s have `ip=0.0.0.0`. Each file was grepped for the VM's IP, emails and phone numbers. The tests use them as follows.
+
+| File | Source |
+|---|---|
+| `player-ios-jNQXAC9IVRw.json` | IOS client, "Me at the zoo": the same en and de creator tracks as ANDROID |
+| `player-android_vr-bot-jNQXAC9IVRw.json` | ANDROID_VR client 1.65.10: `LOGIN_REQUIRED` "Sign in to confirm you're not a bot", while ANDROID and IOS passed from the same IP. Tests serve it as the first client's answer for the bot-check fallback |
+| `player-tv_embedded-unsupported-jNQXAC9IVRw.json` | TVHTML5_SIMPLY_EMBEDDED_PLAYER 2.0: `ERROR` "YouTube is no longer supported in this application or device." (why it was dropped) |
+| `player-web-reload-jNQXAC9IVRw.json`, `player-mweb-reload-jNQXAC9IVRw.json` | WEB and MWEB 2.20261112.10.00: `UNPLAYABLE` "The page needs to be reloaded." (why they were dropped) |
+| `player-android-old-version-400.json` | ANDROID with the retired version 19.09.37: HTTP 400 "Precondition check failed." |
+| `player-nocaptions-android-brXcsLhw84o.json`, `player-nocaptions-ios-brXcsLhw84o.json` | A one-minute piano video with no captions on either client (`OK`, no `captions`) |
+| `player-age-restricted-HtVdAasjOgU.json` | ANDROID: `LOGIN_REQUIRED` "This video may be inappropriate for some users." |
+| `player-members-only-Pw0wchRQJac.json` | ANDROID: `UNPLAYABLE` "Join this channel to get access to members-only content..." |
+| `player-private-yZIXLfi8CZQ.json` | ANDROID: `LOGIN_REQUIRED` "This video is private" |
+| `player-removed-6SJNVb0GnPI.json` | ANDROID: `ERROR` "This video has been removed for violating YouTube's policy on hate speech..." |
+| `player-upcoming-w8DxIwCbsVc.json` | ANDROID, a scheduled live stream: `LIVE_STREAM_OFFLINE` with `scheduledStartTime` 1794717000 (2026-11-15T04:30:00Z) |
+| `player-live-0U8ykcdZL2g.json` | ANDROID, a 24/7 live stream: `OK`, `isLive`, no captions |
+
+Not recorded, because none could be found or reached from the VM: a region-blocked video, a real 5xx or a 429 with Retry-After that is not the block page, and a 403 on timedtext. The timedtext endpoint answered every request from the VM with the 429 block page from about 16:55 UTC onward, so no json3, WebVTT or `tlang` caption payload could be recorded.
+
+To re-record, call the player as `src/resilience/transport.ts` does, with the client from `src/resilience/clients.ts`, apply the same trimming, and grep for your public IP before committing.
 
 ## Comments fixtures
 
@@ -47,3 +70,34 @@ To re-record, call `next` as in `src/comments/request.ts`, follow the continuati
 ## Browse and search fixtures
 
 Playlist, channel and search responses for `src/browse/` live in [browse/](browse/) and are documented in [browse/README.md](browse/README.md).
+
+## Metadata and chapters fixtures
+
+Files for `src/metadata/` live in [metadata/](metadata/). All were recorded from this repo's VM on 2026-11-14 with `test/record-metadata-fixtures.ts`, which goes through the real code path: `getPlayer` (it picked the ANDROID client 20.10.38 every time), `POST /youtubei/v1/next` with the WEB client `2.20261112.10.00` (`hl=en`, `gl=US`), and a `HEAD` of `https://i.ytimg.com/vi/<id>/maxresdefault.jpg`.
+
+| Files (`player-<label>-<id>.json`, `next-<label>-<id>.json`) | Video |
+|---|---|
+| `chapters-2VDV87iHfKw` | Team Coco, a full podcast episode: 9 creator chapters in the description, 9 description links |
+| `precedence-Rq5gJVxz55Q` | Data with Baraa, a 13-hour course that premiered: 37 creator chapters in h:mm:ss, while YouTube serves auto chapters (key moments) instead of description markers |
+| `past-live-9JTLxLyF59M` | C-SPAN, NASA news conference after the Artemis II launch: a past live stream with auto chapters only |
+| `short-0U0O-P43MNQ` | A 33-second Short (vertical streams, 1080x1920) |
+| `live-rFZHOHl-L8A` | Lofi Girl's 24/7 stream, live at recording time (`isLive`, "watching now" count) |
+| `upcoming-zWHMFJII-sA` | NASASpaceflight, a scheduled launch stream: `LIVE_STREAM_OFFLINE`, `isUpcoming`, `scheduledStartTime` |
+| `age-HtVdAasjOgU` | The Witcher 3 trailer: `LOGIN_REQUIRED` "This video may be inappropriate for some users", with `videoDetails` |
+| `members-2a1cufNNiyQ` | Linus Tech Tips: `UNPLAYABLE` members-only (the `next` response carries the `BADGE_STYLE_TYPE_MEMBERS_ONLY` badge) |
+| `zoo-jNQXAC9IVRw` | "Me at the zoo": 3 description chapters plus YouTube's `DESCRIPTION_CHAPTERS` markers, no maxresdefault |
+
+| File | Source |
+|---|---|
+| `maxres-status.json` | HTTP status of the maxresdefault `HEAD` for each video (200, or 404 for jNQXAC9IVRw) |
+| `descriptions.json` | 74 real descriptions that contain timestamps, from 220 videos found through innertube search on 2026-11-14 (`next`, `attributedDescriptionBodyText`), each with the chapters YouTube derived from it (`DESCRIPTION_CHAPTERS` markers, `null` when it showed none) and whether it had auto chapters |
+
+Not found: a video whose description markers exist while its description has no parseable timestamps (class (b) in prompt 07). In the 220-video sample, every `DESCRIPTION_CHAPTERS` list also parsed from the description.
+
+Trimming (only removals, except the email redaction):
+
+- Player responses keep `playabilityStatus` (`status`, `reason`, `liveStreamability`), `videoDetails`, `captions`, and from `streamingData` only each format's `itag`, `mimeType`, `width` and `height` (the stream URLs embed the requesting machine's IP address). The `client` and `attempts` fields vid2context adds were removed.
+- `next` responses keep only `videoPrimaryInfoRenderer` and `videoSecondaryInfoRenderer` (with their path) and the player bar's `decoratedPlayerBarRenderer` (chapter markers). Dropped inside them: the rich-text description and header runs (the full description comes from the player), the subscribe button, thumbnails, click commands, accessibility objects, tracking and logging fields.
+- `descriptions.json`: every email address was replaced with `[email redacted]`.
+
+To re-record, run `npx tsx providers/youtube/test/record-metadata-fixtures.ts providers/youtube/test/fixtures/metadata <label>:<id> ...` and grep the output for your public IP and any email or phone number before committing. Counts (views, likes, live viewers) change between recordings; update the test expectations that pin them.

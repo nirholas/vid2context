@@ -67,13 +67,67 @@ Retries never help with a block and tend to extend it. So a `blocked` result is 
 1. Run vid2context on your own machine. A home connection is rarely blocked.
 2. Keep the server where it is but send its YouTube traffic through your home network: see `docs/guides/cloudflare-tunnel.md`.
 3. Route through a proxy. vid2context has no proxy code of its own: Node 24 honours `HTTPS_PROXY` when started with `NODE_USE_ENV_PROXY=1`, for example `NODE_USE_ENV_PROXY=1 HTTPS_PROXY=http://host:port npx vid2context <url>`.
-4. Set `YOUTUBE_COOKIE` to the Cookie header of a signed-in youtube.com tab. With a `SAPISID` cookie, the matching `SAPISIDHASH` Authorization header is derived. Warning: the cookie ties every request to that Google account, and heavy use can get the account flagged, so use a spare account. The provider runs on Node, Workers and in the browser and never reads files: the CLI and server read a Netscape cookies file from `YOUTUBE_COOKIES_FILE` into `YOUTUBE_COOKIE`. YouTube honours account cookies mainly for its web clients, so with the default app clients the gain is uncertain. Not verified live (no account was used).
+4. Set `YOUTUBE_COOKIE` to the Cookie header of a signed-in youtube.com tab. With a `SAPISID` cookie, the matching `SAPISIDHASH` Authorization header is derived. Warning: the cookie ties every request to that Google account, and heavy use can get the account flagged, so use a spare account. The provider runs on Node, Workers and in the browser and never reads files, so reading a Netscape cookies file (`YOUTUBE_COOKIES_FILE`) into `YOUTUBE_COOKIE` is left to the Node surfaces (CLI, server); until they do, paste the header value itself. YouTube honours account cookies mainly for its web clients, so with the default app clients the gain is uncertain. Not verified live (no account was used).
 5. Install the yt-dlp provider, which has its own client rotation and cookie support.
 6. Wait. Blocks usually lift after some time without requests.
 
 ### PO tokens
 
 When YouTube wants a proof-of-origin token for a client, caption tracks come back empty. `YOUTUBE_PO_TOKEN` is sent in the player request (`serviceIntegrityDimensions.poToken`) and on caption URLs (`&pot=`, with `&c=<client>`). `YOUTUBE_VISITOR_DATA` must be the visitorData the token was minted for; it goes into the client context and the `x-goog-visitor-id` header. Tokens are minted outside vid2context (for example with BgUtils) and expire. Neither was needed on 2026-11-14 with ANDROID or IOS. Cookie and token values are never logged.
+
+## Metadata and chapters
+
+`youtube.getMetadata` makes one player request (the same cached response the captions provider uses), one `next` request (the watch page's data, WEB client) and one `HEAD` request for the maxres thumbnail, the last two in parallel. No key. It succeeds whenever the player returns `videoDetails`, including age-restricted, members-only, live and upcoming videos: those states are reported in `extra`, and the transcript stage raises the errors. If the `next` request fails, the player fields are still returned and a warning is logged.
+
+### Fields and where they come from
+
+| Field | Source |
+|---|---|
+| `title`, `description` (full), `tags`, `durationSec` | player `videoDetails` (`title`, `shortDescription`, `keywords`, `lengthSeconds`; 0 for live and upcoming becomes `undefined`) |
+| `channel.name`, `channel.id`, `channel.url` | player `author` and `channelId`; the URL is the stable `/channel/<id>` form |
+| `publishedAt` | the date line under the title in `next` (`dateText`), as an ISO date `YYYY-MM-DD`. "Premiered Feb 24, 2026", "Streamed live on Apr 1, 2026" and "Started streaming on Aug 19, 2026" give that date. Relative dates ("23 hours ago") and "Scheduled for" give none |
+| `thumbnailUrl` | `maxresdefault.jpg` when a `HEAD` request finds it, else the largest thumbnail the player lists (usually `sddefault` or `hqdefault`). The player never lists maxres, and its presence cannot be inferred (5 of 14 sampled videos listing sddefault had none) |
+| `language` | the language of the auto-caption (asr) track, which is the spoken language; `undefined` without one |
+| `isLive`, `extra.isLive` | player `isLive` |
+| `extra.viewCount` | player `viewCount` (total views, also for live streams) |
+| `extra.likeCount` | the exact count in the like button's label in `next` ("along with 20,138,292 other people"); absent when likes are hidden |
+| `extra.liveViewers` | the "watching now" (live) or "waiting" (upcoming) count in `next` |
+| `extra.dateText` | the date line as YouTube shows it |
+| `extra.channelHandle`, `extra.channelHandleUrl` | the owner's `@handle` from `next` and `https://www.youtube.com/@handle` |
+| `extra.subscriberCountText` | as shown, for example "6.74M subscribers" |
+| `extra.isShort` | true when the input was a `/shorts/` URL, or every video stream is taller than wide and the video is at most 3 minutes long. Neither the player nor `next` flags Shorts directly (checked on 2026-11-14) |
+| `extra.isUpcoming`, `extra.premiereAt` | player `isUpcoming`, and the scheduled start (`scheduledStartTime`, ISO 8601) of an upcoming premiere or live stream |
+| `extra.ageRestricted` | the player status is not OK and its reason mentions age or "inappropriate" |
+| `extra.membersOnly` | the player reason mentions members, or `next` shows the members-only badge |
+| `extra.isLiveContent`, `extra.playability` | player `isLiveContent` and `playabilityStatus.status` |
+| `extra.links` | every http(s) URL in the description, de-duplicated, in order, without trailing punctuation |
+| `extra.chapterSource` | `description`, `markers` or `key-moments` (absent when there are no chapters) |
+
+Not available without an extra request: the category and a separate upload date. They are only in the WEB player response's microformat, and the ANDROID and IOS player responses and `next` do not carry them, so they are left out rather than costing a second player call.
+
+### Chapter precedence
+
+The first source that yields a list wins:
+
+1. Creator chapters parsed from the description.
+2. YouTube's chapter markers in `next` (player bar markers, key `DESCRIPTION_CHAPTERS`): YouTube's own parse of the description.
+3. Auto-generated chapters, shown as "key moments" (key `AUTO_CHAPTERS`).
+
+Every chapter gets `endSec`: the next chapter's start, and the duration for the last one (no `endSec` for the last chapter when the duration is unknown).
+
+### Description rules
+
+A description yields chapters when it has a line stamped `0:00` (or `00:00`, `00:00:00`), at least three timestamped lines in all, and ascending times. Lines before the `0:00` line are ignored, and the list ends at the first time that does not ascend or that falls past the end of the video, so stray timestamps elsewhere do not leak in.
+
+- Timestamps: `h:mm:ss`, `hh:mm:ss`, `mm:ss`, `m:ss`, optionally in brackets or parentheses, optionally as a range (`0:00 - 0:30: Intro` gives "Intro" at 0).
+- The title may come before or after the timestamp, with or without a separator (`-`, `|`, `:`, dashes, bullets). Bullets and list numbers before a leading timestamp are dropped; a list number before a trailing-timestamp title stays, as on YouTube.
+- A timestamp in the middle of a line is never a chapter ("at 3:45 he says"), nor a trailing one after words such as "at", "to", "from", "around" ("skip to 12:30").
+- Titles are trimmed, inner spaces collapsed, emoji at either end and quotes that wrap the whole title removed (YouTube does the same).
+- YouTube's help page asks for chapters of at least 10 seconds, but YouTube accepts shorter ones (the 5-second "Intro" of jNQXAC9IVRw), so this rule is not enforced.
+
+Checked against 220 real videos on 2026-11-14: the parser matches YouTube's own chapter list for every description except six where the creator's list is valid but YouTube showed no description chapters (those keep the creator's chapters) and one that uses time ranges (YouTube keeps "0:30:" in the titles; this parser reads the range).
+
+`YOUTUBE_WEB_VERSION` overrides the WEB client version used for `next` (default `2.20261112.10.00`).
 
 ## Comments
 

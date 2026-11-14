@@ -76,6 +76,13 @@ export function classifyPlayability(ps: PlayabilityStatus | undefined, videoId: 
       'This video is age-restricted and needs a signed-in, age-verified session: set YOUTUBE_COOKIE, or use the yt-dlp provider with your cookies.',
     );
   }
+  // ERROR is decided before the members and region patterns: removal notices mention "your country".
+  if (status === 'ERROR' && /no longer supported|application or device/i.test(reason)) {
+    return { kind: 'client', error: new Vid2ContextError('upstream', msg, { hint: CLIENT_HINT }) };
+  }
+  if (status === 'ERROR') {
+    return final('not-found', 'The video does not exist or was removed. Check the video id or URL.');
+  }
   if (/members|join this channel/i.test(reason)) {
     return final('unavailable', "This video is for the channel's paying members only. A member's YOUTUBE_COOKIE can unlock it.");
   }
@@ -99,12 +106,6 @@ export function classifyPlayability(ps: PlayabilityStatus | undefined, videoId: 
       'unavailable',
       'YouTube shows a content warning for this video and needs a signed-in session: set YOUTUBE_COOKIE.',
     );
-  }
-  if (status === 'ERROR' && /no longer supported|application or device/i.test(reason)) {
-    return { kind: 'client', error: new Vid2ContextError('upstream', msg, { hint: CLIENT_HINT }) };
-  }
-  if (status === 'ERROR') {
-    return final('not-found', 'The video does not exist or was removed. Check the video id or URL.');
   }
   // LOGIN_REQUIRED without a video reason ("Please sign in"), UNPLAYABLE "The page needs to be reloaded"
   // and other unknown states: specific to the client, so the next client gets a turn.

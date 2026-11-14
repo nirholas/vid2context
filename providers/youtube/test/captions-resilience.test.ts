@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { type Attempt, createContext, type Env, type VideoRef, Vid2ContextError } from '@vid2context/core';
+import { type Attempt, createContext, type Env, Vid2ContextError, type VideoRef } from '@vid2context/core';
 import { type RecordedCall, type RecordedResponse, replayFetch, testContext } from '@vid2context/core/testing';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { youtubeCaptions } from '../src/captions/provider.ts';
@@ -47,7 +47,8 @@ const zooTimedtext = [
 ];
 
 const playerCalls = (calls: RecordedCall[]) => calls.filter((c) => c.url === PLAYER_URL);
-const clientOf = (c: RecordedCall) => (JSON.parse(String(c.body)) as { context: { client: { clientName: string } } }).context.client.clientName;
+const clientOf = (c: RecordedCall) =>
+  (JSON.parse(String(c.body)) as { context: { client: { clientName: string } } }).context.client.clientName;
 
 beforeEach(() => resetBreaker());
 afterEach(() => vi.useRealTimers());
@@ -73,7 +74,10 @@ describe('player clients', () => {
   });
 
   it('falls back to IOS when ANDROID gets the bot check, without opening the breaker', async () => {
-    const fetch = replayFetch([byClient({ ANDROID: json('player-android_vr-bot-jNQXAC9IVRw.json'), IOS: json('player-ios-jNQXAC9IVRw.json') }), ...zooTimedtext]);
+    const fetch = replayFetch([
+      byClient({ ANDROID: json('player-android_vr-bot-jNQXAC9IVRw.json'), IOS: json('player-ios-jNQXAC9IVRw.json') }),
+      ...zooTimedtext,
+    ]);
     const ctx = testContext({ fetch });
     const t = await youtubeCaptions.getCaptions(ref(ZOO), { language: 'de' }, ctx);
     expect(t).toMatchObject({ language: 'de', origin: 'creator-captions' });
@@ -89,7 +93,10 @@ describe('player clients', () => {
 
   it('falls back when YouTube rejects a retired client version with HTTP 400', async () => {
     const fetch = replayFetch([
-      byClient({ ANDROID: { status: 400, ...json('player-android-old-version-400.json') }, IOS: json('player-ios-jNQXAC9IVRw.json') }),
+      byClient({
+        ANDROID: { status: 400, ...json('player-android-old-version-400.json') },
+        IOS: json('player-ios-jNQXAC9IVRw.json'),
+      }),
     ]);
     const ctx = testContext({ fetch, env: { YOUTUBE_ANDROID_VERSION: '19.09.37' } });
     const p = await fetchPlayer(ZOO, ctx);
@@ -100,7 +107,10 @@ describe('player clients', () => {
 
   it('uses the next client when the first has no captions, and accepts a video that has none on any client', async () => {
     const fetch = replayFetch([
-      byClient({ ANDROID: json('player-nocaptions-android-brXcsLhw84o.json'), IOS: json('player-nocaptions-ios-brXcsLhw84o.json') }),
+      byClient({
+        ANDROID: json('player-nocaptions-android-brXcsLhw84o.json'),
+        IOS: json('player-nocaptions-ios-brXcsLhw84o.json'),
+      }),
     ]);
     const ctx = testContext({ fetch });
     expect(await youtubeCaptions.getCaptions(ref('brXcsLhw84o'), {}, ctx)).toBeNull();
@@ -120,7 +130,10 @@ describe('player clients', () => {
 
   it('reports every client when all are refused for client reasons', async () => {
     const fetch = replayFetch([
-      byClient({ ANDROID: json('player-tv_embedded-unsupported-jNQXAC9IVRw.json'), IOS: json('player-web-reload-jNQXAC9IVRw.json') }),
+      byClient({
+        ANDROID: json('player-tv_embedded-unsupported-jNQXAC9IVRw.json'),
+        IOS: json('player-web-reload-jNQXAC9IVRw.json'),
+      }),
     ]);
     const err = await fetchPlayer(ZOO, testContext({ fetch })).catch((e: unknown) => e);
     expect(err).toBeInstanceOf(Vid2ContextError);
@@ -201,7 +214,11 @@ describe('error taxonomy (real playability responses)', () => {
       message: expect.stringContaining('live stream has not ended'),
     });
     // Final verdicts come from the first client; nothing asked IOS.
-    expect(playerCalls(fetch.calls).map(clientOf).every((c) => c === 'ANDROID')).toBe(true);
+    expect(
+      playerCalls(fetch.calls)
+        .map(clientOf)
+        .every((c) => c === 'ANDROID'),
+    ).toBe(true);
   });
 
   it('maps HTTP failures: the 429 block page to blocked, a 400 to upstream with a hint', async () => {
@@ -225,7 +242,10 @@ describe('circuit breaker', () => {
     vi.useFakeTimers({ toFake: ['Date'] });
     const fetch = blockedReplay();
     const ctx = testContext({ fetch });
-    await expect(youtubeCaptions.getCaptions(ref('cCPsdFdlshc'), {}, ctx)).rejects.toMatchObject({ code: 'blocked', status: 429 });
+    await expect(youtubeCaptions.getCaptions(ref('cCPsdFdlshc'), {}, ctx)).rejects.toMatchObject({
+      code: 'blocked',
+      status: 429,
+    });
     // Not retried: one timedtext request.
     expect(fetch.calls.filter((c) => c.url.includes('timedtext'))).toHaveLength(1);
     expect(breakerRemainingSec()).toBe(600);
@@ -327,12 +347,18 @@ describe('optional credentials', () => {
 
     const call = fetch.calls[0] as RecordedCall;
     const ts = Math.floor(Date.parse('2026-11-14T00:00:00Z') / 1000);
-    const digest = await crypto.subtle.digest('SHA-1', new TextEncoder().encode(`${ts} cookie-from-test-env https://www.youtube.com`));
+    const digest = await crypto.subtle.digest(
+      'SHA-1',
+      new TextEncoder().encode(`${ts} cookie-from-test-env https://www.youtube.com`),
+    );
     const hex = [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, '0')).join('');
     expect(call.headers.cookie).toBe(env.YOUTUBE_COOKIE);
     expect(call.headers.authorization).toBe(`SAPISIDHASH ${ts}_${hex}`);
     expect(call.headers['x-goog-visitor-id']).toBe('visitor-from-test-env');
-    const body = JSON.parse(String(call.body)) as { context: { client: { visitorData: string } }; serviceIntegrityDimensions: { poToken: string } };
+    const body = JSON.parse(String(call.body)) as {
+      context: { client: { visitorData: string } };
+      serviceIntegrityDimensions: { poToken: string };
+    };
     expect(body.context.client.visitorData).toBe('visitor-from-test-env');
     expect(body.serviceIntegrityDimensions.poToken).toBe('po-token-from-test-env');
 
@@ -340,7 +366,8 @@ describe('optional credentials', () => {
     expect(caption.searchParams.get('pot')).toBe('po-token-from-test-env');
     expect(caption.searchParams.get('c')).toBe('ANDROID');
     const all = logged.join('\n');
-    for (const secret of ['cookie-from-test-env', 'visitor-from-test-env', 'po-token-from-test-env']) expect(all).not.toContain(secret);
+    for (const secret of ['cookie-from-test-env', 'visitor-from-test-env', 'po-token-from-test-env'])
+      expect(all).not.toContain(secret);
   });
 
   it('exposes innertubeRequest with any client spec for the other YouTube endpoints', async () => {
