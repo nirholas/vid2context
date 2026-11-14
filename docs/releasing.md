@@ -1,0 +1,56 @@
+# Releasing
+
+Two packages are published to npm: `vid2context` (the CLI, `npx vid2context`) and `vid2context-mcp` (the MCP server, `npx vid2context-mcp`). The workspace packages stay private and export TypeScript source; the published packages are bundles built from them.
+
+## Versioning
+
+One version number covers both packages. It lives in three manifests that always move together: the root `package.json`, `packages/cli/package.json` and `packages/mcp/package.json` (the bundles take their versions from the last two, see `packages/discovery/src/meta.ts`). Release notes live in the root [CHANGELOG.md](../CHANGELOG.md), in the Keep a Changelog format.
+
+```sh
+node tooling/release/version.mjs patch     # or minor, major, or an explicit 1.2.3
+```
+
+[tooling/release/version.mjs](../tooling/release/version.mjs) changes only the `"version"` line of the three manifests, moves the `## [Unreleased]` notes under `## [x.y.z] - date`, opens a fresh Unreleased section and updates the compare links. It refuses when the Unreleased section is empty, so every release says what changed. It does not commit, tag or publish; it prints those commands.
+
+Why not Changesets: Changesets writes a CHANGELOG.md per package and versions each workspace on its own, while this repo keeps one hand-written changelog at the root and ships two bundles under one version from more than 50 private workspaces. A 150-line script that fits that shape is simpler than configuring Changesets around it, and adds no dependency.
+
+## Building
+
+```sh
+npm run build:npm
+```
+
+`packages/discovery` bundles each bin with esbuild into one ESM file with a `#!/usr/bin/env node` banner, targeting Node 22, and writes the package under `packages/discovery/dist/npm/<name>/`: a generated `package.json` (name, version, `bin`, `engines: { "node": ">=22" }`, `files`, `license: Apache-2.0`, repository), `README.md`, `LICENSE` and `THIRD_PARTY_LICENSES.txt`. No workspace manifest is edited. This tooling reuses that build instead of adding a second bundler.
+
+`node tooling/release/smoke.mjs` runs the bundles the way npx does: `vid2context --help` must print usage, and `vid2context-mcp` must answer a JSON-RPC `initialize` on stdio with nothing but protocol on stdout. `npm run ci` runs it right after the build.
+
+## Dry run
+
+```sh
+npm run release:dry
+```
+
+[tooling/release/release.mjs](../tooling/release/release.mjs) builds, then for each bundle writes `sbom.cdx.json` (CycloneDX, from `npm sbom --omit dev` over the source workspace's production tree, which is what esbuild inlines, renamed to the published package) and runs `npm publish --dry-run`, which prints the tarball contents. Nothing is published.
+
+It fails if npm would rewrite a generated manifest at publish time. npm does this silently, for example by dropping a `bin` entry it considers invalid, which would ship a package that npx cannot run. The SBOM is a release artifact next to the tarball, not part of it.
+
+## Publishing
+
+Publishing happens on Cloud Build when a version tag is pushed (setup in [ci.md](ci.md)):
+
+```sh
+node tooling/release/version.mjs minor
+npm install                                   # sync package-lock.json
+npm run ci && npm run release:dry
+git commit -m "chore(release): v0.2.0" -- package.json packages/cli/package.json packages/mcp/package.json package-lock.json CHANGELOG.md
+git tag -a v0.2.0 -m "v0.2.0"
+git push origin main v0.2.0
+```
+
+[tooling/cloudbuild/release.yaml](../tooling/cloudbuild/release.yaml) runs the full CI, then `release.mjs --no-build --publish --tag v0.2.0`. That refuses unless the tag equals `v<version>` of every bundle, dry-runs every bundle before publishing any, and authenticates with the `npm-token` secret through `NPM_TOKEN`. The SBOMs are copied to `gs://<_ARTIFACT_BUCKET>/releases/<tag>/` when that substitution is set.
+
+To publish by hand instead, log in with `npm login` and run `node tooling/release/release.mjs --publish --tag v0.2.0`.
+
+## Provenance
+
+npm provenance (`npm publish --provenance`) needs an OIDC identity from a supported CI provider, currently GitHub Actions or GitLab CI. Cloud Build is not one, and GitHub Actions is unavailable on this account, so releases publish without provenance. The SBOM, the tag and the Cloud Build log are the audit trail. If GitHub Actions becomes available again, publishing from a workflow with `--provenance` adds the attestation.

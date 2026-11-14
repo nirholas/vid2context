@@ -20,31 +20,50 @@ The MCP server ([packages/mcp/src/server.ts](../../packages/mcp/src/server.ts)) 
 
 ## Implemented tools
 
-### `get_transcript`
+Every tool has a JSON Schema input with a description per field, annotations (`readOnlyHint`, `openWorldHint`, `idempotentHint`, plus `destructiveHint: false` on writes), and a description that says when to use it and roughly what it costs in tokens. Tools marked "structured" also declare an `outputSchema` and return the same object as `structuredContent` and as JSON text. Every video read through any tool is saved to the server's storage (the enabled storage provider, else `MemoryStorage`), so `search_transcript`, the collection tools and the resources see it.
 
-| Input | Type | Default |
+`createServer(registry, ctx, version?, opts?)` holds no transport code. `opts.storage` shares one `Storage` with every tool and wired package (bin.ts opens the registry's backend up front); `opts.extractAudio` is the audio extractor for `watch_live` (bin.ts passes the ffmpeg one from `@vid2context/live/node`).
+
+### Defined in `packages/mcp` (item 44)
+
+| Tool | Input | Returns |
 |---|---|---|
-| `url` | string | required |
-| `format` | formatter id | `text` |
-| `timestamps` | boolean | `true` |
-| `mode` | `auto` \| `captions` \| `stt` \| `video` | `auto` |
-| `language` | BCP-47 string | spoken language |
+| `get_transcript` | `{ url, format?, timestamps?, mode?, language?, maxTokens?, cursor? }` | Text format: the `contextHeader()` header plus the transcript; other formats: the rendered transcript. When the result would exceed `maxTokens` (via `estimateTokens`), one page cut on segment boundaries, ending with `[Partial transcript: ... next_cursor: seg:N]`; pass `cursor: "seg:N"` with the same arguments for the next page. Every page of every format is complete on its own (JSON pages parse). The last page ends with `[End of transcript: ...]` |
+| `get_metadata` | `{ url }` | `VideoMetadata` as JSON |
+| `list_formats` | `{}` | structured `{ formats: { id, description, mimeType, extension, combinesVideos }[] }`, from the `formatters` map at runtime |
+| `get_outline` | `{ url, mode?, language? }` | structured `{ title, url?, durationSec, transcript: { origin, language, producer }, sections: "chapters" \| "time", totalTokens, chapters: { index, title, startSec, endSec?, start, tokens, url? }[], metadata, next }`. Videos without chapters get sections of about five minutes (`transcriptOutline` from core) |
+| `get_section` | `{ url, from?, to?, chapter?, format?, timestamps?, mode?, language? }` | One chapter (index or title: exact, prefix, then substring) or time range (`from`/`to` as seconds, `m:ss` or `h:mm:ss`), with the header and a `Section "title": m:ss to m:ss, about N tokens` line in text format |
+| `list_items` | `{ url, limit? }` | structured `{ input, count, items: { id, platform, kind, nativeId, url? }[] }` through `expandInput`. Default limit 50, max 500 |
+| `search_transcript` | `{ query, collection?, urls?, limit? }` | structured `{ query, count, hits: { videoId, title, at, startSec, endSec, text, context, url?, score }[], failed?, note? }` over `Storage.search`. `urls` are fetched and saved first; `context` is the text within 8 seconds of the hit; `note` explains coverage when nothing matches |
+| `get_comments` | `{ url, limit? }` | structured `{ title, url?, count, comments: Comment[] }`. Read straight from the source's `getComments` (a video without a transcript still has comments), reusing a saved context that already holds enough comments. `unsupported-input` for sources without comments |
+| `export_context_pack` | `{ urls?, collection?, maxTokens?, limit? }` | The `pack` Markdown through `renderMany`; inputs that could not be read are listed under "Not included" |
+| `list_models` | `{ kind? }` | structured `{ models: ModelInfo[], defaultPolicy }` (`ModelInfo` in docs/prompts/SHARED-CONTRACTS.md section 3): every rung of `registry.llmRungs(env)` and the other getters, capabilities plus `stream` when `canStream` is true. Env var names only, never values |
 
-Returns the header plus the rendered transcript (text format), or the rendered transcript alone for other formats.
+Long operations over many videos (`search_transcript` and `export_context_pack` with list `urls`) send `notifications/progress` per video when the client sends a progress token. One failing video never fails the batch: it is reported in `failed`.
 
-### `get_metadata`
+### Wired from other packages
 
-| Input | Type |
-|---|---|
-| `url` | string, required |
+`packages/mcp/src/wire.ts` calls each package's registration function with the same registry, base `Ctx` and storage.
 
-Returns `VideoMetadata` as JSON: title, channel, description, duration, chapters, tags, language.
+| Tools | Package (item) | Registration function |
+|---|---|---|
+| `list_collections`, `create_collection`, `add_to_collection`, `get_collection` | `@vid2context/library` (41) | `registerLibraryTools` |
+| `ask` | `@vid2context/ask` (34) | `registerAskTools` |
+| `research_videos`, `list_caption_languages`, `get_key_moments` | `@vid2context/research` (54) | `registerResearchTools` |
+| `get_skip_segments` | `@vid2context/skips` (53) | `registerSkipsTools` |
+| `export_obsidian` (Node only), `export_notion` | `@vid2context/exporters` (57) | `registerExporterTools` |
+| `find_duplicates` | `@vid2context/dedupe` (62) | `registerDedupeTools` |
+| `watch_live` | `@vid2context/live` (61) | `registerLiveTools` |
+| `open_transcript_viewer` | `@vid2context/mcp-apps` (52) | `registerAppsTools` |
+| `digest_videos`, `choose_caption_track`, prompt `digest`, resource `.../latest` | `@vid2context/mcp-agentic` (51) | `registerAgenticFeatures` |
+
+The rows for these tools in the tables below describe their inputs and outputs. `ask` returns `[n] Title @ m:ss <timestamp URL>` source lines after the answer, and its error body nests the code as `{ error: { code, message, hint }, attempts }`.
 
 ## Planned tools
 
 The Owner column names the work item (see `docs/ROADMAP.md`) that implements the tool.
 
-Ownership rule for parallel work: **only item 44 edits `packages/mcp`.** An item whose own package backs a tool (32, 33, 34, 40, 41) exports a registration function from `src/mcp.ts` in that package:
+Ownership rule for parallel work: **only item 44 edits `packages/mcp`.** An item whose own package backs a tool exports a registration function from `src/mcp.ts` in that package:
 
 ```ts
 // packages/ask/src/mcp.ts
@@ -53,43 +72,46 @@ import type { Ctx, Registry } from '@vid2context/core';
 export function registerAskTools(server: McpServer, deps: { registry: Registry; ctx: Ctx }): void { /* server.registerTool('ask', ...) */ }
 ```
 
-Item 44 calls every registration function that exists when it runs; one that lands later is wired with a one-line additive change to `packages/mcp/src/server.ts`. Item 45 (`packages/mcp-http`) serves the same `createServer()` over Streamable HTTP and never defines tools of its own. "uses NN" below means the tool's logic comes from item NN's package.
+A registration function that lands later is wired with a one-line additive change to `packages/mcp/src/wire.ts`. Item 45 (`packages/mcp-http`) serves the same `createServer()` over Streamable HTTP and never defines tools of its own. "uses NN" below means the tool's logic comes from item NN's package.
 
 | Tool | Owner | Input | Returns |
 |---|---|---|---|
-| `list_formats` | 44 | `{}` | formats from the `formatters` map |
-| `get_outline` | 44 (uses 03) | `{ url }` | metadata, chapters and estimated tokens per chapter, so the agent can fetch only what it needs |
-| `get_section` | 44 (uses 03) | `{ url, from?, to?, chapter?, format?, timestamps? }` | a time range or chapter of a transcript |
-| `list_items` | 44 (uses 08, 13, 15) | `{ url, limit? }` | the videos in a playlist, channel, feed or page |
-| `search_transcript` | 44 (uses 40) | `{ query, collection?, urls?, limit? }` | hits with title, `[m:ss]`, text and timestamp URL |
-| `get_comments` | 44 (uses 09) | `{ url, limit? }` | top comments, creator replies flagged |
-| `export_context_pack` | 44 (uses 01) | `{ urls?, collection?, maxTokens? }` | the context pack Markdown |
-| `list_collections` | 44 (uses 41) | `{}` | collections with counts |
-| `create_collection` | 44 (uses 41) | `{ name, description?, sources? }` | the collection; `sources` (playlists, channels, feeds) are followed |
-| `add_to_collection` | 44 (uses 41) | `{ collection, urls }` | ingests each video (or list) and returns the updated collection |
-| `get_collection` | 44 (uses 41) | `{ collection }` | the collection with video summaries |
-| `ask` | 44 (uses 34: `registerAskTools` in `packages/ask/src/mcp.ts`) | `{ question, collection?, urls? }` | the answer with `[n]` markers, then one line per cited source: `[n] Title @ m:ss <timestamp URL>` and the supporting quote; a tool error with `{ error: { code, message, hint }, attempts }` on failure |
 | `extract` | 44 (uses 33) | `{ template? , schema?, urls?, collection? }` | structured JSON with citations |
 | `build_brief` | 44 (uses 32) | `{ collection?, urls?, question? }` | a server-side cited brief (map-reduce on a free model) |
 
-### Prompts
+When item 40 ships `registerSearchTools` in `@vid2context/search`, it replaces the `search_transcript` defined here (same name, input and output).
 
-| Prompt | Owner | Arguments | Purpose |
-|---|---|---|---|
-| `brief` | 44 | `collection` or `urls`, optional `question` | Instructions for the calling agent to read the sources with the tools above and write a brief where every claim cites `[video title @ m:ss](url)`, flagging consensus and disagreement |
-| `buyer_guide` | 44 (uses 33) | `collection`, `product` | The buyer-guide template as an agent prompt (models, years, mileage, known issues, prices, with citations) |
+## Collection tools (item 41)
 
-### Resources
-
-| URI | Owner | Content |
+| Tool | Input | Returns |
 |---|---|---|
-| `vid2context://video/{id}` | 44 | the saved `VideoContext` as JSON (`id` is the ref id, URL-encoded) |
-| `vid2context://video/{id}/transcript` | 44 | the text transcript with timestamps |
-| `vid2context://collection/{id}` | 44 | the collection with video summaries |
+| `list_collections` | `{}` | collections with counts |
+| `create_collection` | `{ name, description?, sources? }` | the collection; `sources` (playlists, channels, feeds) are followed |
+| `add_to_collection` | `{ collection, urls }` | ingests each video (or list) and returns the updated collection |
+| `get_collection` | `{ collection }` | the collection with video summaries |
+
+## Prompts (implemented)
+
+Both tell the calling agent to plan reading from token counts, read outline first (`get_outline`, `get_section`, `search_transcript`) or whole when it fits, and cite every claim as `[Video title @ m:ss](timestamp link)`, flagging consensus, disagreement and single-source claims. Prompt arguments are strings, so `urls` is a comma, space or newline separated list. The text lives in `packages/mcp/src/prompts.ts` until `@vid2context/insights` (item 32) exports prompt text.
+
+| Prompt | Arguments | Purpose |
+|---|---|---|
+| `brief` | `collection` or `urls`, optional `question` | A cited brief: summary, key findings by theme, consensus and disagreement, open questions, sources |
+| `buyer_guide` | `product`, `collection` or `urls` | A cited buyer guide: models and years, best and worst years, known issues, prices (dated), mileage, inspection checklist |
+
+## Resources (implemented)
+
+Listed from storage (newest 500 saved videos; every collection). Reading an id that is not saved is a `not-found` error with a hint.
+
+| URI | Content |
+|---|---|
+| `vid2context://video/{id}` | the saved `VideoContext` as JSON (`id` is the ref id, URL-encoded: `youtube%3AjNQXAC9IVRw`) |
+| `vid2context://video/{id}/transcript` | the header plus the text transcript with `[m:ss]` timestamps |
+| `vid2context://collection/{id}` | `{ collection, videos: { id, title, url, channel, durationSec, origin, language, chapters, tokens }[], totalTokens, missing }` |
 
 ## Wave 2 tools (prompts 51 to 62)
 
-Same rules as above. Each package registers its tools from its own `src/mcp.ts` (`register<Name>Tools(server, deps)`); item 44, or the integration pass, wires them into `createServer`. The package owner is the prompt number.
+Same rules as above. Each package registers its tools from its own `src/mcp.ts` (`register<Name>Tools(server, deps)`); item 44, or the integration pass, wires them into `createServer` (all rows below are wired, see "Wired from other packages"). The package owner is the prompt number.
 
 | Tool, prompt or resource | Owner | Input | Returns |
 |---|---|---|---|
