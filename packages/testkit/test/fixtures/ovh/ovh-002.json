@@ -1,0 +1,27 @@
+{
+  "recordedAt": "2026-11-14T17:20:20.096Z",
+  "request": {
+    "method": "POST",
+    "url": "https://oai.endpoints.kepler.ai.cloud.ovh.net/v1/chat/completions",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "bodyBytes": 169,
+    "body": "{\"model\":\"Meta-Llama-3_3-70B-Instruct\",\"messages\":[{\"role\":\"user\",\"content\":\"In which year did Apollo 11 land on the Moon? Answer with the year only.\"}],\"max_tokens\":20}",
+    "bodyEncoding": "text"
+  },
+  "response": {
+    "status": 200,
+    "statusText": "OK",
+    "headers": {
+      "content-type": "application/json",
+      "ratelimit-limit": "2",
+      "ratelimit-remaining": "1",
+      "ratelimit-reset": "41",
+      "x-ratelimit-limit-minute": "2",
+      "x-ratelimit-remaining-minute": "1"
+    },
+    "body": "{\"id\":\"chatcmpl-93da1b32ceed9429\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"1969\"},\"finish_reason\":\"stop\"}],\"created\":1794676819,\"model\":\"Meta-Llama-3_3-70B-Instruct\",\"object\":\"chat.completion\",\"usage\":{\"prompt_tokens\":53,\"completion_tokens\":3,\"total_tokens\":56}}",
+    "bodyEncoding": "text"
+  }
+}

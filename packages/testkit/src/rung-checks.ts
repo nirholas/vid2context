@@ -21,7 +21,7 @@ export function expectedRungId(kind: RungKind, rung: Pick<Rung, 'service' | 'mod
 /** Value used for every required env var when checking enablement. Syntactically a string, never a real credential. */
 export const CONFORMANCE_VALUE = 'conformance-check-value';
 
-export function rungProblems(rung: Rung, kind: RungKind): string[] {
+export function rungProblems(rung: Rung, kind: RungKind, opts: { builtFromEmptyEnv?: boolean } = {}): string[] {
   const p: string[] = [];
   if (rung.id !== expectedRungId(kind, rung)) {
     p.push(`id "${rung.id}" should be "${expectedRungId(kind, rung)}" (<kind>/<service>/<model>)`);
@@ -57,7 +57,8 @@ export function rungProblems(rung: Rung, kind: RungKind): string[] {
       if (isPromiseLike(value)) p.push(`isEnabled returned a Promise with ${label}; it must be synchronous`);
       else if (typeof value !== 'boolean') p.push(`isEnabled returned ${typeof value} with ${label}, not a boolean`);
       if (touched.length > 0) p.push(`isEnabled reached the network with ${label}: ${touched[0]}`);
-      if (label === 'empty env' && value === true && (rung.tier === 'free' || rung.tier === 'paid')) {
+      // Only meaningful for rungs built from an empty env: a pooled rung built from a keyed env may capture its key.
+      if (opts.builtFromEmptyEnv && label === 'empty env' && value === true && (rung.tier === 'free' || rung.tier === 'paid')) {
         p.push(`${rung.tier} rung is enabled with an empty env; it must need its key`);
       }
     } catch (err) {

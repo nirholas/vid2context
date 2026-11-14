@@ -190,26 +190,40 @@ export function keyShapedEnv(names: string[]): Env {
 
 // ---------------------------------------------------------------- loading
 
-/** Load one generated runtime registry module. */
-export async function loadRuntimeProviders(runtime: Runtime): Promise<{ providers: Provider[]; packages: string[] }> {
-  const mod = (await import(`@vid2context/registry/${runtime}`)) as { providers: Provider[]; providerPackages: string[] };
-  return { providers: mod.providers, packages: mod.providerPackages };
-}
-
-/** Which package (and so which directory) each provider id comes from. */
-async function providerOrigins(packages: string[], all: ProviderPackage[]): Promise<Map<string, ProviderPackage>> {
-  const map = new Map<string, ProviderPackage>();
+/**
+ * Load the providers of one runtime, package by package, from the list in
+ * packages/registry/src/generated/<runtime>.ts. Importing each package on its
+ * own means one broken package is reported alone instead of hiding the rest.
+ */
+export async function loadRuntimeProviders(
+  runtime: Runtime,
+  root = repoRoot,
+): Promise<{
+  providers: Provider[];
+  packages: string[];
+  origins: Map<string, string>;
+  failures: { pkg: string; error: string }[];
+}> {
+  const generated = join(root, 'packages/registry/src/generated', `${runtime}.ts`);
+  const m = /providerPackages: string\[\] = (\[[^\]]*\])/.exec(readFileSync(generated, 'utf8'));
+  if (!m?.[1]) throw new Error(`no providerPackages list in ${relative(root, generated)}; run npm run gen`);
+  const packages = JSON.parse(m[1]) as string[];
+  const providers: Provider[] = [];
+  const origins = new Map<string, string>();
+  const failures: { pkg: string; error: string }[] = [];
   for (const name of packages) {
-    const pkg = all.find((p) => p.name === name);
-    if (!pkg) continue;
     try {
       const mod = (await import(name)) as { default: Provider | Provider[] };
-      for (const p of [mod.default].flat()) if (p?.id) map.set(p.id, pkg);
-    } catch {
-      // Load failures are reported once by checkInvariants.
+      for (const p of [mod.default].flat()) {
+        if (!p || typeof p !== 'object') throw new Error('the default export is not a Provider or Provider[]');
+        providers.push(p);
+        origins.set(p.id, name);
+      }
+    } catch (err) {
+      failures.push({ pkg: name, error: (err as Error).message.split('\n')[0] ?? String(err) });
     }
   }
-  return map;
+  return { providers, packages, origins, failures };
 }
 
 function rungsOf(p: Provider, env: Env): Rung[] {
@@ -221,7 +235,7 @@ function rungsOf(p: Provider, env: Env): Rung[] {
 export interface CheckOptions {
   root?: string;
   /** Provider lists per runtime. Default: load the generated registries. */
-  registries?: Partial<Record<Runtime, { providers: Provider[]; packages: string[] }>>;
+  registries?: Partial<Record<Runtime, { providers: Provider[]; origins?: Map<string, string> }>>;
 }
 
 export async function checkInvariants(opts: CheckOptions = {}): Promise<InvariantReport> {
@@ -239,17 +253,32 @@ export async function checkInvariants(opts: CheckOptions = {}): Promise<Invarian
 
   const pkgs = providerPackages(root);
   const docVars = documentedEnvVars(root);
-  const loaded: Partial<Record<Runtime, { providers: Provider[]; packages: string[] }>> = {};
+  const loaded: Partial<Record<Runtime, { providers: Provider[]; origins: Map<string, string> }>> = {};
   for (const runtime of RUNTIMES) {
     const given = opts.registries?.[runtime];
     if (given) {
-      loaded[runtime] = given;
+      loaded[runtime] = { providers: given.providers, origins: given.origins ?? new Map() };
       continue;
     }
     try {
-      loaded[runtime] = await loadRuntimeProviders(runtime);
+      const reg = await loadRuntimeProviders(runtime, root);
+      loaded[runtime] = reg;
+      for (const f of reg.failures) {
+        const dir = pkgs.find((p) => p.name === f.pkg)?.dir;
+        v({
+          check: 'package-loads',
+          provider: f.pkg,
+          runtime,
+          file: dir ? relative(root, join(dir, 'package.json')) : undefined,
+          message: `failed to import, so its providers were not checked: ${f.error}`,
+        });
+      }
     } catch (err) {
-      v({ check: 'registry-loads', runtime, message: `the ${runtime} registry failed to load: ${(err as Error).message}` });
+      v({
+        check: 'registry-loads',
+        runtime,
+        message: `the ${runtime} registry list could not be read: ${(err as Error).message}`,
+      });
     }
   }
 
@@ -276,7 +305,11 @@ export async function checkInvariants(opts: CheckOptions = {}): Promise<Invarian
   for (const runtime of RUNTIMES) {
     const reg = loaded[runtime];
     if (!reg) continue;
-    const origins = await providerOrigins(reg.packages, pkgs);
+    const origins = new Map<string, ProviderPackage>();
+    for (const [id, name] of reg.origins) {
+      const pkg = pkgs.find((p) => p.name === name);
+      if (pkg) origins.set(id, pkg);
+    }
     seenIds[runtime] = reg.providers.map((p) => p.id);
 
     // Provider ids: unique and kebab-case.
@@ -365,7 +398,7 @@ export async function checkInvariants(opts: CheckOptions = {}): Promise<Invarian
           });
         }
         for (const r of first) {
-          for (const problem of rungProblems(r, p.kind as RungKind)) {
+          for (const problem of rungProblems(r, p.kind as RungKind, { builtFromEmptyEnv: label === 'empty env' })) {
             v({ check: 'rung-contract', provider: p.id, runtime, file, message: `${r.id}: ${problem}` });
           }
           if (r.provider && r.provider !== p.id) {

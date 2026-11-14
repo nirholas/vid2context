@@ -21,6 +21,7 @@ export {
   checkInvariants,
   formatReport,
   type InvariantReport,
+  RUNTIMES,
   scanPortable,
   stripComments,
   type Violation,

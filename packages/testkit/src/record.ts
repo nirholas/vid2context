@@ -7,20 +7,37 @@
  *
  * stdout: what was recorded and the scrub report. stderr: logs.
  */
-import { writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { existsSync, writeFileSync } from 'node:fs';
+import { join, resolve } from 'node:path';
 import {
   clearCooldowns,
   createContext,
   type Env,
   type GetContextOptions,
   getVideoContext,
+  Registry,
   type TranscriptMode,
   type VideoContext,
 } from '@vid2context/core';
 import { replayFetch } from '@vid2context/core/testing';
-import { createRegistry, loadEnvFiles } from '@vid2context/registry/node';
+import { loadRuntimeProviders } from './invariants.ts';
 import { fixtureRoutes, recordingFetch } from './recorder.ts';
+
+/**
+ * The node registry, built package by package so one provider that is broken
+ * or not installed yet is skipped with a warning instead of stopping the run.
+ */
+async function nodeRegistry(): Promise<Registry> {
+  const { providers, failures } = await loadRuntimeProviders('node');
+  for (const f of failures) console.error(`record: skipping ${f.pkg}: ${f.error}`);
+  return new Registry(providers, 'node');
+}
+
+/** Same files as loadEnvFiles in @vid2context/registry/node: VID2CONTEXT_ENV_FILE, then ./.env. Shell variables win. */
+function loadEnv(): void {
+  const files = [process.env.VID2CONTEXT_ENV_FILE, '.env'].filter((p): p is string => Boolean(p)).map((p) => resolve(p));
+  for (const f of new Set(files)) if (existsSync(f)) process.loadEnvFile(f);
+}
 
 const USAGE =
   'Usage: npm run record -- --out <dir> [--name <n>] -- <input> [--mode auto|captions|stt|video] [--lang xx] [--no-auto]';
@@ -82,11 +99,11 @@ async function main(): Promise<number> {
     console.error((err as Error).message);
     return 2;
   }
-  loadEnvFiles();
+  loadEnv();
   const name = args.name ?? slug(args.input);
   const env = process.env as Env;
   const rec = recordingFetch(globalThis.fetch.bind(globalThis), { dir: args.out, name, scrub: { env } });
-  const registry = createRegistry();
+  const registry = await nodeRegistry();
 
   let live: VideoContext;
   try {
@@ -96,7 +113,7 @@ async function main(): Promise<number> {
     if (rec.files.length > 0) console.error(`record: ${rec.files.length} exchange(s) were still written to ${args.out}`);
     return 1;
   }
-  return finish(args, name, env, rec, live);
+  return finish(args, name, env, registry, rec, live);
 }
 
 async function finish(
