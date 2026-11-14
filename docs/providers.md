@@ -90,6 +90,27 @@ Obsidian exports need no variable: they are local files.
 | `SPONSORBLOCK_API_URL` | `@vid2context/skips` | base URL of a self-hosted SponsorBlock mirror, default `https://sponsor.ajay.app`. Lookups time out after 5 seconds |
 | `VID2CONTEXT_SKIP_CATEGORIES` | `@vid2context/skips` | default categories, comma-separated; default `sponsor,selfpromo,interaction,intro,outro,preview,filler` |
 
+## Hosted mode
+
+Accounts, quotas, a shared transcript cache and abuse protection for a public instance, from `@vid2context/accounts`. Everything is off unless `VID2CONTEXT_HOSTED=1`. GitHub OAuth and Cloudflare Turnstile are free. See `packages/accounts/README.md`.
+
+| Env var | Used by | Notes |
+|---|---|---|
+| `VID2CONTEXT_HOSTED` | `@vid2context/accounts` | `1` turns on sign-in, sessions, API keys, plans and the per-IP limiter for every route under `/api/v1` except `/health`, `/auth/*` and `/bots/*` |
+| `VID2CONTEXT_SESSION_SECRET` | `@vid2context/accounts` | required in hosted mode, 32 characters or more: signs session cookies and keys the IP hashes. Changing it signs everyone out |
+| `VID2CONTEXT_SESSION_TTL_DAYS` | `@vid2context/accounts` | session lifetime, default `30` |
+| `GITHUB_OAUTH_CLIENT_ID`, `GITHUB_OAUTH_CLIENT_SECRET` | `@vid2context/accounts` | a GitHub OAuth app; the scope is empty, so only the numeric id, login and avatar are read, never an email |
+| `GITHUB_OAUTH_REDIRECT_URI` | `@vid2context/accounts` | exact callback URL registered on the app, when a proxy changes the host or scheme; default `<request origin>/api/v1/auth/github/callback` |
+| `VID2CONTEXT_PLANS` | `@vid2context/accounts` | JSON of daily limits per plan (`requestsPerDay`, `sttMinutesPerDay`, `llmCallsPerDay`, `maxCollectionSize`); defaults `free` 500, 60, 100, 200 and `anonymous` 50, 10, 10, 25 |
+| `VID2CONTEXT_DEFAULT_PLAN` | `@vid2context/accounts` | plan for new accounts, default `free` |
+| `VID2CONTEXT_ANONYMOUS` | `@vid2context/accounts` | `1` serves callers without a session or key on the `anonymous` plan, counted per IP |
+| `TURNSTILE_SECRET` | `@vid2context/accounts` | Cloudflare Turnstile secret key; anonymous requests that can start speech-to-text must send a token in `X-Turnstile-Token`. Unset with anonymous on: those requests are refused |
+| `VID2CONTEXT_SHARED_CACHE_TTL_DAYS` | `@vid2context/accounts` | how long a public video's transcript is shared across users, default `30` |
+| `VID2CONTEXT_SHARED_CACHE_PLATFORMS` | `@vid2context/accounts` | platforms whose videos are shared, comma-separated, default `youtube`. Files and uploads are never shared |
+| `VID2CONTEXT_IP_BURST`, `VID2CONTEXT_IP_PER_MINUTE` | `@vid2context/accounts` | per-IP token bucket in front of every guarded route, default `60` burst and `120` per minute. On Workers also a soft KV window (eventually consistent) |
+| `VID2CONTEXT_IP_HEADER` | `@vid2context/accounts` | header with the client IP behind a trusted proxy, for example `x-forwarded-for` (its last address is used). Workers use `CF-Connecting-IP` |
+| `VID2CONTEXT_POST_LOGIN_PATH` | `@vid2context/accounts` | where the browser lands after sign-in when no `return_to` is given, default `/app/` |
+
 ## Planned (see ROADMAP.md)
 
 | Kind | Provider | Tier | Enabled by | Known limits |
