@@ -75,10 +75,20 @@ export function chooseServerCommand(opts: CommandOptions): ServerCommand {
   }
   if (opts.fromSource) {
     const bin = join(REPO_ROOT, 'packages', 'mcp', 'src', 'bin.ts');
+    // Clients start servers from their own working directory, where `npx tsx` would
+    // fetch whatever tsx is newest. The checkout's own tsx is pinned by its lockfile.
+    const tsx = join(REPO_ROOT, 'node_modules', '.bin', opts.platform === 'win32' ? 'tsx.cmd' : 'tsx');
+    if (existsSync(tsx)) {
+      return {
+        command: tsx,
+        args: [bin],
+        reason: `Running the server from this checkout (${bin}) with its own tsx, because of --from-source.`,
+      };
+    }
     return {
       command: 'npx',
-      args: ['tsx', bin],
-      reason: `Running the server from this checkout (${bin}) because of --from-source. Run npm install in the repo first.`,
+      args: ['-y', 'tsx', bin],
+      reason: `Running the server from this checkout (${bin}) because of --from-source. Run npm install in the repo so its pinned tsx is used instead of npx.`,
     };
   }
   const global = findOnPath(MCP_PACKAGE.bin, opts.env, opts.platform);
