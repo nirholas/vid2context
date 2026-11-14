@@ -143,6 +143,10 @@ export interface LlmOptions {
   maxChunkTokens?: number;
   /** Output tokens per call. Default 4000. */
   maxOutputTokens?: number;
+  /** When every rung is rate-limited, wait about a minute and retry, at most this many times per call. Default 3; 0 disables. */
+  rateLimitRetries?: number;
+  /** The wait used between rate-limit retries. Default: an abortable setTimeout. Tests and custom schedulers replace it. */
+  sleep?: (ms: number, signal?: AbortSignal) => Promise<void>;
   /** Called before each LLM step (job progress). `total` is the number of LLM steps planned so far. */
   onProgress?: (p: { done: number; total?: number; message: string }) => void;
 }

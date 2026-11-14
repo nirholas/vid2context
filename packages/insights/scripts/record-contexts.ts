@@ -25,10 +25,16 @@ if (cmd === 'list') {
   }
 } else if (cmd === 'get') {
   for (const input of inputs) {
-    const c = await getVideoContext(registry, input, { mode: 'captions' }, ctx);
-    const file = new URL(`youtube-${c.metadata.ref.nativeId}.json`, dir);
-    writeFileSync(file, `${JSON.stringify(c, null, 2)}\n`);
-    console.error(`${c.metadata.ref.nativeId}  ${c.metadata.title}  ${c.transcript.origin} ${c.transcript.segments.length} segments`);
+    try {
+      const c = await getVideoContext(registry, input, { mode: 'captions' }, ctx);
+      const file = new URL(`youtube-${c.metadata.ref.nativeId}.json`, dir);
+      writeFileSync(file, `${JSON.stringify(c, null, 2)}\n`);
+      console.error(
+        `${c.metadata.ref.nativeId}  ${c.metadata.title}  ${c.transcript.origin} ${c.transcript.segments.length} segments`,
+      );
+    } catch (err) {
+      console.error(`${input}  failed: ${err instanceof Error ? err.message : String(err)}`);
+    }
   }
 } else {
   console.error('usage: record-contexts.ts list <playlist url> | get <video url>...');

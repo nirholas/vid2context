@@ -16,7 +16,14 @@
  *                   all fail is removed too: nothing uncited is presented as
  *                   cited.
  */
-import { attemptsOf, type ChatMessage, estimateTokens, timestampUrl, Vid2ContextError, type VideoContext } from '@vid2context/core';
+import {
+  attemptsOf,
+  type ChatMessage,
+  estimateTokens,
+  timestampUrl,
+  Vid2ContextError,
+  type VideoContext,
+} from '@vid2context/core';
 import type { InsightsDeps } from './brief.ts';
 import { chatJson, type JsonAnswer, Ledger, sourceBudget, withJson } from './llm.ts';
 import { extractionSchema, extractMessages, mergeMessages, repairMessages } from './prompts.ts';
@@ -61,7 +68,13 @@ function collect(v: unknown, path: string, slots: CiteSlot[], owner?: CiteSlot['
   if (Array.isArray(v)) {
     v.forEach((item, i) => {
       if (isCite(item)) slots.push({ holder: v, key: i, path: `${path}${pointer(i)}`, owner });
-      else collect(item, `${path}${pointer(i)}`, slots, isObject(item) ? { list: v, index: i, path: `${path}${pointer(i)}` } : owner);
+      else
+        collect(
+          item,
+          `${path}${pointer(i)}`,
+          slots,
+          isObject(item) ? { list: v, index: i, path: `${path}${pointer(i)}` } : owner,
+        );
     });
   } else if (isObject(v)) {
     for (const [k, val] of Object.entries(v)) {
@@ -95,10 +108,16 @@ export function verifyExtraction(
       path?: unknown;
     };
     const source: Source | undefined = set.find(raw.videoId);
-    const claim = describe(slot.owner ? slot.owner.list[slot.owner.index] : undefined) || (typeof raw.path === 'string' ? raw.path : '');
+    const claim =
+      describe(slot.owner ? slot.owner.list[slot.owner.index] : undefined) || (typeof raw.path === 'string' ? raw.path : '');
     const r = source
       ? verifyQuote(source.context, raw.quote, raw.startSec)
-      : { ok: false as const, reason: 'unknown-video' as const, detail: `"${String(raw.videoId)}" is not one of the sources.`, score: 0 };
+      : {
+          ok: false as const,
+          reason: 'unknown-video' as const,
+          detail: `"${String(raw.videoId)}" is not one of the sources.`,
+          score: 0,
+        };
     if (r.ok && source && r.startSec !== undefined) {
       const url = timestampUrl(source.context.metadata.ref, r.startSec);
       const cite: Citation & { path?: string } = {
@@ -149,8 +168,9 @@ export function verifyExtraction(
 
   const citations: (Citation & { path: string })[] = [];
   const walk = (v: unknown, path: string) => {
-    if (Array.isArray(v)) v.forEach((x, i) => walk(x, `${path}${pointer(i)}`));
-    else if (isObject(v)) {
+    if (Array.isArray(v)) {
+      for (const [i, x] of v.entries()) walk(x, `${path}${pointer(i)}`);
+    } else if (isObject(v)) {
       if (good.has(v)) {
         const c = v as unknown as Citation & { path?: string };
         citations.push({ ...c, path: c.path ?? path });
@@ -175,16 +195,25 @@ async function validated(
   c.deps.ctx.log.info('extraction failed schema validation, sending one repair call', { errors: errors.length });
   const repair = await chatJson(
     c.deps.registry,
-    { step: 'repair', messages: repairMessages(messages, answer.text, errors), chain: c.opts.chain, maxTokens: c.opts.maxOutputTokens },
+    {
+      step: 'repair',
+      messages: repairMessages(messages, answer.text, errors),
+      chain: c.opts.chain,
+      maxTokens: c.opts.maxOutputTokens,
+    },
     c.ledger,
     c.deps.ctx,
   );
   const after = repair.value ? validate(schema, repair.value) : ['/: the answer is not a JSON object'];
   if (after.length > 0 || !repair.value) {
     throw Object.assign(
-      new Vid2ContextError('upstream', `The model's answer did not match the schema after one repair: ${after.slice(0, 5).join('; ')}`, {
-        hint: 'Retry, pick a stronger rung (chain.only or policy "quality"), or simplify the schema (fewer required fields, looser limits).',
-      }),
+      new Vid2ContextError(
+        'upstream',
+        `The model's answer did not match the schema after one repair: ${after.slice(0, 5).join('; ')}`,
+        {
+          hint: 'Retry, pick a stronger rung (chain.only or policy "quality"), or simplify the schema (fewer required fields, looser limits).',
+        },
+      ),
       { attempts: c.ledger.attempts },
     );
   }
@@ -201,7 +230,7 @@ export async function extract(contexts: VideoContext[], opts: ExtractOptions, de
   const { schema, template } = extractionSchema(opts);
   const custom = opts.schema !== undefined;
   const set = sourceSet(contexts);
-  const ledger = new Ledger();
+  const ledger = new Ledger({ sleep: opts.sleep, rateLimitRetries: opts.rateLimitRetries });
   const chain = withJson(opts.chain);
   const budget = sourceBudget(deps.registry, deps.ctx, chain, opts);
   const c = { deps, ledger, opts: { ...opts, chain } };
@@ -211,7 +240,12 @@ export async function extract(contexts: VideoContext[], opts: ExtractOptions, de
   let messages: ChatMessage[];
   if (total <= budget) {
     messages = extractMessages(set.sources, { schema, template, question: opts.question, custom });
-    answer = await chatJson(deps.registry, { step: 'extract', messages, chain, maxTokens: opts.maxOutputTokens }, ledger, deps.ctx);
+    answer = await chatJson(
+      deps.registry,
+      { step: 'extract', messages, chain, maxTokens: opts.maxOutputTokens },
+      ledger,
+      deps.ctx,
+    );
   } else {
     ({ answer, messages } = await extractInParts(set, { schema, template, custom, budget }, c));
   }

@@ -64,15 +64,27 @@ export function registerInsightsTools(server: McpServer, deps: InsightsToolDeps)
       inputSchema: {
         urls: z.array(z.string().min(1)).max(MAX_VIDEOS).optional().describe(`Up to ${MAX_VIDEOS} video URLs or ids`),
         collection: z.string().min(1).optional().describe('A saved collection id'),
-        question: z.string().max(2000).optional().describe('What the brief should answer, e.g. "Which G-Wagon year should I buy?"'),
+        question: z
+          .string()
+          .max(2000)
+          .optional()
+          .describe('What the brief should answer, e.g. "Which G-Wagon year should I buy?"'),
         template: z.enum(TEMPLATE_IDS).optional().describe('brief (default) or buyer-guide, tutorial-steps, comparison, summary'),
-        format: z.enum(['markdown', 'json']).optional().describe('markdown (default): the brief as Markdown; json: the full Brief object'),
+        format: z
+          .enum(['markdown', 'json'])
+          .optional()
+          .describe('markdown (default): the brief as Markdown; json: the full Brief object'),
       },
       annotations: { readOnlyHint: true, openWorldHint: true },
     },
     async (args, extra) => {
       try {
-        const req = parseBriefRequest({ inputs: args.urls, collectionId: args.collection, question: args.question, template: args.template });
+        const req = parseBriefRequest({
+          inputs: args.urls,
+          collectionId: args.collection,
+          question: args.question,
+          template: args.template,
+        });
         const d = forCall(extra.signal);
         const contexts = await loadContexts(req, d);
         const brief = await buildBrief(contexts, { question: req.question, template: req.template }, d);

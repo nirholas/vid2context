@@ -128,7 +128,8 @@ export function verifyQuote(
 ): VerifyResult {
   const windowSec = opts.windowSec ?? WINDOW_SEC;
   const threshold = opts.threshold ?? THRESHOLD;
-  if (typeof quote !== 'string' || !quote.trim()) return { ok: false, reason: 'no-quote', detail: 'The claim has no quote.', score: 0 };
+  if (typeof quote !== 'string' || !quote.trim())
+    return { ok: false, reason: 'no-quote', detail: 'The claim has no quote.', score: 0 };
   const q = normalize(quote).split(' ').filter(Boolean);
   if (q.length < MIN_QUOTE_TOKENS) {
     return {
@@ -139,7 +140,8 @@ export function verifyQuote(
     };
   }
   const t = parseSeconds(startSec);
-  if (Number.isNaN(t)) return { ok: false, reason: 'bad-timestamp', detail: `"${String(startSec)}" is not a timestamp.`, score: 0 };
+  if (Number.isNaN(t))
+    return { ok: false, reason: 'bad-timestamp', detail: `"${String(startSec)}" is not a timestamp.`, score: 0 };
 
   const stream = streamOf(context);
   const segs = context.transcript.segments;

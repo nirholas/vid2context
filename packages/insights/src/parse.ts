@@ -50,10 +50,14 @@ function sources(b: Record<string, unknown>): { inputs?: string[]; collectionId?
     throw bad('inputs must be an array of strings.', 'Send video URLs or ids as "inputs": ["https://youtu.be/..."].');
   }
   const list = (inputs as string[] | undefined)?.map((s) => s.trim()).filter(Boolean);
-  if (list && list.length > MAX_VIDEOS) throw bad(`At most ${MAX_VIDEOS} inputs per request.`, 'Split the videos into several requests.');
+  if (list && list.length > MAX_VIDEOS)
+    throw bad(`At most ${MAX_VIDEOS} inputs per request.`, 'Split the videos into several requests.');
   const collectionId = optString(b, 'collectionId', 200) ?? optString(b, 'collection', 200);
   if ((!list || list.length === 0) && !collectionId) {
-    throw bad('Nothing to read: send inputs or a collectionId.', 'Send {"inputs": ["<video URL>", ...]} or {"collectionId": "<id>"}.');
+    throw bad(
+      'Nothing to read: send inputs or a collectionId.',
+      'Send {"inputs": ["<video URL>", ...]} or {"collectionId": "<id>"}.',
+    );
   }
   return { ...(list && list.length > 0 ? { inputs: list } : {}), ...(collectionId ? { collectionId } : {}) };
 }

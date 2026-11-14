@@ -11,8 +11,8 @@ import { summary } from './summary.ts';
 import { tutorialSteps } from './tutorial-steps.ts';
 import type { Template } from './types.ts';
 
-export type { Template } from './types.ts';
 export { CITE_SCHEMA } from './cite.ts';
+export type { Template } from './types.ts';
 
 export const templates: Record<string, Template> = {
   [brief.id]: brief,

@@ -16,7 +16,14 @@
  * and the run is reproducible. The map step uses the caller's chain (free
  * first, small fast models); the reduce step defaults to policy 'quality'.
  */
-import { type ChainOptions, type Ctx, estimateTokens, type Registry, Vid2ContextError, type VideoContext } from '@vid2context/core';
+import {
+  type ChainOptions,
+  type Ctx,
+  estimateTokens,
+  type Registry,
+  Vid2ContextError,
+  type VideoContext,
+} from '@vid2context/core';
 import { chatJson, Ledger, sourceBudget, withJson } from './llm.ts';
 import { renderBrief } from './markdown.ts';
 import { mapMessages, reduceMessages, singleMessages } from './prompts.ts';
@@ -54,7 +61,8 @@ interface RawTopic {
   points: RawPoint[];
 }
 
-const ids = (v: unknown): string[] => (Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string').map((x) => x.trim()) : []);
+const ids = (v: unknown): string[] =>
+  Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string').map((x) => x.trim()) : [];
 
 function asTopics(v: unknown): RawTopic[] | null {
   if (!Array.isArray(v)) return null;
@@ -179,7 +187,14 @@ function reduceChainFor(opts: BriefOptions, ctx: Ctx): ChainOptions {
 
 async function reduce(
   claims: Claim[],
-  ctx: { deps: InsightsDeps; ledger: Ledger; template: Template; opts: BriefOptions; budget: number; labelOf: (id: string) => string },
+  ctx: {
+    deps: InsightsDeps;
+    ledger: Ledger;
+    template: Template;
+    opts: BriefOptions;
+    budget: number;
+    labelOf: (id: string) => string;
+  },
 ): Promise<RawTopic[]> {
   if (claims.length === 0) return [];
   const topics: RawTopic[] = [];
@@ -189,7 +204,13 @@ async function reduce(
     try {
       const res = await chatJson(
         ctx.deps.registry,
-        { step: 'reduce', messages, chain: reduceChainFor(ctx.opts, ctx.deps.ctx), maxTokens: ctx.opts.maxOutputTokens, chunk: i },
+        {
+          step: 'reduce',
+          messages,
+          chain: reduceChainFor(ctx.opts, ctx.deps.ctx),
+          maxTokens: ctx.opts.maxOutputTokens,
+          chunk: i,
+        },
         ctx.ledger,
         ctx.deps.ctx,
       );
@@ -209,7 +230,7 @@ async function reduce(
 export async function buildBrief(contexts: VideoContext[], opts: BriefOptions, deps: InsightsDeps): Promise<Brief> {
   const set = sourceSet(contexts);
   const template = getTemplate(opts.template);
-  const ledger = new Ledger();
+  const ledger = new Ledger({ sleep: opts.sleep, rateLimitRetries: opts.rateLimitRetries });
   const chain = withJson(opts.chain);
   const budget = sourceBudget(deps.registry, deps.ctx, chain, opts);
   const labelOf = (videoId: string) => set.find(videoId)?.label ?? videoId;
@@ -226,7 +247,12 @@ export async function buildBrief(contexts: VideoContext[], opts: BriefOptions, d
     strategy = 'single';
     progress({ done: 0, total: 1, message: `Reading ${set.sources.length} video(s) in one pass` });
     const messages = singleMessages(rendered, { template, question: opts.question, maxClaims: CLAIMS_SINGLE });
-    const res = await chatJson(deps.registry, { step: 'single', messages, chain, maxTokens: opts.maxOutputTokens }, ledger, deps.ctx);
+    const res = await chatJson(
+      deps.registry,
+      { step: 'single', messages, chain, maxTokens: opts.maxOutputTokens },
+      ledger,
+      deps.ctx,
+    );
     raw = asRawClaims(res.value?.claims);
     topics = asTopics(res.value?.topics);
   } else {
@@ -325,7 +351,8 @@ async function mapSource(
       const claims = asRawClaims(res.value?.claims);
       // A chunk only covers one video: a claim tagged with another label is the model's slip, so pin it to this one.
       out.push(...claims.map((cl) => ({ ...cl, videoId: s.label })));
-      if (!res.value) c.ledger.notes.push(`Map step for ${s.summary.videoId} part ${i + 1} returned no JSON; its claims are missing.`);
+      if (!res.value)
+        c.ledger.notes.push(`Map step for ${s.summary.videoId} part ${i + 1} returned no JSON; its claims are missing.`);
     } catch (err) {
       c.ledger.notes.push(
         `Map step for ${s.summary.videoId} part ${i + 1} failed (${err instanceof Error ? err.message : String(err)}); its claims are missing.`,

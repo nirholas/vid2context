@@ -9,8 +9,8 @@ import {
   getVideoContext,
   type Registry,
   type Storage,
-  type VideoContext,
   Vid2ContextError,
+  type VideoContext,
 } from '@vid2context/core';
 
 /** More videos than this in one request is a collection-sized job; keep requests bounded. */
@@ -61,12 +61,18 @@ export async function loadContexts(req: LoadRequest, deps: LoadDeps): Promise<Vi
     }
     const col = await storage.getCollection(req.collectionId);
     if (!col) {
-      throw new Vid2ContextError('not-found', `No collection "${req.collectionId}".`, { hint: 'List collections to find the id.' });
+      throw new Vid2ContextError('not-found', `No collection "${req.collectionId}".`, {
+        hint: 'List collections to find the id.',
+      });
     }
     if (col.videoIds.length > MAX_VIDEOS) {
-      throw new Vid2ContextError('too-large', `Collection "${col.name}" has ${col.videoIds.length} videos; one request reads at most ${MAX_VIDEOS}.`, {
-        hint: `Pass up to ${MAX_VIDEOS} of its videos as inputs.`,
-      });
+      throw new Vid2ContextError(
+        'too-large',
+        `Collection "${col.name}" has ${col.videoIds.length} videos; one request reads at most ${MAX_VIDEOS}.`,
+        {
+          hint: `Pass up to ${MAX_VIDEOS} of its videos as inputs.`,
+        },
+      );
     }
     for (const id of col.videoIds) {
       const c = await storage.getContext(id);

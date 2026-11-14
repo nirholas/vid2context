@@ -4,7 +4,8 @@ import type { Template } from './types.ts';
 export const tutorialSteps: Template = {
   id: 'tutorial-steps',
   title: 'Tutorial steps',
-  description: 'The steps a tutorial walks through, in order, with prerequisites and pitfalls, each cited to the moment it is shown.',
+  description:
+    'The steps a tutorial walks through, in order, with prerequisites and pitfalls, each cited to the moment it is shown.',
   topics: ['prerequisites', 'steps', 'pitfalls', 'result'],
   instructions: `## Tutorial steps
 

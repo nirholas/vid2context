@@ -71,7 +71,8 @@ export function assertSupportedSchema(schema: unknown, path = '#', depth = 0): a
   if (depth > MAX_DEPTH) throw unsupported(`The schema nests deeper than ${MAX_DEPTH} levels at ${path}.`);
   if (!isObject(schema)) throw unsupported(`The schema at ${path} must be an object.`);
   for (const key of Object.keys(schema)) {
-    if (!KEYWORDS.has(key) && !ANNOTATIONS.has(key)) throw unsupported(`The schema keyword "${key}" at ${path} is not supported.`);
+    if (!KEYWORDS.has(key) && !ANNOTATIONS.has(key))
+      throw unsupported(`The schema keyword "${key}" at ${path} is not supported.`);
   }
   const t = schema.type;
   if (t !== undefined) {
@@ -97,7 +98,16 @@ export function assertSupportedSchema(schema: unknown, path = '#', depth = 0): a
     assertSupportedSchema(schema.items, `${path}/items`, depth + 1);
   }
   if (schema.enum !== undefined && !Array.isArray(schema.enum)) throw unsupported(`"enum" at ${path} must be a list.`);
-  for (const k of ['minItems', 'maxItems', 'minLength', 'maxLength', 'minimum', 'maximum', 'exclusiveMinimum', 'exclusiveMaximum']) {
+  for (const k of [
+    'minItems',
+    'maxItems',
+    'minLength',
+    'maxLength',
+    'minimum',
+    'maximum',
+    'exclusiveMinimum',
+    'exclusiveMaximum',
+  ]) {
     if (schema[k] !== undefined && (typeof schema[k] !== 'number' || !Number.isFinite(schema[k]))) {
       throw unsupported(`"${k}" at ${path} must be a number.`);
     }
@@ -167,7 +177,9 @@ function walk(s: JsonSchema, v: unknown, path: string, errors: string[]): void {
     if (typeof s.minItems === 'number' && v.length < s.minItems) push(`must have at least ${s.minItems} items`);
     if (typeof s.maxItems === 'number' && v.length > s.maxItems) push(`must have at most ${s.maxItems} items (has ${v.length})`);
     if (s.uniqueItems === true && new Set(v.map((x) => JSON.stringify(x))).size !== v.length) push('items must be unique');
-    if (isObject(s.items)) v.forEach((item, i) => walk(s.items as JsonSchema, item, `${path}/${i}`, errors));
+    if (isObject(s.items)) {
+      for (const [i, item] of v.entries()) walk(s.items as JsonSchema, item, `${path}/${i}`, errors);
+    }
   }
   if (isObject(v)) {
     const props = isObject(s.properties) ? (s.properties as Record<string, JsonSchema>) : {};

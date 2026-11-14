@@ -39,7 +39,9 @@ const MAX_BODY_BYTES = 200_000;
 async function readJson(req: Request): Promise<unknown> {
   const text = await req.text();
   if (text.length > MAX_BODY_BYTES) {
-    throw new Vid2ContextError('too-large', 'The request body is larger than 200 KB.', { hint: 'Send a smaller schema or fewer inputs.' });
+    throw new Vid2ContextError('too-large', 'The request body is larger than 200 KB.', {
+      hint: 'Send a smaller schema or fewer inputs.',
+    });
   }
   try {
     return JSON.parse(text);
@@ -61,7 +63,9 @@ export function insightsRoutes(deps: InsightsRouteDeps): Hono {
     if (queue) return c.json(await queue.enqueue(BRIEF_JOB, req), 202);
     const ctx = deps.makeCtx(c.req.raw);
     const contexts = await loadContexts(req, loadDeps(ctx));
-    return c.json(await buildBrief(contexts, { question: req.question, template: req.template }, { registry: deps.registry, ctx }));
+    return c.json(
+      await buildBrief(contexts, { question: req.question, template: req.template }, { registry: deps.registry, ctx }),
+    );
   });
 
   app.post('/extract', async (c) => {
@@ -70,7 +74,11 @@ export function insightsRoutes(deps: InsightsRouteDeps): Hono {
     const ctx = deps.makeCtx(c.req.raw);
     const contexts = await loadContexts(req, loadDeps(ctx));
     return c.json(
-      await extract(contexts, { template: req.template, schema: req.schema, question: req.question }, { registry: deps.registry, ctx }),
+      await extract(
+        contexts,
+        { template: req.template, schema: req.schema, question: req.question },
+        { registry: deps.registry, ctx },
+      ),
     );
   });
 

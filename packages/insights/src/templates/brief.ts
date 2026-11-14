@@ -4,7 +4,8 @@ import type { Template } from './types.ts';
 export const brief: Template = {
   id: 'brief',
   title: 'Brief',
-  description: 'A cited research brief: what the videos say, where they agree, where they disagree, and what only one source claims.',
+  description:
+    'A cited research brief: what the videos say, where they agree, where they disagree, and what only one source claims.',
   topics: [],
   instructions: `## Brief
 

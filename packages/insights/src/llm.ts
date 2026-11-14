@@ -10,8 +10,8 @@ import {
   type ChatMessage,
   type Ctx,
   chat,
-  rankRungs,
   type Registry,
+  rankRungs,
   Vid2ContextError,
 } from '@vid2context/core';
 import type { RungUse, Step } from './types.ts';
@@ -36,7 +36,12 @@ export function withJson(chain: ChainOptions | undefined): ChainOptions {
  * Source tokens one call may carry: from the first rung the chain would try,
  * with headroom for the prompt and the answer, capped at MAX_CHUNK_TOKENS.
  */
-export function sourceBudget(registry: Registry, ctx: Ctx, chain: ChainOptions | undefined, opts: { maxChunkTokens?: number; maxOutputTokens?: number }): number {
+export function sourceBudget(
+  registry: Registry,
+  ctx: Ctx,
+  chain: ChainOptions | undefined,
+  opts: { maxChunkTokens?: number; maxOutputTokens?: number },
+): number {
   const ranked = rankRungs(registry.llmRungs(ctx.env), withJson(chain), ctx.env);
   if (ranked.length === 0) {
     throw new Vid2ContextError('no-provider', 'No LLM rung with JSON output is enabled for server-side synthesis.', {
@@ -48,9 +53,13 @@ export function sourceBudget(registry: Registry, ctx: Ctx, chain: ChainOptions |
   const fromWindow = Math.floor(window * HEADROOM) - output - PROMPT_OVERHEAD_TOKENS;
   const budget = Math.min(MAX_CHUNK_TOKENS, fromWindow, opts.maxChunkTokens ?? Number.POSITIVE_INFINITY);
   if (budget < 500) {
-    throw new Vid2ContextError('too-large', `The first LLM rung (${ranked[0]?.id}) has too small a context window for synthesis.`, {
-      hint: 'Use a rung with a larger window (ChainOptions.only), or lower maxOutputTokens.',
-    });
+    throw new Vid2ContextError(
+      'too-large',
+      `The first LLM rung (${ranked[0]?.id}) has too small a context window for synthesis.`,
+      {
+        hint: 'Use a rung with a larger window (ChainOptions.only), or lower maxOutputTokens.',
+      },
+    );
   }
   return budget;
 }
@@ -69,11 +78,55 @@ export function parseJsonObject(text: string): Record<string, unknown> | null {
   return null;
 }
 
-/** Accumulates rung use and attempts across the steps of one brief or extraction. */
+/** Wait after every rung was rate-limited: a little over the core chain's 60 s rate-limit cooldown. */
+export const RATE_LIMIT_WAIT_MS = 62_000;
+export const DEFAULT_RATE_LIMIT_RETRIES = 3;
+
+export type Sleep = (ms: number, signal?: AbortSignal) => Promise<void>;
+
+/** setTimeout-based sleep that rejects when the signal aborts. Runtime-neutral. */
+export const sleep: Sleep = (ms, signal) =>
+  new Promise((resolve, reject) => {
+    if (signal?.aborted) return reject(signal.reason ?? new DOMException('Aborted', 'AbortError'));
+    const t = setTimeout(() => {
+      signal?.removeEventListener('abort', onAbort);
+      resolve();
+    }, ms);
+    const onAbort = () => {
+      clearTimeout(t);
+      reject(signal?.reason ?? new DOMException('Aborted', 'AbortError'));
+    };
+    signal?.addEventListener('abort', onAbort, { once: true });
+  });
+
+/** Accumulates rung use and attempts across the steps of one brief or extraction, and holds the rate-limit policy. */
 export class Ledger {
   readonly rungs: RungUse[] = [];
   readonly attempts: Attempt[] = [];
   readonly notes: string[] = [];
+  readonly sleep: Sleep;
+  readonly rateLimitRetries: number;
+
+  constructor(opts: { sleep?: Sleep; rateLimitRetries?: number } = {}) {
+    this.sleep = opts.sleep ?? sleep;
+    this.rateLimitRetries = Math.max(0, opts.rateLimitRetries ?? DEFAULT_RATE_LIMIT_RETRIES);
+  }
+}
+
+/**
+ * True when a chain failure was only rate limits: every rung tried answered
+ * 429 (or a keyless host's free-limit 402) or was cooling down from one.
+ * Waiting helps then; it does not for auth or upstream errors.
+ */
+export function onlyRateLimited(attempts: Attempt[]): boolean {
+  const tried = attempts.filter((a) => a.outcome === 'error');
+  if (tried.length === 0) return attempts.length > 0 && attempts.every((a) => a.reason === 'cooldown');
+  return attempts.every(
+    (a) =>
+      a.reason === 'cooldown' ||
+      a.reason?.startsWith('rate-limited') ||
+      (a.reason === 'auth-402' && /free limit|FREE_LIMIT|rate/i.test(a.detail ?? '')),
+  );
 }
 
 export interface JsonCall {
@@ -101,18 +154,30 @@ export async function chatJson(registry: Registry, call: JsonCall, ledger: Ledge
   let skip = chain.skip ?? [];
   let last: JsonAnswer | null = null;
   for (let attempt = 0; attempt < 2; attempt++) {
-    let res: Awaited<ReturnType<typeof chat>>;
-    try {
-      res = await chat(
-        registry,
-        { messages: call.messages, json: true, temperature: 0.2, maxTokens: call.maxTokens ?? DEFAULT_OUTPUT_TOKENS },
-        { ...chain, skip },
-        ctx,
-      );
-    } catch (err) {
-      ledger.attempts.push(...attemptsOf(err));
-      if (last) return last;
-      throw err;
+    let res: Awaited<ReturnType<typeof chat>> | undefined;
+    for (let wait = 0; !res; wait++) {
+      try {
+        res = await chat(
+          registry,
+          { messages: call.messages, json: true, temperature: 0.2, maxTokens: call.maxTokens ?? DEFAULT_OUTPUT_TOKENS },
+          { ...chain, skip },
+          ctx,
+        );
+      } catch (err) {
+        const attempts = attemptsOf(err);
+        ledger.attempts.push(...attempts);
+        if (wait < ledger.rateLimitRetries && onlyRateLimited(attempts) && !ctx.signal?.aborted) {
+          ctx.log.warn('every LLM rung is rate-limited, waiting before retrying', {
+            step: call.step,
+            waitSec: RATE_LIMIT_WAIT_MS / 1000,
+            retry: wait + 1,
+          });
+          await ledger.sleep(RATE_LIMIT_WAIT_MS, ctx.signal);
+          continue;
+        }
+        if (last) return last;
+        throw err;
+      }
     }
     ledger.attempts.push(...res.attempts);
     ledger.rungs.push({

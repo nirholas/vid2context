@@ -145,7 +145,9 @@ export function briefPrompt(contexts: VideoContext[], opts: PromptOptions = {}):
   return [
     {
       role: 'system',
-      content: systemFor('You write research briefs from video transcripts. Every claim you write is cited to a video and a timestamp.'),
+      content: systemFor(
+        'You write research briefs from video transcripts. Every claim you write is cited to a video and a timestamp.',
+      ),
     },
     { role: 'user', content: user.filter(Boolean).join('\n\n') },
   ];
@@ -200,7 +202,9 @@ export const EXTRACT_CITATION_RULE =
 function extractTask(opts: { template?: Template; schema: JsonSchema; question?: string; custom: boolean }): string {
   return [
     opts.question ? `Question: ${opts.question}` : '',
-    opts.template ? opts.template.instructions : '## Extraction\n\nFill the "data" object from the videos and list one citation per fact in "citations".',
+    opts.template
+      ? opts.template.instructions
+      : '## Extraction\n\nFill the "data" object from the videos and list one citation per fact in "citations".',
     '## Citations',
     EXTRACT_CITATION_RULE,
     '## Output',
@@ -226,14 +230,23 @@ export function extractPrompt(contexts: VideoContext[], opts: ExtractPromptOptio
 
 export function extractMessages(
   sources: Source[],
-  opts: { schema: JsonSchema; template?: Template; question?: string; custom: boolean; parts?: Map<Source, { lines: Source['lines']; index: number; total: number }> },
+  opts: {
+    schema: JsonSchema;
+    template?: Template;
+    question?: string;
+    custom: boolean;
+    parts?: Map<Source, { lines: Source['lines']; index: number; total: number }>;
+  },
 ): ChatMessage[] {
   const blocks = sources.map((s) => {
     const p = opts.parts?.get(s);
     return renderSource(s, { style: 'seconds', lines: p?.lines, part: p ? { index: p.index, total: p.total } : undefined }).block;
   });
   return [
-    { role: 'system', content: systemFor('You extract structured, cited facts from video transcripts and reply with JSON only.') },
+    {
+      role: 'system',
+      content: systemFor('You extract structured, cited facts from video transcripts and reply with JSON only.'),
+    },
     {
       role: 'user',
       content: [
@@ -248,6 +261,15 @@ export function extractMessages(
 
 // ---------------------------------------------------------------- server-side brief
 
+const CLAIM_PROPERTIES: Record<string, JsonSchema> = {
+  claim: { type: 'string' },
+  quote: { type: 'string' },
+  videoId: { type: 'string' },
+  startSec: { type: ['number', 'string'] },
+  topic: { type: 'string' },
+  stance: { type: 'string' },
+};
+
 export const MAP_SCHEMA: JsonSchema = {
   type: 'object',
   properties: {
@@ -255,14 +277,7 @@ export const MAP_SCHEMA: JsonSchema = {
       type: 'array',
       items: {
         type: 'object',
-        properties: {
-          claim: { type: 'string' },
-          quote: { type: 'string' },
-          videoId: { type: 'string' },
-          startSec: { type: ['number', 'string'] },
-          topic: { type: 'string' },
-          stance: { type: 'string' },
-        },
+        properties: CLAIM_PROPERTIES,
         required: ['claim', 'quote', 'videoId', 'startSec', 'topic'],
         additionalProperties: false,
       },
@@ -284,19 +299,19 @@ const POINT_SCHEMA: JsonSchema = {
   additionalProperties: false,
 };
 
+const TOPICS_SCHEMA: JsonSchema = {
+  type: 'array',
+  items: {
+    type: 'object',
+    properties: { topic: { type: 'string' }, points: { type: 'array', items: POINT_SCHEMA } },
+    required: ['topic', 'points'],
+    additionalProperties: false,
+  },
+};
+
 export const REDUCE_SCHEMA: JsonSchema = {
   type: 'object',
-  properties: {
-    topics: {
-      type: 'array',
-      items: {
-        type: 'object',
-        properties: { topic: { type: 'string' }, points: { type: 'array', items: POINT_SCHEMA } },
-        required: ['topic', 'points'],
-        additionalProperties: false,
-      },
-    },
-  },
+  properties: { topics: TOPICS_SCHEMA },
   required: ['topics'],
   additionalProperties: false,
 };
@@ -314,10 +329,7 @@ function claimRules(template: Template, maxClaims: number): string {
   ].join('\n');
 }
 
-export function mapMessages(
-  block: string,
-  opts: { template: Template; question?: string; maxClaims: number },
-): ChatMessage[] {
+export function mapMessages(block: string, opts: { template: Template; question?: string; maxClaims: number }): ChatMessage[] {
   return [
     { role: 'system', content: systemFor('You extract cited claims from a video transcript and reply with JSON only.') },
     {
@@ -346,7 +358,10 @@ const REDUCE_RULES = [
 
 export function reduceMessages(claimsBlock: string, opts: { template: Template; question?: string }): ChatMessage[] {
   return [
-    { role: 'system', content: systemFor('You organize claims from several videos into topics and points, and reply with JSON only.') },
+    {
+      role: 'system',
+      content: systemFor('You organize claims from several videos into topics and points, and reply with JSON only.'),
+    },
     {
       role: 'user',
       content: [
@@ -371,16 +386,12 @@ export const SINGLE_SCHEMA: JsonSchema = {
       type: 'array',
       items: {
         type: 'object',
-        properties: {
-          id: { type: 'string' },
-          ...((MAP_SCHEMA.properties as Record<string, JsonSchema>).claims?.items as { properties: Record<string, JsonSchema> })
-            .properties,
-        },
+        properties: { id: { type: 'string' }, ...CLAIM_PROPERTIES },
         required: ['id', 'claim', 'quote', 'videoId', 'startSec', 'topic'],
         additionalProperties: false,
       },
     },
-    topics: (REDUCE_SCHEMA.properties as Record<string, JsonSchema>).topics as JsonSchema,
+    topics: TOPICS_SCHEMA,
   },
   required: ['claims', 'topics'],
   additionalProperties: false,
