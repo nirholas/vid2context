@@ -12,6 +12,9 @@
  *            back along the rest of the ranked list, so one rung's rate limit
  *            does not stall the job. When every rung is cooling down the chunk
  *            waits and retries instead of failing.
+ *   resplit  a chunk every rung refuses as too large (413: OVH keyless caps
+ *            audio at 60 s) is split again under the limit the error states
+ *            (or half its length), and the limit applies to later chunks too
  *   resume   each finished chunk is saved under
  *            longform:<refId>:<audioSha256>:<chunkIndex> for 7 days
  *   stitch   see stitch.ts
@@ -265,7 +268,9 @@ export async function transcribeLong(
   const overlapSec = opts.overlapSec ?? 2;
 
   const splitters = [...(opts.splitters ?? []), ...builtinSplitters];
-  if (input.kind === 'url' && !splitters.some((s) => s.canSplit(input))) {
+  // A URL that names its container (mime type or extension) and that no splitter claims fails before the download.
+  const named = input.kind === 'url' && (Boolean(input.mimeType) || /\.[a-z0-9]{2,5}$/i.test(new URL(input.url).pathname));
+  if (input.kind === 'url' && named && !splitters.some((s) => s.canSplit(input))) {
     throw Object.assign(tooLargeError(input, 'unrecognised container'), {
       attempts: [
         {
