@@ -4,6 +4,8 @@
  * upload store, and context loading with single-flight (identical concurrent
  * requests share one pipeline run).
  */
+
+import type { HostedRequest } from '@vid2context/accounts/http';
 import {
   type Attempt,
   attemptsOf,
@@ -71,6 +73,8 @@ export interface Services {
   uploadBackend(ctx: Ctx): Promise<UploadBackend>;
   /** The live upload for an `upload:<sha256>` input. */
   getUpload(input: string, ctx: Ctx): Promise<UploadEntry>;
+  /** Hosted mode: meter this request's pipeline work against the caller's plan and use the shared cache. */
+  setHosted(req: Request, hosted: HostedRequest): void;
   /** Contexts for a batch: inputs (playlists expanded) and/or a collection's saved videos. */
   loadBatch(sel: { inputs?: string[]; collectionId?: string }, opts: LoadOptions, ctx: Ctx): Promise<VideoContext[]>;
 }
@@ -92,6 +96,9 @@ export function createServices(
   let storagePromise: Promise<Storage> | undefined;
   const uploads = new UploadStore();
   const inflight = new Map<string, Promise<VideoContext>>();
+  const hostedFor = new WeakMap<Ctx, HostedRequest>();
+  /** The registry for this request: metered against the caller's plan in hosted mode. */
+  const registryFor = (ctx: Ctx): Registry => hostedFor.get(ctx)?.registry(registry) ?? registry;
 
   const config = (req: Request): ServerConfig => {
     let cfg = configCache.get(req);
@@ -177,11 +184,12 @@ export function createServices(
     const backend = await uploadBackend(ctx);
     const cached = await uploads.getContext(entry, langKey, backend);
     if (cached) return cached;
-    return shared(`upload\u0000${entry.sha256}\u0000${langKey}`, ctx, async (runCtx) => {
+    const who = hostedFor.get(ctx)?.principal ?? '';
+    return shared(`upload\u0000${entry.sha256}\u0000${langKey}\u0000${who}`, ctx, async (runCtx) => {
       const ref = uploadRef(entry);
       const attempts: Attempt[] = [{ id: 'uploads', stage: 'resolve', outcome: 'ok', detail: ref.id }];
       try {
-        const res = await transcribe(registry, ref, uploadAudio(entry), { stt: { language: opts.language } }, runCtx);
+        const res = await transcribe(registryFor(ctx), ref, uploadAudio(entry), { stt: { language: opts.language } }, runCtx);
         const context: VideoContext = {
           metadata: uploadMetadata(entry),
           transcript: res.transcript,
@@ -207,17 +215,21 @@ export function createServices(
   const loadContext = async (input: string, opts: LoadOptions, ctx: Ctx): Promise<VideoContext> => {
     check(input, ctx);
     if (isUploadInput(input)) return loadUpload(input, opts, ctx);
-    const store = await storage(ctx);
+    const hosted = hostedFor.get(ctx);
+    const base = await storage(ctx);
+    // Hosted mode: public videos come from (and go to) the shared cache, and work is metered per caller.
+    const store = hosted ? hosted.storage(base, { mode: opts.mode, language: opts.language, refresh: opts.refresh }) : base;
     const key = JSON.stringify([
       input.trim(),
       opts.mode ?? 'auto',
       opts.language ?? '',
       opts.comments ?? false,
       opts.refresh ?? false,
+      hosted?.principal ?? '',
     ]);
     return shared(key, ctx, (runCtx) =>
       getVideoContext(
-        registry,
+        registryFor(ctx),
         input,
         { mode: opts.mode, language: opts.language, comments: opts.comments, refresh: opts.refresh, storage: store },
         runCtx,
@@ -301,6 +313,9 @@ export function createServices(
     loadMetadata,
     uploadBackend,
     getUpload,
+    setHosted: (req, hosted) => {
+      hostedFor.set(ctxFor(req), hosted);
+    },
     loadBatch,
   };
 }

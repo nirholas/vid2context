@@ -8,6 +8,11 @@ import { type Env, isPublicMode, limits } from '@vid2context/core';
 export interface ServerConfig {
   /** Raw VID2CONTEXT_API_KEYS (parsed and cached by auth.ts). Empty: open mode. */
   apiKeys: string;
+  /**
+   * VID2CONTEXT_HOSTED=1: @vid2context/accounts guards /api/* (sessions, v2c_ keys, per-IP limits, quotas),
+   * so the server's own key check and rate limit step aside.
+   */
+  hosted: boolean;
   /** Requests per minute per key (or per IP in open mode). 0 turns rate limiting off. */
   ratePerMinute: number;
   /** Bucket size: how many requests may arrive at once before the per-minute rate applies. */
@@ -55,6 +60,8 @@ export function serverConfig(env: Env): ServerConfig {
   const maxUploadMb = env.VID2CONTEXT_MAX_UPLOAD_MB?.trim() ? limits(env).maxUploadMb : DEFAULT_MAX_UPLOAD_MB;
   return {
     apiKeys: env.VID2CONTEXT_API_KEYS?.trim() ?? '',
+    // Same reading as @vid2context/accounts (readHostedConfig).
+    hosted: ['1', 'true', 'yes'].includes(env.VID2CONTEXT_HOSTED ?? ''),
     ratePerMinute,
     rateBurst: Math.max(1, Math.floor(num(env.VID2CONTEXT_RATE_BURST, Math.max(1, Math.ceil(ratePerMinute / 2))))),
     corsOrigins: (env.VID2CONTEXT_CORS_ORIGINS ?? '')

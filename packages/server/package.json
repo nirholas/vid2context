@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@hono/node-server": "^2.1.8",
+    "@vid2context/accounts": "*",
     "@vid2context/ask": "*",
     "@vid2context/chapters": "*",
     "@vid2context/core": "*",

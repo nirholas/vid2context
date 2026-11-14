@@ -4,8 +4,9 @@
  *   requestContext  X-Request-Id in and out, JSON access log, X-Robots-Tag on /api/*
  *   cors            VID2CONTEXT_CORS_ORIGINS (preflights answered before auth)
  *   timeout         VID2CONTEXT_REQUEST_TIMEOUT_MS, answered with `timeout` (504)
- *   auth            VID2CONTEXT_API_KEYS, Bearer keys with scopes
- *   rateLimit       token bucket per key, or per client IP in open mode
+ *   hosted          @vid2context/accounts when VID2CONTEXT_HOSTED=1 (installed by app.ts)
+ *   auth            VID2CONTEXT_API_KEYS, Bearer keys with scopes (off in hosted mode)
+ *   rateLimit       token bucket per key, or per client IP in open mode (off in hosted mode)
  *   bodyLimit       VID2CONTEXT_MAX_BODY_KB, or the upload cap on POST /uploads
  *
  * Settings are read from the request's env on every request.
@@ -121,8 +122,9 @@ export function timeout(services: Services): MiddlewareHandler<AppEnv> {
 
 export function auth(services: Services): MiddlewareHandler<AppEnv> {
   return async (c, next) => {
-    const raw = services.config(c.req.raw).apiKeys;
-    if (!raw || OPEN_PATHS.has(c.req.path) || c.req.method === 'OPTIONS') return next();
+    const cfg = services.config(c.req.raw);
+    const raw = cfg.apiKeys;
+    if (!raw || cfg.hosted || OPEN_PATHS.has(c.req.path) || c.req.method === 'OPTIONS') return next();
     const principal = await authenticate(c.req.header('authorization'), await apiKeysFor(raw));
     c.set('principal', principal);
     assertScope(principal, requiredScope(c.req.method, c.req.path), c.req.method, c.req.path);
@@ -133,7 +135,7 @@ export function auth(services: Services): MiddlewareHandler<AppEnv> {
 export function rateLimit(services: Services, clientIp: (c: Context<AppEnv>) => string | undefined): MiddlewareHandler<AppEnv> {
   return async (c, next) => {
     const cfg = services.config(c.req.raw);
-    if (cfg.ratePerMinute <= 0 || OPEN_PATHS.has(c.req.path) || c.req.method === 'OPTIONS') return next();
+    if (cfg.ratePerMinute <= 0 || cfg.hosted || OPEN_PATHS.has(c.req.path) || c.req.method === 'OPTIONS') return next();
     const principal = c.get('principal');
     const who = principal ? `key:${principal.name}` : `ip:${clientIp(c) ?? 'unknown'}`;
     const result = await takeToken(await services.kv(services.ctxFor(c.req.raw)), who, {

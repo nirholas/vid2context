@@ -10,6 +10,7 @@
  * openapi.json. Sub-apps exported by other packages are mounted below
  * (see SUB_APPS); docs/contracts/http-api.md lists every route and its owner.
  */
+import { accountsRoutes, hostedMiddleware } from '@vid2context/accounts/http';
 import { askRoutes } from '@vid2context/ask/http';
 import { chaptersRoutes } from '@vid2context/chapters/http';
 import { type Ctx, formatters, type Registry, type Storage } from '@vid2context/core';
@@ -85,6 +86,7 @@ interface SubApp {
  * passed). src/workers.ts reads it to route /mcp and the OAuth paths to the app.
  */
 export const MOUNTED_SUB_APPS = [
+  '@vid2context/accounts',
   '@vid2context/search',
   '@vid2context/library',
   '@vid2context/ask',
@@ -98,7 +100,12 @@ export const MOUNTED_SUB_APPS = [
   '@vid2context/webhooks',
 ] as const;
 
-function subApps(services: Services, opts: AppOptions, version: string): { list: SubApp[]; mcp: McpHttpApp } {
+function subApps(
+  services: Services,
+  opts: AppOptions,
+  version: string,
+  accountsDeps: Parameters<typeof accountsRoutes>[0],
+): { list: SubApp[]; mcp: McpHttpApp } {
   const deps = { registry: services.registry, makeCtx: services.ctxFor, storage: services.storage };
   const mcp = mcpHttpRoutes({
     ...deps,
@@ -107,6 +114,8 @@ function subApps(services: Services, opts: AppOptions, version: string): { list:
     ...(opts.mcpDnsRebindingProtection ? { dnsRebindingProtection: true } : {}),
   });
   const list: SubApp[] = [
+    // Inert (404) unless VID2CONTEXT_HOSTED=1.
+    { name: '@vid2context/accounts', prefix: '/api/v1', routes: accountsRoutes(accountsDeps) },
     { name: '@vid2context/search', prefix: '/api/v1', routes: searchRoutes(deps) },
     {
       name: '@vid2context/library',
@@ -171,6 +180,20 @@ export function createApp(opts: AppOptions): ServerApp {
   app.use('*', requestContext(services, { onAccessLog: opts.onAccessLog, clientIp }));
   app.use('/api/*', cors(services));
   app.use('/api/*', timeout(services));
+  // Hosted mode (VID2CONTEXT_HOSTED=1): sessions, v2c_ keys, per-IP limits and quotas from @vid2context/accounts.
+  // Pass-through otherwise. Pipeline work then runs on the caller's metered registry and the shared cache.
+  const accountsDeps = {
+    makeCtx: services.ctxFor,
+    storage: services.storage,
+    clientIp: (c: Context) => clientIp(c as Context<AppEnv>),
+    basePath: '/api/v1',
+  };
+  app.use('/api/*', hostedMiddleware(accountsDeps));
+  app.use('/api/*', async (c, next) => {
+    const hosted = c.get('hosted');
+    if (hosted) services.setHosted(c.req.raw, hosted);
+    await next();
+  });
   app.use('/api/*', auth(services));
   app.use('/api/*', rateLimit(services, clientIp));
   app.use('/api/*', bodyLimit(services));
@@ -209,7 +232,7 @@ export function createApp(opts: AppOptions): ServerApp {
   app.route('/api/v1', uploadRoutes(deps));
   app.route('/api/v1', bundleRoutes(deps));
 
-  const { list: mounted, mcp } = subApps(services, opts, version);
+  const { list: mounted, mcp } = subApps(services, opts, version, accountsDeps);
   for (const sub of mounted) app.route(sub.prefix || '/', sub.routes);
 
   docs.add({
