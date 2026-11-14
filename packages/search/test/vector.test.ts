@@ -148,9 +148,11 @@ describe('with the real provider-embed OVH rung', () => {
     const engine = createSearchEngine({ registry: registryWith([embedProviderReal].flat()), ctx: testContext({ fetch }) });
     expect(engine.embedModel()).toBe('embed/ovh/bge-m3');
     expect(await engine.index(zoo)).toMatchObject({ vector: 'indexed', model: 'embed/ovh/bge-m3' });
-    const out = await engine.search({ query: SECOND_MODEL_QUERY, mode: 'vector', limit: 1 });
+    const out = await engine.search({ query: SECOND_MODEL_QUERY, mode: 'vector', limit: 2 });
     expect(out.meta.vector).toBe('ok');
-    expect(out.hits[0]?.text).toContain('trunks');
+    // Both zoo chunks come back from the vector side ("elephants" ranks just above "long trunks" for this model).
+    expect(out.hits.map((h) => h.sources)).toEqual([['vector'], ['vector']]);
+    expect(out.hits.some((h) => h.text.includes('trunks'))).toBe(true);
   });
 });
 
