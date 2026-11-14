@@ -12,7 +12,7 @@
  * outlive one transaction.
  */
 import type { Db } from './db.ts';
-import { type Migration, migrations as bundled } from './migrations.generated.ts';
+import { migrations as bundled, type Migration } from './migrations.generated.ts';
 
 const OUTER_TAG = '$vid2context_outer$';
 const INNER_TAG = '$vid2context_migration$';

@@ -69,7 +69,7 @@ export function toStorageError(err: unknown, secrets: string[]): Vid2ContextErro
   }
   if (code === '53300' || code === '53400') {
     return new Vid2ContextError('rate-limited', message, {
-      hint: 'The server has no free connections. Lower VID2CONTEXT_PG_POOL_MAX or use the provider\'s pooled connection string.',
+      hint: "The server has no free connections. Lower VID2CONTEXT_PG_POOL_MAX or use the provider's pooled connection string.",
       retryAfterSec: 5,
     });
   }
@@ -84,7 +84,16 @@ export function toStorageError(err: unknown, secrets: string[]): Vid2ContextErro
     });
   }
   if (
-    ['ECONNREFUSED', 'ENOTFOUND', 'EAI_AGAIN', 'ECONNRESET', 'EHOSTUNREACH', 'CONNECTION_CLOSED', 'CONNECTION_ENDED', 'CONNECTION_DESTROYED'].includes(code) ||
+    [
+      'ECONNREFUSED',
+      'ENOTFOUND',
+      'EAI_AGAIN',
+      'ECONNRESET',
+      'EHOSTUNREACH',
+      'CONNECTION_CLOSED',
+      'CONNECTION_ENDED',
+      'CONNECTION_DESTROYED',
+    ].includes(code) ||
     code.startsWith('08') ||
     code === '57P01' ||
     code === '57P03'

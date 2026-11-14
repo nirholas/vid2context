@@ -20,9 +20,9 @@ import {
   type VectorQuery,
   type VectorRecord,
   type VectorStore,
+  Vid2ContextError,
   type VideoContext,
   type VideoSummary,
-  Vid2ContextError,
 } from '@vid2context/core';
 import type { Db, Param, Row, Statement } from './db.ts';
 import { toStorageError } from './errors.ts';
@@ -126,7 +126,9 @@ function decodeCursor(cursor: string, size: number): string[] {
   } catch {
     // Fall through to the error below.
   }
-  throw new Vid2ContextError('bad-request', 'Invalid list cursor.', { hint: 'Pass the cursor exactly as a previous page returned it, or omit it.' });
+  throw new Vid2ContextError('bad-request', 'Invalid list cursor.', {
+    hint: 'Pass the cursor exactly as a previous page returned it, or omit it.',
+  });
 }
 
 function clampLimit(limit: number | undefined, fallback: number, max: number): number {
@@ -146,7 +148,9 @@ async function sha256Hex(text: string): Promise<string> {
 function vectorLiteral(v: number[]): string {
   for (const x of v) {
     if (typeof x !== 'number' || !Number.isFinite(x)) {
-      throw new Vid2ContextError('bad-request', 'Vectors must contain only finite numbers.', { hint: 'Check the embedding response.' });
+      throw new Vid2ContextError('bad-request', 'Vectors must contain only finite numbers.', {
+        hint: 'Check the embedding response.',
+      });
     }
   }
   return `[${v.join(',')}]`;
@@ -203,10 +207,10 @@ export class PostgresStorage implements Storage, KvStore, VectorStore {
   // ------------------------------------------------------------- contexts
 
   async getContext(id: string): Promise<VideoContext | null> {
-    const rows = await this.q<{ context: string }>(`SELECT context::text AS context FROM ${this.S}.videos WHERE tenant_id = $1 AND id = $2`, [
-      this.tenant,
-      id,
-    ]);
+    const rows = await this.q<{ context: string }>(
+      `SELECT context::text AS context FROM ${this.S}.videos WHERE tenant_id = $1 AND id = $2`,
+      [this.tenant, id],
+    );
     const raw = rows[0]?.context;
     return raw === undefined ? null : (JSON.parse(raw) as VideoContext);
   }
@@ -562,7 +566,10 @@ export class PostgresStorage implements Storage, KvStore, VectorStore {
    * HNSW index, under an advisory lock so concurrent writers never race on
    * CREATE INDEX. A model keeps one dimension count for its lifetime.
    */
-  private async ensureModel(model: string, dimensions: number): Promise<{ dimensions: number; index: 'vector' | 'halfvec' | null }> {
+  private async ensureModel(
+    model: string,
+    dimensions: number,
+  ): Promise<{ dimensions: number; index: 'vector' | 'halfvec' | null }> {
     const known = this.s.vectorModels.get(model);
     if (known) {
       if (known.dimensions !== dimensions) throw this.dimensionMismatch(model, known.dimensions, dimensions);
@@ -654,11 +661,10 @@ export class PostgresStorage implements Storage, KvStore, VectorStore {
   }
 
   async deleteVectors(filter: { videoId: string; model?: string }): Promise<void> {
-    await this.q(`DELETE FROM ${this.S}.vectors WHERE tenant_id = $1 AND video_id = $2 AND ($3::text IS NULL OR model = $3::text)`, [
-      this.tenant,
-      filter.videoId,
-      filter.model ?? null,
-    ]);
+    await this.q(
+      `DELETE FROM ${this.S}.vectors WHERE tenant_id = $1 AND video_id = $2 AND ($3::text IS NULL OR model = $3::text)`,
+      [this.tenant, filter.videoId, filter.model ?? null],
+    );
   }
 
   /** The SQL a vector query runs. Exposed so tests and operators can EXPLAIN it. */
@@ -686,7 +692,10 @@ export class PostgresStorage implements Storage, KvStore, VectorStore {
     const statements: Statement[] = [{ text: `SET LOCAL hnsw.ef_search = ${Math.min(1000, Math.max(40, limit * 2))}` }];
     // pgvector 0.8 keeps scanning the graph until enough rows pass the tenant and video filters.
     if (await this.supportsIterativeScan()) statements.push({ text: 'SET LOCAL hnsw.iterative_scan = strict_order' });
-    statements.push({ text: `SELECT ${cols}, 1 - (${expr}) AS score FROM ${this.S}.vectors WHERE ${where} ORDER BY ${expr} LIMIT $3`, params });
+    statements.push({
+      text: `SELECT ${cols}, 1 - (${expr}) AS score FROM ${this.S}.vectors WHERE ${where} ORDER BY ${expr} LIMIT $3`,
+      params,
+    });
     return { statements, exact };
   }
 

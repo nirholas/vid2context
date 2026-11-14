@@ -11,13 +11,30 @@
  * settings shares one pool and migrates the schema once.
  */
 import { type Ctx, defineProvider, type Env, type StorageProvider } from '@vid2context/core';
-import { databaseUrl, type PgConfig, readConfig } from './config.ts';
+import {
+  assertSchemaName,
+  assertTenant,
+  DEFAULT_SCHEMA,
+  DEFAULT_TENANT,
+  databaseUrl,
+  type PgConfig,
+  readConfig,
+} from './config.ts';
 import { connect, type Db } from './db.ts';
 import { secretsOf, toStorageError } from './errors.ts';
 import { type MigrateResult, migrate } from './migrate.ts';
 import { PostgresStorage, type Shared } from './storage.ts';
 
-export { DEFAULT_SCHEMA, DEFAULT_TENANT, databaseUrl, isNeonUrl, type PgConfig, readConfig } from './config.ts';
+export {
+  assertSchemaName,
+  assertTenant,
+  DEFAULT_SCHEMA,
+  DEFAULT_TENANT,
+  databaseUrl,
+  isNeonUrl,
+  type PgConfig,
+  readConfig,
+} from './config.ts';
 export type { ConnectOptions, Db, Param, Row, Statement } from './db.ts';
 export { scrub, secretsOf, toStorageError } from './errors.ts';
 export { type MigrateResult, migrate } from './migrate.ts';
@@ -33,12 +50,7 @@ export function isPostgresEnabled(env: Env): boolean {
   return databaseUrl(env) !== undefined;
 }
 
-/**
- * Builds a storage on an already open Db: runs migrations, then binds the
- * tenant. For callers that manage their own connection (tests on PGlite, a
- * server sharing one pool across tenants).
- */
-export async function createPostgresStorage(opts: {
+interface PrepareOptions {
   db: Db;
   schema?: string;
   tenant?: string;
@@ -46,12 +58,14 @@ export async function createPostgresStorage(opts: {
   secrets?: string[];
   /** Called by storage.close(). Default: closes the Db. */
   release?: () => Promise<void>;
-}): Promise<{ storage: PostgresStorage; migrations: MigrateResult }> {
-  const schema = opts.schema ?? 'vid2context';
+}
+
+async function prepareShared(opts: PrepareOptions): Promise<{ shared: Shared; migrations: MigrateResult }> {
+  const schema = assertSchemaName(opts.schema ?? DEFAULT_SCHEMA);
   const secrets = opts.secrets ?? [];
-  let result: MigrateResult;
+  let migrations: MigrateResult;
   try {
-    result = await migrate(opts.db, schema);
+    migrations = await migrate(opts.db, schema);
   } catch (err) {
     throw toStorageError(err, secrets);
   }
@@ -62,7 +76,19 @@ export async function createPostgresStorage(opts: {
     vectorModels: new Map(),
     release: opts.release ?? (() => opts.db.close()),
   };
-  return { storage: new PostgresStorage(shared, opts.tenant ?? 'default'), migrations: result };
+  return { shared, migrations };
+}
+
+/**
+ * Builds a storage on an already open Db: runs migrations, then binds the
+ * tenant. For callers that manage their own connection (tests on PGlite, a
+ * server sharing one pool across tenants).
+ */
+export async function createPostgresStorage(
+  opts: PrepareOptions,
+): Promise<{ storage: PostgresStorage; migrations: MigrateResult }> {
+  const { shared, migrations } = await prepareShared(opts);
+  return { storage: new PostgresStorage(shared, assertTenant(opts.tenant ?? DEFAULT_TENANT)), migrations };
 }
 
 interface Pooled {
@@ -103,11 +129,15 @@ async function openShared(config: PgConfig, ctx: Ctx, key: string): Promise<Shar
     }
   };
   try {
-    const { storage, migrations } = await createPostgresStorage({ db, schema: config.schema, secrets, release });
+    const { shared, migrations } = await prepareShared({ db, schema: config.schema, secrets, release });
     if (migrations.applied.length > 0) {
-      ctx.log.info('postgres storage migrated', { schema: config.schema, applied: migrations.applied, version: migrations.version });
+      ctx.log.info('postgres storage migrated', {
+        schema: config.schema,
+        applied: migrations.applied,
+        version: migrations.version,
+      });
     }
-    return (storage as unknown as { s: Shared }).s;
+    return shared;
   } catch (err) {
     await db.close().catch(() => undefined);
     throw err;
