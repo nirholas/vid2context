@@ -96,6 +96,45 @@ export function itemsRequest(base: string, p: { url: string; limit?: number }): 
   };
 }
 
+/** GET /api/v1/collections: every collection, for the collection picker. */
+export function listCollectionsRequest(base: string): IHttpRequestOptions {
+  return { method: 'GET', baseURL: base, url: '/api/v1/collections', json: true };
+}
+
+/** Splits the inputs field: one video, playlist or feed URL per line or comma. */
+export function parseInputs(raw: string): string[] {
+  return [
+    ...new Set(
+      raw
+        .split(/[\n,]/)
+        .map((s) => s.trim())
+        .filter(Boolean),
+    ),
+  ];
+}
+
+/**
+ * POST /api/v1/collections/:id/items. The server ingests inline and answers
+ * `{ collection, summary }`, or, when it runs a jobs queue, answers `202` with
+ * the ingest job (follow it with GET /api/v1/jobs/:id or a job.succeeded webhook).
+ */
+export function addToCollectionRequest(
+  base: string,
+  p: { collectionId: string; inputs: string[]; limit?: number },
+): IHttpRequestOptions {
+  const id = p.collectionId.trim();
+  if (!id) throw new Error('Collection is empty: pick a collection or pass its id.');
+  if (p.inputs.length === 0) throw new Error('Nothing to add: pass at least one video, playlist or feed URL.');
+  const limit = p.limit && p.limit > 0 ? Math.floor(p.limit) : undefined;
+  return {
+    method: 'POST',
+    baseURL: base,
+    url: `/api/v1/collections/${encodeURIComponent(id)}/items`,
+    body: { inputs: p.inputs, ...(limit ? { limit } : {}) },
+    json: true,
+  };
+}
+
 /** GET /api/v1/health: formats and providers (no secrets). */
 export function healthRequest(base: string): IHttpRequestOptions {
   return { method: 'GET', baseURL: base, url: '/api/v1/health', json: true };

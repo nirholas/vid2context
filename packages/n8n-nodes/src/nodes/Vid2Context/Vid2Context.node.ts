@@ -18,10 +18,13 @@ import {
   contextRequest,
   type FullResponse,
   healthRequest,
+  addToCollectionRequest,
   isMissingRoute,
   itemsRequest,
+  listCollectionsRequest,
   MODES,
   metadataRequest,
+  parseInputs,
   type TranscriptParams,
   transcriptItem,
   transcriptRequest,
@@ -79,6 +82,12 @@ export class Vid2Context implements INodeType {
             action: 'List the videos in a playlist channel or feed',
             description: 'Expand a playlist, channel, podcast feed or page into one item per video',
           },
+          {
+            name: 'Add to Collection',
+            value: 'addToCollection',
+            action: 'Add videos to a collection',
+            description: 'Fetch videos (or every video of a playlist or feed) and save them into a collection',
+          },
         ],
         default: 'getTranscript',
       },
@@ -91,6 +100,39 @@ export class Vid2Context implements INodeType {
         placeholder: 'https://www.youtube.com/watch?v=jNQXAC9IVRw',
         description:
           'A video URL or ID that vid2context understands (YouTube, podcasts, files on the server). For List Items: a playlist, channel or feed URL.',
+        displayOptions: { hide: { operation: ['addToCollection'] } },
+      },
+      {
+        displayName: 'Collection Name or ID',
+        name: 'collectionId',
+        type: 'options',
+        typeOptions: { loadOptionsMethod: 'getCollections' },
+        required: true,
+        default: '',
+        description:
+          'The collection to add to. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
+        displayOptions: { show: { operation: ['addToCollection'] } },
+      },
+      {
+        displayName: 'Videos',
+        name: 'inputs',
+        type: 'string',
+        typeOptions: { rows: 3 },
+        required: true,
+        default: '',
+        placeholder: 'https://www.youtube.com/watch?v=jNQXAC9IVRw',
+        description:
+          'Video, playlist, channel or feed URLs, one per line or separated by commas. Playlists and feeds add every video the collection has not seen.',
+        displayOptions: { show: { operation: ['addToCollection'] } },
+      },
+      {
+        displayName: 'Max New Videos',
+        name: 'maxNew',
+        type: 'number',
+        typeOptions: { minValue: 0 },
+        default: 0,
+        description: 'Most new videos to fetch in this run; 0 uses the server limit (VID2CONTEXT_MAX_PLAYLIST_ITEMS)',
+        displayOptions: { show: { operation: ['addToCollection'] } },
       },
       {
         displayName: 'Limit',
@@ -125,6 +167,7 @@ export class Vid2Context implements INodeType {
         type: 'collection',
         placeholder: 'Add Option',
         default: {},
+        displayOptions: { hide: { operation: ['addToCollection'] } },
         options: [
           {
             displayName: 'Mode',
@@ -156,6 +199,19 @@ export class Vid2Context implements INodeType {
         };
         return (health.formats ?? []).map((f) => ({ name: f.id, value: f.id, description: f.description }));
       },
+      async getCollections(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
+        const base = await baseUrl(this);
+        const listed = (await this.helpers.httpRequestWithAuthentication.call(
+          this,
+          CREDENTIAL,
+          listCollectionsRequest(base),
+        )) as { collections?: { id: string; name: string; videoIds?: string[] }[] };
+        return (listed.collections ?? []).map((c) => ({
+          name: c.name,
+          value: c.id,
+          description: `${c.videoIds?.length ?? 0} videos`,
+        }));
+      },
     },
   };
 
@@ -168,6 +224,16 @@ export class Vid2Context implements INodeType {
     for (let i = 0; i < items.length; i++) {
       try {
         const operation = this.getNodeParameter('operation', i) as string;
+        if (operation === 'addToCollection') {
+          const request = addToCollectionRequest(base, {
+            collectionId: this.getNodeParameter('collectionId', i) as string,
+            inputs: parseInputs(this.getNodeParameter('inputs', i) as string),
+            limit: this.getNodeParameter('maxNew', i, 0) as number,
+          });
+          // { collection, summary } when the server ingests inline; the ingest Job when it runs a queue.
+          out.push({ json: (await send(request)) as IDataObject, pairedItem: { item: i } });
+          continue;
+        }
         const url = this.getNodeParameter('url', i) as string;
         const options = this.getNodeParameter('options', i, {}) as { mode?: string; lang?: string };
         const video = { url, mode: options.mode, lang: options.lang };
