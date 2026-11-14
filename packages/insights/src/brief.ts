@@ -221,15 +221,33 @@ export async function buildBrief(contexts: VideoContext[], opts: BriefOptions, d
   let topics: RawTopic[] | null = null;
   let strategy: Brief['strategy'];
 
+  const progress = opts.onProgress ?? (() => {});
   if (total <= budget) {
     strategy = 'single';
+    progress({ done: 0, total: 1, message: `Reading ${set.sources.length} video(s) in one pass` });
     const messages = singleMessages(rendered, { template, question: opts.question, maxClaims: CLAIMS_SINGLE });
     const res = await chatJson(deps.registry, { step: 'single', messages, chain, maxTokens: opts.maxOutputTokens }, ledger, deps.ctx);
     raw = asRawClaims(res.value?.claims);
     topics = asTopics(res.value?.topics);
   } else {
     strategy = 'map-reduce';
-    for (const s of set.sources) raw.push(...(await mapSource(s, { deps, ledger, template, opts, chain, budget })));
+    const plan = set.sources.map((s) => chunkLines(s.lines, budget).length);
+    const steps = plan.reduce((a, b) => a + b, 0) + 1;
+    let done = 0;
+    for (const s of set.sources) {
+      raw.push(
+        ...(await mapSource(s, {
+          deps,
+          ledger,
+          template,
+          opts,
+          chain,
+          budget,
+          tick: (message) => progress({ done: done++, total: steps, message }),
+        })),
+      );
+    }
+    progress({ done, total: steps, message: 'Merging claims into topics' });
   }
 
   if (strategy === 'map-reduce' && raw.length === 0 && !ledger.rungs.some((r) => r.step === 'map')) {
@@ -281,11 +299,20 @@ export async function buildBrief(contexts: VideoContext[], opts: BriefOptions, d
 
 async function mapSource(
   s: Source,
-  c: { deps: InsightsDeps; ledger: Ledger; template: Template; opts: BriefOptions; chain: ChainOptions; budget: number },
+  c: {
+    deps: InsightsDeps;
+    ledger: Ledger;
+    template: Template;
+    opts: BriefOptions;
+    chain: ChainOptions;
+    budget: number;
+    tick: (message: string) => void;
+  },
 ): Promise<RawClaim[]> {
   const chunks = chunkLines(s.lines, c.budget);
   const out: RawClaim[] = [];
   for (const [i, lines] of chunks.entries()) {
+    c.tick(`Reading ${s.summary.title} (part ${i + 1} of ${chunks.length})`);
     const { block } = renderSource(s, { style: 'seconds', lines, part: { index: i, total: chunks.length } });
     const messages = mapMessages(block, { template: c.template, question: c.opts.question, maxClaims: CLAIMS_PER_CHUNK });
     try {

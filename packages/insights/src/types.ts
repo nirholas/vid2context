@@ -143,6 +143,8 @@ export interface LlmOptions {
   maxChunkTokens?: number;
   /** Output tokens per call. Default 4000. */
   maxOutputTokens?: number;
+  /** Called before each LLM step (job progress). `total` is the number of LLM steps planned so far. */
+  onProgress?: (p: { done: number; total?: number; message: string }) => void;
 }
 
 export interface BriefOptions extends LlmOptions {
