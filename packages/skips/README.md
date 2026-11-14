@@ -44,7 +44,7 @@ Checked live against the API on 2026-11-14.
 | `outro` | end cards and credits | yes |
 | `preview` | recap or preview of what is coming | yes |
 | `filler` | tangents and jokes not needed for the main content (aggressive) | yes |
-| `hook` | a teaser or greeting before the intro | no |
+| `hook` | narrated teasers of the video, greetings and goodbyes | no |
 | `music_offtopic` | non-music parts of music videos | no |
 | `poi_highlight` | the point most viewers skip to; returned as `highlight` | no |
 | `exclusive_access` | whole-video label: showcases a product the creator got access to | no |

@@ -6,4 +6,10 @@ Add an entry when you copy or port code: the project, its URL, its license, the 
 
 ## Entries
 
-None yet.
+### SponsorBlock segment data (data, not code)
+
+- Source: https://sponsor.ajay.app, read at run time through its public API (`/api/skipSegments/<hash prefix>`). No SponsorBlock code is copied; its server is AGPL-3.0 and is not used.
+- License: the database is CC BY-NC-SA 4.0 (https://creativecommons.org/licenses/by-nc-sa/4.0/), per the SponsorBlock server README.
+- Attribution shown with every result that uses it: "Segment data: SponsorBlock (sponsor.ajay.app), CC BY-NC-SA 4.0".
+- Non-commercial: a paid hosted plan must not depend on this data. `VID2CONTEXT_SPONSORBLOCK=0` turns it off.
+- Files: `packages/skips/src/` (lookups), `packages/skips/test/fixtures/skipSegments-*.json` (recorded API responses).

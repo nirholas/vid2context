@@ -69,6 +69,14 @@ Every free and paid lane takes `<PROVIDER>_FALLBACK_KEYS` (one extra rung per ke
 
 Obsidian exports need no variable: they are local files.
 
+## Content filters
+
+| Env var | Used by | Notes |
+|---|---|---|
+| `VID2CONTEXT_SPONSORBLOCK` | `@vid2context/skips` (`get_skip_segments`, `GET /skips`, `skip=`) | `0` turns SponsorBlock lookups off. SponsorBlock is free and keyless; only a 4-character hash prefix of the video id is sent. Data is CC BY-NC-SA 4.0: non-commercial, with attribution |
+| `SPONSORBLOCK_API_URL` | `@vid2context/skips` | base URL of a self-hosted SponsorBlock mirror, default `https://sponsor.ajay.app`. Lookups time out after 5 seconds |
+| `VID2CONTEXT_SKIP_CATEGORIES` | `@vid2context/skips` | default categories, comma-separated; default `sponsor,selfpromo,interaction,intro,outro,preview,filler` |
+
 ## Planned (see ROADMAP.md)
 
 | Kind | Provider | Tier | Enabled by | Known limits |
