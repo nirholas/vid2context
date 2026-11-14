@@ -1,0 +1,86 @@
+# Cloud Run service for the vid2context HTTP API. cloudbuild.yaml fills in
+# ${IMAGE} and ${SERVICE_ACCOUNT} and deploys it with
+#   gcloud run services replace service.yaml --region <region>
+# To deploy by hand, render it with envsubst (docs/deploy/cloud-run.md).
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: vid2context
+  annotations:
+    run.googleapis.com/ingress: all
+spec:
+  template:
+    metadata:
+      annotations:
+        # Scale to zero when idle: no traffic, no cost.
+        autoscaling.knative.dev/minScale: "0"
+        autoscaling.knative.dev/maxScale: "3"
+        # Faster cold starts: extra CPU while the container boots.
+        run.googleapis.com/startup-cpu-boost: "true"
+        # gen2 is required for in-memory and Cloud Storage volumes.
+        run.googleapis.com/execution-environment: gen2
+    spec:
+      serviceAccountName: ${SERVICE_ACCOUNT}
+      # Caption requests are light, but a speech-to-text request runs yt-dlp
+      # and ffmpeg. Four at a time on 2 vCPU keeps ffmpeg from starving.
+      containerConcurrency: 4
+      # Long videos: download, convert and transcribe can take minutes.
+      timeoutSeconds: 900
+      containers:
+        - image: ${IMAGE}
+          ports:
+            - name: http1
+              containerPort: 8787
+          resources:
+            limits:
+              cpu: "2"
+              # The in-memory /data volume below counts against this.
+              memory: 2Gi
+          env:
+            - name: VID2CONTEXT_LOG_LEVEL
+              value: info
+            # Required: without keys every route is open to anyone who can
+            # reach the URL. Create the secret first (docs/deploy/cloud-run.md).
+            - name: VID2CONTEXT_API_KEYS
+              valueFrom:
+                secretKeyRef:
+                  name: vid2context-api-keys
+                  key: latest
+            # Optional free-tier keys, the same way: create the secret, then
+            # uncomment. Any variable from .env.example works.
+            # - name: GROQ_API_KEY
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: vid2context-groq-api-key
+            #       key: latest
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          startupProbe:
+            httpGet:
+              path: /api/v1/health
+            periodSeconds: 2
+            failureThreshold: 30
+          livenessProbe:
+            httpGet:
+              path: /api/v1/health
+            periodSeconds: 30
+      volumes:
+        # In memory: fast and free, but emptied on every new instance and
+        # counted against the memory limit. Fine for caches. Keep the library
+        # in Postgres (DATABASE_URL) when it must survive restarts.
+        - name: data
+          emptyDir:
+            medium: Memory
+            sizeLimit: 512Mi
+        # Cloud Storage instead: survives restarts and holds downloaded
+        # models, but every file operation is a network call, and SQLite's
+        # locking does not work on it. Use it for models and media, not for
+        # library.db. Replace the emptyDir above with this block and set
+        # DATA_BUCKET when rendering (cloudbuild.yaml: _DATA_BUCKET):
+        # - name: data
+        #   csi:
+        #     driver: gcsfuse.run.googleapis.com
+        #     volumeAttributes:
+        #       bucketName: ${DATA_BUCKET}
+        #       mountOptions: uid=1000,gid=1000,implicit-dirs

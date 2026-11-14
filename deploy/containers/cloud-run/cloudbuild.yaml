@@ -1,0 +1,58 @@
+# Build the vid2context image, push it to Artifact Registry and deploy it to
+# Cloud Run. Run from the repository root:
+#
+#   gcloud builds submit --config deploy/containers/cloud-run/cloudbuild.yaml \
+#     --substitutions _REGION=us-central1
+#
+# One-time setup (repository, service account, secret): docs/deploy/cloud-run.md.
+substitutions:
+  _REGION: us-central1
+  _REPOSITORY: vid2context
+  _SERVICE: vid2context
+  _SERVICE_ACCOUNT: vid2context-run
+  _WITH_WHISPER: "0"
+  _DATA_BUCKET: ""
+  _IMAGE: ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/vid2context
+
+options:
+  dynamicSubstitutions: true
+  logging: CLOUD_LOGGING_ONLY
+  machineType: E2_HIGHCPU_8
+
+timeout: 3600s
+
+steps:
+  - id: build
+    name: gcr.io/cloud-builders/docker
+    env:
+      - DOCKER_BUILDKIT=1
+    args:
+      - build
+      - --file=deploy/containers/Dockerfile
+      - --build-arg=WITH_WHISPER=${_WITH_WHISPER}
+      - --tag=${_IMAGE}:${BUILD_ID}
+      - --tag=${_IMAGE}:latest
+      - .
+
+  - id: push
+    name: gcr.io/cloud-builders/docker
+    args: [push, --all-tags, "${_IMAGE}"]
+
+  - id: deploy
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    entrypoint: bash
+    env:
+      - IMAGE=${_IMAGE}:${BUILD_ID}
+      - SERVICE_ACCOUNT=${_SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
+      - DATA_BUCKET=${_DATA_BUCKET}
+      - SERVICE=${_SERVICE}
+      - REGION=${_REGION}
+    args:
+      - -euc
+      - |
+        sed -e "s|\$${IMAGE}|$${IMAGE}|g" \
+            -e "s|\$${SERVICE_ACCOUNT}|$${SERVICE_ACCOUNT}|g" \
+            -e "s|\$${DATA_BUCKET}|$${DATA_BUCKET}|g" \
+            -e "s|^  name: vid2context$$|  name: $${SERVICE}|" \
+            deploy/containers/cloud-run/service.yaml > /workspace/service.yaml
+        gcloud run services replace /workspace/service.yaml --region "$${REGION}"
