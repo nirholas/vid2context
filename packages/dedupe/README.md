@@ -55,11 +55,35 @@ All are options of `findDuplicates(contexts, opts)` (see `DedupeOptions` in `src
 
 ### Measured on the real fixtures
 
-MEASUREMENTS
+Every pair of the eight real fixtures (the reuploads, the episode and clips below, and the two shared contexts) was aligned with the defaults. "Exact" is the share of the shorter transcript's shingles found anywhere in the other with no tolerance at all; "overlap" is the score `findDuplicates` uses.
+
+| Pair | Transcripts | Exact | Overlap | Result |
+| --- | --- | --- | --- | --- |
+| Me at the zoo: original vs RetroYTVideos reupload | creator captions vs auto-captions | 0.559 | 1.000 | reupload |
+| Me at the zoo: original vs 2021 reupload | creator captions vs auto-captions | 0.471 | 1.000 | reupload |
+| Me at the zoo: the two reuploads | auto vs auto | 0.556 | 1.000 | reupload |
+| Lex Fridman #118 vs "The Snuggle is Real" (36 s) | local Whisper, separate runs | 1.000 | 1.000 | clip at 1416.24 s (true about 1416.2) |
+| Lex Fridman #118 vs "Richard Feynman is misunderstood" (4:49) | local Whisper, separate runs | 0.899 | 1.000 | clip at 311.85 s (true about 311.8) |
+| Lex Fridman #118 vs "Topology is amazing and useful" (5:16) | local Whisper, separate runs | 0.832 | 0.983 | clip at 1121.48 s (true 1123.1) |
+| All 22 other pairs (different videos) | mixed | 0.000 | 0.000 | distinct, no run at all |
+
+What this says about the thresholds:
+
+- Exact shingle overlap alone is not enough: three transcripts of the same 19 seconds of audio share only 47 to 56 percent of their shingles, because one misheard word breaks five shingles. Even two Whisper runs over the same audio share only 83 to 90 percent, since the model segments and punctuates a 5-minute excerpt differently from the same passage inside a 2-hour file. Gap bridging and edge anchoring lift every real pair to 0.98 or more.
+- Unrelated videos score exactly 0 (not one run of 3 in-order matches), so there is a wide gap between the classes. The defaults sit low in that gap on purpose: 0.8 for reuploads and 0.6 for clips leave room for the cases these fixtures do not cover (weaker auto-captions, a clip with an added intro, outro or commentary) while a chance match of unrelated speech would still need dozens of in-order five-word runs.
+- The clip offset is within 2 seconds of the true offset on all three clips. The remaining error is caption timing: the topology clip's first line starts 1.6 seconds into its segment in the episode. The true offsets were found by matching clip sentences to episode sentences by hand (see `test/fixtures/README.md`).
 
 ## Performance
 
-PERFORMANCE
+Measured on an AMD EPYC 7B12 (32 threads, single-threaded run) with Node 24, on copies of real fixtures under distinct ids (`test/performance.test.ts`):
+
+| Input | Time | Candidate pairs | Aligned pairs |
+| --- | --- | --- | --- |
+| 200 copies of an 18-minute transcript (60 hours, every pair a duplicate) | 7.0 s | 19,900 | 199 |
+| 100 copies of a 2h08m episode (214 hours) | 8.6 s | 4,950 | 99 |
+| 94 copies of the episode and of each of its three clips (376 videos, 209 hours) | 10.8 s | 43,992 | 654 |
+
+Most of the time goes to MinHash signatures (one per 100-shingle window, so cost grows linearly with total speech). Pairs already in one reupload cluster, and cluster pairs already linked as clip and source, are not aligned again; without that second rule the last row aligns 26,880 pairs and takes 28.6 s. These are worst cases where everything matches everything. A collection of distinct videos makes few LSH candidates, so 200 one-hour transcripts cost about the same as the 214-hour row, about 8 seconds. The tests allow 60 to 120 seconds per case so slow laptops and CI do not flake.
 
 ## Using it in briefs (item 32)
 
