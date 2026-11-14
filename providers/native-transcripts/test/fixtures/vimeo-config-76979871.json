@@ -1,0 +1,62 @@
+{
+ "video": {
+  "id": 76979871,
+  "title": "The New Vimeo Player (You Know, For Videos)",
+  "width": 1280,
+  "height": 720,
+  "duration": 62,
+  "url": "https://vimeo.com/76979871",
+  "share_url": "https://vimeo.com/76979871",
+  "privacy": "anybody",
+  "embed_permission": "public",
+  "thumbnail_url": "https://i.vimeocdn.com/video/452001751-8216e0571c251a09d7a8387550942d89f7f86f6398f8ed886e639b0dd50d3c90-d",
+  "unlisted_hash": null,
+  "locale": "en",
+  "live_event": null,
+  "owner": {
+   "id": 152184,
+   "name": "Vimeo",
+   "url": "https://vimeo.com/staff",
+   "account_type": "enterprise"
+  }
+ },
+ "request": {
+  "lang": "en",
+  "text_tracks": [
+   {
+    "id": 170,
+    "lang": "de",
+    "url": "https://captions.vimeo.com/captions/170.vtt?expires=1794680261&sig=6664228606eeb8abe5e28569c318facbf92e727b",
+    "kind": "subtitles",
+    "label": "Deutsch",
+    "provenance": "user_uploaded",
+    "default": true
+   },
+   {
+    "id": 171,
+    "lang": "es",
+    "url": "https://captions.vimeo.com/captions/171.vtt?expires=1794680261&sig=4010cb186d9a5b0c6504d3adc440ef8cb4bc37b1",
+    "kind": "subtitles",
+    "label": "Español",
+    "provenance": "user_uploaded"
+   },
+   {
+    "id": 140662,
+    "lang": "en",
+    "url": "https://captions.vimeo.com/captions/140662.vtt?expires=1794680261&sig=7b80d0253ccbaf3209aeec38010a47104f1863b2",
+    "kind": "subtitles",
+    "label": "English",
+    "provenance": "user_uploaded"
+   },
+   {
+    "id": 4678937,
+    "lang": "fr",
+    "url": "https://captions.vimeo.com/captions/4678937.vtt?expires=1794680261&sig=90669aa0d9ca6ff4b050cd2a6838d55a2f93dd8a",
+    "kind": "subtitles",
+    "label": "Français",
+    "provenance": "user_uploaded"
+   }
+  ]
+ },
+ "view": 1
+}

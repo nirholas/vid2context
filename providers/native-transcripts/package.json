@@ -1,0 +1,19 @@
+{
+  "name": "@vid2context/provider-native-transcripts",
+  "version": "0.1.0",
+  "description": "Vimeo, Loom and Wistia sources with their creator captions or platform transcripts, fetched keyless before any speech-to-text runs.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "vid2context": {
+    "runtimes": [
+      "node",
+      "workers"
+    ]
+  },
+  "dependencies": {
+    "@vid2context/core": "*"
+  }
+}

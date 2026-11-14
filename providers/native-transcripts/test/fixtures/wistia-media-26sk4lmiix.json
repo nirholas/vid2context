@@ -1,0 +1,26 @@
+{
+ "media": {
+  "hashedId": "26sk4lmiix",
+  "name": "Nice.",
+  "duration": 44.42,
+  "createdAt": 1457560310,
+  "type": "Video",
+  "mediaType": "Video",
+  "protected": false,
+  "status": 2,
+  "seoDescription": "a /construct-an-embed-code video",
+  "availableTranscripts": [],
+  "assets": [
+   {
+    "type": "still_image",
+    "slug": "still_image_960x540",
+    "display_name": "Thumbnail Image",
+    "width": 960,
+    "height": 540,
+    "url": "https://embed-ssl.wistia.com/deliveries/56cacb9a5d6ea04b1f29defaf4b55d1ec979e1b0.bin",
+    "ext": "jpg",
+    "size": 103140
+   }
+  ]
+ }
+}

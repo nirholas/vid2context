@@ -1,0 +1,86 @@
+{
+ "video": {
+  "id": 1133654544,
+  "title": "Vimeo REFRAME 2025 Replay",
+  "width": 3840,
+  "height": 2160,
+  "duration": 60,
+  "url": "https://vimeo.com/1133654544",
+  "share_url": "https://vimeo.com/1133654544",
+  "privacy": "anybody",
+  "embed_permission": "public",
+  "thumbnail_url": "https://i.vimeocdn.com/video/2078324290-ce2037053e0d43f84c11537aaa4e89be9134b919874997f68887bcef55591467-d",
+  "unlisted_hash": null,
+  "locale": "en",
+  "live_event": null,
+  "owner": {
+   "id": 152184,
+   "name": "Vimeo",
+   "url": "https://vimeo.com/staff",
+   "account_type": "enterprise"
+  }
+ },
+ "request": {
+  "lang": "en",
+  "text_tracks": [
+   {
+    "id": 263263656,
+    "lang": "en-x-autogen",
+    "url": "https://captions.vimeo.com/captions/263263656.vtt?expires=1794680262&sig=107ae70f87334b852852db697db229a1b2b57b65",
+    "kind": "subtitles",
+    "label": "English (auto-generated)",
+    "provenance": "ai_generated",
+    "default": true
+   },
+   {
+    "id": 265260483,
+    "lang": "de",
+    "url": "https://captions.vimeo.com/captions/265260483.vtt?expires=1794680262&sig=43b1225eee8fe4abceada296c661a1a5b97ab225",
+    "kind": "captions",
+    "label": "Deutsch",
+    "provenance": "user_uploaded"
+   },
+   {
+    "id": 265260553,
+    "lang": "es",
+    "url": "https://captions.vimeo.com/captions/265260553.vtt?expires=1794680262&sig=90e4f714613ce335c06051312cf7e6163868050d",
+    "kind": "captions",
+    "label": "Español",
+    "provenance": "user_uploaded"
+   },
+   {
+    "id": 265260649,
+    "lang": "fr",
+    "url": "https://captions.vimeo.com/captions/265260649.vtt?expires=1794680262&sig=bfe6fffbffc7f1034672272d9b1c2fbc41178f92",
+    "kind": "captions",
+    "label": "Français",
+    "provenance": "user_uploaded"
+   },
+   {
+    "id": 265260896,
+    "lang": "ja",
+    "url": "https://captions.vimeo.com/captions/265260896-3.vtt?expires=1794680262&sig=151ab67c3f55afc1c881a74a51a64ec20ab816bf",
+    "kind": "captions",
+    "label": "日本語",
+    "provenance": "user_uploaded"
+   },
+   {
+    "id": 265261007,
+    "lang": "ko",
+    "url": "https://captions.vimeo.com/captions/265261007-1.vtt?expires=1794680262&sig=2ba7a2498031d8242baa28bea380088f6ff5d3e1",
+    "kind": "captions",
+    "label": "한국어",
+    "provenance": "user_uploaded"
+   },
+   {
+    "id": 265261533,
+    "lang": "pt",
+    "url": "https://captions.vimeo.com/captions/265261533-1.vtt?expires=1794680262&sig=6d59cb696e426b7f476058f301b41464800817f8",
+    "kind": "captions",
+    "label": "Português",
+    "provenance": "user_uploaded"
+   }
+  ]
+ },
+ "view": 1
+}
