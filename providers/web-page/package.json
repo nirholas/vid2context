@@ -19,5 +19,8 @@
     "@vid2context/provider-youtube": "*",
     "entities": "^8.0.0",
     "htmlparser2": "^12.0.0"
+  },
+  "devDependencies": {
+    "@vid2context/registry": "*"
   }
 }

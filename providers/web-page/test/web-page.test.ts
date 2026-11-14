@@ -167,7 +167,7 @@ describe('discoverInHtml on real pages', () => {
     expect(videos[0]).toMatchObject({
       input: 'https://www.youtube.com/watch?v=jNQXAC9IVRw',
       platform: 'youtube',
-      source: 'oembed',
+      source: 'json-ld', // the JSON-LD block comes first in the page head
       title: 'Me at the zoo',
     });
     expect(videos[0]?.uploadDate).toBe('2005-04-23T20:31:52-07:00');
@@ -371,7 +371,7 @@ describe('listItems and the pipeline', () => {
     const ctx = testContext({ fetch: replayFetch(pageRoutes()) });
     const meta = await webPageSource.getMetadata(ref(`page:${OPENCULTURE}`), ctx);
     expect(meta.title).toMatch(/^T\.S\. Eliot/);
-    expect((meta.extra?.videos as unknown[]).length).toBe(3);
+    expect(meta.extra?.videos).toHaveLength(3);
   });
 
   it('fetches a page once per context across metadata, listing and transcript', async () => {
