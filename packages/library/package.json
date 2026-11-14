@@ -1,0 +1,21 @@
+{
+  "name": "@vid2context/library",
+  "version": "0.1.0",
+  "description": "Living research collections for vid2context: follow playlists, channels and feeds as sources, refresh them idempotently, schedule watch lists, and send signed webhooks when new videos arrive.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./http": "./src/http.ts",
+    "./mcp": "./src/mcp.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "@vid2context/core": "*",
+    "hono": "^4.13.18",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@vid2context/provider-youtube": "*"
+  }
+}
