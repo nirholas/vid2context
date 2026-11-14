@@ -17,7 +17,9 @@ import { REFS_DIR } from './refs.ts';
 import { renderReport } from './report.ts';
 import { type EvalResult, type SuiteName, summarize } from './results.ts';
 import { runCaptionsSuite } from './suites/captions.ts';
+import { runCitationsSuite } from './suites/citations.ts';
 import type { SuiteContext } from './suites/common.ts';
+import { runSearchSuite } from './suites/search.ts';
 import { runSttSuite, type SuiteOutput } from './suites/stt.ts';
 
 export const RESULTS_DIR = fileURLToPath(new URL('../results/', import.meta.url));
@@ -32,12 +34,8 @@ export interface RunDeps {
   now?(): Date;
 }
 
-/** Suites that need packages which have not landed in this repo yet, and what they need. */
-export const UNAVAILABLE: Partial<Record<SuiteName, string>> = {
-  citations:
-    'needs a brief or answer producer with citations (packages/insights from prompt 32 or packages/ask from prompt 34); neither exports one in this checkout yet',
-  search: 'needs the transcript search engine (packages/search from prompt 40), which is not in this checkout yet',
-};
+/** Suites that need packages which have not landed in this repo yet, and what they need. Empty when every suite can run. */
+export const UNAVAILABLE: Partial<Record<SuiteName, string>> = {};
 
 export function liveAllowed(env: Env, args: Pick<EvalArgs, 'live'>): boolean {
   return args.live || env.LIVE === '1' || env.LIVE === 'true';
@@ -47,9 +45,8 @@ async function runSuite(suite: SuiteName, sc: SuiteContext): Promise<SuiteOutput
   if (suite === 'stt') return runSttSuite(sc);
   if (suite === 'captions') return runCaptionsSuite(sc, false);
   if (suite === 'cleanup') return runCaptionsSuite(sc, true);
-  throw new Vid2ContextError('unsupported-input', `The ${suite} suite ${UNAVAILABLE[suite] ?? 'is not available'}.`, {
-    hint: 'Run the stt, captions or cleanup suite; docs/evals.md lists what each suite needs.',
-  });
+  if (suite === 'citations') return runCitationsSuite(sc);
+  return runSearchSuite(sc);
 }
 
 /** Run the CLI. Returns the process exit code: 0 ok, 1 threshold breach, 2 usage or setup error. */

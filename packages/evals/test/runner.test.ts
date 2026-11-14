@@ -42,17 +42,6 @@ describe('the live gate', () => {
     expect(await main(['--help'], { env: {}, setup: async () => Promise.reject(new Error('no')), ...o })).toBe(0);
     expect(o.out.join('')).toMatch(/--suite/);
   });
-
-  it('refuses a suite whose package has not landed, before any network setup', async () => {
-    const o = io();
-    const code = await main(['--suite', 'search', '--live'], {
-      env: {},
-      setup: async () => Promise.reject(new Error('no')),
-      ...o,
-    });
-    expect(code).toBe(2);
-    expect(o.err.join('')).toMatch(/search suite/);
-  });
 });
 
 describe('parseArgs', () => {

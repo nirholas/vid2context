@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { loadCitationsDataset, loadSearchDataset, loadVideoDataset, videoItemProblems } from '../src/dataset.ts';
 import { checkCitation, citationAccuracy } from '../src/metrics/citations.ts';
+import { scoreCitations } from '../src/suites/citations.ts';
 import { sharedContext } from './helpers.ts';
 
 const gwagon = () => sharedContext('youtube-cCPsdFdlshc.json').transcript.segments;
@@ -79,5 +80,36 @@ describe('citation accuracy', () => {
     expect(res.total).toBe(3);
     expect(res.verified).toBe(1);
     expect(res.checks.map((c) => c.reason)).toEqual([undefined, 'wrong-time', 'no-transcript']);
+  });
+});
+
+describe('scoreCitations', () => {
+  const transcripts = new Map([['youtube:cCPsdFdlshc', gwagon()]]);
+  const q = loadCitationsDataset().questions.find((x) => x.id === 'g55-oil');
+
+  it('credits citations that quote the transcript at the labeled place', () => {
+    const e = q?.expected[0];
+    if (!q || !e) throw new Error('g55-oil question missing');
+    const s = scoreCitations(q, [{ videoId: e.videoId, startSec: e.startSec + 5, quote: e.quote }], 0, transcripts);
+    expect(s).toEqual({ total: 1, verified: 1, hit: true, rejected: 0 });
+  });
+
+  it('does not credit a real quote cited at the wrong place, or a citation without a quote', () => {
+    if (!q) throw new Error('g55-oil question missing');
+    const s = scoreCitations(
+      q,
+      [
+        { videoId: 'youtube:cCPsdFdlshc', startSec: 900, quote: "there's nothing you can't do" },
+        { videoId: 'youtube:cCPsdFdlshc', startSec: 305 },
+      ],
+      2,
+      transcripts,
+    );
+    // The quote is real (spoken at 863 s), but 900 s is more than 30 s away from it.
+    expect(checkCitation(gwagon(), { atSec: 900, quote: "there's nothing you can't do" }).reason).toBe('wrong-time');
+    expect(s.total).toBe(2);
+    expect(s.verified).toBe(0);
+    expect(s.hit).toBe(true);
+    expect(s.rejected).toBe(2);
   });
 });

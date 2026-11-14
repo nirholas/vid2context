@@ -1,0 +1,583 @@
+{
+  "suite": "search",
+  "date": "2026-11-14",
+  "startedAt": "2026-11-14T17:38:46.734Z",
+  "finishedAt": "2026-11-14T17:38:51.852Z",
+  "dataset": {
+    "file": "packages/evals/datasets/search.json",
+    "items": 15,
+    "evaluated": 15
+  },
+  "environment": {
+    "node": "24.22.2",
+    "platform": "linux-x64",
+    "policy": "free",
+    "keyless": true,
+    "rungs": [
+      "search/keyword",
+      "search/hybrid"
+    ],
+    "envFiles": 1
+  },
+  "skippedRungs": [],
+  "notes": [
+    "Hybrid search used the embedding model embed/cloudflare/@cf/baai/bge-m3."
+  ],
+  "items": [
+    {
+      "item": "land-cruiser-killer",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "search/keyword",
+      "outcome": "ok",
+      "retrieval": {
+        "k": 5,
+        "precisionAtK": 0.2,
+        "recallAtK": 1,
+        "reciprocalRank": 1
+      },
+      "latencyMs": 8,
+      "attempts": []
+    },
+    {
+      "item": "m113-power",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "search/keyword",
+      "outcome": "ok",
+      "retrieval": {
+        "k": 5,
+        "precisionAtK": 0.2,
+        "recallAtK": 1,
+        "reciprocalRank": 1
+      },
+      "latencyMs": 13,
+      "attempts": []
+    },
+    {
+      "item": "first-gen-interior-years",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "search/keyword",
+      "outcome": "ok",
+      "retrieval": {
+        "k": 5,
+        "precisionAtK": 0.2,
+        "recallAtK": 1,
+        "reciprocalRank": 1
+      },
+      "latencyMs": 7,
+      "attempts": []
+    },
+    {
+      "item": "g55-us-arrival",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "search/keyword",
+      "outcome": "ok",
+      "retrieval": {
+        "k": 5,
+        "precisionAtK": 0.2,
+        "recallAtK": 1,
+        "reciprocalRank": 1
+      },
+      "latencyMs": 5,
+      "attempts": []
+    },
+    {
+      "item": "supercharged-horsepower",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "search/keyword",
+      "outcome": "ok",
+      "retrieval": {
+        "k": 5,
+        "precisionAtK": 0.25,
+        "recallAtK": 1,
+        "reciprocalRank": 1
+      },
+      "latencyMs": 3,
+      "attempts": []
+    },
+    {
+      "item": "g55-oil-consumption",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "search/keyword",
+      "outcome": "ok",
+      "retrieval": {
+        "k": 5,
+        "precisionAtK": 0.2,
+        "recallAtK": 1,
+        "reciprocalRank": 1
+      },
+      "latencyMs": 3,
+      "attempts": []
+    },
+    {
+      "item": "carplay-head-unit",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "search/keyword",
+      "outcome": "ok",
+      "retrieval": {
+        "k": 5,
+        "precisionAtK": 0.3333333333333333,
+        "recallAtK": 1,
+        "reciprocalRank": 1
+      },
+      "latencyMs": 2,
+      "attempts": []
+    },
+    {
+      "item": "early-g500-buyer",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "search/keyword",
+      "outcome": "ok",
+      "retrieval": {
+        "k": 5,
+        "precisionAtK": 0.2,
+        "recallAtK": 1,
+        "reciprocalRank": 1
+      },
+      "latencyMs": 5,
+      "attempts": []
+    },
+    {
+      "item": "m278-engine",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "search/keyword",
+      "outcome": "ok",
+      "retrieval": {
+        "k": 5,
+        "precisionAtK": 0.2,
+        "recallAtK": 1,
+        "reciprocalRank": 1
+      },
+      "latencyMs": 2,
+      "attempts": []
+    },
+    {
+      "item": "seven-speed",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "search/keyword",
+      "outcome": "ok",
+      "retrieval": {
+        "k": 5,
+        "precisionAtK": 0.25,
+        "recallAtK": 1,
+        "reciprocalRank": 1
+      },
+      "latencyMs": 2,
+      "attempts": []
+    },
+    {
+      "item": "biturbo-hot-v",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "search/keyword",
+      "outcome": "ok",
+      "retrieval": {
+        "k": 5,
+        "precisionAtK": 0.2,
+        "recallAtK": 1,
+        "reciprocalRank": 1
+      },
+      "latencyMs": 2,
+      "attempts": []
+    },
+    {
+      "item": "g63-power",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "search/keyword",
+      "outcome": "ok",
+      "retrieval": {
+        "k": 5,
+        "precisionAtK": 0.2,
+        "recallAtK": 1,
+        "reciprocalRank": 0.5
+      },
+      "latencyMs": 1,
+      "attempts": []
+    },
+    {
+      "item": "off-road-build",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "search/keyword",
+      "outcome": "ok",
+      "retrieval": {
+        "k": 5,
+        "precisionAtK": 0.6,
+        "recallAtK": 1,
+        "reciprocalRank": 1
+      },
+      "latencyMs": 4,
+      "attempts": []
+    },
+    {
+      "item": "auxiliary-coolers",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "search/keyword",
+      "outcome": "ok",
+      "retrieval": {
+        "k": 5,
+        "precisionAtK": 0.2,
+        "recallAtK": 1,
+        "reciprocalRank": 1
+      },
+      "latencyMs": 2,
+      "attempts": []
+    },
+    {
+      "item": "collector-value",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "search/keyword",
+      "outcome": "ok",
+      "retrieval": {
+        "k": 5,
+        "precisionAtK": 0.2,
+        "recallAtK": 1,
+        "reciprocalRank": 1
+      },
+      "latencyMs": 4,
+      "attempts": []
+    },
+    {
+      "item": "land-cruiser-killer",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "search/hybrid",
+      "outcome": "ok",
+      "retrieval": {
+        "k": 5,
+        "precisionAtK": 0.2,
+        "recallAtK": 1,
+        "reciprocalRank": 1
+      },
+      "latencyMs": 395,
+      "attempts": [
+        {
+          "id": "embed/cloudflare/@cf/baai/bge-m3",
+          "stage": "embed",
+          "outcome": "ok",
+          "ms": 384
+        }
+      ]
+    },
+    {
+      "item": "m113-power",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "search/hybrid",
+      "outcome": "ok",
+      "retrieval": {
+        "k": 5,
+        "precisionAtK": 0.2,
+        "recallAtK": 1,
+        "reciprocalRank": 1
+      },
+      "latencyMs": 191,
+      "attempts": [
+        {
+          "id": "embed/cloudflare/@cf/baai/bge-m3",
+          "stage": "embed",
+          "outcome": "ok",
+          "ms": 183
+        }
+      ]
+    },
+    {
+      "item": "first-gen-interior-years",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "search/hybrid",
+      "outcome": "ok",
+      "retrieval": {
+        "k": 5,
+        "precisionAtK": 0.2,
+        "recallAtK": 1,
+        "reciprocalRank": 1
+      },
+      "latencyMs": 167,
+      "attempts": [
+        {
+          "id": "embed/cloudflare/@cf/baai/bge-m3",
+          "stage": "embed",
+          "outcome": "ok",
+          "ms": 161
+        }
+      ]
+    },
+    {
+      "item": "g55-us-arrival",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "search/hybrid",
+      "outcome": "ok",
+      "retrieval": {
+        "k": 5,
+        "precisionAtK": 0.2,
+        "recallAtK": 1,
+        "reciprocalRank": 1
+      },
+      "latencyMs": 277,
+      "attempts": [
+        {
+          "id": "embed/cloudflare/@cf/baai/bge-m3",
+          "stage": "embed",
+          "outcome": "ok",
+          "ms": 271
+        }
+      ]
+    },
+    {
+      "item": "supercharged-horsepower",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "search/hybrid",
+      "outcome": "ok",
+      "retrieval": {
+        "k": 5,
+        "precisionAtK": 0.2,
+        "recallAtK": 1,
+        "reciprocalRank": 1
+      },
+      "latencyMs": 225,
+      "attempts": [
+        {
+          "id": "embed/cloudflare/@cf/baai/bge-m3",
+          "stage": "embed",
+          "outcome": "ok",
+          "ms": 219
+        }
+      ]
+    },
+    {
+      "item": "g55-oil-consumption",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "search/hybrid",
+      "outcome": "ok",
+      "retrieval": {
+        "k": 5,
+        "precisionAtK": 0.2,
+        "recallAtK": 1,
+        "reciprocalRank": 1
+      },
+      "latencyMs": 252,
+      "attempts": [
+        {
+          "id": "embed/cloudflare/@cf/baai/bge-m3",
+          "stage": "embed",
+          "outcome": "ok",
+          "ms": 245
+        }
+      ]
+    },
+    {
+      "item": "carplay-head-unit",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "search/hybrid",
+      "outcome": "ok",
+      "retrieval": {
+        "k": 5,
+        "precisionAtK": 0.2,
+        "recallAtK": 1,
+        "reciprocalRank": 1
+      },
+      "latencyMs": 232,
+      "attempts": [
+        {
+          "id": "embed/cloudflare/@cf/baai/bge-m3",
+          "stage": "embed",
+          "outcome": "ok",
+          "ms": 225
+        }
+      ]
+    },
+    {
+      "item": "early-g500-buyer",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "search/hybrid",
+      "outcome": "ok",
+      "retrieval": {
+        "k": 5,
+        "precisionAtK": 0.2,
+        "recallAtK": 1,
+        "reciprocalRank": 1
+      },
+      "latencyMs": 180,
+      "attempts": [
+        {
+          "id": "embed/cloudflare/@cf/baai/bge-m3",
+          "stage": "embed",
+          "outcome": "ok",
+          "ms": 174
+        }
+      ]
+    },
+    {
+      "item": "m278-engine",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "search/hybrid",
+      "outcome": "ok",
+      "retrieval": {
+        "k": 5,
+        "precisionAtK": 0.2,
+        "recallAtK": 1,
+        "reciprocalRank": 0.5
+      },
+      "latencyMs": 242,
+      "attempts": [
+        {
+          "id": "embed/cloudflare/@cf/baai/bge-m3",
+          "stage": "embed",
+          "outcome": "ok",
+          "ms": 236
+        }
+      ]
+    },
+    {
+      "item": "seven-speed",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "search/hybrid",
+      "outcome": "ok",
+      "retrieval": {
+        "k": 5,
+        "precisionAtK": 0.2,
+        "recallAtK": 1,
+        "reciprocalRank": 1
+      },
+      "latencyMs": 269,
+      "attempts": [
+        {
+          "id": "embed/cloudflare/@cf/baai/bge-m3",
+          "stage": "embed",
+          "outcome": "ok",
+          "ms": 263
+        }
+      ]
+    },
+    {
+      "item": "biturbo-hot-v",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "search/hybrid",
+      "outcome": "ok",
+      "retrieval": {
+        "k": 5,
+        "precisionAtK": 0.2,
+        "recallAtK": 1,
+        "reciprocalRank": 1
+      },
+      "latencyMs": 267,
+      "attempts": [
+        {
+          "id": "embed/cloudflare/@cf/baai/bge-m3",
+          "stage": "embed",
+          "outcome": "ok",
+          "ms": 262
+        }
+      ]
+    },
+    {
+      "item": "g63-power",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "search/hybrid",
+      "outcome": "ok",
+      "retrieval": {
+        "k": 5,
+        "precisionAtK": 0.2,
+        "recallAtK": 1,
+        "reciprocalRank": 0.3333333333333333
+      },
+      "latencyMs": 299,
+      "attempts": [
+        {
+          "id": "embed/cloudflare/@cf/baai/bge-m3",
+          "stage": "embed",
+          "outcome": "ok",
+          "ms": 291
+        }
+      ]
+    },
+    {
+      "item": "off-road-build",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "search/hybrid",
+      "outcome": "ok",
+      "retrieval": {
+        "k": 5,
+        "precisionAtK": 0.6,
+        "recallAtK": 1,
+        "reciprocalRank": 1
+      },
+      "latencyMs": 260,
+      "attempts": [
+        {
+          "id": "embed/cloudflare/@cf/baai/bge-m3",
+          "stage": "embed",
+          "outcome": "ok",
+          "ms": 249
+        }
+      ]
+    },
+    {
+      "item": "auxiliary-coolers",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "search/hybrid",
+      "outcome": "ok",
+      "retrieval": {
+        "k": 5,
+        "precisionAtK": 0.2,
+        "recallAtK": 1,
+        "reciprocalRank": 1
+      },
+      "latencyMs": 183,
+      "attempts": [
+        {
+          "id": "embed/cloudflare/@cf/baai/bge-m3",
+          "stage": "embed",
+          "outcome": "ok",
+          "ms": 173
+        }
+      ]
+    },
+    {
+      "item": "collector-value",
+      "videoId": "youtube:cCPsdFdlshc",
+      "language": "en",
+      "rung": "search/hybrid",
+      "outcome": "ok",
+      "retrieval": {
+        "k": 5,
+        "precisionAtK": 0.2,
+        "recallAtK": 1,
+        "reciprocalRank": 1
+      },
+      "latencyMs": 190,
+      "attempts": [
+        {
+          "id": "embed/cloudflare/@cf/baai/bge-m3",
+          "stage": "embed",
+          "outcome": "ok",
+          "ms": 184
+        }
+      ]
+    }
+  ]
+}

@@ -9,7 +9,10 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
+    "@vid2context/ask": "*",
     "@vid2context/core": "*",
-    "@vid2context/registry": "*"
+    "@vid2context/insights": "*",
+    "@vid2context/registry": "*",
+    "@vid2context/search": "*"
   }
 }
