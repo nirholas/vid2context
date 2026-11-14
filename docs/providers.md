@@ -63,6 +63,23 @@ Every free and paid lane takes `<PROVIDER>_FALLBACK_KEYS` (one extra rung per ke
 | `VID2CONTEXT_LOG_LEVEL` | `debug`, `info`, `warn` (default), `error`, `silent`; logs go to stderr |
 | `VID2CONTEXT_ENV_FILE` | an env file to load before `./.env` (shell variables always win) |
 
+## Library storage
+
+The library (saved contexts, collections, search, key-value state, vectors) uses the enabled storage backend with the lowest priority. Guide: [guides/library-sqlite.md](guides/library-sqlite.md).
+
+| Priority | Backend | Runtime | Enabled when |
+|---|---|---|---|
+| lower than 50 | Postgres (`storage-postgres`) | node | a database URL is set (see that provider's rows) |
+| 50 | SQLite (`storage-sqlite`), FTS5 search, one local file | node (22.13+) | by default, unless `VID2CONTEXT_STORAGE` names another backend |
+| none | in-process `MemoryStorage`, lost on exit | any | no backend is enabled, or `VID2CONTEXT_STORAGE=memory` |
+
+| Env var | Used by | Notes |
+|---|---|---|
+| `VID2CONTEXT_STORAGE` | storage providers | pick one backend: `sqlite`, `postgres`, `cloudflare`, or `memory` (no persistent backend). Unset: the priority order above |
+| `VID2CONTEXT_DB` | `storage-sqlite` | path of the SQLite file, or `:memory:`; default `<VID2CONTEXT_HOME>/library.db` |
+| `VID2CONTEXT_HOME` | `storage-sqlite` and other local data | data directory; default `.vid2context` in the working directory |
+| `VID2CONTEXT_DB_BUSY_TIMEOUT_MS` | `storage-sqlite` | how long a write waits for another process holding the file; default 5000 |
+
 ## Exports
 
 | Env var | Used by | Notes |
