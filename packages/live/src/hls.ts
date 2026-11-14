@@ -152,7 +152,8 @@ function parseMedia(lines: string[], baseUrl: string): MediaPlaylist {
     else if (line.startsWith('#EXT-X-PLAYLIST-TYPE:')) playlistType = tagValue(line);
     else if (line.startsWith('#EXTINF:')) duration = Number.parseFloat(tagValue(line).split(',')[0] ?? '') || 0;
     else if (line.startsWith('#EXT-X-PROGRAM-DATE-TIME:')) {
-      const ms = Date.parse(tagValue(line));
+      // Some packagers (ffmpeg among them) write the zone as +0000; ISO 8601 parsers want +00:00.
+      const ms = Date.parse(tagValue(line).replace(/([+-]\d{2})(\d{2})$/, '$1:$2'));
       programDateMs = Number.isFinite(ms) ? ms : undefined;
     } else if (line.startsWith('#EXT-X-MAP:')) {
       const uri = parseAttributes(tagValue(line)).URI;

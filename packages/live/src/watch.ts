@@ -34,7 +34,7 @@ import { type LiveSource, resolveLive } from './resolve.ts';
 import type { ChunkMedia, LiveDeps, LiveEvent, LiveStatusCode, WatchLiveOptions } from './types.ts';
 import { NOT_LIVE_HINT } from './youtube.ts';
 
-export const LIVE_DEFAULTS = { chunkSec: 30, overlapSec: 2, maxLagSec: 120 } as const;
+export const LIVE_DEFAULTS = { chunkSec: 30, overlapSec: 2, maxLagSec: 120, catchUpChunks: 3 } as const;
 
 /** Consecutive playlist failures before giving up on a stream. */
 const MAX_PLAYLIST_FAILURES = 6;
@@ -44,13 +44,6 @@ const SEGMENT_RETRIES = 2;
 const MIN_TAIL_SEC = 1;
 /** Words of already emitted text kept for overlap matching. */
 const TAIL_WORDS = 24;
-/**
- * When transcription is behind by two chunks or more, the next request takes
- * up to this many chunks of audio at once. Fewer, longer requests let a
- * rate-limited rung (the keyless one allows about 2 per minute) catch up
- * before the maxLagSec skip has to drop audio.
- */
-const MAX_CATCHUP_CHUNKS = 3;
 
 type DoneReason = Extract<LiveEvent, { type: 'done' }>['reason'];
 
@@ -153,7 +146,7 @@ export function describeAttempts(attempts: Attempt[]): string {
     .join(', ');
 }
 
-function validate(opts: WatchLiveOptions): { chunkSec: number; overlapSec: number; maxLagSec: number } {
+function validate(opts: WatchLiveOptions): { chunkSec: number; overlapSec: number; maxLagSec: number; catchUpChunks: number } {
   const chunkSec = opts.chunkSec ?? LIVE_DEFAULTS.chunkSec;
   const overlapSec = opts.overlapSec ?? LIVE_DEFAULTS.overlapSec;
   const maxLagSec = opts.maxLagSec ?? LIVE_DEFAULTS.maxLagSec;
@@ -170,7 +163,14 @@ function validate(opts: WatchLiveOptions): { chunkSec: number; overlapSec: numbe
   if (opts.fromSequence !== undefined && !(Number.isInteger(opts.fromSequence) && opts.fromSequence >= 0)) {
     throw bad(`fromSequence ${opts.fromSequence} is not a media sequence number.`, 'Pass the resumeSequence of the last event.');
   }
-  return { chunkSec, overlapSec, maxLagSec };
+  const catchUpChunks = opts.catchUpChunks ?? LIVE_DEFAULTS.catchUpChunks;
+  if (!(Number.isInteger(catchUpChunks) && catchUpChunks >= 1 && catchUpChunks <= 10)) {
+    throw bad(
+      `catchUpChunks ${catchUpChunks} is out of range.`,
+      'Use a whole number from 1 (never merge chunks) to 10 (default 3).',
+    );
+  }
+  return { chunkSec, overlapSec, maxLagSec, catchUpChunks };
 }
 
 /**
@@ -183,7 +183,7 @@ function validate(opts: WatchLiveOptions): { chunkSec: number; overlapSec: numbe
  * transcribe it.
  */
 export async function* watchLive(input: string, opts: WatchLiveOptions, deps: LiveDeps): AsyncGenerator<LiveEvent> {
-  const { chunkSec, overlapSec, maxLagSec } = validate(opts);
+  const { chunkSec, overlapSec, maxLagSec, catchUpChunks } = validate(opts);
   const extractor = deps.extractAudio;
   if (!extractor) {
     throw new Vid2ContextError('no-provider', 'Live transcription needs an audio extractor (ffmpeg), which runs on Node only.', {
@@ -228,6 +228,7 @@ export async function* watchLive(input: string, opts: WatchLiveOptions, deps: Li
   let lastEndSec = 0;
   let nominal = 1;
   let cursor: number | null = null; // next window start, stream time
+  let inflightEnd: number | null = null; // end of the chunk being transcribed right now
   let overlapNext = false; // whether the next window repeats the end of the previous one
   let finished: Exclude<DoneReason, 'cancelled'> | null = null;
   let fatal: unknown = null;
@@ -268,7 +269,8 @@ export async function* watchLive(input: string, opts: WatchLiveOptions, deps: Li
 
   const enforceLag = () => {
     const end = bufferEnd();
-    const head = cursor ?? buffer[0]?.startSec;
+    const from = cursor ?? buffer[0]?.startSec;
+    const head = from === undefined ? undefined : Math.max(from, inflightEnd ?? from);
     if (end === null || head === undefined || end - head <= maxLagSec) return;
     const target = end - chunkSec;
     while (buffer.length > 1 && endOf(buffer[0] as Buffered) <= target) buffer.shift();
@@ -509,7 +511,8 @@ export async function* watchLive(input: string, opts: WatchLiveOptions, deps: Li
 
       const windowStart = cursor as number;
       const chunkStart = Math.max(windowStart - (overlapNext ? overlapSec : 0), (buffer[0] as Buffered).startSec);
-      const chunkLen = avail >= 2 * chunkSec ? Math.min(avail, chunkSec * MAX_CATCHUP_CHUNKS) : chunkSec;
+      // Behind by two chunks or more: take several at once, so a rate-limited rung needs fewer requests to catch up.
+      const chunkLen = avail >= 2 * chunkSec ? Math.min(avail, chunkSec * catchUpChunks) : chunkSec;
       const chunkEnd = Math.min(windowStart + chunkLen, end as number);
       const parts = buffer.filter((b) => endOf(b) > chunkStart && b.startSec < chunkEnd);
       const firstPart = parts[0] as Buffered;
@@ -521,11 +524,13 @@ export async function* watchLive(input: string, opts: WatchLiveOptions, deps: Li
         filename: `live-${firstPart.sequence}.wav`,
       };
       const useOverlap = overlapNext;
+      inflightEnd = chunkEnd;
 
       let audio: Awaited<ReturnType<typeof extractor.extract>>;
       try {
         audio = await extractor.extract(media, stop.signal);
       } catch (err) {
+        inflightEnd = null;
         if (stop.signal.aborted) {
           reason = 'cancelled';
           break;
@@ -550,6 +555,7 @@ export async function* watchLive(input: string, opts: WatchLiveOptions, deps: Li
         );
         retries = 0;
       } catch (err) {
+        inflightEnd = null;
         if (stop.signal.aborted) {
           reason = 'cancelled';
           break;
@@ -601,6 +607,7 @@ export async function* watchLive(input: string, opts: WatchLiveOptions, deps: Li
       // A skip while this chunk was being transcribed moves the cursor past it; never move it back.
       const skipped = cursor !== null && cursor > windowStart;
       cursor = Math.max(cursor ?? chunkEnd, chunkEnd);
+      inflightEnd = null;
       overlapNext = !skipped && overlapSec > 0;
       while (buffer.length > 1 && endOf(buffer[0] as Buffered) <= cursor - overlapSec) buffer.shift();
 

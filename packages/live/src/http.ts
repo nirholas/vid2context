@@ -11,7 +11,7 @@
 import { attemptsOf, type Ctx, type Registry, Vid2ContextError } from '@vid2context/core';
 import { Hono } from 'hono';
 import { streamSSE } from 'hono/streaming';
-import type { AudioExtractor } from './types.ts';
+import type { AudioExtractor, LiveDeps } from './types.ts';
 import { watchLive } from './watch.ts';
 
 export const LIVE_HTTP_DEFAULT_MINUTES = 10;
@@ -23,6 +23,8 @@ export interface LiveRouteDeps {
   makeCtx: (req: Request) => Ctx;
   /** ffmpeg-backed extractor from '@vid2context/live/node'. Without it the stream answers with a `no-provider` error event. */
   extractAudio?: AudioExtractor;
+  /** Waits between playlist polls; defaults to a real timer. */
+  sleep?: LiveDeps['sleep'];
 }
 
 function errorBody(err: unknown) {
@@ -68,7 +70,7 @@ export function liveRoutes(deps: LiveRouteDeps): Hono {
         const events = watchLive(
           url,
           { maxMinutes: Math.min(minutes, LIVE_HTTP_MAX_MINUTES), language, fromSequence, signal },
-          { registry: deps.registry, ctx: { ...ctx, signal }, extractAudio: deps.extractAudio },
+          { registry: deps.registry, ctx: { ...ctx, signal }, extractAudio: deps.extractAudio, sleep: deps.sleep },
         );
         for await (const e of events) {
           if (stream.aborted) break;

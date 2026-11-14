@@ -9,7 +9,7 @@ import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { attemptsOf, type Ctx, type Registry, Vid2ContextError } from '@vid2context/core';
 import { z } from 'zod';
 import { formatLiveLine, latestLines } from './format.ts';
-import type { AudioExtractor, LiveEvent } from './types.ts';
+import type { AudioExtractor, LiveDeps, LiveEvent } from './types.ts';
 import { watchLive } from './watch.ts';
 
 export const WATCH_LIVE_DEFAULT_MINUTES = 10;
@@ -20,6 +20,8 @@ export interface LiveToolDeps {
   ctx: Ctx;
   /** ffmpeg-backed extractor from '@vid2context/live/node'. Without it the tool answers with a `no-provider` error. */
   extractAudio?: AudioExtractor;
+  /** Waits between playlist polls; defaults to a real timer. */
+  sleep?: LiveDeps['sleep'];
 }
 
 type ToolResult = { content: { type: 'text'; text: string }[]; isError?: boolean };
@@ -83,7 +85,11 @@ export function registerLiveTools(server: McpServer, deps: LiveToolDeps): void {
       const lines: Extract<LiveEvent, { type: 'segment' }>[] = [];
       const statuses: string[] = [];
       try {
-        const events = watchLive(args.url, { maxMinutes }, { registry: deps.registry, ctx, extractAudio: deps.extractAudio });
+        const events = watchLive(
+          args.url,
+          { maxMinutes },
+          { registry: deps.registry, ctx, extractAudio: deps.extractAudio, sleep: deps.sleep },
+        );
         let batch = 0;
         for await (const e of events) {
           if (e.type === 'segment') {

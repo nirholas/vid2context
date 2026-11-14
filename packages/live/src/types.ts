@@ -26,6 +26,11 @@ export interface WatchLiveOptions {
   overlapSec?: number;
   /** When transcription falls this many seconds behind the live edge, skip ahead. Default 120. */
   maxLagSec?: number;
+  /**
+   * When transcription is behind by two chunks or more, the next request takes up to this many chunks of audio at once,
+   * so a rate-limited rung needs fewer requests to catch up before maxLagSec forces a skip. Default 3; 1 never merges.
+   */
+  catchUpChunks?: number;
   /** Spoken language (BCP-47) passed to speech-to-text; also picks the audio rendition when a stream offers several. */
   language?: string;
   signal?: AbortSignal;
