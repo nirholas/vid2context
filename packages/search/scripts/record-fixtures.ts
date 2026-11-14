@@ -34,6 +34,7 @@ import {
   registryWith,
   SECOND_FIXTURE,
   SECOND_MODEL,
+  SECOND_MODEL_QUERY,
   ZOO,
 } from '../test/helpers.ts';
 
@@ -111,6 +112,8 @@ async function recordSecondModel(): Promise<void> {
   const engine = createSearchEngine({ registry, ctx });
   const res = await engine.index(loadContext(ZOO));
   if (res.vector !== 'indexed') throw new Error(`indexing the zoo video with ${SECOND_MODEL} failed: ${res.reason}`);
+  const found = await engine.search({ query: SECOND_MODEL_QUERY, mode: 'vector' });
+  if (found.meta.vector !== 'ok') throw new Error(`query with ${SECOND_MODEL} failed: ${found.meta.vectorReason}`);
   const fixture: EmbedFixture = {
     endpoint: OVH_EMBED_URL,
     model: SECOND_MODEL,

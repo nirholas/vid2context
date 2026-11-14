@@ -94,6 +94,7 @@ export interface EmbedFixture {
 }
 
 export const SECOND_MODEL = 'bge-multilingual-gemma2';
+export const SECOND_MODEL_QUERY = 'animals with long noses';
 export const SECOND_FIXTURE = new URL('./fixtures/embeddings-ovh-gemma2-zoo.json', import.meta.url);
 
 export function loadEmbedFixture(file: URL = EMBED_FIXTURE): EmbedFixture {
