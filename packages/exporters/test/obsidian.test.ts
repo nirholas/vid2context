@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs';
-import { type Collection, MemoryStorage, segmentsToText, timestampUrl, type VideoContext } from '@vid2context/core';
+import { type Collection, type Comment, MemoryStorage, segmentsToText, timestampUrl, type VideoContext } from '@vid2context/core';
 import { describe, expect, it } from 'vitest';
 import { parse } from 'yaml';
 import { escapeMarkdown, exportObsidian, noteId, renderObsidian, safeFileName, safeTag, yamlString } from '../src/obsidian.ts';
@@ -9,6 +9,11 @@ const fixture = (name: string): VideoContext =>
 
 const zoo = fixture('youtube-jNQXAC9IVRw');
 const gwagon = fixture('youtube-cCPsdFdlshc');
+/** Real comments recorded for the same video (test/fixtures/README.md), attached the way the pipeline attaches them. */
+const comments = JSON.parse(
+  readFileSync(new URL('./fixtures/youtube-jNQXAC9IVRw.comments.json', import.meta.url), 'utf8'),
+) as Comment[];
+const withComments: VideoContext = { ...zoo, comments };
 
 function split(content: string): { props: Record<string, unknown>; body: string } {
   const m = content.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
@@ -92,6 +97,21 @@ describe('renderObsidian', () => {
 
   it('leaves the comments section out when there are no comments', () => {
     for (const f of renderObsidian([zoo, gwagon])) expect(f.content).not.toContain('## Comments');
+  });
+
+  it('ends with a Comments section, flags and replies nested under their comment, when comments exist', () => {
+    const { body } = split(renderObsidian([withComments])[0]?.content ?? '');
+    const section = body.slice(body.indexOf('## Comments\n\n'));
+    expect(section).not.toBe(body);
+    expect(body.lastIndexOf('\n## ')).toBe(body.indexOf('\n## Comments'));
+    const lines = section.split('\n').slice(2).filter(Boolean);
+    const [first, second] = comments;
+    expect(lines).toEqual([
+      "- **@SanDiegoZoo** (pinned, 4800000 likes, 2020-11-15): We're so honored that the first ever YouTube video was filmed here!",
+      ...(first?.replies ?? []).map((r) => `  - **${r.author}** (${r.likes} likes, ${r.publishedAt}): ${r.text}`),
+      `- **${second?.author}** (${second?.likes} likes, ${second?.publishedAt}): ${second?.text}`,
+      ...(second?.replies ?? []).map((r) => `  - **${r.author}** (${r.likes} likes, ${r.publishedAt}): ${r.text}`),
+    ]);
   });
 
   it('writes a collection index note whose wikilinks resolve to the notes, in collection order', async () => {

@@ -5,7 +5,7 @@
  * replayed here; the live test in notion.live.test.ts talks to the real API.
  */
 import { readFileSync } from 'node:fs';
-import { segmentsToText, timestampUrl, type VideoContext } from '@vid2context/core';
+import { type Comment, segmentsToText, timestampUrl, type VideoContext } from '@vid2context/core';
 import { replayFetch, testContext } from '@vid2context/core/testing';
 import { describe, expect, it } from 'vitest';
 import {
@@ -33,6 +33,11 @@ const fixture = (name: string): VideoContext =>
 
 const zoo = fixture('youtube-jNQXAC9IVRw');
 const gwagon = fixture('youtube-cCPsdFdlshc');
+/** Real comments recorded for the same video (test/fixtures/README.md), attached the way the pipeline attaches them. */
+const comments = JSON.parse(
+  readFileSync(new URL('./fixtures/youtube-jNQXAC9IVRw.comments.json', import.meta.url), 'utf8'),
+) as Comment[];
+const withComments: VideoContext = { ...zoo, comments };
 
 /** The page id used in Notion's own API reference examples. */
 const DOCS_PAGE_ID = 'b55c9c91-384d-452b-81db-d1ef79372b75';
