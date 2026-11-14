@@ -21,8 +21,9 @@ Each clip was converted with `ffmpeg -vn -ac 1 -ar 16000 -b:a 32k` and sent as `
 | `commons-apollo11-small-step.json` | same | 200 |
 | `llm-nixon-armstrong-call.json` | `nameSpeakers` on the keyless chain (empty env); answered by OVH `gpt-oss-120b` | 200 chat completion. Names Speaker 2 "President Nixon" (confidence 0.97) with a quote at 54 s; Speakers 0 and 1 null. The body includes the model's reasoning text |
 | `llm-nixon-armstrong-call--ovh-Meta-Llama-3-3-70B-Instruct.json` | same, recorder run with `llm/ovh/Meta-Llama-3_3-70B-Instruct` only | 200. Names Speaker 2 "Richard Nixon" (confidence 1) with a quote at 54 s |
+| `llm-nixon-armstrong-call--pollinations-openai-fast.json` | same, recorder run with `llm/pollinations/openai-fast` only and `max_tokens` 4000 | 200 from `gpt-oss-20b` with `finish_reason: "length"`: the JSON stops after the second speaker's confidence. Kept with an `error` field; the test checks the `upstream` error and its hint. (At `max_tokens` 2000 the same rung answered 400 `output_token_limit_exceeded`, which is why the default is 4000) |
 | `llm-apollo11-small-step.json` | `nameSpeakers` on the keyless chain; answered by OVH `Meta-Llama-3_3-70B-Instruct` | 200. Speaker 0 null, confidence 0 (the transcript never ties the voice to a name) |
 
-Each `llm-*.json` file is `{ recordedAt, rung, calls: [{ url, method, status, contentType, body }] }` with the body exactly as received; only the response's `content-type` header is kept. Request headers are not stored. No IP addresses, keys or account ids appear in any file (checked with grep, including against the Cloudflare account id).
+Each `llm-*.json` file is `{ recordedAt, rung, error?, calls: [{ url, method, status, contentType, body }] }` with the body exactly as received; only the response's `content-type` header is kept. Request headers are not stored. No IP addresses, keys or account ids appear in any file (checked with grep, including against the Cloudflare account id).
 
 The Workers AI transcription used about 1,600 neurons for the 202 s clip, inside the free daily allocation.
