@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>vid2context: offline Whisper demo</title>
+    <style>
+      body { font: 15px/1.5 system-ui, sans-serif; background: #000; color: #fafafa; max-width: 820px; margin: 2rem auto; padding: 0 1rem; }
+      fieldset { border: 1px solid #26262b; border-radius: 12px; padding: 1rem; display: grid; gap: 0.75rem; }
+      label { display: grid; gap: 0.25rem; color: #a1a1aa; }
+      input, select, button { font: inherit; background: #0b0b0d; color: #fafafa; border: 1px solid #3a3a42; border-radius: 8px; padding: 0.5rem; }
+      button { background: linear-gradient(135deg, #3b82f6, #22d3ee); border: 0; cursor: pointer; }
+      progress { width: 100%; }
+      pre { font: 13px/1.5 ui-monospace, monospace; background: #0b0b0d; border: 1px solid #26262b; border-radius: 12px; padding: 1rem; white-space: pre-wrap; }
+      #log { color: #71717a; max-height: 12rem; overflow: auto; }
+    </style>
+  </head>
+  <body>
+    <h1>Offline Whisper (Transformers.js)</h1>
+    <p>Pick an audio or video file. It is decoded and transcribed in this tab; nothing is uploaded. The model downloads once and is then cached by the browser.</p>
+    <form id="form">
+      <fieldset>
+        <label>File <input id="file" type="file" accept="audio/*,video/*" required /></label>
+        <label>Model (TRANSFORMERS_STT_MODEL) <input id="model" value="whisper-base" /></label>
+        <label>Device (TRANSFORMERS_DEVICE)
+          <select id="device"><option value="auto">auto</option><option value="wasm">wasm</option><option value="webgpu">webgpu</option></select>
+        </label>
+        <label>Precision (TRANSFORMERS_DTYPE, blank for the default) <input id="dtype" placeholder="encoder=q8,decoder=fp32" /></label>
+        <label>Language (blank to detect) <input id="language" placeholder="en" /></label>
+        <button id="run" type="submit">Transcribe</button>
+      </fieldset>
+    </form>
+    <p id="status" data-state="idle">Idle.</p>
+    <progress id="progress" max="100" value="0"></progress>
+    <pre id="segments"></pre>
+    <pre id="log"></pre>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

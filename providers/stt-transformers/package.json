@@ -20,5 +20,9 @@
   "dependencies": {
     "@huggingface/transformers": "^4.3.2",
     "@vid2context/core": "*"
+  },
+  "devDependencies": {
+    "playwright": "^1.65.1",
+    "vite": "^8.3.8"
   }
 }

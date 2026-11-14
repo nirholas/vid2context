@@ -62,9 +62,9 @@ describe('mapChunks on recorded pipeline output', () => {
     expect(hits).toHaveLength(3);
     const copyOf = (s: Segment) => Math.floor(s.startSec / (rec.durationSec / 3));
     expect(hits.map(copyOf)).toEqual([0, 1, 2]);
-    // Same phrase, same offset within each copy (within a second or two of model jitter).
-    const offsets = hits.map((s) => s.startSec - copyOf(s) * (rec.durationSec / 3));
-    for (const o of offsets) expect(Math.abs(o - (offsets[0] ?? 0))).toBeLessThan(2.5);
+    // The phrase ends at the same point in each copy (within model jitter), so window offsets were applied.
+    const ends = hits.map((s) => s.endSec - copyOf(s) * (rec.durationSec / 3));
+    for (const e of ends) expect(Math.abs(e - (ends[0] ?? 0))).toBeLessThan(1.5);
     expect(segments.at(-1)?.endSec ?? 0).toBeGreaterThan(60);
   });
 
@@ -86,7 +86,9 @@ describe('env and rungs', () => {
   });
 
   it('builds one local rung per configured model, short names expanded', () => {
-    const rungs = provider.rungs({ TRANSFORMERS_STT_MODEL: 'whisper-small, onnx-community/whisper-large-v3-turbo,whisper-base.en' });
+    const rungs = provider.rungs({
+      TRANSFORMERS_STT_MODEL: 'whisper-small, onnx-community/whisper-large-v3-turbo,whisper-base.en',
+    });
     expect(rungs.map((r) => r.id)).toEqual([
       'stt/transformers/onnx-community/whisper-small',
       `stt/transformers/${TURBO_MODEL}`,
@@ -98,9 +100,9 @@ describe('env and rungs', () => {
       expect(r.provider).toBe('stt-transformers');
       expect(r.requires).toEqual(['TRANSFORMERS_STT_MODEL']);
       expect(r.capabilities).toContain('segments');
-      expect(r.isEnabled?.({ TRANSFORMERS_STT_MODEL: 'whisper-small, onnx-community/whisper-large-v3-turbo,whisper-base.en' })).toBe(
-        true,
-      );
+      expect(
+        r.isEnabled?.({ TRANSFORMERS_STT_MODEL: 'whisper-small, onnx-community/whisper-large-v3-turbo,whisper-base.en' }),
+      ).toBe(true);
     }
     expect(rungs[0]?.capabilities).toEqual(['segments', 'language-detect', 'translate']);
     // large-v3-turbo was trained without translation; English-only models detect nothing.
@@ -147,7 +149,10 @@ describe('device and dtype selection', () => {
 
   it('honours TRANSFORMERS_DTYPE', () => {
     expect(chooseDtype('cpu', DEFAULT_MODEL, 'fp32')).toBe('fp32');
-    expect(chooseDtype('cpu', DEFAULT_MODEL, 'encoder=fp16, decoder=q4')).toEqual({ encoder_model: 'fp16', decoder_model_merged: 'q4' });
+    expect(chooseDtype('cpu', DEFAULT_MODEL, 'encoder=fp16, decoder=q4')).toEqual({
+      encoder_model: 'fp16',
+      decoder_model_merged: 'q4',
+    });
     expect(() => chooseDtype('cpu', DEFAULT_MODEL, 'fp64')).toThrow(/unknown dtype/);
     expect(() => chooseDtype('cpu', DEFAULT_MODEL, 'encoder=q8')).toThrow(/expected encoder/);
   });
@@ -186,9 +191,10 @@ describe.skipIf(!hasFfmpeg)('ffmpeg decoding (local, no network)', () => {
 
   it('reports a missing ffmpeg with a hint', async () => {
     const ctx = testContext({ env: { FFMPEG_PATH: '/nonexistent/ffmpeg' } });
-    const err = await decodeWithFfmpeg({ kind: 'bytes', data: new Uint8Array(4), mimeType: 'audio/mpeg', filename: 'a.mp3' }, ctx).catch(
-      (e) => e,
-    );
+    const err = await decodeWithFfmpeg(
+      { kind: 'bytes', data: new Uint8Array(4), mimeType: 'audio/mpeg', filename: 'a.mp3' },
+      ctx,
+    ).catch((e) => e);
     expect(err).toBeInstanceOf(Vid2ContextError);
     expect(err.code).toBe('no-provider');
     expect(err.hint).toMatch(/FFMPEG_PATH/);

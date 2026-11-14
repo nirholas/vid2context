@@ -250,6 +250,10 @@ async function loadPipeline(hooks: RuntimeHooks, model: string, device: Transfor
         tf.env.useFSCache = true;
       } else {
         tf.env.useBrowserCache = true;
+        // ONNX Runtime's WASM files come from cdn.jsdelivr.net unless the app self-hosts them.
+        const wasmPath = ctx.env.TRANSFORMERS_WASM_PATH?.trim();
+        const wasm = tf.env.backends.onnx.wasm;
+        if (wasmPath && wasm) wasm.wasmPaths = wasmPath.endsWith('/') ? wasmPath : `${wasmPath}/`;
       }
       const state = { lastPct: -1 };
       ctx.log.info(`transformers: loading ${model} on ${device}`, { cacheDir: dir ?? 'browser Cache Storage' });
