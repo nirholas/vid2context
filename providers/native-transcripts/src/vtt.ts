@@ -42,35 +42,54 @@ function cleanLine(line: string): { text: string; speaker?: string } {
   return { text: decodeEntities(text).replace(/\s+/g, ' ').trim(), speaker };
 }
 
+/**
+ * Line scanner. Per the WebVTT spec only an empty line ends a block: a line
+ * holding just spaces (YouTube auto-captions put one in every cue) is cue
+ * text. A timing line also ends the previous cue, which tolerates files that
+ * leave out the empty line between cues. NOTE, STYLE and REGION blocks and
+ * the header run until the next empty line.
+ */
 function parseCues(raw: string): Cue[] {
-  const text = raw.replace(/^﻿/, '').replace(/\r\n?/g, '\n');
-  const blocks = text.split(/\n[ \t]*\n+/);
+  const lines = raw.replace(/^\uFEFF/, '').replace(/\r\n?/g, '\n').split('\n');
   const cues: Cue[] = [];
-  for (const [i, block] of blocks.entries()) {
-    const lines = block.split('\n');
-    if (i === 0 && /^WEBVTT(?:[ \t].*)?$/.test(lines[0]?.trim() ?? '')) {
-      // The header block may itself hold a cue only in malformed files; header metadata never has "-->".
-      const timingAt = lines.findIndex((l) => TIMING.test(l));
-      if (timingAt < 0) continue;
-      lines.splice(0, timingAt);
+  let i = 0;
+  const skipBlock = () => {
+    while (i < lines.length && lines[i] !== '') i++;
+  };
+  if (/^WEBVTT(?:[ \t].*)?$/.test(lines[0]?.trim() ?? '')) {
+    // Header: "WEBVTT" plus optional metadata lines, up to the first empty line or a timing line.
+    i = 1;
+    while (i < lines.length && lines[i] !== '' && !TIMING.test(lines[i] ?? '')) i++;
+  }
+  while (i < lines.length) {
+    const line = lines[i] ?? '';
+    if (line.trim() === '') {
+      i++;
+      continue;
     }
-    const first = lines[0]?.trim() ?? '';
-    if (/^(NOTE|STYLE|REGION)(?:\s|$)/.test(first)) continue;
-    const timingAt = lines.findIndex((l) => TIMING.test(l));
-    if (timingAt < 0 || timingAt > 1) continue;
-    const m = TIMING.exec(lines[timingAt] ?? '');
-    if (!m?.[1] || !m[2]) continue;
+    if (/^(NOTE|STYLE|REGION)(?:[ \t]|$)/.test(line)) {
+      skipBlock();
+      continue;
+    }
+    const m = TIMING.exec(line);
+    if (!m?.[1] || !m[2]) {
+      // A cue identifier sits directly above its timing line; anything else is stray text.
+      if (!TIMING.test(lines[i + 1] ?? '')) skipBlock();
+      i++;
+      continue;
+    }
+    i++;
     let speaker: string | undefined;
     const body: string[] = [];
-    for (const line of lines.slice(timingAt + 1)) {
-      const c = cleanLine(line);
+    while (i < lines.length && lines[i] !== '' && !TIMING.test(lines[i] ?? '')) {
+      const c = cleanLine(lines[i] ?? '');
       if (c.speaker !== undefined && speaker === undefined) speaker = c.speaker;
       if (c.text) body.push(c.text);
+      i++;
     }
     if (body.length === 0) continue;
     const start = vttTime(m[1]);
-    const end = Math.max(start, vttTime(m[2]));
-    cues.push({ start, end, lines: body, ...(speaker ? { speaker } : {}) });
+    cues.push({ start, end: Math.max(start, vttTime(m[2])), lines: body, ...(speaker ? { speaker } : {}) });
   }
   return cues;
 }
