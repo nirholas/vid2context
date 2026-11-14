@@ -7,7 +7,7 @@ import youtube from '@vid2context/provider-youtube';
 import { Hono } from 'hono';
 import { describe, expect, it } from 'vitest';
 import { skipsRoutes } from '../src/http.ts';
-import { ATTRIBUTION_HEADER, readSkipValue, SPONSORBLOCK_ATTRIBUTION, type SkipReport, skipQueryOption } from '../src/index.ts';
+import { ATTRIBUTION_HEADER, readSkipValue, type SkipReport, SPONSORBLOCK_ATTRIBUTION, skipQueryOption } from '../src/index.ts';
 import { registerSkipsTools } from '../src/mcp.ts';
 import { officeContext, requestedCategories, routes } from './fixtures.ts';
 
