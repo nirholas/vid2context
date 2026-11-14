@@ -34,9 +34,11 @@ import {
 import {
   downloadArgs,
   framesFromThumbs,
+  nextWakeMs,
   onlyRateLimited,
   parseDuration,
   resolveSampleOptions,
+  restMsAfter,
   samplingArgs,
   selectExpression,
 } from '../src/node/index.ts';
@@ -288,6 +290,33 @@ describe('vision rungs', () => {
     expect(attempts[0]?.reason).toBe('rate-limited');
     expect(onlyRateLimited(attempts)).toBe(true);
     expect(replay.calls).toHaveLength(1);
+  });
+
+  it('waits exactly as long as the chain rests a rung: real 429 and own spacing', async () => {
+    const rec = JSON.parse(text('ovh-qwen2.5-vl-72b.429.json')) as {
+      status: number;
+      headers: Record<string, string>;
+      body: string;
+    };
+    const limited = await ovhRung()
+      .read(frame('062'), testContext({ fetch: replayFetch([{ method: 'POST', url: OVH_CHAT_URL, response: rec }]) }))
+      .catch((e: unknown) => e);
+    expect(restMsAfter(limited)).toBe(26_000);
+    // The rung's own spacing: the second read inside 30 s rests until the slot, rounded up to whole seconds.
+    resetThrottle();
+    const replay = replayFetch([{ method: 'POST', url: OVH_CHAT_URL, response: { body: text(ovhFile('062')) } }]);
+    const rung = ovhRung();
+    await rung.read(frame('062'), testContext({ fetch: replay }));
+    const spaced = await rung.read(frame('100'), testContext({ fetch: replay })).catch((e: unknown) => e);
+    expect(restMsAfter(spaced)).toBe(30_000);
+    expect(restMsAfter(new Vid2ContextError('upstream', 'HTTP 500', { status: 500 }))).toBe(0);
+    const now = 1_000_000;
+    const resting = new Map([
+      ['visual/ovh/Qwen2.5-VL-72B-Instruct', now + 26_000],
+      ['visual/gemini/gemini-2.5-flash-lite', now + 4_000],
+    ]);
+    expect(nextWakeMs(resting, ['visual/ovh/Qwen2.5-VL-72B-Instruct', 'visual/gemini/gemini-2.5-flash-lite'], now)).toBe(4_000);
+    expect(nextWakeMs(resting, ['visual/tesseract/eng'], now)).toBeUndefined();
   });
 
   it('maps kinds and parses JSON replies', () => {

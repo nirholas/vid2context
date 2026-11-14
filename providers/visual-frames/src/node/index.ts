@@ -33,7 +33,6 @@ import { dataHome } from '@vid2context/ffmpeg';
 import { nodeVisualProvider } from '../node-provider.ts';
 import { DEFAULT_HASH_THRESHOLD, dedupeFrames, mergeNotes, selectBudget } from '../select.ts';
 import { terminateTesseract } from '../tesseract.ts';
-import { throttleRemainingMs } from '../throttle.ts';
 import { downloadVideo } from './download.ts';
 import { resolveSampleOptions, type SampleOptions, sampleFrames } from './sample.ts';
 
@@ -85,6 +84,24 @@ const DEFAULT_MAX_WAIT_SEC = 120;
 const MAX_RETRIES_PER_FRAME = 3;
 /** Core cools a rate-limited rung for 60 s when the service gives no Retry-After. */
 const UNKNOWN_COOLDOWN_MS = 60_000;
+/** Slack after a rung's rest ends, so the retry never lands a moment too early. */
+const WAKE_MARGIN_MS = 500;
+
+/**
+ * How long core's chain rests a rung after this error: max(Retry-After, 5) s
+ * for `rate-limited` (60 s without Retry-After), else 0. Mirrors cooldownFor
+ * in packages/core/src/chain.ts, which is not exported.
+ */
+export function restMsAfter(err: unknown): number {
+  if (!(err instanceof Vid2ContextError) || err.code !== 'rate-limited') return 0;
+  return Math.max(err.retryAfterSec ?? UNKNOWN_COOLDOWN_MS / 1000, 5) * 1000;
+}
+
+/** Milliseconds until the first resting rung is usable again (undefined when none is known to rest). */
+export function nextWakeMs(restingUntil: Map<string, number>, rungIds: string[], now = Date.now()): number | undefined {
+  const waits = rungIds.map((id) => (restingUntil.get(id) ?? 0) - now).filter((ms) => ms > 0);
+  return waits.length > 0 ? Math.min(...waits) : undefined;
+}
 
 function sleep(ms: number, signal?: AbortSignal): Promise<void> {
   return new Promise((resolve, reject) => {
@@ -149,6 +166,16 @@ export async function extractVisualNotes(input: string, opts: ExtractVisualOptio
     const notes: VisualNote[] = [];
     const frames: VisualFrameInfo[] = [];
     const attempts: Attempt[] = [];
+    const restingUntil = new Map<string, number>();
+    const read = async (rung: VisualRung, frame: { data: Uint8Array; mimeType: string; atSec: number }) => {
+      try {
+        return await rung.read(frame, ctx);
+      } catch (err) {
+        const rest = restMsAfter(err);
+        if (rest > 0) restingUntil.set(rung.id, Date.now() + rest);
+        throw err;
+      }
+    };
     let lastError: unknown;
     for (const [i, d] of chosen.entries()) {
       const file = sampled.files[d.best.index];
@@ -157,7 +184,7 @@ export async function extractVisualNotes(input: string, opts: ExtractVisualOptio
       const info: VisualFrameInfo = { atSec: d.atSec, hash: d.hash };
       for (let attempt = 0; ; attempt++) {
         try {
-          const res = await runChain('visual', rungs, (rung) => rung.read(frame, ctx), chain, ctx);
+          const res = await runChain('visual', rungs, (rung) => read(rung, frame), chain, ctx);
           attempts.push(...res.attempts);
           notes.push(...res.value);
           info.sentTo = res.rung.id;
@@ -174,10 +201,11 @@ export async function extractVisualNotes(input: string, opts: ExtractVisualOptio
             });
             break;
           }
-          const known = rankRungs(rungs, chain, ctx.env)
-            .map((r) => throttleRemainingMs(r.id))
-            .filter((ms) => ms > 0);
-          const waitMs = Math.min(maxWaitMs, (known.length > 0 ? Math.min(...known) : UNKNOWN_COOLDOWN_MS) + 250);
+          const wake = nextWakeMs(
+            restingUntil,
+            rankRungs(rungs, chain, ctx.env).map((r) => r.id),
+          );
+          const waitMs = Math.min(maxWaitMs, (wake ?? UNKNOWN_COOLDOWN_MS) + WAKE_MARGIN_MS);
           ctx.log.info('every visual rung is rate-limited; waiting for the next slot', {
             atSec: d.atSec,
             waitSec: Math.ceil(waitMs / 1000),

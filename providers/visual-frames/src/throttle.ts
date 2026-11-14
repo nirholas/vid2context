@@ -4,8 +4,8 @@
  * Keyless OVH allows about 2 requests per minute per model, and free Gemini
  * keys have a per-minute cap too. A rung that was used too recently does not
  * wait: it throws `rate-limited` with the remaining seconds, so the chain
- * cools it down and moves on to the next rung. The frame pipeline reads
- * `throttleRemainingMs` to decide how long to wait when every rung is resting.
+ * cools it down and moves on to the next rung. When every rung is resting,
+ * the frame pipeline waits until the first one is usable again.
  */
 import { Vid2ContextError } from '@vid2context/core';
 
