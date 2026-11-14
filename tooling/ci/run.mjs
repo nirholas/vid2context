@@ -42,6 +42,12 @@ const STEPS = [
   { name: 'hygiene', cmd: [process.execPath, 'tooling/checks/run.mjs'], about: 'house-rule checks on tracked files' },
   { name: 'build', cmd: [NPM, 'run', 'build:npm'], needs: 'build:npm', about: 'bundle the publishable npm packages' },
   {
+    name: 'smoke',
+    cmd: [process.execPath, 'tooling/release/smoke.mjs'],
+    after: 'build',
+    about: 'run the bundles: CLI --help, MCP initialize over stdio',
+  },
+  {
     name: 'eval',
     cmd: [NPM, 'run', 'eval', '--', '--check'],
     needs: 'eval',
@@ -104,6 +110,7 @@ function main() {
     else if (step.when && !step.when()) row.status = `skipped (${step.whenNote})`;
     else if (step.needs && !available[step.needs]) row.status = `absent (no "${step.needs}" script)`;
     else if (failed && !opts.keepGoing) row.status = 'not run';
+    else if (step.after && rows.find((r) => r.name === step.after)?.status.startsWith('FAIL')) row.status = `not run (${step.after} failed)`;
     else {
       console.error(`\n== ci: ${step.name}: ${step.cmd.map((c) => c.replace(`${ROOT}/`, '')).join(' ')}`);
       const t0 = performance.now();

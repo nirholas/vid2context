@@ -7,5 +7,5 @@
     "providers/*/test/**/*.ts",
     "scripts/**/*.ts"
   ],
-  "exclude": ["**/node_modules", "**/dist", "packages/web/**", "packages/extension/**"]
+  "exclude": ["**/node_modules", "**/dist", "packages/web/**", "packages/extension/**", "packages/chat/**"]
 }

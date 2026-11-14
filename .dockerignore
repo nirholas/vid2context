@@ -1,13 +1,24 @@
-# Keep secrets, local data and build output out of image builds.
+# Keep secrets, local data, build output and test data out of image builds.
+# Used by the root Dockerfile (MCP stdio image) and deploy/containers/Dockerfile.
 .env
 .env.*
 !.env.example
 .git
+.github
 node_modules
 **/node_modules
 dist
 **/dist
 .vid2context
 .wrangler
+.vercel
 coverage
 *.log
+.DS_Store
+
+# Recorded fixtures and media are for tests only, never needed at run time.
+tests/fixtures
+**/test/fixtures
+clients/python/tests/fixtures
+**/__pycache__
+**/.venv

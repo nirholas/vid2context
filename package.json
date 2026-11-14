@@ -31,7 +31,13 @@
     "deploy": "npm run gen && npm run build:site && wrangler deploy",
     "discovery:gen": "tsx packages/discovery/src/cli.ts gen",
     "discovery:logo": "tsx packages/discovery/src/cli.ts logo",
-    "build:npm": "npm run gen && tsx packages/discovery/src/cli.ts build"
+    "build:npm": "npm run gen && tsx packages/discovery/src/cli.ts build",
+    "conformance": "npm run gen && vitest run --config packages/testkit/vitest.conformance.config.ts",
+    "record": "tsx packages/testkit/src/record.ts",
+    "ci": "node tooling/ci/run.mjs",
+    "hygiene": "node tooling/checks/run.mjs",
+    "release:dry": "node tooling/release/release.mjs",
+    "hooks:install": "node tooling/hooks/install.mjs"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.6.7",

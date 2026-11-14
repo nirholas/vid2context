@@ -1,12 +1,22 @@
-// Cloudflare Worker for vid2context.com: the landing page (site/) and the HTTP API (/api/*).
-// Deploy with `npm run deploy` (needs CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID in .env).
+// Cloudflare Worker for vid2context.com: one Worker serves the landing site (/),
+// the web app (/app/), the chat app (/chat/), the HTTP API (/api/v1/*) and,
+// once prompt 46 routes it, remote MCP (/mcp).
+//
+//   npm run build:assets   assemble dist/assets (site, apps, llms.txt)
+//   npm run dev:worker     build assets and run locally with wrangler dev
+//   npm run deploy         build assets and deploy (needs CLOUDFLARE_API_TOKEN)
+//
+// Secrets (provider keys, VID2CONTEXT_API_KEYS) are set with
+// `npx wrangler secret put <NAME>` and never written here. Full guide:
+// docs/deploy/cloudflare.md
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "vid2context",
   "main": "packages/server/src/workers.ts",
   "compatibility_date": "2026-10-01",
   "assets": {
-    "directory": "site",
+    // Built by deploy/serverless/build-assets.mjs; dist/ is gitignored.
+    "directory": "dist/assets",
     "binding": "ASSETS",
     "run_worker_first": true,
     "html_handling": "auto-trailing-slash",
@@ -19,5 +29,53 @@
   // Also serve on vid2context.<account>.workers.dev, a fallback URL that works without the custom domain.
   "workers_dev": true,
   "preview_urls": false,
-  "observability": { "enabled": true }
+  "observability": { "enabled": true },
+
+  "vars": {
+    // Marks this as the public instance (shared, internet-facing).
+    "VID2CONTEXT_PUBLIC": "1"
+    // Storage on Cloudflare (providers/storage-cloudflare): each variable names
+    // a binding declared below. Uncomment together with that binding.
+    // "VID2CONTEXT_D1": "DB",
+    // "VID2CONTEXT_R2": "MEDIA",
+    // "VID2CONTEXT_KV": "KV"
+  }
+
+  // ---------------------------------------------------------------- optional bindings
+  // Uncomment what you use, and add a comma after the closing brace of "vars".
+  // Every binding is optional: without them the Worker uses in-memory storage,
+  // hosted and keyless rungs, and no background jobs.
+
+  // D1: the library (contexts, collections, search). Create it with
+  //   npx wrangler d1 create vid2context
+  // and paste the database_id it prints.
+  // "d1_databases": [
+  //   { "binding": "DB", "database_name": "vid2context", "database_id": "<from wrangler d1 create>" }
+  // ],
+
+  // R2: large contexts and uploaded media.
+  //   npx wrangler r2 bucket create vid2context-media
+  // "r2_buckets": [
+  //   { "binding": "MEDIA", "bucket_name": "vid2context-media" }
+  // ],
+
+  // KV: KvStore for sessions, API keys, webhooks and caches.
+  //   npx wrangler kv namespace create vid2context
+  // "kv_namespaces": [
+  //   { "binding": "KV", "id": "<from wrangler kv namespace create>" }
+  // ],
+
+  // Workers AI: free Whisper and LLM rungs through the binding (providers/cloudflare-ai).
+  // "ai": { "binding": "AI" },
+
+  // Queue for background jobs (packages/jobs, prompt 42), producer and consumer.
+  //   npx wrangler queues create vid2context-jobs
+  // "queues": {
+  //   "producers": [{ "binding": "JOBS_QUEUE", "queue": "vid2context-jobs" }],
+  //   "consumers": [{ "queue": "vid2context-jobs", "max_batch_size": 5, "max_retries": 3 }]
+  // },
+
+  // Cron trigger for watch lists (prompt 41): refresh followed playlists and
+  // channels. Needs a `scheduled` handler in packages/server/src/workers.ts.
+  // "triggers": { "crons": ["*/30 * * * *"] }
 }
