@@ -406,7 +406,7 @@ describe('quotas', () => {
     expect(asAuto.status).toBe(429);
     expect(asAuto.headers.get('retry-after')).toBe('7200');
     const body = await asAuto.json();
-    expect(body.error.message).toContain('daily speech-to-text limit (0.3 audio minutes per day)');
+    expect(body.error.message).toContain('daily speech-to-text limit (0.5 audio minutes per day)');
     expect(body.error.hint).toContain('mode=captions');
     expect(h.fetch.calls.filter((c) => c.url.includes('/audio/transcriptions'))).toHaveLength(1);
   });
