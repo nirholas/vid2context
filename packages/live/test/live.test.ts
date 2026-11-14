@@ -89,7 +89,8 @@ describe('HLS playlists (recorded from NASA live on YouTube)', () => {
   it('starts at the newest chunk of audio, or at fromSequence, and reports a resume gap', () => {
     const a = parsePlaylist(read(join(NASA, 'media-1.m3u8')), 'https://x/');
     if (a.kind !== 'media') throw new Error('expected a media playlist');
-    expect(chooseStartSequence(a, { chunkSec: 30 })).toEqual({ start: 323504 });
+    // Six segments, one of them 4.94 s, make 29.96 s; the seventh crosses 30 s.
+    expect(chooseStartSequence(a, { chunkSec: 30 })).toEqual({ start: 323503 });
     expect(chooseStartSequence(a, { chunkSec: 10 })).toEqual({ start: 323508 });
     expect(chooseStartSequence(a, { chunkSec: 30, fromSequence: 323507 })).toEqual({ start: 323507 });
     expect(chooseStartSequence(a, { chunkSec: 30, fromSequence: 323512 })).toEqual({ start: 323512 });
