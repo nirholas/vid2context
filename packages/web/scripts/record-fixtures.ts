@@ -17,11 +17,15 @@ const VIDEO = 'https://www.youtube.com/watch?v=jNQXAC9IVRw';
 const MISSING = 'https://www.youtube.com/watch?v=xxxxxxxxxxx';
 const PLAYLIST = 'https://www.youtube.com/playlist?list=PLrAXtmErZgOeiKm4sgNOknGvNjby9efdf';
 
+/** Fields removed before saving: health's provider list shows which keys this machine has set. */
+const STRIP: Record<string, string[]> = { 'health.json': ['providers'] };
+
 async function record(name: string, method: string, path: string, init: RequestInit = {}): Promise<unknown> {
   const res = await fetch(`${base}${path}`, { method, ...init });
   const contentType = res.headers.get('content-type') ?? '';
   const text = await res.text();
   const body = contentType.includes('json') ? JSON.parse(text) : text;
+  for (const field of STRIP[name] ?? []) delete (body as Record<string, unknown>)[field];
   writeFileSync(new URL(name, out), `${JSON.stringify({ request: { method, path }, status: res.status, contentType, body }, null, 2)}\n`);
   console.error(`[record] ${name}: ${method} ${path} -> ${res.status}`);
   return body;
