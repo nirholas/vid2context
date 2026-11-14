@@ -1,118 +1,56 @@
 /**
- * vid2context MCP server. Tools return text; failures come back as tool
- * errors (isError) carrying the error code, hint and attempts, so the calling
- * agent can explain what went wrong or retry with another mode.
+ * vid2context MCP server. Tools return text (and structuredContent where the
+ * result is structured); failures come back as tool results with isError
+ * carrying the error code, hint and attempts, so the calling agent can
+ * explain what went wrong or retry another way.
  *
  * Every tool call gets its own Ctx (a shallow copy carrying the call's abort
- * signal), so per-request caches never outlive the call.
+ * signal), so per-request state never outlives the call. createServer holds
+ * no transport code: bin.ts serves it over stdio and packages/mcp-http over
+ * Streamable HTTP.
  */
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import {
-  attemptsOf,
-  type Ctx,
-  formatTimestamp,
-  formatters,
-  getVideoContext,
-  type Registry,
-  render,
-  type TranscriptMode,
-  Vid2ContextError,
-  type VideoContext,
-} from '@vid2context/core';
-import { z } from 'zod';
+import type { Ctx, Registry, Storage } from '@vid2context/core';
+import type { AudioExtractor } from '@vid2context/live';
+import { registerPrompts } from './prompts.ts';
+import { registerResources } from './resources.ts';
+import { LazyStorage } from './shared.ts';
+import { registerListTools } from './tools/lists.ts';
+import { registerModelTools } from './tools/models.ts';
+import { registerVideoTools } from './tools/video.ts';
+import { registerPackageTools } from './wire.ts';
+
+export { briefPrompt, buyerGuidePrompt } from './prompts.ts';
+export { contextHeader, LazyStorage, type ToolResult, toolError } from './shared.ts';
+export { renderTranscript } from './tools/video.ts';
+export { listModels, type ModelInfo } from './tools/models.ts';
 
 export const SERVER_NAME = 'vid2context';
 
-type ToolResult = { content: { type: 'text'; text: string }[]; isError?: boolean };
+export const SERVER_INSTRUCTIONS = `vid2context turns videos into context you can cite. Speech is about 12k tokens per hour of video.
+Reading strategy: for anything longer than about 20 minutes, call get_outline first (chapters with token counts), then get_section for the chapters you need, or search_transcript to find where a topic comes up. get_transcript returns everything; set maxTokens to page through long ones.
+Many videos: create_collection or add_to_collection, then get_collection, search_transcript and export_context_pack. The brief and buyer_guide prompts describe how to write a cited brief.
+Cite moments as [Video title @ m:ss](timestamp link); outlines and search hits include the links.`;
 
-const text = (t: string): ToolResult => ({ content: [{ type: 'text', text: t }] });
-
-export function toolError(err: unknown): ToolResult {
-  const e = err instanceof Vid2ContextError ? err : undefined;
-  const payload = {
-    error: e?.code ?? 'error',
-    message: err instanceof Error ? err.message : String(err),
-    ...(e?.hint ? { hint: e.hint } : {}),
-    attempts: attemptsOf(err),
-  };
-  return { content: [{ type: 'text', text: JSON.stringify(payload, null, 2) }], isError: true };
+export interface ServerOptions {
+  /**
+   * Library and cache backend shared by every tool. Default: the registry's
+   * enabled storage provider, opened on first use, else MemoryStorage.
+   */
+  storage?: Storage;
+  /** Audio extractor for watch_live. bin.ts passes the ffmpeg one; without it watch_live answers with a no-provider error. */
+  extractAudio?: AudioExtractor;
 }
 
-/** A short header so the agent knows which video a transcript came from and how it was produced. */
-export function contextHeader(c: VideoContext): string {
-  const m = c.metadata;
-  const lines = [
-    `Title: ${m.title}`,
-    m.channel ? `Channel: ${m.channel.name}` : undefined,
-    m.ref.url ? `URL: ${m.ref.url}` : undefined,
-    m.durationSec ? `Duration: ${formatTimestamp(m.durationSec)}` : undefined,
-    `Transcript: ${c.transcript.origin}, ${c.transcript.language}${c.transcript.translated ? ', machine-translated' : ''} (${c.transcript.producer})`,
-    m.chapters.length > 0
-      ? `Chapters: ${m.chapters.map((ch) => `${formatTimestamp(ch.startSec)} ${ch.title}`).join(' | ')}`
-      : undefined,
-  ];
-  return `${lines.filter(Boolean).join('\n')}\n\n`;
-}
-
-export function createServer(registry: Registry, ctx: Ctx, version = '0.1.0'): McpServer {
-  const server = new McpServer({ name: SERVER_NAME, version });
-  const callCtx = (signal?: AbortSignal): Ctx => ({ ...ctx, signal: signal ?? ctx.signal });
-  const formatIds = Object.keys(formatters) as [string, ...string[]];
-
-  server.registerTool(
-    'get_transcript',
-    {
-      title: 'Get video transcript',
-      description:
-        'Turn a video URL or local media file into a transcript. Uses creator captions, then platform auto-captions, then speech-to-text. ' +
-        'Text output starts with a header (title, channel, URL, chapters) and, with timestamps, prefixes each line with [m:ss] so you can cite moments. ' +
-        `Formats: ${Object.values(formatters)
-          .map((f) => `${f.id} (${f.description})`)
-          .join('; ')}.`,
-      inputSchema: {
-        url: z.string().min(1).describe('Video URL (YouTube and more) or a local file path'),
-        format: z.enum(formatIds).optional().describe('Output format. Default: text'),
-        timestamps: z.boolean().optional().describe('Prefix lines with timestamps. Default: true'),
-        mode: z.enum(['auto', 'captions', 'stt', 'video']).optional().describe('Transcript strategy. Default: auto'),
-        language: z.string().optional().describe('Preferred transcript language (BCP-47, e.g. en, de)'),
-      },
-    },
-    async (args, extra) => {
-      try {
-        const context = await getVideoContext(
-          registry,
-          args.url,
-          { mode: (args.mode ?? 'auto') as TranscriptMode, language: args.language },
-          callCtx(extra.signal),
-        );
-        const format = args.format ?? 'text';
-        const body = render(context, format, { timestamps: args.timestamps ?? true });
-        return text(format === 'text' ? contextHeader(context) + body : body);
-      } catch (err) {
-        return toolError(err);
-      }
-    },
-  );
-
-  server.registerTool(
-    'get_metadata',
-    {
-      title: 'Get video metadata',
-      description:
-        'Title, channel, description, duration, chapters, tags and language for a video URL or local file, without fetching the transcript.',
-      inputSchema: { url: z.string().min(1).describe('Video URL or local file path') },
-    },
-    async (args, extra) => {
-      try {
-        const c = callCtx(extra.signal);
-        const { source, ref } = registry.resolve(args.url);
-        const metadata = await source.getMetadata(ref, c);
-        return text(JSON.stringify(metadata, null, 2));
-      } catch (err) {
-        return toolError(err);
-      }
-    },
-  );
-
+export function createServer(registry: Registry, ctx: Ctx, version = '0.1.0', opts: ServerOptions = {}): McpServer {
+  const server = new McpServer({ name: SERVER_NAME, version }, { instructions: SERVER_INSTRUCTIONS });
+  const storage = opts.storage ?? new LazyStorage(registry, ctx);
+  const deps = { registry, ctx, storage };
+  registerVideoTools(server, deps);
+  registerListTools(server, deps);
+  registerModelTools(server, deps);
+  registerPackageTools(server, { ...deps, extractAudio: opts.extractAudio });
+  registerPrompts(server);
+  registerResources(server, storage);
   return server;
 }
