@@ -217,11 +217,11 @@ Reads what a transcript misses: slide text, code, charts. `extractVisualNotes` i
 
 ## Library storage
 
-The library (saved contexts, collections, search, key-value state, vectors) uses the enabled storage backend with the lowest priority. Guide: [guides/library-sqlite.md](guides/library-sqlite.md).
+The library (saved contexts, collections, search, key-value state, vectors) uses the enabled storage backend with the lowest priority. Guides: [guides/library-sqlite.md](guides/library-sqlite.md), [guides/library-postgres.md](guides/library-postgres.md).
 
 | Priority | Backend | Runtime | Enabled when |
 |---|---|---|---|
-| lower than 50 | Postgres (`storage-postgres`) | node | a database URL is set (see that provider's rows) |
+| 10 | Postgres + pgvector (`storage-postgres`), tsvector search, HNSW vector search, tenants | node; workers with Neon | `VID2CONTEXT_DATABASE_URL` or `DATABASE_URL` is set, unless `VID2CONTEXT_STORAGE` names another backend. See [guides/library-postgres.md](guides/library-postgres.md) |
 | 50 | SQLite (`storage-sqlite`), FTS5 search, one local file | node (22.13+) | by default, unless `VID2CONTEXT_STORAGE` names another backend |
 | 20 | Cloudflare D1 (`storage-cloudflare`), FTS5 search, R2 for large contexts, KV for state | workers | `VID2CONTEXT_D1` names a D1 binding, unless `VID2CONTEXT_STORAGE` names another backend. See [guides/cloudflare.md](guides/cloudflare.md) |
 | none | in-process `MemoryStorage`, lost on exit | any | no backend is enabled, or `VID2CONTEXT_STORAGE=memory` |
@@ -235,6 +235,14 @@ The library (saved contexts, collections, search, key-value state, vectors) uses
 | `VID2CONTEXT_D1` | `storage-cloudflare` | name of the Worker's D1 binding (for example `DB`); enables the backend |
 | `VID2CONTEXT_R2` | `storage-cloudflare` | optional R2 binding name: contexts over 1,000,000 bytes of JSON go there (a D1 row holds at most 2 MB), and uploaded media blobs |
 | `VID2CONTEXT_KV` | `storage-cloudflare` | optional KV binding name for key-value state (TTLs under 60 s are raised to 60, the KV minimum); without it the state lives in a D1 table |
+| `VID2CONTEXT_DATABASE_URL` | `storage-postgres` | Postgres connection string; wins over `DATABASE_URL`. Setting either enables the backend. SSL from `?sslmode=` |
+| `DATABASE_URL` | `storage-postgres` | the conventional name many hosts set; used when `VID2CONTEXT_DATABASE_URL` is unset |
+| `VID2CONTEXT_PG_SCHEMA` | `storage-postgres` | schema for the tables; default `vid2context`. Created and migrated on first start |
+| `VID2CONTEXT_TENANT` | `storage-postgres` | tenant id stamped on and filtered by every row; default `default` |
+| `VID2CONTEXT_PG_POOL_MAX` | `storage-postgres` | pool size on Node; default 10 |
+| `VID2CONTEXT_PG_STATEMENT_TIMEOUT_MS` | `storage-postgres` | per-statement timeout sent at connect; unset uses the server default (PgBouncer-style poolers reject it) |
+| `VID2CONTEXT_PG_DRIVER` | `storage-postgres` | `postgres` (TCP, Node default) or `neon-http` (Neon over HTTPS, the Workers default) |
+| `VID2CONTEXT_PG_NEON_FETCH_ENDPOINT` | `storage-postgres` | Neon HTTP endpoint override for a local Neon proxy or self-hosted Neon |
 
 ## Security and limits
 

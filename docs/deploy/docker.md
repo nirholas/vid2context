@@ -96,7 +96,15 @@ The server reads the repository's `.env` and runs read-only with all capabilitie
 | `stt` | `speaches` 0.8.3, CPU | `LOCAL_STT_BASE_URL=http://stt:8000/v1` and `LOCAL_STT_MODEL=Systran/faster-whisper-small`. speaches downloads a model on request; its port is not published, so ask from inside the network: `docker compose -f deploy/containers/compose.yaml exec server node -e "fetch('http://stt:8000/v1/models/Systran/faster-whisper-small',{method:'POST'}).then(r=>console.log(r.status))"` |
 | `ollama` | `ollama/ollama:0.40.13` | `OLLAMA_BASE_URL=http://ollama:11434/v1` and `OLLAMA_MODEL=qwen3:8b`, after `docker compose exec ollama ollama pull qwen3:8b` |
 
-`WITH_WHISPER=1 docker compose ... up --build` builds the whisper.cpp variant. `VID2CONTEXT_BIND=0.0.0.0` publishes the port beyond loopback (set `VID2CONTEXT_API_KEYS` first).
+Compose itself reads a few variables from your shell (or from `deploy/containers/.env`, the compose project's directory, not the repository's `.env`). They configure Docker, not vid2context:
+
+| Variable | Default | Effect |
+|---|---|---|
+| `VID2CONTEXT_PORT` | `8787` | port on your machine |
+| `VID2CONTEXT_BIND` | `127.0.0.1` | address on your machine; `0.0.0.0` publishes it to your network (set `VID2CONTEXT_API_KEYS` in `.env` first) |
+| `WITH_WHISPER` | `0` | `1` builds the whisper.cpp variant (`up --build`) |
+| `VID2CONTEXT_IMAGE_TAG` | `local` | tag of the built image, `vid2context:<tag>` |
+| `POSTGRES_PASSWORD` | `vid2context` | password of the `postgres` profile's database |
 
 ## YouTube and datacenter IPs
 
