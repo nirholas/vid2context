@@ -125,7 +125,9 @@ describe.skipIf(!miniflare || !esbuild)('durable retries through Cloudflare Queu
       type: 'video.ingested',
       data: videoIngestedData(gwagon),
     });
-    expect(result.deliveries).toMatchObject([{ hookId: hook.id, attempt: 1, outcome: 'retrying', status: 500, nextAttemptInMs: 1000 }]);
+    expect(result.deliveries).toMatchObject([
+      { hookId: hook.id, attempt: 1, outcome: 'retrying', status: 500, nextAttemptInMs: 1000 },
+    ]);
 
     const [first, second] = await r.waitFor(2, 15_000);
     expect(second?.headers['webhook-id']).toBe(first?.headers['webhook-id']);

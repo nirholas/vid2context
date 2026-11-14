@@ -93,7 +93,28 @@ Or with the official library in any language, for example `new Webhook(secret).v
 - Network errors, timeouts (10 s), 5xx and 429 are retried: attempts at about 0 s, 30 s, 5 min, 30 min, 2 h and 8 h, each with up to 20% jitter. A longer `Retry-After` wins. Other 4xx answers end that message.
 - `410 Gone` disables the hook at once. 20 consecutive failed attempts disable it too. A successful `POST /webhooks/:id/test` re-enables it.
 - The URL is checked again before every attempt.
-- Retries run in this process with `setTimeout` by default, so pending retries are lost when the process restarts, and on Workers they end with the request. Pass a `scheduler` (anything with `schedule(task, delayMs)`, where the task is plain JSON) to keep them durable, and call `deliverTask(task, store, ctx)` when one comes due. The jobs package has no delayed enqueue yet, so there is no built-in durable scheduler.
+- Retries run in this process with `setTimeout` by default, so pending retries are lost when the process restarts, and on Workers they end with the request. Pass a `scheduler` (anything with `schedule(task, delayMs)`, where the task is plain JSON) to keep them durable, and call `deliverTask(task, store, ctx)` when one comes due.
+
+### Durable retries on Workers (Cloudflare Queues)
+
+`queueRetryScheduler(queue)` turns every retry into a delayed message `{ webhookDelivery: task }` on a Cloudflare Queue (the queue service the jobs package runs on; delays are whole seconds, at most 12 hours, which covers the 8 hour last retry). `handleWebhookRetryBatch(batch, deps)` is the consumer: it runs each due attempt, schedules the next one through the same queue, and returns the messages that are not webhook retries.
+
+```ts
+import { workersKv, handleQueueBatch } from '@vid2context/jobs';
+import { emit, handleWebhookRetryBatch, queueRetryScheduler, WebhookStore } from '@vid2context/webhooks';
+
+const store = new WebhookStore(workersKv(env.WEBHOOKS_KV));      // or a D1 storage that implements KvStore
+await emit(event, store, ctx, { scheduler: queueRetryScheduler(env.WEBHOOKS) });
+
+export default {
+  async queue(batch, env) {
+    const rest = await handleWebhookRetryBatch(batch, { store, ctx, queue: env.WEBHOOKS });
+    if (rest.length) await handleQueueBatch({ queue: batch.queue, messages: rest }, env, jobsSetup);
+  },
+};
+```
+
+The jobs consumer acks and drops messages without a `jobId`, so on a shared queue run the webhook consumer first, as above, or give webhook retries their own queue. Pass the same `retryDelaysMs` and `maxFailures` to `emit` and to `deps.delivery`. Google Cloud Tasks and a polled store are not wired: on Node and Cloud Run retries stay in-process.
 
 ## Where events come from
 
@@ -116,4 +137,4 @@ Hooks make the server send requests to a URL a caller chose, so targets are chec
 
 ## Tests
 
-`npx vitest run packages/webhooks` signs the published vectors, delivers to a real HTTP server started on a random port (success, a 500 then success, a 429 with `Retry-After`, a timeout, disabling after 20 failures and on 410, redirects) and checks SSRF rejections. `LIVE=1` adds DNS checks against public names that point at private addresses (`localtest.me`, `nip.io`).
+`npx vitest run packages/webhooks` signs the published vectors, delivers to a real HTTP server started on a random port (success, a 500 then success, a 429 with `Retry-After`, a timeout, disabling after 20 failures and on 410, redirects) and checks SSRF rejections. When Miniflare and esbuild are installed (wrangler brings both), `test/queue.test.ts` runs a Worker under workerd whose failed deliveries are retried from delayed Cloudflare Queues messages by `handleWebhookRetryBatch`, against a real receiver on 127.0.0.1. `LIVE=1` adds DNS checks against public names that point at private addresses (`localtest.me`, `nip.io`).
