@@ -43,7 +43,6 @@ export function cloudTasksConfigFromEnv(env: Env): CloudTasksConfig | null {
 }
 
 export interface CloudTask {
-  name: string;
   scheduleTime?: string;
   httpRequest: {
     httpMethod: 'POST';
@@ -54,15 +53,10 @@ export interface CloudTask {
   };
 }
 
-/**
- * The task for one attempt of a job. The task name includes the attempt, so
- * Cloud Tasks deduplicates a repeated dispatch of the same attempt.
- */
-export function buildCloudTask(cfg: CloudTasksConfig, job: Job & { attempts?: number }, delayMs = 0, now = Date.now()): CloudTask {
-  const attempt = job.attempts ?? 0;
+/** The HTTP task for one dispatch of a job. Cloud Tasks names it. */
+export function buildCloudTask(cfg: CloudTasksConfig, job: Pick<Job, 'id'>, delayMs = 0, now = Date.now()): CloudTask {
   const body = btoa(JSON.stringify({ jobId: job.id }));
   return {
-    name: `${cfg.queue}/tasks/${job.id}-a${attempt}-${Math.floor(now / 1000)}`,
     ...(delayMs > 0 ? { scheduleTime: new Date(now + delayMs).toISOString() } : {}),
     httpRequest: {
       httpMethod: 'POST',
@@ -106,10 +100,6 @@ export function cloudTasksDispatch(cfg: CloudTasksConfig, ctx: Ctx, accessToken:
       body: JSON.stringify({ task }),
       ...(ctx.signal ? { signal: ctx.signal } : {}),
     });
-    if (res.status === 409) {
-      await res.body?.cancel();
-      return; // The same task already exists: this dispatch is a duplicate.
-    }
     if (!res.ok) throw await errorFromResponse(res, 'Cloud Tasks createTask');
     await res.body?.cancel();
   };
