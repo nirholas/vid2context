@@ -22,6 +22,7 @@ import {
   getVideoContext,
   hasKv,
   type KvStore,
+  limits,
   MemoryKv,
   type Registry,
   type Storage,
@@ -34,7 +35,6 @@ import { firstDueAt, nextDueAt, parseSchedule, type Schedule } from './schedule.
 import { bad, type ErrorInfo, eachLimit, errorInfo, randomToken } from './util.ts';
 import { sendWebhook, type WebhookOptions, type WebhookResult, webhookPayload } from './webhook.ts';
 
-export const DEFAULT_MAX_ITEMS = 200;
 export const DEFAULT_CONCURRENCY = 3;
 export const DEFAULT_DELAY_MS = 300;
 export const DEFAULT_LEASE_TTL_SEC = 3600;
@@ -63,6 +63,8 @@ export interface IngestFailure {
   code: string;
   message: string;
   hint?: string;
+  /** The failed step behind the error, for example the caption download YouTube answered with HTTP 429. */
+  cause?: string;
 }
 
 export interface RefreshSummary {
@@ -78,7 +80,7 @@ export interface RefreshSummary {
 }
 
 export interface IngestOptions {
-  /** Most new items to ingest this run. Capped by VID2CONTEXT_MAX_PLAYLIST_ITEMS (default 200). */
+  /** Most new items to ingest this run. Capped by VID2CONTEXT_MAX_PLAYLIST_ITEMS (default 500). */
   limit?: number;
   /** Videos fetched at once. Default 3. */
   concurrency?: number;
@@ -152,11 +154,6 @@ interface Candidate {
 /** In-flight refreshes per storage, so one process never refreshes a collection twice at once. */
 const inflight = new WeakMap<Storage, Map<string, Promise<RefreshSummary>>>();
 
-function positiveInt(v: string | undefined, fallback: number): number {
-  const n = Number(v);
-  return v && Number.isInteger(n) && n > 0 ? n : fallback;
-}
-
 function stringList(v: unknown, field: string): string[] {
   if (v === undefined || v === null) return [];
   if (!Array.isArray(v) || v.some((s) => typeof s !== 'string' || !s.trim())) {
@@ -185,9 +182,9 @@ export class Library {
     this.leaseTtlSec = deps.leaseTtlSec ?? DEFAULT_LEASE_TTL_SEC;
   }
 
-  /** VID2CONTEXT_MAX_PLAYLIST_ITEMS, default 200: items read per source and ingested per run. */
+  /** The core limit VID2CONTEXT_MAX_PLAYLIST_ITEMS (default 500): items read per source and ingested per run. */
   get maxItems(): number {
-    return positiveInt(this.ctx.env.VID2CONTEXT_MAX_PLAYLIST_ITEMS, DEFAULT_MAX_ITEMS);
+    return limits(this.ctx.env).maxPlaylistItems;
   }
 
   // Collections

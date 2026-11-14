@@ -6,7 +6,7 @@
  */
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { type RecordedCall, type Route, replayFetch } from '@vid2context/core/testing';
+import { type RecordedCall, type RecordedResponse, replayFetch } from '@vid2context/core/testing';
 
 export interface FixtureCall {
   method: string;
@@ -39,28 +39,65 @@ export function requestKey(url: string, body: string): string {
   }
 }
 
+export const fixturePath = (name: string) => join(import.meta.dirname, 'fixtures', name);
+export const readFixture = (name: string) => readFileSync(fixturePath(name), 'utf8');
+
 export function loadFixture(name = 'youtube-gwagon-playlist.json'): Fixture {
-  return JSON.parse(readFileSync(join(import.meta.dirname, 'fixtures', name), 'utf8')) as Fixture;
+  return JSON.parse(readFixture(name)) as Fixture;
+}
+
+export interface Override {
+  match: (call: RecordedCall) => boolean;
+  response: RecordedResponse;
 }
 
 export interface ReplayOptions {
-  /** Called when a request starts and when its response is ready; lets tests count requests in flight. */
-  around?: (call: RecordedCall, fc: FixtureCall) => Promise<void>;
+  /** Checked before the recorded calls. */
+  overrides?: Override[];
+  /** Runs before each response is returned; lets tests count requests in flight. */
+  around?: (call: RecordedCall) => Promise<void>;
 }
 
 /** A replayFetch serving the fixture. Requests that were never recorded throw. */
 export function fixtureFetch(fixture: Fixture, opts: ReplayOptions = {}) {
   const byKey = new Map<string, FixtureCall>();
   for (const c of fixture.calls) byKey.set(`${c.method} ${c.key}`, c);
-  const find = (call: RecordedCall) => byKey.get(`${call.method} ${requestKey(call.url, call.body ? String(call.body) : '')}`);
-  const route: Route = {
-    url: () => true,
-    response: async (call) => {
-      const fc = find(call);
-      if (!fc) throw new Error(`fixture: no recorded response for ${call.method} ${call.url}`);
-      await opts.around?.(call, fc);
-      return { status: fc.status, body: fc.body, headers: fc.contentType ? { 'content-type': fc.contentType } : {} };
+  return replayFetch([
+    {
+      url: () => true,
+      response: async (call) => {
+        await opts.around?.(call);
+        const o = opts.overrides?.find((x) => x.match(call));
+        if (o) return o.response;
+        const fc = byKey.get(`${call.method} ${requestKey(call.url, call.body ? String(call.body) : '')}`);
+        if (!fc) throw new Error(`fixture: no recorded response for ${call.method} ${call.url}`);
+        return { status: fc.status, body: fc.body, headers: fc.contentType ? { 'content-type': fc.contentType } : {} };
+      },
     },
-  };
-  return replayFetch([route]);
+  ]);
 }
+
+const PLAYER = 'https://www.youtube.com/youtubei/v1/player?prettyPrint=false';
+const playerFor =
+  (id: string) =>
+  (call: RecordedCall): boolean =>
+    call.url === PLAYER && String(call.body).includes(`"videoId":"${id}"`);
+const json = { 'content-type': 'application/json' };
+
+/**
+ * Videos with working captions, recorded on 2026-11-14 for the YouTube
+ * provider's tests and copied here: "Best & Worst G-Wagon Years" (in the
+ * playlist) and "Me at the zoo".
+ */
+export const captionedVideos: Override[] = [
+  { match: playerFor('cCPsdFdlshc'), response: { body: readFixture('player-cCPsdFdlshc.json'), headers: json } },
+  {
+    match: (c) => /\/api\/timedtext\?v=cCPsdFdlshc.*lang=en.*fmt=srv3/.test(c.url) && !c.url.includes('tlang='),
+    response: { body: readFixture('timedtext-cCPsdFdlshc-en-asr.srv3.xml') },
+  },
+  { match: playerFor('jNQXAC9IVRw'), response: { body: readFixture('player-jNQXAC9IVRw.json'), headers: json } },
+  {
+    match: (c) => /\/api\/timedtext\?v=jNQXAC9IVRw.*lang=en.*fmt=srv3/.test(c.url) && !c.url.includes('tlang='),
+    response: { body: readFixture('timedtext-jNQXAC9IVRw-en.srv3.xml') },
+  },
+];

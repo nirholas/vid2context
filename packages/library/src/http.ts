@@ -28,8 +28,8 @@ export interface RouteDeps {
   registry: Registry;
   makeCtx: (req: Request) => Ctx;
   storage: (ctx: Ctx) => Promise<Storage>;
-  /** Watch lists and seen sets. Default: the storage when it implements KvStore, else one process-wide MemoryKv. */
-  kv?: KvStore;
+  /** Watch lists and seen sets, or a factory per request. Default: the storage when it implements KvStore, else one process-wide MemoryKv. */
+  kv?: KvStore | ((ctx: Ctx) => Promise<KvStore>);
   /** Extra library options (webhook retries, lease TTL, clock). */
   library?: Pick<LibraryDeps, 'webhook' | 'leaseTtlSec' | 'now'>;
 }
@@ -77,7 +77,7 @@ export function libraryRoutes(deps: RouteDeps): Hono {
   const open = async (req: Request): Promise<Library> => {
     const ctx = deps.makeCtx(req);
     const storage = await deps.storage(ctx);
-    const kv = deps.kv ?? (hasKv(storage) ? storage : fallbackKv);
+    const kv = typeof deps.kv === 'function' ? await deps.kv(ctx) : (deps.kv ?? (hasKv(storage) ? storage : fallbackKv));
     return createLibrary({ registry: deps.registry, storage, ctx, kv, ...deps.library });
   };
 

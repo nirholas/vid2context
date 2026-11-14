@@ -56,10 +56,26 @@ function scrubMedia(v: unknown): unknown {
 }
 
 /** People's contact details in video descriptions never land in the repo. */
-function redact(body: string): string {
-  return body
+function redactText(text: string): string {
+  return text
     .replace(/[\w.+-]+@[\w-]+\.[\w.-]+/g, '[email redacted]')
     .replace(/(?<!\d)\(?\d{3}\)?[ .-]\d{3}[ .-]\d{4}(?!\d)/g, '[phone redacted]');
+}
+
+function redactValue(v: unknown): unknown {
+  if (typeof v === 'string') return redactText(v);
+  if (Array.isArray(v)) return v.map(redactValue);
+  if (!v || typeof v !== 'object') return v;
+  return Object.fromEntries(Object.entries(v).map(([k, x]) => [k, redactValue(x)]));
+}
+
+/** Redact inside parsed JSON strings, so escape sequences stay intact; plain text otherwise. */
+function redact(body: string): string {
+  try {
+    return JSON.stringify(redactValue(JSON.parse(body)));
+  } catch {
+    return redactText(body);
+  }
 }
 
 function trim(url: string, body: string): string {

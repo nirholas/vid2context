@@ -1,4 +1,4 @@
-import { Vid2ContextError } from '@vid2context/core';
+import { attemptsOf, Vid2ContextError } from '@vid2context/core';
 
 /** Resolves after `ms`, or at once when the signal aborts. Never rejects. */
 export function sleep(ms: number, signal?: AbortSignal): Promise<void> {
@@ -32,7 +32,8 @@ export async function eachLimit<T>(
     while (next < items.length && !signal?.aborted) {
       if (!first) await sleep(delayMs, signal);
       first = false;
-      if (signal?.aborted) return;
+      // Another worker may have taken the last item during the pause.
+      if (signal?.aborted || next >= items.length) return;
       const item = items[next++] as T;
       await fn(item);
     }
@@ -45,13 +46,26 @@ export interface ErrorInfo {
   code: string;
   message: string;
   hint?: string;
+  /** The last failed step behind the error, from its attempts: "youtube-captions blocked: ...HTTP 429...". */
+  cause?: string;
 }
 
 export function errorInfo(err: unknown): ErrorInfo {
+  const failedStep = attemptsOf(err)
+    .filter((a) => a.outcome === 'error')
+    .at(-1);
+  const cause = failedStep
+    ? `${failedStep.id} ${failedStep.reason ?? 'error'}${failedStep.detail ? `: ${failedStep.detail}` : ''}`.slice(0, 300)
+    : undefined;
   if (err instanceof Vid2ContextError) {
-    return { code: err.code, message: err.message.slice(0, 500), ...(err.hint ? { hint: err.hint } : {}) };
+    return {
+      code: err.code,
+      message: err.message.slice(0, 500),
+      ...(err.hint ? { hint: err.hint } : {}),
+      ...(cause && failedStep?.detail !== err.message ? { cause } : {}),
+    };
   }
-  return { code: 'internal', message: (err instanceof Error ? err.message : String(err)).slice(0, 500) };
+  return { code: 'internal', message: (err instanceof Error ? err.message : String(err)).slice(0, 500), ...(cause ? { cause } : {}) };
 }
 
 export function randomToken(): string {
