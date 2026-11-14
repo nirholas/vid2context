@@ -8,6 +8,7 @@
 import type { Collection, Env, Registry, VideoContext, VideoSummary } from '@vid2context/core';
 import { createContext, listModels } from '@vid2context/core';
 import { type ApiClient, ApiError } from './api.ts';
+import { guardIdle } from './idle.ts';
 import { localChat } from './local-engine.ts';
 import { toModelRows } from './models.ts';
 import { contextTokens, tokensFromDuration } from './sources.ts';
@@ -87,7 +88,10 @@ export class ServerBackend implements Backend {
   }
 
   chat(req: ChatApiRequest, _conversation: Conversation, signal: AbortSignal): AsyncIterable<ChatEvent> {
-    return this.api.chat(req, signal);
+    // The guard needs its own abort: it may give up before the caller does.
+    const ac = new AbortController();
+    const both = AbortSignal.any([signal, ac.signal]);
+    return guardIdle(this.api.chat(req, both), { abort: () => ac.abort() });
   }
 
   async attachInput(input: string, signal?: AbortSignal): Promise<AttachedContext> {
@@ -182,7 +186,12 @@ export class ClientBackend implements Backend {
     return toModelRows(listModels(this.registry, this.env, { kind: 'llm' }), 'client', this.env);
   }
 
-  async *chat(req: ChatApiRequest, conversation: Conversation, signal: AbortSignal): AsyncGenerator<ChatEvent> {
+  chat(req: ChatApiRequest, conversation: Conversation, signal: AbortSignal): AsyncIterable<ChatEvent> {
+    const ac = new AbortController();
+    return guardIdle(this.run(req, conversation, AbortSignal.any([signal, ac.signal])), { abort: () => ac.abort() });
+  }
+
+  private async *run(req: ChatApiRequest, conversation: Conversation, signal: AbortSignal): AsyncGenerator<ChatEvent> {
     const contexts: VideoContext[] = [];
     for (const a of conversation.contexts) {
       if (a.status !== 'ready' || !a.videoId) continue;
