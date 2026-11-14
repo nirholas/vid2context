@@ -1,0 +1,20 @@
+{
+  "name": "@vid2context/provider-llm-local",
+  "version": "0.1.0",
+  "description": "Local LLM rungs (Ollama with correct context sizing, LM Studio, llama.cpp, vLLM, Jan, LocalAI, any OpenAI-compatible server) and detection of local model servers.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "vid2context": {
+    "runtimes": [
+      "node",
+      "browser"
+    ]
+  },
+  "dependencies": {
+    "@vid2context/core": "*",
+    "@vid2context/provider-llm-openai-compatible": "*"
+  }
+}
