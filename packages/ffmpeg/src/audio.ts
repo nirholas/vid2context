@@ -109,9 +109,13 @@ export async function extractAudio(input: string, opts: ExtractAudioOptions = {}
     }
     const data = new Uint8Array(await readFile(out));
     if (opts.maxBytes !== undefined && data.byteLength > opts.maxBytes) {
-      throw new Vid2ContextError('too-large', `Extracted audio is ${data.byteLength} bytes, over the ${opts.maxBytes}-byte limit.`, {
-        hint: 'Use a shorter input, a lower bitrate, or split the audio first.',
-      });
+      throw new Vid2ContextError(
+        'too-large',
+        `Extracted audio is ${data.byteLength} bytes, over the ${opts.maxBytes}-byte limit.`,
+        {
+          hint: 'Use a shorter input, a lower bitrate, or split the audio first.',
+        },
+      );
     }
     const info = await probeWith(tools.ffprobe, out, ctx);
     return {

@@ -78,7 +78,8 @@ export function findTools(env: Env = {}): FoundTools {
     ffprobe = envFfprobe;
   }
   // ffprobe usually sits next to an explicitly configured ffmpeg.
-  if (ffmpeg && !ffprobe && isExecutable(join(dirname(ffmpeg), `ffprobe${EXE}`))) ffprobe = join(dirname(ffmpeg), `ffprobe${EXE}`);
+  if (ffmpeg && !ffprobe && isExecutable(join(dirname(ffmpeg), `ffprobe${EXE}`)))
+    ffprobe = join(dirname(ffmpeg), `ffprobe${EXE}`);
   for (const { dir, source: s } of searchDirs(env)) {
     if (!ffmpeg && isExecutable(join(dir, `ffmpeg${EXE}`))) {
       ffmpeg = join(dir, `ffmpeg${EXE}`);
@@ -88,7 +89,12 @@ export function findTools(env: Env = {}): FoundTools {
     if (ffmpeg && ffprobe) break;
   }
   if (!ffmpeg || !ffprobe) {
-    return { ffmpeg, ffprobe, source, problem: `${ffmpeg ? 'ffprobe' : 'ffmpeg'} was not found on PATH, in ~/.local/bin or in ${managedBinDir(env)}.` };
+    return {
+      ffmpeg,
+      ffprobe,
+      source,
+      problem: `${ffmpeg ? 'ffprobe' : 'ffmpeg'} was not found on PATH, in ~/.local/bin or in ${managedBinDir(env)}.`,
+    };
   }
   return { ffmpeg, ffprobe, source };
 }

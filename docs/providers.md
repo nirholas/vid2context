@@ -16,6 +16,8 @@ Limits below come from the providers' published free tiers or from live checks; 
 | `youtube-captions` | creator captions, auto-captions, YouTube translation (`tlang`) | always | translated tracks were rate-limited (HTTP 429) from a GCP VM on 2026-11-14 |
 | `media-file` | local files and `file://` URLs (Node only) | always | metadata from the filesystem; audio bytes for speech-to-text |
 
+| `ytdlp` | catch-all for any http(s) URL (Vimeo, TikTok, X, Reddit, Twitch, TED, ...): metadata, playlists, comments, 16 kHz mono mp3 audio; also audio for YouTube refs (Node only) | always | yt-dlp is found (`YTDLP_PATH`, `PATH`) or installed into `.vid2context/bin/` from the official release with SHA-256 verification, updated weekly (`YTDLP_AUTO_UPDATE=0` disables). Audio needs ffmpeg (`FFMPEG_PATH`). Also `YTDLP_TIMEOUT_SEC`, `YTDLP_CONCURRENCY` (default 2), `YTDLP_COOKIES_FILE`, `YTDLP_COOKIES_FROM_BROWSER`. See [guides/ytdlp.md](guides/ytdlp.md). |
+| `ytdlp-captions` | creator subtitles and automatic captions through yt-dlp (Node only) | always | runs after `youtube-captions` for YouTube. YouTube subtitle downloads through yt-dlp were rate-limited (HTTP 429) from a GCP VM on 2026-11-14; `vimeo.com/<id>` pages wanted a login there, so the provider retries through `player.vimeo.com`. |
 ## Speech-to-text (`stt-openai-compatible`)
 
 | Rung id | Tier | Enabled by | Free limits and notes |
