@@ -1,0 +1,87 @@
+# vid2context with Docker Compose. Run from the repository root:
+#
+#   docker compose -f deploy/containers/compose.yaml up -d --build
+#   curl http://127.0.0.1:8787/api/v1/health
+#
+# Keys come from the repository's .env (optional; see .env.example).
+# Optional local services, each behind a profile:
+#
+#   --profile postgres   Postgres with pgvector for the library
+#   --profile stt        speaches, a local OpenAI-compatible speech-to-text server
+#   --profile ollama     Ollama for local LLMs
+#
+# Compose cannot change the server's environment per profile, so a profile
+# only starts its service. Point the server at it by setting the matching
+# variable in .env (values in docs/deploy/docker.md):
+#   DATABASE_URL=postgres://vid2context:vid2context@postgres:5432/vid2context
+#   LOCAL_STT_BASE_URL=http://stt:8000/v1
+#   OLLAMA_BASE_URL=http://ollama:11434/v1
+# Guide: docs/deploy/docker.md
+
+name: vid2context
+
+services:
+  server:
+    build:
+      context: ../..
+      dockerfile: deploy/containers/Dockerfile
+      args:
+        WITH_WHISPER: ${WITH_WHISPER:-0}
+    image: vid2context:${VID2CONTEXT_IMAGE_TAG:-local}
+    restart: unless-stopped
+    ports:
+      # Loopback only. Set VID2CONTEXT_BIND=0.0.0.0 to expose it on your
+      # network, and set VID2CONTEXT_API_KEYS in .env before you do.
+      - ${VID2CONTEXT_BIND:-127.0.0.1}:${VID2CONTEXT_PORT:-8787}:8787
+    env_file:
+      - path: ../../.env
+        required: false
+    environment:
+      PORT: "8787"
+    volumes:
+      - data:/data
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+  postgres:
+    profiles: [postgres]
+    image: pgvector/pgvector:0.8.1-pg17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: vid2context
+      POSTGRES_DB: vid2context
+      # Reachable only inside this compose network. Change it in your shell
+      # or deploy/containers/.env if the database will hold anything private.
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-vid2context}
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -U vid2context -d vid2context]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  stt:
+    profiles: [stt]
+    image: ghcr.io/speaches-ai/speaches:0.8.3-cpu
+    restart: unless-stopped
+    volumes:
+      - hf-cache:/home/ubuntu/.cache/huggingface/hub
+
+  ollama:
+    profiles: [ollama]
+    image: ollama/ollama:0.40.13
+    restart: unless-stopped
+    volumes:
+      - ollama:/root/.ollama
+
+volumes:
+  data:
+  postgres:
+  hf-cache:
+  ollama:
