@@ -10,7 +10,7 @@ import { connect, type Db } from '../src/db.ts';
 import { createPostgresStorage, migrations, openPostgresStorage, type PostgresStorage } from '../src/index.ts';
 import { quoteIdent } from '../src/migrate.ts';
 import { storageContract } from './contract.ts';
-import { loadContext } from './fixtures.ts';
+import { loadEmbeddings } from './fixtures.ts';
 import { type LiveDb, startLiveDb } from './live-db.ts';
 
 const LIVE = Boolean(process.env.LIVE);
@@ -25,26 +25,6 @@ const newSchema = () => {
 
 function ctxFor(env: Env): Ctx {
   return createContext({ runtime: 'node', env, log: { debug() {}, info() {}, warn() {}, error: (m, d) => console.error(m, d ?? '') } });
-}
-
-/** One call to the keyless OVH bge-m3 endpoint, waiting out 429s as Retry-After asks (up to about two minutes). */
-async function embedLive(input: string[]): Promise<number[][]> {
-  for (let attempt = 0; attempt < 8; attempt++) {
-    const res = await fetch('https://oai.endpoints.kepler.ai.cloud.ovh.net/v1/embeddings', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ model: 'bge-m3', input }),
-    });
-    if (res.status === 429) {
-      const wait = Math.min(30, Number(res.headers.get('retry-after')) || 5 * (attempt + 1));
-      await new Promise((r) => setTimeout(r, wait * 1000));
-      continue;
-    }
-    if (!res.ok) throw new Error(`OVH HTTP ${res.status}`);
-    const body = (await res.json()) as { data: { index: number; embedding: number[] }[] };
-    return body.data.sort((x, y) => x.index - y.index).map((d) => d.embedding);
-  }
-  throw new Error('OVH kept answering 429');
 }
 
 async function rawDb(url: string): Promise<Db> {
@@ -129,34 +109,25 @@ describe.skipIf(!LIVE)('storage-postgres live', () => {
     it('answers vector queries from the HNSW index on a real server', async (t) => {
       if (!db.live) t.skip();
       const live = db.live as LiveDb;
-      // Embed every segment of the real G-Wagon transcript with the keyless OVH bge-m3 endpoint.
-      const gwagon = loadContext('youtube-cCPsdFdlshc.json');
-      const texts = gwagon.transcript.segments.map((s) => s.text);
-      const vectors: number[][] = [];
-      try {
-        for (let i = 0; i < texts.length; i += 32) vectors.push(...(await embedLive(texts.slice(i, i + 32))));
-      } catch (err) {
-        console.error(`[storage-postgres live] OVH embeddings unavailable, HNSW plan not checked: ${(err as Error).message}`);
-        t.skip();
+      // The 12 real bge-m3 vectors recorded from OVH, each stored under 400
+      // ids (4,800 rows): enough rows that the planner's cost model prefers
+      // the HNSW graph over scanning and sorting, as it does on a real library.
+      const fx = loadEmbeddings();
+      const model = 'embed/ovh/bge-m3';
+      const vectorOf = (i: number) => fx.response.data.find((d) => d.index === i)?.embedding ?? [];
+      const records = [];
+      for (let copy = 0; copy < 400; copy++) {
+        for (const [i, c] of fx.chunks.entries()) {
+          records.push({ id: `${c.videoId}#${c.startSec}#${copy}`, videoId: c.videoId, startSec: c.startSec, endSec: c.endSec, text: c.text, model, vector: vectorOf(i) });
+        }
       }
       const schema = newSchema();
       const storage = await openPostgresStorage(ctxFor({ DATABASE_URL: live.url, VID2CONTEXT_PG_SCHEMA: schema, VID2CONTEXT_TENANT: 'plan' }));
-      const model = 'embed/ovh/bge-m3';
-      await storage.upsertVectors(
-        gwagon.transcript.segments.map((s, i) => ({
-          id: `${gwagon.metadata.ref.id}#${s.startSec}`,
-          videoId: gwagon.metadata.ref.id,
-          startSec: s.startSec,
-          endSec: s.endSec,
-          text: s.text,
-          model,
-          vector: vectors[i] as number[],
-        })),
-      );
-      const q = vectors[texts.findIndex((t) => /transmission/i.test(t))] as number[];
+      await storage.upsertVectors(records);
+      const q = vectorOf(fx.chunks.length); // "elephants with long trunks"
       const hits = await storage.queryVectors({ model, vector: q, limit: 5 });
       expect(hits).toHaveLength(5);
-      expect(hits[0]?.text).toMatch(/transmission/i);
+      expect(hits[0]?.text).toMatch(/elephants|trunks/);
 
       const plan = await storage.vectorQuerySql({ model, vector: q, limit: 5 });
       const raw = await rawDb(live.url);
