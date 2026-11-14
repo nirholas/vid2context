@@ -51,7 +51,8 @@ describe('citation accuracy', () => {
     expect(checkCitation(segs, { atSec: 280, quote: '490 horsepower compressor motor' }).ok).toBe(true);
     const far = checkCitation(segs, { atSec: 900, quote: '490 horsepower compressor motor' });
     expect(far).toMatchObject({ ok: false, reason: 'wrong-time' });
-    expect(far.foundAtSec).toBeCloseTo(279.6, 0);
+    // "you had a 490 horsepower compressor" runs 279.6 to 281.88 s; "490" is word 4 of 8 once spelled out.
+    expect(far.foundAtSec).toBeCloseTo(279.6 + (2.28 * 3) / 8, 6);
   });
 
   it('rejects quotes that are not in the transcript and quotes too short to mean anything', () => {
