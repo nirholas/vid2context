@@ -32,7 +32,12 @@ export interface ConfigReport {
   storage: StorageInfo;
 }
 
-export async function configReport(registry: Registry, env: Env, cwd: string, profile?: string): Promise<{ report: ConfigReport; text: string }> {
+export async function configReport(
+  registry: Registry,
+  env: Env,
+  cwd: string,
+  profile?: string,
+): Promise<{ report: ConfigReport; text: string }> {
   const where = findConfigFile(env, cwd);
   const config = where.path ? await loadConfigFile(where.path) : undefined;
   if (profile && !config) {

@@ -28,7 +28,8 @@ export async function serveCommand(c: CommandContext): Promise<number> {
   const base = c.deps.ctx;
   const app = createApp({
     registry: c.deps.registry,
-    makeCtx: (req) => createContext({ runtime: base.runtime, env: base.env, fetch: base.fetch, log: base.log, signal: req.signal }),
+    makeCtx: (req) =>
+      createContext({ runtime: base.runtime, env: base.env, fetch: base.fetch, log: base.log, signal: req.signal }),
     version: c.version,
   });
   const listening = new Promise<number>((resolve, reject) => {

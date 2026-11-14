@@ -19,7 +19,12 @@ export interface Check {
 const MIN_NODE = 22;
 
 function firstLine(s: string): string {
-  return s.split(/\r?\n/).find((l) => l.trim())?.trim() ?? '';
+  return (
+    s
+      .split(/\r?\n/)
+      .find((l) => l.trim())
+      ?.trim() ?? ''
+  );
 }
 
 export function checkNode(version: string): Check {
@@ -71,7 +76,10 @@ export function checkTool(spec: ToolSpec, obs: ToolObservation): Check {
   return { ...base, status: 'ok', detail: `${version} at ${obs.path}` };
 }
 
-export const TOOLS: Record<'ffmpeg' | 'ffprobe' | 'ytdlp' | 'deno', ToolSpec & { binary: string; envVar?: string; args: string[] }> = {
+export const TOOLS: Record<
+  'ffmpeg' | 'ffprobe' | 'ytdlp' | 'deno',
+  ToolSpec & { binary: string; envVar?: string; args: string[] }
+> = {
   ffmpeg: {
     id: 'ffmpeg',
     label: 'ffmpeg',
@@ -180,14 +188,20 @@ export function checkKeyless(obs: HttpObservation, keylessOn: boolean): Check {
       ...base,
       status: 'warn',
       detail: `OVH AI Endpoints answered HTTP ${obs.status}`,
-      fix: obs.status === 429 ? 'Rate-limited: wait a minute, or add a free key.' : 'Retry later, or add a free key (GROQ_API_KEY).',
+      fix:
+        obs.status === 429 ? 'Rate-limited: wait a minute, or add a free key.' : 'Retry later, or add a free key (GROQ_API_KEY).',
     };
   }
   let count = 0;
   try {
     count = (JSON.parse(obs.body ?? '') as { data?: unknown[] }).data?.length ?? 0;
   } catch {
-    return { ...base, status: 'warn', detail: 'OVH AI Endpoints answered with something that is not JSON', fix: 'Check for a proxy rewriting responses.' };
+    return {
+      ...base,
+      status: 'warn',
+      detail: 'OVH AI Endpoints answered with something that is not JSON',
+      fix: 'Check for a proxy rewriting responses.',
+    };
   }
   return { ...base, status: 'ok', detail: `OVH AI Endpoints reachable (${count} models listed)` };
 }
@@ -206,10 +220,19 @@ export const PROBE_VIDEO = 'jNQXAC9IVRw';
 export function checkYouTube(obs: YouTubeObservation): Check {
   const base = { id: 'youtube', label: 'YouTube captions' };
   if (obs.notInstalled) {
-    return { ...base, status: 'warn', detail: 'no YouTube source provider is installed', fix: 'Install @vid2context/provider-youtube.' };
+    return {
+      ...base,
+      status: 'warn',
+      detail: 'no YouTube source provider is installed',
+      fix: 'Install @vid2context/provider-youtube.',
+    };
   }
   if (obs.error === undefined) {
-    return { ...base, status: 'ok', detail: `fetched ${obs.segments ?? 0} ${obs.origin ?? 'caption'} segments for ${PROBE_VIDEO}` };
+    return {
+      ...base,
+      status: 'ok',
+      detail: `fetched ${obs.segments ?? 0} ${obs.origin ?? 'caption'} segments for ${PROBE_VIDEO}`,
+    };
   }
   const err = obs.error;
   if (err instanceof Vid2ContextError && (err.code === 'blocked' || err.code === 'rate-limited')) {

@@ -148,6 +148,15 @@ export class Progress {
 /** Pad columns to the widest cell. The last column is never padded. */
 export function table(rows: string[][]): string {
   const widths: number[] = [];
-  for (const r of rows) r.forEach((c, i) => (widths[i] = Math.max(widths[i] ?? 0, c.length)));
-  return rows.map((r) => r.map((c, i) => (i === r.length - 1 ? c : c.padEnd(widths[i] ?? 0))).join('  ').trimEnd()).join('\n');
+  for (const r of rows) {
+    for (const [i, c] of r.entries()) widths[i] = Math.max(widths[i] ?? 0, c.length);
+  }
+  return rows
+    .map((r) =>
+      r
+        .map((c, i) => (i === r.length - 1 ? c : c.padEnd(widths[i] ?? 0)))
+        .join('  ')
+        .trimEnd(),
+    )
+    .join('\n');
 }

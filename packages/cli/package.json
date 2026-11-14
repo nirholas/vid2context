@@ -11,7 +11,17 @@
     ".": "./src/main.ts"
   },
   "dependencies": {
+    "@hono/node-server": "^2.1.8",
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "@vid2context/config": "*",
     "@vid2context/core": "*",
-    "@vid2context/registry": "*"
+    "@vid2context/mcp": "*",
+    "@vid2context/registry": "*",
+    "@vid2context/server": "*"
+  },
+  "devDependencies": {
+    "@vid2context/provider-media-file": "*",
+    "@vid2context/provider-stt-openai-compatible": "*",
+    "@vid2context/provider-youtube": "*"
   }
 }

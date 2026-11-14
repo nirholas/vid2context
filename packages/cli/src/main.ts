@@ -16,12 +16,12 @@ import { commandHelp, mainHelp } from './help.ts';
 import { errorJson, formatError } from './output.ts';
 import { type CommandContext, makeContext, type RunDeps } from './runtime.ts';
 
-export { exitCodeFor, exitCodeTable, EXIT_BY_CODE, UsageError } from './exit-codes.ts';
-export { formatAttempts, formatError, type Io } from './output.ts';
-export type { RunDeps } from './runtime.ts';
 export { listModels, type ModelInfo } from './commands/models.ts';
 export { completionScript } from './completion.ts';
+export { EXIT_BY_CODE, exitCodeFor, exitCodeTable, UsageError } from './exit-codes.ts';
 export { mainHelp as usage } from './help.ts';
+export { formatAttempts, formatError, type Io } from './output.ts';
+export type { RunDeps } from './runtime.ts';
 
 type Command = (c: CommandContext) => Promise<number>;
 

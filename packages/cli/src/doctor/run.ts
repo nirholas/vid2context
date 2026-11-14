@@ -44,7 +44,9 @@ export function dataDir(env: Env, cwd: string): string {
 export function findBinary(name: string, env: Env, cwd: string, envVar?: string): ToolObservation {
   const configured = envVar ? env[envVar]?.trim() : undefined;
   if (configured) {
-    return isExecutable(configured) ? { path: configured } : { problem: `${envVar} is set to ${configured}, which is not an executable file.` };
+    return isExecutable(configured)
+      ? { path: configured }
+      : { problem: `${envVar} is set to ${configured}, which is not an executable file.` };
   }
   const dirs = [
     ...(env.PATH ?? env.Path ?? '').split(delimiter).filter(Boolean),
@@ -58,7 +60,12 @@ export function findBinary(name: string, env: Env, cwd: string, envVar?: string)
   return {};
 }
 
-async function observeTool(tool: (typeof TOOLS)[keyof typeof TOOLS], env: Env, cwd: string, exec: Exec): Promise<ToolObservation> {
+async function observeTool(
+  tool: (typeof TOOLS)[keyof typeof TOOLS],
+  env: Env,
+  cwd: string,
+  exec: Exec,
+): Promise<ToolObservation> {
   const found = findBinary(tool.binary, env, cwd, tool.envVar);
   if (!found.path) return found;
   const res = await exec(found.path, tool.args, { timeoutMs: 15_000 });
@@ -80,7 +87,13 @@ function probeDataDir(dir: string): string | undefined {
 /** Every env var name a rung requires, and the ones that are set. Names only. */
 export function keyNames(registry: Registry, env: Env): { known: string[]; set: string[] } {
   const known = new Set<string>();
-  for (const rungs of [registry.sttRungs(env), registry.llmRungs(env), registry.embedRungs(env), registry.videoRungs(env), registry.visualRungs(env)]) {
+  for (const rungs of [
+    registry.sttRungs(env),
+    registry.llmRungs(env),
+    registry.embedRungs(env),
+    registry.videoRungs(env),
+    registry.visualRungs(env),
+  ]) {
     for (const r of rungs) for (const n of r.requires) known.add(n);
   }
   const all = [...known].sort();
@@ -115,7 +128,13 @@ export async function probeYouTube(registry: Registry, ctx: Ctx): Promise<YouTub
   }
 }
 
-export async function runDoctor(opts: { registry: Registry; ctx: Ctx; exec: Exec; cwd: string; nodeVersion: string }): Promise<Check[]> {
+export async function runDoctor(opts: {
+  registry: Registry;
+  ctx: Ctx;
+  exec: Exec;
+  cwd: string;
+  nodeVersion: string;
+}): Promise<Check[]> {
   const { registry, ctx, exec, cwd } = opts;
   const env = ctx.env;
   const dir = dataDir(env, cwd);

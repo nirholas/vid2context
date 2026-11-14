@@ -7,8 +7,8 @@ import {
   render,
   type Storage,
   timestampUrl,
-  type VideoContext,
   Vid2ContextError,
+  type VideoContext,
 } from '@vid2context/core';
 import { bool, list, positiveInt, str } from '../args.ts';
 import { UsageError } from '../exit-codes.ts';
@@ -17,7 +17,9 @@ import type { CommandContext } from '../runtime.ts';
 
 function backendNote(c: CommandContext, storage: Storage): void {
   if (storage.backend === 'memory') {
-    c.note('note: no persistent storage backend is enabled, so this library lives only for this process (see `vid2context config`).');
+    c.note(
+      'note: no persistent storage backend is enabled, so this library lives only for this process (see `vid2context config`).',
+    );
   }
 }
 
@@ -95,7 +97,8 @@ export async function libraryCommand(c: CommandContext): Promise<number> {
           ])}\n`
         : '',
     );
-    if (!page.items.length) c.note('The library is empty. `vid2context get <url>` saves videos when a storage backend is enabled.');
+    if (!page.items.length)
+      c.note('The library is empty. `vid2context get <url>` saves videos when a storage backend is enabled.');
     return 0;
   }
   const id = arg(c, 1, 'a library id, e.g. youtube:jNQXAC9IVRw');
@@ -103,7 +106,8 @@ export async function libraryCommand(c: CommandContext): Promise<number> {
   if (!context) throw notFound('Library item', id, 'Run `vid2context library ls` to see saved ids.');
   if (action === 'show') {
     const format = c.json ? 'json' : (str(c.values, 'format') ?? 'text');
-    if (!formatters[format]) throw new UsageError(`Unknown format "${format}".`, `Available: ${Object.keys(formatters).join(', ')}.`);
+    if (!formatters[format])
+      throw new UsageError(`Unknown format "${format}".`, `Available: ${Object.keys(formatters).join(', ')}.`);
     c.out.text(render(context, format, { timestamps: bool(c.values, 'timestamps') }));
     return 0;
   }
@@ -146,7 +150,11 @@ export async function collectionCommand(c: CommandContext): Promise<number> {
   if (action === 'create') {
     const name = c.positionals.slice(1).join(' ');
     if (!name) throw new UsageError('Pass a collection name.', 'Example: vid2context collection create "Talks"');
-    const col = await storage.createCollection({ name, description: str(c.values, 'description'), sources: list(c.values, 'source') });
+    const col = await storage.createCollection({
+      name,
+      description: str(c.values, 'description'),
+      sources: list(c.values, 'source'),
+    });
     emit(c, col, `${col.id}\n`);
     return 0;
   }
@@ -172,7 +180,8 @@ export async function collectionCommand(c: CommandContext): Promise<number> {
 
   if (action === 'add') {
     const inputs = c.positionals.slice(2);
-    if (!inputs.length) throw new UsageError('Pass one or more videos to add.', 'Example: vid2context collection add <id> jNQXAC9IVRw');
+    if (!inputs.length)
+      throw new UsageError('Pass one or more videos to add.', 'Example: vid2context collection add <id> jNQXAC9IVRw');
     const ids: string[] = [];
     for (const input of inputs) {
       // A library id that is already saved needs no network.

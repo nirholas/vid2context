@@ -95,7 +95,10 @@ export function parseCli(argv: string[]): ParsedArgs {
       );
     }
     if (e.code === 'ERR_PARSE_ARGS_INVALID_OPTION_VALUE') {
-      throw new UsageError(e.message.split('\n')[0] ?? e.message, 'Flags that take a value need it right after them: --format json.');
+      throw new UsageError(
+        e.message.split('\n')[0] ?? e.message,
+        'Flags that take a value need it right after them: --format json.',
+      );
     }
     throw new UsageError(e.message);
   }
@@ -159,10 +162,7 @@ export function choice<T extends string>(values: Record<string, FlagValue>, name
   if (v === undefined) return undefined;
   if (!allowed.includes(v as T)) {
     const near = closest(v, [...allowed]);
-    throw new UsageError(
-      `Unknown ${name} "${v}".`,
-      `${near ? `Did you mean ${near}? ` : ''}Available: ${allowed.join(', ')}.`,
-    );
+    throw new UsageError(`Unknown ${name} "${v}".`, `${near ? `Did you mean ${near}? ` : ''}Available: ${allowed.join(', ')}.`);
   }
   return v as T;
 }

@@ -6,8 +6,8 @@ import {
   render,
   renderMany,
   type Storage,
-  type VideoContext,
   Vid2ContextError,
+  type VideoContext,
 } from '@vid2context/core';
 import { bool, positiveInt, str } from '../args.ts';
 import { exitCodeFor, UsageError } from '../exit-codes.ts';
@@ -27,10 +27,14 @@ function one(c: CommandContext, what: string): string {
 /** --json means the json format; --format with another id beside --json is a contradiction. */
 function formatOf(c: CommandContext, fallback = 'text'): string {
   const format = str(c.values, 'format');
-  if (c.json && format && format !== 'json') throw new UsageError(`--json and --format ${format} contradict each other.`, 'Pass one.');
+  if (c.json && format && format !== 'json')
+    throw new UsageError(`--json and --format ${format} contradict each other.`, 'Pass one.');
   const id = c.json ? 'json' : (format ?? fallback);
   if (!formatters[id]) {
-    throw new UsageError(`Unknown format "${id}".`, `Available: ${Object.keys(formatters).join(', ')}. See \`vid2context formats\`.`);
+    throw new UsageError(
+      `Unknown format "${id}".`,
+      `Available: ${Object.keys(formatters).join(', ')}. See \`vid2context formats\`.`,
+    );
   }
   return id;
 }
@@ -82,7 +86,10 @@ export async function formatsCommand(c: CommandContext): Promise<number> {
     }));
     c.out.text(`${JSON.stringify(rows, null, 2)}\n`);
   } else {
-    const rows = [['ID', 'EXT', 'VIDEOS', 'DESCRIPTION'], ...all.map((f) => [f.id, f.extension, f.renderMany ? 'many' : 'one', f.description])];
+    const rows = [
+      ['ID', 'EXT', 'VIDEOS', 'DESCRIPTION'],
+      ...all.map((f) => [f.id, f.extension, f.renderMany ? 'many' : 'one', f.description]),
+    ];
     c.out.text(`${table(rows)}\n`);
   }
   return 0;
@@ -94,7 +101,8 @@ export async function formatsCommand(c: CommandContext): Promise<number> {
  * code. Throws when nothing succeeded.
  */
 async function gather(c: CommandContext, storage: Storage | null): Promise<{ contexts: VideoContext[]; firstError?: unknown }> {
-  if (c.positionals.length === 0) throw new UsageError('Pass one or more inputs.', `Run \`vid2context ${c.args.command.name} --help\`.`);
+  if (c.positionals.length === 0)
+    throw new UsageError('Pass one or more inputs.', `Run \`vid2context ${c.args.command.name} --help\`.`);
   const inputs: string[] = [];
   for (const input of c.positionals) {
     c.progress.start(`Resolving ${input}`);
@@ -127,7 +135,8 @@ async function gather(c: CommandContext, storage: Storage | null): Promise<{ con
 
 export async function packCommand(c: CommandContext): Promise<number> {
   const format = str(c.values, 'format');
-  if (format && format !== 'pack') throw new UsageError('`pack` always writes the pack format.', 'Use `get --format` for other formats.');
+  if (format && format !== 'pack')
+    throw new UsageError('`pack` always writes the pack format.', 'Use `get --format` for other formats.');
   const maxTokens = positiveInt(c.values, 'max-tokens');
   const { contexts, firstError } = await gather(c, await c.persistentStorage());
   c.out.text(
@@ -141,7 +150,8 @@ export async function packCommand(c: CommandContext): Promise<number> {
 }
 
 export async function bundleCommand(c: CommandContext): Promise<number> {
-  if (!c.out.toFile) throw new UsageError('`bundle` writes a .zip and needs --out.', 'Example: vid2context bundle jNQXAC9IVRw -o zoo.zip');
+  if (!c.out.toFile)
+    throw new UsageError('`bundle` writes a .zip and needs --out.', 'Example: vid2context bundle jNQXAC9IVRw -o zoo.zip');
   const { contexts, firstError } = await gather(c, await c.persistentStorage());
   const bundle = await buildBundle(contexts, {
     maxTokens: positiveInt(c.values, 'max-tokens'),

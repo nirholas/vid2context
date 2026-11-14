@@ -176,7 +176,9 @@ export function fishCompletion(): string {
     if (c.subcommands) {
       const subs = c.subcommands.map((s) => s.name).join(' ');
       for (const s of c.subcommands) {
-        lines.push(`complete -c vid2context -n '${cond}; and not __fish_seen_subcommand_from ${subs}' -a ${s.name} -d '${fishText(s.summary)}'`);
+        lines.push(
+          `complete -c vid2context -n '${cond}; and not __fish_seen_subcommand_from ${subs}' -a ${s.name} -d '${fishText(s.summary)}'`,
+        );
       }
     }
     if (c.name === 'completion') lines.push(`complete -c vid2context -n '${cond}' -a 'bash zsh fish'`);

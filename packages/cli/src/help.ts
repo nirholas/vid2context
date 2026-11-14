@@ -48,7 +48,12 @@ Examples:
 
 export function commandHelp(c: CommandSpec): string {
   const own = c.flags.map((n) => FLAGS[n]).filter((f): f is FlagSpec => Boolean(f));
-  const parts = [`vid2context ${c.name}: ${c.summary}.`, '', 'Usage:', `  vid2context ${c.name}${c.args ? ` ${c.args}` : ''} [flags]`];
+  const parts = [
+    `vid2context ${c.name}: ${c.summary}.`,
+    '',
+    'Usage:',
+    `  vid2context ${c.name}${c.args ? ` ${c.args}` : ''} [flags]`,
+  ];
   if (c.subcommands) {
     parts.push('', 'Subcommands:', table(c.subcommands.map((s) => [`  ${s.name}${s.args ? ` ${s.args}` : ''}`, s.summary])));
   }
