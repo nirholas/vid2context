@@ -84,6 +84,9 @@ export async function extractSubtitles(
       '-nostdin',
       '-loglevel',
       'error',
+      // Keep container timestamps: without this ffmpeg rebases output to the
+      // earliest stream start (Opus pre-skip, AAC priming) and cues drift.
+      '-copyts',
       ...inputGuards(target),
       '-i',
       target,
