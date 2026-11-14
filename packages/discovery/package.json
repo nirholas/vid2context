@@ -1,0 +1,19 @@
+{
+  "name": "@vid2context/discovery",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Makes vid2context findable by AI agents, MCP directories and search engines: builds the npm packages, generates the registry manifests and serves the well-known discovery routes.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./http": "./src/http.ts"
+  },
+  "dependencies": {
+    "hono": "^4.13.18"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "esbuild": "^0.28.2"
+  }
+}
