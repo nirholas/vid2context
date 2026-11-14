@@ -19,6 +19,9 @@ describe('ThinkSplitter', () => {
 
   it('passes text without tags straight through', () => {
     const s = new ThinkSplitter();
-    expect(s.push('Apollo 11 landed on the moon in 1969.')).toEqual({ answer: 'Apollo 11 landed on the moon in 1969.', reasoning: '' });
+    expect(s.push('Apollo 11 landed on the moon in 1969.')).toEqual({
+      answer: 'Apollo 11 landed on the moon in 1969.',
+      reasoning: '',
+    });
   });
 });

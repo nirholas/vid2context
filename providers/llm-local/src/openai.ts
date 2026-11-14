@@ -8,8 +8,18 @@
  * `exceed_context_size_error`; vLLM: "maximum context length"); that becomes
  * `too-large` with a hint instead of a generic upstream error.
  */
-import { type ChatRequest, type ChatResult, type ChatStreamEvent, type Ctx, streamOpenAiChat, Vid2ContextError } from '@vid2context/core';
-import { buildBody, type ChatEndpoint, chatWith } from '@vid2context/provider-llm-openai-compatible';
+import {
+  type ChatRequest,
+  type ChatResult,
+  type ChatStreamEvent,
+  type Ctx,
+  streamOpenAiChat,
+  Vid2ContextError,
+} from '@vid2context/core';
+import { buildBody, chatWith } from '@vid2context/provider-llm-openai-compatible';
+
+/** The foundation client's endpoint shape (full /chat/completions URL, model, optional key). */
+export type ChatEndpoint = Parameters<typeof chatWith>[0];
 
 const OVERFLOW = /exceed_context_size_error|exceeds the available context size|maximum context length/i;
 

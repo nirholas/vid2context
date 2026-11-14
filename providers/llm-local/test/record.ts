@@ -7,7 +7,7 @@
  * Writes test/fixtures/ollama-chat-long-transcript.{request,response}.json.
  * The other fixtures were recorded with curl (see test/fixtures/README.md).
  */
-import { readFileSync, writeFileSync } from 'node:fs';
+import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { createContext } from '@vid2context/core';
 import { ollamaChat } from '../src/ollama.ts';

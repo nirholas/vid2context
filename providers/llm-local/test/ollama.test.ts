@@ -8,7 +8,11 @@ import { longTranscriptRequest } from './long-transcript.ts';
 
 // Real responses from Ollama 0.40.16 on 2026-11-14 (see test/fixtures/README.md).
 // Each test uses its own base URL because /api/show and /api/version are cached per base and model.
-function ollama(base: string, chat: string | ((body: Record<string, unknown>) => string), show = 'ollama-show-qwen2.5-0.5b.json') {
+function ollama(
+  base: string,
+  chat: string | ((body: Record<string, unknown>) => string),
+  show = 'ollama-show-qwen2.5-0.5b.json',
+) {
   return replayFetch([
     { method: 'POST', url: `${base}/api/show`, response: { body: fixture(show) } },
     { method: 'GET', url: `${base}/api/version`, response: httpFixture('ollama-api-version.http') },
@@ -124,9 +128,18 @@ describe('chat', () => {
     const base = 'http://ollama-chat:11434';
     const f = ollama(base, 'ollama-chat.json');
     const res = await ollamaChat({ base, model: 'qwen2.5:0.5b', keepAlive: '30m' }, question, testContext({ fetch: f }));
-    expect(res).toEqual({ text: 'Apollo 11 landed on the moon in 1969.', model: 'qwen2.5:0.5b', usage: { inputTokens: 47, outputTokens: 16 } });
+    expect(res).toEqual({
+      text: 'Apollo 11 landed on the moon in 1969.',
+      model: 'qwen2.5:0.5b',
+      usage: { inputTokens: 47, outputTokens: 16 },
+    });
     const sent = jsonBody(f.calls.at(-1) as { body: unknown });
-    expect(sent).toMatchObject({ model: 'qwen2.5:0.5b', stream: false, keep_alive: '30m', options: { num_predict: 64, temperature: 0 } });
+    expect(sent).toMatchObject({
+      model: 'qwen2.5:0.5b',
+      stream: false,
+      keep_alive: '30m',
+      options: { num_predict: 64, temperature: 0 },
+    });
     expect(sent.format).toBeUndefined();
   });
 
@@ -149,7 +162,11 @@ describe('chat', () => {
 
   it('puts a JSON Schema in format on servers from 0.5.0', async () => {
     const base = 'http://ollama-schema:11434';
-    const schema = { type: 'object', properties: { year: { type: 'number' }, mission: { type: 'string' } }, required: ['year', 'mission'] };
+    const schema = {
+      type: 'object',
+      properties: { year: { type: 'number' }, mission: { type: 'string' } },
+      required: ['year', 'mission'],
+    };
     const f = ollama(base, 'ollama-chat-schema.json');
     const res = await ollamaChat({ base, model: 'qwen2.5:0.5b' }, { ...question, json: { schema } }, testContext({ fetch: f }));
     expect(JSON.parse(res.text)).toEqual({ year: 1969, mission: 'Apollo 11' });
@@ -169,13 +186,19 @@ describe('stream', () => {
   it('parses the NDJSON stream into deltas and one done', async () => {
     const base = 'http://ollama-stream:11434';
     const f = ollama(base, 'ollama-chat-stream.ndjson');
-    const events: ChatStreamEvent[] = await collect(ollamaStream({ base, model: 'qwen2.5:0.5b' }, question, testContext({ fetch: f })));
+    const events: ChatStreamEvent[] = await collect(
+      ollamaStream({ base, model: 'qwen2.5:0.5b' }, question, testContext({ fetch: f })),
+    );
     const deltas = events.filter((e) => e.type === 'delta').map((e) => (e as { text: string }).text);
     expect(deltas.length).toBeGreaterThan(5);
     expect(deltas.join('')).toBe('Apollo 11 landed on the moon in 1969.');
     expect(events.at(-1)).toEqual({
       type: 'done',
-      result: { text: 'Apollo 11 landed on the moon in 1969.', model: 'qwen2.5:0.5b', usage: { inputTokens: 47, outputTokens: 16 } },
+      result: {
+        text: 'Apollo 11 landed on the moon in 1969.',
+        model: 'qwen2.5:0.5b',
+        usage: { inputTokens: 47, outputTokens: 16 },
+      },
     });
     expect(events.filter((e) => e.type === 'done')).toHaveLength(1);
     expect(jsonBody(f.calls.at(-1) as { body: unknown }).stream).toBe(true);

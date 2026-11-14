@@ -31,8 +31,9 @@ describe.skipIf(live('OLLAMA_MODEL'))('Ollama, live', () => {
 
   it('streams', async () => {
     const rung = localRungs(env).find((r) => r.service === 'ollama' && r.model);
+    if (!rung) throw new Error('no Ollama rung');
     const events = await collect(
-      rung?.stream({ messages: [{ role: 'user', content: 'Say hello in three words.' }], maxTokens: 20 }, ctx()) ?? [],
+      rung.stream({ messages: [{ role: 'user', content: 'Say hello in three words.' }], maxTokens: 20 }, ctx()),
     );
     expect(events.at(-1)?.type).toBe('done');
   }, 120_000);
@@ -47,13 +48,14 @@ describe.skipIf(live('LLAMACPP_MODEL'))('llama.cpp server, live', () => {
   it('chats and streams', async () => {
     const ctx = createContext({ runtime: 'node', env });
     const rung = localRungs(env).find((r) => r.service === 'llamacpp' && r.model);
+    if (!rung) throw new Error('no llama.cpp rung');
     const req = {
       messages: [{ role: 'user' as const, content: 'Which year did Apollo 11 land on the moon? Answer in one short sentence.' }],
       maxTokens: 64,
       temperature: 0,
     };
-    expect((await rung?.chat(req, ctx))?.text).toContain('1969');
-    const events = await collect(rung?.stream(req, ctx) ?? []);
+    expect((await rung.chat(req, ctx)).text).toContain('1969');
+    const events = await collect(rung.stream(req, ctx));
     expect(events.at(-1)?.type).toBe('done');
   }, 120_000);
 });

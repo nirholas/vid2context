@@ -33,7 +33,11 @@ describe('llama.cpp server (OpenAI-compatible)', () => {
 
   it('streams SSE into deltas, usage and one done', async () => {
     const f = replayFetch([
-      { method: 'POST', url: URL_CHAT, response: { headers: { 'content-type': 'text/event-stream' }, body: fixture('llamacpp-chat-stream.sse') } },
+      {
+        method: 'POST',
+        url: URL_CHAT,
+        response: { headers: { 'content-type': 'text/event-stream' }, body: fixture('llamacpp-chat-stream.sse') },
+      },
     ]);
     const events: ChatStreamEvent[] = await collect(rung().stream(question, testContext({ fetch: f })));
     expect(
@@ -44,14 +48,22 @@ describe('llama.cpp server (OpenAI-compatible)', () => {
     ).toBe('Apollo 11 landed on the moon in 1969.');
     expect(events.at(-1)).toEqual({
       type: 'done',
-      result: { text: 'Apollo 11 landed on the moon in 1969.', model: 'qwen2.5-0.5b-instruct-q4_k_m', usage: { inputTokens: 47, outputTokens: 16 } },
+      result: {
+        text: 'Apollo 11 landed on the moon in 1969.',
+        model: 'qwen2.5-0.5b-instruct-q4_k_m',
+        usage: { inputTokens: 47, outputTokens: 16 },
+      },
     });
     const sent = jsonBody(f.calls[0] as { body: unknown });
     expect(sent).toMatchObject({ stream: true, max_tokens: 64, model: 'qwen2.5-0.5b-instruct-q4_k_m' });
   });
 
   it('sends a strict JSON Schema', async () => {
-    const schema = { type: 'object', properties: { year: { type: 'number' }, mission: { type: 'string' } }, required: ['year', 'mission'] };
+    const schema = {
+      type: 'object',
+      properties: { year: { type: 'number' }, mission: { type: 'string' } },
+      required: ['year', 'mission'],
+    };
     const f = replayFetch([{ method: 'POST', url: URL_CHAT, response: { body: fixture('llamacpp-chat-schema.json') } }]);
     const res = await rung().chat({ ...question, json: { schema } }, testContext({ fetch: f }));
     expect(JSON.parse(res.text).year).toBe(1969);

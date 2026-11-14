@@ -1,7 +1,7 @@
 import { type Route, replayFetch, testContext } from '@vid2context/core/testing';
 import { describe, expect, it } from 'vitest';
-import { detectLocalServers } from '../src/detection.ts';
 import { renderReport } from '../src/detect.ts';
+import { detectLocalServers } from '../src/detection.ts';
 import { fixture, httpFixture } from './helpers.ts';
 
 // Probe responses recorded on 2026-11-14 from Ollama 0.40.16, llama.cpp server
@@ -53,7 +53,14 @@ describe('detectLocalServers', () => {
     expect(ollama?.models[0]?.capabilities).toEqual(['completion', 'tools']);
     // llama.cpp reports the context it was started with (-c 8192), not the model maximum.
     expect(r.servers[1]?.models).toEqual([
-      { id: 'qwen2.5-0.5b-instruct-q4_k_m', task: 'chat', contextLength: 8192, capabilities: [], sizeBytes: 391859712, parameterSize: '494M' },
+      {
+        id: 'qwen2.5-0.5b-instruct-q4_k_m',
+        task: 'chat',
+        contextLength: 8192,
+        capabilities: [],
+        sizeBytes: 391859712,
+        parameterSize: '494M',
+      },
     ]);
     // Closed default ports are reported as failed probes, not servers.
     expect(r.probes.some((p) => p.url === 'http://localhost:1234/v1/models' && p.error)).toBe(true);
@@ -83,7 +90,9 @@ describe('detectLocalServers', () => {
 
   it('skips models that do not fit in memory when recommending', async () => {
     // 1.8 GB qwen2.5:3b does not fit a 2 GB machine's budget; the 0.5B models do.
-    const r = await detectLocalServers(testContext({ env, fetch: replayFetch(machine) }), { hardware: { totalRamBytes: 2 * GB } });
+    const r = await detectLocalServers(testContext({ env, fetch: replayFetch(machine) }), {
+      hardware: { totalRamBytes: 2 * GB },
+    });
     expect(r.recommendations.find((x) => x.task === 'briefs')?.model).not.toBe('qwen2.5:3b');
   });
 
@@ -111,7 +120,10 @@ describe('detectLocalServers', () => {
     const r = await detectLocalServers(
       testContext({
         env: { LOCAL_LLM_BASE_URL: `${OLLAMA}/v1`, OLLAMA_BASE_URL: OLLAMA },
-        fetch: replayFetch([...machine, { method: 'GET', url: `${OLLAMA}/v1/models`, response: httpFixture('ollama-v1-models.http') }]),
+        fetch: replayFetch([
+          ...machine,
+          { method: 'GET', url: `${OLLAMA}/v1/models`, response: httpFixture('ollama-v1-models.http') },
+        ]),
       }),
     );
     expect(r.servers.filter((s) => s.kind === 'ollama')).toHaveLength(1);

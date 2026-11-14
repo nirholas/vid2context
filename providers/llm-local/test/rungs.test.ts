@@ -70,7 +70,9 @@ describe('rungs from env', () => {
 
   it('adds capabilities and the context length once /api/show has been read', async () => {
     const base = 'http://ollama-caps:11434';
-    const f = replayFetch([{ method: 'POST', url: `${base}/api/show`, response: { body: fixture('ollama-show-qwen2.5-3b.json') } }]);
+    const f = replayFetch([
+      { method: 'POST', url: `${base}/api/show`, response: { body: fixture('ollama-show-qwen2.5-3b.json') } },
+    ]);
     const env = { OLLAMA_MODEL: 'qwen2.5:3b', OLLAMA_BASE_URL: base };
     expect(enabled(env)[0]?.contextTokens).toBeUndefined();
     await showModel(base, 'qwen2.5:3b', testContext({ fetch: f }));

@@ -16,9 +16,8 @@
  * machine and prints the env lines that enable them.
  */
 import { defineProvider, type Env, type LlmProvider, type StreamingLlmRung, Vid2ContextError } from '@vid2context/core';
-import type { ChatEndpoint } from '@vid2context/provider-llm-openai-compatible';
 import { cachedModelInfo, type OllamaEndpoint, ollamaChat, ollamaStream } from './ollama.ts';
-import { openAiChat, openAiStream } from './openai.ts';
+import { type ChatEndpoint, openAiChat, openAiStream } from './openai.ts';
 import { baseUrlFor, type LocalServer, modelsFor, SERVERS } from './servers.ts';
 
 export type { DetectedModel, DetectedServer, DetectionReport, DetectOptions, Hardware } from './detection.ts';
