@@ -86,7 +86,8 @@ export function parseArgs(argv: string[]): ParsedArgs {
     switch (a) {
       case '--scope': {
         const s = value(i++, a);
-        if (!SCOPES.includes(s as Scope)) throw new Vid2ContextError('bad-request', `Unknown scope: ${s}`, { hint: 'Use --scope user or --scope project.' });
+        if (!SCOPES.includes(s as Scope))
+          throw new Vid2ContextError('bad-request', `Unknown scope: ${s}`, { hint: 'Use --scope user or --scope project.' });
         out.scope = s as Scope;
         break;
       }
@@ -105,7 +106,10 @@ export function parseArgs(argv: string[]): ParsedArgs {
       case '--env': {
         const kv = value(i++, a);
         const eq = kv.indexOf('=');
-        if (eq <= 0) throw new Vid2ContextError('bad-request', `--env expects KEY=VALUE, got ${kv}`, { hint: 'For example --env OLLAMA_BASE_URL=http://localhost:11434/v1' });
+        if (eq <= 0)
+          throw new Vid2ContextError('bad-request', `--env expects KEY=VALUE, got ${kv}`, {
+            hint: 'For example --env OLLAMA_BASE_URL=http://localhost:11434/v1',
+          });
         out.env[kv.slice(0, eq)] = kv.slice(eq + 1);
         break;
       }
@@ -138,11 +142,18 @@ export function parseArgs(argv: string[]): ParsedArgs {
     }
   }
   if ((out.token || out.tokenEnv) && !out.remote) {
-    throw new Vid2ContextError('bad-request', '--token and --token-env only apply with --remote.', { hint: 'Add --remote <url>, or drop the token.' });
+    throw new Vid2ContextError('bad-request', '--token and --token-env only apply with --remote.', {
+      hint: 'Add --remote <url>, or drop the token.',
+    });
   }
-  if (out.token && out.tokenEnv) throw new Vid2ContextError('bad-request', 'Pass --token or --token-env, not both.', { hint: 'Prefer --token-env so the token stays out of the config file.' });
+  if (out.token && out.tokenEnv)
+    throw new Vid2ContextError('bad-request', 'Pass --token or --token-env, not both.', {
+      hint: 'Prefer --token-env so the token stays out of the config file.',
+    });
   if (out.remote && (out.command || out.fromSource || Object.keys(out.env).length > 0)) {
-    throw new Vid2ContextError('bad-request', '--command, --from-source and --env apply to the local server, not --remote.', { hint: 'Drop them, or drop --remote.' });
+    throw new Vid2ContextError('bad-request', '--command, --from-source and --env apply to the local server, not --remote.', {
+      hint: 'Drop them, or drop --remote.',
+    });
   }
   if (out.remote) {
     let u: URL | undefined;
@@ -152,7 +163,9 @@ export function parseArgs(argv: string[]): ParsedArgs {
       u = undefined;
     }
     if (!u || (u.protocol !== 'https:' && u.protocol !== 'http:')) {
-      throw new Vid2ContextError('bad-request', `--remote needs an http(s) URL, got ${out.remote}`, { hint: 'For example --remote https://your-host/mcp' });
+      throw new Vid2ContextError('bad-request', `--remote needs an http(s) URL, got ${out.remote}`, {
+        hint: 'For example --remote https://your-host/mcp',
+      });
     }
   }
   return out;
@@ -216,8 +229,10 @@ export function notesFor(args: ParsedArgs, result: InstallResult, chosen?: Serve
   } else if (args.token) {
     notes.push('The token is stored in the client config in plain text. Use --token-env <VAR> to reference an env var instead.');
   }
-  if (result.client === 'codex' && result.scope === 'project') notes.push('Codex reads .codex/config.toml only in projects you have trusted.');
-  if (result.client === 'vscode' && args.legacy) notes.push('The .vscode/mcp.json format is deprecated by VS Code and will be removed in February 2027.');
+  if (result.client === 'codex' && result.scope === 'project')
+    notes.push('Codex reads .codex/config.toml only in projects you have trusted.');
+  if (result.client === 'vscode' && args.legacy)
+    notes.push('The .vscode/mcp.json format is deprecated by VS Code and will be removed in February 2027.');
   const verify = VERIFY[result.client];
   if (verify) notes.push(`Verify: ${verify}`);
   const sameAsDefault = chosen && chosen.command === MCP_COMMAND.command && chosen.args.join(' ') === MCP_COMMAND.args.join(' ');
@@ -236,18 +251,25 @@ function renderText(result: InstallResult, notes: string[], token?: string): str
         : `${result.label}: vid2context is not in ${where}. Nothing changed.`,
     );
   } else if (result.dryRun) {
-    lines.push(`${result.label}: dry run, nothing written. ${result.action === 'install' ? 'Would install into' : 'Would remove from'} ${where}:`);
+    lines.push(
+      `${result.label}: dry run, nothing written. ${result.action === 'install' ? 'Would install into' : 'Would remove from'} ${where}:`,
+    );
   } else {
-    lines.push(`${result.label}: ${result.action === 'install' ? 'installed vid2context into' : 'removed vid2context from'} ${where}.`);
+    lines.push(
+      `${result.label}: ${result.action === 'install' ? 'installed vid2context into' : 'removed vid2context from'} ${where}.`,
+    );
     if (result.backup) lines.push(`Backup: ${result.backup}`);
   }
-  for (const c of result.commands) lines.push(`${result.dryRun ? 'Would run' : 'Ran'}: ${c.map((p) => (/\s/.test(p) ? JSON.stringify(p) : p)).join(' ')}`);
+  for (const c of result.commands)
+    lines.push(`${result.dryRun ? 'Would run' : 'Ran'}: ${c.map((p) => (/\s/.test(p) ? JSON.stringify(p) : p)).join(' ')}`);
   if (result.diff && (result.dryRun || result.changed)) lines.push('', result.diff.trimEnd());
   if (notes.length) lines.push('', ...notes);
   return `${redact(lines.join('\n'), token)}\n`;
 }
 
-export function listClients(e: Environment): { id: string; label: string; scopes: Record<string, string>; note?: string; docs: { url: string; verified: string }[] }[] {
+export function listClients(
+  e: Environment,
+): { id: string; label: string; scopes: Record<string, string>; note?: string; docs: { url: string; verified: string }[] }[] {
   return CLIENTS.map((c) => {
     const scopes: Record<string, string> = {};
     for (const s of c.scopes) {
@@ -276,7 +298,9 @@ export function main(argv: string[], e: Environment = currentEnvironment()): num
         for (const [s, p] of Object.entries(r.scopes)) write(`  ${s}: ${p}\n`);
         if (r.note) write(`  ${r.note}\n`);
       }
-      write('\nWindsurf is not supported: its official MCP docs now redirect to Devin Desktop, so the config format could not be verified.\n');
+      write(
+        '\nWindsurf is not supported: its official MCP docs now redirect to Devin Desktop, so the config format could not be verified.\n',
+      );
     }
     return 0;
   }

@@ -159,7 +159,8 @@ const withoutEntry = (c: Case, text: string, original: string): unknown => {
   return doc;
 };
 
-const backups = (path: string) => (existsSync(dirname(path)) ? readdirSync(dirname(path)).filter((f) => f.includes('.vid2context-backup-')) : []);
+const backups = (path: string) =>
+  existsSync(dirname(path)) ? readdirSync(dirname(path)).filter((f) => f.includes('.vid2context-backup-')) : [];
 
 describe.each(CASES)('$client ($scope$legacy)', (c) => {
   const run = (opts: { server?: LocalServer | RemoteServer; uninstall?: boolean; dryRun?: boolean } = {}) =>
@@ -254,7 +255,14 @@ describe.each(CASES)('$client ($scope$legacy)', (c) => {
     expect(result.diff).toMatch(/^\+ .*vid2context/m);
     expect(readFileSync(path(), 'utf8')).toBe(fixture(c.fixture));
     expect(backups(path())).toEqual([]);
-    const fresh = install({ client: c.client, scope: c.scope, legacy: c.legacy, server: LOCAL, dryRun: true, environment: { ...env, cwd: join(root, 'nowhere'), home: join(root, 'nohome') } });
+    const fresh = install({
+      client: c.client,
+      scope: c.scope,
+      legacy: c.legacy,
+      server: LOCAL,
+      dryRun: true,
+      environment: { ...env, cwd: join(root, 'nowhere'), home: join(root, 'nohome') },
+    });
     expect(fresh.diff.startsWith('--- /dev/null')).toBe(true);
     expect(existsSync(fresh.path)).toBe(false);
   });
@@ -278,7 +286,11 @@ describe.each(CASES)('$client ($scope$legacy)', (c) => {
 
 describe('client specifics', () => {
   it('env vars are written only when passed', () => {
-    const r = install({ client: 'cursor', server: { ...LOCAL, env: { OLLAMA_BASE_URL: 'http://localhost:11434/v1' } }, environment: env });
+    const r = install({
+      client: 'cursor',
+      server: { ...LOCAL, env: { OLLAMA_BASE_URL: 'http://localhost:11434/v1' } },
+      environment: env,
+    });
     expect(entryOf(CASES[2] as Case, readFileSync(r.path, 'utf8'))).toEqual({
       type: 'stdio',
       command: 'npx',
@@ -294,12 +306,15 @@ describe('client specifics', () => {
       if (c.format !== 'json') throw new Error('json client expected');
       return (c.entry(remote, { legacy }) as { headers: Record<string, string> }).headers.Authorization;
     };
-    expect(header('claude-code')).toBe('Bearer ${V2C_TOKEN}');
-    expect(header('cursor')).toBe('Bearer ${env:V2C_TOKEN}');
-    expect(header('vscode')).toBe('Bearer ${V2C_TOKEN}');
-    expect(header('vscode', true)).toBe('Bearer ${env:V2C_TOKEN}');
+    expect(header('claude-code')).toBe(`Bearer \${V2C_TOKEN}`);
+    expect(header('cursor')).toBe(`Bearer \${env:V2C_TOKEN}`);
+    expect(header('vscode')).toBe(`Bearer \${V2C_TOKEN}`);
+    expect(header('vscode', true)).toBe(`Bearer \${env:V2C_TOKEN}`);
     const codex = getClient('codex');
-    expect(codex.format === 'toml' && codex.entry(remote)).toEqual({ url: 'https://mcp.example.org/mcp', bearer_token_env_var: 'V2C_TOKEN' });
+    expect(codex.format === 'toml' && codex.entry(remote)).toEqual({
+      url: 'https://mcp.example.org/mcp',
+      bearer_token_env_var: 'V2C_TOKEN',
+    });
     expect(() => header('gemini-cli')).toThrow(/Gemini CLI has no documented way/);
   });
 
@@ -326,7 +341,9 @@ describe('client specifics', () => {
 
   it('Claude Desktop paths follow the platform', () => {
     const c = getClient('claude-desktop');
-    expect(c.path('user', { ...env, platform: 'darwin', home: '/Users/u' })).toBe('/Users/u/Library/Application Support/Claude/claude_desktop_config.json');
+    expect(c.path('user', { ...env, platform: 'darwin', home: '/Users/u' })).toBe(
+      '/Users/u/Library/Application Support/Claude/claude_desktop_config.json',
+    );
     expect(c.path('user', { ...env, platform: 'win32', env: { APPDATA: 'C:/Users/u/AppData/Roaming' } })).toContain('Claude');
     expect(c.path('user', env)).toBe(join(env.home, '.config', 'Claude', 'claude_desktop_config.json'));
   });
@@ -338,7 +355,9 @@ describe('client specifics', () => {
 
   it('rejects unknown clients and scopes with a hint', () => {
     expect(() => install({ client: 'windsurf', server: LOCAL, environment: env })).toThrow(/Unknown client/);
-    expect(() => install({ client: 'claude-desktop', scope: 'project', server: LOCAL, environment: env })).toThrow(/no project scope/);
+    expect(() => install({ client: 'claude-desktop', scope: 'project', server: LOCAL, environment: env })).toThrow(
+      /no project scope/,
+    );
     expect(() => install({ client: 'cursor', legacy: true, server: LOCAL, environment: env })).toThrow(/--legacy/);
   });
 });

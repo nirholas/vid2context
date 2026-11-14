@@ -197,7 +197,9 @@ function lineEnding(text: string): string {
 
 /** JSON for a value, indented so it sits at `baseIndent` inside the file. */
 function render(value: unknown, unit: string, baseIndent: string, eol: string): string {
-  return JSON.stringify(value, null, unit).split('\n').join(eol + baseIndent);
+  return JSON.stringify(value, null, unit)
+    .split('\n')
+    .join(eol + baseIndent);
 }
 
 /**

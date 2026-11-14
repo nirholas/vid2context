@@ -131,12 +131,16 @@ const claudeDesktop: JsonClient = {
   key: () => 'mcpServers',
   entry: (server) => {
     if (server.kind === 'remote') {
-      throw new Vid2ContextError('unsupported-input', 'Claude Desktop does not read remote servers from claude_desktop_config.json.', {
-        hint:
-          `In Claude Desktop open Settings, Connectors, Add custom connector, and paste ${server.url}. ` +
-          'Use the connector form to add a request header (Authorization: Bearer <token>) or sign in with OAuth. ' +
-          'Or run this installer without --remote to use the free local server.',
-      });
+      throw new Vid2ContextError(
+        'unsupported-input',
+        'Claude Desktop does not read remote servers from claude_desktop_config.json.',
+        {
+          hint:
+            `In Claude Desktop open Settings, Connectors, Add custom connector, and paste ${server.url}. ` +
+            'Use the connector form to add a request header (Authorization: Bearer <token>) or sign in with OAuth. ' +
+            'Or run this installer without --remote to use the free local server.',
+        },
+      );
     }
     return { command: server.command, args: server.args, ...envObject(server) };
   },
@@ -216,8 +220,7 @@ const geminiCli: JsonClient = {
   ],
   scopes: ['user', 'project'],
   defaultScope: 'user',
-  path: (scope, e) =>
-    scope === 'project' ? join(e.cwd, '.gemini', 'settings.json') : join(e.home, '.gemini', 'settings.json'),
+  path: (scope, e) => (scope === 'project' ? join(e.cwd, '.gemini', 'settings.json') : join(e.home, '.gemini', 'settings.json')),
   key: () => 'mcpServers',
   entry: (server) =>
     server.kind === 'local'

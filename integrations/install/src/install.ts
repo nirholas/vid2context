@@ -7,7 +7,17 @@
  */
 import { execFileSync } from 'node:child_process';
 import { Vid2ContextError } from '@vid2context/core';
-import { type Client, type Environment, getClient, type JsonClient, SERVER_NAME, type Scope, type ServerSpec, type TomlClient, vscodeLegacyPath } from './clients.ts';
+import {
+  type Client,
+  type Environment,
+  getClient,
+  type JsonClient,
+  type Scope,
+  SERVER_NAME,
+  type ServerSpec,
+  type TomlClient,
+  vscodeLegacyPath,
+} from './clients.ts';
 import { findOnPath } from './command.ts';
 import { lineDiff } from './diff.ts';
 import { backup, readIfExists, writeAtomic } from './files.ts';
@@ -55,7 +65,9 @@ function deepEqual(a: unknown, b: unknown): boolean {
   if (a && b && typeof a === 'object' && typeof b === 'object') {
     const ka = Object.keys(a);
     const kb = Object.keys(b);
-    return ka.length === kb.length && ka.every((k) => deepEqual((a as Record<string, unknown>)[k], (b as Record<string, unknown>)[k]));
+    return (
+      ka.length === kb.length && ka.every((k) => deepEqual((a as Record<string, unknown>)[k], (b as Record<string, unknown>)[k]))
+    );
   }
   return false;
 }
@@ -135,9 +147,13 @@ export function editToml(text: string, client: TomlClient, opts: { entry?: Recor
     tablePath.reduce<unknown>((t, k) => (t && typeof t === 'object' ? (t as Record<string, unknown>)[k] : undefined), d);
   const existing = lookup(data);
   if (existing !== undefined && !findTable(text, tablePath)) {
-    throw new Vid2ContextError('bad-request', `${path} defines ${tablePath.join('.')} inline, which this installer does not rewrite. The file was not changed.`, {
-      hint: `Replace that definition by hand with:\n${snippet}`,
-    });
+    throw new Vid2ContextError(
+      'bad-request',
+      `${path} defines ${tablePath.join('.')} inline, which this installer does not rewrite. The file was not changed.`,
+      {
+        hint: `Replace that definition by hand with:\n${snippet}`,
+      },
+    );
   }
   let out: string;
   if (!entry) out = existing === undefined ? text : removeTable(text, tablePath);
@@ -154,7 +170,8 @@ export function editToml(text: string, client: TomlClient, opts: { entry?: Recor
 
 function configPath(client: Client, scope: Scope, opts: InstallOptions): string {
   if (opts.legacy) {
-    if (client.id !== 'vscode') throw new Vid2ContextError('bad-request', '--legacy only applies to vscode.', { hint: 'Drop --legacy.' });
+    if (client.id !== 'vscode')
+      throw new Vid2ContextError('bad-request', '--legacy only applies to vscode.', { hint: 'Drop --legacy.' });
     if (scope !== 'project') {
       throw new Vid2ContextError('bad-request', 'The legacy VS Code format is only supported per workspace.', {
         hint: 'Use --legacy --scope project, or drop --legacy to write the current Copilot user config.',
@@ -163,21 +180,27 @@ function configPath(client: Client, scope: Scope, opts: InstallOptions): string 
     return vscodeLegacyPath(opts.environment);
   }
   const path = client.path(scope, opts.environment);
-  if (!path) throw new Vid2ContextError('unsupported-input', `${client.label} has no ${scope} config on this OS.`, { hint: `Use --scope ${client.defaultScope}.` });
+  if (!path)
+    throw new Vid2ContextError('unsupported-input', `${client.label} has no ${scope} config on this OS.`, {
+      hint: `Use --scope ${client.defaultScope}.`,
+    });
   return path;
 }
 
 function resolveScope(client: Client, scope: Scope | undefined): Scope {
   const s = scope ?? client.defaultScope;
   if (!client.scopes.includes(s)) {
-    throw new Vid2ContextError('bad-request', `${client.label} has no ${s} scope.`, { hint: `Use --scope ${client.scopes.join(' or ')}.` });
+    throw new Vid2ContextError('bad-request', `${client.label} has no ${s} scope.`, {
+      hint: `Use --scope ${client.scopes.join(' or ')}.`,
+    });
   }
   return s;
 }
 
 function serverOrThrow(opts: InstallOptions): ServerSpec | undefined {
   if (opts.uninstall) return undefined;
-  if (!opts.server) throw new Vid2ContextError('bad-request', 'No server to install.', { hint: 'Pass a server spec, or use --uninstall.' });
+  if (!opts.server)
+    throw new Vid2ContextError('bad-request', 'No server to install.', { hint: 'Pass a server spec, or use --uninstall.' });
   return opts.server;
 }
 
@@ -186,12 +209,17 @@ export function install(opts: InstallOptions): InstallResult {
   const scope = resolveScope(client, opts.scope);
   const server = serverOrThrow(opts);
   if (client.id === 'claude-code') {
-    const claude = opts.useClaudeCli === false ? undefined : findOnPath('claude', opts.environment.env, opts.environment.platform);
+    const claude =
+      opts.useClaudeCli === false ? undefined : findOnPath('claude', opts.environment.env, opts.environment.platform);
     if (claude) return viaClaudeCli(client as JsonClient, claude, scope, server, opts);
     if (scope === 'user') {
-      throw new Vid2ContextError('unavailable', 'The claude CLI is not on PATH, and user-scope servers live in ~/.claude.json, which Claude Code rewrites while it runs.', {
-        hint: 'Install Claude Code (npm install -g @anthropic-ai/claude-code) and rerun, or use --scope project to write .mcp.json in this folder.',
-      });
+      throw new Vid2ContextError(
+        'unavailable',
+        'The claude CLI is not on PATH, and user-scope servers live in ~/.claude.json, which Claude Code rewrites while it runs.',
+        {
+          hint: 'Install Claude Code (npm install -g @anthropic-ai/claude-code) and rerun, or use --scope project to write .mcp.json in this folder.',
+        },
+      );
     }
   }
   const path = configPath(client, scope, opts);
@@ -228,7 +256,13 @@ export function install(opts: InstallOptions): InstallResult {
 }
 
 /** Claude Code through its own CLI, which knows where each scope lives and how to merge. */
-function viaClaudeCli(client: JsonClient, claude: string, scope: Scope, server: ServerSpec | undefined, opts: InstallOptions): InstallResult {
+function viaClaudeCli(
+  client: JsonClient,
+  claude: string,
+  scope: Scope,
+  server: ServerSpec | undefined,
+  opts: InstallOptions,
+): InstallResult {
   const e = opts.environment;
   const path = client.path(scope, e) as string;
   const readEntry = (): unknown => {
@@ -238,7 +272,11 @@ function viaClaudeCli(client: JsonClient, claude: string, scope: Scope, server: 
     try {
       root = parseJsonc(text, { comments: true });
     } catch (err) {
-      throw parseFailure(path, err as Error, server ? jsonSnippet('mcpServers', client.entry(server, {})) : `Remove "${SERVER_NAME}".`);
+      throw parseFailure(
+        path,
+        err as Error,
+        server ? jsonSnippet('mcpServers', client.entry(server, {})) : `Remove "${SERVER_NAME}".`,
+      );
     }
     const servers = member(root, 'mcpServers');
     const found = servers?.value.kind === 'object' ? member(servers.value, SERVER_NAME) : undefined;
@@ -257,7 +295,19 @@ function viaClaudeCli(client: JsonClient, claude: string, scope: Scope, server: 
       if (server.kind === 'local') {
         const envFlags = Object.entries(server.env).flatMap(([k, v]) => ['--env', `${k}=${v}`]);
         // The docs warn that --env directly before the name swallows it, so --scope and --transport sit between.
-        commands.push(['mcp', 'add', ...envFlags, '--scope', scope, '--transport', 'stdio', SERVER_NAME, '--', server.command, ...server.args]);
+        commands.push([
+          'mcp',
+          'add',
+          ...envFlags,
+          '--scope',
+          scope,
+          '--transport',
+          'stdio',
+          SERVER_NAME,
+          '--',
+          server.command,
+          ...server.args,
+        ]);
       } else {
         const headers = (wantedEntry.headers ?? {}) as Record<string, string>;
         const headerFlags = Object.entries(headers).flatMap(([k, v]) => ['--header', `${k}: ${v}`]);
@@ -299,6 +349,10 @@ function viaClaudeCli(client: JsonClient, claude: string, scope: Scope, server: 
   }
   result.wrote = true;
   const now = readEntry();
-  result.diff = lineDiff(beforeEntry, now === undefined ? '' : `${JSON.stringify({ [SERVER_NAME]: now }, null, 2)}\n`, `${path} (mcpServers)`);
+  result.diff = lineDiff(
+    beforeEntry,
+    now === undefined ? '' : `${JSON.stringify({ [SERVER_NAME]: now }, null, 2)}\n`,
+    `${path} (mcpServers)`,
+  );
   return result;
 }

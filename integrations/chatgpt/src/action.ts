@@ -82,7 +82,14 @@ const textResponse = (description: string) => ({
 const anyObject = { type: 'object', additionalProperties: true };
 
 /** The paths this schema covers, in order. Exported for the test. */
-export const ACTION_PATHS = ['/api/v1/metadata', '/api/v1/outline', '/api/v1/transcript', '/api/v1/section', '/api/v1/search', '/api/v1/pack'];
+export const ACTION_PATHS = [
+  '/api/v1/metadata',
+  '/api/v1/outline',
+  '/api/v1/transcript',
+  '/api/v1/section',
+  '/api/v1/search',
+  '/api/v1/pack',
+];
 
 export function buildActionSchema(server: string): Record<string, unknown> {
   let parsed: URL;
@@ -123,16 +130,21 @@ export function buildActionSchema(server: string): Record<string, unknown> {
         get: {
           operationId: 'getMetadata',
           summary: 'Video metadata: title, channel, duration, chapters (planned route)',
-          description: 'Title, channel, description, duration, chapters and tags. Cheap: call it first to see how long a video is.',
+          description:
+            'Title, channel, description, duration, chapters and tags. Cheap: call it first to see how long a video is.',
           parameters: [urlParam],
-          responses: { '200': { description: 'VideoMetadata', content: { 'application/json': { schema: anyObject } } }, ...errors },
+          responses: {
+            '200': { description: 'VideoMetadata', content: { 'application/json': { schema: anyObject } } },
+            ...errors,
+          },
         },
       },
       '/api/v1/outline': {
         get: {
           operationId: 'getOutline',
           summary: 'Chapters with estimated tokens per chapter (planned route)',
-          description: 'Metadata, chapters and estimated tokens per chapter, so you fetch only the sections you need. Use before reading long videos.',
+          description:
+            'Metadata, chapters and estimated tokens per chapter, so you fetch only the sections you need. Use before reading long videos.',
           parameters: [urlParam],
           responses: {
             '200': {
@@ -164,7 +176,8 @@ export function buildActionSchema(server: string): Record<string, unknown> {
         get: {
           operationId: 'getTranscript',
           summary: 'Full transcript with [m:ss] timestamps (implemented)',
-          description: 'The whole transcript, about 12k tokens per hour of speech. For long videos prefer getOutline, then getSection.',
+          description:
+            'The whole transcript, about 12k tokens per hour of speech. For long videos prefer getOutline, then getSection.',
           parameters: [
             urlParam,
             formatParam,
@@ -207,10 +220,17 @@ export function buildActionSchema(server: string): Record<string, unknown> {
         get: {
           operationId: 'searchTranscripts',
           summary: 'Search saved transcripts (planned route)',
-          description: 'Full-text search over videos saved on the server. Each hit has the title, start time, text and a timestamp URL to cite.',
+          description:
+            'Full-text search over videos saved on the server. Each hit has the title, start time, text and a timestamp URL to cite.',
           parameters: [
             { name: 'q', in: 'query', required: true, description: 'Search query.', schema: { type: 'string' } },
-            { name: 'collectionId', in: 'query', required: false, description: 'Limit to one collection.', schema: { type: 'string' } },
+            {
+              name: 'collectionId',
+              in: 'query',
+              required: false,
+              description: 'Limit to one collection.',
+              schema: { type: 'string' },
+            },
             {
               name: 'videoIds',
               in: 'query',
@@ -223,7 +243,9 @@ export function buildActionSchema(server: string): Record<string, unknown> {
           responses: {
             '200': {
               description: '{ hits }',
-              content: { 'application/json': { schema: { type: 'object', properties: { hits: { type: 'array', items: anyObject } } } } },
+              content: {
+                'application/json': { schema: { type: 'object', properties: { hits: { type: 'array', items: anyObject } } } },
+              },
             },
             ...errors,
           },
@@ -233,9 +255,13 @@ export function buildActionSchema(server: string): Record<string, unknown> {
         get: {
           operationId: 'getContextPack',
           summary: 'Context pack Markdown for one video (planned route)',
-          description: 'One Markdown file with metadata, chapters and transcript sized for a token budget, plus citation instructions.',
+          description:
+            'One Markdown file with metadata, chapters and transcript sized for a token budget, plus citation instructions.',
           parameters: [urlParam],
-          responses: { '200': { description: 'The context pack', content: { 'text/markdown': { schema: { type: 'string' } } } }, ...errors },
+          responses: {
+            '200': { description: 'The context pack', content: { 'text/markdown': { schema: { type: 'string' } } } },
+            ...errors,
+          },
         },
       },
     },
