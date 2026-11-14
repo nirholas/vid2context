@@ -18,7 +18,17 @@ import { createVisualProvider } from './provider.ts';
 import type { TesseractLangSource } from './tesseract.ts';
 
 export * from './shared.ts';
-export { cdnLangSource, DEFAULT_MIN_CONFIDENCE, MIN_TEXT_CHARS, type TesseractLangSource, tesseractEnabled, tesseractLangs, tesseractRungs, terminateTesseract, textFromBlocks } from './tesseract.ts';
+export {
+  cdnLangSource,
+  DEFAULT_MIN_CONFIDENCE,
+  MIN_TEXT_CHARS,
+  type TesseractLangSource,
+  terminateTesseract,
+  tesseractEnabled,
+  tesseractLangs,
+  tesseractRungs,
+  textFromBlocks,
+} from './tesseract.ts';
 
 const require = createRequire(import.meta.url);
 
@@ -58,9 +68,13 @@ async function download(lang: string, target: string, ctx: Ctx): Promise<void> {
   ctx.log.info('tesseract: downloading language data once', { lang, url });
   const res = await fetchWithTimeout(ctx, url, {}, 5 * 60_000);
   if (!res.ok) {
-    throw new Vid2ContextError(res.status === 404 ? 'bad-request' : 'upstream', `No tesseract language data for "${lang}" (HTTP ${res.status}).`, {
-      hint: 'Use tesseract language codes in TESSERACT_LANGS (eng, deu, fra, ces, chi_sim, ...), or set TESSERACT_LANG_PATH.',
-    });
+    throw new Vid2ContextError(
+      res.status === 404 ? 'bad-request' : 'upstream',
+      `No tesseract language data for "${lang}" (HTTP ${res.status}).`,
+      {
+        hint: 'Use tesseract language codes in TESSERACT_LANGS (eng, deu, fra, ces, chi_sim, ...), or set TESSERACT_LANG_PATH.',
+      },
+    );
   }
   const tmp = `${target}.${process.pid}.part`;
   await writeFile(tmp, new Uint8Array(await res.arrayBuffer()));

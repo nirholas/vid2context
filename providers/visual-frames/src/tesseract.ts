@@ -8,7 +8,8 @@
  * frames and terminated after IDLE_MS without work, or by terminateTesseract().
  *
  * Only confident lines are kept (TESSERACT_MIN_CONFIDENCE, default 60, per
- * line), lines that are mostly symbols are dropped, and a frame with fewer than
+ * line), lines that are mostly symbols or have no word of 3 or more letters
+ * or digits are dropped, and a frame with fewer than
  * MIN_TEXT_CHARS letters and digits in total yields no note: photos and faces
  * produce scattered low-confidence garbage that this filters out.
  */
@@ -62,7 +63,7 @@ function alnumCount(s: string): number {
   return (s.match(/[\p{L}\p{N}]/gu) ?? []).length;
 }
 
-/** Keep confident, mostly-alphanumeric lines; paragraphs are separated by a blank line. */
+/** Keep confident lines that are mostly letters and digits and hold at least one 3-character word; paragraphs are separated by a blank line. */
 export function textFromBlocks(blocks: OcrBlock[] | null | undefined, minConf = DEFAULT_MIN_CONFIDENCE): string {
   const paragraphs: string[] = [];
   for (const block of blocks ?? []) {
@@ -72,7 +73,8 @@ export function textFromBlocks(blocks: OcrBlock[] | null | undefined, minConf = 
           const t = l.text.trim();
           const visible = t.replace(/\s+/g, '').length;
           const alnum = alnumCount(t);
-          return l.confidence >= minConf && alnum >= 2 && alnum / Math.max(1, visible) >= 0.5;
+          const hasWord = /[\p{L}\p{N}]{3,}/u.test(t);
+          return l.confidence >= minConf && hasWord && alnum / Math.max(1, visible) >= 0.5;
         })
         .map((l) => l.text.trim());
       if (lines.length > 0) paragraphs.push(lines.join('\n'));
@@ -84,7 +86,11 @@ export function textFromBlocks(blocks: OcrBlock[] | null | undefined, minConf = 
 // ---------------------------------------------------------------- worker pool
 
 interface TessWorker {
-  recognize(image: unknown, options?: Record<string, unknown>, output?: Record<string, boolean>): Promise<{ data: { blocks: OcrBlock[] | null } }>;
+  recognize(
+    image: unknown,
+    options?: Record<string, unknown>,
+    output?: Record<string, boolean>,
+  ): Promise<{ data: { blocks: OcrBlock[] | null } }>;
   terminate(): Promise<unknown>;
 }
 interface TessModule {
@@ -121,7 +127,10 @@ function getWorker(langs: string[], source: TesseractLangSource, ctx: Ctx): Pool
       const T = await loadTesseract();
       const { options } = await source(langs, ctx);
       // OEM 1 = LSTM only, the model the 4.0.0_best_int traineddata is built for.
-      return T.createWorker(langs, 1, { ...options, errorHandler: (e: unknown) => ctx.log.debug('tesseract worker error', { error: String(e) }) });
+      return T.createWorker(langs, 1, {
+        ...options,
+        errorHandler: (e: unknown) => ctx.log.debug('tesseract worker error', { error: String(e) }),
+      });
     })(),
   };
   entry.worker.catch(() => {
@@ -169,7 +178,8 @@ export async function readWithTesseract(
       cause: err,
     });
   }
-  const image = ctx.runtime === 'browser' ? new Blob([frame.data as Uint8Array<ArrayBuffer>], { type: frame.mimeType }) : frame.data;
+  const image =
+    ctx.runtime === 'browser' ? new Blob([frame.data as Uint8Array<ArrayBuffer>], { type: frame.mimeType }) : frame.data;
   try {
     const { data } = await worker.recognize(image, {}, { blocks: true, text: false });
     const text = textFromBlocks(data.blocks, minConfidence(ctx.env));

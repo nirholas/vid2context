@@ -39,7 +39,17 @@ import { downloadVideo } from './download.ts';
 import { resolveSampleOptions, type SampleOptions, sampleFrames } from './sample.ts';
 
 export { commonArgs, downloadArgs, downloadVideo, VIDEO_FORMAT } from './download.ts';
-export { framesFromThumbs, parseDuration, resolveSampleOptions, SAMPLE_DEFAULTS, type SampleOptions, type SampledFrames, sampleFrames, samplingArgs, selectExpression } from './sample.ts';
+export {
+  framesFromThumbs,
+  parseDuration,
+  resolveSampleOptions,
+  SAMPLE_DEFAULTS,
+  type SampledFrames,
+  type SampleOptions,
+  sampleFrames,
+  samplingArgs,
+  selectExpression,
+} from './sample.ts';
 
 export interface ExtractVisualOptions extends SampleOptions {
   /** Most frames sent to rungs. Default 40. */
@@ -107,11 +117,15 @@ function localPath(input: string): string {
 export async function extractVisualNotes(input: string, opts: ExtractVisualOptions, ctx: Ctx): Promise<ExtractVisualResult> {
   const maxFrames = opts.maxFrames ?? DEFAULT_MAX_FRAMES;
   if (!Number.isInteger(maxFrames) || maxFrames < 1) {
-    throw new Vid2ContextError('bad-request', `maxFrames must be a positive integer, got ${maxFrames}.`, { hint: 'Pass maxFrames: 40, for example.' });
+    throw new Vid2ContextError('bad-request', `maxFrames must be a positive integer, got ${maxFrames}.`, {
+      hint: 'Pass maxFrames: 40, for example.',
+    });
   }
   const hashThreshold = opts.hashThreshold ?? DEFAULT_HASH_THRESHOLD;
   if (!Number.isInteger(hashThreshold) || hashThreshold < 0 || hashThreshold > 64) {
-    throw new Vid2ContextError('bad-request', `hashThreshold must be an integer from 0 to 64, got ${hashThreshold}.`, { hint: 'The default is 12.' });
+    throw new Vid2ContextError('bad-request', `hashThreshold must be an integer from 0 to 64, got ${hashThreshold}.`, {
+      hint: 'The default is 12.',
+    });
   }
   const sample = resolveSampleOptions(opts);
   const chain = opts.chain ?? {};
@@ -155,14 +169,20 @@ export async function extractVisualNotes(input: string, opts: ExtractVisualOptio
           lastError = err;
           if (ctx.signal?.aborted) throw err;
           if (attempt >= MAX_RETRIES_PER_FRAME || maxWaitMs === 0 || !onlyRateLimited(tried)) {
-            ctx.log.warn('no visual rung could read a frame', { atSec: d.atSec, error: err instanceof Error ? err.message : String(err) });
+            ctx.log.warn('no visual rung could read a frame', {
+              atSec: d.atSec,
+              error: err instanceof Error ? err.message : String(err),
+            });
             break;
           }
           const known = rankRungs(rungs, chain, ctx.env)
             .map((r) => throttleRemainingMs(r.id))
             .filter((ms) => ms > 0);
           const waitMs = Math.min(maxWaitMs, (known.length > 0 ? Math.min(...known) : UNKNOWN_COOLDOWN_MS) + 250);
-          ctx.log.info('every visual rung is rate-limited; waiting for the next slot', { atSec: d.atSec, waitSec: Math.ceil(waitMs / 1000) });
+          ctx.log.info('every visual rung is rate-limited; waiting for the next slot', {
+            atSec: d.atSec,
+            waitSec: Math.ceil(waitMs / 1000),
+          });
           await sleep(waitMs, ctx.signal);
         }
       }

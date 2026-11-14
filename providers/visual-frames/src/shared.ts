@@ -1,6 +1,27 @@
 /** Exports shared by every entry of the package (runtime-neutral). */
-export { DEFAULT_HASH_THRESHOLD, type DistinctFrame, dedupeFrames, MERGE_SIMILARITY, mergeNotes, normalizeText, type SampledFrame, selectBudget, textSimilarity } from './select.ts';
-export { dHash, type GrayImage, grayFromRgba, hammingDistance, resizeGray, sharpness, THUMB_HEIGHT, THUMB_WIDTH } from './hash.ts';
+
+export {
+  dHash,
+  type GrayImage,
+  grayFromRgba,
+  hammingDistance,
+  resizeGray,
+  sharpness,
+  THUMB_HEIGHT,
+  THUMB_WIDTH,
+} from './hash.ts';
+export { createVisualProvider, visualRungs } from './provider.ts';
+export {
+  DEFAULT_HASH_THRESHOLD,
+  type DistinctFrame,
+  dedupeFrames,
+  MERGE_SIMILARITY,
+  mergeNotes,
+  normalizeText,
+  type SampledFrame,
+  selectBudget,
+  textSimilarity,
+} from './select.ts';
 export { resetThrottle, throttleRemainingMs } from './throttle.ts';
 export {
   answerText,
@@ -18,4 +39,3 @@ export {
   VISION_PROMPT,
   visionRungs,
 } from './vision.ts';
-export { createVisualProvider, visualRungs } from './provider.ts';

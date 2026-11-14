@@ -98,8 +98,7 @@ export function sharpness(img: GrayImage): number {
   for (let y = 1; y < h - 1; y++) {
     for (let x = 1; x < w - 1; x++) {
       const i = y * w + x;
-      const lap =
-        4 * (data[i] ?? 0) - (data[i - 1] ?? 0) - (data[i + 1] ?? 0) - (data[i - w] ?? 0) - (data[i + w] ?? 0);
+      const lap = 4 * (data[i] ?? 0) - (data[i - 1] ?? 0) - (data[i + 1] ?? 0) - (data[i - w] ?? 0) - (data[i + w] ?? 0);
       sum += lap;
       sumSq += lap * lap;
       n++;

@@ -64,7 +64,11 @@ export function dedupeFrames(frames: SampledFrame[], threshold = DEFAULT_HASH_TH
  * windows; each window contributes its biggest change, then the remaining
  * slots go to the biggest changes overall. Returned in time order.
  */
-export function selectBudget<T extends { atSec: number; change: number }>(frames: T[], maxFrames: number, durationSec?: number): T[] {
+export function selectBudget<T extends { atSec: number; change: number }>(
+  frames: T[],
+  maxFrames: number,
+  durationSec?: number,
+): T[] {
   if (maxFrames <= 0) return [];
   if (frames.length <= maxFrames) return [...frames].sort((a, b) => a.atSec - b.atSec);
   const last = Math.max(...frames.map((f) => f.atSec));

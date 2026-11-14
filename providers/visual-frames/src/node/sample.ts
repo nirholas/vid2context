@@ -63,9 +63,19 @@ export function resolveSampleOptions(o: SampleOptions = {}): Required<Omit<Sampl
     quality: Math.round(o.quality ?? SAMPLE_DEFAULTS.quality),
     timeoutMs: o.timeoutMs ?? 30 * 60_000,
   };
-  check('sceneThreshold', r.sceneThreshold, r.sceneThreshold > 0 && r.sceneThreshold < 1, 'Use a value between 0 and 1; 0.3 is the default, 0.1 catches soft transitions.');
+  check(
+    'sceneThreshold',
+    r.sceneThreshold,
+    r.sceneThreshold > 0 && r.sceneThreshold < 1,
+    'Use a value between 0 and 1; 0.3 is the default, 0.1 catches soft transitions.',
+  );
   check('minIntervalSec', r.minIntervalSec, r.minIntervalSec >= 0, 'Use 0 or more seconds; the default is 2.');
-  check('maxIntervalSec', r.maxIntervalSec, r.maxIntervalSec > 0 && r.maxIntervalSec >= r.minIntervalSec, 'Use more seconds than minIntervalSec; the default is 30.');
+  check(
+    'maxIntervalSec',
+    r.maxIntervalSec,
+    r.maxIntervalSec > 0 && r.maxIntervalSec >= r.minIntervalSec,
+    'Use more seconds than minIntervalSec; the default is 30.',
+  );
   check('width', r.width, r.width >= 64 && r.width <= 4096, 'Use a width between 64 and 4096 pixels; the default is 1024.');
   check('quality', r.quality, r.quality >= 2 && r.quality <= 31, 'Use a JPEG quality between 2 (best) and 31.');
   return r;

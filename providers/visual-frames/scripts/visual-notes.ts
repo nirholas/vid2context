@@ -23,7 +23,9 @@ const { positionals, values } = parseArgs({
 });
 const input = positionals[0];
 if (!input) {
-  console.error('usage: visual-notes.ts <file-or-url> [--max-frames N] [--scene 0.3] [--min 2] [--max 30] [--policy free|local-only|quality]');
+  console.error(
+    'usage: visual-notes.ts <file-or-url> [--max-frames N] [--scene 0.3] [--min 2] [--max 30] [--policy free|local-only|quality]',
+  );
   process.exit(2);
 }
 const num = (v: string | undefined) => (v === undefined ? undefined : Number(v));

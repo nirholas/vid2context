@@ -52,10 +52,14 @@ export async function downloadVideo(url: string, outDir: string, ctx: Ctx): Prom
   try {
     bin = await ensureYtDlp(ctx);
   } catch (err) {
-    throw new Vid2ContextError('no-provider', `yt-dlp is needed to read frames from a URL: ${err instanceof Error ? err.message : String(err)}`, {
-      hint: 'Install yt-dlp with `npx tsx providers/ytdlp/src/setup.ts` (@vid2context/provider-ytdlp) or set YTDLP_PATH, or pass a local video file instead.',
-      cause: err,
-    });
+    throw new Vid2ContextError(
+      'no-provider',
+      `yt-dlp is needed to read frames from a URL: ${err instanceof Error ? err.message : String(err)}`,
+      {
+        hint: 'Install yt-dlp with `npx tsx providers/ytdlp/src/setup.ts` (@vid2context/provider-ytdlp) or set YTDLP_PATH, or pass a local video file instead.',
+        cause: err,
+      },
+    );
   }
   const n = Number(ctx.env.YTDLP_TIMEOUT_SEC);
   const timeoutMs = (Number.isFinite(n) && n > 0 ? n : DEFAULT_TIMEOUT_SEC) * 1000;
