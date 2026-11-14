@@ -47,13 +47,24 @@ Model overrides: `GROQ_STT_MODEL`, `MISTRAL_STT_MODEL`, `OVH_STT_MODEL`, `DEEPIN
 |---|---|---|---|
 | `stt/transformers/<model>` | local | `TRANSFORMERS_STT_MODEL` (a Hugging Face repo id or a short `onnx-community` name: `whisper-base`, `whisper-small`, `whisper-large-v3-turbo`; comma-separated for several rungs) | Whisper on Transformers.js: onnxruntime-node in Node (CPU, or `cuda`/`dml`/`coreml`), WebGPU or WASM in the browser. Fully offline after the first download (whisper-base about 290 MB in fp32), cached in `.vid2context/models/transformers/` (`VID2CONTEXT_HOME`) or the browser's Cache Storage. Detects the spoken language itself; `translate` on non-turbo multilingual models. Optional: `TRANSFORMERS_DEVICE` (`auto`, `cpu`, `cuda`, `dml`, `coreml`, `wasm`, `webgpu`), `TRANSFORMERS_DTYPE` (`fp32`, or `encoder=fp32,decoder=q4`), `TRANSFORMERS_WASM_PATH` (browser: self-hosted ONNX Runtime WASM files instead of cdn.jsdelivr.net). Node needs ffmpeg (`FFMPEG_PATH`). Measured 2026-11-14, Apollo clip (24 s), whisper-base: Node CPU about 4 to 7x realtime, headless Chromium WASM about realtime. See [guides/offline-and-browser.md](guides/offline-and-browser.md). |
 
+## LLMs: local servers (`llm-local`)
+
+Models on this machine: free, private, and the only rungs the `local-only` policy keeps. Each `<SERVER>_MODEL` is a comma-separated list (one rung per model, tried in order); `<SERVER>_BASE_URL` overrides the default address. Every rung streams. `npx tsx providers/llm-local/src/detect.ts` finds running servers and prints these lines for you. See [guides/local-llm.md](guides/local-llm.md).
+
+| Rung id | Tier | Enabled by | Notes |
+|---|---|---|---|
+| `llm/ollama/<model>` | local | `OLLAMA_MODEL` (`OLLAMA_BASE_URL`, default `http://localhost:11434/v1`; the value with or without `/v1` works) | native `/api/chat` with `num_ctx` sized per request from the prompt and capped by the model maximum from `/api/show`, so long transcripts are never silently truncated; a prompt over the maximum fails with `too-large`. JSON mode, JSON Schema (Ollama 0.5.0 and newer). `OLLAMA_KEEP_ALIVE` (`30m`, `-1`, `0`) sets how long the model stays loaded. Verified live with Ollama 0.40.16, 2026-11-14 |
+| `llm/lmstudio/<model>` | local | `LMSTUDIO_MODEL` (`LMSTUDIO_BASE_URL`, default `http://localhost:1234/v1`; optional `LMSTUDIO_API_KEY`) | JSON and JSON Schema. The context length is fixed when the model is loaded in LM Studio; raise it there for long videos |
+| `llm/llamacpp/<model>` | local | `LLAMACPP_MODEL` (`LLAMACPP_BASE_URL`, default `http://localhost:8080/v1`; optional `LLAMACPP_API_KEY`) | llama.cpp `llama-server`; JSON and JSON Schema; a prompt over its `-c` context fails with `too-large`. Verified live with b12383, 2026-11-14 |
+| `llm/vllm/<model>` | local | `VLLM_MODEL` (`VLLM_BASE_URL`, default `http://localhost:8000/v1`; optional `VLLM_API_KEY`) | JSON and JSON Schema; over `--max-model-len` fails with `too-large` |
+| `llm/jan/<model>` | local | `JAN_MODEL` (`JAN_BASE_URL`, default `http://localhost:1337/v1`; `JAN_API_KEY` when the Jan server has one set) | plain chat |
+| `llm/localai/<model>` | local | `LOCALAI_MODEL` (`LOCALAI_BASE_URL`, default `http://localhost:8080/v1`; optional `LOCALAI_API_KEY`) | JSON mode |
+| `llm/local/<model>` | local | `LOCAL_LLM_BASE_URL` + `LOCAL_LLM_MODEL` (optional `LOCAL_LLM_API_KEY`) | any other OpenAI-compatible server; plain chat |
+
 ## LLMs (`llm-openai-compatible`)
 
 | Rung id | Tier | Enabled by | Free limits and notes |
 |---|---|---|---|
-| `llm/ollama/<model>` | local | `OLLAMA_MODEL` (`OLLAMA_BASE_URL`, default `http://localhost:11434/v1`) | JSON mode |
-| `llm/lmstudio/<model>` | local | `LMSTUDIO_MODEL` (`LMSTUDIO_BASE_URL`, default `http://localhost:1234/v1`) | JSON and JSON Schema |
-| `llm/local/<model>` | local | `LOCAL_LLM_BASE_URL` + `LOCAL_LLM_MODEL` (optional `LOCAL_LLM_API_KEY`) | any OpenAI-compatible server (llama.cpp, vLLM, Jan) |
 | `llm/groq/qwen/qwen3.8-27b` | free | `GROQ_API_KEY` | quota metered per model, so each model is its own rung |
 | `llm/groq/openai/gpt-oss-120b` | free | `GROQ_API_KEY` | |
 | `llm/cerebras/gpt-oss-120b` | free | `CEREBRAS_API_KEY` | JSON Schema |
@@ -113,6 +124,15 @@ Check what answers today: `npm run check:llm` (see [guides/llm.md](guides/llm.md
 | `llm/vertex-anthropic/claude-haiku-5-5` | paid | same as above | Claude on Vertex AI (`rawPredict`), location `VERTEX_ANTHROPIC_LOCATION` (default `global`) |
 
 Model lists: `GEMINI_NATIVE_MODEL`, `ANTHROPIC_MODEL`, `VERTEX_GEMINI_MODEL`, `VERTEX_ANTHROPIC_MODEL` (comma-separated). `ANTHROPIC_BASE_URL` overrides `https://api.anthropic.com`. `VID2CONTEXT_GCE_METADATA=1` reads tokens from the GCE metadata server (Node on Google Cloud only). Verified live on 2026-11-14: only the error paths (invalid keys, and Vertex refusing a project with locked billing); answers, streaming, JSON and caching are not yet verified live. See [guides/anthropic-and-gemini.md](guides/anthropic-and-gemini.md).
+
+## LLMs in the browser (`llm-browser`, browser only)
+
+| Rung id | Tier | Enabled by | Notes |
+|---|---|---|---|
+| `llm/webllm/<model>` | local | `WEBLLM_MODEL` (comma-separated ids from WebLLM's prebuilt list, one rung each) | WebLLM on WebGPU in the page: streaming, 4096-token window. Recommended: `Llama-3.2-1B-Instruct-q4f16_1-MLC` (0.9 GB VRAM), `Qwen2.5-1.5B-Instruct-q4f16_1-MLC` (1.6 GB), `Llama-3.2-3B-Instruct-q4f16_1-MLC` (2.3 GB); `q4f32_1` builds when the GPU lacks `shader-f16`. Ids checked against `@mlc-ai/web-llm` 0.2.88 on 2026-11-14. |
+| `llm/chrome-ai/prompt-api` | local | `CHROME_AI=1` | Chrome's built-in Prompt API (Gemini Nano on device): desktop Chrome 148+ on the web, about 22 GB free disk and a 4 GB GPU or 16 GB RAM. Streaming; context size from the session's `contextWindow`. Refuses Chromium's model-less echo with `no-provider`. |
+
+The web app sets these flags after `detectBrowserAi()`; `browserAiEnv()` turns its result into env. Neither rung advertises `json` (structured output not verified). See [guides/offline-and-browser.md](guides/offline-and-browser.md).
 
 ## Embeddings (`embed`, `embed-transformers`)
 
@@ -297,6 +317,25 @@ The job engine from `@vid2context/jobs` (`POST /jobs`, `GET /jobs/:id`, `GET /jo
 | `VID2CONTEXT_CLOUD_TASKS_RUN_URL` | `@vid2context/jobs` | public https base of the API including `/api/v1`; tasks POST to `<url>/jobs/<id>/run` |
 | `VID2CONTEXT_CLOUD_TASKS_SERVICE_ACCOUNT` | `@vid2context/jobs` | service account Cloud Tasks signs the OIDC token as; the run endpoint requires it |
 | `VID2CONTEXT_CLOUD_TASKS_AUDIENCE` | `@vid2context/jobs` | OIDC audience the run endpoint expects, default the run URL |
+
+## Remote MCP server
+
+The MCP tools over Streamable HTTP at `/mcp`, for ChatGPT and Claude.ai connectors, from `@vid2context/mcp-http`. See [guides/remote-mcp.md](guides/remote-mcp.md) and [guides/cloudflare-tunnel.md](guides/cloudflare-tunnel.md).
+
+| Env var | Used by | Notes |
+|---|---|---|
+| `VID2CONTEXT_MCP_TOKENS` | `@vid2context/mcp-http` | static bearer tokens, comma-separated, compared by SHA-256 in constant time. Without these and without `VID2CONTEXT_OWNER_PASSWORD_HASH`, `/mcp` refuses every request |
+| `VID2CONTEXT_OWNER_PASSWORD_HASH` | `@vid2context/mcp-http` | turns on the OAuth 2.1 server (dynamic registration, Client ID Metadata Documents, PKCE S256, rotating refresh tokens). Format `scrypt:<log2 N>:<r>:<p>:<salt>:<hash>`, made by `vid2context-mcp-http hash-password` |
+| `VID2CONTEXT_MCP_PUBLIC_URL` | `@vid2context/mcp-http` | public origin (`https://mcp.vid2context.com`). The OAuth issuer, the resource tokens are bound to (`<origin>/mcp`) and the server card URL. Default: the request's origin |
+| `VID2CONTEXT_CORS_ORIGINS` | `@vid2context/mcp-http`, HTTP API | browser origins allowed on `/mcp` and `/oauth/{register,token,revoke}`. An `Origin` that is not listed gets 403 on `/mcp` |
+| `VID2CONTEXT_MCP_ALLOWED_HOSTS` | `@vid2context/mcp-http` | extra Host values for the DNS-rebinding check the bin applies when it listens on loopback (loopback names and the public host always pass) |
+| `VID2CONTEXT_MCP_RATE_LIMIT` | `@vid2context/mcp-http` | requests per minute per token, default `120`, `0` off. Answers 429 with `Retry-After` |
+| `VID2CONTEXT_MCP_MODE`, `VID2CONTEXT_MCP_SESSION_IDLE_SEC` | `@vid2context/mcp-http` | `session` (default on Node) or `stateless` (default on Workers). Idle sessions close after 1800 s by default |
+| `VID2CONTEXT_OAUTH_ACCESS_TTL_SEC`, `VID2CONTEXT_OAUTH_REFRESH_TTL_SEC` | `@vid2context/mcp-http` | token lifetimes, default 3600 and 2592000 (30 days) |
+| `VID2CONTEXT_OAUTH_ALLOWED_REDIRECTS` | `@vid2context/mcp-http` | redirect URI prefixes clients may use. Unset: any https URI, or http on localhost |
+| `VID2CONTEXT_OPENAI_APPS_CHALLENGE` | `@vid2context/mcp-http` | OpenAI app directory domain verification token, served at `/.well-known/openai-apps-challenge` |
+
+OAuth clients, codes and tokens are kept in the storage backend when it implements `KvStore`, under `auth:oauth:` keys. Otherwise they live in process memory, and a restart signs every connector out.
 
 ## Planned (see ROADMAP.md)
 

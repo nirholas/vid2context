@@ -455,6 +455,8 @@ Events, in order (`event:` name, `data:` one JSON object):
 
 The answer cites sources as `[n]`, where `n` matches `meta.sources[].n`. `Citation` is the type in `docs/contracts/http-api.md`. Clients render `[n]` as a chip "Title @ m:ss" linking to the source `url` (a timestamp link).
 
+Additive fields from prompt 34 (`packages/ask`): `meta.promptTokens` (estimated tokens of the prompt sent), `meta.restart` (a repeat `meta` after a rung failed mid-reasoning, from core's `chatStream`), `done.unverified` (cited numbers that matched no source; they are removed from the deltas and `done.text`), and `n` on each `Citation` (the `[n]` it backs).
+
 ## 4. MCP tools
 
 `docs/contracts/mcp-tools.md` is the source of truth for tool names, inputs, prompts, resources and ownership: only prompt 44 edits `packages/mcp`; packages that back tools export a `register<Name>Tools(server, deps)` function from their own `src/mcp.ts`; prompt 45 (`packages/mcp-http`) serves the same `createServer()` over Streamable HTTP and defines no tools of its own. One addition, owned by prompt 44, added to the contract when built:
