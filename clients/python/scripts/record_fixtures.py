@@ -48,7 +48,7 @@ CALLS: list[tuple[str, str, dict[str, str], int]] = [
     (
         "transcript-jNQXAC9IVRw-timestamps",
         "/api/v1/transcript",
-        {"url": "https://youtu.be/jNQXAC9IVRw", "format": "text", "timestamps": "1"},
+        {"url": "https://youtu.be/jNQXAC9IVRw", "timestamps": "1"},
         200,
     ),
     ("transcript-missing-url", "/api/v1/transcript", {}, 400),
@@ -107,6 +107,8 @@ def wait_for(base: str, proc: subprocess.Popen[bytes], seconds: float = 60) -> N
 
 
 def main() -> None:
+    # Turn SIGTERM (from `timeout` or a killed shell) into an exit so the server below is always stopped.
+    signal.signal(signal.SIGTERM, lambda *_: sys.exit(143))
     args = sys.argv[1:]
     minimal = "--minimal" in args
     only = {a for a in args if a != "--minimal"}

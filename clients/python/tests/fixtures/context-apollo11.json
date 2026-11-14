@@ -1,0 +1,15 @@
+{
+  "recorded": "2026-11-14",
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/context",
+    "query": {
+      "url": "tests/fixtures/media/apollo11-small-step.mp3"
+    }
+  },
+  "status": 200,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": "{\"metadata\":{\"ref\":{\"input\":\"tests/fixtures/media/apollo11-small-step.mp3\",\"platform\":\"file\",\"kind\":\"video\",\"id\":\"file:38010fa474cd134a25d80936cf1877b2\",\"nativeId\":\"38010fa474cd134a25d80936cf1877b2\",\"url\":\"file:///home/user/vid2context/vid2context/tests/fixtures/media/apollo11-small-step.mp3\"},\"title\":\"apollo11-small-step\",\"chapters\":[],\"extra\":{\"path\":\"/home/user/vid2context/vid2context/tests/fixtures/media/apollo11-small-step.mp3\",\"sizeBytes\":145412,\"modifiedAt\":\"2026-11-14T15:55:57.360Z\"}},\"transcript\":{\"ref\":{\"input\":\"tests/fixtures/media/apollo11-small-step.mp3\",\"platform\":\"file\",\"kind\":\"video\",\"id\":\"file:38010fa474cd134a25d80936cf1877b2\",\"nativeId\":\"38010fa474cd134a25d80936cf1877b2\",\"url\":\"file:///home/user/vid2context/vid2context/tests/fixtures/media/apollo11-small-step.mp3\"},\"language\":\"en\",\"origin\":\"stt\",\"producer\":\"stt/ovh/whisper-large-v3-turbo\",\"model\":\"whisper-large-v3-turbo\",\"segments\":[{\"startSec\":3.5,\"endSec\":5.16,\"text\":\"I'm going to step off the limb now.\",\"words\":[{\"word\":\"I'm\",\"startSec\":3.5,\"endSec\":3.94},{\"word\":\"going\",\"startSec\":3.94,\"endSec\":4.04},{\"word\":\"to\",\"startSec\":4.04,\"endSec\":4.14},{\"word\":\"step\",\"startSec\":4.14,\"endSec\":4.36},{\"word\":\"off\",\"startSec\":4.36,\"endSec\":4.56},{\"word\":\"the\",\"startSec\":4.56,\"endSec\":4.72},{\"word\":\"limb\",\"startSec\":4.72,\"endSec\":4.94},{\"word\":\"now.\",\"startSec\":4.94,\"endSec\":5.16}]},{\"startSec\":14.98,\"endSec\":23.04,\"text\":\"That's one small step for man, one giant leap for mankind.\",\"words\":[{\"word\":\"That's\",\"startSec\":14.98,\"endSec\":15.7},{\"word\":\"one\",\"startSec\":15.7,\"endSec\":15.96},{\"word\":\"small\",\"startSec\":15.96,\"endSec\":16.48},{\"word\":\"step\",\"startSec\":16.48,\"endSec\":16.92},{\"word\":\"for\",\"startSec\":16.92,\"endSec\":17.26},{\"word\":\"man,\",\"startSec\":17.26,\"endSec\":17.62},{\"word\":\"one\",\"startSec\":17.84,\"endSec\":21},{\"word\":\"giant\",\"startSec\":21,\"endSec\":22.08},{\"word\":\"leap\",\"startSec\":22.08,\"endSec\":22.42},{\"word\":\"for\",\"startSec\":22.42,\"endSec\":22.7},{\"word\":\"mankind.\",\"startSec\":22.7,\"endSec\":23.04}]}],\"createdAt\":\"2026-11-14T17:28:07.283Z\"},\"attempts\":[{\"id\":\"media-file\",\"stage\":\"resolve\",\"outcome\":\"ok\",\"detail\":\"file:38010fa474cd134a25d80936cf1877b2\"},{\"id\":\"media-file\",\"stage\":\"metadata\",\"outcome\":\"ok\",\"ms\":0},{\"id\":\"media-file\",\"stage\":\"audio\",\"outcome\":\"ok\",\"ms\":1},{\"id\":\"stt/ovh/whisper-large-v3-turbo\",\"stage\":\"stt\",\"outcome\":\"ok\",\"ms\":1525}]}"
+}

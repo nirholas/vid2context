@@ -102,6 +102,23 @@ describe('VideoContextLoader', () => {
     }
   });
 
+  it('points file media without a deep-link form at the file itself', async () => {
+    const docs = await new VideoContextLoader('tests/fixtures/media/apollo11-small-step.mp3', {
+      fetch: server(),
+      chunking: 'window',
+      windowSec: 10,
+    }).load();
+    expect(docs.map((d) => d.pageContent)).toEqual([
+      "I'm going to step off the limb now.",
+      "That's one small step for man, one giant leap for mankind.",
+    ]);
+    const meta = docs[1]?.metadata;
+    expect(meta).toMatchObject({ platform: 'file', transcript_origin: 'stt', start_sec: 14.98, end_sec: 23.04 });
+    expect(meta?.url).toBe(meta?.source);
+    expect(String(meta?.url).startsWith('file://')).toBe(true);
+    expect(meta && 'channel' in meta).toBe(false);
+  });
+
   it('lazyLoad fetches one video at a time and sends the API key', async () => {
     const fetch = server();
     const it = new VideoContextLoader([ZOO, GWAGON], {

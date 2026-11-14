@@ -56,7 +56,9 @@ def _transcript_query(
     url: str, format: str, timestamps: bool, mode: Optional[TranscriptMode], lang: Optional[str]
 ) -> dict[str, str]:
     q = _video_query(url, mode, lang)
-    q["format"] = format
+    # The server's default format is text (docs/contracts/http-api.md), so it is only sent when different.
+    if format != "text":
+        q["format"] = format
     if timestamps:
         q["timestamps"] = "1"
     return q

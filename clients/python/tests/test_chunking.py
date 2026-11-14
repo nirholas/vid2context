@@ -15,6 +15,7 @@ def _ctx(name: str) -> VideoContext:
 
 ZOO = _ctx("context-jNQXAC9IVRw")
 GWAGON = _ctx("context-cCPsdFdlshc")
+APOLLO = _ctx("context-apollo11")
 
 
 def test_chapters_put_each_segment_in_the_chapter_it_starts_in():
@@ -102,3 +103,17 @@ def test_timestamp_url_matches_core():
     ref = ZOO.metadata.ref
     assert timestamp_url(ref, 75.9) == "https://www.youtube.com/watch?v=jNQXAC9IVRw&t=75s"
     assert timestamp_url(ref, -3) == "https://www.youtube.com/watch?v=jNQXAC9IVRw&t=0s"
+
+
+def test_media_without_a_deep_link_form_points_at_the_file():
+    chunks = chunk_context(APOLLO, "window", window_sec=10)
+    assert [c.text for c in chunks] == [
+        "I'm going to step off the limb now.",
+        "That's one small step for man, one giant leap for mankind.",
+    ]
+    meta = chunks[1].metadata
+    assert meta["platform"] == "file" and meta["transcript_origin"] == "stt"
+    assert meta["start_sec"] == 14.98 and meta["end_sec"] == 23.04
+    # A file:// link has no timestamp form, so url falls back to the source.
+    assert meta["url"] == meta["source"] and meta["url"].startswith("file://")
+    assert "channel" not in meta

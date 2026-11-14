@@ -66,7 +66,7 @@ def test_error_body_without_attempts_or_hint():
 def test_a_body_that_is_not_the_contract():
     # What a client sees when the base URL points at something that is not vid2context:
     # here the server's own transcript text served where an error body was expected.
-    rec = load("transcript-jNQXAC9IVRw-text")
+    rec = load("transcript-apollo11-text")
     err = error_from_body(502, rec["body"])
     assert err.code == "upstream" and err.status == 502
     assert err.hint is not None and "/api/v1/health" in err.hint

@@ -9,6 +9,7 @@ from vid2context import AsyncClient, Client, Vid2ContextError
 
 ZOO = "https://youtu.be/jNQXAC9IVRw"
 GWAGON = "https://www.youtube.com/watch?v=cCPsdFdlshc"
+APOLLO = "tests/fixtures/media/apollo11-small-step.mp3"
 
 
 def test_health_lists_formats_and_providers(transport, replay):
@@ -54,6 +55,35 @@ def test_context_of_a_long_auto_captioned_video(transport):
     assert ctx.transcript.origin == "auto-captions"
     assert len(ctx.transcript.segments) == 521
     assert ctx.metadata.description is not None and "[email redacted]" in ctx.metadata.description
+
+
+def test_transcript_in_the_server_format(transport, replay):
+    with Client(transport=transport) as v2c:
+        text = v2c.transcript(APOLLO)
+        stamped = v2c.transcript(APOLLO, timestamps=True)
+    # The body exactly as the server sent it, trailing newline included.
+    assert text == "I'm going to step off the limb now. That's one small step for man, one giant leap for mankind.\n"
+    assert stamped.splitlines() == [
+        "[0:03] I'm going to step off the limb now.",
+        "[0:14] That's one small step for man, one giant leap for mankind.",
+    ]
+    assert dict(replay.requests[0].url.params) == {"url": APOLLO}
+    assert dict(replay.requests[1].url.params) == {"url": APOLLO, "timestamps": "1"}
+
+
+def test_context_of_a_local_file_transcribed_by_speech_to_text(transport):
+    with Client(transport=transport) as v2c:
+        ctx = v2c.context(APOLLO)
+    assert ctx.metadata.ref.platform == "file"
+    assert ctx.metadata.title == "apollo11-small-step"
+    t = ctx.transcript
+    assert (t.origin, t.producer, t.model) == ("stt", "stt/ovh/whisper-large-v3-turbo", "whisper-large-v3-turbo")
+    assert [s.text for s in t.segments] == [
+        "I'm going to step off the limb now.",
+        "That's one small step for man, one giant leap for mankind.",
+    ]
+    # Fields this client does not model yet (word timings) stay available on the raw JSON.
+    assert ctx.raw["transcript"]["segments"][0]["words"][0]["word"] == "I'm"
 
 
 def test_mode_and_lang_are_sent_as_query_parameters(make_replay):
