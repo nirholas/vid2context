@@ -220,10 +220,18 @@ export function findDuplicates(contexts: VideoContext[], options: DedupeOptions 
   const uf = new UnionFind(docs.length);
   const reuploadEdges = new Map<number, number[]>();
   const evaluated: Pair[] = [];
+  // Cluster pairs already known to be clip and source: once one copy of a clip aligns with one copy of its source,
+  // the other copies on either side add nothing (member evidence is computed against the original afterwards).
+  // Keys use the roots at the time; a later union only makes an old key miss, never skip a pair wrongly.
+  const clipLinked = new Set<number>();
+  const clusterKey = (u: number, v: number) => Math.min(u, v) * docs.length + Math.max(u, v);
   for (const [x, y] of candidates) {
-    if (uf.find(x) === uf.find(y)) continue;
+    const rx = uf.find(x);
+    const ry = uf.find(y);
+    if (rx === ry || clipLinked.has(clusterKey(rx, ry))) continue;
     const p = evaluate(x, y);
     evaluated.push(p);
+    if (p.kind === 'clip') clipLinked.add(clusterKey(rx, ry));
     if (p.kind !== 'reupload') continue;
     uf.union(p.a, p.b);
     for (const [u, v] of [
