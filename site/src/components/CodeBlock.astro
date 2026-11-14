@@ -1,0 +1,63 @@
+---
+/** A highlighted code block with a copy button. */
+import { highlight } from '../lib/markdown.ts';
+import CopyButton from './islands/CopyButton.tsx';
+
+interface Props {
+  code: string;
+  lang?: string;
+  /** Small label above the code, such as a file name. */
+  label?: string;
+  copy?: boolean;
+}
+const { code, lang = 'bash', label, copy = true } = Astro.props;
+const html = highlight(code, lang);
+---
+
+<div class="code">
+  {
+    (label || copy) && (
+      <div class="code-bar">
+        <span class="code-label">{label ?? ''}</span>
+        {copy && <CopyButton client:visible text={code} />}
+      </div>
+    )
+  }
+  <Fragment set:html={html} />
+</div>
+
+<style is:global>
+  .code-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    min-height: 2.5rem;
+    padding: 0.25rem 0.5rem 0.25rem 1rem;
+    border-bottom: 1px solid var(--v2c-border);
+    background: var(--v2c-surface-2);
+  }
+  .code-label {
+    color: var(--v2c-muted);
+    font-family: var(--v2c-font-mono);
+    font-size: 0.75rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .copy-btn {
+    flex: none;
+    min-height: 2rem;
+    min-width: 4.5rem;
+    padding: 0.25rem 0.65rem;
+    border: 1px solid var(--v2c-border-strong);
+    border-radius: var(--v2c-radius-sm);
+    background: var(--v2c-surface);
+    color: var(--v2c-text);
+    font-size: 0.75rem;
+    cursor: pointer;
+  }
+  .copy-btn:hover {
+    border-color: var(--v2c-muted);
+  }
+</style>

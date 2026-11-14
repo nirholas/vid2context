@@ -44,6 +44,9 @@
   --site-tier-keyless-text: #c084fc;
   --site-tier-paid-text: var(--v2c-tier-paid);
   --site-glow: rgb(59 130 246 / 0.18);
+  --site-success-text: var(--v2c-success);
+  --site-danger-text: #f87171;
+  --site-link: #60a5fa;
 }
 :root[data-theme="light"] {
   --site-btn-fg: #ffffff;
@@ -53,6 +56,9 @@
   --site-tier-keyless-text: #7e22ce;
   --site-tier-paid-text: #b45309;
   --site-glow: rgb(37 99 235 / 0.1);
+  --site-success-text: #15803d;
+  --site-danger-text: #b91c1c;
+  --site-link: var(--v2c-accent);
 }
 @media (prefers-color-scheme: light) {
   :root[data-theme="system"] {
@@ -63,6 +69,9 @@
     --site-tier-keyless-text: #7e22ce;
     --site-tier-paid-text: #b45309;
     --site-glow: rgb(37 99 235 / 0.1);
+    --site-success-text: #15803d;
+    --site-danger-text: #b91c1c;
+    --site-link: var(--v2c-accent);
   }
 }
 
@@ -327,18 +336,10 @@
   color: var(--v2c-text);
 }
 .prose a {
-  color: var(--v2c-accent);
+  color: var(--site-link);
   text-decoration: underline;
   text-underline-offset: 3px;
   text-decoration-thickness: 1px;
-}
-:root:not([data-theme="light"]) .prose a {
-  color: #60a5fa;
-}
-@media (prefers-color-scheme: light) {
-  :root[data-theme="system"] .prose a {
-    color: var(--v2c-accent);
-  }
 }
 .prose ul,
 .prose ol {

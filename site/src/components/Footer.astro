@@ -2,6 +2,12 @@
 import { data, REPO_URL } from '../data/site.ts';
 import { withBase } from '../lib/base.ts';
 import Logo from './Logo.astro';
+
+interface Props {
+  /** This page's Markdown twin, when it has one. */
+  twinUrl?: string;
+}
+const { twinUrl } = Astro.props;
 ---
 
 <footer class="footer">
@@ -34,7 +40,7 @@ import Logo from './Logo.astro';
         <ul>
           <li><a href={withBase('/llms.txt')}>llms.txt</a></li>
           <li><a href={withBase('/llms-full.txt')}>llms-full.txt</a></li>
-          <li><a href={withBase('/index.md')}>This page as Markdown</a></li>
+          {twinUrl && <li><a href={twinUrl}>This page as Markdown</a></li>}
           <li><a href={withBase('/sitemap.xml')}>Sitemap</a></li>
         </ul>
       </div>

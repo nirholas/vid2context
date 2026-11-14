@@ -1,0 +1,214 @@
+---
+import { hero } from '../../data/landing.ts';
+import { data, REPO_URL } from '../../data/site.ts';
+import { withBase } from '../../lib/base.ts';
+import HeroInput from '../islands/HeroInput.tsx';
+
+const app = withBase('/app/');
+---
+
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero-glow" aria-hidden="true"></div>
+  <div class="wrap hero-inner">
+    <a class="hero-pill" href={REPO_URL} rel="noopener">
+      <span class="hero-pill-dot" aria-hidden="true"></span>
+      Open source, v{data.meta.softwareVersion}, {data.meta.license}
+    </a>
+    <h1 id="hero-title">
+      Turn any video into <span class="gradient-text">context</span> for AI agents
+    </h1>
+    <p class="hero-sub">{hero.sub}</p>
+    <HeroInput client:load action={app} placeholder={hero.placeholder} button={hero.button} />
+    <div class="hero-try">
+      <span class="hero-try-label">Try:</span>
+      <ul>
+        {
+          hero.chips.map((c) => (
+            <li>
+              <a class="chip" href={`${app}?url=${encodeURIComponent(c.url)}`}>
+                {c.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+    <ul class="hero-badges" aria-label="Highlights">
+      {
+        hero.badges.map((b) => (
+          <li>
+            <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+              <path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="m5 12 4.5 4.5L19 7" />
+            </svg>
+            {b}
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style is:global>
+  .hero {
+    position: relative;
+    overflow: hidden;
+    padding-block: clamp(3.5rem, 9vw, 7rem) 2rem;
+  }
+  .hero-glow {
+    position: absolute;
+    inset: -20% -10% auto;
+    height: 38rem;
+    background:
+      radial-gradient(40rem 22rem at 50% 0%, var(--site-glow), transparent 70%),
+      radial-gradient(22rem 14rem at 70% 10%, color-mix(in srgb, var(--v2c-accent-2) 14%, transparent), transparent 70%);
+    pointer-events: none;
+  }
+  .hero-inner {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .hero-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2rem;
+    padding: 0.3rem 0.85rem;
+    border: 1px solid var(--v2c-border);
+    border-radius: var(--v2c-radius-pill);
+    background: var(--v2c-surface);
+    color: var(--v2c-muted);
+    font-size: 0.8125rem;
+    text-decoration: none;
+  }
+  .hero-pill:hover {
+    color: var(--v2c-text);
+  }
+  .hero-pill-dot {
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 50%;
+    background: var(--v2c-success);
+  }
+  .hero h1 {
+    max-width: 15ch;
+    margin-top: 1.5rem;
+    font-size: clamp(2.4rem, 7.2vw, 4.75rem);
+    line-height: 1.02;
+    letter-spacing: -0.045em;
+    font-weight: 700;
+  }
+  .hero-sub {
+    max-width: 40rem;
+    margin-top: 1.4rem;
+    color: var(--v2c-muted);
+    font-size: clamp(1.0625rem, 2vw, 1.25rem);
+    line-height: 1.55;
+  }
+  .hero-form {
+    width: 100%;
+    max-width: 44rem;
+    margin-top: 2.25rem;
+  }
+  .hero-box {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.4rem 0.4rem 1.1rem;
+    border: 1px solid var(--v2c-border-strong);
+    border-radius: var(--v2c-radius-pill);
+    background: var(--v2c-surface);
+    box-shadow: var(--v2c-shadow);
+    transition:
+      border-color 0.15s,
+      box-shadow 0.15s;
+  }
+  .hero-box:focus-within {
+    border-color: var(--v2c-accent);
+    box-shadow:
+      0 0 0 3px color-mix(in srgb, var(--v2c-accent) 30%, transparent),
+      var(--v2c-shadow);
+  }
+  .hero-icon {
+    flex: none;
+    color: var(--v2c-muted);
+  }
+  .hero-box input {
+    flex: 1;
+    min-width: 0;
+    min-height: 2.75rem;
+    border: 0;
+    background: transparent;
+    color: var(--v2c-text);
+    font-size: 1.0625rem;
+    outline: none;
+  }
+  .hero-box input::placeholder {
+    color: var(--v2c-muted);
+  }
+  .hero-submit {
+    flex: none;
+    min-height: 3rem;
+    padding-inline: 1.35rem;
+    font-size: 1rem;
+  }
+  .hero-error {
+    min-height: 1.5rem;
+    margin-top: 0.5rem;
+    color: var(--site-danger-text);
+    font-size: 0.875rem;
+  }
+  .hero-try {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+  }
+  .hero-try ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+  .hero-try-label {
+    color: var(--v2c-muted);
+    font-size: 0.875rem;
+  }
+  .hero-try .chip {
+    text-decoration: none;
+  }
+  .hero-badges {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem 1.5rem;
+    margin-top: 2rem;
+    color: var(--v2c-muted);
+    font-size: 0.875rem;
+  }
+  .hero-badges li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .hero-badges svg {
+    color: var(--v2c-success);
+  }
+  @media (max-width: 520px) {
+    .hero-box {
+      flex-wrap: wrap;
+      padding: 0.5rem;
+      border-radius: var(--v2c-radius-lg);
+    }
+    .hero-icon {
+      margin-left: 0.5rem;
+    }
+    .hero-submit {
+      width: 100%;
+    }
+  }
+</style>

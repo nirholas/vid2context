@@ -1,0 +1,307 @@
+---
+import { data, formatBytes } from '../../data/site.ts';
+import { withBase } from '../../lib/base.ts';
+import { highlight } from '../../lib/markdown.ts';
+import DemoViewer, { type ViewerFile } from '../islands/DemoViewer.tsx';
+import LiveDemo from '../islands/LiveDemo.tsx';
+import SectionHead from './SectionHead.astro';
+
+const d = data.demo;
+const FIRST = ['context.md', 'transcript.srt', 'metadata.json'];
+const LANG: Record<string, string> = { md: 'markdown', json: 'json', srt: 'text', vtt: 'text', txt: 'text' };
+const ordered = [...d.files].sort((a, b) => {
+  const ia = FIRST.indexOf(a.path);
+  const ib = FIRST.indexOf(b.path);
+  return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
+});
+const files: ViewerFile[] = ordered.map((f) => ({
+  path: f.path,
+  size: formatBytes(f.bytes),
+  html: highlight(f.text, LANG[f.path.split('.').pop() ?? ''] ?? 'text'),
+}));
+const minutes = `${Math.floor(d.durationSec / 60)}:${String(Math.round(d.durationSec % 60)).padStart(2, '0')}`;
+---
+
+<section id="demo" class="section" aria-labelledby="demo-title">
+  <div class="wrap">
+    <SectionHead
+      id="demo"
+      eyebrow="A real result"
+      title="One link in, every format out"
+      sub={`This is the actual bundle vid2context produces for "${d.title}", the first video on YouTube. Every file below was rendered from a recorded run when this site was built.`}
+    />
+    <div class="demo-frame card">
+      <div class="demo-head">
+        <div class="demo-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+        <p class="demo-video">
+          <a href={d.url} rel="noopener">{d.title}</a>
+          <span>{d.channel}</span>
+          <span>{minutes}</span>
+          <span>{d.origin.replace('-', ' ')}</span>
+        </p>
+      </div>
+      <DemoViewer client:visible files={files} initial="context.md" zipName={d.zipName} zipSize={formatBytes(d.zipBytes)} />
+      <div class="demo-attempts">
+        <p>How it was made</p>
+        <ol>
+          {
+            d.attempts.map((a) => (
+              <li>
+                <span class="font-mono">{a.stage}</span>
+                <span class={a.outcome === 'ok' ? 'ok' : 'skip'}>{a.outcome}</span>
+                <span class="font-mono">{a.id}</span>
+                {a.detail && <span class="demo-detail">{a.detail}</span>}
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </div>
+
+    <div id="try" class="try card">
+      <div class="try-text">
+        <h3>Try the live API</h3>
+        <p>
+          This box calls <code>{withBase('/api/v1/transcript')}</code> on this site. YouTube often blocks requests from cloud servers, so a video
+          can fail here and still work on your own machine. When it fails, you see the error, the hint and every attempt.
+        </p>
+      </div>
+      <LiveDemo client:visible endpoint={withBase('/api/v1/transcript')} initialUrl={d.url} />
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  .demo-frame {
+    overflow: hidden;
+    box-shadow: var(--v2c-shadow);
+  }
+  .demo-head {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--v2c-border);
+    background: var(--v2c-surface-2);
+  }
+  .demo-dots {
+    display: flex;
+    gap: 0.4rem;
+  }
+  .demo-dots i {
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 50%;
+    background: var(--v2c-border-strong);
+  }
+  .demo-video {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.9rem;
+    min-width: 0;
+    color: var(--v2c-muted);
+    font-size: 0.8125rem;
+  }
+  .demo-video a {
+    color: var(--v2c-text);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .demo-video a:hover {
+    text-decoration: underline;
+  }
+  .viewer {
+    display: grid;
+    grid-template-columns: 1fr;
+    min-height: 26rem;
+  }
+  @media (min-width: 800px) {
+    .viewer {
+      grid-template-columns: 15rem 1fr;
+    }
+  }
+  .viewer-files {
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--v2c-border);
+  }
+  @media (min-width: 800px) {
+    .viewer-files {
+      border-bottom: 0;
+      border-right: 1px solid var(--v2c-border);
+    }
+  }
+  .viewer-zip {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.25rem 0.5rem 0.6rem;
+    color: var(--v2c-muted);
+    font-size: 0.75rem;
+  }
+  .viewer-files [role='tablist'] {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    max-height: 10rem;
+    overflow-y: auto;
+  }
+  @media (min-width: 800px) {
+    .viewer-files [role='tablist'] {
+      max-height: none;
+    }
+  }
+  .viewer-tab {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    width: 100%;
+    min-height: 2.25rem;
+    padding: 0.35rem 0.6rem;
+    border-radius: var(--v2c-radius-sm);
+    color: var(--v2c-muted);
+    font-size: 0.8125rem;
+    text-align: left;
+    cursor: pointer;
+  }
+  .viewer-tab:hover {
+    color: var(--v2c-text);
+    background: var(--v2c-surface-2);
+  }
+  .viewer-tab[aria-selected='true'] {
+    color: var(--v2c-text);
+    background: var(--v2c-surface-3);
+  }
+  .viewer-size {
+    color: var(--v2c-muted);
+    font-size: 0.75rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .viewer-panel {
+    min-width: 0;
+    max-height: 30rem;
+    overflow: auto;
+  }
+  .viewer-panel pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .demo-attempts {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem 1.25rem;
+    padding: 0.85rem 1rem;
+    border-top: 1px solid var(--v2c-border);
+    background: var(--v2c-surface-2);
+    font-size: 0.8125rem;
+  }
+  .demo-attempts > p {
+    color: var(--v2c-muted);
+  }
+  .demo-attempts ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.25rem;
+  }
+  .demo-attempts li {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .demo-attempts .ok {
+    color: var(--site-success-text);
+  }
+  .demo-detail {
+    color: var(--v2c-muted);
+  }
+  .try {
+    display: grid;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+    padding: clamp(1.25rem, 3vw, 2rem);
+  }
+  @media (min-width: 900px) {
+    .try {
+      grid-template-columns: 1fr 1.6fr;
+      align-items: start;
+    }
+  }
+  .try h3 {
+    font-size: 1.25rem;
+    font-weight: 650;
+  }
+  .try-text p {
+    margin-top: 0.6rem;
+    color: var(--v2c-muted);
+    font-size: 0.9375rem;
+  }
+  .try code {
+    font-size: 0.85em;
+    color: var(--v2c-text);
+  }
+  .live-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+  .live-input {
+    flex: 1 1 16rem;
+    min-width: 0;
+    min-height: 2.75rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--v2c-border-strong);
+    border-radius: var(--v2c-radius-pill);
+    background: var(--v2c-bg);
+    color: var(--v2c-text);
+    font-family: var(--v2c-font-mono);
+    font-size: 0.875rem;
+  }
+  .live-opts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    margin-top: 0.85rem;
+    color: var(--v2c-muted);
+    font-size: 0.875rem;
+  }
+  .live-opts label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 2rem;
+  }
+  .live-opts select {
+    min-height: 2rem;
+    padding: 0.15rem 0.5rem;
+    border: 1px solid var(--v2c-border-strong);
+    border-radius: var(--v2c-radius-sm);
+    background: var(--v2c-bg);
+    color: var(--v2c-text);
+  }
+  .live-out:not(:empty) {
+    margin-top: 1rem;
+  }
+  .live-out pre {
+    max-height: 22rem;
+    overflow: auto;
+    margin-top: 0.5rem;
+    padding: 1rem;
+    border: 1px solid var(--v2c-border);
+    border-radius: var(--v2c-radius);
+    background: var(--v2c-bg);
+    font-size: 0.8125rem;
+    line-height: 1.65;
+    white-space: pre-wrap;
+  }
+  .live-msg.ok {
+    color: var(--site-success-text);
+  }
+  .live-msg.err {
+    color: var(--site-danger-text);
+  }
+  .live-hint {
+    margin-top: 0.25rem;
+    color: var(--v2c-muted);
+    font-size: 0.875rem;
+  }
+</style>
