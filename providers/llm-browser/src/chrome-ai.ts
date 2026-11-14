@@ -48,6 +48,28 @@ export function newText(sofar: string, chunk: string): string {
   return sofar && chunk.startsWith(sofar) ? chunk.slice(sofar.length) : chunk;
 }
 
+/**
+ * Chromium builds (not Chrome) expose the Prompt API without a model: sessions
+ * open, then every answer is this notice followed by the prompt echoed back.
+ * Observed in headless Chromium 159 on 2026-11-14.
+ */
+export const CHROMIUM_ECHO_NOTICE = 'On-device model is not available in Chromium';
+
+/** True while `text` could still turn out to be the Chromium echo notice. */
+function mayBeEcho(text: string): boolean {
+  return text.length < CHROMIUM_ECHO_NOTICE.length && CHROMIUM_ECHO_NOTICE.startsWith(text);
+}
+
+function echoError(): Vid2ContextError {
+  return new Vid2ContextError(
+    'no-provider',
+    'chrome-ai: this browser has the Prompt API but no on-device model (Chromium echoes the prompt)',
+    {
+      hint: 'Built-in AI needs Google Chrome, not Chromium. Pick another LLM.',
+    },
+  );
+}
+
 async function openSession(req: ChatRequest, initialPrompts: ChatMessage[], ctx: Ctx): Promise<LanguageModelSession> {
   const lm = languageModelGlobal();
   if (!lm) {
@@ -113,6 +135,8 @@ export function chromeAiRung(): StreamingLlmRung {
       try {
         const reader = session.promptStreaming(input, { signal: ctx.signal }).getReader();
         let text = '';
+        // Hold the first characters back until they cannot be the Chromium echo notice.
+        let held = true;
         try {
           for (;;) {
             const { done, value } = await reader.read();
@@ -120,7 +144,18 @@ export function chromeAiRung(): StreamingLlmRung {
             const delta = newText(text, String(value));
             if (!delta) continue;
             text += delta;
+            if (held) {
+              if (mayBeEcho(text)) continue;
+              if (text.startsWith(CHROMIUM_ECHO_NOTICE)) throw echoError();
+              held = false;
+              yield { type: 'delta', text };
+              continue;
+            }
             yield { type: 'delta', text: delta };
+          }
+          if (held && text) {
+            if (text.startsWith(CHROMIUM_ECHO_NOTICE)) throw echoError();
+            yield { type: 'delta', text };
           }
         } catch (err) {
           const e = err as Error & { contextWindow?: number; requested?: number };

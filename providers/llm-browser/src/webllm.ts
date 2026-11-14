@@ -26,8 +26,10 @@ import { emitProgress } from './progress.ts';
 const F16 = ['Llama-3.2-1B-Instruct-q4f16_1-MLC', 'Qwen2.5-1.5B-Instruct-q4f16_1-MLC', 'Llama-3.2-3B-Instruct-q4f16_1-MLC'];
 const F32 = ['Llama-3.2-1B-Instruct-q4f32_1-MLC', 'Qwen2.5-1.5B-Instruct-q4f32_1-MLC', 'Llama-3.2-3B-Instruct-q4f32_1-MLC'];
 
-/** The smallest prebuilt instruct model, used by the live browser test. */
-export const SMALLEST_WEBLLM_MODEL = 'SmolLM2-360M-Instruct-q4f16_1-MLC';
+/** The smallest prebuilt instruct model (about 0.4 GB with f16 shaders, 0.6 GB without), used by the live browser test. */
+export function smallestWebLlmModel(shaderF16: boolean): string {
+  return shaderF16 ? 'SmolLM2-360M-Instruct-q4f16_1-MLC' : 'SmolLM2-360M-Instruct-q4f32_1-MLC';
+}
 /** Every prebuilt model in this list has a 4096-token context window. */
 export const WEBLLM_CONTEXT_TOKENS = 4096;
 
