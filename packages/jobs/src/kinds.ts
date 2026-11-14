@@ -29,6 +29,11 @@ export class JobKinds {
     this.entries.set(kind, { handler: handler as JobHandler, maxAttempts, backoff: { ...DEFAULT_BACKOFF, ...opts.backoff } });
   }
 
+  /** Same as `register`, so a bare kind table can be passed wherever a queue's `registerKind` is expected. */
+  registerKind<I, O>(kind: string, handler: JobHandler<I, O>, opts: KindOptions = {}): void {
+    this.register(kind, handler, opts);
+  }
+
   get(kind: string): KindEntry | undefined {
     return this.entries.get(kind);
   }

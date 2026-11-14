@@ -29,7 +29,7 @@ interface Env {
 
 const registry = new Registry(youtube, 'workers');
 const kinds = new JobKinds();
-registerBuiltinKinds({ registerKind: (k, h, o) => kinds.register(k, h, o) });
+registerBuiltinKinds(kinds);
 
 // A kind that fetches one caption track: the first request answers the recorded 429, the next the recorded track.
 let timedtextCalls = 0;

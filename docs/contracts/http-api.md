@@ -174,6 +174,15 @@ Long work (collection ingest, briefs, long audio) runs as a job. Owner: 42.
 | `GET /jobs/:id` | | `Job` |
 | `GET /jobs/:id/events` | | `text/event-stream` with events `progress` `{ done, total, message? }`, `item` `{ id, outcome }`, `done` `{ result }`, `error` `{ code, message, hint? }` |
 | `DELETE /jobs/:id` | | `202 Job` (cancel requested) |
+| `POST /jobs/:id/run` | `{ jobId }` with `Authorization: Bearer <Google OIDC token>` | `200 { outcome, job }`; only when the Cloud Tasks adapter is configured (otherwise `404`); `401` with the standard error body (`code: auth`) when the token fails verification |
+
+Stream details (implemented in `packages/jobs/src/sse.ts`):
+
+- Event ids are a per-job sequence starting at 1. A client that reconnects with `Last-Event-ID: n` receives only events after `n`.
+- A fresh connection first replays the state: the `item` events so far, then the latest `progress` (or the final `done` or `error` of a finished job), then live events. A comment line `: heartbeat` is sent every 15 seconds. The stream closes after `done` or `error`.
+- `item` may also carry `title` and, for failures, `error: { code, message, hint? }`; `outcome` is `ok`, `error` or `skipped`.
+- A canceled job ends with `error` `{ code: 'canceled', ... }`, and its `Job.error` has the same value.
+- Built-in kinds: `context` (input: one URL), `items` (input: a playlist, channel or feed; options `limit`, `concurrency`), `bundle` (input: a URL or an array of URLs). See `docs/guides/jobs.md`.
 
 ```ts
 interface Job {

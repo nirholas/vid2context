@@ -44,6 +44,8 @@ export function cloudTasksConfigFromEnv(env: Env): CloudTasksConfig | null {
 
 export interface CloudTask {
   scheduleTime?: string;
+  /** How long Cloud Tasks waits for the run endpoint. 30 minutes is the maximum for HTTP targets. */
+  dispatchDeadline: string;
   httpRequest: {
     httpMethod: 'POST';
     url: string;
@@ -58,6 +60,7 @@ export function buildCloudTask(cfg: CloudTasksConfig, job: Pick<Job, 'id'>, dela
   const body = btoa(JSON.stringify({ jobId: job.id }));
   return {
     ...(delayMs > 0 ? { scheduleTime: new Date(now + delayMs).toISOString() } : {}),
+    dispatchDeadline: '1800s',
     httpRequest: {
       httpMethod: 'POST',
       url: `${cfg.runUrl}/jobs/${encodeURIComponent(job.id)}/run`,

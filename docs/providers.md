@@ -285,6 +285,19 @@ Telegram, Discord and Slack bots from `@vid2context/bots` (`POST /bots/telegram`
 | `BOTS_ALLOWED_CHATS`, `BOTS_ALLOWED_GUILDS`, `BOTS_ALLOWED_TEAMS` | `@vid2context/bots` | optional comma-separated Telegram chat, Discord server and Slack team ids; unset serves everyone |
 | `BOTS_RATE_LIMIT_PER_HOUR` | `@vid2context/bots` | videos per hour per chat and per user, default `10`, held in memory per instance |
 
+## Background jobs
+
+The job engine from `@vid2context/jobs` (`POST /jobs`, `GET /jobs/:id`, `GET /jobs/:id/events`, `DELETE /jobs/:id`). The in-process runner needs nothing; the Cloud Tasks adapter needs all three `CLOUD_TASKS` variables. Guide: `docs/guides/jobs.md`.
+
+| Env var | Used by | Notes |
+|---|---|---|
+| `VID2CONTEXT_JOB_CONCURRENCY` | `@vid2context/jobs` | jobs that run at once in the in-process runner, default `2` |
+| `VID2CONTEXT_JOB_TTL_HOURS` | `@vid2context/jobs` | hours a finished job is kept (KvStore TTL), default `72` |
+| `VID2CONTEXT_CLOUD_TASKS_QUEUE` | `@vid2context/jobs` | `projects/<project>/locations/<location>/queues/<queue>` |
+| `VID2CONTEXT_CLOUD_TASKS_RUN_URL` | `@vid2context/jobs` | public https base of the API including `/api/v1`; tasks POST to `<url>/jobs/<id>/run` |
+| `VID2CONTEXT_CLOUD_TASKS_SERVICE_ACCOUNT` | `@vid2context/jobs` | service account Cloud Tasks signs the OIDC token as; the run endpoint requires it |
+| `VID2CONTEXT_CLOUD_TASKS_AUDIENCE` | `@vid2context/jobs` | OIDC audience the run endpoint expects, default the run URL |
+
 ## Planned (see ROADMAP.md)
 
 | Kind | Provider | Tier | Enabled by | Known limits |

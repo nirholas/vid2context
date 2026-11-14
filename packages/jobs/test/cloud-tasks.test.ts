@@ -44,6 +44,7 @@ describe('Cloud Tasks task building', () => {
     const task = buildCloudTask(cfg, { id: 'job_abcdefghijklmnopqrstuv' }, 4000, now);
     expect(task).toEqual({
       scheduleTime: '2026-11-14T12:00:04.000Z',
+      dispatchDeadline: '1800s',
       httpRequest: {
         httpMethod: 'POST',
         url: `${RUN_URL}/jobs/job_abcdefghijklmnopqrstuv/run`,
