@@ -56,6 +56,12 @@ function values(): Record<string, string> {
       ? `the published npm package \`${data.npm.mcpPackage}\``
       : 'a clone of the repo (the npm package is not published yet, so these steps run the server from source)',
   };
+  // From a clone; -s keeps npm's banner out of redirected output.
+  v.cli = 'npm run -s cli --';
+  v['demo.contextMd'] = data.demo.files.find((f) => f.path === 'context.md')?.text ?? '';
+  v['demo.fileList'] = data.demo.files.map((f) => `\`${f.path}\``).join(', ');
+  v['mcp.toolCount'] = String(data.mcpTools?.length ?? 0);
+  v['mcp.tools'] = (data.mcpTools ?? []).map((t) => `- \`${t.name}\`: ${t.description}`).join('\n');
   if (data.playlist) {
     v['playlist.url'] = data.playlist.url;
     v['playlist.title'] = data.playlist.title ?? 'the playlist';
