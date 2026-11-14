@@ -65,7 +65,7 @@ describe('defaultRetriever', () => {
     );
     expect(sources.map((s) => s.n)).toEqual(sources.map((_, i) => i + 1));
     const total = chunkByTime(gwagon).length + chunkByTime(zoo).length;
-    expect(sources.length).toBeLessThanOrEqual(total);
+    expect(sources).toHaveLength(total);
     expect(sources[0]?.url).toBe('https://www.youtube.com/watch?v=cCPsdFdlshc&t=0s');
     expect(sources.at(-1)?.videoId).toBe('youtube:jNQXAC9IVRw');
     for (const s of sources) expect(s.url).toMatch(/[?&]t=\d+s$/);

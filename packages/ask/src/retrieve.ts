@@ -8,7 +8,8 @@
  * similarity with one embedding model pinned for the query. The two rankings
  * are fused with reciprocal rank fusion, the best chunks are taken up to the
  * budget, and neighbouring chunks of the same video are merged into one
- * time range.
+ * time range. Whole transcripts are not merged, so each source stays a
+ * short stretch of video.
  */
 import {
   attemptsOf,
@@ -104,8 +105,13 @@ async function vectorRanking(
   }
 }
 
-/** Merge neighbouring chunks of one video into ranges, then number every range by video order and time. */
-export function toSources(chunks: TimeChunk[], contexts: VideoContext[]): Source[] {
+/**
+ * Number chunks as sources by video order and time. With `merge`, neighbouring
+ * chunks of one video become one range (for retrieved chunks, so the model
+ * sees continuous context); without it every chunk stays its own source, so
+ * whole transcripts keep a precise citation per minute or so.
+ */
+export function toSources(chunks: TimeChunk[], contexts: VideoContext[], opts: { merge?: boolean } = {}): Source[] {
   const order = new Map(contexts.map((c, i) => [c.metadata.ref.id, i]));
   const sorted = [...chunks].sort((a, b) => (order.get(a.videoId) ?? 0) - (order.get(b.videoId) ?? 0) || a.index - b.index);
   const groups: TimeChunk[][] = [];
@@ -113,6 +119,7 @@ export function toSources(chunks: TimeChunk[], contexts: VideoContext[]): Source
     const last = groups.at(-1);
     const prev = last?.at(-1);
     if (
+      opts.merge &&
       last &&
       prev &&
       prev.videoId === c.videoId &&
@@ -201,6 +208,6 @@ export const defaultRetriever: Retriever = {
       picked.push(c);
       used += c.tokens;
     }
-    return toSources(picked, scope.contexts);
+    return toSources(picked, scope.contexts, { merge: true });
   },
 };
