@@ -19,6 +19,7 @@ Limits below come from the providers' published free tiers or from live checks; 
 | `media-file` | local files and `file://` URLs (Node only) | always | metadata from the filesystem; audio bytes for speech-to-text |
 | `ytdlp` | catch-all for any http(s) URL (Vimeo, TikTok, X, Reddit, Twitch, TED, ...): metadata, playlists, comments, 16 kHz mono mp3 audio; also audio for YouTube refs (Node only) | always | yt-dlp is found (`YTDLP_PATH`, `PATH`) or installed into `.vid2context/bin/` from the official release with SHA-256 verification, updated weekly (`YTDLP_AUTO_UPDATE=0` disables). Audio needs ffmpeg (`FFMPEG_PATH`). Also `YTDLP_TIMEOUT_SEC`, `YTDLP_CONCURRENCY` (default 2), `YTDLP_COOKIES_FILE`, `YTDLP_COOKIES_FROM_BROWSER`. See [guides/ytdlp.md](guides/ytdlp.md). |
 | `ytdlp-captions` | creator subtitles and automatic captions through yt-dlp (Node only) | always | runs after `youtube-captions` for YouTube. YouTube subtitle downloads through yt-dlp were rate-limited (HTTP 429) from a GCP VM on 2026-11-14; `vimeo.com/<id>` pages wanted a login there, so the provider retries through `player.vimeo.com`. |
+| `share-links` | Google Drive, Dropbox, OneDrive and SharePoint file share links: filename, size, type (OneDrive: duration) and a direct download URL for speech-to-text | always | no key, Node and Workers. Drive's virus-scan page for large files is confirmed automatically; personal OneDrive uses the web viewer's anonymous token. `SHARE_LINKS_MAX_MB` (default 25) caps what is handed to speech-to-text; the keyless OVH lane takes 10 MB. Verified live 2026-11-14. See [providers/share-links](../providers/share-links/README.md). |
 
 ## Speech-to-text (`stt-openai-compatible`)
 
@@ -94,7 +95,6 @@ More free lanes on top of `llm-openai-compatible`. "Verified live" means a real 
 
 Check what answers today: `npm run check:llm` (see [guides/llm.md](guides/llm.md)).
 
-## Chain controls
 ## Embeddings (`embed`, `embed-transformers`)
 
 Guide, dimensions and the one-model-per-index rule: [guides/embeddings.md](guides/embeddings.md). "Live" means verified against the real service on 2026-11-14; "docs" means built from the provider's current documentation without a key.
@@ -115,6 +115,7 @@ Guide, dimensions and the one-model-per-index rule: [guides/embeddings.md](guide
 
 Model overrides: `OLLAMA_EMBED_MODEL`, `LMSTUDIO_EMBED_MODEL`, `LOCAL_EMBED_MODEL`, `TRANSFORMERS_EMBED_MODEL`, `GEMINI_EMBED_MODEL`, `JINA_EMBED_MODEL`, `CLOUDFLARE_EMBED_MODEL`, `MISTRAL_EMBED_MODEL`, `OVH_EMBED_MODEL`, `OPENAI_EMBED_MODEL`. `VID2CONTEXT_EMBED_MODEL` (a rung id such as `embed/ovh/bge-m3`) fixes the model new indexes use.
 
+## Chain controls
 
 | Env var | Effect |
 |---|---|
@@ -169,6 +170,15 @@ See [security/hardening.md](security/hardening.md) and [security/threat-model.md
 | `NOTION_PARENT_PAGE_ID` | `@vid2context/exporters` | id or link of the Notion page the video pages go under; a per-call `parentPageId` wins |
 
 Obsidian exports need no variable: they are local files.
+
+## Collections and watch lists
+
+Read by `@vid2context/library` (collection refresh, watch lists). See [guides/collections.md](guides/collections.md). A refresh reads at most `VID2CONTEXT_MAX_PLAYLIST_ITEMS` items per source and ingests at most that many per run.
+
+| Variable | Meaning |
+|---|---|
+| `VID2CONTEXT_WEBHOOK_URL` | POST `{ collection: { id, name }, added: VideoSummary[], checkedAt }` here after a refresh adds videos; retried with backoff on 5xx and 429, never blocks or fails the refresh |
+| `VID2CONTEXT_WEBHOOK_SECRET` | signs that POST: `X-Vid2context-Signature: sha256=<hex HMAC-SHA256 of the raw body>`, plus `X-Vid2context-Timestamp` (unix seconds). Unset: sent unsigned |
 
 ## Client libraries
 
