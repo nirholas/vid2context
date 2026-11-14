@@ -4,24 +4,26 @@
  * register a hook could make it probe the private network or a cloud
  * metadata endpoint.
  *
- * Rules:
- * - only `https:`; credentials in the URL are refused;
- * - IP-literal hosts in loopback, private, link-local, CGNAT, multicast,
- *   reserved or unspecified ranges are refused on every runtime;
- * - hostnames are resolved and every address checked when a resolver is
- *   available (on Node one is loaded automatically; Workers has no DNS API,
- *   so there only literal and name checks apply);
- * - with `VID2CONTEXT_WEBHOOKS_ALLOW_LOCAL=1`, `http:` and hosts on loopback
- *   or private networks are allowed (self-hosted n8n on this machine, in
- *   Docker or on the LAN). Link-local and cloud metadata addresses stay
- *   refused even then.
+ * The default path is the core URL policy from item 10 (`checkUrl` in
+ * packages/core/src/security), restricted to `https:`: no credentials in the
+ * URL; loopback, private, link-local, CGNAT, multicast, reserved and
+ * metadata addresses refused as literals and, when a resolver is available,
+ * in DNS answers; local-only names (localhost, .local, .internal, single
+ * labels) refused. The resolver is the one registered with
+ * `setHostResolver`, else Node's dns.lookup on Node; Workers has no DNS API,
+ * so there only literal and name checks apply.
+ *
+ * With `VID2CONTEXT_WEBHOOKS_ALLOW_LOCAL=1`, `http:` and hosts on loopback or
+ * private networks are allowed (a self-hosted n8n on this machine, in Docker
+ * or on the LAN). Link-local and cloud metadata addresses stay refused even
+ * then, as literals and in DNS answers.
  *
  * Known limit: the address is checked, then fetch resolves the name again,
  * so a DNS server that answers differently the second time (DNS rebinding)
  * is not stopped. Redirects are never followed, which closes the other
  * common bypass.
  */
-import { type Ctx, Vid2ContextError } from '@vid2context/core';
+import { type Ctx, checkUrl, getHostResolver, Vid2ContextError } from '@vid2context/core';
 
 export type HostClass = 'public' | 'loopback' | 'private' | 'link-local' | 'reserved' | 'metadata';
 
@@ -147,11 +149,14 @@ function reject(url: string, why: string, allowLocal: boolean): Vid2ContextError
 }
 
 /**
- * Node's resolver, loaded only when running on Node. The module name is a
- * variable on purpose: bundlers for Workers and the browser then leave the
- * import alone instead of failing on a Node built-in that never runs there.
+ * The resolver to use: the one registered with core's setHostResolver, else
+ * Node's dns.lookup when running on Node. The module name is a variable on
+ * purpose: bundlers for Workers and the browser then leave the import alone
+ * instead of failing on a Node built-in that never runs there.
  */
 async function defaultResolver(ctx: Ctx): Promise<HostResolver | null> {
+  const registered = getHostResolver();
+  if (registered) return registered;
   if (ctx.runtime !== 'node') return null;
   const name = 'node:dns';
   const dns = (await import(/* @vite-ignore */ name)) as typeof import('node:dns');
@@ -178,40 +183,44 @@ export async function checkWebhookUrl(raw: string, ctx: Ctx, opts: UrlGuardOptio
   }
   const shown = `${url.protocol}//${url.host}`;
   if (raw.length > 2048) throw reject(shown, 'longer than 2048 characters', allowLocal);
-  if (url.username || url.password) throw reject(shown, 'credentials in the URL', allowLocal);
   if (url.protocol !== 'https:' && !(url.protocol === 'http:' && allowLocal)) {
     throw reject(shown, `${url.protocol} is not allowed, use https:`, allowLocal);
   }
+  const resolve = opts.resolve === undefined ? await defaultResolver(ctx) : opts.resolve;
 
-  // WHATWG URL parsing already normalizes decimal, octal, hex and short IPv4
-  // forms to dotted quads, lowercases names and converts IDNs to punycode.
+  if (!allowLocal) {
+    // Item 10's policy does the work: literals, local names, metadata hosts and DNS answers.
+    const check = await checkUrl(url, { protocols: ['https:'], ...(resolve ? { resolve } : {}) });
+    if (!check.ok) throw reject(shown, check.reason, allowLocal);
+    return check.url;
+  }
+
+  // Local opt-in: the core policy with private hosts allowed still refuses
+  // credentials and metadata hosts; link-local and metadata addresses are
+  // refused here on top, as literals and in DNS answers.
+  const check = await checkUrl(url, { protocols: ['http:', 'https:'], allowPrivate: true });
+  if (!check.ok) throw reject(shown, check.reason, allowLocal);
   const host = url.hostname.replace(/\.$/, '');
   const literal = classifyIp(host);
   if (literal) {
-    if (!allowed(literal, allowLocal)) throw reject(shown, `${literal} address`, allowLocal);
+    if (!allowed(literal, allowLocal)) throw reject(shown, `${host} is a ${literal} address`, allowLocal);
     return url;
   }
-  if (METADATA_HOSTS.has(host)) throw reject(shown, 'cloud metadata host', allowLocal);
-  if (host === 'localhost' || host.endsWith('.localhost')) {
-    if (!allowLocal) throw reject(shown, 'loopback host', allowLocal);
-    return url;
-  }
-
-  const resolve = opts.resolve === undefined ? await defaultResolver(ctx) : opts.resolve;
-  if (!resolve) return url;
+  if (METADATA_HOSTS.has(host)) throw reject(shown, `${host} is a cloud metadata endpoint`, allowLocal);
+  if (!resolve || host === 'localhost' || host.endsWith('.localhost')) return url;
   let addresses: string[];
   try {
     addresses = await resolve(host);
   } catch (err) {
     throw new Vid2ContextError('bad-request', `Webhook host does not resolve: ${host}`, {
-      hint: 'Check the hostname for typos and that it has a public DNS record.',
+      hint: 'Check the hostname for typos and that it resolves from the vid2context server.',
       cause: err,
     });
   }
-  if (addresses.length === 0) throw reject(shown, 'the host has no addresses', allowLocal);
+  if (addresses.length === 0) throw reject(shown, `${host} resolved to no addresses`, allowLocal);
   for (const address of addresses) {
     const cls = classifyIp(address) ?? 'reserved';
-    if (!allowed(cls, allowLocal)) throw reject(shown, `${host} resolves to a ${cls} address`, allowLocal);
+    if (!allowed(cls, allowLocal)) throw reject(shown, `${host} resolves to ${address}, a ${cls} address`, allowLocal);
   }
   return url;
 }

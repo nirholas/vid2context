@@ -69,15 +69,17 @@ describe('checkWebhookUrl', () => {
     ['https://0x7f.1/hook', /loopback/], // hex, short form
     ['https://127.1/hook', /loopback/], // short form
     ['https://[::1]/hook', /loopback/],
-    ['https://[::ffff:127.0.0.1]/hook', /loopback/],
+    ['https://[::ffff:127.0.0.1]/hook', /IPv4-mapped/],
     ['https://10.0.0.8/hook', /private/],
     ['https://192.168.0.1./hook', /private/], // trailing dot
     ['https://169.254.169.254/latest/meta-data/', /metadata/],
     ['https://[fd00:ec2::254]/', /metadata/],
     ['https://metadata.google.internal/computeMetadata/v1/', /metadata/],
-    ['https://localhost/hook', /loopback host/],
-    ['https://n8n.localhost/hook', /loopback host/],
-    ['https://0.0.0.0/hook', /reserved/],
+    ['https://localhost/hook', /names a local host/],
+    ['https://n8n.localhost/hook', /names a local host/],
+    ['https://nas.internal/hook', /names a local host/],
+    ['https://intranet/hook', /single-label host/],
+    ['https://0.0.0.0/hook', /0\.0\.0\.0 is a/],
     ['not a url', /not a valid absolute URL/],
   ])('refuses %s', async (raw, why) => {
     const err = await checkWebhookUrl(raw, ctx, offline).catch((e: unknown) => e);
@@ -101,13 +103,20 @@ describe.skipIf(!process.env.LIVE)('checkWebhookUrl with live DNS', () => {
 
   it('refuses public names whose DNS records point at private or loopback addresses', async () => {
     // localtest.me and nip.io are public DNS zones that answer with loopback or the embedded IP.
-    await expect(checkWebhookUrl('https://localtest.me/hook', live)).rejects.toThrow(/resolves to a loopback address/);
-    await expect(checkWebhookUrl('https://10.0.0.1.nip.io/hook', live)).rejects.toThrow(/resolves to a private address/);
-    await expect(checkWebhookUrl('https://169.254.169.254.nip.io/hook', live)).rejects.toThrow(/resolves to a metadata address/);
+    await expect(checkWebhookUrl('https://localtest.me/hook', live)).rejects.toThrow(/resolves to 127\.0\.0\.1, a loopback/);
+    await expect(checkWebhookUrl('https://10.0.0.1.nip.io/hook', live)).rejects.toThrow(/resolves to 10\.0\.0\.1, a private/);
+    await expect(checkWebhookUrl('https://169.254.169.254.nip.io/hook', live)).rejects.toThrow(/resolves to 169\.254\.169\.254/);
+  });
+
+  it('with the local opt-in allows names that resolve to loopback, never to metadata or link-local', async () => {
+    const liveLocal = testContext({ runtime: 'node', env: { VID2CONTEXT_WEBHOOKS_ALLOW_LOCAL: '1' } });
+    await expect(checkWebhookUrl('http://localtest.me:5678/webhook', liveLocal)).resolves.toBeInstanceOf(URL);
+    await expect(checkWebhookUrl('http://169.254.169.254.nip.io/', liveLocal)).rejects.toThrow(/metadata address/);
+    await expect(checkWebhookUrl('http://169.254.1.1.nip.io/', liveLocal)).rejects.toThrow(/link-local address/);
   });
 
   it('accepts a public name and refuses one that does not resolve', async () => {
     await expect(checkWebhookUrl('https://example.com/hook', live)).resolves.toBeInstanceOf(URL);
-    await expect(checkWebhookUrl('https://does-not-exist.invalid/hook', live)).rejects.toThrow(/does not resolve/);
+    await expect(checkWebhookUrl('https://does-not-exist.invalid/hook', live)).rejects.toThrow(/could not resolve/);
   });
 });
