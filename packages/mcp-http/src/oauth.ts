@@ -155,7 +155,10 @@ async function authenticateClient(
   if (!found.ok) return { ok: false, response: oauthError('invalid_client', `Client rejected: ${found.reason}.`, 401) };
   const client = found.client;
   if (client.tokenEndpointAuthMethod !== 'none') {
-    const ok = Boolean(secret) && client.secretHash !== undefined && timingSafeEqualString(await sha256Hex(secret as string), client.secretHash);
+    const ok =
+      Boolean(secret) &&
+      client.secretHash !== undefined &&
+      timingSafeEqualString(await sha256Hex(secret as string), client.secretHash);
     if (!ok) return { ok: false, response: oauthError('invalid_client', 'Client authentication failed.', 401) };
   }
   return { ok: true, client };
@@ -265,13 +268,21 @@ export function mountOAuth(app: Hono, getState: GetState): void {
 
     if (form.decision !== 'approve') {
       await s.store.deleteRequest(requestId);
-      return redirectBack(ar.redirectUri, { error: 'access_denied', error_description: 'The owner denied access.', state: ar.state }, s.urls.issuer);
+      return redirectBack(
+        ar.redirectUri,
+        { error: 'access_denied', error_description: 'The owner denied access.', state: ar.state },
+        s.urls.issuer,
+      );
     }
     const [ipFails, allFails] = await Promise.all([s.store.failures(`ip:${s.ip}`), s.store.failures('all')]);
     if (ipFails >= FAILS_PER_IP || allFails >= FAILS_GLOBAL) {
-      return page(messagePage('Too many attempts', 'Sign-in is paused after repeated wrong passwords. Wait 15 minutes and retry.'), 429, {
-        'retry-after': '900',
-      });
+      return page(
+        messagePage('Too many attempts', 'Sign-in is paused after repeated wrong passwords. Wait 15 minutes and retry.'),
+        429,
+        {
+          'retry-after': '900',
+        },
+      );
     }
     const ok = await verifyPassword(form.password ?? '', s.cfg.ownerPasswordHash as string);
     if (!ok) {
@@ -350,7 +361,7 @@ export function mountOAuth(app: Hono, getState: GetState): void {
       if (form.resource && !sameResource(form.resource, rec.resource)) {
         return withHeaders(oauthError('invalid_target', 'resource does not match the original grant.'), cors);
       }
-      if (form.scope && form.scope.split(' ').some((sc) => !rec.scope.split(' ').includes(sc))) {
+      if (form.scope?.split(' ').some((sc) => !rec.scope.split(' ').includes(sc))) {
         return withHeaders(oauthError('invalid_scope', 'A refresh cannot add scopes.'), cors);
       }
       const tokens = await s.store.issueTokens(client.clientId, rec.scope, rec.resource, rec.familyId);
@@ -358,10 +369,7 @@ export function mountOAuth(app: Hono, getState: GetState): void {
       return withHeaders(tokenResponse(tokens), cors);
     }
 
-    return withHeaders(
-      oauthError('unsupported_grant_type', 'Supported grant types: authorization_code, refresh_token.'),
-      cors,
-    );
+    return withHeaders(oauthError('unsupported_grant_type', 'Supported grant types: authorization_code, refresh_token.'), cors);
   });
 
   // ---------------------------------------------------------------- revocation

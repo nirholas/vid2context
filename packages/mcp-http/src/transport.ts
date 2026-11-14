@@ -16,13 +16,25 @@
 import type { AuthInfo } from '@modelcontextprotocol/sdk/server/auth/types.js';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { WebStandardStreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js';
-import type { Ctx, Registry } from '@vid2context/core';
-import { createServer } from '@vid2context/mcp';
+import type { Ctx, Registry, Storage } from '@vid2context/core';
+import { createServer, type ServerOptions } from '@vid2context/mcp';
 import type { McpHttpMode } from './config.ts';
 
 export interface TransportDeps {
   registry: Registry;
   version: string;
+  /** Passed to every createServer() call (for example extractAudio for watch_live). */
+  serverOptions?: Omit<ServerOptions, 'storage'>;
+}
+
+interface HandleOptions {
+  mode: McpHttpMode;
+  ctx: Ctx;
+  /** One library backend shared by every request and session, so stateless requests do not each open their own. */
+  storage: Storage;
+  authInfo: AuthInfo;
+  principal: string;
+  idleSec: number;
 }
 
 interface Session {
@@ -66,20 +78,21 @@ export class McpTransport {
     return this.sessions.size;
   }
 
-  async handle(
-    req: Request,
-    opts: { mode: McpHttpMode; ctx: Ctx; authInfo: AuthInfo; principal: string; idleSec: number },
-  ): Promise<Response> {
+  private build(ctx: Ctx, storage: Storage): McpServer {
+    return createServer(this.deps.registry, ctx, this.deps.version, { ...this.deps.serverOptions, storage });
+  }
+
+  async handle(req: Request, opts: HandleOptions): Promise<Response> {
     return opts.mode === 'stateless' ? this.stateless(req, opts) : this.session(req, opts);
   }
 
-  private async stateless(req: Request, opts: { ctx: Ctx; authInfo: AuthInfo }): Promise<Response> {
+  private async stateless(req: Request, opts: HandleOptions): Promise<Response> {
     if (req.method !== 'POST') {
       return jsonRpcError(405, -32000, 'Method not allowed: this server is stateless, so only POST is served.', {
         allow: 'POST',
       });
     }
-    const server = createServer(this.deps.registry, opts.ctx, this.deps.version);
+    const server = this.build(opts.ctx, opts.storage);
     const transport = new WebStandardStreamableHTTPServerTransport({
       sessionIdGenerator: undefined,
       enableJsonResponse: prefersJson(req),
@@ -99,10 +112,7 @@ export class McpTransport {
     return res;
   }
 
-  private async session(
-    req: Request,
-    opts: { ctx: Ctx; authInfo: AuthInfo; principal: string; idleSec: number },
-  ): Promise<Response> {
+  private async session(req: Request, opts: HandleOptions): Promise<Response> {
     this.sweep(opts.idleSec);
     const sid = req.headers.get('mcp-session-id');
     if (sid) {
@@ -119,7 +129,7 @@ export class McpTransport {
     }
 
     // The session outlives this request, so its base Ctx must not carry this request's signal.
-    const server = createServer(this.deps.registry, { ...opts.ctx, signal: undefined }, this.deps.version);
+    const server = this.build({ ...opts.ctx, signal: undefined }, opts.storage);
     const entry: Partial<Session> = { server, principal: opts.principal, lastSeen: Date.now() };
     const transport = new WebStandardStreamableHTTPServerTransport({
       sessionIdGenerator: () => crypto.randomUUID(),
