@@ -22,8 +22,8 @@ import { registerPackageTools } from './wire.ts';
 
 export { briefPrompt, buyerGuidePrompt } from './prompts.ts';
 export { contextHeader, LazyStorage, type ToolResult, toolError } from './shared.ts';
-export { renderTranscript } from './tools/video.ts';
 export { listModels, type ModelInfo } from './tools/models.ts';
+export { renderTranscript } from './tools/video.ts';
 
 export const SERVER_NAME = 'vid2context';
 

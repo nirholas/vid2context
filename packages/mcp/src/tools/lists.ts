@@ -16,9 +16,9 @@ import {
   formatTimestamp,
   getVideoContext,
   renderMany,
+  type Storage,
   segmentsToText,
   sliceSegments,
-  type Storage,
   timestampUrl,
   Vid2ContextError,
   type VideoContext,
@@ -107,10 +107,7 @@ const limitInput = z
   .optional()
   .describe(`Most videos taken from each playlist, channel or feed. Default: ${LIST_LIMIT}`);
 
-const failedShape = z.array(
-  z.object({ input: z.string(), error: z.string(), message: z.string(), hint: z.string().optional() }),
-);
-
+const failedShape = z.array(z.object({ input: z.string(), error: z.string(), message: z.string(), hint: z.string().optional() }));
 
 function collectionInfo(c: Collection) {
   return {
@@ -151,7 +148,6 @@ export async function collectionView(storage: Storage, col: Collection) {
   }
   return { collection: collectionInfo(col), videos, totalTokens: videos.reduce((sum, v) => sum + v.tokens, 0), missing };
 }
-
 
 export function registerListTools(server: McpServer, deps: ToolDeps): void {
   const { registry, storage } = deps;

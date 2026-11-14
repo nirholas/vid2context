@@ -72,7 +72,10 @@ export async function progress(extra: Extra, done: number, total: number, messag
   const token = extra._meta?.progressToken;
   if (token === undefined) return;
   try {
-    await extra.sendNotification({ method: 'notifications/progress', params: { progressToken: token, progress: done, total, message } });
+    await extra.sendNotification({
+      method: 'notifications/progress',
+      params: { progressToken: token, progress: done, total, message },
+    });
   } catch {
     // A client that hung up mid-call is not an error for the tool itself.
   }

@@ -38,7 +38,9 @@ export const videoInput = {
   mode: z
     .enum(MODES)
     .optional()
-    .describe('Transcript strategy: auto (captions, then speech-to-text), captions only, stt (always transcribe), video (multimodal model). Default: auto'),
+    .describe(
+      'Transcript strategy: auto (captions, then speech-to-text), captions only, stt (always transcribe), video (multimodal model). Default: auto',
+    ),
   language: z.string().optional().describe('Preferred transcript language (BCP-47, e.g. en, de). Default: the spoken language'),
 };
 
@@ -132,16 +134,14 @@ function sectionLabel(info: SectionInfo, tokens: number): string {
   return `Section${name}: ${formatTimestamp(info.fromSec)} to ${formatTimestamp(info.toSec)}, about ${tokens} tokens\n`;
 }
 
-const timeArg = z
-  .union([z.number().nonnegative(), z.string().min(1)])
-  .optional();
+const timeArg = z.union([z.number().nonnegative(), z.string().min(1)]).optional();
 
 const outlineOutput = {
   title: z.string(),
   url: z.string().optional(),
   durationSec: z.number(),
   transcript: z.object({ origin: z.string(), language: z.string(), producer: z.string() }),
-  sections: z.enum(['chapters', 'time']).describe('chapters: the video\'s own chapters; time: sections of about five minutes'),
+  sections: z.enum(['chapters', 'time']).describe("chapters: the video's own chapters; time: sections of about five minutes"),
   totalTokens: z.number(),
   chapters: z.array(
     z.object({
@@ -194,8 +194,13 @@ export function registerVideoTools(server: McpServer, deps: ToolDeps): void {
           .int()
           .min(200)
           .optional()
-          .describe('Largest result to return, in estimated tokens. Longer transcripts come back in pages with a continuation cursor'),
-        cursor: z.string().optional().describe('Continuation cursor from a previous partial result (like "seg:412"). Use the same other arguments'),
+          .describe(
+            'Largest result to return, in estimated tokens. Longer transcripts come back in pages with a continuation cursor',
+          ),
+        cursor: z
+          .string()
+          .optional()
+          .describe('Continuation cursor from a previous partial result (like "seg:412"). Use the same other arguments'),
       },
       annotations: { readOnlyHint: true, openWorldHint: true, idempotentHint: true },
     },
@@ -275,7 +280,7 @@ export function registerVideoTools(server: McpServer, deps: ToolDeps): void {
     {
       title: 'Get video outline',
       description:
-        'Start here for any video longer than about 20 minutes. Returns the metadata and the video\'s chapters (or sections of about five minutes when it has none), ' +
+        "Start here for any video longer than about 20 minutes. Returns the metadata and the video's chapters (or sections of about five minutes when it has none), " +
         'each with its start time, a timestamp link and its estimated token count, plus the total. ' +
         'Then read only what you need with get_section (by chapter index or title, or by time). ' +
         'Fetches the transcript once (saved for later calls); the outline itself costs about 300 to 1,500 tokens.',
@@ -321,9 +326,9 @@ export function registerVideoTools(server: McpServer, deps: ToolDeps): void {
     {
       title: 'Get a transcript section',
       description:
-        'One chapter or time range of a video\'s transcript, with the same header as get_transcript. ' +
+        "One chapter or time range of a video's transcript, with the same header as get_transcript. " +
         'Pass chapter (an index or title from get_outline) or from/to (seconds, m:ss or h:mm:ss); from alone reads to the end, to alone reads from the start. ' +
-        'Cost: the section\'s token count from get_outline (about 1k tokens per 5 minutes of speech).',
+        "Cost: the section's token count from get_outline (about 1k tokens per 5 minutes of speech).",
       inputSchema: {
         ...videoInput,
         from: timeArg.describe('Start time: seconds (754), m:ss (12:34) or h:mm:ss (1:02:03). Default: the start'),
@@ -331,7 +336,9 @@ export function registerVideoTools(server: McpServer, deps: ToolDeps): void {
         chapter: z
           .union([z.number().int().nonnegative(), z.string().min(1)])
           .optional()
-          .describe('A chapter index from get_outline, or a chapter title (exact, prefix, then substring match, case-insensitive)'),
+          .describe(
+            'A chapter index from get_outline, or a chapter title (exact, prefix, then substring match, case-insensitive)',
+          ),
         format: z.enum(formatIds()).optional().describe('Output format. Default: text'),
         timestamps: z.boolean().optional().describe('Prefix lines with [m:ss] timestamps. Default: true'),
       },

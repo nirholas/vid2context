@@ -18,7 +18,9 @@ let storage: Storage;
 try {
   storage = (await registry.openStorage(ctx)) ?? new MemoryStorage();
 } catch (err) {
-  ctx.log.warn('storage backend failed to open, using memory storage', { error: err instanceof Error ? err.message : String(err) });
+  ctx.log.warn('storage backend failed to open, using memory storage', {
+    error: err instanceof Error ? err.message : String(err),
+  });
   storage = new MemoryStorage();
 }
 const server = createServer(registry, ctx, pkg.version, {
