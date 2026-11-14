@@ -70,4 +70,16 @@ Recorded tests (`packages/core/test/longform/`, real OVH keyless responses):
 - 58 s LibriVox clip in 3 chunks of about 21 s: both seams were `silence` (cuts in pauses), timestamps monotonic, nothing duplicated, and 0.885 word similarity (2 x LCS / total words) to a single-pass transcript of the same clip. The gap is Whisper's: it skipped the 10-second LibriVox disclaimer when it heard chunk 1 alone.
 - 90 s clip: one request refused with 413 (60 s cap), re-split into 45 s and 47 s pieces, which overlap on "to the decisive campaign which freed" and stitch as `aligned` with one copy kept.
 
-Live run (`LIVE=1 npx vitest run packages/core/test/longform/live.test.ts`): see the section below.
+Live run on 2026-11-14 (`LIVE=1 npx vitest run packages/core/test/longform/live.test.ts`), no keys set, so the keyless OVH lane only:
+
+| | |
+|---|---|
+| Audio | LibriVox, "Chancellorsville and Gettysburg" chapter 7 (CC0), 35:37, 64 kbps MP3, 17 MB, fetched by URL |
+| Plan | 4 chunks of about 9 minutes, concurrency 3 |
+| What happened | The first chunks were refused with 413 (60 s cap), so every chunk was re-split into pieces of at most 57 s: 40 successful requests in all, waiting through 429s between them |
+| Wall time | 2,877 s (48 min), about 1.35 s of wall time per second of audio |
+| Rungs used | `stt/ovh/whisper-large-v3-turbo` only |
+| Seams | 39 in all: 36 `aligned`, 1 `silence`, 2 `time-cut` |
+| Output | 287 segments, 6,047 words, last segment ending at 35:25, timestamps monotonic |
+
+Keyless works but it is slow, because the 60-second cap and the 2 requests per minute make the IP's rate limit the bottleneck (other jobs from the same IP share it). If a rung declares `maxDurationSec: 60`, the first wave of 413s is skipped. A free Groq key would send each 9-minute chunk in a single request.
