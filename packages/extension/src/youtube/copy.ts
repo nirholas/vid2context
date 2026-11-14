@@ -29,7 +29,10 @@ export function templateVars(context: VideoContext, content: string): Record<str
   };
 }
 
-export function renderForCopy(context: VideoContext, settings: Pick<Settings, 'copyFormat' | 'copyTemplate' | 'timestamps'>): CopyResult {
+export function renderForCopy(
+  context: VideoContext,
+  settings: Pick<Settings, 'copyFormat' | 'copyTemplate' | 'timestamps'>,
+): CopyResult {
   const useFormatter = settings.copyFormat !== AGENT_FORMAT && formatters[settings.copyFormat];
   const content = useFormatter
     ? render(context, settings.copyFormat, { timestamps: settings.timestamps })

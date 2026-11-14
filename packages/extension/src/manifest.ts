@@ -49,10 +49,11 @@ export function manifestFor({ browser, version }: ManifestInput): Record<string,
     manifest.browser_specific_settings = {
       gecko: {
         id: GECKO_ID,
-        // world: "MAIN" content scripts need Firefox 128.
-        strict_min_version: '128.0',
+        // world: "MAIN" content scripts need 128; data_collection_permissions needs 140 (the current ESR).
+        strict_min_version: '140.0',
         data_collection_permissions: { required: ['none'] },
       },
+      gecko_android: { strict_min_version: '142.0' },
     };
   }
   return manifest;

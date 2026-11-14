@@ -16,7 +16,9 @@ type LocalArea = Pick<chrome.storage.StorageArea, 'get' | 'set'>;
 
 function valid(x: unknown): x is HistoryItem {
   const i = x as HistoryItem;
-  return !!i && typeof i.url === 'string' && typeof i.title === 'string' && typeof i.action === 'string' && typeof i.at === 'string';
+  return (
+    !!i && typeof i.url === 'string' && typeof i.title === 'string' && typeof i.action === 'string' && typeof i.at === 'string'
+  );
 }
 
 export async function getHistory(area: LocalArea): Promise<HistoryItem[]> {

@@ -1,0 +1,5 @@
+{
+  "status": 404,
+  "contentType": "application/json",
+  "body": "{\"error\":{\"code\":\"not-found\",\"message\":\"YouTube xxxxxxxxxxx: ERROR (This video is unavailable)\",\"hint\":\"The video does not exist or was removed. Check the video id or URL.\"},\"attempts\":[{\"id\":\"youtube\",\"stage\":\"resolve\",\"outcome\":\"ok\",\"detail\":\"youtube:xxxxxxxxxxx\"},{\"id\":\"youtube\",\"stage\":\"metadata\",\"outcome\":\"error\",\"reason\":\"not-found\",\"detail\":\"YouTube xxxxxxxxxxx: ERROR (This video is unavailable)\"}]}"
+}

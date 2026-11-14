@@ -109,7 +109,11 @@ async function onCopy(): Promise<void> {
     try {
       await navigator.clipboard.writeText(text);
     } catch {
-      ui.setStatus('info', 'Ready. Click "Copy for AI" again to copy it.', 'The browser only allows copying right after a click.');
+      ui.setStatus(
+        'info',
+        'Ready. Click "Copy for AI" again to copy it.',
+        'The browser only allows copying right after a click.',
+      );
       return;
     }
     const what = via === 'agentPrompt' ? 'agent prompt' : via;

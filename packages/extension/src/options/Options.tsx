@@ -69,7 +69,12 @@ export function Options() {
       </header>
 
       <Section title="Where vid2context runs">
-        <Field id="app-base" label="App base" hint="Open in vid2context and the context menu open <app base>/app/?url=..." error={errors.appBase}>
+        <Field
+          id="app-base"
+          label="App base"
+          hint="Open in vid2context and the context menu open <app base>/app/?url=..."
+          error={errors.appBase}
+        >
           <input
             type="url"
             className={INPUT}
@@ -80,7 +85,8 @@ export function Options() {
           />
         </Field>
         <Field
-          id="api-base" label="API base"
+          id="api-base"
+          label="API base"
           hint="Used by Copy transcript (via API) on pages other than YouTube. Start one locally with npm run dev:server."
           error={errors.apiBase}
         >
@@ -110,7 +116,11 @@ export function Options() {
       </Section>
 
       <Section title="Copy for AI">
-        <Field id="copy-format" label="Default copy format" hint="What Copy for AI puts on the clipboard. The list comes from the formats vid2context ships.">
+        <Field
+          id="copy-format"
+          label="Default copy format"
+          hint="What Copy for AI puts on the clipboard. The list comes from the formats vid2context ships."
+        >
           <select id="copy-format" className={INPUT} value={draft.copyFormat} onChange={(e) => set('copyFormat', e.target.value)}>
             {formats.map((f) => (
               <option key={f.id} value={f.id}>
@@ -120,7 +130,8 @@ export function Options() {
           </select>
         </Field>
         <Field
-          id="copy-template" label="Copy template"
+          id="copy-template"
+          label="Copy template"
           hint="Wraps the copied text. Placeholders: {{content}} (required), {{title}}, {{url}}, {{channel}}."
           error={errors.copyTemplate}
         >
@@ -141,7 +152,9 @@ export function Options() {
           />
           <span>
             Include timestamps
-            <span className="block text-muted">For the text format. The agent prompt and Markdown always cite with timestamps.</span>
+            <span className="block text-muted">
+              For the text format. The agent prompt and Markdown always cite with timestamps.
+            </span>
           </span>
         </label>
       </Section>
@@ -175,7 +188,19 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
   );
 }
 
-function Field({ id, label, hint, error, children }: { id: string; label: string; hint?: string; error?: string; children: ReactNode }) {
+function Field({
+  id,
+  label,
+  hint,
+  error,
+  children,
+}: {
+  id: string;
+  label: string;
+  hint?: string;
+  error?: string;
+  children: ReactNode;
+}) {
   return (
     <div className="flex flex-col gap-1.5">
       <label htmlFor={id} className="text-sm font-medium">

@@ -49,7 +49,9 @@ export function normalizeSettings(raw: unknown): Settings {
     apiBase: cleanBase(r.apiBase) ?? DEFAULT_SETTINGS.apiBase,
     copyFormat: typeof r.copyFormat === 'string' && r.copyFormat ? r.copyFormat : DEFAULT_SETTINGS.copyFormat,
     copyTemplate:
-      typeof r.copyTemplate === 'string' && r.copyTemplate.includes('{{content}}') ? r.copyTemplate : DEFAULT_SETTINGS.copyTemplate,
+      typeof r.copyTemplate === 'string' && r.copyTemplate.includes('{{content}}')
+        ? r.copyTemplate
+        : DEFAULT_SETTINGS.copyTemplate,
     timestamps: typeof r.timestamps === 'boolean' ? r.timestamps : DEFAULT_SETTINGS.timestamps,
   };
 }

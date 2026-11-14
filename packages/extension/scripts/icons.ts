@@ -22,7 +22,9 @@ function inTriangle(x: number, y: number): boolean {
   const a = [12, 9.5];
   const b = [12, 22.5];
   const c = [22, 16];
-  const side = (p: number[], q: number[]) => ((q[0] as number) - (p[0] as number)) * (y - (p[1] as number)) - ((q[1] as number) - (p[1] as number)) * (x - (p[0] as number));
+  const side = (p: number[], q: number[]) =>
+    ((q[0] as number) - (p[0] as number)) * (y - (p[1] as number)) -
+    ((q[1] as number) - (p[1] as number)) * (x - (p[0] as number));
   const d1 = side(a, b);
   const d2 = side(b, c);
   const d3 = side(c, a);

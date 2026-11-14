@@ -40,7 +40,7 @@ async function buildPages(): Promise<void> {
       outDir: stage,
       emptyOutDir: false,
       modulePreload: { polyfill: false },
-      target: ['chrome111', 'firefox128'],
+      target: ['chrome111', 'firefox140'],
       rollupOptions: {
         input: { popup: join(src, 'popup/index.html'), options: join(src, 'options/index.html') },
       },
@@ -55,7 +55,7 @@ async function buildScript(name: string, entry: string): Promise<void> {
     build: {
       outDir: stage,
       emptyOutDir: false,
-      target: ['chrome111', 'firefox128'],
+      target: ['chrome111', 'firefox140'],
       lib: { entry: join(src, entry), formats: ['iife'], name: `vid2context_${name}`, fileName: () => `${name}.js` },
     },
   });

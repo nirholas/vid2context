@@ -2,7 +2,7 @@
  * Everything "Copy for AI" and "Download .zip" need, computed in the page:
  * player response, track choice, caption download, VideoContext.
  */
-import { type VideoContext, Vid2ContextError } from '@vid2context/core';
+import { Vid2ContextError, type VideoContext } from '@vid2context/core';
 import { fetchCaptionSegments, poTokenFromUrl } from '../youtube/captions.ts';
 import { buildVideoContext, pickTrack } from '../youtube/context.ts';
 import { captionTracks, extractPlayerResponse, type WatchPlayerResponse } from '../youtube/player.ts';

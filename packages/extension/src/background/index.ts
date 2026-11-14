@@ -43,8 +43,7 @@ interface PermissionAsk {
 async function copyViaApi(url: string, title: string, tabId: number | undefined, asked: PermissionAsk): Promise<void> {
   const settings = await settingsReady();
   const pattern = originPattern(settings.apiBase);
-  const granted =
-    (asked.pattern === pattern && (await asked.result)) || (await ext.permissions.contains({ origins: [pattern] }));
+  const granted = (asked.pattern === pattern && (await asked.result)) || (await ext.permissions.contains({ origins: [pattern] }));
   if (!granted) {
     await notify(tabId, {
       kind: 'error',

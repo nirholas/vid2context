@@ -116,7 +116,11 @@ export function Popup() {
   const openInApp = async () => {
     if (!tab.url) return;
     const url = videoId ? `https://www.youtube.com/watch?v=${videoId}` : tab.url;
-    const msg: BackgroundRequest = { type: 'v2c:open-app', url, title: yt?.state === 'ready' ? (yt.title ?? url) : (tab.title ?? url) };
+    const msg: BackgroundRequest = {
+      type: 'v2c:open-app',
+      url,
+      title: yt?.state === 'ready' ? (yt.title ?? url) : (tab.title ?? url),
+    };
     await ext.runtime.sendMessage(msg).catch(() => ext.tabs.create({ url: appLink(settings.appBase, url) }));
     window.close();
   };
@@ -130,7 +134,11 @@ export function Popup() {
     void (async () => {
       try {
         if (!(await permission)) {
-          return setStatus({ kind: 'error', message: 'Permission to reach the API was not granted.', hint: 'Allow it, or change the API base in Options.' });
+          return setStatus({
+            kind: 'error',
+            message: 'Permission to reach the API was not granted.',
+            hint: 'Allow it, or change the API base in Options.',
+          });
         }
         const text = await transcriptViaApi(url, settings, fetch);
         await writeClipboard(text, 'Transcript copied.');
@@ -179,10 +187,18 @@ export function Popup() {
           {videoId && (
             <>
               {yt?.state === 'ready' && !yt.hasCaptions && (
-                <Notice kind="info" message="This video has no captions." hint="Open it in vid2context to transcribe the audio." />
+                <Notice
+                  kind="info"
+                  message="This video has no captions."
+                  hint="Open it in vid2context to transcribe the audio."
+                />
               )}
               {yt?.state === 'unreachable' && (
-                <Notice kind="info" message="Could not reach the page." hint="Reload the YouTube tab, then open this popup again." />
+                <Notice
+                  kind="info"
+                  message="Could not reach the page."
+                  hint="Reload the YouTube tab, then open this popup again."
+                />
               )}
               <Button
                 variant="primary"
@@ -219,7 +235,12 @@ export function Popup() {
 
         {status && <StatusLine status={status} />}
         {readyText !== null && (
-          <Button className="mt-2 w-full" variant="primary" icon={<Copy size={16} />} onClick={() => void writeClipboard(readyText, 'Copied.')}>
+          <Button
+            className="mt-2 w-full"
+            variant="primary"
+            icon={<Copy size={16} />}
+            onClick={() => void writeClipboard(readyText, 'Copied.')}
+          >
             Copy
           </Button>
         )}
@@ -230,7 +251,11 @@ export function Popup() {
           <Notice kind={last.kind === 'error' ? 'error' : 'info'} message={last.message} hint={last.hint} />
           <div className="mt-3 flex justify-end gap-2">
             {last.text !== undefined && (
-              <Button variant="primary" icon={<Copy size={16} />} onClick={() => void writeClipboard(last.text ?? '', 'Copied.').then(dismissLast)}>
+              <Button
+                variant="primary"
+                icon={<Copy size={16} />}
+                onClick={() => void writeClipboard(last.text ?? '', 'Copied.').then(dismissLast)}
+              >
                 Copy
               </Button>
             )}
@@ -291,7 +316,12 @@ function Notice({ kind, message, hint }: { kind: 'info' | 'error'; message: stri
 }
 
 function StatusLine({ status }: { status: NonNullable<Status> }): ReactNode {
-  if (status.kind === 'error') return <div className="mt-3"><Notice kind="error" message={status.message} hint={status.hint} /></div>;
+  if (status.kind === 'error')
+    return (
+      <div className="mt-3">
+        <Notice kind="error" message={status.message} hint={status.hint} />
+      </div>
+    );
   return (
     <p className={`mt-3 flex items-center gap-2 text-sm ${status.kind === 'ok' ? 'text-success' : 'text-muted'}`} role="status">
       {status.kind === 'busy' ? <Loader2 size={16} className="animate-spin" /> : <Check size={16} />}
