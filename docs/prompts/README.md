@@ -120,4 +120,4 @@ These can be written as a second, smaller set of prompts once wave 1 has landed.
 - NVIDIA GPU or not: decides whether local whisper.cpp (18) leads the speech-to-text chain or hosted free rungs do.
 - Domain: vid2context.com (with vidtocontext.com redirecting) on Cloudflare DNS, used by 36, 45 and 50.
 - ChatGPT: the context pack and .zip (01, 15) work on day one; the live remote MCP connector (45) needs the server reachable over HTTPS.
-- CI: `.github/workflows/ci.yml` cannot run while Actions billing is locked. 38 builds local CI and Cloud Build instead.
+- CI: there is no GitHub Actions workflow (billing is locked; the dead `ci.yml` was removed). 38 builds local CI and Cloud Build instead. Dependabot opens weekly npm PRs with no CI: verify them locally.

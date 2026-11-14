@@ -1,5 +1,8 @@
 version: 2
 updates:
+  # npm only. GitHub Actions is unavailable on this account (billing locked
+  # since 2026-09-15), so there are no workflows to update and no CI runs on
+  # these PRs: verify each one locally with `npm run check` before merging.
   - package-ecosystem: npm
     directory: /
     schedule:
@@ -7,7 +10,8 @@ updates:
     groups:
       dev-dependencies:
         dependency-type: development
-  - package-ecosystem: github-actions
-    directory: /
-    schedule:
-      interval: weekly
+    ignore:
+      # Types must match the lowest supported Node (engines: >=22), or code
+      # could compile against APIs that Node 22 does not have.
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]

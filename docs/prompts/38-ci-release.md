@@ -8,12 +8,12 @@
 | Commit scope | `tooling` |
 | Runs alongside | 49 other prompts in the same folder; depends only on the foundation |
 
-vid2context turns any video into context for AI agents: transcripts, metadata, chapters and cited briefs, free-first, as a CLI, MCP server, HTTP API and web app. Enterprise users judge a project by whether every commit is checked and every release is reproducible. GitHub Actions billing on the owner's account has been locked since 2026-09-15, so `.github/workflows/ci.yml` (typecheck, lint, tests on Node 22 and 24) exists but cannot run. CI therefore has to run locally with one command, optionally on Google Cloud Build, and releases (the `npx vid2context` CLI and the `npx vid2context-mcp` server) have to be built, versioned and published by scripts. This prompt builds that tooling, plus repo hygiene checks that enforce the house rules (no em-dashes, no TODOs, no secrets, no Node built-ins in edge code).
+vid2context turns any video into context for AI agents: transcripts, metadata, chapters and cited briefs, free-first, as a CLI, MCP server, HTTP API and web app. Enterprise users judge a project by whether every commit is checked and every release is reproducible. GitHub Actions billing on the owner's account has been locked since 2026-09-15, so the old `.github/workflows/ci.yml` was removed: it could never run. CI therefore has to run locally with one command, optionally on Google Cloud Build, and releases (the `npx vid2context` CLI and the `npx vid2context-mcp` server) have to be built, versioned and published by scripts. This prompt builds that tooling, plus repo hygiene checks that enforce the house rules (no em-dashes, no TODOs, no secrets, no Node built-ins in edge code).
 
 ## Read first
 
 1. `CLAUDE.md` and `AGENTS.md` (house style, commands, the note on GitHub Actions), then `docs/ARCHITECTURE.md`.
-2. Root `package.json` (scripts, workspaces, devDependencies), `tsconfig.json`, `biome.json`, `vitest.config.ts`, `scripts/gen-registry.mjs`, `.github/workflows/ci.yml`, `CHANGELOG.md`, `CONTRIBUTING.md`.
+2. Root `package.json` (scripts, workspaces, devDependencies), `tsconfig.json`, `biome.json`, `vitest.config.ts`, `scripts/gen-registry.mjs`, `.github/dependabot.yml`, `CHANGELOG.md`, `CONTRIBUTING.md`.
 3. `packages/cli/package.json` and `src/bin.ts`, `packages/mcp/package.json` and `src/bin.ts` (the entry points you bundle; do not edit them).
 4. `docs/prompts/SHARED-CONTRACTS.md`, section 8 (shared files) and 9.
 
@@ -65,7 +65,7 @@ vid2context turns any video into context for AI agents: transcripts, metadata, c
 
 ### The dead workflow
 
-- Leave `.github/workflows/ci.yml` in place (you do not own `.github/`). State in your report that it cannot run while Actions billing is locked and that `npm run ci` replaces it.
+- `.github/workflows/ci.yml` was removed on 2026-11-14 because it could not run. Do not recreate it (you do not own `.github/`). `npm run ci` replaces it; say so in `docs/ci.md`.
 
 ## Out of scope
 
