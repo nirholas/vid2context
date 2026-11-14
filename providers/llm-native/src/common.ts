@@ -65,8 +65,3 @@ export function tryJson<T>(text: string): T | undefined {
     return undefined;
   }
 }
-
-/** Throws a plain Error naming the label when the text is not valid JSON; callers wrap it. */
-export function assertJson(text: string): void {
-  JSON.parse(text);
-}

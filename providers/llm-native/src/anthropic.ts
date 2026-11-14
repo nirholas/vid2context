@@ -240,9 +240,14 @@ export function anthropicRetryAfter(headers: Headers, now = Date.now()): number 
  * `{ type: 'error', error: { type, message } }`, or Google's
  * `{ error: { code, message, status } }` when Vertex rejects the call first.
  */
-export async function anthropicError(res: Response, target: Pick<AnthropicTarget, 'label' | 'authHint'>): Promise<Vid2ContextError> {
+export async function anthropicError(
+  res: Response,
+  target: Pick<AnthropicTarget, 'label' | 'authHint'>,
+): Promise<Vid2ContextError> {
   const raw = await res.text().catch(() => '');
-  const parsed = tryJson<AnthropicErrorBody>(raw);
+  const json = tryJson<AnthropicErrorBody | AnthropicErrorBody[]>(raw);
+  // Vertex streamRawPredict wraps Google errors in a one-element array.
+  const parsed = Array.isArray(json) ? json[0] : json;
   const detail = parsed?.error?.message ?? raw.slice(0, 500);
   const kind = parsed?.error?.type ?? parsed?.error?.status;
   const s = res.status;
@@ -263,9 +268,16 @@ export async function anthropicError(res: Response, target: Pick<AnthropicTarget
   }
   if (s === 401 || s === 403) return new Vid2ContextError('auth', msg, { status: s, hint: target.authHint });
   if (s === 400 && /credit balance/i.test(detail)) {
-    return new Vid2ContextError('auth', msg, { status: s, hint: 'The Anthropic account is out of credits. Add credits in the Claude Console.' });
+    return new Vid2ContextError('auth', msg, {
+      status: s,
+      hint: 'The Anthropic account is out of credits. Add credits in the Claude Console.',
+    });
   }
-  if (s === 404) return new Vid2ContextError('not-found', msg, { status: s, hint: 'The model id is unknown or retired. Set a current id in the model env var.' });
+  if (s === 404)
+    return new Vid2ContextError('not-found', msg, {
+      status: s,
+      hint: 'The model id is unknown or retired. Set a current id in the model env var.',
+    });
   if (s === 413) return new Vid2ContextError('too-large', msg, { status: s });
   return new Vid2ContextError('upstream', msg, { status: s });
 }
@@ -323,20 +335,36 @@ export function finishAnthropic(
   if (req.json) {
     answer = unfence(answer).trim();
     if (tryJson(answer) === undefined) {
-      throw new Vid2ContextError('upstream', `${label} chat: the answer is not valid JSON${stopReason === 'max_tokens' ? ' (cut off at max_tokens)' : ''}.`, {
-        hint: stopReason === 'max_tokens' ? 'Raise maxTokens so the JSON can finish.' : 'The chain tries the next rung.',
-      });
+      throw new Vid2ContextError(
+        'upstream',
+        `${label} chat: the answer is not valid JSON${stopReason === 'max_tokens' ? ' (cut off at max_tokens)' : ''}.`,
+        {
+          hint: stopReason === 'max_tokens' ? 'Raise maxTokens so the JSON can finish.' : 'The chain tries the next rung.',
+        },
+      );
     }
   }
   return { text: answer, model, usage, ...(stopReason ? { stopReason } : {}) };
 }
 
-export function parseAnthropicMessage(label: string, req: ChatRequest, json: WireMessageResponse, fallbackModel: string): NativeChatResult {
+export function parseAnthropicMessage(
+  label: string,
+  req: ChatRequest,
+  json: WireMessageResponse,
+  fallbackModel: string,
+): NativeChatResult {
   const text = (json.content ?? [])
     .filter((b) => b.type === 'text')
     .map((b) => b.text ?? '')
     .join('');
-  return finishAnthropic(label, req, text, json.model ?? fallbackModel, json.stop_reason ?? undefined, mapAnthropicUsage(json.usage));
+  return finishAnthropic(
+    label,
+    req,
+    text,
+    json.model ?? fallbackModel,
+    json.stop_reason ?? undefined,
+    mapAnthropicUsage(json.usage),
+  );
 }
 
 // ---------------------------------------------------------------- calls
@@ -417,11 +445,17 @@ export async function* anthropicEvents(
       break;
     } else if (type === 'error') {
       const overloaded = data.error?.type === 'overloaded_error';
-      throw new Vid2ContextError('upstream', `${label} stream: ${data.error?.type ?? 'error'}: ${data.error?.message ?? msg.data}`, {
-        status: overloaded ? 529 : undefined,
-        retryAfterSec: overloaded ? 30 : undefined,
-        hint: overloaded ? 'Anthropic is overloaded. The chain moves on and retries this rung after about 30 seconds.' : undefined,
-      });
+      throw new Vid2ContextError(
+        'upstream',
+        `${label} stream: ${data.error?.type ?? 'error'}: ${data.error?.message ?? msg.data}`,
+        {
+          status: overloaded ? 529 : undefined,
+          retryAfterSec: overloaded ? 30 : undefined,
+          hint: overloaded
+            ? 'Anthropic is overloaded. The chain moves on and retries this rung after about 30 seconds.'
+            : undefined,
+        },
+      );
     }
   }
   if (!stopped && !stopReason) throw new Vid2ContextError('upstream', `${label} stream: ended before message_stop.`);

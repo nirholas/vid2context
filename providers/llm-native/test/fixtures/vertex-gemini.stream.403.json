@@ -1,0 +1,7 @@
+{
+  "status": 403,
+  "headers": {
+    "content-type": "text/event-stream"
+  },
+  "body": "{\n  \"error\": {\n    \"code\": 403,\n    \"message\": \"There are issues with your billing account, please resolve / pay your outstanding balance for project: projects/redacted-project\",\n    \"status\": \"PERMISSION_DENIED\"\n  }\n}\n"
+}

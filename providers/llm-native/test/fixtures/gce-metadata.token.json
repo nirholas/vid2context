@@ -1,0 +1,7 @@
+{
+  "status": 200,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": "{\"access_token\":\"redacted-token\",\"expires_in\":3288,\"token_type\":\"Bearer\"}"
+}
