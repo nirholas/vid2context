@@ -17,6 +17,8 @@ npm run gen          # regenerate packages/registry/src/generated/
 npm run cli -- <url> [--format text|json] [--timestamps] [--mode auto|captions|stt|video] [--lang xx]
 npm run mcp          # stdio MCP server
 npm run dev:server   # HTTP API on 127.0.0.1:8787 with reload
+npm run build:npm    # bundle the npm packages vid2context-mcp and vid2context
+npm run discovery:gen  # regenerate server.json and the other directory manifests
 ```
 
 Node 22 or newer. Keys go in `.env` (see `.env.example`); every key is optional.

@@ -38,6 +38,12 @@ describe('npm packages', () => {
     expect(statSync(file).mode & 0o111).not.toBe(0);
   });
 
+  it('ships the licenses of bundled dependencies', () => {
+    const notices = readFileSync(join(mcpDir, 'THIRD_PARTY_LICENSES.txt'), 'utf8');
+    expect(notices).toContain('@modelcontextprotocol/sdk@');
+    expect(notices).toContain('zod@');
+  });
+
   it('runs the CLI bundle', () => {
     const version = execFileSync(process.execPath, [join(cliDir, 'dist/vid2context.mjs'), '--version'], { encoding: 'utf8' });
     expect(version.trim()).toBe(CLI_PACKAGE.version);

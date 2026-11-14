@@ -38,6 +38,9 @@ vid2context turns any video into context for AI agents: transcripts, metadata, c
 - `.claude-plugin/plugin.json` (name, description, version, author nirholas, the MCP server definition) and `skills/vid2context/SKILL.md`.
 - The skill teaches: when to reach for vid2context (any video URL, playlist, podcast or local media), outline first (`get_outline`), then `get_section` or `search_transcript` instead of whole transcripts for long material (about 12k tokens per hour of speech), always cite as `[Title @ m:ss](timestamp url)`, flag consensus and disagreement across sources, use the `brief` and `buyer_guide` prompts for multi-video research (the owner's G-Wagon playlist example), and how to recover from errors using `hint` and `attempts` (for example, `blocked` means run locally or through the tunnel).
 - Validate the plugin structure against the current Claude Code plugin docs (WebFetch) and record the date.
+- Added by item 51: a root `.claude-plugin/marketplace.json` (`name`, `owner: { "name": "nirholas" }`, `plugins: [{ "name": "vid2context", "source": "./integrations/claude-plugin", "description": ... }]`) so users can run `claude plugin marketplace add nirholas/vid2context` then `claude plugin install vid2context@<marketplace name>`. Check it with `claude plugin validate .`. The plugin's MCP server runs the published package (`npx -y vid2context-mcp`), not a path into a clone.
+
+Also from item 51: the installers write the published command `npx -y vid2context-mcp` by default (a `--from-source` flag keeps the tsx path for contributors), and print the one-click links and commands from `@vid2context/discovery` (`packages/discovery/src/install.ts`) instead of retyping them. Submit the plugin to the Anthropic directory (claude.ai/directory/manage) only through the owner.
 
 ### ChatGPT (`integrations/chatgpt/`)
 

@@ -1,0 +1,354 @@
+1
+00:00:06,660 --> 00:00:08,579
+Altitud 5.200 pies
+
+2
+00:00:12,529 --> 00:00:14,335
+Control manual de actitud correcto
+
+3
+00:00:14,335 --> 00:00:15,972
+Recibido, copiado
+
+4
+00:00:17,044 --> 00:00:18,126
+Altitud 4.200
+
+5
+00:00:18,152 --> 00:00:19,810
+Houston, están autorizados para aterrizar, cambio
+
+6
+00:00:24,297 --> 00:00:26,639
+Recibido. Entendido.
+Autorizados para aterrizar. 3.000 pies.
+
+7
+00:00:26,749 --> 00:00:27,923
+Alarma de programa.
+
+8
+00:00:30,420 --> 00:00:31,222
+1201
+
+9
+00:00:31,464 --> 00:00:32,198
+1201
+
+10
+00:00:32,353 --> 00:00:33,567
+Recibido, alarma 1201
+
+11
+00:00:35,471 --> 00:00:37,376
+Estamos listos. Mismo tipo. Estamos listos.
+
+12
+00:00:39,196 --> 00:00:41,242
+2000 pies. 2000 pies.
+
+13
+00:00:41,454 --> 00:00:43,627
+Al AGS. 47 grados. Recibido.
+
+14
+00:00:44,544 --> 00:00:45,362
+47 grados.
+
+15
+00:00:49,990 --> 00:00:51,522
+Eagle, se ve muy bien. Están autorizados.
+
+16
+00:00:55,366 --> 00:00:56,509
+Altitud 1.600
+
+17
+00:01:00,854 --> 00:01:02,759
+1.400 pies, todavía se ve muy bien
+
+18
+00:01:06,837 --> 00:01:08,488
+Recibido. 1202. Lo copiamos.
+
+19
+00:01:09,772 --> 00:01:10,788
+35 grados.
+
+20
+00:01:11,959 --> 00:01:13,722
+35 grados. 750.
+
+21
+00:01:14,146 --> 00:01:15,232
+Bajando a 23
+
+22
+00:01:16,869 --> 00:01:19,296
+700 pies, 21 bajando, 33 grados.
+
+23
+00:01:21,257 --> 00:01:22,992
+600 pies, bajando a 19.
+
+24
+00:01:25,377 --> 00:01:27,663
+540 pies, bajando a... 30.
+
+25
+00:01:28,015 --> 00:01:28,820
+Bajando a 15.
+
+26
+00:01:36,185 --> 00:01:37,737
+400 pies, bajando a 9
+
+27
+00:01:39,684 --> 00:01:40,474
+[5]8 adelante.
+
+28
+00:01:43,056 --> 00:01:44,933
+350 pies, bajando a 4.
+
+29
+00:01:45,751 --> 00:01:47,374
+[3]30, tres y medio bajando.
+
+30
+00:01:52,566 --> 00:01:56,178
+Están... fijados en... velocidad horizontal.
+
+31
+00:01:57,462 --> 00:01:59,014
+300 pies, bajando tres y medio
+
+32
+00:01:59,268 --> 00:02:00,284
+47 adelante
+
+33
+00:02:01,695 --> 00:02:02,443
+[Redúcelo] despacio
+
+34
+00:02:03,156 --> 00:02:04,040
+y uno por minuto
+
+35
+00:02:04,333 --> 00:02:05,321
+Uno y medio bajando
+
+36
+00:02:08,298 --> 00:02:09,055
+[2]70
+
+37
+00:02:09,286 --> 00:02:11,176
+[Ok, ¿cómo está el combustible?]
+
+38
+00:02:12,020 --> 00:02:13,036
+Ocho [por ciento.]
+
+39
+00:02:13,265 --> 00:02:15,951
+[Ok. Aquí hay una...
+Parece una buena zona aquí.]
+
+40
+00:02:16,256 --> 00:02:17,653
+[Tengo la sombra ahí fuera.]
+
+41
+00:02:19,205 --> 00:02:20,672
+[2]50, bajando a 2 y medio
+
+42
+00:02:21,589 --> 00:02:22,492
+19 adelante
+
+43
+00:02:25,328 --> 00:02:26,767
+Luces de altitud, velocidad
+
+44
+00:02:27,995 --> 00:02:29,857
+3 y medio bajando, 220 pies
+
+45
+00:02:31,804 --> 00:02:32,651
+13 adelante
+
+46
+00:02:34,923 --> 00:02:37,482
+11 adelante. Bajando bien. 200 pies
+
+47
+00:02:37,509 --> 00:02:38,750
+4 y medio bajando
+
+48
+00:02:38,762 --> 00:02:39,805
+5 y medio bajando
+
+49
+00:02:43,671 --> 00:02:45,646
+160 pies, 6 y medio bajando
+
+50
+00:02:45,646 --> 00:02:46,817
+5 y medio bajando
+
+51
+00:02:48,115 --> 00:02:48,962
+9 adelante
+
+52
+00:02:50,655 --> 00:02:51,868
+[Se ve] bien.
+
+53
+00:02:52,814 --> 00:02:53,646
+[1]20 pies.
+
+54
+00:02:58,288 --> 00:03:00,814
+100 pies, 3 1/2 bajando, 9 adelante
+
+55
+00:03:02,069 --> 00:03:02,783
+5 por ciento
+
+56
+00:03:04,143 --> 00:03:04,999
+Luz de cantidad.
+
+57
+00:03:07,995 --> 00:03:09,124
+Ok. 75 pies.
+
+58
+00:03:09,533 --> 00:03:11,430
+Y se ve bien. Bajando medio
+
+59
+00:03:12,214 --> 00:03:13,247
+6 adelante
+
+60
+00:03:15,615 --> 00:03:16,629
+60 segundos
+
+61
+00:03:17,548 --> 00:03:18,579
+La luz está encendida
+
+62
+00:03:21,865 --> 00:03:22,910
+Bajando 2 y medio
+
+63
+00:03:25,886 --> 00:03:26,702
+Adelante
+
+64
+00:03:27,057 --> 00:03:27,864
+Adelante
+
+65
+00:03:31,347 --> 00:03:32,856
+40 pies, bajando 2 y medio
+
+66
+00:03:33,266 --> 00:03:34,583
+Levantando algo de polvo.
+
+67
+00:03:35,580 --> 00:03:37,146
+30 pies, 2 y medio bajando
+
+68
+00:03:37,654 --> 00:03:38,503
+Sombra [tenue]
+
+69
+00:03:39,714 --> 00:03:40,560
+4 adelante
+
+70
+00:03:41,386 --> 00:03:43,478
+4 adelante. Derivando un poco a la derecha.
+
+71
+00:03:43,566 --> 00:03:44,417
+[20 pies]
+
+72
+00:03:44,610 --> 00:03:45,467
+bajando medio
+
+73
+00:03:45,753 --> 00:03:46,543
+30 segundos
+
+74
+00:03:46,543 --> 00:03:49,662
+[Derivando] hacia adelante
+[solo un poco; eso está] bien.
+
+75
+00:03:50,888 --> 00:03:51,664
+Luz de contacto
+
+76
+00:03:54,543 --> 00:03:55,545
+Ok. Paro de motor.
+
+77
+00:03:55,996 --> 00:03:57,224
+ACA fuera de retén.
+
+78
+00:03:58,479 --> 00:04:01,584
+Control de modo, ambos en Auto.
+Mando de anulación de motor de descenso, apagado.
+
+79
+00:04:02,091 --> 00:04:02,896
+Motor armado, apagado.
+
+80
+00:04:04,010 --> 00:04:05,181
+413 está dentro.
+
+81
+00:04:08,765 --> 00:04:10,374
+Te recibimos abajo, Eagle.
+
+82
+00:04:11,206 --> 00:04:12,307
+Houston eh,
+
+83
+00:04:14,917 --> 00:04:17,598
+Aquí Base Tranquilidad.
+El Águila ha aterrizado.
+
+84
+00:04:17,894 --> 00:04:21,280
+Recibido. Tran... Tranquilidad,
+te recibimos en el suelo.
+
+85
+00:04:21,337 --> 00:04:23,354
+Tienen a un montón de tipos
+a punto de ponerse azules.
+
+86
+00:04:23,354 --> 00:04:25,179
+Estamos respirando de nuevo. Muchas gracias.
+
+87
+00:04:28,787 --> 00:04:29,794
+Gracias.

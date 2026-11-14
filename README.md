@@ -1,6 +1,8 @@
 # vid2context
 
-**Turn any video into context for AI agents.**
+[![npm](https://img.shields.io/npm/v/vid2context-mcp?label=vid2context-mcp)](https://www.npmjs.com/package/vid2context-mcp) [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE) [![Node 22+](https://img.shields.io/badge/node-%3E%3D22-339933?logo=nodedotjs&logoColor=white)](https://nodejs.org) [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/nirholas/vid2context)
+
+**Turn any video into context for AI agents.** An MCP server, CLI and library that gives Claude, ChatGPT, Cursor, VS Code Copilot and any other agent the transcript, metadata and chapters of a YouTube video or media file, with timestamps it can cite.
 
 Paste a video link or drop in a media file. vid2context returns the transcript, metadata and chapters in a form your agent can read and cite: plain text with `[m:ss]` timestamps, JSON, or (soon) a single Markdown context pack you can upload to ChatGPT Projects, Claude Projects or a custom GPT.
 
@@ -66,6 +68,12 @@ Early and pre-release (0.1.0). What works today:
 Requires Node.js 22 or newer.
 
 ```sh
+npx vid2context "https://www.youtube.com/watch?v=jNQXAC9IVRw" --timestamps
+```
+
+From source:
+
+```sh
 git clone https://github.com/nirholas/vid2context.git
 cd vid2context
 npm install
@@ -94,7 +102,36 @@ Program output goes to stdout and everything else to stderr, so `vid2context URL
 
 ## Use it from your agent
 
-### Claude Code (MCP over stdio)
+The MCP server is the npm package [`vid2context-mcp`](https://www.npmjs.com/package/vid2context-mcp), listed in the [MCP Registry](https://registry.modelcontextprotocol.io) as `io.github.nirholas/vid2context`. It needs no keys.
+
+[![Install in VS Code](https://img.shields.io/badge/VS_Code-Install_vid2context-0098FF?logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect?url=vscode%3Amcp%2Finstall%3F%257B%2522name%2522%253A%2522vid2context%2522%252C%2522command%2522%253A%2522npx%2522%252C%2522args%2522%253A%255B%2522-y%2522%252C%2522vid2context-mcp%2522%255D%257D) [![Install in VS Code Insiders](https://img.shields.io/badge/VS_Code_Insiders-Install_vid2context-24bfa5?logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect?url=vscode-insiders%3Amcp%2Finstall%3F%257B%2522name%2522%253A%2522vid2context%2522%252C%2522command%2522%253A%2522npx%2522%252C%2522args%2522%253A%255B%2522-y%2522%252C%2522vid2context-mcp%2522%255D%257D) [![Install in Cursor](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/install-mcp?name=vid2context&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsInZpZDJjb250ZXh0LW1jcCJdfQ%3D%3D)
+
+### Claude Code
+
+```sh
+claude mcp add --scope user --transport stdio vid2context -- npx -y vid2context-mcp
+```
+
+### Codex, Gemini CLI
+
+```sh
+codex mcp add vid2context -- npx -y vid2context-mcp
+gemini extensions install https://github.com/nirholas/vid2context
+```
+
+### Claude Desktop, Cursor, Windsurf, Cline and other clients
+
+```json
+{
+  "mcpServers": {
+    "vid2context": { "command": "npx", "args": ["-y", "vid2context-mcp"] }
+  }
+}
+```
+
+To pass a key, add `"env": { "GROQ_API_KEY": "..." }` to the entry. Agents setting this up for you can follow [llms-install.md](llms-install.md).
+
+### From source
 
 From the repo root:
 
@@ -102,7 +139,9 @@ From the repo root:
 claude mcp add vid2context -- "$PWD/node_modules/.bin/tsx" "$PWD/packages/mcp/src/bin.ts"
 ```
 
-Then ask Claude Code something like "get the transcript of https://youtu.be/jNQXAC9IVRw and summarize it with timestamps". The server exposes:
+### Tools
+
+Ask your agent something like "get the transcript of https://youtu.be/jNQXAC9IVRw and summarize it with timestamps". The server exposes:
 
 | Tool             | Input                                                                     | Returns                                                                                   |
 | ---------------- | ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
@@ -110,8 +149,6 @@ Then ask Claude Code something like "get the transcript of https://youtu.be/jNQX
 | `get_metadata`   | `url`                                                                     | Title, channel, description, duration, chapters, tags and language as JSON                |
 
 Failures come back as tool errors carrying the error code, hint and attempts, so the agent can explain the problem or retry with another mode.
-
-Any other MCP client that speaks stdio (Claude Desktop, Cursor, VS Code, Windsurf) can use the same command.
 
 ### ChatGPT
 
@@ -172,6 +209,7 @@ packages/
   cli/         The vid2context command.
   mcp/         The MCP server.
   server/      HTTP API on Hono (scaffold).
+  discovery/   npm packages, MCP Registry and directory manifests (server.json, glama.json, ...).
 providers/
   youtube/                 Source and captions through the innertube player API.
   media-file/              Local files and file:// URLs (Node only).
@@ -223,6 +261,18 @@ Tests use real responses recorded from the live services, never invented data. L
 - **Library:** collections fed from playlists, watch lists that ingest new uploads, hybrid keyword and vector search, on SQLite, Cloudflare D1 or Postgres with pgvector.
 - **Surfaces:** a full CLI, more MCP tools, remote MCP for ChatGPT and Claude.ai, a full HTTP API with OpenAPI, a web app where you paste a link or upload a video, pick your LLM, and get everything as copyable text or a .zip, and a browser extension.
 - **Deploy:** Docker, Railway, Cloud Run, Alibaba Cloud, Cloudflare Workers and Pages, Vercel, and a client-only GitHub Pages build.
+
+## FAQ
+
+**How do I give Claude, ChatGPT or Cursor a YouTube video?** Add the MCP server (above) and paste the link into your chat. The agent calls `get_transcript` and gets the transcript with `[m:ss]` timestamps. ChatGPT needs a remote MCP server, which is on the roadmap.
+
+**Does it need an API key?** No. Creator captions and auto-captions need no key, and speech-to-text falls back to keyless hosts. Keys only add faster or local options.
+
+**What if a video has no captions?** vid2context downloads the audio and runs speech-to-text, preferring a local Whisper server, then free tiers such as Groq, then keyless hosts.
+
+**Can I keep AI processing on my machine?** Point it at a local speech-to-text server and a local LLM and set `VID2CONTEXT_POLICY=local-only`. No hosted AI service is used; fetching a YouTube video still needs the network, a local file does not.
+
+**Is it a YouTube transcript API?** Yes, as a library and CLI today, and as an HTTP API with OpenAPI soon. It returns text, JSON and timestamps, keeps the raw transcript, and records every provider it tried.
 
 ## License
 

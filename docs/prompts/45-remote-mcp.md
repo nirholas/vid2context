@@ -43,6 +43,12 @@ vid2context turns any video into context for AI agents: transcripts, metadata, c
   - Clients, codes and tokens stored in a KvStore (`auth:oauth:` keys) with TTLs: `hasKv(storage) ? storage : new MemoryKv()`, with a clear warning that MemoryKv loses tokens on restart.
 - Origin header validation and DNS-rebinding protection when bound to localhost; CORS only for configured origins; per-token rate limits (token bucket in the KvStore) answering `429` with `Retry-After`.
 
+### Discovery for the remote server (added by item 51)
+
+- MCP Server Card at `<streamable-http-url>/server-card` and an entry for it in `/.well-known/ai-catalog.json` (`{"specVersion":"1.0","entries":[{"identifier":"urn:air:vid2context.com:mcp:vid2context","type":"application/mcp-server-card+json","url":"https://vid2context.com/mcp/server-card"}]}`). Server Cards are experimental as of 2026-11 (SEP-2127, `modelcontextprotocol/ext-server-card`): re-check the status and shape before building, and build from `serverJson()` in `@vid2context/discovery` so names, version and description stay identical.
+- Once the endpoint is public, add a `remotes` entry (`{"type": "streamable-http", "url": "https://vid2context.com/mcp"}`) to `serverJson()` in `packages/discovery/src/manifests.ts` and rerun `npm run discovery:gen`. That edit is the one shared touch allowed in `packages/discovery`.
+- ChatGPT's app directory (platform.openai.com, "plugins") needs this public HTTPS endpoint plus domain verification at `/.well-known/openai-apps-challenge`; document the steps for the owner in the guide.
+
 ### Guides
 
 - `docs/guides/remote-mcp.md`: when to use stdio versus remote, running `vid2context-mcp-http`, static token setup, OAuth setup, adding the connector in ChatGPT (developer mode connectors) and in Claude.ai (custom connectors), with the exact fields, and troubleshooting.

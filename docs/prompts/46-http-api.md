@@ -48,6 +48,13 @@ Check for each export and mount it with `app.route('/api/v1', ...)` when present
 - Public mode: when `VID2CONTEXT_PUBLIC=1` (set by public deployments), refuse local file paths and `file://` inputs with `unsupported-input` and a hint (prompt 10 may later enforce this in the pipeline too; keep your check).
 - Graceful shutdown on Node (stop accepting, finish in-flight requests, then exit).
 
+### Discovery (added by item 51, see `docs/guides/discovery.md`)
+
+- Markdown for agents in the Worker: for a non-`/api` `GET` whose `Accept` header prefers `text/markdown` over `text/html`, serve the page's `.md` twin from `ASSETS` (prompt 36 emits `/index.md` and `<path>.md`) with `Content-Type: text/markdown; charset=utf-8` and `Vary: Accept`. Fall through to HTML when no twin exists. HTML responses also get `Vary: Accept`.
+- A `Link` header on HTML responses: `</llms.txt>; rel="alternate"; type="text/plain", </api/v1/openapi.json>; rel="service-desc"; type="application/openapi+json"` (RFC 8288 and RFC 8631), plus `</mcp>; rel="service"` once `/mcp` is mounted.
+- `X-Robots-Tag: noindex` on every `/api/*` response so JSON never competes with the docs in search results.
+- `www` and `http` are already 301-redirected to `https://vid2context.com` at the zone (Single Redirect rule and Always Use HTTPS). Do not add a second redirect in code.
+
 ## Out of scope
 
 - `/chat` and `/ask` logic: prompt 34 (ask). `/collections` and `/search`: prompts 41 and 40. `/briefs` and `/extract`: prompt 32. `/jobs`: prompt 42. `/mcp`: prompt 45. You mount them.

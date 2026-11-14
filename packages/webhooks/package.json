@@ -1,0 +1,16 @@
+{
+  "name": "@vid2context/webhooks",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Signed, retried outbound webhooks (Standard Webhooks) for vid2context events: new videos, collection updates, finished jobs and briefs.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./http": "./src/http.ts"
+  },
+  "dependencies": {
+    "@vid2context/core": "*",
+    "hono": "^4.13.18"
+  }
+}

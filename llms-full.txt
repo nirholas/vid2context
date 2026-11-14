@@ -11,9 +11,24 @@ vid2context is early and pre-release (version 0.1.0). What exists today:
 - `@vid2context/core`: data model, provider contracts, the free-first rung chain, the video-to-context pipeline, output formatters, an in-memory storage backend. Runtime-neutral: no Node-only imports, so it runs on Node, Cloudflare Workers and in the browser.
 - `@vid2context/registry`: provider registries generated per runtime (node, workers, browser).
 - Providers: `youtube`, `media-file`, `stt-openai-compatible`, `llm-openai-compatible`.
-- `@vid2context/cli`: a minimal command line (see below).
+- `@vid2context/cli`: a minimal command line (see below), published to npm as `vid2context`.
+- `@vid2context/mcp`: an MCP server over stdio with `get_transcript` and `get_metadata`, published to npm as `vid2context-mcp` and listed in the MCP Registry as `io.github.nirholas/vid2context`.
 
-In development: the MCP server (`@vid2context/mcp`) and the HTTP API (`@vid2context/server`, built on Hono). Planned: the web app, playlist and channel expansion for YouTube, and research briefs. Do not tell users these are ready.
+In development: more MCP tools, remote MCP over HTTPS, and the HTTP API (`@vid2context/server`, built on Hono). Planned: the web app, playlist and channel expansion for YouTube, and research briefs. Do not tell users these are ready.
+
+## Install
+
+The MCP server needs no keys:
+
+```bash
+npx -y vid2context-mcp
+```
+
+Claude Code: `claude mcp add --scope user --transport stdio vid2context -- npx -y vid2context-mcp`. Other clients take `{"mcpServers": {"vid2context": {"command": "npx", "args": ["-y", "vid2context-mcp"]}}}`. Optional keys go in the server entry's `env`. Step-by-step agent setup: https://github.com/nirholas/vid2context/blob/main/llms-install.md
+
+The CLI: `npx vid2context <url-or-file> --timestamps`.
+
+The npm packages are single-file bundles built from this repo by `npm run build:npm` (`packages/discovery`).
 
 ## Install from source
 
@@ -26,7 +41,7 @@ npm install        # also generates the provider registry
 npm run check      # typecheck, lint, tests
 ```
 
-Packages are not published to npm yet.
+The workspace packages (`@vid2context/*`) export TypeScript source and are not published individually.
 
 ## Command line
 

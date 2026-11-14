@@ -591,6 +591,8 @@ Everything not listed belongs to exactly one prompt (see the index in `docs/prom
 | `docs/providers.md`, `.env.example` | every prompt that adds env vars or rungs: add or update only its own rows and variables |
 | `docs/contracts/*.md` | the surface owner: 44 (`mcp-tools.md`), 45 (transport section of `mcp-tools.md`), 46 (`http-api.md`), 34 (the `/chat` and `/ask` rows), 20, 21 and 25 (`providers.md`) |
 | `docs/guides/youtube.md` | 06, 07, 08, 09: each adds or edits only its own `##` section |
+| root `server.json`, `glama.json`, `gemini-extension.json`, `context7.json`, `llms-install.md` | nobody by hand: generated from `packages/discovery` by `npm run discovery:gen` |
+| `packages/discovery/src/manifests.ts` | 45 (add the `remotes` entry to `serverJson()` once `/mcp` is public) |
 | `THIRD_PARTY_NOTICES.md` | any prompt that copies or ports permissively licensed code: add its own entry under `## Entries` (replace "None yet." if it is still there) |
 
 Nobody in the wave edits `CLAUDE.md`, `AGENTS.md`, the root `README.md`, `docs/ROADMAP.md`, `docs/ARCHITECTURE.md`, `docs/prompts/` (except fixing this file additively when a contract here changes), `.github/`, the shared fixtures, or another prompt's directory. The owner updates those after the wave.

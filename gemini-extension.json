@@ -1,0 +1,43 @@
+{
+  "name": "vid2context",
+  "version": "0.1.0",
+  "description": "Turn any video into context for AI agents: transcripts, metadata, chapters, timestamps.",
+  "mcpServers": {
+    "vid2context": {
+      "command": "npx",
+      "args": ["-y", "vid2context-mcp"]
+    }
+  },
+  "settings": [
+    {
+      "name": "Groq API key",
+      "description": "Optional, leave empty to skip. Groq free tier: fast Whisper speech-to-text and LLMs",
+      "envVar": "GROQ_API_KEY",
+      "sensitive": true
+    },
+    {
+      "name": "Gemini API key",
+      "description": "Optional, leave empty to skip. Google AI Studio free tier LLMs",
+      "envVar": "GEMINI_API_KEY",
+      "sensitive": true
+    },
+    {
+      "name": "OpenAI API key",
+      "description": "Optional, leave empty to skip. OpenAI, used last and only when set",
+      "envVar": "OPENAI_API_KEY",
+      "sensitive": true
+    },
+    {
+      "name": "Ollama URL",
+      "description": "Optional, leave empty to skip. Local Ollama server, for example http://localhost:11434/v1",
+      "envVar": "OLLAMA_BASE_URL",
+      "sensitive": false
+    },
+    {
+      "name": "Local speech-to-text URL",
+      "description": "Optional, leave empty to skip. Local OpenAI-compatible speech-to-text server, for example http://localhost:8000/v1",
+      "envVar": "LOCAL_STT_BASE_URL",
+      "sensitive": false
+    }
+  ]
+}

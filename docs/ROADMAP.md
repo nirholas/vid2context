@@ -103,6 +103,12 @@ Shared surfaces have a single owner: only item 46 edits `packages/server` and on
 | 49 | Container deploys: Docker image (Node, yt-dlp, deno, ffmpeg, optional whisper.cpp), Railway, Cloud Run, Alibaba Cloud | `deploy/containers` |
 | 50 | Serverless and static deploys: Cloudflare Workers and Pages, Vercel, GitHub Pages client-only | `deploy/serverless` |
 
+### J. Discovery
+
+| # | Item | Directory |
+|---|---|---|
+| 51 | Discovery: npm packages, MCP Registry, directory manifests, install links, SEO and agent-discovery requirements for the site and server | `packages/discovery` |
+
 ### Wave 2: gaps found by the prior-art review
 
 See `docs/prior-art.md` and `docs/prompts/README.md` for details.

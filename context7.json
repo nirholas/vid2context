@@ -1,0 +1,22 @@
+{
+  "$schema": "https://context7.com/schema/context7.json",
+  "projectTitle": "vid2context",
+  "description": "Turn any video into context for AI agents and LLMs: YouTube transcripts, captions, speech-to-text, metadata and chapters with timestamps your agent can cite. Free-first: local models, then free tiers, then keyless hosts, paid APIs last. Works with zero configuration.",
+  "branch": "main",
+  "folders": ["docs", "packages", "providers"],
+  "excludeFolders": [
+    "docs/prompts",
+    "tests/fixtures",
+    "packages/*/test/fixtures",
+    "providers/*/test/fixtures",
+    "packages/registry/src/generated"
+  ],
+  "rules": [
+    "Run the MCP server with `npx -y vid2context-mcp`; it needs no keys and prefers existing captions before speech-to-text.",
+    "In library code, call getVideoContext from @vid2context/core with a registry from @vid2context/registry/node and a context from createNodeContext.",
+    "Providers never read process.env or the global fetch: they use ctx.env, ctx.fetch, ctx.log and ctx.signal.",
+    "Raw transcripts are always kept; summaries and briefs are added layers.",
+    "Every model id is overridable from env; see .env.example and docs/providers.md.",
+    "Import workspace packages with explicit .ts extensions; packages export TypeScript source."
+  ]
+}

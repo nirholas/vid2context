@@ -53,6 +53,19 @@ vid2context turns any video into context for AI agents: transcripts, metadata, c
 - Per-page title and description, canonical URLs on `https://vid2context.com`, Open Graph and Twitter cards with an OG image generated at build time (no external service), `sitemap.xml`, `robots.txt`, JSON-LD `SoftwareApplication`.
 - `/llms.txt` and `/llms-full.txt` from the repo files, linked with `<link rel="alternate">`.
 
+Added by item 51 (discovery, see `docs/guides/discovery.md`). Build these too:
+
+- One canonical host: `https://vid2context.com`, no trailing-slash duplicates. The zone already 301s `www` and `http` to it, so canonicals, the sitemap and OG URLs must all use the apex with https.
+- `robots.txt`: allow everything, list `Sitemap: https://vid2context.com/sitemap.xml`, and name the AI crawlers explicitly with `Allow: /` so intent is unambiguous: `GPTBot`, `OAI-SearchBot`, `ChatGPT-User`, `ClaudeBot`, `Claude-SearchBot`, `Claude-User`, `PerplexityBot`, `Perplexity-User`, `Google-Extended`, `Applebot`, `Applebot-Extended`. Disallow only `/api/` (JSON, not pages). Cloudflare's managed robots.txt and AI-bot blocking are off on the zone; keep them off.
+- `sitemap.xml` with `<lastmod>` from each source file's last git commit date, not the build time.
+- JSON-LD, one `@graph` per page: `WebSite`, `SoftwareApplication` (`applicationCategory` DeveloperApplication, `operatingSystem` "macOS, Linux, Windows", `offers` price 0, `license`, `downloadUrl` the npm page, `softwareVersion` from `packages/discovery` meta), `SoftwareSourceCode` (`codeRepository`, `programmingLanguage` TypeScript), `FAQPage` for the FAQ section, `BreadcrumbList` on docs pages. Validate with a build-time test that parses every emitted block.
+- Markdown twins for agents: every HTML page also emits `<path>.md` (for `/` that is `/index.md`) with the same content as clean Markdown, linked from the page with `<link rel="alternate" type="text/markdown" href="...">`. Prompt 46 serves them for `Accept: text/markdown`.
+- `llms.txt` on the site lists the docs pages (their `.md` twins) in addition to the repo copy's links; keep the repo copy as the source and append a generated `## Docs` section at build time.
+- Install section with the one-click buttons and commands generated from `@vid2context/discovery` (`vscodeInstallUrl`, `cursorInstallUrl`, `claudeCodeCommand`, `mcpServersJson`, `lmStudioDeeplink`, `gooseDeeplink`): import them at build time, never retype them. Custom schemes (`vscode:`, `cursor:`, `lmstudio:`, `goose:`) work on the site even though GitHub strips them.
+- Search-intent docs pages, each with a working example and real output (no invented numbers): "YouTube transcript MCP server", "Give Claude a YouTube video", "Give ChatGPT a YouTube video", "Free YouTube transcript API", "Transcribe a video with Whisper for free", "Turn a YouTube playlist into research notes" (once item 08 lands), and one page per client (Claude Code, Claude Desktop, Cursor, VS Code, Codex, Gemini CLI, Windsurf, Cline, LM Studio, Goose). Honest comparison pages against `youtube-transcript-api`, `yt-dlp` and plain Whisper: what each does, when to pick which.
+- `og:image` per page, `twitter:card` `summary_large_image`, `og:site_name`, `og:type`, `<html lang>`, `theme-color`, and a real favicon set (`/favicon.svg`, `/apple-touch-icon.png` at 180x180) rendered from `packages/discovery/assets/logo.svg`.
+- Performance budget that keeps Core Web Vitals green: no blocking third-party scripts or fonts, images with width and height, total JS on the landing page under 100 KB gzipped. Check with Lighthouse in the build test or report the score.
+
 ### Copy and quality rules
 
 - No em-dashes or en-dashes, no emojis, no invented numbers, testimonials, user counts or company logos. Every number on the page (providers, rungs, sources, stars) is computed at build time.

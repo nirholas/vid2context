@@ -4,7 +4,13 @@
 
 vid2context resolves a video input (a YouTube URL or id, or a local media file), fetches its metadata and chapters, and produces a timed transcript. It prefers existing captions (creator, then platform auto-captions) and falls back to speech-to-text through a chain of OpenAI-compatible providers. Every result records which providers were tried and why each one succeeded or failed.
 
-Status: early and pre-release (0.1.0). The TypeScript library core, four providers and a minimal CLI work today. The MCP server and HTTP API (Hono) are in development, and a web app is planned; all of them share the same core. Install from source: clone, `npm install`, then `npm run cli -- <url-or-file>`. Requires Node.js 22 or newer.
+Status: early and pre-release (0.1.0). The TypeScript library core, four providers, the CLI and an MCP server over stdio (`get_transcript`, `get_metadata`) work today. The HTTP API (Hono) and remote MCP are in development, and a web app is planned; all of them share the same core. Requires Node.js 22 or newer.
+
+## Install
+
+- MCP server, no keys needed: `npx -y vid2context-mcp` (npm `vid2context-mcp`, MCP Registry `io.github.nirholas/vid2context`). Claude Code: `claude mcp add --scope user --transport stdio vid2context -- npx -y vid2context-mcp`
+- CLI: `npx vid2context <url-or-file> --timestamps`
+- [llms-install.md](https://github.com/nirholas/vid2context/blob/main/llms-install.md): step-by-step setup for agents installing the MCP server for a user, with the optional keys and a verification call
 
 ## Docs
 

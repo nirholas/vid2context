@@ -1,0 +1,67 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.nirholas/vid2context",
+  "title": "vid2context",
+  "description": "Turn any video into context for AI agents: transcripts, metadata, chapters, timestamps.",
+  "version": "0.1.0",
+  "websiteUrl": "https://vid2context.com",
+  "repository": {
+    "url": "https://github.com/nirholas/vid2context",
+    "source": "github"
+  },
+  "icons": [
+    {
+      "src": "https://raw.githubusercontent.com/nirholas/vid2context/main/packages/discovery/assets/logo.png",
+      "mimeType": "image/png",
+      "sizes": ["400x400"]
+    }
+  ],
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "vid2context-mcp",
+      "version": "0.1.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "GROQ_API_KEY",
+          "description": "Optional. Groq free tier: fast Whisper speech-to-text and LLMs",
+          "isRequired": false,
+          "isSecret": true,
+          "format": "string"
+        },
+        {
+          "name": "GEMINI_API_KEY",
+          "description": "Optional. Google AI Studio free tier LLMs",
+          "isRequired": false,
+          "isSecret": true,
+          "format": "string"
+        },
+        {
+          "name": "OPENAI_API_KEY",
+          "description": "Optional. OpenAI, used last and only when set",
+          "isRequired": false,
+          "isSecret": true,
+          "format": "string"
+        },
+        {
+          "name": "OLLAMA_BASE_URL",
+          "description": "Optional. Local Ollama server, for example http://localhost:11434/v1",
+          "isRequired": false,
+          "isSecret": false,
+          "format": "string"
+        },
+        {
+          "name": "LOCAL_STT_BASE_URL",
+          "description": "Optional. Local OpenAI-compatible speech-to-text server, for example http://localhost:8000/v1",
+          "isRequired": false,
+          "isSecret": false,
+          "format": "string"
+        }
+      ]
+    }
+  ]
+}

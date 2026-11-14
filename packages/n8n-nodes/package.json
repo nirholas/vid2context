@@ -1,0 +1,30 @@
+{
+  "name": "n8n-nodes-vid2context",
+  "version": "0.1.0",
+  "description": "n8n community nodes for vid2context: fetch transcripts, metadata and full video context, and start workflows on vid2context webhook events.",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/nirholas/vid2context/tree/main/packages/n8n-nodes",
+  "keywords": ["n8n-community-node-package", "vid2context", "transcript", "youtube", "video"],
+  "author": {
+    "name": "nirholas"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nirholas/vid2context.git",
+    "directory": "packages/n8n-nodes"
+  },
+  "type": "commonjs",
+  "scripts": {
+    "build": "node scripts/build.mjs"
+  },
+  "files": ["dist"],
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "strict": true,
+    "credentials": ["dist/credentials/Vid2ContextApi.credentials.js"],
+    "nodes": ["dist/nodes/Vid2Context/Vid2Context.node.js", "dist/nodes/Vid2ContextTrigger/Vid2ContextTrigger.node.js"]
+  },
+  "peerDependencies": {
+    "n8n-workflow": "*"
+  }
+}

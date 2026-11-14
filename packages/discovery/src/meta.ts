@@ -87,6 +87,8 @@ export const MCP_COMMAND = { command: 'npx', args: ['-y', MCP_PACKAGE.name] } as
 
 export interface EnvVar {
   name: string;
+  /** Human label for install dialogs. */
+  label: string;
   description: string;
   secret: boolean;
 }
@@ -97,9 +99,24 @@ export interface EnvVar {
  * every model override, is in .env.example and docs/providers.md.
  */
 export const ENV_VARS: EnvVar[] = [
-  { name: 'GROQ_API_KEY', description: 'Groq free tier: fast Whisper speech-to-text and LLMs', secret: true },
-  { name: 'GEMINI_API_KEY', description: 'Google AI Studio free tier LLMs', secret: true },
-  { name: 'OPENAI_API_KEY', description: 'OpenAI, used last and only when set', secret: true },
-  { name: 'OLLAMA_BASE_URL', description: 'Local Ollama server, e.g. http://localhost:11434/v1', secret: false },
-  { name: 'LOCAL_STT_BASE_URL', description: 'Local OpenAI-compatible speech-to-text server', secret: false },
+  {
+    name: 'GROQ_API_KEY',
+    label: 'Groq API key',
+    description: 'Groq free tier: fast Whisper speech-to-text and LLMs',
+    secret: true,
+  },
+  { name: 'GEMINI_API_KEY', label: 'Gemini API key', description: 'Google AI Studio free tier LLMs', secret: true },
+  { name: 'OPENAI_API_KEY', label: 'OpenAI API key', description: 'OpenAI, used last and only when set', secret: true },
+  {
+    name: 'OLLAMA_BASE_URL',
+    label: 'Ollama URL',
+    description: 'Local Ollama server, for example http://localhost:11434/v1',
+    secret: false,
+  },
+  {
+    name: 'LOCAL_STT_BASE_URL',
+    label: 'Local speech-to-text URL',
+    description: 'Local OpenAI-compatible speech-to-text server, for example http://localhost:8000/v1',
+    secret: false,
+  },
 ];

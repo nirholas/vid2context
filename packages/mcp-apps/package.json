@@ -1,0 +1,24 @@
+{
+  "name": "@vid2context/mcp-apps",
+  "version": "0.1.0",
+  "description": "MCP Apps for vid2context: an interactive transcript viewer (chapters, search, clickable timestamps, citations) rendered inside ChatGPT, Claude and other MCP Apps hosts.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./mcp": "./src/mcp.ts"
+  },
+  "scripts": {
+    "build:viewer": "node scripts/build-viewer.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/ext-apps": "^1.7.5",
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "@vid2context/core": "*",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2",
+    "happy-dom": "^21.0.4"
+  }
+}
