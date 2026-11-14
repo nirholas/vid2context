@@ -18,8 +18,15 @@
     "record": "tsx scripts/record-fixtures.ts"
   },
   "dependencies": {
+    "@fontsource/inter": "^5.3.0",
+    "@fontsource/jetbrains-mono": "^5.3.0",
     "@vid2context/core": "*",
-    "@vid2context/registry": "*"
+    "@vid2context/registry": "*",
+    "lucide-react": "^1.73.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
     "@playwright/test": "^1.65.0",

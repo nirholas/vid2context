@@ -1,0 +1,47 @@
+{
+  "recordedAt": "2026-11-14T17:21:22.455Z",
+  "browser": "Chromium 158.0.8127.18",
+  "origin": "http://127.0.0.1:28748",
+  "results": [
+    {
+      "service": "groq",
+      "cors": "allowed",
+      "status": 401
+    },
+    {
+      "service": "cerebras",
+      "cors": "blocked",
+      "error": "TypeError: Failed to fetch"
+    },
+    {
+      "service": "mistral",
+      "cors": "allowed",
+      "status": 401
+    },
+    {
+      "service": "github",
+      "cors": "blocked",
+      "error": "TypeError: Failed to fetch"
+    },
+    {
+      "service": "gemini",
+      "cors": "allowed",
+      "status": 400
+    },
+    {
+      "service": "ovh",
+      "cors": "allowed",
+      "status": 200
+    },
+    {
+      "service": "pollinations",
+      "cors": "allowed",
+      "status": 200
+    },
+    {
+      "service": "openai",
+      "cors": "allowed",
+      "status": 401
+    }
+  ]
+}
