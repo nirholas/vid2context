@@ -34,7 +34,6 @@ import {
 import { mediaStream } from './stream.ts';
 
 export { findSidecars, mediaFileCaptions, type SubtitleTrack } from './captions.ts';
-export { type HlsInfo, matchStream, mediaStream, parseDashManifest, parseHlsPlaylist } from './stream.ts';
 export {
   fileId,
   MIME_BY_EXT,
@@ -43,6 +42,7 @@ export {
   pathOf,
   probeIfAvailable,
 } from './files.ts';
+export { type HlsInfo, matchStream, mediaStream, parseDashManifest, parseHlsPlaylist } from './stream.ts';
 export { parseSubtitles, parseTimestamp } from './subtitles.ts';
 
 async function rawBytes(path: string, durationSec?: number): Promise<AudioInput> {
@@ -81,7 +81,11 @@ export const mediaFile: SourceProvider = defineProvider({
     const meta: VideoMetadata = {
       ref,
       title: p.tags.title?.trim() || stemOf(path),
-      chapters: p.chapters.map((c) => ({ title: c.title, startSec: c.startSec, ...(c.endSec !== undefined ? { endSec: c.endSec } : {}) })),
+      chapters: p.chapters.map((c) => ({
+        title: c.title,
+        startSec: c.startSec,
+        ...(c.endSec !== undefined ? { endSec: c.endSec } : {}),
+      })),
       extra: {
         ...base,
         container: p.container,

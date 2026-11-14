@@ -146,7 +146,11 @@ export const mediaFileCaptions: CaptionsProvider = defineProvider({
     const path = mediaPathOf(ref);
     if (!path) return [];
     const tracks = [...findSidecars(path), ...embeddedTracks(await probeIfAvailable(path, ctx))];
-    return tracks.map((t) => ({ language: t.language ?? 'und', name: t.forced ? `${t.name} (forced)` : t.name, origin: 'creator-captions' }));
+    return tracks.map((t) => ({
+      language: t.language ?? 'und',
+      name: t.forced ? `${t.name} (forced)` : t.name,
+      origin: 'creator-captions',
+    }));
   },
   async getCaptions(ref, opts: CaptionOptions, ctx): Promise<Transcript | null> {
     const path = mediaPathOf(ref);
@@ -160,7 +164,10 @@ export const mediaFileCaptions: CaptionsProvider = defineProvider({
       try {
         segments = await readTrack(track, path, ctx);
       } catch (err) {
-        ctx.log.warn('could not read subtitle track', { track: track.name, error: err instanceof Error ? err.message : String(err) });
+        ctx.log.warn('could not read subtitle track', {
+          track: track.name,
+          error: err instanceof Error ? err.message : String(err),
+        });
         continue;
       }
       if (segments.length === 0) continue;

@@ -1,7 +1,7 @@
 {
   "name": "@vid2context/provider-media-file",
   "version": "0.1.0",
-  "description": "Local media files for vid2context: file paths and file:// URLs become refs, metadata and audio for speech-to-text. Node only.",
+  "description": "Local media files and streams for vid2context: file paths and file:// URLs become refs with ffprobe metadata, sidecar and embedded subtitles as captions, and compact audio for speech-to-text; HLS and DASH URLs through ffmpeg. Node only.",
   "license": "Apache-2.0",
   "type": "module",
   "exports": {
@@ -13,6 +13,8 @@
     ]
   },
   "dependencies": {
-    "@vid2context/core": "*"
+    "@vid2context/core": "*",
+    "@vid2context/ffmpeg": "*",
+    "@vid2context/provider-media-url": "*"
   }
 }

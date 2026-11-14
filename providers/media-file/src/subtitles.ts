@@ -8,8 +8,7 @@
  */
 import type { Segment } from '@vid2context/core';
 
-const TIMING =
-  /^\s*((?:\d+:)?\d{1,2}:\d{1,2}(?:[.,]\d{1,3})?)\s*-->\s*((?:\d+:)?\d{1,2}:\d{1,2}(?:[.,]\d{1,3})?)(?:\s+.*)?$/;
+const TIMING = /^\s*((?:\d+:)?\d{1,2}:\d{1,2}(?:[.,]\d{1,3})?)\s*-->\s*((?:\d+:)?\d{1,2}:\d{1,2}(?:[.,]\d{1,3})?)(?:\s+.*)?$/;
 
 /** Seconds from '01:02:03,456', '02:03.4' or '1:02:03'. */
 export function parseTimestamp(text: string): number {

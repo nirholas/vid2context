@@ -108,4 +108,3 @@ export function stemOf(path: string): string {
   const name = basename(path);
   return name.slice(0, name.length - extname(name).length) || name;
 }
-
