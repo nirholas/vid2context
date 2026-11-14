@@ -22,11 +22,15 @@ describe('parseSubtitles', () => {
     expect(segs).toHaveLength(7);
     expect(segs[0]).toEqual({ startSec: 0.5, endSec: 3.26, text: "I'm at the foot of the ladder." });
     expect(segs[1]?.text).toBe('The LEM footpads are only depressed in the surface about one or two inches,');
-    expect(segs[6]).toEqual({ startSec: 47.772, endSec: 55.822, text: "That's one small step for [a] man, one giant leap for mankind." });
+    expect(segs[6]).toEqual({
+      startSec: 47.772,
+      endSec: 55.822,
+      text: "That's one small step for [a] man, one giant leap for mankind.",
+    });
   });
 
   it('gives the same result with a BOM and CRLF line endings', () => {
-    expect(parseSubtitles(`﻿${SRT.replace(/\n/g, '\r\n')}`)).toEqual(parseSubtitles(SRT));
+    expect(parseSubtitles(`\uFEFF${SRT.replace(/\n/g, '\r\n')}`)).toEqual(parseSubtitles(SRT));
   });
 
   it('parses real WebVTT: header, timestamp map, tags and cue settings', () => {

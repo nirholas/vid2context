@@ -181,11 +181,13 @@ export function parseHlsPlaylist(text: string, baseUrl: string): HlsInfo {
 
 const VIDEO_CODEC = /avc1|avc3|hvc1|hev1|vp09|vp9|av01|mp4v/i;
 
-/** The playlist ffmpeg should read for audio: default audio rendition with its own URI, else the smallest variant. */
+/** The playlist ffmpeg should read for audio: the default audio rendition's own playlist, else the smallest (audio-only when possible) variant. */
 export function pickAudioPlaylist(info: HlsInfo): string | undefined {
-  const audio = info.renditions.filter((r) => r.type === 'AUDIO' && r.url);
-  const rendition = audio.find((r) => r.isDefault) ?? audio[0];
-  if (rendition?.url) return rendition.url;
+  const audio = info.renditions.filter((r) => r.type === 'AUDIO');
+  // The default rendition decides: its own playlist when it has one; when its audio is
+  // muxed into the variants (no URI), a variant, never a non-default alternate track.
+  const chosen = audio.find((r) => r.isDefault) ?? audio[0];
+  if (chosen?.url) return chosen.url;
   const byBandwidth = [...info.variants].sort(
     (a, b) => (a.bandwidth ?? Number.MAX_SAFE_INTEGER) - (b.bandwidth ?? Number.MAX_SAFE_INTEGER),
   );
