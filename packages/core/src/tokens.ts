@@ -17,7 +17,7 @@
  */
 
 /** Tokens per character for scripts without spaces between words (or with short syllable blocks). */
-const HAN = 0.95;
+const HAN = 1.0;
 const KANA = 0.8;
 const HANGUL = 0.73;
 /** Tokens per letter for alphabetic scripts other than Latin. */
@@ -92,11 +92,11 @@ function kindOf(cp: number, ch: string): Kind {
 function wordCost(kind: Kind, letters: number, parts: number): number {
   switch (kind) {
     case ASCII:
-      // Common English words are one token up to about 6 letters, then grow slowly.
-      return 1 + Math.max(0, letters - 6) * 0.1 + (parts - 1) * 0.5;
+      // Common English words are one token up to about 5 letters, then grow slowly.
+      return 1 + Math.max(0, letters - 5) * 0.15 + (parts - 1) * 0.5;
     case LATIN_EXT:
       // Words with diacritics (French, Spanish, Portuguese, ...) split more often.
-      return 1.4 + Math.max(0, letters - 5) * 0.12 + (parts - 1) * 0.5;
+      return 1.7 + Math.max(0, letters - 4) * 0.15 + (parts - 1) * 0.5;
     case CYR:
       return Math.max(1, letters * CYRILLIC);
     case ARAB:

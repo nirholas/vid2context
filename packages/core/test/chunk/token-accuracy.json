@@ -1,0 +1,245 @@
+{
+  "measuredAt": "2026-11-14",
+  "tokenizers": {
+    "o200k": "gpt-tokenizer 4.1.0, o200k_base (GPT-4o and later)",
+    "cl100k": "gpt-tokenizer 4.1.0, cl100k_base (GPT-4, GPT-3.5)",
+    "llama3": "llama3-tokenizer-js 1.2.0 (Llama 3 family)"
+  },
+  "rows": [
+    {
+      "sample": "youtube-cCPsdFdlshc transcript",
+      "script": "Latin (English)",
+      "chars": 19866,
+      "estimate": 4483,
+      "o200k": 4184,
+      "cl100k": 4363,
+      "llama3": 4363,
+      "errorPct": {
+        "o200k": 7.1,
+        "cl100k": 2.8,
+        "llama3": 2.8
+      }
+    },
+    {
+      "sample": "youtube-cCPsdFdlshc text with timestamps",
+      "script": "Latin (English)",
+      "chars": 23751,
+      "estimate": 7609,
+      "o200k": 7310,
+      "cl100k": 7489,
+      "llama3": 7489,
+      "errorPct": {
+        "o200k": 4.1,
+        "cl100k": 1.6,
+        "llama3": 1.6
+      }
+    },
+    {
+      "sample": "youtube-cCPsdFdlshc description",
+      "script": "Latin (English)",
+      "chars": 795,
+      "estimate": 231,
+      "o200k": 240,
+      "cl100k": 246,
+      "llama3": 245,
+      "errorPct": {
+        "o200k": -3.7,
+        "cl100k": -6.1,
+        "llama3": -5.7
+      }
+    },
+    {
+      "sample": "youtube-jNQXAC9IVRw transcript",
+      "script": "Latin (English)",
+      "chars": 217,
+      "estimate": 50,
+      "o200k": 48,
+      "cl100k": 52,
+      "llama3": 52,
+      "errorPct": {
+        "o200k": 4.2,
+        "cl100k": -3.8,
+        "llama3": -3.8
+      }
+    },
+    {
+      "sample": "commons-ap11-final-approach.en",
+      "script": "Latin (English)",
+      "chars": 1928,
+      "estimate": 593,
+      "o200k": 579,
+      "cl100k": 589,
+      "llama3": 589,
+      "errorPct": {
+        "o200k": 2.4,
+        "cl100k": 0.7,
+        "llama3": 0.7
+      }
+    },
+    {
+      "sample": "commons-ap11-final-approach.es",
+      "script": "Latin (accented)",
+      "chars": 2099,
+      "estimate": 630,
+      "o200k": 654,
+      "cl100k": 718,
+      "llama3": 718,
+      "errorPct": {
+        "o200k": -3.7,
+        "cl100k": -12.3,
+        "llama3": -12.3
+      }
+    },
+    {
+      "sample": "commons-ap11-final-approach.fa",
+      "script": "Arabic",
+      "chars": 1760,
+      "estimate": 725,
+      "o200k": 725,
+      "cl100k": 1453,
+      "llama3": 699,
+      "errorPct": {
+        "o200k": 0,
+        "cl100k": -50.1,
+        "llama3": 3.7
+      }
+    },
+    {
+      "sample": "commons-ap11-final-approach.fr",
+      "script": "Latin (accented)",
+      "chars": 2159,
+      "estimate": 676,
+      "o200k": 672,
+      "cl100k": 757,
+      "llama3": 757,
+      "errorPct": {
+        "o200k": 0.6,
+        "cl100k": -10.7,
+        "llama3": -10.7
+      }
+    },
+    {
+      "sample": "commons-ap11-final-approach.hi",
+      "script": "Devanagari",
+      "chars": 1756,
+      "estimate": 847,
+      "o200k": 770,
+      "cl100k": 2066,
+      "llama3": 1002,
+      "errorPct": {
+        "o200k": 10,
+        "cl100k": -59,
+        "llama3": -15.5
+      }
+    },
+    {
+      "sample": "commons-ap11-final-approach.it",
+      "script": "Latin (accented)",
+      "chars": 2072,
+      "estimate": 625,
+      "o200k": 695,
+      "cl100k": 787,
+      "llama3": 787,
+      "errorPct": {
+        "o200k": -10.1,
+        "cl100k": -20.6,
+        "llama3": -20.6
+      }
+    },
+    {
+      "sample": "commons-ap11-final-approach.ja",
+      "script": "Japanese (Han and kana)",
+      "chars": 839,
+      "estimate": 629,
+      "o200k": 641,
+      "cl100k": 833,
+      "llama3": 622,
+      "errorPct": {
+        "o200k": -1.9,
+        "cl100k": -24.5,
+        "llama3": 1.1
+      }
+    },
+    {
+      "sample": "commons-ap11-final-approach.pt",
+      "script": "Latin (accented)",
+      "chars": 2145,
+      "estimate": 692,
+      "o200k": 699,
+      "cl100k": 776,
+      "llama3": 776,
+      "errorPct": {
+        "o200k": -1,
+        "cl100k": -10.8,
+        "llama3": -10.8
+      }
+    },
+    {
+      "sample": "commons-ap11-final-approach.ru",
+      "script": "Cyrillic",
+      "chars": 1744,
+      "estimate": 757,
+      "o200k": 713,
+      "cl100k": 1016,
+      "llama3": 775,
+      "errorPct": {
+        "o200k": 6.2,
+        "cl100k": -25.5,
+        "llama3": -2.3
+      }
+    },
+    {
+      "sample": "commons-ap11-final-approach.zh-hans",
+      "script": "Chinese (Han)",
+      "chars": 913,
+      "estimate": 707,
+      "o200k": 697,
+      "cl100k": 938,
+      "llama3": 697,
+      "errorPct": {
+        "o200k": 1.4,
+        "cl100k": -24.6,
+        "llama3": 1.4
+      }
+    },
+    {
+      "sample": "commons-ap11-final-approach.zh-hant",
+      "script": "Chinese (Han)",
+      "chars": 913,
+      "estimate": 707,
+      "o200k": 754,
+      "cl100k": 1034,
+      "llama3": 739,
+      "errorPct": {
+        "o200k": -6.2,
+        "cl100k": -31.6,
+        "llama3": -4.3
+      }
+    },
+    {
+      "sample": "commons-reagan-radio-address-trade.ko",
+      "script": "Korean (Hangul)",
+      "chars": 1934,
+      "estimate": 1047,
+      "o200k": 1040,
+      "cl100k": 1862,
+      "llama3": 1056,
+      "errorPct": {
+        "o200k": 0.7,
+        "cl100k": -43.8,
+        "llama3": -0.9
+      }
+    }
+  ],
+  "englishOneMinuteWindows": {
+    "count": 19,
+    "o200k": {
+      "meanAbsPct": 7.8,
+      "maxAbsPct": 16.7
+    },
+    "llama3": {
+      "meanAbsPct": 2.9,
+      "maxAbsPct": 5.6
+    }
+  }
+}
