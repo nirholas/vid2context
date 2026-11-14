@@ -68,9 +68,9 @@ describe('transcript compaction', () => {
   it('sizes chunks from the smallest context window the chain may try', () => {
     const registry = makeRegistry();
     expect(chunkBudget({ registry, ctx: ctxWith([]) }, {})).toBe(MAX_CHUNK_TOKENS);
-    // A local Ollama rung declares no window, so the budget falls to the conservative default.
-    const local = chunkBudget({ registry, ctx: ctxWith([], { OLLAMA_MODEL: 'qwen3:8b' }) }, {});
-    expect(local).toBe(Math.floor((8192 - 3000 - 600) * 0.85));
+    // A model id the lane does not know declares no window, so the budget falls to the conservative default.
+    const unknown = chunkBudget({ registry, ctx: ctxWith([], { GEMINI_API_KEY: 'k', GEMINI_MODEL: 'gemini-next-preview' }) }, {});
+    expect(unknown).toBe(Math.floor((8192 - 3000 - 600) * 0.85));
   });
 });
 
@@ -78,7 +78,11 @@ describe('keyMoments on the recorded keyless answer', () => {
   it('was recorded with this exact prompt', () => {
     const lines = compactLines(gwagon.transcript.segments);
     const req = momentsRequest(gwagon, lines, { index: 0, total: 1, count: 8 });
-    for (const c of single.calls) expect(c.request.messages).toEqual(req.messages);
+    for (const c of single.calls) {
+      // The provider appends its JSON-format instruction to the system message; the rest is ours, byte for byte.
+      expect(c.request.messages[0]?.content.startsWith(req.messages[0]?.content ?? '-')).toBe(true);
+      expect(c.request.messages[1]).toEqual(req.messages[1]);
+    }
   });
 
   it('snaps every timestamp to a real segment start and reports the rung', async () => {
