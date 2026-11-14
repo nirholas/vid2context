@@ -4,7 +4,7 @@
  * wrapper that shows on hover and on keyboard focus.
  */
 import { X } from 'lucide-react';
-import { type ButtonHTMLAttributes, type ReactNode, useEffect, useId, useRef } from 'react';
+import { type ButtonHTMLAttributes, type ComponentPropsWithRef, type ReactNode, useEffect, useId, useRef } from 'react';
 
 export function cx(...parts: (string | false | null | undefined)[]): string {
   return parts.filter(Boolean).join(' ');
@@ -88,7 +88,7 @@ export function Dialog(props: {
 }
 
 export function IconButton(
-  props: ButtonHTMLAttributes<HTMLButtonElement> & { label: string; tip?: boolean; active?: boolean; children: ReactNode },
+  props: ComponentPropsWithRef<'button'> & { label: string; tip?: boolean; active?: boolean; children: ReactNode },
 ) {
   const { label, tip = true, active, className, children, ...rest } = props;
   return (

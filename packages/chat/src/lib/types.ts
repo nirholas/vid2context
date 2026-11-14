@@ -55,6 +55,8 @@ export interface ChatSource {
 }
 
 export interface Citation {
+  /** The [n] this citation backs (additive field from prompt 34). */
+  n?: number;
   videoId: string;
   title: string;
   startSec: number;
@@ -76,7 +78,17 @@ export interface ChatErrorData {
 }
 
 export type ChatEvent =
-  | { type: 'meta'; rung: string; model: string; contextTokens?: number; sources: ChatSource[] }
+  | {
+      type: 'meta';
+      rung: string;
+      model: string;
+      contextTokens?: number;
+      sources: ChatSource[];
+      /** Estimated tokens of the prompt sent (prompt 34). */
+      promptTokens?: number;
+      /** A repeat meta after a rung failed mid-answer: drop the partial text and reasoning, start over (prompt 34). */
+      restart?: boolean;
+    }
   | { type: 'reasoning'; text: string }
   | { type: 'delta'; text: string }
   | {
@@ -87,6 +99,8 @@ export type ChatEvent =
       usage?: Usage;
       citations: Citation[];
       attempts: Attempt[];
+      /** Cited numbers that matched no source; already removed from the text (prompt 34). */
+      unverified?: number[];
     }
   | ({ type: 'error' } & ChatErrorData);
 
@@ -149,5 +163,7 @@ export interface MessageRecord {
   citations?: Citation[];
   attempts?: Attempt[];
   usage?: Usage;
+  promptTokens?: number;
+  unverified?: number[];
   error?: ChatErrorData;
 }

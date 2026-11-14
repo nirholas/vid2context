@@ -1,9 +1,10 @@
 /**
- * Model list helpers for the picker: build ModelInfo from rungs (client-only
- * mode, where there is no GET /models), explain why a row is disabled, group
- * rows by tier and service, and filter them by a search query.
+ * Model list helpers for the picker: explain why a row is disabled, group
+ * rows by tier and service, filter them by a search query, and format labels.
+ * In client-only mode the list itself comes from core's listModels over the
+ * browser registry, the same function GET /api/v1/models uses.
  */
-import { canStream, isRungEnabled, keylessAllowed, type Env, type LlmRung, type Tier } from '@vid2context/core';
+import type { Env, Tier } from '@vid2context/core';
 import { browserCorsFor } from './cors.ts';
 import type { ModelInfo, ModelRow } from './types.ts';
 
@@ -65,25 +66,6 @@ export function formatContextTokens(n: number | undefined): string | undefined {
   }
   const k = n % 1024 === 0 ? n / 1024 : n / 1000;
   return `${Math.round(k)}K`;
-}
-
-/** The ModelInfo a GET /api/v1/models?kind=llm response would hold, built from rungs in this runtime. */
-export function modelInfoFromRungs(rungs: LlmRung[], env: Env): ModelInfo[] {
-  const keyless = keylessAllowed(env);
-  return rungs.map((r) => ({
-    id: r.id,
-    kind: 'llm',
-    label: modelLabel(r.model, r.service),
-    service: r.service,
-    provider: r.provider,
-    model: r.model,
-    tier: r.tier,
-    quality: r.quality,
-    capabilities: [...r.capabilities, ...(canStream(r) && !r.capabilities.includes('stream') ? ['stream'] : [])],
-    ...(r.contextTokens ? { contextTokens: r.contextTokens } : {}),
-    enabled: isRungEnabled(r, env) && (r.tier !== 'keyless' || keyless),
-    requires: [...r.requires],
-  }));
 }
 
 export type Mode = 'server' | 'client';

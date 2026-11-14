@@ -5,11 +5,11 @@
  * through the browser registry, and keeps attached transcripts in IndexedDB.
  * Components only see the Backend interface.
  */
-import type { Collection, Env, LlmRung, VideoContext, VideoSummary } from '@vid2context/core';
-import { createContext } from '@vid2context/core';
+import type { Collection, Env, Registry, VideoContext, VideoSummary } from '@vid2context/core';
+import { createContext, listModels } from '@vid2context/core';
 import { ApiClient, ApiError } from './api.ts';
 import { localChat } from './local-engine.ts';
-import { modelInfoFromRungs, toModelRows } from './models.ts';
+import { toModelRows } from './models.ts';
 import { contextTokens, tokensFromDuration } from './sources.ts';
 import type { ChatStore } from './store.ts';
 import type { AttachedContext, ChatApiRequest, ChatEvent, Conversation, ModelRow } from './types.ts';
@@ -167,23 +167,19 @@ export function requestContext(contexts: AttachedContext[]): ChatApiRequest['con
 
 // ---------------------------------------------------------------- client-only
 
-export interface RungSource {
-  llmRungs(env: Env): LlmRung[];
-}
-
 export class ClientBackend implements Backend {
   readonly mode = 'client' as const;
   readonly features: BackendFeatures = { link: false, library: false, collections: false, uploads: false, localFiles: true };
 
   constructor(
-    private readonly registry: RungSource,
+    private readonly registry: Registry,
     private readonly env: Env,
     private readonly store: ChatStore,
     private readonly fetchFn?: typeof fetch,
   ) {}
 
   async listModels(): Promise<ModelRow[]> {
-    return toModelRows(modelInfoFromRungs(this.registry.llmRungs(this.env), this.env), 'client', this.env);
+    return toModelRows(listModels(this.registry, this.env, { kind: 'llm' }), 'client', this.env);
   }
 
   async *chat(req: ChatApiRequest, conversation: Conversation, signal: AbortSignal): AsyncGenerator<ChatEvent> {
@@ -194,7 +190,7 @@ export class ClientBackend implements Backend {
       if (c) contexts.push(c);
     }
     const ctx = createContext({ runtime: 'browser', env: this.env, signal, ...(this.fetchFn ? { fetch: this.fetchFn } : {}) });
-    yield* localChat({ rungs: this.registry.llmRungs(this.env), ctx, request: req, contexts });
+    yield* localChat({ registry: this.registry, ctx, request: req, contexts });
   }
 
   attachInput(): Promise<AttachedContext> {

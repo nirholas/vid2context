@@ -235,10 +235,15 @@ export async function* chatEventsFromSse(body: ReadableStream<Uint8Array>, signa
   }
 }
 
+interface ErrorBody {
+  error?: { code?: string; message?: string; hint?: string };
+  attempts?: Attempt[];
+}
+
 export async function errorFromApi(res: Response): Promise<ApiError> {
-  let body: { error?: { code?: string; message?: string; hint?: string }; attempts?: Attempt[] } | null = null;
+  let body: ErrorBody | null = null;
   try {
-    body = (await res.json()) as typeof body;
+    body = (await res.json()) as ErrorBody;
   } catch {
     body = null;
   }

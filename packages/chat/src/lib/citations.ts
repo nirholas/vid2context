@@ -59,7 +59,7 @@ export function citationsFromText(text: string, sources: ChatSource[]): Citation
   for (const n of citedNumbers(text)) {
     const s = sourceByNumber(sources, n);
     if (!s) continue;
-    out.push({ videoId: s.videoId, title: s.title, startSec: s.startSec, endSec: s.endSec, ...(s.url ? { url: s.url } : {}) });
+    out.push({ n, videoId: s.videoId, title: s.title, startSec: s.startSec, endSec: s.endSec, ...(s.url ? { url: s.url } : {}) });
   }
   return out;
 }
