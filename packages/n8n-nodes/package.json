@@ -46,7 +46,7 @@
     "@vid2context/registry": "*",
     "@vid2context/server": "*",
     "@vid2context/webhooks": "*",
-    "n8n-workflow": "^2.47.2",
+    "n8n-workflow": "^3.2.0",
     "standardwebhooks": "^1.1.1"
   }
 }
