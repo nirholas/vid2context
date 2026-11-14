@@ -117,5 +117,5 @@ describe.skipIf(!process.env.LIVE)('live summary (LIVE=1, keyless chain)', () =>
     const summary = await summarize(new Registry([llm], 'node'), context, ctx);
     expect(summary.bullets.length).toBeGreaterThanOrEqual(3);
     for (const b of summary.bullets) for (const t of b.times) expect(validTime(segments, t)).toBe(true);
-  });
+  }, 240_000);
 });

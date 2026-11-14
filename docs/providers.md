@@ -217,6 +217,20 @@ Outbound, signed Standard Webhooks from `@vid2context/webhooks` (`GET/POST /webh
 | `VID2CONTEXT_WEBHOOKS_ALLOW_LOCAL` | `@vid2context/webhooks` | `1` allows `http:` targets and hosts on loopback or private networks (self-hosted n8n). Default off: public `https:` only. Link-local and cloud metadata addresses are always refused |
 | `VID2CONTEXT_WEBHOOKS_BASE_URL` | `@vid2context/webhooks` | public base URL of the API, so payload links are absolute; unset, links are `/api/v1/...` paths |
 
+## Bots
+
+Telegram, Discord and Slack bots from `@vid2context/bots` (`POST /bots/telegram`, `/bots/discord`, `/bots/slack/events`, `/bots/slack/commands`). All three platforms are free for bots; the summary uses the LLM chain above. A platform is on only when its secrets are set. Setup steps: `packages/bots/README.md`.
+
+| Env var | Used by | Notes |
+|---|---|---|
+| `TELEGRAM_BOT_TOKEN`, `TELEGRAM_WEBHOOK_SECRET` | `@vid2context/bots` | both turn the Telegram route on; the secret is checked against `X-Telegram-Bot-Api-Secret-Token` |
+| `DISCORD_APPLICATION_ID`, `DISCORD_PUBLIC_KEY` | `@vid2context/bots` | both turn the Discord route on; the public key verifies Ed25519 signatures |
+| `DISCORD_BOT_TOKEN` | `packages/bots` setup script | registers the `/video` command; the server does not need it |
+| `SLACK_SIGNING_SECRET`, `SLACK_BOT_TOKEN` | `@vid2context/bots` | both turn the Slack routes on; `xoxb-` token with `commands`, `chat:write`, `files:write`, `app_mentions:read`, `im:history` |
+| `BOTS_PUBLIC_BASE_URL` | `packages/bots` setup scripts | public HTTPS origin of the server; the scripts add `/api/v1/bots/...` |
+| `BOTS_ALLOWED_CHATS`, `BOTS_ALLOWED_GUILDS`, `BOTS_ALLOWED_TEAMS` | `@vid2context/bots` | optional comma-separated Telegram chat, Discord server and Slack team ids; unset serves everyone |
+| `BOTS_RATE_LIMIT_PER_HOUR` | `@vid2context/bots` | videos per hour per chat and per user, default `10`, held in memory per instance |
+
 ## Planned (see ROADMAP.md)
 
 | Kind | Provider | Tier | Enabled by | Known limits |
