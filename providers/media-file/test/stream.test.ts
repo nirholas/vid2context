@@ -42,6 +42,9 @@ describe('matchStream', () => {
     expect(streamTitle(BIPBOP)).toBe('bipbop 16x9 variant');
     expect(streamTitle(BIPBOP_GEAR0)).toBe('gear0');
     expect(streamTitle('https://cdn.example.org/events/keynote_2026/master.m3u8')).toBe('keynote 2026');
+    expect(
+      streamTitle('https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8'),
+    ).toBe('tears-of-steel');
   });
 });
 
@@ -175,6 +178,7 @@ describe.skipIf(!process.env.LIVE || !HAVE_FFMPEG)('media-stream (LIVE)', () => 
     const res = await getVideoContext(registry, url, { storage: null, chain: { only: ['ovh'] } }, ctx);
     expect(res.transcript.origin).toBe('stt');
     expect(res.attempts.find((a) => a.stage === 'audio')).toMatchObject({ id: 'media-stream', outcome: 'ok' });
+    expect(res.metadata.title).toBe('tears-of-steel');
     expect(res.transcript.segments.length).toBeGreaterThan(20);
   });
 });

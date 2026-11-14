@@ -81,7 +81,9 @@ export function streamTitle(url: string): string {
     .map((p) => decodeURIComponent(p));
   const file = parts.pop() ?? '';
   const stem = file.replace(/\.[a-z0-9]+$/i, '');
-  const pick = GENERIC_NAMES.has(stem.toLowerCase()) && parts.length ? (parts.pop() ?? stem) : stem;
+  // Generic or empty names (master.m3u8, /tears-of-steel.ism/.m3u8) take the folder name, minus any extension.
+  const generic = !stem || GENERIC_NAMES.has(stem.toLowerCase());
+  const pick = generic && parts.length ? (parts.pop() ?? stem).replace(/\.[a-z0-9]+$/i, '') : stem;
   return pick.replace(/[_]+/g, ' ').trim() || u.hostname;
 }
 
