@@ -10,8 +10,16 @@ import {
   type EmbedProvider,
   type EmbedRung,
   errorFromResponse,
-  Registry,
+  type KvStore,
+  MemoryKv,
+  MemoryStorage,
+  MemoryVectors,
   type Provider,
+  Registry,
+  type VectorHit,
+  type VectorQuery,
+  type VectorRecord,
+  type VectorStore,
   type VideoContext,
 } from '@vid2context/core';
 import type { Route } from '@vid2context/core/testing';
@@ -85,27 +93,30 @@ export interface EmbedFixture {
   calls: RecordedEmbedCall[];
 }
 
-export function loadEmbedFixture(): EmbedFixture {
-  return JSON.parse(readFileSync(EMBED_FIXTURE, 'utf8')) as EmbedFixture;
+export const SECOND_MODEL = 'bge-multilingual-gemma2';
+export const SECOND_FIXTURE = new URL('./fixtures/embeddings-ovh-gemma2-zoo.json', import.meta.url);
+
+export function loadEmbedFixture(file: URL = EMBED_FIXTURE): EmbedFixture {
+  return JSON.parse(readFileSync(file, 'utf8')) as EmbedFixture;
 }
 
 /**
  * A replayFetch route serving recorded embedding responses: the request's
- * `input` list must equal a recorded call's input exactly (same texts, same
- * batch), so a change to chunking shows up as a missing recording instead of
- * silently wrong vectors.
+ * model and `input` list must equal a recorded call's exactly (same texts,
+ * same batch), so a change to chunking shows up as a missing recording
+ * instead of silently wrong vectors.
  */
-export function embedRoute(fixture: EmbedFixture): Route {
-  const byInput = new Map(fixture.calls.map((c) => [JSON.stringify(c.input), c]));
+export function embedRoute(...fixtures: EmbedFixture[]): Route {
+  const byKey = new Map(fixtures.flatMap((f) => f.calls.map((c) => [`${f.model}\u0000${JSON.stringify(c.input)}`, c] as const)));
   return {
     method: 'POST',
-    url: fixture.endpoint,
+    url: OVH_EMBED_URL,
     response: (call) => {
-      const body = JSON.parse(String(call.body)) as { input: string[] };
-      const rec = byInput.get(JSON.stringify(body.input));
+      const body = JSON.parse(String(call.body)) as { model: string; input: string[] };
+      const rec = byKey.get(`${body.model}\u0000${JSON.stringify(body.input)}`);
       if (!rec) {
         throw new Error(
-          `No recorded embedding for input ${JSON.stringify(body.input).slice(0, 160)}. Re-record with: npx tsx packages/search/scripts/record-fixtures.ts`,
+          `No recorded ${body.model} embedding for input ${JSON.stringify(body.input).slice(0, 160)}. Re-record with: npx tsx packages/search/scripts/record-fixtures.ts`,
         );
       }
       return { status: rec.status, headers: { 'content-type': 'application/json' }, body: rec.body };
@@ -124,4 +135,39 @@ export interface EvalQuery {
 export function loadQueries(): EvalQuery[] {
   const raw = JSON.parse(readFileSync(new URL('./fixtures/queries.json', import.meta.url), 'utf8')) as { queries: EvalQuery[] };
   return raw.queries;
+}
+
+/**
+ * MemoryStorage plus the process-local VectorStore and KvStore from core, as
+ * one backend: stands in for a persistent library (SQLite, D1, Postgres) that
+ * implements the storage extensions, so the engine stores vectors and its
+ * manifest in storage and a second engine over it reuses them.
+ */
+export class MemoryLibrary extends MemoryStorage implements VectorStore, KvStore {
+  private readonly vec = new MemoryVectors();
+  private readonly kv = new MemoryKv();
+  upsertCalls = 0;
+
+  upsertVectors(records: VectorRecord[]): Promise<void> {
+    this.upsertCalls++;
+    return this.vec.upsertVectors(records);
+  }
+  deleteVectors(filter: { videoId: string; model?: string }): Promise<void> {
+    return this.vec.deleteVectors(filter);
+  }
+  queryVectors(query: VectorQuery): Promise<VectorHit[]> {
+    return this.vec.queryVectors(query);
+  }
+  kvGet<T = unknown>(key: string): Promise<T | null> {
+    return this.kv.kvGet<T>(key);
+  }
+  kvSet(key: string, value: unknown, opts?: { ttlSec?: number }): Promise<void> {
+    return this.kv.kvSet(key, value, opts);
+  }
+  kvDelete(key: string): Promise<void> {
+    return this.kv.kvDelete(key);
+  }
+  kvList(prefix: string, opts?: { limit?: number; cursor?: string }): Promise<{ keys: string[]; cursor?: string }> {
+    return this.kv.kvList(prefix, opts);
+  }
 }

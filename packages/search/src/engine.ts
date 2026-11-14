@@ -72,7 +72,7 @@ export interface SearchEngineOptions {
   /** Keyword backend. 'auto' (default) uses storage full-text search when the backend has it, else BM25. */
   keyword?: 'auto' | 'bm25' | 'storage';
   chunk?: ChunkOptions;
-  /** Texts per embedding request. Default 64. */
+  /** Texts per embedding request. Default 24 (the keyless OVH endpoint accepts at most 25). */
   embedBatchSize?: number;
   fusion?: FusionOptions;
   /** Candidates taken from each side before fusion. Default 50. */
@@ -270,7 +270,7 @@ class HybridSearchEngine implements SearchEngine {
     }
     this.keywordMode = wantStorage ? 'storage' : 'bm25';
     this.chunkOpts = { ...CHUNK_DEFAULTS, ...o.chunk };
-    this.batchSize = clampInt(o.embedBatchSize, 64, 1, 2048);
+    this.batchSize = clampInt(o.embedBatchSize, 24, 1, 2048);
     this.fusion = {
       k: o.fusion?.k ?? 60,
       keywordWeight: o.fusion?.keywordWeight ?? 1,
