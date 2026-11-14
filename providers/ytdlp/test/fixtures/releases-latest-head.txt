@@ -1,0 +1,2 @@
+HTTP/2 302 
+location: https://github.com/yt-dlp/yt-dlp/releases/tag/2026.10.26

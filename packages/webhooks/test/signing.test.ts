@@ -48,18 +48,20 @@ describe('Standard Webhooks published test vectors', () => {
   });
 
   it('verifies the reference message at its own time and parses the payload', async () => {
-    const parsed = await verifyWebhook<{ test: number }>(VECTOR.secret, vectorHeaders, VECTOR.payload, { nowSec: VECTOR.timestamp });
+    const parsed = await verifyWebhook<{ test: number }>(VECTOR.secret, vectorHeaders, VECTOR.payload, {
+      nowSec: VECTOR.timestamp,
+    });
     expect(parsed.test).toBe(2432232314);
   });
 
   it('rejects the reference message once it is older than the tolerance', async () => {
     await expect(verifyWebhook(VECTOR.secret, vectorHeaders, VECTOR.payload)).rejects.toMatchObject({ code: 'bad-request' });
-    await expect(
-      verifyWebhook(VECTOR.secret, vectorHeaders, VECTOR.payload, { nowSec: VECTOR.timestamp + 301 }),
-    ).rejects.toThrow(/too old/);
-    await expect(
-      verifyWebhook(VECTOR.secret, vectorHeaders, VECTOR.payload, { nowSec: VECTOR.timestamp - 301 }),
-    ).rejects.toThrow(/future/);
+    await expect(verifyWebhook(VECTOR.secret, vectorHeaders, VECTOR.payload, { nowSec: VECTOR.timestamp + 301 })).rejects.toThrow(
+      /too old/,
+    );
+    await expect(verifyWebhook(VECTOR.secret, vectorHeaders, VECTOR.payload, { nowSec: VECTOR.timestamp - 301 })).rejects.toThrow(
+      /future/,
+    );
   });
 
   it('rejects a changed body, a missing header, a bad timestamp and an unknown version', async () => {
@@ -67,9 +69,9 @@ describe('Standard Webhooks published test vectors', () => {
     await expect(verifyWebhook(VECTOR.secret, vectorHeaders, '{"test": 2432232315}', at)).rejects.toThrow(/No webhook signature/);
     const { 'webhook-id': _id, ...noId } = vectorHeaders;
     await expect(verifyWebhook(VECTOR.secret, noId, VECTOR.payload, at)).rejects.toThrow(/Missing/);
-    await expect(verifyWebhook(VECTOR.secret, { ...vectorHeaders, 'webhook-timestamp': 'hello' }, VECTOR.payload, at)).rejects.toThrow(
-      /whole number/,
-    );
+    await expect(
+      verifyWebhook(VECTOR.secret, { ...vectorHeaders, 'webhook-timestamp': 'hello' }, VECTOR.payload, at),
+    ).rejects.toThrow(/whole number/);
     const v2 = { ...vectorHeaders, 'webhook-signature': VECTOR.signature.replace('v1,', 'v2,') };
     await expect(verifyWebhook(VECTOR.secret, v2, VECTOR.payload, at)).rejects.toThrow(/No webhook signature/);
     await expect(verifyWebhook('whsec_', vectorHeaders, VECTOR.payload, at)).rejects.toThrow(/empty/);
@@ -88,7 +90,11 @@ describe('Standard Webhooks published test vectors', () => {
   it('reads headers from a Headers object and from Node-style records with any case', async () => {
     const at = { nowSec: VECTOR.timestamp };
     await expect(verifyWebhook(VECTOR.secret, new Headers(vectorHeaders), VECTOR.payload, at)).resolves.toBeTruthy();
-    const upper = { 'Webhook-Id': VECTOR.msgId, 'Webhook-Timestamp': String(VECTOR.timestamp), 'Webhook-Signature': VECTOR.signature };
+    const upper = {
+      'Webhook-Id': VECTOR.msgId,
+      'Webhook-Timestamp': String(VECTOR.timestamp),
+      'Webhook-Signature': VECTOR.signature,
+    };
     await expect(verifyWebhook(VECTOR.secret, upper, VECTOR.payload, at)).resolves.toBeTruthy();
   });
 });
@@ -97,7 +103,11 @@ describe('interop with the official standardwebhooks library', () => {
   it('a webhook signed here verifies with the official library', async () => {
     const secret = generateSecret();
     const id = generateMessageId();
-    const body = JSON.stringify({ type: 'collection.updated', timestamp: new Date().toISOString(), data: { collection: { id: 'g-wagon' } } });
+    const body = JSON.stringify({
+      type: 'collection.updated',
+      timestamp: new Date().toISOString(),
+      data: { collection: { id: 'g-wagon' } },
+    });
     const headers = await signedHeaders(secret, id, Date.now() / 1000, body);
     const parsed = new Webhook(secret).verify(body, { ...headers }) as { type: string };
     expect(parsed.type).toBe('collection.updated');

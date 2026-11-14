@@ -254,7 +254,7 @@ function bodyMessage(body: string): string {
 
 const TOO_LARGE = /too large|too big|maximum (content |file |upload )?(size|length)|exceeds? .*(size|limit)|file size|payload/i;
 const MODEL_MISSING = /model_not_found|model\b.*\b(does not exist|not found|not exist|unknown|is not supported|not available)|unknown model|invalid model|no such model/i;
-const UNDECODABLE = /could not (decode|process|read|parse) (the )?(audio|file|media)|failed to (decode|load|read) (the )?(audio|file|media)|invalid (audio|media) file|corrupt|not a valid (audio|media)|unable to (decode|process) (the )?(audio|file)/i;
+const UNDECODABLE = /could not (decode|process|read|parse) (the )?(audio|file|media)|failed to (decode|load|read)( and convert)? (the )?(audio|file|media)|invalid data found when processing input|invalid (audio|media) file|corrupt|not a valid (audio|media)|unable to (decode|process) (the )?(audio|file)/i;
 const BAD_FORMAT = /extension .* not supported|unsupported (file )?(format|extension|media type)|invalid file format|file format .* not supported/i;
 
 /**

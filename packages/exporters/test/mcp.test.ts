@@ -6,7 +6,6 @@ import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { MemoryStorage, Registry, type Runtime, type VideoContext } from '@vid2context/core';
 import { replayFetch, testContext } from '@vid2context/core/testing';
-import youtube from '@vid2context/provider-youtube';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { registerExporterTools } from '../src/mcp.ts';
 
@@ -22,7 +21,7 @@ let dir = '';
 
 async function connect(runtime: Runtime, env: Record<string, string> = {}): Promise<Client> {
   const server = new McpServer({ name: 'test', version: '0.0.0' });
-  registerExporterTools(server, { registry: new Registry(youtube, 'node'), ctx: testContext({ fetch, env, runtime }), storage });
+  registerExporterTools(server, { registry: new Registry([], 'node'), ctx: testContext({ fetch, env, runtime }), storage });
   const [a, b] = InMemoryTransport.createLinkedPair();
   await server.connect(a);
   const client = new Client({ name: 'test-client', version: '0.0.0' });

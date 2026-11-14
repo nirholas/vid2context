@@ -241,7 +241,10 @@ export class ViewBridge {
     // A request from the host.
     if (m.id !== undefined) {
       const id = m.id;
-      if (m.method === 'ping') return this.respond(id, {});
+      if (m.method === 'ping') {
+        this.respond(id, {});
+        return;
+      }
       if (m.method === 'ui/resource-teardown') {
         void Promise.resolve(h.onTeardown?.()).finally(() => this.respond(id, {}));
         return;

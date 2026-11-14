@@ -5,6 +5,7 @@
  * network (the replay fetch has no routes and records every call).
  */
 import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { RESOURCE_MIME_TYPE } from '@modelcontextprotocol/ext-apps/server';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
@@ -18,7 +19,7 @@ import { registerAppsTools, TEXT_FALLBACK_CHARS } from '../src/mcp.ts';
 import { VIEWER_HTML } from '../src/ui/viewer.html.ts';
 
 const context = JSON.parse(
-  readFileSync(new URL('../../../tests/fixtures/contexts/youtube-cCPsdFdlshc.json', import.meta.url), 'utf8'),
+  readFileSync(join(import.meta.dirname, '../../../tests/fixtures/contexts/youtube-cCPsdFdlshc.json'), 'utf8'),
 ) as VideoContext;
 const URL_INPUT = 'https://www.youtube.com/watch?v=cCPsdFdlshc';
 
@@ -86,11 +87,15 @@ describe('open_transcript_viewer', () => {
     });
 
     const text = res.content[0]?.text ?? '';
-    expect(text.startsWith('Title: Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!\nChannel: Alliance Motorworks\n')).toBe(
-      true,
-    );
+    expect(
+      text.startsWith(
+        'Title: Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!\nChannel: Alliance Motorworks\n',
+      ),
+    ).toBe(true);
     expect(text).toContain("[0:00] so you're going to buy G wagon which");
-    expect(text).toMatch(/\[Showing the first \d+ of \d+ transcript lines \(521 segments\)\. The full transcript is in the transcript viewer/);
+    expect(text).toMatch(
+      /\[Showing the first \d+ of \d+ transcript lines \(521 segments\)\. The full transcript is in the transcript viewer/,
+    );
     expect(text.length).toBeLessThan(TEXT_FALLBACK_CHARS + 1000);
     const lastLine = context.transcript.segments.at(-1)?.text ?? '';
     expect(text).not.toContain(lastLine);

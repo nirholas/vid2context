@@ -1,7 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { MemoryStorage, Registry, Vid2ContextError, type VideoContext } from '@vid2context/core';
 import { replayFetch, testContext } from '@vid2context/core/testing';
-import youtube from '@vid2context/provider-youtube';
 import { Hono } from 'hono';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { exporterRoutes } from '../src/http.ts';
@@ -13,7 +12,7 @@ const fixture = (name: string): VideoContext =>
 const zoo = fixture('youtube-jNQXAC9IVRw');
 const gwagon = fixture('youtube-cCPsdFdlshc');
 
-// A fetch with no recorded responses: every context below comes from storage, so any network call fails the test.
+// A fetch with no recorded responses: every context comes from storage, so any network call fails the test.
 const fetch = replayFetch([]);
 const storage = new MemoryStorage();
 let collectionId = '';
@@ -23,13 +22,20 @@ function app(env: Record<string, string> = {}): Hono {
   const root = new Hono();
   root.onError((err, c) => {
     const e = err instanceof Vid2ContextError ? err : undefined;
-    const status = e?.code === 'bad-request' ? 400 : e?.code === 'not-found' ? 404 : e?.code === 'no-provider' ? 503 : 500;
+    const status =
+      e?.code === 'bad-request' || e?.code === 'unsupported-input'
+        ? 400
+        : e?.code === 'not-found'
+          ? 404
+          : e?.code === 'no-provider'
+            ? 503
+            : 500;
     return c.json({ error: { code: e?.code ?? 'internal', message: err.message, ...(e?.hint ? { hint: e.hint } : {}) } }, status);
   });
   root.route(
     '/api/v1',
     exporterRoutes({
-      registry: new Registry(youtube, 'node'),
+      registry: new Registry([], 'node'),
       makeCtx: () => testContext({ fetch, env }),
       storage: async () => storage,
     }),
@@ -61,15 +67,21 @@ describe('POST /exports/obsidian', () => {
     expect(fetch.calls).toHaveLength(0);
   });
 
-  it('accepts video inputs and a folder', async () => {
-    const res = await post(app(), '/exports/obsidian', {
-      inputs: ['https://www.youtube.com/watch?v=jNQXAC9IVRw'],
-      folder: 'Videos',
-    });
+  it('puts the notes in a chosen folder', async () => {
+    const res = await post(app(), '/exports/obsidian', { collectionId, folder: 'Videos/G-Wagon' });
     expect(res.status).toBe(200);
     const body = (await res.json()) as { files: ObsidianFile[] };
-    expect(body.files.map((f) => f.path)).toEqual(['Videos/Me at the zoo.md']);
-    expect(body.files[0]?.content).toContain('vid2context-id: "youtube:jNQXAC9IVRw"');
+    expect(body.files.map((f) => f.path)).toEqual([
+      'Videos/G-Wagon/Best & Worst G-Wagon Years - Reliability, Interiors & Engines Ranked!.md',
+      'Videos/G-Wagon/Me at the zoo.md',
+      'Videos/G-Wagon/G-Wagon buyer research.md',
+    ]);
+  });
+
+  it('passes inputs through the registry, so an input no source understands is a 400 with a hint', async () => {
+    const res = await post(app(), '/exports/obsidian', { inputs: ['https://www.youtube.com/watch?v=jNQXAC9IVRw'] });
+    expect(res.status).toBe(400);
+    expect(await res.json()).toMatchObject({ error: { code: 'unsupported-input', hint: expect.any(String) } });
     expect(fetch.calls).toHaveLength(0);
   });
 

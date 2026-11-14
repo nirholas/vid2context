@@ -5,6 +5,7 @@
  * a CSP that blocks external scripts, styles, fonts and images.
  */
 import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import type { VideoContext } from '@vid2context/core';
 import { describe, expect, it } from 'vitest';
 import { buildViewerSource, outFile } from '../scripts/build-viewer.mjs';
@@ -35,7 +36,7 @@ describe('viewer bundle', () => {
     expect(doc.getElementById('app')).not.toBeNull();
 
     const context = JSON.parse(
-      readFileSync(new URL('../../../tests/fixtures/contexts/youtube-cCPsdFdlshc.json', import.meta.url), 'utf8'),
+      readFileSync(join(import.meta.dirname, '../../../tests/fixtures/contexts/youtube-cCPsdFdlshc.json'), 'utf8'),
     ) as VideoContext;
     const root = document.createElement('div');
     document.body.replaceChildren(root);

@@ -55,7 +55,12 @@ export async function startReceiver(answer: Answer): Promise<Receiver> {
     const chunks: Buffer[] = [];
     req.on('data', (c: Buffer) => chunks.push(c));
     req.on('end', () => {
-      const entry: Received = { method: req.method ?? '', path: req.url ?? '', headers: flatHeaders(req), body: Buffer.concat(chunks) };
+      const entry: Received = {
+        method: req.method ?? '',
+        path: req.url ?? '',
+        headers: flatHeaders(req),
+        body: Buffer.concat(chunks),
+      };
       received.push(entry);
       for (const w of waiters.filter((w) => received.length >= w.n)) {
         waiters.splice(waiters.indexOf(w), 1);

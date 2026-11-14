@@ -1,0 +1,29 @@
+# Ordinary public URLs that checkUrlSync must allow (written by hand on 2026-11-14
+# from the hosts vid2context fetches: video platforms, podcast hosts and CDNs).
+https://www.youtube.com/watch?v=jNQXAC9IVRw
+https://youtu.be/jNQXAC9IVRw
+https://m.youtube.com/shorts/jNQXAC9IVRw
+https://www.youtube.com/playlist?list=PLFgquLnL59alCl_2TQvOiD5Vgm1hCaGSI
+https://vimeo.com/76979871
+https://player.vimeo.com/video/76979871
+https://www.dailymotion.com/video/x8aq8gq
+https://www.twitch.tv/videos/1234567890
+https://www.tiktok.com/@nasa/video/7300000000000000000
+https://archive.org/details/Apollo11-Highlights
+https://feeds.simplecast.com/54nAGcIl
+https://feeds.megaphone.fm/vergecast
+https://anchor.fm/s/1234abcd/podcast/rss
+https://rss.art19.com/the-daily
+https://traffic.libsyn.com/secure/example/episode1.mp3
+https://media.transistor.fm/abc123/episode.mp3
+https://podcasts.apple.com/us/podcast/the-daily/id1200361736
+https://open.spotify.com/episode/4rOoJ6Egrf8K2IrywzwOMk
+https://dts.podtrac.com/redirect.mp3/chrt.fm/track/ABC/traffic.megaphone.fm/NYT123.mp3
+https://cdn.jsdelivr.net/npm/vitest@3.0.0/package.json
+https://d1a2b3c4d5e6f7.cloudfront.net/videos/talk.mp4
+https://upload.wikimedia.org/wikipedia/commons/a/a7/Apollo_11_first_step.ogg
+https://www.ted.com/talks/sir_ken_robinson_do_schools_kill_creativity
+https://example.com:8443/video.mp4
+http://example.org/feed.xml
+https://xn--bcher-kva.example/podcast.rss
+https://my_bucket.s3.amazonaws.com/audio.m4a

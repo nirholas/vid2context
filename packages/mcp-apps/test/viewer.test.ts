@@ -4,13 +4,14 @@
  * (tests/fixtures/contexts) in a DOM environment.
  */
 import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import type { VideoContext } from '@vid2context/core';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { toViewerData, type ViewerData } from '../src/data.ts';
 import { createViewer, MAX_RENDERED_LINES, type Viewer } from '../src/ui/viewer.ts';
 
 const load = (file: string): VideoContext =>
-  JSON.parse(readFileSync(new URL(`../../../tests/fixtures/contexts/${file}`, import.meta.url), 'utf8')) as VideoContext;
+  JSON.parse(readFileSync(join(import.meta.dirname, '../../../tests/fixtures/contexts', file), 'utf8')) as VideoContext;
 
 const long = load('youtube-cCPsdFdlshc.json');
 const zoo = load('youtube-jNQXAC9IVRw.json');

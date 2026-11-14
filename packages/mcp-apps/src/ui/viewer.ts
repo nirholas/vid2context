@@ -135,8 +135,18 @@ export function createViewer(mount: HTMLElement, host: ViewerHost = {}): Viewer 
     'aria-keyshortcuts': '/',
   });
   const searchCount = el(doc, 'span', { class: 'count', 'aria-live': 'polite', 'aria-atomic': 'true' });
-  const prevBtn = el(doc, 'button', { type: 'button', class: 'btn', 'aria-label': 'Previous match', title: 'Previous match (Shift+Enter)' }, 'Prev');
-  const nextBtn = el(doc, 'button', { type: 'button', class: 'btn', 'aria-label': 'Next match', title: 'Next match (Enter)' }, 'Next');
+  const prevBtn = el(
+    doc,
+    'button',
+    { type: 'button', class: 'btn', 'aria-label': 'Previous match', title: 'Previous match (Shift+Enter)' },
+    'Prev',
+  );
+  const nextBtn = el(
+    doc,
+    'button',
+    { type: 'button', class: 'btn', 'aria-label': 'Next match', title: 'Next match (Enter)' },
+    'Next',
+  );
   searchBox.append(searchInput, searchCount, prevBtn, nextBtn);
 
   const selBar = el(doc, 'div', { class: 'selbar', role: 'region', 'aria-label': 'Selected lines' });
@@ -256,10 +266,20 @@ export function createViewer(mount: HTMLElement, host: ViewerHost = {}): Viewer 
     const sel = el(doc, 'input', { type: 'checkbox', class: 'sel', 'aria-label': `Select line at ${ts}` });
     const url = timestampLink(data?.timestampBase ?? null, seg[0]);
     const link = url
-      ? el(doc, 'a', { class: 'ts', href: url, target: '_blank', rel: 'noopener noreferrer', 'aria-label': `Open video at ${ts}` }, `[${ts}]`)
+      ? el(
+          doc,
+          'a',
+          { class: 'ts', href: url, target: '_blank', rel: 'noopener noreferrer', 'aria-label': `Open video at ${ts}` },
+          `[${ts}]`,
+        )
       : el(doc, 'span', { class: 'ts' }, `[${ts}]`);
     const text = el(doc, 'span', { class: 'text' });
-    const cite = el(doc, 'button', { type: 'button', class: 'cite', 'aria-label': `Copy citation for ${ts}`, title: 'Copy citation' }, 'Cite');
+    const cite = el(
+      doc,
+      'button',
+      { type: 'button', class: 'cite', 'aria-label': `Copy citation for ${ts}`, title: 'Copy citation' },
+      'Cite',
+    );
     row.append(sel, link, text, cite);
     return row;
   }
@@ -381,7 +401,10 @@ export function createViewer(mount: HTMLElement, host: ViewerHost = {}): Viewer 
     chapters.forEach((c, n) => {
       const li = el(doc, 'li');
       const b = el(doc, 'button', { type: 'button', class: 'chap', 'data-n': String(n) });
-      b.append(el(doc, 'span', { class: 'chap-ts' }, formatTimestamp(c.startSec)), el(doc, 'span', { class: 'chap-title' }, c.title));
+      b.append(
+        el(doc, 'span', { class: 'chap-ts' }, formatTimestamp(c.startSec)),
+        el(doc, 'span', { class: 'chap-title' }, c.title),
+      );
       b.setAttribute('aria-label', `Chapter ${n + 1}: ${c.title}, at ${formatTimestamp(c.startSec)}`);
       li.append(b);
       chaptersList.append(li);

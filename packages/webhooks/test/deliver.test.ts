@@ -90,10 +90,15 @@ describe('delivery to a real local receiver', () => {
     const hook = await store.create({ url: r.url, events: ['video.ingested'] }, ctx);
     const attempts: AttemptResult[] = [];
 
-    const result = await emit({ type: 'video.ingested', data: videoIngestedData(gwagon, { collectionId: 'g-wagon' }) }, store, ctx, {
-      retryDelaysMs: [0, 50, 50],
-      onAttempt: (a) => attempts.push(a),
-    });
+    const result = await emit(
+      { type: 'video.ingested', data: videoIngestedData(gwagon, { collectionId: 'g-wagon' }) },
+      store,
+      ctx,
+      {
+        retryDelaysMs: [0, 50, 50],
+        onAttempt: (a) => attempts.push(a),
+      },
+    );
     expect(result.deliveries[0]).toMatchObject({ outcome: 'retrying', status: 500, attempt: 1 });
     expect(result.deliveries[0]?.nextAttemptInMs).toBeGreaterThanOrEqual(40);
 
@@ -102,7 +107,8 @@ describe('delivery to a real local receiver', () => {
     const got = await r.waitFor(2);
     expect(got[0]?.headers['webhook-id']).toBe(got[1]?.headers['webhook-id']);
     // Each attempt is signed afresh and both verify.
-    for (const req of got) await expect(verifyWebhook(hook.secret, req.headers, req.body)).resolves.toMatchObject({ type: 'video.ingested' });
+    for (const req of got)
+      await expect(verifyWebhook(hook.secret, req.headers, req.body)).resolves.toMatchObject({ type: 'video.ingested' });
     expect((await store.get(hook.id))?.failures).toBe(0);
   });
 
@@ -111,7 +117,13 @@ describe('delivery to a real local receiver', () => {
     const store = WebhookStore.inMemory();
     const hook = await store.create({ url: r.url, events: ['job.failed'] }, ctx);
     const attempts: AttemptResult[] = [];
-    const job = { id: 'job_1', kind: 'ingest', status: 'failed', createdAt: '2026-11-14T12:00:00.000Z', updatedAt: '2026-11-14T12:01:00.000Z' };
+    const job = {
+      id: 'job_1',
+      kind: 'ingest',
+      status: 'failed',
+      createdAt: '2026-11-14T12:00:00.000Z',
+      updatedAt: '2026-11-14T12:01:00.000Z',
+    };
     await emit({ type: 'job.failed', data: { job: { ...job, links: { job: '/api/v1/jobs/job_1' } } } }, store, ctx, {
       retryDelaysMs: [0, 20],
       jitter: false,
@@ -163,8 +175,18 @@ describe('delivery to a real local receiver', () => {
     const r = await receiver((_req, res) => res.writeHead(gone ? 410 : 200).end());
     const store = WebhookStore.inMemory();
     const hook = await store.create({ url: r.url, events: ['job.succeeded'] }, ctx);
-    const job = { id: 'job_2', kind: 'brief', status: 'succeeded', createdAt: '2026-11-14T12:00:00.000Z', updatedAt: '2026-11-14T12:00:09.000Z' };
-    const res = await emit({ type: 'job.succeeded', data: { job: { ...job, links: { job: '/api/v1/jobs/job_2' } } } }, store, ctx);
+    const job = {
+      id: 'job_2',
+      kind: 'brief',
+      status: 'succeeded',
+      createdAt: '2026-11-14T12:00:00.000Z',
+      updatedAt: '2026-11-14T12:00:09.000Z',
+    };
+    const res = await emit(
+      { type: 'job.succeeded', data: { job: { ...job, links: { job: '/api/v1/jobs/job_2' } } } },
+      store,
+      ctx,
+    );
     expect(res.deliveries[0]).toMatchObject({ outcome: 'disabled', status: 410 });
     expect((await store.get(hook.id))?.disabledReason).toBe('the receiver answered 410 Gone');
 
@@ -243,10 +265,12 @@ describe('SSRF rejections at registration', () => {
 
   it('validates events', async () => {
     const store = WebhookStore.inMemory();
-    await expect(store.create({ url: 'https://8.8.8.8/hook', events: [] }, strict, { resolve: null })).rejects.toThrow(/non-empty/);
-    await expect(store.create({ url: 'https://8.8.8.8/hook', events: ['video.deleted'] }, strict, { resolve: null })).rejects.toThrow(
-      /Unknown webhook event: video.deleted/,
+    await expect(store.create({ url: 'https://8.8.8.8/hook', events: [] }, strict, { resolve: null })).rejects.toThrow(
+      /non-empty/,
     );
+    await expect(
+      store.create({ url: 'https://8.8.8.8/hook', events: ['video.deleted'] }, strict, { resolve: null }),
+    ).rejects.toThrow(/Unknown webhook event: video.deleted/);
     const all = await store.create({ url: 'https://8.8.8.8/hook', events: ['video.ingested', '*'] }, strict, { resolve: null });
     expect(all.events).toEqual(['*']);
   });

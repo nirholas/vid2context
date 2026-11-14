@@ -151,10 +151,14 @@ export async function fetchModelIndex(ctx: Ctx): Promise<Map<string, ModelIndexE
   try {
     res = await fetchWithTimeout(ctx, url, {}, 30_000);
   } catch (err) {
-    throw new Vid2ContextError('unavailable', `Could not reach Hugging Face to list whisper.cpp models: ${(err as Error).message}`, {
-      hint: 'Check the network connection, or download the model yourself and set WHISPER_CPP_MODEL to its absolute path.',
-      cause: err,
-    });
+    throw new Vid2ContextError(
+      'unavailable',
+      `Could not reach Hugging Face to list whisper.cpp models: ${(err as Error).message}`,
+      {
+        hint: 'Check the network connection, or download the model yourself and set WHISPER_CPP_MODEL to its absolute path.',
+        cause: err,
+      },
+    );
   }
   if (!res.ok) throw await errorFromResponse(res, 'Hugging Face model index');
   return parseModelIndex(await res.json());
@@ -222,11 +226,9 @@ export async function downloadVerified(
     } finally {
       await fh.close();
     }
-    if (written === sizeOf(part)) {
-      const digest = hash.digest('hex');
-      return finish(part, dest, digest, expected, label);
-    }
+    return finish(part, dest, hash.digest('hex'), expected, label);
   }
+  // 416: the partial file already holds every byte; verify it as it is.
   return finish(part, dest, await sha256OfFile(part), expected, label);
 }
 
@@ -234,9 +236,13 @@ function finish(part: string, dest: string, digest: string, expected: { sha256: 
   const size = sizeOf(part);
   if (digest !== expected.sha256 || (expected.size !== undefined && size !== expected.size)) {
     rmSync(part, { force: true });
-    throw new Vid2ContextError('upstream', `Checksum mismatch for ${label}: expected sha256 ${expected.sha256}, got ${digest} (${size} bytes).`, {
-      hint: 'The partial file was deleted. Run setup again to download it fresh.',
-    });
+    throw new Vid2ContextError(
+      'upstream',
+      `Checksum mismatch for ${label}: expected sha256 ${expected.sha256}, got ${digest} (${size} bytes).`,
+      {
+        hint: 'The partial file was deleted. Run setup again to download it fresh.',
+      },
+    );
   }
   renameSync(part, dest);
 }
@@ -255,12 +261,16 @@ export async function downloadModel(name: string, ctx: Ctx, opts: { force?: bool
   const resolved = resolveModel(name, ctx.env);
   if (looksLikePath(name)) {
     if (!isFile(resolved.path)) {
-      throw new Vid2ContextError('not-found', `Model file not found: ${resolved.path}`, { hint: 'Check the path, or pass a catalog name to download one.' });
+      throw new Vid2ContextError('not-found', `Model file not found: ${resolved.path}`, {
+        hint: 'Check the path, or pass a catalog name to download one.',
+      });
     }
     return { name: resolved.name, path: resolved.path, sizeBytes: sizeOf(resolved.path), reused: true };
   }
   if (!resolved.known) {
-    throw new Vid2ContextError('bad-request', `Unknown whisper.cpp model: ${name}`, { hint: `Pick one of: ${MODEL_NAMES.join(', ')}.` });
+    throw new Vid2ContextError('bad-request', `Unknown whisper.cpp model: ${name}`, {
+      hint: `Pick one of: ${MODEL_NAMES.join(', ')}.`,
+    });
   }
   const file = modelFileName(resolved.name);
   mkdirSync(modelsDir(ctx.env), { recursive: true });
@@ -280,7 +290,9 @@ export async function downloadModel(name: string, ctx: Ctx, opts: { force?: bool
       }
       const entry = index.get(file);
       if (!entry) {
-        throw new Vid2ContextError('not-found', `${file} is not in ${HF_REPO} any more.`, { hint: 'Pick another model name, or download a ggml file and set WHISPER_CPP_MODEL to its path.' });
+        throw new Vid2ContextError('not-found', `${file} is not in ${HF_REPO} any more.`, {
+          hint: 'Pick another model name, or download a ggml file and set WHISPER_CPP_MODEL to its path.',
+        });
       }
       if (!opts.force && isFile(resolved.path) && sizeOf(resolved.path) === entry.size) {
         return { name: resolved.name, path: resolved.path, sizeBytes: entry.size, sha256: entry.sha256, reused: true };

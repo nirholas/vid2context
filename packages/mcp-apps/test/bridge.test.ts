@@ -5,6 +5,7 @@
  * handshake step fails here.
  */
 import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { AppBridge } from '@modelcontextprotocol/ext-apps/app-bridge';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
 import type { JSONRPCMessage } from '@modelcontextprotocol/sdk/types.js';
@@ -14,7 +15,7 @@ import { toViewerData } from '../src/data.ts';
 import { type BridgeChannel, type BridgeHandlers, PROTOCOL_VERSION, ViewBridge } from '../src/ui/bridge.ts';
 
 const context = JSON.parse(
-  readFileSync(new URL('../../../tests/fixtures/contexts/youtube-cCPsdFdlshc.json', import.meta.url), 'utf8'),
+  readFileSync(join(import.meta.dirname, '../../../tests/fixtures/contexts/youtube-cCPsdFdlshc.json'), 'utf8'),
 ) as VideoContext;
 
 /** Connect a ViewBridge and an AppBridge through a linked in-memory transport pair. */
