@@ -7,7 +7,7 @@ Turns video contexts into notes you keep: an Obsidian vault folder (one note per
 | `@vid2context/exporters` | any | `renderObsidian`, `exportObsidian`, `exportNotion`, `planNotionPage`, helpers |
 | `@vid2context/exporters/node` | Node | `writeObsidian(files, vaultPath, { overwrite? })` |
 | `@vid2context/exporters/http` | any | `exporterRoutes(deps)`: `POST /exports/obsidian`, `POST /exports/notion` |
-| `@vid2context/exporters/mcp` | any | `registerExporterTools(server, deps)`: `export_obsidian` (Node only), `export_notion` |
+| `@vid2context/exporters/mcp` | any | `registerExporterTools(server, deps)`: `export_obsidian` (stdio on Node only), `export_notion` |
 
 ## Obsidian
 
@@ -68,10 +68,10 @@ An export lists the parent's child pages, reads each one's first block (once per
 
 - `POST /api/v1/exports/obsidian` with `{ inputs?, collectionId?, folder? }` returns `{ files: [{ path, content }], missing }`. The server never writes files: the caller does, or the bundle route zips them.
 - `POST /api/v1/exports/notion` with `{ inputs?, collectionId?, parentPageId? }` returns `{ pages: [{ videoId, url, pageId, status }], missing }`.
-- MCP `export_obsidian` `{ urls?, collection?, vaultPath, folder?, overwrite? }` is registered only when the runtime is Node, since it writes on the user's machine. `export_notion` `{ urls?, collection?, parentPageId? }` is registered everywhere.
+- MCP `export_obsidian` `{ urls?, collection?, vaultPath, folder?, overwrite? }` writes on the machine running the server, so it is for the stdio server only. It is registered when the runtime is Node, unless the server passes `localFiles: false` (a remote server should, so the tool is not listed). A call that arrives over an HTTP transport is refused with a hint pointing at stdio or `POST /exports/obsidian`, even when the tool is listed. `export_notion` `{ urls?, collection?, parentPageId? }` is registered everywhere.
 
 `inputs` and `urls` can be videos, playlists, channels or feeds (expanded through the registry); `collection` and `collectionId` need a storage backend. Both can be combined; videos are exported once each.
 
 ## Tests
 
-`npx vitest run packages/exporters` renders the shared real contexts in `tests/fixtures/contexts/`, parses the frontmatter with a YAML parser, checks headings, links, filenames and the index note, and runs the writer in a temporary folder with path-escape attempts and the overwrite guard. Notion tests check request construction (block order, chunk sizes, batch counts, limits) without any Notion response, because no token was available when this package was written. `notion.live.test.ts` runs against the real API with `LIVE=1`, `NOTION_TOKEN` and `NOTION_PARENT_PAGE_ID` (use a scratch page: it creates pages there).
+`npx vitest run packages/exporters` renders the shared real contexts in `tests/fixtures/contexts/`, parses the frontmatter with a YAML parser, checks headings, links, filenames and the index note, renders real recorded YouTube comments (`test/fixtures/`, see its README) in both formats, and runs the writer in a temporary folder with path-escape attempts and the overwrite guard. Notion tests check request construction (block order, chunk sizes, batch counts, limits) without any Notion response, because no token was available when this package was written. `notion.live.test.ts` runs against the real API with `LIVE=1`, `NOTION_TOKEN` and `NOTION_PARENT_PAGE_ID` (use a scratch page: it creates pages there).
