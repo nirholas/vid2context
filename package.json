@@ -21,6 +21,7 @@
     "lint": "biome check .",
     "format": "biome check --write .",
     "check": "npm run typecheck && npm run lint && npm test",
+    "check:llm": "tsx scripts/check-llm.ts",
     "cli": "tsx packages/cli/src/bin.ts",
     "mcp": "tsx packages/mcp/src/bin.ts",
     "dev:server": "tsx watch packages/server/src/node.ts",

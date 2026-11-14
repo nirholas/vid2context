@@ -16,8 +16,6 @@ Limits below come from the providers' published free tiers or from live checks; 
 | `youtube-captions` | creator captions, auto-captions, YouTube translation (`tlang`) | always | translated tracks were rate-limited (HTTP 429) from a GCP VM on 2026-11-14 |
 | `media-file` | local files and `file://` URLs (Node only) | always | metadata from the filesystem; audio bytes for speech-to-text |
 
-| `ytdlp` | catch-all for any http(s) URL (Vimeo, TikTok, X, Reddit, Twitch, TED, ...): metadata, playlists, comments, 16 kHz mono mp3 audio; also audio for YouTube refs (Node only) | always | yt-dlp is found (`YTDLP_PATH`, `PATH`) or installed into `.vid2context/bin/` from the official release with SHA-256 verification, updated weekly (`YTDLP_AUTO_UPDATE=0` disables). Audio needs ffmpeg (`FFMPEG_PATH`). Also `YTDLP_TIMEOUT_SEC`, `YTDLP_CONCURRENCY` (default 2), `YTDLP_COOKIES_FILE`, `YTDLP_COOKIES_FROM_BROWSER`. See [guides/ytdlp.md](guides/ytdlp.md). |
-| `ytdlp-captions` | creator subtitles and automatic captions through yt-dlp (Node only) | always | runs after `youtube-captions` for YouTube. YouTube subtitle downloads through yt-dlp were rate-limited (HTTP 429) from a GCP VM on 2026-11-14; `vimeo.com/<id>` pages wanted a login there, so the provider retries through `player.vimeo.com`. |
 ## Speech-to-text (`stt-openai-compatible`)
 
 | Rung id | Tier | Enabled by | Free limits and notes |
@@ -60,6 +58,38 @@ Model overrides: `GROQ_STT_MODEL`, `MISTRAL_STT_MODEL`, `OVH_STT_MODEL`, `DEEPIN
 
 Every free and paid lane takes `<PROVIDER>_FALLBACK_KEYS` (one extra rung per key) and `<PROVIDER>_MODEL` (a comma-separated model list that replaces the defaults): `GROQ_MODEL`, `CEREBRAS_MODEL`, `MISTRAL_MODEL`, `GITHUB_MODEL`, `GEMINI_MODEL`, `OVH_MODEL`, `POLLINATIONS_MODEL`, `OPENAI_MODEL`.
 
+## LLMs: free catalog (`llm-free-catalog`)
+
+More free lanes on top of `llm-openai-compatible`. "Verified live" means a real request answered from this project's VM on that date; the other rows follow the service's docs and public model list but have not answered a real request with a key yet.
+
+| Rung id | Tier | Enabled by | Free limits and notes | Verified |
+|---|---|---|---|---|
+| `llm/kilo/nvidia/nemotron-3-ultra-550b-a55b:free` | keyless | none | Kilo Code gateway, about 200 requests per hour; JSON mode. Runs before OVH and Pollinations | live, 2026-11-14 |
+| `llm/kilo/nvidia/nemotron-3.5-super-vl:free` | keyless | none | separate model quota on the same gateway | live, 2026-11-14 |
+| `llm/kilo/nvidia/nemotron-3.5-lightning:free` | keyless | none | smaller and faster; JSON mode | live, 2026-11-14 |
+| `llm/nvidia/nvidia/nemotron-3-super-120b-a12b` | free | `NVIDIA_API_KEY` | free NIM tier, can queue under load (45 s lane timeout); thinking turned off | id in the public NIM list 2026-11-14; not verified live |
+| `llm/sambanova/Meta-Llama-3.3-70B-Instruct` | free | `SAMBANOVA_API_KEY` | about 20 requests per minute and 200k tokens per day per model; output capped at 3072 tokens | id and cap in the public model list 2026-11-14; not verified live |
+| `llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast` | free | `CLOUDFLARE_ACCOUNT_ID` + `CLOUDFLARE_API_TOKEN` | 10,000 neurons per day per account (a short answer costs about 2 to 5); 24k-token context; JSON and JSON Schema | live, 2026-11-14 |
+| `llm/zhipu/glm-4.7-flash` | free | `ZHIPU_API_KEY` | permanently free Flash tier, rate limited; thinking turned off | not verified live |
+| `llm/siliconflow/Qwen/Qwen3-8B` | free | `SILICONFLOW_API_KEY` | free model on SiliconFlow; an 8B step-down, tried late; thinking turned off | not verified live |
+
+- Keys: every lane takes `<PROVIDER>_FALLBACK_KEYS` (`KILO_`, `NVIDIA_`, `SAMBANOVA_`, `ZHIPU_`, `SILICONFLOW_`). `CLOUDFLARE_FALLBACK_KEYS` entries are a token for the same account or `<account_id>:<token>` for another account (each account has its own neuron allocation).
+- Models: `KILO_MODEL`, `NVIDIA_MODEL`, `SAMBANOVA_MODEL`, `CLOUDFLARE_MODEL`, `ZHIPU_MODEL`, `SILICONFLOW_MODEL` replace the defaults (comma-separated).
+- Endpoints: `KILO_BASE_URL`, `NVIDIA_BASE_URL`, `SAMBANOVA_BASE_URL`, `ZHIPU_BASE_URL` (`https://open.bigmodel.cn/api/paas/v4` for the mainland endpoint), `SILICONFLOW_BASE_URL` (`https://api.siliconflow.cn/v1` for mainland).
+- `KILO_API_KEY` is optional: with it Kilo becomes a free-tier rung (raised limits). A Kilo model id without `:free` used with a key is tier `paid`, since it could bill the account.
+- Not added: extra Groq or Cerebras rungs. Groq's model list needs a key. Cerebras's public list (2026-11-14) shows `gpt-oss-120b` and `qwen-3.8-27b` but no longer `llama-3.3-70b`, and its free-tier coverage cannot be checked without a key.
+
+## LLMs: OpenRouter (`llm-openrouter`)
+
+| Rung id | Tier | Enabled by | Notes |
+|---|---|---|---|
+| `llm/openrouter/free-auto` | free | `OPENROUTER_API_KEY` (+ `OPENROUTER_FALLBACK_KEYS`) | picks the best live `:free` model from `GET /api/v1/models` (cached one hour) and tries up to 3 candidates when one is retired, rate limited or failing. 14 free models listed on 2026-11-14. The catalog was read live; chat not verified live (no key) |
+| `llm/openrouter/<model>` | free if the id ends in `:free`, else paid | `OPENROUTER_API_KEY` + `OPENROUTER_MODEL` | explicit model ids, comma-separated |
+
+`OPENROUTER_BASE_URL` overrides `https://openrouter.ai/api/v1`. Free models allow about 20 requests per minute and a small daily cap (larger once the account has bought credits); see openrouter.ai/docs.
+
+Check what answers today: `npm run check:llm` (see [guides/llm.md](guides/llm.md)).
+
 ## Chain controls
 
 | Env var | Effect |
@@ -88,23 +118,6 @@ See [security/hardening.md](security/hardening.md) and [security/threat-model.md
 | `VID2CONTEXT_MAX_AUDIO_MB` | largest audio download or file read for speech-to-text (default 1024) |
 | `VID2CONTEXT_MAX_SEGMENTS` | most transcript segments kept from one source (default 200000) |
 | `VID2CONTEXT_FETCH_TIMEOUT_MS` | default timeout for one outbound request through `safeFetch` (default 30000) |
-
-## Library storage
-
-The library (saved contexts, collections, search, key-value state, vectors) uses the enabled storage backend with the lowest priority. Guide: [guides/library-sqlite.md](guides/library-sqlite.md).
-
-| Priority | Backend | Runtime | Enabled when |
-|---|---|---|---|
-| lower than 50 | Postgres (`storage-postgres`) | node | a database URL is set (see that provider's rows) |
-| 50 | SQLite (`storage-sqlite`), FTS5 search, one local file | node (22.13+) | by default, unless `VID2CONTEXT_STORAGE` names another backend |
-| none | in-process `MemoryStorage`, lost on exit | any | no backend is enabled, or `VID2CONTEXT_STORAGE=memory` |
-
-| Env var | Used by | Notes |
-|---|---|---|
-| `VID2CONTEXT_STORAGE` | storage providers | pick one backend: `sqlite`, `postgres`, `cloudflare`, or `memory` (no persistent backend). Unset: the priority order above |
-| `VID2CONTEXT_DB` | `storage-sqlite` | path of the SQLite file, or `:memory:`; default `<VID2CONTEXT_HOME>/library.db` |
-| `VID2CONTEXT_HOME` | `storage-sqlite` and other local data | data directory; default `.vid2context` in the working directory |
-| `VID2CONTEXT_DB_BUSY_TIMEOUT_MS` | `storage-sqlite` | how long a write waits for another process holding the file; default 5000 |
 
 ## Exports
 
@@ -157,12 +170,6 @@ Outbound, signed Standard Webhooks from `@vid2context/webhooks` (`GET/POST /webh
 
 | Kind | Provider | Tier | Enabled by | Known limits |
 |---|---|---|---|---|
-| llm | Kilo Code gateway, Nemotron `:free` models | keyless | none (`KILO_API_KEY` optional) | about 200 requests per hour |
-| llm | NVIDIA NIM `nvidia/nemotron-3-super-120b-a12b` | free | `NVIDIA_API_KEY` | free, can queue under load |
-| llm | SambaNova `Meta-Llama-3.3-70B-Instruct` | free | `SAMBANOVA_API_KEY` | about 20 requests per minute and 200k tokens per day per model |
-| llm | Zhipu `glm-4.7-flash` | free | `ZHIPU_API_KEY` | permanently free Flash tier |
-| llm | Cloudflare Workers AI `@cf/meta/llama-3.3-70b-instruct-fp8-fast` | free | `CLOUDFLARE_ACCOUNT_ID` + `CLOUDFLARE_API_TOKEN` | 10,000 neurons per day |
-| llm | OpenRouter, best live `:free` model | free | `OPENROUTER_API_KEY` | never pin a `:free` id |
 | llm | Anthropic `claude-haiku-4-5-20251001`, native | paid | `ANTHROPIC_API_KEY` | |
 | stt | whisper.cpp, Transformers.js, Workers AI Whisper, Gemini, Deepgram, AssemblyAI | local / free | per prompt | |
 | embed | OVH `bge-m3` (keyless), Ollama, Transformers.js, Gemini, Cloudflare, paid | mixed | per prompt | |

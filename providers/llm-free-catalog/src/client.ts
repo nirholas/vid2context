@@ -14,7 +14,10 @@
  * reasoning fields and <think> blocks are stripped the same way everywhere.
  */
 import { type ChatRequest, type ChatResult, type Ctx, Vid2ContextError } from '@vid2context/core';
-import { type ChatEndpoint, chatWith } from '@vid2context/provider-llm-openai-compatible';
+import { chatWith } from '@vid2context/provider-llm-openai-compatible';
+
+/** The foundation client's endpoint type (its index exports the function, not the type). */
+type ChatEndpoint = Parameters<typeof chatWith>[0];
 
 export interface LaneLimits {
   /** Largest max_tokens the model accepts; larger requests are clamped. */

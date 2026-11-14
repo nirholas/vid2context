@@ -12,7 +12,8 @@
  * Zhipu 55, GitHub 60, Gemini 70, SiliconFlow 80 (an 8B step-down), Groq
  * gpt-oss-20b 90. Kilo runs before OVH (10) and Pollinations (20) in the
  * keyless tier: its quota (about 200 requests per hour) is far larger than
- * OVH's 2 requests per minute.
+ * OVH's 2 requests per minute. With KILO_API_KEY it becomes a free-tier lane
+ * at 35, between NVIDIA and SambaNova.
  */
 import { type Env, keyPool, type LlmRung, type PooledKey, pooledService, type Tier } from '@vid2context/core';
 import { type CatalogEndpoint, chatVia, type LaneLimits } from './client.ts';
@@ -59,6 +60,8 @@ export interface CatalogLane {
    * its rung is tier 'paid' (Kilo's gateway also serves paid models).
    */
   freeSuffixOnly?: boolean;
+  /** Priority in the free tier when a keyless lane is used with an account key. */
+  keyedPriority?: number;
 }
 
 const trimSlash = (s: string) => s.replace(/\/+$/, '');
@@ -117,6 +120,7 @@ export const CATALOG_LANES: CatalogLane[] = [
     ],
     extraBody: { reasoning: { enabled: false } },
     freeSuffixOnly: true,
+    keyedPriority: 35,
   },
   // ---- free: hosted free tiers with your own key
   // NVIDIA NIM (build.nvidia.com). Nemotron 3 leaks its chain of thought into
@@ -246,13 +250,14 @@ export function laneRungs(lane: CatalogLane, env: Env): LlmRung[] {
         limits: { ...lane.limits, maxOutputTokens: model.maxOutputTokens },
       };
       const capabilities = [...(model.json || model.jsonSchema ? ['json'] : []), ...(model.jsonSchema ? ['json-schema'] : [])];
+      const keyed = Boolean(cred.key) && lane.tier === 'keyless';
       return {
         id: `llm/${cred.service}/${model.id}`,
         provider: PROVIDER_ID,
         service: cred.service,
         model: model.id,
         tier: tierFor(lane, model, cred),
-        priority: lane.priority + i,
+        priority: (keyed ? (lane.keyedPriority ?? lane.priority) : lane.priority) + i,
         quality: model.quality,
         capabilities,
         requires: cred.requires,
