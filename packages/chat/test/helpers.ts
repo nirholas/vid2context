@@ -3,12 +3,16 @@
  * test/fixtures/README.md for where and when each was made.
  */
 import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import type { VideoContext } from '@vid2context/core';
 import type { RecordedResponse, Route } from '@vid2context/core/testing';
 import type { ChatApiRequest, ChatEvent, ModelInfo } from '../src/lib/types.ts';
 
+/** This folder on disk. import.meta.url is not a file: URL under the jsdom environment, so use dirname. */
+const HERE = import.meta.dirname;
+
 export function fixture(name: string): string {
-  return readFileSync(new URL(`./fixtures/${name}`, import.meta.url), 'utf8');
+  return readFileSync(join(HERE, 'fixtures', name), 'utf8');
 }
 
 export function fixtureJson<T>(name: string): T {
@@ -17,13 +21,11 @@ export function fixtureJson<T>(name: string): T {
 
 /** Shared real VideoContext output in tests/fixtures/contexts/. */
 export function sharedContext(id: 'cCPsdFdlshc' | 'jNQXAC9IVRw'): VideoContext {
-  return JSON.parse(
-    readFileSync(new URL(`../../../tests/fixtures/contexts/youtube-${id}.json`, import.meta.url), 'utf8'),
-  ) as VideoContext;
+  return JSON.parse(readFileSync(join(HERE, '../../../tests/fixtures/contexts', `youtube-${id}.json`), 'utf8')) as VideoContext;
 }
 
 export function sharedContextText(id: 'cCPsdFdlshc' | 'jNQXAC9IVRw'): string {
-  return readFileSync(new URL(`../../../tests/fixtures/contexts/youtube-${id}.json`, import.meta.url), 'utf8');
+  return readFileSync(join(HERE, '../../../tests/fixtures/contexts', `youtube-${id}.json`), 'utf8');
 }
 
 export interface ClientRecording {
