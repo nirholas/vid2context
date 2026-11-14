@@ -33,3 +33,6 @@ export interface PageResponse {
   /** For `player`: the player response object. For `pot`: a timedtext URL that carries the token. */
   value: unknown;
 }
+
+/** `storage.local` key for a context-menu result that could not be shown in the tab (browser pages, the web store). */
+export const LAST_RESULT_KEY = 'lastResult';
