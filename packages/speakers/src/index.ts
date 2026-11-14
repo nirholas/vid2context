@@ -13,18 +13,18 @@ import {
   chat,
   type Registry,
   type Segment,
-  type VideoContext,
   Vid2ContextError,
+  type VideoContext,
 } from '@vid2context/core';
 import { DEFAULT_TOLERANCE_SEC, isPlausibleName, nameIsGrounded, quoteAppearsNear } from './evidence.ts';
-import { buildSpeakerMessages, SPEAKER_SCHEMA, type SampleOptions, sampleTurns, speakerLabels, speakerTurns } from './prompt.ts';
+import { buildSpeakerMessages, type SampleOptions, SPEAKER_SCHEMA, sampleTurns, speakerLabels, speakerTurns } from './prompt.ts';
 
 export { isPlausibleName, nameIsGrounded, nameTokens, normalizeText, quoteAppearsNear } from './evidence.ts';
 export {
   buildSpeakerMessages,
   hasNamingCue,
-  SPEAKER_SCHEMA,
   type SampleOptions,
+  SPEAKER_SCHEMA,
   sampleTurns,
   speakerLabels,
   speakerTurns,
@@ -97,7 +97,10 @@ export function parseSpeakerJson(text: string): RawEntry[] {
 }
 
 function labelKey(label: string): string {
-  return label.trim().toLowerCase().replace(/^speaker\s*/, '');
+  return label
+    .trim()
+    .toLowerCase()
+    .replace(/^speaker\s*/, '');
 }
 
 /**
@@ -168,6 +171,8 @@ export async function nameSpeakers(
   const labels = speakerLabels(segments);
   if (labels.length === 0) return { mapping: [], context: applySpeakerNames(context, []), attempts: [] };
 
+  // An aborted caller gets its own abort reason, not a chain error that says every rung failed.
+  ctx.signal?.throwIfAborted();
   const sample = sampleTurns(speakerTurns(segments), opts);
   const messages = buildSpeakerMessages(context, sample, labels);
   const res = await chat(

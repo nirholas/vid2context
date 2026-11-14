@@ -31,7 +31,11 @@ async function recordTranscript(clip: Clip): Promise<void> {
   const res = await fetch(url, { headers: { 'user-agent': UA } });
   if (!res.ok) throw new Error(`commons ${res.status}`);
   const body = (await res.json()) as { query: { pages: Record<string, { imageinfo: { url: string }[] }> } };
-  writeFileSync(`${FIXTURES}commons-${clip.stem}.json`, `${JSON.stringify(body, null, 2)}\n`);
+  // Commons descriptions can carry an archive's contact email and phone; fixtures never keep them.
+  const redacted = JSON.stringify(body, null, 2)
+    .replace(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g, '[email redacted]')
+    .replace(/\b\d{3}-\d{3}-\d{4}\b/g, '[phone redacted]');
+  writeFileSync(`${FIXTURES}commons-${clip.stem}.json`, `${redacted}\n`);
 
   const mediaUrl = Object.values(body.query.pages)[0]?.imageinfo[0]?.url;
   if (!mediaUrl) throw new Error(`no media url for ${clip.commonsTitle}`);
