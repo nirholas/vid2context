@@ -100,12 +100,24 @@ async function recordNamingOnce(clip: Clip, only?: string): Promise<void> {
   // An empty env leaves the keyless lanes as the only enabled rungs.
   const ctx = createContext({ runtime: 'node', env: {}, fetch: recordingFetch, log: stderrLogger('debug') });
   const registry = new Registry([llm].flat(), 'node');
-  const result = await nameSpeakers(loadContext(clip), registry, ctx, only ? { chain: { only: [only] } } : {});
-  const out = { recordedAt: new Date().toISOString(), rung: result.rung, calls };
   const suffix = only ? `--${only.replace(/^llm\//, '').replace(/[^A-Za-z0-9.]+/g, '-')}` : '';
-  writeFileSync(`${FIXTURES}llm-${clip.stem}${suffix}.json`, `${JSON.stringify(out, null, 2)}\n`);
-  console.error(`recorded ${calls.length} llm call(s) for ${clip.stem} via ${result.rung}`);
-  console.error(JSON.stringify(result.mapping, null, 2));
+  const file = `${FIXTURES}llm-${clip.stem}${suffix}.json`;
+  try {
+    const result = await nameSpeakers(loadContext(clip), registry, ctx, only ? { chain: { only: [only] } } : {});
+    writeFileSync(file, `${JSON.stringify({ recordedAt: new Date().toISOString(), rung: result.rung, calls }, null, 2)}\n`);
+    console.error(`recorded ${calls.length} llm call(s) for ${clip.stem} via ${result.rung}`);
+    console.error(JSON.stringify(result.mapping, null, 2));
+  } catch (err) {
+    // A model that answered with something unusable is still a real response worth keeping, when one rung was pinned.
+    const answered = calls.some((c) => c.status === 200);
+    if (only && answered) {
+      const error = { code: (err as { code?: string }).code, message: (err as Error).message };
+      writeFileSync(file, `${JSON.stringify({ recordedAt: new Date().toISOString(), rung: only, error, calls }, null, 2)}\n`);
+      console.error(`recorded ${calls.length} llm call(s) for ${clip.stem} via ${only}, which failed: ${error.message}`);
+      return;
+    }
+    throw err;
+  }
 }
 
 const what = process.argv[2] ?? 'all';

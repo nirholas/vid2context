@@ -73,6 +73,9 @@ interface RawEntry {
   evidence?: unknown;
 }
 
+const HINT =
+  'The answer may have been cut off: raise maxTokens (reasoning models need room), retry, or pick another model with chain options (for example only: ["groq"]).';
+
 /** Parse the model's JSON, tolerating code fences and text around the object. */
 export function parseSpeakerJson(text: string): RawEntry[] {
   const unfenced = text.replace(/```(?:json)?/gi, '');
@@ -80,7 +83,7 @@ export function parseSpeakerJson(text: string): RawEntry[] {
   const end = unfenced.lastIndexOf('}');
   if (start < 0 || end <= start) {
     throw new Vid2ContextError('upstream', 'The model did not return a JSON object for speaker naming.', {
-      hint: 'Retry, or pick a stronger model with chain options (for example only: ["groq"]).',
+      hint: HINT,
     });
   }
   let parsed: unknown;
@@ -88,7 +91,7 @@ export function parseSpeakerJson(text: string): RawEntry[] {
     parsed = JSON.parse(unfenced.slice(start, end + 1));
   } catch (err) {
     throw new Vid2ContextError('upstream', 'The model returned malformed JSON for speaker naming.', {
-      hint: 'Retry, or pick a stronger model with chain options (for example only: ["groq"]).',
+      hint: HINT,
       cause: err,
     });
   }
@@ -177,7 +180,7 @@ export async function nameSpeakers(
   const messages = buildSpeakerMessages(context, sample, labels);
   const res = await chat(
     registry,
-    { messages, json: { schema: SPEAKER_SCHEMA, name: 'speakers' }, temperature: 0, maxTokens: opts.maxTokens ?? 2000 },
+    { messages, json: { schema: SPEAKER_SCHEMA, name: 'speakers' }, temperature: 0, maxTokens: opts.maxTokens ?? 4000 },
     { allowPaid: false, ...opts.chain },
     ctx,
   );

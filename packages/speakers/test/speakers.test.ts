@@ -84,6 +84,19 @@ describe('nameSpeakers on the recorded Nixon to Apollo 11 call', () => {
   });
 });
 
+describe('nameSpeakers when the model answer is unusable', () => {
+  it('fails with an upstream error and a recovery hint when the JSON was cut off (Pollinations gpt-oss-20b)', async () => {
+    const { fetch, rung } = replay('llm-nixon-armstrong-call--pollinations-openai-fast.json');
+    const err = await nameSpeakers(loadContext(CLIPS.call), registry, testContext({ fetch }), { chain: { only: [rung] } }).catch(
+      (e: unknown) => e,
+    );
+    expect(err).toMatchObject({ code: 'upstream', message: expect.stringContaining('malformed JSON') });
+    expect((err as { hint?: string }).hint).toContain('maxTokens');
+    const body = JSON.parse(String(fetch.calls[0]?.body)) as { max_tokens?: number; max_completion_tokens?: number };
+    expect(body.max_tokens ?? body.max_completion_tokens).toBe(4000);
+  });
+});
+
 describe('nameSpeakers on the single-speaker Apollo 11 clip', () => {
   it('keeps the label when the model finds no evidence in the transcript', async () => {
     const { fetch, rung } = replay('llm-apollo11-small-step.json');
