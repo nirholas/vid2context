@@ -115,6 +115,14 @@ Keyless rungs send data to a third party without an account. They are on by defa
 
 Free model ids are retired without notice. Pin ids only where the provider keeps them stable, make every id overridable through env, and never pin an OpenRouter `:free` id (pick from the live list instead).
 
+## Platform bindings (`ctx.bindings`)
+
+`ctx.bindings` is an optional `Record<string, unknown>` of platform objects that are not strings: on Cloudflare Workers, `createWorkersContext(env)` puts every non-string env value there (the `AI`, D1, R2, KV and Vectorize bindings) and keeps strings in `ctx.env`. On Node and in the browser it is usually absent.
+
+- Treat it as optional. `rungs(env)` and `isEnabled(env)` see only `env`, so a provider that needs a binding is switched on by a string env var naming the binding (for example `CLOUDFLARE_AI_BINDING=AI`, `VID2CONTEXT_D1=DB`) and reads `ctx.bindings[name]` at call time.
+- When the named binding is missing or has the wrong shape, throw a `Vid2ContextError` whose hint names the binding and the `wrangler.jsonc` entry that creates it.
+- Never copy bindings into logs, attempts or error messages.
+
 ## Storage providers (`kind: 'storage'`)
 
 `isEnabled(env)` decides from env alone; the enabled backend with the lowest `priority` wins. `create(ctx)` returns an object implementing `Storage` from [packages/core/src/storage.ts](../../packages/core/src/storage.ts). Unknown ids throw `Vid2ContextError('not-found')`. Raw transcripts are always stored; summaries and briefs are stored next to them, never instead of them.

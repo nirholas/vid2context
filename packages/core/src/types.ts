@@ -173,4 +173,6 @@ export interface Ctx {
   fetch: typeof fetch;
   log: Logger;
   signal?: AbortSignal;
+  /** Platform objects such as Cloudflare bindings (AI, D1, R2, KV). Providers must treat them as optional. */
+  bindings?: Record<string, unknown>;
 }

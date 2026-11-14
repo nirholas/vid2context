@@ -31,6 +31,7 @@ export function createContext(opts: {
   fetch?: typeof fetch;
   log?: Logger;
   signal?: AbortSignal;
+  bindings?: Record<string, unknown>;
 }): Ctx {
   const env = opts.env ?? {};
   const level = (env.VID2CONTEXT_LOG_LEVEL as LogLevel | undefined) ?? 'warn';
@@ -40,6 +41,7 @@ export function createContext(opts: {
     fetch: opts.fetch ?? globalThis.fetch.bind(globalThis),
     log: opts.log ?? stderrLogger(level in LEVELS ? level : 'warn', env),
     signal: opts.signal,
+    ...(opts.bindings ? { bindings: opts.bindings } : {}),
   };
 }
 
