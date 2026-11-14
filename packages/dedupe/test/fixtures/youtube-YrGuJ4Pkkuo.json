@@ -1,0 +1,558 @@
+{
+  "metadata": {
+    "ref": {
+      "input": "https://www.youtube.com/watch?v=YrGuJ4Pkkuo",
+      "platform": "youtube",
+      "kind": "video",
+      "id": "youtube:YrGuJ4Pkkuo",
+      "nativeId": "YrGuJ4Pkkuo",
+      "url": "https://www.youtube.com/watch?v=YrGuJ4Pkkuo"
+    },
+    "title": "Richard Feynman is misunderstood | Grant Sanderson and Lex Fridman",
+    "description": "Full episode with Grant Sanderson (Aug 2020): https://www.youtube.com/watch?v=U_6AYX42gkU\nClips channel (Lex Clips): https://www.youtube.com/lexclips\nMain channel (Lex Fridman): https://www.youtube.com/lexfridman\n(more links below)\n\nPodcast full episodes playlist:\nhttps://www.youtube.com/playlist?list=PLrAXtmErZgOdP_8GztsuKi9nrraNbKKp4\n\nPodcasts clips playlist:\nhttps://www.youtube.com/playlist?list=PLrAXtmErZgOeciFP3CBCIEElOJeitOr41\n\nPodcast website:\nhttps://lexfridman.com/ai\n\nPodcast on Apple Podcasts (iTunes):\nhttps://apple.co/2lwqZIr\n\nPodcast on Spotify:\nhttps://open.spotify.com/show/2MAi0BvDc6GTFvKFPXnkCL\n\nPodcast RSS:\nhttps://lexfridman.com/category/ai/feed/\n\nGrant Sanderson is a math educator and creator of 3Blue1Brown.\n\nSubscribe to this YouTube channel or connect on:\n- Twitter: https://twitter.com/lexfridman\n- LinkedIn: https://www.linkedin.com/in/lexfridman\n- Facebook: https://www.facebook.com/lexfridman\n- Instagram: https://www.instagram.com/lexfridman\n- Medium: https://medium.com/@lexfridman\n- Support on Patreon: https://www.patreon.com/lexfridman",
+    "durationSec": 289,
+    "publishedAt": "2020-08-25",
+    "thumbnailUrl": "https://i.ytimg.com/vi/YrGuJ4Pkkuo/maxresdefault.jpg",
+    "language": "en",
+    "tags": [
+      "grant sanderson",
+      "artificial intelligence",
+      "ai",
+      "ai podcast",
+      "artificial intelligence podcast",
+      "lex clips",
+      "lex fridman",
+      "lex friedman",
+      "joe rogan",
+      "elon musk",
+      "lex podcast",
+      "lex mit",
+      "lex ai",
+      "mit ai",
+      "ai podcast clips",
+      "ai clips",
+      "deep learning",
+      "machine learning",
+      "computer science",
+      "engineering",
+      "physics",
+      "science",
+      "tech",
+      "technology",
+      "tech podcast",
+      "physics podcast",
+      "mathematics",
+      "math",
+      "math podcast",
+      "friedman",
+      "consciousness",
+      "philosophy",
+      "turing",
+      "einstein"
+    ],
+    "chapters": [
+      {
+        "title": "Intro",
+        "startSec": 0,
+        "endSec": 17
+      },
+      {
+        "title": "Richard Feynman is misunderstood",
+        "startSec": 17,
+        "endSec": 36
+      },
+      {
+        "title": "A letter to his wife",
+        "startSec": 36,
+        "endSec": 65
+      },
+      {
+        "title": "Feynman in reality",
+        "startSec": 65,
+        "endSec": 160
+      },
+      {
+        "title": "Seeing problems yourself",
+        "startSec": 160,
+        "endSec": 176
+      },
+      {
+        "title": "Rediscovery",
+        "startSec": 176,
+        "endSec": 289
+      }
+    ],
+    "isLive": false,
+    "extra": {
+      "viewCount": 284660,
+      "likeCount": 7114,
+      "dateText": "Aug 25, 2020",
+      "channelHandle": "@LexClips",
+      "channelHandleUrl": "https://www.youtube.com/@LexClips",
+      "subscriberCountText": "1.65M subscribers",
+      "isShort": false,
+      "isLive": false,
+      "isUpcoming": false,
+      "isLiveContent": false,
+      "ageRestricted": false,
+      "membersOnly": false,
+      "playability": "OK",
+      "chapterSource": "key-moments",
+      "links": [
+        "https://www.youtube.com/watch?v=U_6AYX42gkU",
+        "https://www.youtube.com/lexclips",
+        "https://www.youtube.com/lexfridman",
+        "https://www.youtube.com/playlist?list=PLrAXtmErZgOdP_8GztsuKi9nrraNbKKp4",
+        "https://www.youtube.com/playlist?list=PLrAXtmErZgOeciFP3CBCIEElOJeitOr41",
+        "https://lexfridman.com/ai",
+        "https://apple.co/2lwqZIr",
+        "https://open.spotify.com/show/2MAi0BvDc6GTFvKFPXnkCL",
+        "https://lexfridman.com/category/ai/feed/",
+        "https://twitter.com/lexfridman",
+        "https://www.linkedin.com/in/lexfridman",
+        "https://www.facebook.com/lexfridman",
+        "https://www.instagram.com/lexfridman",
+        "https://medium.com/@lexfridman",
+        "https://www.patreon.com/lexfridman"
+      ]
+    },
+    "channel": {
+      "name": "Lex Clips",
+      "id": "UCJIfeSCssxSC_Dhc5s7woww",
+      "url": "https://www.youtube.com/channel/UCJIfeSCssxSC_Dhc5s7woww"
+    }
+  },
+  "transcript": {
+    "ref": {
+      "input": "https://www.youtube.com/watch?v=YrGuJ4Pkkuo",
+      "platform": "youtube",
+      "kind": "video",
+      "id": "youtube:YrGuJ4Pkkuo",
+      "nativeId": "YrGuJ4Pkkuo",
+      "url": "https://www.youtube.com/watch?v=YrGuJ4Pkkuo"
+    },
+    "language": "en",
+    "origin": "stt",
+    "producer": "stt/whisper-cpp/small",
+    "model": "small",
+    "segments": [
+      {
+        "startSec": 0,
+        "endSec": 5.9,
+        "text": "You've spoken about Richard Feynman as someone you admire."
+      },
+      {
+        "startSec": 5.9,
+        "endSec": 9.62,
+        "text": "I think last time we spoke, we ran out of time."
+      },
+      {
+        "startSec": 9.62,
+        "endSec": 12.98,
+        "text": "So I wanted to talk to you about him."
+      },
+      {
+        "startSec": 12.98,
+        "endSec": 15.5,
+        "text": "Who is Richard Feynman to you and your eyes?"
+      },
+      {
+        "startSec": 15.5,
+        "endSec": 17.1,
+        "text": "What impact did he have on you?"
+      },
+      {
+        "startSec": 17.1,
+        "endSec": 20.02,
+        "text": "I mean, I think a ton of people like Feynman."
+      },
+      {
+        "startSec": 20.02,
+        "endSec": 22.46,
+        "text": "It's a little bit cliche to say that you like Feynman, right?"
+      },
+      {
+        "startSec": 22.46,
+        "endSec": 27.02,
+        "text": "That's almost like when you don't know what to say about sports and you just point to the"
+      },
+      {
+        "startSec": 27.02,
+        "endSec": 29.54,
+        "text": "Super Bowl or something or something you enjoy watching."
+      },
+      {
+        "startSec": 29.54,
+        "endSec": 33.8,
+        "text": "But I do actually think there's a layer to Feynman that sits behind the iconography."
+      },
+      {
+        "startSec": 33.8,
+        "endSec": 38.74,
+        "text": "One thing that just really struck me was this letter that he wrote to his wife two years"
+      },
+      {
+        "startSec": 38.74,
+        "endSec": 39.98,
+        "text": "after she died."
+      },
+      {
+        "startSec": 39.98,
+        "endSec": 42.42,
+        "text": "So during the Manhattan Project, she had polio."
+      },
+      {
+        "startSec": 42.42,
+        "endSec": 43.7,
+        "text": "Tragically, she died."
+      },
+      {
+        "startSec": 43.7,
+        "endSec": 46.28,
+        "text": "They were just young, madly in love."
+      },
+      {
+        "startSec": 46.28,
+        "endSec": 54.06,
+        "text": "And the icon of Feynman is this, almost this mildly sexist womanizing philanderer, at least"
+      },
+      {
+        "startSec": 54.06,
+        "endSec": 56.38,
+        "text": "on the personal side."
+      },
+      {
+        "startSec": 56.38,
+        "endSec": 59.06,
+        "text": "But you read this letter and I can try to pull it up for you if I want."
+      },
+      {
+        "startSec": 59.06,
+        "endSec": 64.06,
+        "text": "And it's just this absolutely heartfelt letter to his wife saying how much he loves her even"
+      },
+      {
+        "startSec": 64.06,
+        "endSec": 68.74,
+        "text": "though she's dead and kind of what she means to him, how no woman can ever measure up to"
+      },
+      {
+        "startSec": 68.74,
+        "endSec": 69.98,
+        "text": "her."
+      },
+      {
+        "startSec": 69.98,
+        "endSec": 75.04,
+        "text": "And it shows you that the Feynman that we've all seen in like surely you're joking is different"
+      },
+      {
+        "startSec": 75.04,
+        "endSec": 77.06,
+        "text": "from the Feynman in reality."
+      },
+      {
+        "startSec": 77.06,
+        "endSec": 83.3,
+        "text": "And I think the same kind of goes in his science where he kind of sometimes has this output"
+      },
+      {
+        "startSec": 83.3,
+        "endSec": 87.18,
+        "text": "of being this aw-shocks character, like everyone else is coming in, there's with these fancy"
+      },
+      {
+        "startSec": 87.18,
+        "endSec": 90.66,
+        "text": "falutin formulas, but I'm just going to try to whittle it down to its essentials, which"
+      },
+      {
+        "startSec": 90.66,
+        "endSec": 93.3,
+        "text": "is so appealing because we love to see that kind of thing."
+      },
+      {
+        "startSec": 93.3,
+        "endSec": 100.26,
+        "text": "But when you get into it, like, what he was doing was actually quite deep, very much mathematical."
+      },
+      {
+        "startSec": 100.26,
+        "endSec": 103.34,
+        "text": "That should go without saying, but I remember reading a book about Feynman in a café once"
+      },
+      {
+        "startSec": 103.34,
+        "endSec": 106.94,
+        "text": "and this woman looked at me and was like, saw that it was about Feynman."
+      },
+      {
+        "startSec": 106.94,
+        "endSec": 107.94,
+        "text": "She was like, \"Oh, I love him."
+      },
+      {
+        "startSec": 107.94,
+        "endSec": 109.42,
+        "text": "I read Julliard joking.\""
+      },
+      {
+        "startSec": 109.42,
+        "endSec": 113.1,
+        "text": "And she started explaining to me how he was never really a math person."
+      },
+      {
+        "startSec": 113.1,
+        "endSec": 118.06,
+        "text": "And I don't understand how that can possibly be a public perception about any physicist,"
+      },
+      {
+        "startSec": 118.06,
+        "endSec": 122.7,
+        "text": "but for whatever reason that like worked into his or that he sort of shoot off math in place"
+      },
+      {
+        "startSec": 122.7,
+        "endSec": 124.26,
+        "text": "of true science."
+      },
+      {
+        "startSec": 124.26,
+        "endSec": 127.1,
+        "text": "The reality of it is he was deeply in love with math and was much more going in that"
+      },
+      {
+        "startSec": 127.1,
+        "endSec": 131.1,
+        "text": "direction and had a clicking point into seeing that physics was a way to realize that and"
+      },
+      {
+        "startSec": 131.1,
+        "endSec": 135.94,
+        "text": "all the creativity that he could output in that direction was instead poured towards things"
+      },
+      {
+        "startSec": 135.94,
+        "endSec": 140.06,
+        "text": "like fundamental, not even fundamental theories, just emergent phenomena and everything like"
+      },
+      {
+        "startSec": 140.06,
+        "endSec": 141.06,
+        "text": "that."
+      },
+      {
+        "startSec": 141.06,
+        "endSec": 147.14,
+        "text": "So, to answer your actual question, what I like about his way of going at things is this"
+      },
+      {
+        "startSec": 147.14,
+        "endSec": 152.02,
+        "text": "constant desire to reinvent it for himself, like when he would consume papers the way"
+      },
+      {
+        "startSec": 152.02,
+        "endSec": 153.02,
+        "text": "he'd describe it."
+      },
+      {
+        "startSec": 153.02,
+        "endSec": 155.74,
+        "text": "He would start to see what problem he was trying to solve and then just try to solve"
+      },
+      {
+        "startSec": 155.74,
+        "endSec": 160.22,
+        "text": "it himself to get a sense of personal ownership and then from there see what others had done."
+      },
+      {
+        "startSec": 160.22,
+        "endSec": 162.74,
+        "text": "Is that how you see problems yourself?"
+      },
+      {
+        "startSec": 162.74,
+        "endSec": 168.7,
+        "text": "That's actually an interesting point when you first are inspired by a certain idea that"
+      },
+      {
+        "startSec": 168.7,
+        "endSec": 174.06,
+        "text": "you may want to teach or visualize or just explore on your own, I'm sure you're captured"
+      },
+      {
+        "startSec": 174.06,
+        "endSec": 176.58,
+        "text": "by some possibility and magic of it."
+      },
+      {
+        "startSec": 176.58,
+        "endSec": 178.9,
+        "text": "Do you read the work of others?"
+      },
+      {
+        "startSec": 178.9,
+        "endSec": 180.26,
+        "text": "Do you go through the proofs?"
+      },
+      {
+        "startSec": 180.26,
+        "endSec": 183.18,
+        "text": "Do you try to rediscover everything yourself?"
+      },
+      {
+        "startSec": 183.18,
+        "endSec": 187.3,
+        "text": "So I think the things that I've learned best and have the deepest ownership of are the"
+      },
+      {
+        "startSec": 187.3,
+        "endSec": 189.38,
+        "text": "ones that have some element of rediscovery."
+      },
+      {
+        "startSec": 189.38,
+        "endSec": 193.7,
+        "text": "The problem is that it really slows you down and for my part it's actually a big fault."
+      },
+      {
+        "startSec": 193.7,
+        "endSec": 198.34,
+        "text": "This is part of why I'm not an active researcher, I'm not at the depth of the field, a lot of"
+      },
+      {
+        "startSec": 198.34,
+        "endSec": 199.34,
+        "text": "other people are."
+      },
+      {
+        "startSec": 199.34,
+        "endSec": 204.02,
+        "text": "The stuff that I do learn, I try to learn it really well, but other times you do need"
+      },
+      {
+        "startSec": 204.02,
+        "endSec": 207.22,
+        "text": "to get through it at a certain pace, you do need to get to a point of a problem you're"
+      },
+      {
+        "startSec": 207.22,
+        "endSec": 208.22,
+        "text": "trying to solve."
+      },
+      {
+        "startSec": 208.22,
+        "endSec": 212.54,
+        "text": "So obviously you need to be well equipped to read things without that reinvention component"
+      },
+      {
+        "startSec": 212.54,
+        "endSec": 214.14,
+        "text": "and see how others have done it."
+      },
+      {
+        "startSec": 214.14,
+        "endSec": 217.26,
+        "text": "But I think if you choose a few core building blocks along the way and you say I'm really"
+      },
+      {
+        "startSec": 217.26,
+        "endSec": 223.22,
+        "text": "going to try to approach this before I see how this person went at it, I'm really going"
+      },
+      {
+        "startSec": 223.22,
+        "endSec": 225.06,
+        "text": "to try to approach it for myself."
+      },
+      {
+        "startSec": 225.06,
+        "endSec": 230.34,
+        "text": "No matter what you gain, all sorts of inarticulatable intuitions about that topic which aren't going"
+      },
+      {
+        "startSec": 230.34,
+        "endSec": 232.74,
+        "text": "to be there if you simply go through the proof."
+      },
+      {
+        "startSec": 232.74,
+        "endSec": 236.58,
+        "text": "For example you're going to be trying to come up with counter examples, you're going to try"
+      },
+      {
+        "startSec": 236.58,
+        "endSec": 240.9,
+        "text": "to come up with intuitive examples, all sorts of things where you're populating your brain"
+      },
+      {
+        "startSec": 240.9,
+        "endSec": 243.94,
+        "text": "with data and the ones that you come up with are likely to be different than the one that"
+      },
+      {
+        "startSec": 243.94,
+        "endSec": 247.38,
+        "text": "the text comes up with and that lends at a different angle."
+      },
+      {
+        "startSec": 247.38,
+        "endSec": 251.66,
+        "text": "So that aspect also slowed Feynman down in a lot of respects, I think there was a period"
+      },
+      {
+        "startSec": 251.66,
+        "endSec": 257.02,
+        "text": "when the rest of physics was running away from him, but insofar as it got him to where"
+      },
+      {
+        "startSec": 257.02,
+        "endSec": 261.82,
+        "text": "he was, I kind of resonate with that."
+      },
+      {
+        "startSec": 261.82,
+        "endSec": 267.66,
+        "text": "I would be nowhere near it because I don't like him at all, but it's like a state to"
+      },
+      {
+        "startSec": 267.66,
+        "endSec": 268.46,
+        "text": "aspire to."
+      },
+      {
+        "startSec": 281.66,
+        "endSec": 283.66,
+        "text": "[end of transcript]"
+      }
+    ],
+    "createdAt": "2026-11-14T18:00:57.708Z"
+  },
+  "attempts": [
+    {
+      "id": "youtube",
+      "stage": "resolve",
+      "outcome": "ok",
+      "detail": "youtube:YrGuJ4Pkkuo"
+    },
+    {
+      "id": "youtube",
+      "stage": "metadata",
+      "outcome": "ok",
+      "ms": 1119
+    },
+    {
+      "id": "ytdlp",
+      "stage": "audio",
+      "outcome": "ok",
+      "ms": 10209
+    },
+    {
+      "id": "stt/whisper-cpp/small",
+      "stage": "stt",
+      "outcome": "ok",
+      "ms": 493952
+    }
+  ]
+}

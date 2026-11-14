@@ -1,0 +1,530 @@
+{
+  "metadata": {
+    "ref": {
+      "input": "https://www.youtube.com/watch?v=Ge0ggAtmL54",
+      "platform": "youtube",
+      "kind": "video",
+      "id": "youtube:Ge0ggAtmL54",
+      "nativeId": "Ge0ggAtmL54",
+      "url": "https://www.youtube.com/watch?v=Ge0ggAtmL54"
+    },
+    "title": "Topology is amazing and useful | Grant Sanderson and Lex Fridman",
+    "description": "Full episode with Grant Sanderson (Aug 2020): https://www.youtube.com/watch?v=U_6AYX42gkU\nClips channel (Lex Clips): https://www.youtube.com/lexclips\nMain channel (Lex Fridman): https://www.youtube.com/lexfridman\n(more links below)\n\nPodcast full episodes playlist:\nhttps://www.youtube.com/playlist?list=PLrAXtmErZgOdP_8GztsuKi9nrraNbKKp4\n\nPodcasts clips playlist:\nhttps://www.youtube.com/playlist?list=PLrAXtmErZgOeciFP3CBCIEElOJeitOr41\n\nPodcast website:\nhttps://lexfridman.com/ai\n\nPodcast on Apple Podcasts (iTunes):\nhttps://apple.co/2lwqZIr\n\nPodcast on Spotify:\nhttps://open.spotify.com/show/2MAi0BvDc6GTFvKFPXnkCL\n\nPodcast RSS:\nhttps://lexfridman.com/category/ai/feed/\n\nGrant Sanderson is a math educator and creator of 3Blue1Brown.\n\nSubscribe to this YouTube channel or connect on:\n- Twitter: https://twitter.com/lexfridman\n- LinkedIn: https://www.linkedin.com/in/lexfridman\n- Facebook: https://www.facebook.com/lexfridman\n- Instagram: https://www.instagram.com/lexfridman\n- Medium: https://medium.com/@lexfridman\n- Support on Patreon: https://www.patreon.com/lexfridman",
+    "durationSec": 316,
+    "publishedAt": "2020-08-26",
+    "thumbnailUrl": "https://i.ytimg.com/vi/Ge0ggAtmL54/maxresdefault.jpg",
+    "tags": [
+      "grant sanderson",
+      "artificial intelligence",
+      "ai",
+      "ai podcast",
+      "artificial intelligence podcast",
+      "lex clips",
+      "lex fridman",
+      "lex friedman",
+      "joe rogan",
+      "elon musk",
+      "lex podcast",
+      "lex mit",
+      "lex ai",
+      "mit ai",
+      "ai podcast clips",
+      "ai clips",
+      "deep learning",
+      "machine learning",
+      "computer science",
+      "engineering",
+      "physics",
+      "science",
+      "tech",
+      "technology",
+      "tech podcast",
+      "physics podcast",
+      "mathematics",
+      "math",
+      "math podcast",
+      "friedman",
+      "consciousness",
+      "philosophy",
+      "turing",
+      "einstein"
+    ],
+    "chapters": [],
+    "isLive": false,
+    "extra": {
+      "viewCount": 19336,
+      "likeCount": 622,
+      "dateText": "Aug 26, 2020",
+      "channelHandle": "@LexClips",
+      "channelHandleUrl": "https://www.youtube.com/@LexClips",
+      "subscriberCountText": "1.65M subscribers",
+      "isShort": false,
+      "isLive": false,
+      "isUpcoming": false,
+      "isLiveContent": false,
+      "ageRestricted": false,
+      "membersOnly": false,
+      "playability": "OK",
+      "links": [
+        "https://www.youtube.com/watch?v=U_6AYX42gkU",
+        "https://www.youtube.com/lexclips",
+        "https://www.youtube.com/lexfridman",
+        "https://www.youtube.com/playlist?list=PLrAXtmErZgOdP_8GztsuKi9nrraNbKKp4",
+        "https://www.youtube.com/playlist?list=PLrAXtmErZgOeciFP3CBCIEElOJeitOr41",
+        "https://lexfridman.com/ai",
+        "https://apple.co/2lwqZIr",
+        "https://open.spotify.com/show/2MAi0BvDc6GTFvKFPXnkCL",
+        "https://lexfridman.com/category/ai/feed/",
+        "https://twitter.com/lexfridman",
+        "https://www.linkedin.com/in/lexfridman",
+        "https://www.facebook.com/lexfridman",
+        "https://www.instagram.com/lexfridman",
+        "https://medium.com/@lexfridman",
+        "https://www.patreon.com/lexfridman"
+      ]
+    },
+    "channel": {
+      "name": "Lex Clips",
+      "id": "UCJIfeSCssxSC_Dhc5s7woww",
+      "url": "https://www.youtube.com/channel/UCJIfeSCssxSC_Dhc5s7woww"
+    }
+  },
+  "transcript": {
+    "ref": {
+      "input": "https://www.youtube.com/watch?v=Ge0ggAtmL54",
+      "platform": "youtube",
+      "kind": "video",
+      "id": "youtube:Ge0ggAtmL54",
+      "nativeId": "Ge0ggAtmL54",
+      "url": "https://www.youtube.com/watch?v=Ge0ggAtmL54"
+    },
+    "language": "en",
+    "origin": "stt",
+    "producer": "stt/whisper-cpp/small",
+    "model": "small",
+    "segments": [
+      {
+        "startSec": 0,
+        "endSec": 6.2,
+        "text": "A few videos I've seen you do, I don't know how often you do it, but there's almost a"
+      },
+      {
+        "startSec": 6.2,
+        "endSec": 12.76,
+        "text": "tangential like pause where you, here's a cool thing, you say like here's a cool thing,"
+      },
+      {
+        "startSec": 12.76,
+        "endSec": 18.16,
+        "text": "but it's outside the scope of this video essentially, but I'll leave it to you as homework, essentially,"
+      },
+      {
+        "startSec": 18.16,
+        "endSec": 21.24,
+        "text": "to like figure out, it's a cool thing to explore."
+      },
+      {
+        "startSec": 21.24,
+        "endSec": 25.44,
+        "text": "I wish I could say that wasn't a function of laziness, and that's like you've worked"
+      },
+      {
+        "startSec": 25.44,
+        "endSec": 29.96,
+        "text": "so hard on making the 20 minutes already that to extend it out even further would take more"
+      },
+      {
+        "startSec": 29.96,
+        "endSec": 30.96,
+        "text": "time."
+      },
+      {
+        "startSec": 30.96,
+        "endSec": 36.52,
+        "text": "And one of your cooler videos, the homomorphic like from the Mobius Strip to the 3D."
+      },
+      {
+        "startSec": 36.52,
+        "endSec": 37.52,
+        "text": "Mobius Strip rectangle?"
+      },
+      {
+        "startSec": 37.52,
+        "endSec": 44.68,
+        "text": "Yeah, that's a super, and you're like, yeah, you can't, you can't transform the Mobius"
+      },
+      {
+        "startSec": 44.68,
+        "endSec": 54.36,
+        "text": "Strip into a surface without intersecting itself, but I'll leave it to you to see why"
+      },
+      {
+        "startSec": 54.36,
+        "endSec": 55.36,
+        "text": "that is."
+      },
+      {
+        "startSec": 55.36,
+        "endSec": 60.04,
+        "text": "Well, I hope that's not exactly how I phrase it because I think what my hope would be is"
+      },
+      {
+        "startSec": 60.04,
+        "endSec": 63.8,
+        "text": "that I leave it to you to think about why you would expect that to be true, and then"
+      },
+      {
+        "startSec": 63.8,
+        "endSec": 68.56,
+        "text": "to want to know what aspects of a Mobius Strip do you want to formalize such that you can"
+      },
+      {
+        "startSec": 68.56,
+        "endSec": 73.68,
+        "text": "prove that intuition that you have, because at some point now you're starting to invent"
+      },
+      {
+        "startSec": 73.68,
+        "endSec": 75.36,
+        "text": "algebraic topology."
+      },
+      {
+        "startSec": 75.36,
+        "endSec": 81.2,
+        "text": "If you have these vague instincts like I want to get this Mobius Strip, I want to fit it"
+      },
+      {
+        "startSec": 81.2,
+        "endSec": 86.62,
+        "text": "such that it's all above the plane, but its boundary sits exactly on the plane."
+      },
+      {
+        "startSec": 86.62,
+        "endSec": 89.84,
+        "text": "I don't think I can do that without crossing itself, but that feels really vague."
+      },
+      {
+        "startSec": 89.84,
+        "endSec": 90.84,
+        "text": "How do I formalize it?"
+      },
+      {
+        "startSec": 90.84,
+        "endSec": 94.84,
+        "text": "And as you're starting to formalize that, that's what's going to get you to try to"
+      },
+      {
+        "startSec": 94.84,
+        "endSec": 98.28,
+        "text": "come up with a definition for what it means to be orientable or non-orientable."
+      },
+      {
+        "startSec": 98.28,
+        "endSec": 101.44,
+        "text": "And like once you have that motivation, a lot of the otherwise arbitrary things that"
+      },
+      {
+        "startSec": 101.44,
+        "endSec": 105.8,
+        "text": "are sitting at the very beginning of a topology textbook start to make a little more sense."
+      },
+      {
+        "startSec": 105.8,
+        "endSec": 112,
+        "text": "Yeah, and I mean that whole video beautifully was a motivation for topology school."
+      },
+      {
+        "startSec": 112,
+        "endSec": 116.04,
+        "text": "My hope with that is I feel like topology is, I don't want to say it's taught wrong,"
+      },
+      {
+        "startSec": 116.04,
+        "endSec": 121.08,
+        "text": "but I do think sometimes it's popularized in the wrong way, where you'll hear these"
+      },
+      {
+        "startSec": 121.08,
+        "endSec": 124.44,
+        "text": "things with people saying, oh, topologists, they're very interested in surfaces that you"
+      },
+      {
+        "startSec": 124.44,
+        "endSec": 128.72,
+        "text": "can bend and stretch, but you can't cut or glue."
+      },
+      {
+        "startSec": 128.72,
+        "endSec": 129.72,
+        "text": "Are they?"
+      },
+      {
+        "startSec": 129.72,
+        "endSec": 130.72,
+        "text": "Why?"
+      },
+      {
+        "startSec": 130.72,
+        "endSec": 135.44,
+        "text": "There's all sorts of things you can be interested in with random imaginative manipulations of"
+      },
+      {
+        "startSec": 135.44,
+        "endSec": 136.44,
+        "text": "things."
+      },
+      {
+        "startSec": 136.44,
+        "endSec": 138.74,
+        "text": "Is that really what mathematicians are into?"
+      },
+      {
+        "startSec": 138.74,
+        "endSec": 143.2,
+        "text": "And the short answer is, not really."
+      },
+      {
+        "startSec": 143.2,
+        "endSec": 147,
+        "text": "It's not as if someone was sitting there thinking, I wonder what the properties of clay are."
+      },
+      {
+        "startSec": 147,
+        "endSec": 151.72,
+        "text": "I had some arbitrary rules about when I can't cut it and when I can't glue it."
+      },
+      {
+        "startSec": 151.72,
+        "endSec": 159,
+        "text": "Instead, there's a ton of pieces of math that can actually be equivalent to these very"
+      },
+      {
+        "startSec": 159,
+        "endSec": 162.72,
+        "text": "general structures that's like geometry, except you don't have exact distances."
+      },
+      {
+        "startSec": 162.72,
+        "endSec": 164.96,
+        "text": "You just want to maintain a notion of closeness."
+      },
+      {
+        "startSec": 164.96,
+        "endSec": 169.92,
+        "text": "And once you get it to those general structures, constructing mappings between them translate"
+      },
+      {
+        "startSec": 169.92,
+        "endSec": 173.72,
+        "text": "into non-trivial facts about other parts of math."
+      },
+      {
+        "startSec": 173.72,
+        "endSec": 177.36,
+        "text": "And that, I don't think that's actually popularized."
+      },
+      {
+        "startSec": 177.36,
+        "endSec": 180.64,
+        "text": "I don't even think it's emphasized well enough when you're starting to take a topology class,"
+      },
+      {
+        "startSec": 180.64,
+        "endSec": 182.04,
+        "text": "because you kind of have these two problems."
+      },
+      {
+        "startSec": 182.04,
+        "endSec": 186.6,
+        "text": "It's either it's too squishy, you're just talking about coffee mugs and donuts, or it's"
+      },
+      {
+        "startSec": 186.6,
+        "endSec": 192.8,
+        "text": "a little bit too rigor first, and you're talking about the axiom systems with open sets."
+      },
+      {
+        "startSec": 192.8,
+        "endSec": 195.12,
+        "text": "An open set is not the opposite of closed set."
+      },
+      {
+        "startSec": 195.12,
+        "endSec": 196.32,
+        "text": "So sorry about that, everyone."
+      },
+      {
+        "startSec": 196.32,
+        "endSec": 201.24,
+        "text": "We have a notion of clopen sets for ones that are both at the same time."
+      },
+      {
+        "startSec": 201.24,
+        "endSec": 205.92,
+        "text": "And it's not an intuitive axiom system in comparison to other fields of math."
+      },
+      {
+        "startSec": 205.92,
+        "endSec": 210.04,
+        "text": "So you as a student really have to walk through mud to get there, and you're constantly confused"
+      },
+      {
+        "startSec": 210.04,
+        "endSec": 214.64,
+        "text": "about how this relates to the beautiful things about coffee mugs and mobius strips and such."
+      },
+      {
+        "startSec": 214.64,
+        "endSec": 219.64,
+        "text": "And it takes a really long time to actually see topology in the way that mathematicians"
+      },
+      {
+        "startSec": 219.64,
+        "endSec": 220.92,
+        "text": "see topology."
+      },
+      {
+        "startSec": 220.92,
+        "endSec": 222.36,
+        "text": "But I don't think it needs to take that time."
+      },
+      {
+        "startSec": 222.36,
+        "endSec": 226.48,
+        "text": "I think there's this is making me feel like I need to make more videos on the topic, because"
+      },
+      {
+        "startSec": 226.48,
+        "endSec": 227.48,
+        "text": "I think I've --"
+      },
+      {
+        "startSec": 227.48,
+        "endSec": 228.48,
+        "text": "100% you do."
+      },
+      {
+        "startSec": 228.48,
+        "endSec": 235.2,
+        "text": "But I've also seen it in my narrow view of I find game theory very beautiful, and I know"
+      },
+      {
+        "startSec": 235.2,
+        "endSec": 239.84,
+        "text": "topology has been used elegantly to prove things in game theory."
+      },
+      {
+        "startSec": 239.84,
+        "endSec": 242.32,
+        "text": "Yeah, you have facts that seem very strange."
+      },
+      {
+        "startSec": 242.32,
+        "endSec": 247.08,
+        "text": "I could tell you you stir your coffee, and after you stir it, and let's say all the molecules"
+      },
+      {
+        "startSec": 247.08,
+        "endSec": 250.84,
+        "text": "settle to not moving again, one of the molecules will be basically in the same position it"
+      },
+      {
+        "startSec": 250.84,
+        "endSec": 252.6,
+        "text": "was before."
+      },
+      {
+        "startSec": 252.6,
+        "endSec": 255.68,
+        "text": "You have all sorts of fixed point theorems like this, right?"
+      },
+      {
+        "startSec": 255.68,
+        "endSec": 260.56,
+        "text": "That kind of fixed point theorem, directly relevant to Nash Equilibrium, right?"
+      },
+      {
+        "startSec": 260.56,
+        "endSec": 263.96,
+        "text": "So you can imagine popularizing it by describing the coffee fact."
+      },
+      {
+        "startSec": 263.96,
+        "endSec": 266.92,
+        "text": "But then you'll have to wonder, like, who cares about if a molecule of coffee like stays"
+      },
+      {
+        "startSec": 266.92,
+        "endSec": 267.92,
+        "text": "in the same spot?"
+      },
+      {
+        "startSec": 267.92,
+        "endSec": 270.16,
+        "text": "Is this what we're paying our mathematicians for?"
+      },
+      {
+        "startSec": 270.16,
+        "endSec": 274.84,
+        "text": "You have this very elegant mapping onto economics in a way that's very concrete -- I shouldn't"
+      },
+      {
+        "startSec": 274.84,
+        "endSec": 279.72,
+        "text": "say concrete, very tangible, like actually adds value to people's lives through the predictions"
+      },
+      {
+        "startSec": 279.72,
+        "endSec": 281.56,
+        "text": "that it makes."
+      },
+      {
+        "startSec": 281.56,
+        "endSec": 285.6,
+        "text": "But that line isn't always drawn because you have to get a little bit technical in order"
+      },
+      {
+        "startSec": 285.6,
+        "endSec": 289.48,
+        "text": "to properly draw that line out."
+      },
+      {
+        "startSec": 289.48,
+        "endSec": 295.16,
+        "text": "And often I think popularized forms of media just shy away from being a little too technical."
+      },
+      {
+        "startSec": 309.72,
+        "endSec": 328.52,
+        "text": "[end of transcript]"
+      }
+    ],
+    "createdAt": "2026-11-14T18:07:48.867Z"
+  },
+  "attempts": [
+    {
+      "id": "youtube",
+      "stage": "resolve",
+      "outcome": "ok",
+      "detail": "youtube:Ge0ggAtmL54"
+    },
+    {
+      "id": "youtube",
+      "stage": "metadata",
+      "outcome": "ok",
+      "ms": 1735
+    },
+    {
+      "id": "ytdlp",
+      "stage": "audio",
+      "outcome": "ok",
+      "ms": 13123
+    },
+    {
+      "id": "stt/whisper-cpp/small",
+      "stage": "stt",
+      "outcome": "ok",
+      "ms": 393840
+    }
+  ]
+}

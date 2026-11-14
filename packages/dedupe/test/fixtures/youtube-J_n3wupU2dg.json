@@ -1,0 +1,166 @@
+{
+  "metadata": {
+    "ref": {
+      "input": "https://www.youtube.com/watch?v=J_n3wupU2dg",
+      "platform": "youtube",
+      "kind": "video",
+      "id": "youtube:J_n3wupU2dg",
+      "nativeId": "J_n3wupU2dg",
+      "url": "https://www.youtube.com/watch?v=J_n3wupU2dg"
+    },
+    "title": "The Snuggle is Real | Grant Sanderson and Lex Fridman",
+    "description": "Full episode with Grant Sanderson (Aug 2020): https://www.youtube.com/watch?v=U_6AYX42gkU\nClips channel (Lex Clips): https://www.youtube.com/lexclips\nMain channel (Lex Fridman): https://www.youtube.com/lexfridman\n(more links below)\n\nPodcast full episodes playlist:\nhttps://www.youtube.com/playlist?list=PLrAXtmErZgOdP_8GztsuKi9nrraNbKKp4\n\nPodcasts clips playlist:\nhttps://www.youtube.com/playlist?list=PLrAXtmErZgOeciFP3CBCIEElOJeitOr41\n\nPodcast website:\nhttps://lexfridman.com/ai\n\nPodcast on Apple Podcasts (iTunes):\nhttps://apple.co/2lwqZIr\n\nPodcast on Spotify:\nhttps://open.spotify.com/show/2MAi0BvDc6GTFvKFPXnkCL\n\nPodcast RSS:\nhttps://lexfridman.com/category/ai/feed/\n\nGrant Sanderson is a math educator and creator of 3Blue1Brown.\n\nSubscribe to this YouTube channel or connect on:\n- Twitter: https://twitter.com/lexfridman\n- LinkedIn: https://www.linkedin.com/in/lexfridman\n- Facebook: https://www.facebook.com/lexfridman\n- Instagram: https://www.instagram.com/lexfridman\n- Medium: https://medium.com/@lexfridman\n- Support on Patreon: https://www.patreon.com/lexfridman",
+    "durationSec": 36,
+    "publishedAt": "2020-08-27",
+    "thumbnailUrl": "https://i.ytimg.com/vi/J_n3wupU2dg/maxresdefault.jpg",
+    "language": "en",
+    "tags": [
+      "grant sanderson",
+      "artificial intelligence",
+      "ai",
+      "ai podcast",
+      "artificial intelligence podcast",
+      "lex clips",
+      "lex fridman",
+      "lex friedman",
+      "joe rogan",
+      "elon musk",
+      "lex podcast",
+      "lex mit",
+      "lex ai",
+      "mit ai",
+      "ai podcast clips",
+      "ai clips",
+      "deep learning",
+      "machine learning",
+      "computer science",
+      "engineering",
+      "physics",
+      "science",
+      "tech",
+      "technology",
+      "tech podcast",
+      "physics podcast",
+      "mathematics",
+      "math",
+      "math podcast",
+      "friedman",
+      "consciousness",
+      "philosophy",
+      "turing",
+      "einstein"
+    ],
+    "chapters": [],
+    "isLive": false,
+    "extra": {
+      "viewCount": 1912,
+      "likeCount": 80,
+      "dateText": "Aug 27, 2020",
+      "channelHandle": "@LexClips",
+      "channelHandleUrl": "https://www.youtube.com/@LexClips",
+      "subscriberCountText": "1.65M subscribers",
+      "isShort": false,
+      "isLive": false,
+      "isUpcoming": false,
+      "isLiveContent": false,
+      "ageRestricted": false,
+      "membersOnly": false,
+      "playability": "OK",
+      "links": [
+        "https://www.youtube.com/watch?v=U_6AYX42gkU",
+        "https://www.youtube.com/lexclips",
+        "https://www.youtube.com/lexfridman",
+        "https://www.youtube.com/playlist?list=PLrAXtmErZgOdP_8GztsuKi9nrraNbKKp4",
+        "https://www.youtube.com/playlist?list=PLrAXtmErZgOeciFP3CBCIEElOJeitOr41",
+        "https://lexfridman.com/ai",
+        "https://apple.co/2lwqZIr",
+        "https://open.spotify.com/show/2MAi0BvDc6GTFvKFPXnkCL",
+        "https://lexfridman.com/category/ai/feed/",
+        "https://twitter.com/lexfridman",
+        "https://www.linkedin.com/in/lexfridman",
+        "https://www.facebook.com/lexfridman",
+        "https://www.instagram.com/lexfridman",
+        "https://medium.com/@lexfridman",
+        "https://www.patreon.com/lexfridman"
+      ]
+    },
+    "channel": {
+      "name": "Lex Clips",
+      "id": "UCJIfeSCssxSC_Dhc5s7woww",
+      "url": "https://www.youtube.com/channel/UCJIfeSCssxSC_Dhc5s7woww"
+    }
+  },
+  "transcript": {
+    "ref": {
+      "input": "https://www.youtube.com/watch?v=J_n3wupU2dg",
+      "platform": "youtube",
+      "kind": "video",
+      "id": "youtube:J_n3wupU2dg",
+      "nativeId": "J_n3wupU2dg",
+      "url": "https://www.youtube.com/watch?v=J_n3wupU2dg"
+    },
+    "language": "en",
+    "origin": "stt",
+    "producer": "stt/whisper-cpp/small",
+    "model": "small",
+    "segments": [
+      {
+        "startSec": 0,
+        "endSec": 5.68,
+        "text": "Oh, by the way, for people who are watching the video, I do not condone the message in"
+      },
+      {
+        "startSec": 5.68,
+        "endSec": 6.68,
+        "text": "this mug."
+      },
+      {
+        "startSec": 6.68,
+        "endSec": 11.2,
+        "text": "It's the only one I have, which is the snuggle is real."
+      },
+      {
+        "startSec": 11.2,
+        "endSec": 14.12,
+        "text": "By the way, for anyone watching, I do condone the message of that mug."
+      },
+      {
+        "startSec": 14.12,
+        "endSec": 15.44,
+        "text": "The snuggle is real."
+      },
+      {
+        "startSec": 30,
+        "endSec": 40,
+        "text": "[BLANK_AUDIO]"
+      }
+    ],
+    "createdAt": "2026-11-14T17:52:03.533Z"
+  },
+  "attempts": [
+    {
+      "id": "youtube",
+      "stage": "resolve",
+      "outcome": "ok",
+      "detail": "youtube:J_n3wupU2dg"
+    },
+    {
+      "id": "youtube",
+      "stage": "metadata",
+      "outcome": "ok",
+      "ms": 960
+    },
+    {
+      "id": "ytdlp",
+      "stage": "audio",
+      "outcome": "ok",
+      "ms": 8171
+    },
+    {
+      "id": "stt/whisper-cpp/small",
+      "stage": "stt",
+      "outcome": "ok",
+      "ms": 9828
+    }
+  ]
+}
