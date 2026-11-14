@@ -7,7 +7,7 @@ import { type FormEvent, useEffect, useId, useState } from 'react';
 import { apiBase, DEFAULT_API_BASE, getHealth, normalizeApiBase, setApiBase } from '../lib/api.ts';
 import { useApiStatus } from '../lib/api-status.tsx';
 import { cleanKeys, KEY_NAME, loadProviderKeys, saveProviderKeys } from '../lib/settings.ts';
-import { loadTheme, saveTheme, type Theme } from '../lib/theme.ts';
+import { saveTheme, type Theme, useTheme } from '../lib/theme.ts';
 import { ErrorPanel } from './ErrorPanel.tsx';
 import { Button, Card, Spinner } from './ui.tsx';
 
@@ -111,7 +111,7 @@ const THEME_OPTIONS: { id: Theme; label: string; icon: typeof Sun }[] = [
 ];
 
 function ThemeSection() {
-  const [theme, setTheme] = useState<Theme>(loadTheme());
+  const theme = useTheme();
   return (
     <Card className="space-y-3 p-5">
       <fieldset>
@@ -129,10 +129,7 @@ function ThemeSection() {
                 name="theme"
                 value={t.id}
                 checked={theme === t.id}
-                onChange={() => {
-                  setTheme(t.id);
-                  saveTheme(t.id);
-                }}
+                onChange={() => saveTheme(t.id)}
                 className="sr-only"
               />
               <t.icon className="size-4" aria-hidden />

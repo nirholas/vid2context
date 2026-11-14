@@ -7,6 +7,8 @@
  */
 @theme inline {
   --color-bg: var(--v2c-bg);
+  --color-sidebar: var(--v2c-sidebar);
+  --color-panel: var(--v2c-panel);
   --color-surface: var(--v2c-surface);
   --color-surface-2: var(--v2c-surface-2);
   --color-surface-3: var(--v2c-surface-3);
@@ -33,21 +35,9 @@
   --shadow-v2c: var(--v2c-shadow);
 }
 
-/*
- * Text on accent fills. White on the cyan end of the dark gradient is below
- * WCAG AA, so dark themes put black text on accent and light themes white
- * (the light gradient button uses large bold text, which needs 3:1).
- */
+/* Text on accent fills: the accent is white in dark themes and near-black in light ones. */
 :root {
-  --v2c-on-accent: #000000;
-}
-:root[data-theme="light"] {
-  --v2c-on-accent: #ffffff;
-}
-@media (prefers-color-scheme: light) {
-  :root[data-theme="system"] {
-    --v2c-on-accent: #ffffff;
-  }
+  --v2c-on-accent: var(--v2c-accent-fg);
 }
 
 html {

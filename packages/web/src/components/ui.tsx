@@ -1,4 +1,4 @@
-/** Small shared pieces: buttons, the copy button with feedback, a spinner and a progress bar. */
+/** Small shared pieces: buttons, icon buttons, the copy button with feedback, a spinner, a progress bar and the brand mark. */
 import { Check, Copy, LoaderCircle } from 'lucide-react';
 import { type ButtonHTMLAttributes, type ReactNode, useEffect, useRef, useState } from 'react';
 import { copyText } from '../lib/clipboard.ts';
@@ -7,8 +7,8 @@ type Variant = 'primary' | 'accent' | 'secondary' | 'ghost';
 
 const VARIANTS: Record<Variant, string> = {
   primary:
-    'v2c-gradient text-on-accent font-bold shadow-v2c hover:brightness-110 disabled:opacity-60 disabled:hover:brightness-100',
-  accent: 'bg-accent text-on-accent font-semibold hover:brightness-110 disabled:opacity-60',
+    'v2c-gradient text-on-accent font-semibold shadow-v2c hover:opacity-90 disabled:opacity-60 disabled:hover:opacity-60',
+  accent: 'bg-accent text-on-accent font-medium hover:opacity-90 disabled:opacity-60',
   secondary: 'bg-surface-2 text-fg border border-border hover:border-border-strong hover:bg-surface-3 disabled:opacity-60',
   ghost: 'text-muted hover:text-fg hover:bg-surface-2 disabled:opacity-60',
 };
@@ -24,6 +24,40 @@ export function Button({
   ...rest
 }: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: Variant }) {
   return <button type={type} className={buttonClass(variant, className)} {...rest} />;
+}
+
+/** Square icon-only control: sidebar footers, composer tools, panel bars. */
+export function iconButtonClass(extra = '', round = false): string {
+  return `inline-flex size-9 shrink-0 items-center justify-center text-muted transition hover:bg-surface-3 hover:text-fg disabled:opacity-40 disabled:hover:bg-transparent ${
+    round ? 'rounded-full' : 'rounded-v2c-sm'
+  } ${extra}`;
+}
+
+/** An icon button always has an accessible name; `label` doubles as the hover tooltip. */
+export function IconButton({
+  label,
+  round = false,
+  className = '',
+  type = 'button',
+  children,
+  ...rest
+}: ButtonHTMLAttributes<HTMLButtonElement> & { label: string; round?: boolean }) {
+  return (
+    <button type={type} aria-label={label} title={label} className={iconButtonClass(className, round)} {...rest}>
+      {children}
+    </button>
+  );
+}
+
+/** The vid2context mark: a play triangle on the accent. */
+export function BrandMark({ className = 'size-7' }: { className?: string }) {
+  return (
+    <span className={`flex shrink-0 items-center justify-center rounded-v2c-sm bg-accent text-on-accent ${className}`} aria-hidden>
+      <svg viewBox="0 0 16 16" className="size-1/2" fill="currentColor" aria-hidden>
+        <path d="M5 3.5v9l7-4.5z" />
+      </svg>
+    </span>
+  );
 }
 
 export function Spinner({ label, className = '' }: { label?: string; className?: string }) {
@@ -105,4 +139,14 @@ export function ProgressBar({ value, label }: { value?: number; label: string })
 
 export function Card({ children, className = '' }: { children: ReactNode; className?: string }) {
   return <section className={`rounded-v2c-lg border border-border bg-surface ${className}`}>{children}</section>;
+}
+
+/** Small uppercase-free section heading with an icon, as in the home and result sections. */
+export function SectionTitle({ id, icon, children }: { id?: string; icon?: ReactNode; children: ReactNode }) {
+  return (
+    <h2 id={id} className="flex items-center gap-2 text-[15px] font-semibold text-fg">
+      {icon}
+      {children}
+    </h2>
+  );
 }

@@ -41,7 +41,7 @@ export function ErrorPanel({
           )}
           <p className="text-xs text-muted">
             Error code <code className="font-mono">{e.code}</code>
-            {e.status ? `, upstream HTTP ${e.status}` : ''}
+            {e.status ? `, HTTP ${e.status}` : ''}
             {e.retryAfterSec ? `, retry after ${e.retryAfterSec} s` : ''}
           </p>
           {children}

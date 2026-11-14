@@ -11,6 +11,13 @@ const STORE = 'results';
 /** Oldest entries beyond this are dropped on save. */
 export const MAX_ENTRIES = 100;
 
+/** Fired on `window` after any save, delete or clear, so every list of results can reload. */
+export const HISTORY_EVENT = 'v2c:history';
+
+function changed(): void {
+  if (typeof window !== 'undefined') window.dispatchEvent(new Event(HISTORY_EVENT));
+}
+
 export interface HistorySummary {
   /** runKey(input, mode, lang). */
   key: string;
@@ -97,6 +104,7 @@ export async function putEntry(entry: HistoryEntry): Promise<void> {
   });
   for (const k of keys.slice(MAX_ENTRIES)) store.delete(k);
   await txDone(tx);
+  changed();
 }
 
 /** Newest first, without the stored contexts. */
@@ -128,6 +136,7 @@ export async function deleteEntry(key: string): Promise<void> {
   const tx = d.transaction(STORE, 'readwrite');
   tx.objectStore(STORE).delete(key);
   await txDone(tx);
+  changed();
 }
 
 export async function clearHistory(): Promise<void> {
@@ -135,4 +144,5 @@ export async function clearHistory(): Promise<void> {
   const tx = d.transaction(STORE, 'readwrite');
   tx.objectStore(STORE).clear();
   await txDone(tx);
+  changed();
 }
