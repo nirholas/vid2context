@@ -218,6 +218,11 @@ interface MapOutcome {
   dropped: DroppedClaim[];
 }
 
+/** "1 citation", "3 citations". */
+function count(n: number, noun: string): string {
+  return `${n} ${noun}${n === 1 ? '' : 's'}`;
+}
+
 export async function runDigest(
   server: McpServer,
   deps: { registry: Registry; storage: (ctx: Ctx) => Promise<Storage | null> },
@@ -380,8 +385,8 @@ export async function runDigest(
     'Sources:',
     ...contexts.map((c, i) => sourceLine(c, i + 1)),
     '',
-    `Built with MCP sampling by the client's model (${[...models].join(', ') || 'model not reported'}): ${ok.length} of ${chunks.length} note calls succeeded, ${reduceError ? 'the combine call failed' : '1 combine call'}.`,
-    `Citation check (tolerance ${tolerance} s): ${digestCitations} citations verified against the transcripts; ${droppedNotes.length} note lines and ${droppedDigest.length} digest lines dropped because a timestamp was missing or does not exist in the source.`,
+    `Built with MCP sampling by the client's model (${[...models].join(', ') || 'model not reported'}): ${ok.length} of ${count(chunks.length, 'note call')} succeeded, ${reduceError ? 'the combine call failed' : '1 combine call'}.`,
+    `Citation check (tolerance ${tolerance} s): ${count(digestCitations, 'citation')} verified against the transcripts; ${count(droppedNotes.length, 'note line')} and ${count(droppedDigest.length, 'digest line')} dropped because a timestamp was missing or does not exist in the source.`,
   ];
   if (droppedNotes.length + droppedDigest.length > 0) {
     lines.push('', 'Dropped claims:');
