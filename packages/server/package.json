@@ -1,0 +1,16 @@
+{
+  "name": "@vid2context/server",
+  "version": "0.1.0",
+  "description": "vid2context HTTP API on Hono: one app for Node, Cloudflare Workers, Vercel, Cloud Run, Railway and Alibaba Cloud.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/app.ts"
+  },
+  "dependencies": {
+    "@hono/node-server": "^2.1.8",
+    "@vid2context/core": "*",
+    "@vid2context/registry": "*",
+    "hono": "^4.13.18"
+  }
+}

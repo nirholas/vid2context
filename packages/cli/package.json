@@ -1,0 +1,17 @@
+{
+  "name": "@vid2context/cli",
+  "version": "0.1.0",
+  "description": "vid2context command line: turn a video URL or file into a transcript with metadata, ready for an AI agent.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "bin": {
+    "vid2context": "./src/bin.ts"
+  },
+  "exports": {
+    ".": "./src/main.ts"
+  },
+  "dependencies": {
+    "@vid2context/core": "*",
+    "@vid2context/registry": "*"
+  }
+}

@@ -8,5 +8,8 @@
     "./node": "./src/node.ts",
     "./workers": "./src/workers.ts",
     "./browser": "./src/browser.ts"
+  },
+  "dependencies": {
+    "@vid2context/core": "*"
   }
 }
