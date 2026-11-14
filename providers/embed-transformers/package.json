@@ -1,0 +1,21 @@
+{
+  "name": "@vid2context/provider-embed-transformers",
+  "version": "0.1.0",
+  "description": "Local embeddings with Transformers.js (multilingual-e5-small by default): onnxruntime-node in Node, WebGPU or WASM in the browser.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "vid2context": {
+    "runtimes": [
+      "node",
+      "browser"
+    ]
+  },
+  "dependencies": {
+    "@huggingface/transformers": "^4.3.2",
+    "@vid2context/core": "*",
+    "@vid2context/provider-embed": "*"
+  }
+}
