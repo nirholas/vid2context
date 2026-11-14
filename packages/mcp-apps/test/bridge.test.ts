@@ -11,7 +11,7 @@ import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
 import type { JSONRPCMessage } from '@modelcontextprotocol/sdk/types.js';
 import type { VideoContext } from '@vid2context/core';
 import { describe, expect, it } from 'vitest';
-import { toViewerData } from '../src/data.ts';
+import { toViewerData } from '../src/context.ts';
 import { type BridgeChannel, type BridgeHandlers, PROTOCOL_VERSION, ViewBridge } from '../src/ui/bridge.ts';
 
 const context = JSON.parse(

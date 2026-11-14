@@ -9,7 +9,7 @@ import { join } from 'node:path';
 import type { VideoContext } from '@vid2context/core';
 import { describe, expect, it } from 'vitest';
 import { buildViewerSource, outFile } from '../scripts/build-viewer.mjs';
-import { toViewerData } from '../src/data.ts';
+import { toViewerData } from '../src/context.ts';
 import { VIEWER_HTML } from '../src/ui/viewer.html.ts';
 import { createViewer } from '../src/ui/viewer.ts';
 

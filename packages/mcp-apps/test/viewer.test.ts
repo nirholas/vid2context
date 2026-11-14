@@ -7,7 +7,8 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { VideoContext } from '@vid2context/core';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { toViewerData, type ViewerData } from '../src/data.ts';
+import { toViewerData } from '../src/context.ts';
+import type { ViewerData } from '../src/data.ts';
 import { createViewer, MAX_RENDERED_LINES, type Viewer } from '../src/ui/viewer.ts';
 
 const load = (file: string): VideoContext =>

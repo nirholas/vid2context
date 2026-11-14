@@ -13,7 +13,7 @@ import type { JSONRPCMessage } from '@modelcontextprotocol/sdk/types.js';
 import type { VideoContext } from '@vid2context/core';
 import { Window } from 'happy-dom';
 import { afterEach, describe, expect, it } from 'vitest';
-import { toViewerData } from '../src/data.ts';
+import { toViewerData } from '../src/context.ts';
 import { VIEWER_HTML } from '../src/ui/viewer.html.ts';
 
 const context = JSON.parse(

@@ -1,13 +1,17 @@
 /**
  * The data the transcript viewer renders, shared by the MCP tool (which
- * builds it) and the viewer bundle (which reads it). Runtime-neutral: this
- * file is bundled into the viewer HTML, so it imports only pure helpers.
+ * builds it, see context.ts) and the viewer bundle (which reads it).
+ *
+ * This file is bundled into the viewer HTML, so it has no runtime imports:
+ * pulling in @vid2context/core would make the committed bundle change
+ * whenever any core module changes. `formatTimestamp` is therefore a copy of
+ * core's, and test/data.test.ts checks that both give the same output.
  *
  * Segments travel as [startSec, endSec, text] tuples. Some hosts (ChatGPT)
  * show `structuredContent` to the model as well as to the viewer, so the
  * shape is kept small: trimmed metadata, no per-segment keys.
  */
-import { type Chapter, formatTimestamp, timestampUrl, type VideoContext } from '@vid2context/core';
+import type { Chapter, VideoContext } from '@vid2context/core';
 
 /** The MCP Apps resource the viewer is served from. */
 export const VIEWER_URI = 'ui://vid2context/transcript-viewer';
@@ -43,33 +47,13 @@ export interface ViewerData {
 /** The marker in `timestampBase` that stands for whole seconds. */
 export const TIME_MARKER = '{t}';
 
-// A value no real URL contains, used to turn core's timestampUrl into a template.
-const PROBE_SEC = 987654321;
-
-const round2 = (n: number): number => Math.round(n * 100) / 100;
-
-/** Build the viewer data for one video context. Raw segment text is kept as is. */
-export function toViewerData(context: VideoContext): ViewerData {
-  const m = context.metadata;
-  const t = context.transcript;
-  const probe = timestampUrl(m.ref, PROBE_SEC);
-  const metadata: ViewerMetadata = {
-    id: m.ref.id,
-    title: m.title,
-    origin: t.origin,
-    language: t.language,
-  };
-  if (m.ref.url) metadata.url = m.ref.url;
-  if (m.channel?.name) metadata.channel = m.channel.name;
-  if (m.durationSec !== undefined) metadata.durationSec = m.durationSec;
-  if (m.publishedAt) metadata.publishedAt = m.publishedAt;
-  if (t.translated) metadata.translated = true;
-  return {
-    metadata,
-    chapters: m.chapters.map((c) => (c.endSec === undefined ? { title: c.title, startSec: c.startSec } : { ...c })),
-    segments: t.segments.map((s): SegmentTuple => [round2(s.startSec), round2(s.endSec), s.text]),
-    timestampBase: probe?.includes(String(PROBE_SEC)) ? probe.replace(String(PROBE_SEC), TIME_MARKER) : null,
-  };
+/** 75 -> "1:15", 3723 -> "1:02:03". The same output as core's formatTimestamp. */
+export function formatTimestamp(sec: number): string {
+  const total = Math.max(0, Math.floor(sec));
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const ss = String(total % 60).padStart(2, '0');
+  return h > 0 ? `${h}:${String(m).padStart(2, '0')}:${ss}` : `${m}:${ss}`;
 }
 
 /** The link that opens the video at `sec`, or undefined when there is none. */

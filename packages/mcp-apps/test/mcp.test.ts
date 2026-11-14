@@ -14,7 +14,8 @@ import { MemoryStorage, Registry, type StorageProvider, type VideoContext } from
 import { replayFetch, testContext } from '@vid2context/core/testing';
 import youtube from '@vid2context/provider-youtube';
 import { describe, expect, it } from 'vitest';
-import { toViewerData, VIEWER_URI } from '../src/data.ts';
+import { toViewerData } from '../src/context.ts';
+import { VIEWER_URI } from '../src/data.ts';
 import { registerAppsTools, TEXT_FALLBACK_CHARS } from '../src/mcp.ts';
 import { VIEWER_HTML } from '../src/ui/viewer.html.ts';
 

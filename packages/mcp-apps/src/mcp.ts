@@ -14,7 +14,8 @@ import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { type Ctx, getVideoContext, type Registry, render, type Storage, type VideoContext } from '@vid2context/core';
 import { contextHeader, toolError } from '@vid2context/mcp';
 import { z } from 'zod';
-import { toViewerData, VIEWER_URI } from './data.ts';
+import { toViewerData } from './context.ts';
+import { VIEWER_URI } from './data.ts';
 import { VIEWER_HTML } from './ui/viewer.html.ts';
 
 export { VIEWER_URI };

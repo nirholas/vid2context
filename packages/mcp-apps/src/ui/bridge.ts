@@ -186,8 +186,9 @@ export class ViewBridge {
       });
     };
     check();
-    if (typeof win.ResizeObserver !== 'function') return () => {};
-    const ro = new win.ResizeObserver(check);
+    const Observer = (win as Window & { ResizeObserver?: typeof ResizeObserver }).ResizeObserver;
+    if (typeof Observer !== 'function') return () => {};
+    const ro = new Observer(check);
     ro.observe(doc.documentElement);
     ro.observe(doc.body);
     return () => ro.disconnect();

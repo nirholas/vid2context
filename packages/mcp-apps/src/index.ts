@@ -1,10 +1,11 @@
+export { toViewerData } from './context.ts';
 export {
   citation,
+  formatTimestamp,
   isViewerData,
   type SegmentTuple,
   TIME_MARKER,
   timestampLink,
-  toViewerData,
   VIEWER_URI,
   type ViewerData,
   type ViewerMetadata,

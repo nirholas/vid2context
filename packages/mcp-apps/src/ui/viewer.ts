@@ -11,8 +11,7 @@
  * through `ViewerHost`, so this file never talks to the host protocol itself
  * and can be tested in a DOM environment without one.
  */
-import { formatTimestamp } from '@vid2context/core';
-import { citation, type SegmentTuple, timestampLink, type ViewerData } from '../data.ts';
+import { citation, formatTimestamp, type SegmentTuple, timestampLink, type ViewerData } from '../data.ts';
 
 export interface ViewerHost {
   /** Ask the host to open a URL. Resolve true when it did. Absent: the plain link opens it. */
