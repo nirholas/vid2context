@@ -43,3 +43,7 @@ Trimming (only removals; nothing was added or rewritten):
 - Dropped everywhere: tracking and logging fields, avatars and thumbnails (except `viewRepliesCreatorThumbnail`, which marks threads the creator replied in), accessibility labels, commenters' channel ids and channel links, the custom emoji catalog, and the session-bound `redir_token` parameter of redirect links.
 
 To re-record, call `next` as in `src/comments/request.ts`, follow the continuation tokens, apply the same trimming, and grep the result for your public IP and `visitorData` before committing.
+
+## Browse and search fixtures
+
+Playlist, channel and search responses for `src/browse/` live in [browse/](browse/) and are documented in [browse/README.md](browse/README.md).
