@@ -9,7 +9,7 @@ import { readFileSync } from 'node:fs';
 import type { AddressInfo } from 'node:net';
 import { join } from 'node:path';
 import { serve } from '@hono/node-server';
-import { MemoryStorage, Registry } from '@vid2context/core';
+import { type KvStore, MemoryKv, MemoryStorage, Registry } from '@vid2context/core';
 import { replayFetch, testContext } from '@vid2context/core/testing';
 import youtube from '@vid2context/provider-youtube';
 import { createApp } from '@vid2context/server';
@@ -38,6 +38,28 @@ const serverFetch = ((input: RequestInfo | URL, init?: RequestInit) => {
   return new URL(href).hostname === '127.0.0.1' ? globalThis.fetch(input, init) : youtubeReplay(input, init);
 }) as typeof fetch;
 
+/**
+ * The in-memory library plus a KvStore, like the SQLite, D1 and Postgres
+ * backends. Webhook stores built over it share one KV, so the hooks the
+ * server's routes register are the ones the test's emitter sees, whichever
+ * mount of the webhook routes answers.
+ */
+class KvMemoryStorage extends MemoryStorage implements KvStore {
+  private readonly kv = new MemoryKv();
+  kvGet<T = unknown>(key: string) {
+    return this.kv.kvGet<T>(key);
+  }
+  kvSet(key: string, value: unknown, opts?: { ttlSec?: number }) {
+    return this.kv.kvSet(key, value, opts);
+  }
+  kvDelete(key: string) {
+    return this.kv.kvDelete(key);
+  }
+  kvList(prefix: string, opts?: { limit?: number; cursor?: string }) {
+    return this.kv.kvList(prefix, opts);
+  }
+}
+
 export interface ApiServer {
   base: string;
   close(): Promise<void>;
@@ -48,10 +70,11 @@ export interface ApiServer {
 
 export async function startApi(): Promise<ApiServer> {
   const env = { VID2CONTEXT_WEBHOOKS_ALLOW_LOCAL: '1' };
-  const storage = new MemoryStorage();
+  const storage = new KvMemoryStorage();
   const makeCtx = () => testContext({ env, fetch: serverFetch });
   const stores = webhookStoreResolver({ storage: async () => storage });
-  const app = createApp({ registry: new Registry(youtube, 'node'), makeCtx });
+  const app = createApp({ registry: new Registry(youtube, 'node'), makeCtx, storage: async () => storage });
+  // The server mounts the webhook routes itself once item 46 wires them; this mount covers servers that do not.
   app.route('/api/v1', webhookRoutes({ makeCtx, storage: async () => storage, stores }));
 
   for (let tries = 0; ; tries++) {

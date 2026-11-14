@@ -12,7 +12,7 @@ import { type Receiver, startReceiver } from './receiver.ts';
 function makeApp(env: Record<string, string>) {
   const storage = new MemoryStorage();
   const makeCtx = () => testContext({ env, fetch: globalThis.fetch });
-  const app = createApp({ registry: new Registry([], 'node'), makeCtx });
+  const app = createApp({ registry: new Registry([], 'node'), makeCtx, storage: async () => storage });
   app.route('/api/v1', webhookRoutes({ makeCtx, storage: async () => storage }));
   return app;
 }
