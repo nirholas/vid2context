@@ -218,6 +218,15 @@ export function buildAssets(o) {
     }
   }
 
+  // Vite emits ONNX Runtime's WASM next to the apps, but transformers.js loads it from
+  // cdn.jsdelivr.net unless TRANSFORMERS_WASM_PATH points elsewhere, so an oversize copy is
+  // never fetched. Drop it rather than fail the deploy; any other oversize file still fails.
+  for (const file of walk(out)) {
+    if (/(^|\/)ort-wasm[^/]*\.wasm$/.test(file) && statSync(file).size > MAX_ASSET_BYTES) {
+      rmSync(file);
+      log(`[assets] dropped ${relative(out, file)} (over 25 MiB; browsers load ONNX Runtime WASM from the CDN)`);
+    }
+  }
   const tooBig = walk(out).filter((f) => statSync(f).size > MAX_ASSET_BYTES);
   if (tooBig.length > 0) {
     throw new Error(`Assets above 25 MiB cannot be served by Workers: ${tooBig.map((f) => relative(out, f)).join(', ')}`);
