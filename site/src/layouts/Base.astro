@@ -32,7 +32,7 @@ interface Props {
 
 const { title, description, path, graph = [], ogType = 'website', noindex = false, twin = true } = Astro.props;
 const canonical = `${SITE_URL}${path}`;
-const ogImage = `${SITE_URL}${ogImageFor(path)}`;
+const ogImage = `${SITE_URL}${ogImageFor(noindex ? '/' : path)}`;
 const twinUrl = withBase(twinOf(path));
 const ld = jsonLd([...baseGraph(), ...graph]);
 const themeScript =
