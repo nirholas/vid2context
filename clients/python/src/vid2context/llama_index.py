@@ -65,7 +65,11 @@ class VideoContextReader(BaseReader):
         async_client: Optional[AsyncClient] = None,
         base_url: Optional[str] = None,
         api_key: Optional[str] = None,
+        expand: bool = False,
+        max_items: Optional[int] = None,
     ) -> None:
+        self.expand = expand
+        self.max_items = max_items
         self.chunking = chunking
         self.window_sec = window_sec
         self.client = client
@@ -88,6 +92,8 @@ class VideoContextReader(BaseReader):
             async_client=self.async_client,
             base_url=self.base_url,
             api_key=self.api_key,
+            expand=self.expand,
+            max_items=self.max_items,
         )
 
     def lazy_load_data(self, urls: Urls, **_: Any) -> Iterable[Document]:

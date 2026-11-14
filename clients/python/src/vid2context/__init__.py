@@ -6,7 +6,7 @@ in `vid2context.langchain` and `vid2context.llama_index` (optional extras).
 """
 
 from .chunking import Chunk, Chunking, chunk_context, segments_text, timestamp_url
-from .client import DEFAULT_BASE_URL, DEFAULT_TIMEOUT, AsyncClient, Client
+from .client import DEFAULT_BASE_URL, DEFAULT_TIMEOUT, AsyncClient, Client, TimeArg
 from .errors import Vid2ContextError
 from .models import (
     Attempt,
@@ -15,6 +15,8 @@ from .models import (
     Comment,
     FormatInfo,
     Health,
+    Outline,
+    OutlineChapter,
     Segment,
     Transcript,
     TranscriptMode,
@@ -40,7 +42,10 @@ __all__ = [
     "Comment",
     "FormatInfo",
     "Health",
+    "Outline",
+    "OutlineChapter",
     "Segment",
+    "TimeArg",
     "Transcript",
     "TranscriptMode",
     "TranscriptOrigin",

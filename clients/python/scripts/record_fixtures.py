@@ -77,6 +77,11 @@ CALLS: list[tuple[str, str, dict[str, str], int]] = [
         200,
     ),
     ("section-missing-selector", "/api/v1/section", {"url": "https://youtu.be/jNQXAC9IVRw"}, 400),
+    # The transcript routes again on the Apollo 11 clip, for when YouTube blocks caption requests.
+    ("outline-apollo11", "/api/v1/outline", {"url": APOLLO}, 200),
+    ("section-apollo11-chapter", "/api/v1/section", {"url": APOLLO, "chapter": "0"}, 200),
+    ("section-apollo11-range", "/api/v1/section", {"url": APOLLO, "from": "0", "to": "0:06", "timestamps": "1"}, 200),
+    ("items-apollo11", "/api/v1/items", {"url": APOLLO}, 200),
 ]
 RETRIES = 4
 

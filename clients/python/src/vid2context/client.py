@@ -8,12 +8,12 @@ somewhere else.
 from __future__ import annotations
 
 import os
-from typing import Any, Mapping, Optional
+from typing import Any, Mapping, Optional, Union
 
 import httpx
 
 from .errors import Vid2ContextError, error_from_body
-from .models import Health, TranscriptMode, VideoContext
+from .models import FormatInfo, Health, Outline, TranscriptMode, VideoContext, VideoMetadata, VideoRef
 
 DEFAULT_BASE_URL = "http://127.0.0.1:8787"
 DEFAULT_TIMEOUT = 300.0
@@ -61,6 +61,47 @@ def _transcript_query(
         q["format"] = format
     if timestamps:
         q["timestamps"] = "1"
+    return q
+
+
+TimeArg = Union[float, int, str]
+"""Seconds (754), or a string the server parses: "754", "12:34" or "1:02:03"."""
+
+
+def _time(v: TimeArg) -> str:
+    if isinstance(v, bool):
+        raise TypeError("a time must be seconds or an m:ss string, not a bool")
+    if isinstance(v, float) and v.is_integer():
+        return str(int(v))
+    return str(v)
+
+
+def _section_query(
+    url: str,
+    start: Optional[TimeArg],
+    end: Optional[TimeArg],
+    chapter: Optional[Union[int, str]],
+    format: str,
+    timestamps: bool,
+    mode: Optional[TranscriptMode],
+    lang: Optional[str],
+) -> dict[str, str]:
+    # The server rejects a request with no selector (400 bad-request with a hint); that check stays there
+    # so the client reports exactly what the server says.
+    q = _transcript_query(url, format, timestamps, mode, lang)
+    if start is not None:
+        q["from"] = _time(start)
+    if end is not None:
+        q["to"] = _time(end)
+    if chapter is not None:
+        q["chapter"] = str(chapter)
+    return q
+
+
+def _items_query(url: str, limit: Optional[int]) -> dict[str, str]:
+    q = _video_query(url, None, None)
+    if limit is not None:
+        q["limit"] = str(limit)
     return q
 
 
@@ -145,6 +186,36 @@ class Client:
         """The transcript rendered by a server formatter (ids listed in `health().formats`)."""
         return _text(self._get("/transcript", _transcript_query(url, format, timestamps, mode, lang)))
 
+    def metadata(self, url: str) -> VideoMetadata:
+        """Title, channel, duration and chapters, without fetching a transcript."""
+        return VideoMetadata.from_dict(_json(self._get("/metadata", _video_query(url, None, None))))
+
+    def outline(self, url: str, mode: Optional[TranscriptMode] = None, lang: Optional[str] = None) -> Outline:
+        """Chapters (or five-minute sections) with token estimates, to choose what to fetch with `section`."""
+        return Outline.from_dict(_json(self._get("/outline", _video_query(url, mode, lang))))
+
+    def section(
+        self,
+        url: str,
+        start: Optional[TimeArg] = None,
+        end: Optional[TimeArg] = None,
+        chapter: Optional[Union[int, str]] = None,
+        format: str = "text",
+        timestamps: bool = False,
+        mode: Optional[TranscriptMode] = None,
+        lang: Optional[str] = None,
+    ) -> str:
+        """One time range (`start` to `end`, end exclusive) or one chapter (outline index or title), rendered."""
+        return _text(self._get("/section", _section_query(url, start, end, chapter, format, timestamps, mode, lang)))
+
+    def items(self, url: str, limit: Optional[int] = None) -> list[VideoRef]:
+        """Expand a playlist, channel, feed or page into video refs. A single video returns itself."""
+        return [VideoRef.from_dict(r) for r in _json(self._get("/items", _items_query(url, limit))).get("items", [])]
+
+    def formats(self) -> list[FormatInfo]:
+        """Output formats this server can render, with file extensions."""
+        return [FormatInfo.from_dict(f) for f in _json(self._get("/formats")).get("formats", [])]
+
     def close(self) -> None:
         self._http.close()
 
@@ -194,6 +265,33 @@ class AsyncClient:
     ) -> str:
         return _text(await self._get("/transcript", _transcript_query(url, format, timestamps, mode, lang)))
 
+    async def metadata(self, url: str) -> VideoMetadata:
+        return VideoMetadata.from_dict(_json(await self._get("/metadata", _video_query(url, None, None))))
+
+    async def outline(self, url: str, mode: Optional[TranscriptMode] = None, lang: Optional[str] = None) -> Outline:
+        return Outline.from_dict(_json(await self._get("/outline", _video_query(url, mode, lang))))
+
+    async def section(
+        self,
+        url: str,
+        start: Optional[TimeArg] = None,
+        end: Optional[TimeArg] = None,
+        chapter: Optional[Union[int, str]] = None,
+        format: str = "text",
+        timestamps: bool = False,
+        mode: Optional[TranscriptMode] = None,
+        lang: Optional[str] = None,
+    ) -> str:
+        q = _section_query(url, start, end, chapter, format, timestamps, mode, lang)
+        return _text(await self._get("/section", q))
+
+    async def items(self, url: str, limit: Optional[int] = None) -> list[VideoRef]:
+        body = _json(await self._get("/items", _items_query(url, limit)))
+        return [VideoRef.from_dict(r) for r in body.get("items", [])]
+
+    async def formats(self) -> list[FormatInfo]:
+        return [FormatInfo.from_dict(f) for f in _json(await self._get("/formats")).get("formats", [])]
+
     async def aclose(self) -> None:
         await self._http.aclose()
 
@@ -204,4 +302,4 @@ class AsyncClient:
         await self.aclose()
 
 
-__all__ = ["AsyncClient", "Client", "DEFAULT_BASE_URL", "DEFAULT_TIMEOUT"]
+__all__ = ["AsyncClient", "Client", "DEFAULT_BASE_URL", "DEFAULT_TIMEOUT", "TimeArg"]

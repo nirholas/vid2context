@@ -54,8 +54,12 @@ class VideoLoading:
         async_client: Optional[AsyncClient],
         base_url: Optional[str],
         api_key: Optional[str],
+        expand: bool = False,
+        max_items: Optional[int] = None,
     ) -> None:
         check_chunking(chunking, window_sec)
+        if max_items is not None and max_items < 1:
+            raise Vid2ContextError("bad-request", f"max_items must be at least 1, got {max_items}.", hint="Use a value such as 50.")
         self.urls = as_url_list(urls)
         self.chunking = chunking
         self.window_sec = window_sec
@@ -66,17 +70,45 @@ class VideoLoading:
         self.async_client = async_client
         self.base_url = base_url
         self.api_key = api_key
+        self.expand = expand
+        self.max_items = max_items
 
     def _skip(self, url: str, err: Vid2ContextError) -> None:
         if not self.continue_on_failure:
             raise err
         log.warning("vid2context: skipped %s: %s [%s]", url, err, err.code)
 
+    def _videos(self, client: Client) -> Iterator[str]:
+        for url in self.urls:
+            if not self.expand:
+                yield url
+                continue
+            try:
+                refs = client.items(url, limit=self.max_items)
+            except Vid2ContextError as err:
+                self._skip(url, err)
+                continue
+            for ref in refs:
+                yield ref.url or ref.input
+
+    async def _avideos(self, client: AsyncClient) -> AsyncIterator[str]:
+        for url in self.urls:
+            if not self.expand:
+                yield url
+                continue
+            try:
+                refs = await client.items(url, limit=self.max_items)
+            except Vid2ContextError as err:
+                self._skip(url, err)
+                continue
+            for ref in refs:
+                yield ref.url or ref.input
+
     def chunks(self) -> Iterator[tuple[int, Chunk]]:
         own = self.client is None
         client = self.client or Client(self.base_url, self.api_key)
         try:
-            for url in self.urls:
+            for url in self._videos(client):
                 try:
                     ctx = client.context(url, mode=self.mode, lang=self.lang)
                 except Vid2ContextError as err:
@@ -91,7 +123,7 @@ class VideoLoading:
         own = self.async_client is None
         client = self.async_client or AsyncClient(self.base_url, self.api_key)
         try:
-            for url in self.urls:
+            async for url in self._avideos(client):
                 try:
                     ctx = await client.context(url, mode=self.mode, lang=self.lang)
                 except Vid2ContextError as err:

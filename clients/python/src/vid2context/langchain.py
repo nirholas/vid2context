@@ -44,6 +44,10 @@ class VideoContextLoader(BaseLoader):
         async_client: A `vid2context.AsyncClient` for `alazy_load` and `aload`.
         base_url: Server URL; default VID2CONTEXT_API_URL or http://127.0.0.1:8787.
         api_key: Bearer key; default VID2CONTEXT_API_KEY.
+        expand: Expand each URL through GET /items first, so a playlist, channel, feed or page
+            loads every video in it (a single video expands to itself). Off by default, so plain
+            video URLs cost one request each.
+        max_items: With expand, the most videos to take from each list (default: the server's cap).
 
     Metadata on every Document: source, title, channel, video_id, platform, start_sec, end_sec,
     url (a timestamp link), transcript_origin, language, chunking, plus chapter and chapter_index,
@@ -63,6 +67,8 @@ class VideoContextLoader(BaseLoader):
         async_client: Optional[AsyncClient] = None,
         base_url: Optional[str] = None,
         api_key: Optional[str] = None,
+        expand: bool = False,
+        max_items: Optional[int] = None,
     ) -> None:
         self._loading = VideoLoading(
             urls,
@@ -75,6 +81,8 @@ class VideoContextLoader(BaseLoader):
             async_client=async_client,
             base_url=base_url,
             api_key=api_key,
+            expand=expand,
+            max_items=max_items,
         )
 
     def lazy_load(self) -> Iterator[Document]:

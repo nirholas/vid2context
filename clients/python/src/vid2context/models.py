@@ -236,13 +236,57 @@ class VideoContext:
 
 @dataclass
 class FormatInfo:
+    """A transcript formatter. `extension` is present in GET /formats, not in health."""
+
     id: str
     description: str
     mime_type: str
+    extension: Optional[str] = None
 
     @classmethod
     def from_dict(cls, d: dict[str, Any]) -> FormatInfo:
-        return cls(id=d.get("id", ""), description=d.get("description", ""), mime_type=d.get("mimeType", ""))
+        return cls(
+            id=d.get("id", ""),
+            description=d.get("description", ""),
+            mime_type=d.get("mimeType", ""),
+            extension=d.get("extension"),
+        )
+
+
+@dataclass
+class OutlineChapter:
+    """A chapter (or a five-minute section when the video has none) with its token estimate."""
+
+    title: str
+    start_sec: float
+    end_sec: Optional[float]
+    tokens: int
+
+    @classmethod
+    def from_dict(cls, d: dict[str, Any]) -> OutlineChapter:
+        return cls(
+            title=d.get("title", ""),
+            start_sec=float(d.get("startSec", 0)),
+            end_sec=_opt_float(d.get("endSec")),
+            tokens=int(d.get("tokens", 0)),
+        )
+
+
+@dataclass
+class Outline:
+    """GET /api/v1/outline: pick the chapters you need, then fetch them with `section`."""
+
+    metadata: VideoMetadata
+    chapters: list[OutlineChapter]
+    total_tokens: int
+
+    @classmethod
+    def from_dict(cls, d: dict[str, Any]) -> Outline:
+        return cls(
+            metadata=VideoMetadata.from_dict(d.get("metadata", {})),
+            chapters=[OutlineChapter.from_dict(c) for c in d.get("chapters", [])],
+            total_tokens=int(d.get("totalTokens", 0)),
+        )
 
 
 @dataclass
