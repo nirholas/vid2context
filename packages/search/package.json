@@ -1,0 +1,21 @@
+{
+  "name": "@vid2context/search",
+  "version": "0.1.0",
+  "description": "Hybrid transcript search for vid2context: BM25 or storage full-text search fused with embedding search by reciprocal rank fusion, optional LLM rerank, merged time ranges with timestamp links.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./http": "./src/http.ts",
+    "./mcp": "./src/mcp.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "@vid2context/core": "*",
+    "hono": "^4.13.18",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@vid2context/provider-llm-openai-compatible": "*"
+  }
+}
