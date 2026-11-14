@@ -10,7 +10,7 @@
     "typecheck": "tsc -p tsconfig.json",
     "test": "vitest run --root ../.. packages/extension",
     "e2e": "LIVE=1 playwright test -c e2e/playwright.config.ts",
-    "lint:firefox": "web-ext lint --source-dir dist/firefox",
+    "lint:firefox": "npx --yes web-ext@10.8.0 lint --source-dir dist/firefox",
     "record": "tsx scripts/record-fixtures.ts"
   },
   "dependencies": {
@@ -30,7 +30,6 @@
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.3.0",
     "tailwindcss": "^4.3.5",
-    "vite": "^8.3.8",
-    "web-ext": "^10.8.0"
+    "vite": "^8.3.8"
   }
 }

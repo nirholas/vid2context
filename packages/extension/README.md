@@ -75,7 +75,7 @@ npm run e2e -w packages/extension          # Playwright, live: loads dist/chrome
 
 The Playwright run needs a build first. It opens the real watch page for "Me at the zoo", checks the buttons appear once, clicks "Copy for AI" and reads the clipboard. It also runs the same flow with the recorded caption track served for the caption request, which checks the in-browser path on networks YouTube refuses captions to (datacenter IPs often get HTTP 429). `V2C_SCREENSHOTS=<dir>` saves screenshots of the buttons, popup and options page.
 
-`npm run lint:firefox -w packages/extension` runs `web-ext lint` on the Firefox build.
+`npm run lint:firefox -w packages/extension` runs `web-ext lint` on the Firefox build. web-ext is fetched by `npx` at a pinned version instead of being a dependency, because its linter pulls in deepmerge, which has an unpatched advisory (GHSA-gcqx-w48m-w2h4) and would otherwise sit in every install.
 
 ## Store listing checklist
 
