@@ -6,7 +6,8 @@
  * the bundled eng data and needs no download.
  */
 import { createVisualProvider } from './provider.ts';
-import { cdnLangSource } from './tesseract.ts';
+import { cdnLangSource, tesseractRungs } from './tesseract.ts';
+import { PROVIDER_ID } from './vision.ts';
 
 export * from './shared.ts';
 export {
@@ -21,4 +22,4 @@ export {
   textFromBlocks,
 } from './tesseract.ts';
 
-export default createVisualProvider(cdnLangSource);
+export default createVisualProvider((env) => tesseractRungs(env, cdnLangSource, PROVIDER_ID));

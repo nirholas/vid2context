@@ -15,7 +15,8 @@ import { dirname, join } from 'node:path';
 import { type Ctx, type Env, fetchWithTimeout, Vid2ContextError } from '@vid2context/core';
 import { dataHome } from '@vid2context/ffmpeg';
 import { createVisualProvider } from './provider.ts';
-import type { TesseractLangSource } from './tesseract.ts';
+import { type TesseractLangSource, tesseractRungs } from './tesseract.ts';
+import { PROVIDER_ID } from './vision.ts';
 
 export * from './shared.ts';
 export {
@@ -99,4 +100,7 @@ export const nodeLangSource: TesseractLangSource = async (langs, ctx) => {
   return { options: { langPath: dir, cacheMethod: 'none' } };
 };
 
-export default createVisualProvider(nodeLangSource);
+/** Vision rungs plus tesseract with bundled or cached language data. */
+export const nodeVisualProvider = createVisualProvider((env) => tesseractRungs(env, nodeLangSource, PROVIDER_ID));
+
+export default nodeVisualProvider;

@@ -10,7 +10,7 @@ export {
   THUMB_HEIGHT,
   THUMB_WIDTH,
 } from './hash.ts';
-export { createVisualProvider, visualRungs } from './provider.ts';
+export { createVisualProvider, type RungFactory, visualRungs } from './provider.ts';
 export {
   DEFAULT_HASH_THRESHOLD,
   type DistinctFrame,

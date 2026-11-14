@@ -30,8 +30,7 @@ import {
   type VisualRung,
 } from '@vid2context/core';
 import { dataHome } from '@vid2context/ffmpeg';
-import { nodeLangSource } from '../node-provider.ts';
-import { visualRungs } from '../provider.ts';
+import { nodeVisualProvider } from '../node-provider.ts';
 import { DEFAULT_HASH_THRESHOLD, dedupeFrames, mergeNotes, selectBudget } from '../select.ts';
 import { terminateTesseract } from '../tesseract.ts';
 import { throttleRemainingMs } from '../throttle.ts';
@@ -130,7 +129,7 @@ export async function extractVisualNotes(input: string, opts: ExtractVisualOptio
   const sample = resolveSampleOptions(opts);
   const chain = opts.chain ?? {};
   const maxWaitMs = Math.max(0, opts.maxWaitSec ?? DEFAULT_MAX_WAIT_SEC) * 1000;
-  const rungs = opts.rungs ?? visualRungs(ctx.env, nodeLangSource);
+  const rungs = opts.rungs ?? nodeVisualProvider.rungs(ctx.env);
   if (rankRungs(rungs, chain, ctx.env).length === 0) {
     throw new Vid2ContextError('no-provider', 'No visual rung is enabled, so no frame could be read.', {
       hint: 'Leave TESSERACT_ENABLED unset (local OCR), set OLLAMA_VISION_MODEL or GEMINI_API_KEY, or allow keyless OVH (unset VID2CONTEXT_KEYLESS=0). The local-only policy needs tesseract or Ollama.',

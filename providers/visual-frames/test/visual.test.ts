@@ -36,6 +36,7 @@ import {
   framesFromThumbs,
   onlyRateLimited,
   parseDuration,
+  resolveSampleOptions,
   samplingArgs,
   selectExpression,
 } from '../src/node/index.ts';
@@ -121,17 +122,18 @@ describe('ffmpeg sampling output (recorded run, max interval 5 s)', () => {
     expect(times).toHaveLength(25);
     expect(frames).toHaveLength(25);
     expect(times.slice(0, 3)).toEqual([0, 5, 10]);
-    expect(times).toContain(79.333333);
+    // Settled frames: 1 s after the scene changes at 36.3 s (chart) and 79.4 s (code screen).
+    expect(times).toContain(37.333333);
+    expect(times).toContain(80.4);
     expect(parseDuration(stderr)).toBe(120);
   });
 
   it('dedupes the talk into its scenes', () => {
     const distinct = dedupeFrames(frames);
-    const starts = distinct.map((d) => d.atSec);
-    // Speakers from 5 s, title slide from 30 s, chart from 40 s, code screen near 80 s, article near 109 s.
-    for (const t of [5, 30, 40, 109.333333]) expect(starts).toContain(t);
-    expect(starts.some((t) => t >= 79 && t <= 85)).toBe(true);
-    expect(distinct.length).toBeLessThan(frames.length / 2);
+    // Fade-in, speakers, title slide, chart, split screen, code screen, rendered article.
+    expect(distinct.map((d) => d.atSec)).toEqual([0, 5, 30, 37.333333, 72.366667, 80.4, 110.433333]);
+    const code = distinct.find((d) => d.atSec === 80.4);
+    expect(code?.runLength).toBe(6);
   });
 
   it('keeps the biggest changes spread across the duration within the budget', () => {
@@ -146,10 +148,15 @@ describe('ffmpeg sampling output (recorded run, max interval 5 s)', () => {
   });
 
   it('builds a scene select with min and max intervals, two outputs and no shell quoting', () => {
-    const o = { sceneThreshold: 0.3, minIntervalSec: 2, maxIntervalSec: 30, width: 1024, quality: 3 };
+    const o = { sceneThreshold: 0.3, minIntervalSec: 2, maxIntervalSec: 30, settleSec: 1, width: 1024, quality: 3 };
     expect(selectExpression(o)).toBe(
-      'gt(isnan(prev_selected_t)+gte(t-prev_selected_t,30)+gt(scene,0.3)*gte(t-prev_selected_t,2),0)',
+      'if(gt(scene,0.3),st(0,t+1));' +
+        'st(2,isnan(prev_selected_t)+gte(t-prev_selected_t,30)+gt(ld(0),0)*gte(t-(ld(0)-1),1)*gte(t-prev_selected_t,2));' +
+        'if(ld(2)*gte(t-(ld(0)-1),1),st(0,0));gt(ld(2),0)',
     );
+    expect(() => resolveSampleOptions({ settleSec: -1 })).toThrow(Vid2ContextError);
+    expect(() => resolveSampleOptions({ sceneThreshold: 1.5 })).toThrow(Vid2ContextError);
+    expect(resolveSampleOptions({}).settleSec).toBe(1);
     const args = samplingArgs('/videos/talk.mp4', '/tmp/x', o, 7);
     expect(args).toContain('-filter_complex');
     expect(args.join(' ')).toContain(`scale=${THUMB_WIDTH}:${THUMB_HEIGHT}:flags=area,format=gray[small]`);
@@ -346,5 +353,54 @@ describe('tesseract OCR on real frames (local, no network)', () => {
     const all = textFromBlocks(rec.blocks, 0);
     expect(all).toContain('Wikikontdienci 2017');
     expect(all).not.toContain('[ -');
+  });
+});
+
+describe('runtime split', () => {
+  const pkg = JSON.parse(readFileSync(join(import.meta.dirname, '..', 'package.json'), 'utf8')) as {
+    exports: Record<string, string | Record<string, string>>;
+  };
+  const root = join(import.meta.dirname, '..');
+
+  /** Every module specifier reachable from a source file through relative imports. */
+  function reachable(entry: string): { files: string[]; specifiers: string[] } {
+    const files = new Set<string>();
+    const specifiers = new Set<string>();
+    const visit = (file: string) => {
+      if (files.has(file)) return;
+      files.add(file);
+      const src = readFileSync(file, 'utf8');
+      for (const m of src.matchAll(/(?:^|\n)\s*(?:import|export)\s[^'"]*?from\s+'([^']+)'|import\(\s*'([^']+)'\s*\)/g)) {
+        const spec = m[1] ?? m[2] ?? '';
+        if (spec.startsWith('.')) visit(join(file, '..', spec));
+        else specifiers.add(spec);
+      }
+    };
+    visit(join(root, entry));
+    return { files: [...files], specifiers: [...specifiers] };
+  }
+
+  it('resolves Workers bundles to the edge entry, Node to the node entry', () => {
+    const dot = pkg.exports['.'] as Record<string, string>;
+    expect(Object.keys(dot)[0]).toBe('workerd');
+    expect(dot.workerd).toBe('./src/edge.ts');
+    expect(dot.worker).toBe('./src/edge.ts');
+    expect(dot.node).toBe('./src/node-provider.ts');
+    expect(pkg.exports['./node']).toBe('./src/node/index.ts');
+  });
+
+  it('keeps Node built-ins, tesseract.js and Node-only packages out of the edge entry', () => {
+    const { files, specifiers } = reachable('src/edge.ts');
+    expect(files.length).toBeGreaterThan(3);
+    expect(specifiers.filter((s) => s.startsWith('node:'))).toEqual([]);
+    for (const s of ['tesseract.js', '@vid2context/ffmpeg', '@vid2context/provider-ytdlp']) expect(specifiers).not.toContain(s);
+    expect(files.some((f) => f.includes(`${join('src', 'node')}`))).toBe(false);
+  });
+
+  it('keeps Node built-ins out of the browser entry, which loads tesseract.js lazily', () => {
+    const { specifiers } = reachable('src/index.ts');
+    expect(specifiers.filter((s) => s.startsWith('node:'))).toEqual([]);
+    expect(specifiers).toContain('tesseract.js');
+    expect(specifiers).not.toContain('@vid2context/ffmpeg');
   });
 });

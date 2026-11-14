@@ -9,19 +9,22 @@
  *   node              src/node-provider.ts  vision rungs + tesseract with the bundled eng data, cached under .vid2context/models
  */
 import { defineProvider, type Env, type VisualProvider, type VisualRung } from '@vid2context/core';
-import { type TesseractLangSource, tesseractRungs } from './tesseract.ts';
 import { PROVIDER_ID, visionRungs } from './vision.ts';
 
-export function visualRungs(env: Env, tesseract?: TesseractLangSource): VisualRung[] {
-  return [...visionRungs(env), ...(tesseract ? tesseractRungs(env, tesseract, PROVIDER_ID) : [])];
+/** Builds extra rungs from env (the tesseract rung, added by the browser and Node entries only). */
+export type RungFactory = (env: Env) => VisualRung[];
+
+/** The vision rungs plus any extra rungs. This module never imports tesseract, so the edge entry cannot reach it. */
+export function visualRungs(env: Env, extra?: RungFactory): VisualRung[] {
+  return [...visionRungs(env), ...(extra ? extra(env) : [])];
 }
 
-export function createVisualProvider(tesseract?: TesseractLangSource): VisualProvider {
+export function createVisualProvider(extra?: RungFactory): VisualProvider {
   return defineProvider({
     id: PROVIDER_ID,
     kind: 'visual',
     name: 'Frames: OCR and vision models',
     runtimes: ['node', 'workers', 'browser'],
-    rungs: (env: Env) => visualRungs(env, tesseract),
+    rungs: (env: Env) => visualRungs(env, extra),
   });
 }
