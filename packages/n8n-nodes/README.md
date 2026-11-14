@@ -14,12 +14,11 @@ n8n is free to self-host, and the nodes need only a running vid2context server.
 | Get Metadata | `GET /api/v1/metadata` (falls back to `GET /api/v1/context` on servers without that route) | title, channel, description, duration, chapters, tags |
 | Get Context | `GET /api/v1/context` | the full VideoContext: metadata, timed segments, attempts |
 | List Items | `GET /api/v1/items` | one item per video in a playlist, channel, feed or page |
+| Add to Collection | `POST /api/v1/collections/:id/items` | `{ collection, summary }` (videos added, skipped, failed); on a server running a jobs queue, the `202` ingest job instead |
 
-Options: mode (`auto`, `captions`, `stt`, `video`) and language. With "Continue On Fail", errors become items with `error` and the API's own message in `description`.
+Options: mode (`auto`, `captions`, `stt`, `video`) and language. Add to Collection picks the collection from a list loaded with `GET /api/v1/collections` (or takes an id from an expression), takes video, playlist or feed URLs one per line, and an optional cap on new videos; videos the collection already has are skipped, so re-running a workflow does not duplicate them. With "Continue On Fail", errors become items with `error` and the API's own message in `description`.
 
 **vid2context Trigger**. Pick the events (`video.ingested`, `collection.updated`, `job.succeeded`, `job.failed`, `brief.ready`). On activation it registers the workflow's webhook URL with `POST /api/v1/webhooks` and keeps the returned signing secret in the workflow's static data; on deactivation it deletes the webhook. Every delivery is checked against its Standard Webhooks signature (HMAC-SHA256 over the raw body, 5 minute timestamp tolerance); unsigned or forged requests get `401` and never start the workflow. Output is the event payload `{ type, timestamp, data, messageId }`. Payloads carry ids, titles and API links, not transcripts: add a vid2context node after the trigger to fetch the text (for example Get Transcript with URL `{{ $json.data.added[0].url }}`).
-
-Add to Collection is not included yet: the collection routes belong to the library package and are not served by `packages/server` today.
 
 ## Credentials
 
@@ -71,4 +70,4 @@ Webhook payloads link to the API (`data.added[].links.transcript`, `data.job.lin
 
 ## Tests
 
-`npx vitest run packages/n8n-nodes` starts a real vid2context server on a random port (recorded YouTube responses replayed underneath, the webhook routes mounted) and checks the request building, the transcript, metadata and context calls, the trigger's register, exists and delete logic, and signature checks against the Standard Webhooks published vector, the official `standardwebhooks` library and `@vid2context/webhooks`.
+`npx vitest run packages/n8n-nodes` starts a real vid2context server on a random port (recorded YouTube responses replayed underneath, the webhook routes mounted) and checks the request building, the transcript, metadata and context calls, Add to Collection through the server's collection routes, the trigger's register, exists and delete logic, and signature checks against the Standard Webhooks published vector, the official `standardwebhooks` library and `@vid2context/webhooks`.
