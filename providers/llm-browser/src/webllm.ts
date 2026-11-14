@@ -169,6 +169,18 @@ export function webLlmRung(model: string, index: number): StreamingLlmRung {
           }
           if (ctx.signal?.aborted) throw ctx.signal.reason ?? new DOMException('Aborted', 'AbortError');
           yield { type: 'done', result: { text, model, usage } } as const;
+        } catch (err) {
+          if (ctx.signal?.aborted || err instanceof Vid2ContextError) throw err;
+          // A lost GPU device leaves the engine unusable; drop it so the next request reloads.
+          engines.delete(model);
+          throw new Vid2ContextError(
+            'upstream',
+            `webllm: ${model} failed while generating: ${String((err as Error)?.message ?? err)}`,
+            {
+              cause: err,
+              hint: 'The GPU may have run out of memory or reset. Close other GPU-heavy tabs, pick a smaller model, or another LLM.',
+            },
+          );
         } finally {
           ctx.signal?.removeEventListener('abort', onAbort);
         }

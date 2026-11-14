@@ -102,6 +102,14 @@ const env = {
 
 These rungs never send audio or text anywhere. The only network traffic is the one-time model download (huggingface.co for Whisper and WebLLM weights, cdn.jsdelivr.net for ONNX Runtime's WASM files unless self-hosted, Google's component updater for Chrome's model). After that, everything runs on the device and works offline.
 
+## What was verified (2026-11-14)
+
+- Node: whisper-base downloaded into a temporary `VID2CONTEXT_HOME` and transcribed the Apollo clip on onnxruntime-node (CPU), language detected as `en`, through the CLI with `--mode stt` (`attempts` shows `stt/transformers/onnx-community/whisper-base`).
+- Browser, headless Chromium 159 (Playwright): the Whisper demo transcribed the Apollo clip on WASM in about 25 s. Headless Chromium has no WebGPU adapter by default, so the WebGPU path of the Whisper rung was not exercised.
+- Chromium exposes the Prompt API as `downloadable` but without a model (the echo described above); the rung's refusal was verified. A real Gemini Nano answer was not verified (no Google Chrome with the model here).
+- WebLLM on a software WebGPU adapter (`--enable-unsafe-webgpu --use-webgpu-adapter=swiftshader`): `SmolLM2-360M-Instruct-q4f32_1-MLC` downloaded and loaded, but the device was lost during generation after about 13 minutes, so a streamed WebLLM answer is unverified. It needs a real GPU.
+- Not verified: GPU devices in Node (`cuda`, `dml`, `coreml`), and `whisper-large-v3-turbo`.
+
 ## Demo pages
 
 `providers/stt-transformers/demo/` and `providers/llm-browser/demo/` are small pages served by Vite for manual checks and the Playwright tests; they are not part of the packages.
