@@ -6,9 +6,12 @@
   "license": "Apache-2.0",
   "type": "module",
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview"
+    "dev": "node scripts/build.mjs --data-only && astro dev",
+    "build": "node scripts/build.mjs",
+    "preview": "astro preview",
+    "test": "vitest run --config vitest.config.ts",
+    "test:e2e": "playwright test",
+    "lighthouse": "node scripts/lighthouse.mjs"
   },
   "dependencies": {
     "@astrojs/react": "7.1.2",
@@ -28,6 +31,10 @@
     "@playwright/test": "1.64.1",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
-    "lighthouse": "13.6.0"
+    "lighthouse": "13.6.0",
+    "tsx": "4.23.15"
+  },
+  "allowScripts": {
+    "esbuild": true
   }
 }

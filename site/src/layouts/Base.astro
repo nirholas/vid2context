@@ -1,0 +1,85 @@
+---
+/**
+ * Every page: head with SEO, Open Graph, JSON-LD, the Markdown twin and the
+ * theme script; the sticky nav; the footer.
+ */
+import '@fontsource/inter/latin-400.css';
+import '@fontsource/inter/latin-500.css';
+import '@fontsource/inter/latin-600.css';
+import '@fontsource/inter/latin-700.css';
+import '@fontsource/jetbrains-mono/latin-400.css';
+import interRegular from '@fontsource/inter/files/inter-latin-400-normal.woff2?url';
+import interBold from '@fontsource/inter/files/inter-latin-700-normal.woff2?url';
+import '../styles/global.css';
+import Footer from '../components/Footer.astro';
+import Nav from '../components/Nav.astro';
+import { data, SITE_URL } from '../data/site.ts';
+import { withBase } from '../lib/base.ts';
+import { twinOf } from '../lib/docs.ts';
+import { baseGraph, jsonLd, ogImageFor } from '../lib/seo.ts';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Root-absolute page path with trailing slash, '/' for the home page. */
+  path: string;
+  graph?: Record<string, unknown>[];
+  ogType?: 'website' | 'article';
+  noindex?: boolean;
+  /** Emit the twin link (every page except 404). */
+  twin?: boolean;
+}
+
+const { title, description, path, graph = [], ogType = 'website', noindex = false, twin = true } = Astro.props;
+const canonical = `${SITE_URL}${path}`;
+const ogImage = `${SITE_URL}${ogImageFor(path)}`;
+const twinUrl = withBase(twinOf(path));
+const ld = jsonLd([...baseGraph(), ...graph]);
+const themeScript =
+  "(function(){try{var t=localStorage.getItem('v2c.theme');if(t==='light'||t==='dark'||t==='system')document.documentElement.dataset.theme=t}catch(e){}})()";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline set:html={themeScript} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
+    <meta name="theme-color" content="#000000" />
+    <meta name="color-scheme" content="dark light" />
+    <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
+    <link rel="apple-touch-icon" href={withBase('/apple-touch-icon.png')} sizes="180x180" />
+    <link rel="preload" href={interRegular} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={interBold} as="font" type="font/woff2" crossorigin />
+    {twin && <link rel="alternate" type="text/markdown" href={twinUrl} title="This page as Markdown" />}
+    <link rel="alternate" type="text/plain" href={withBase('/llms.txt')} title="llms.txt" />
+    <link rel="alternate" type="text/plain" href={withBase('/llms-full.txt')} title="llms-full.txt" />
+    <link rel="sitemap" type="application/xml" href={withBase('/sitemap.xml')} />
+
+    <meta property="og:site_name" content={data.meta.title} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={title} />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <script type="application/ld+json" is:inline set:html={ld} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Nav />
+    <slot />
+    <Footer />
+  </body>
+</html>

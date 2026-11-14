@@ -83,6 +83,8 @@ interface SiteData {
   providers: ProviderInfo[];
   sources: { name: string; provider: string; providerName: string; catchAll: boolean }[];
   ytdlpExtractors: number | null;
+  mcpTools: { name: string; title: string; description: string }[] | null;
+  deployTargets: { name: string; summary: string; evidence: string; doc: string | null; command: string | null }[];
   formatters: { id: string; description: string; extension: string }[];
   demo: {
     fixture: string;

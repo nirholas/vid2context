@@ -1,0 +1,119 @@
+---
+import { data, REPO_URL } from '../data/site.ts';
+import { withBase } from '../lib/base.ts';
+import Logo from './Logo.astro';
+---
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <div class="footer-brand">
+      <a href={withBase('/')} class="footer-logo"><Logo size={22} /> vid2context</a>
+      <p>{data.meta.shortDescription}</p>
+    </div>
+    <nav aria-label="Footer" class="footer-cols">
+      <div>
+        <h2>Product</h2>
+        <ul>
+          <li><a href={withBase('/app/')}>Open the app</a></li>
+          <li><a href={withBase('/#how')}>How it works</a></li>
+          <li><a href={withBase('/#agents')}>Agents and MCP</a></li>
+          <li><a href={withBase('/#faq')}>FAQ</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Docs</h2>
+        <ul>
+          <li><a href={withBase('/docs/')}>Documentation</a></li>
+          <li><a href={withBase('/docs/providers/')}>Providers and rungs</a></li>
+          <li><a href={withBase('/docs/architecture/')}>Architecture</a></li>
+          <li><a href={withBase('/docs/contracts/http-api/')}>HTTP API</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>For agents</h2>
+        <ul>
+          <li><a href={withBase('/llms.txt')}>llms.txt</a></li>
+          <li><a href={withBase('/llms-full.txt')}>llms-full.txt</a></li>
+          <li><a href={withBase('/index.md')}>This page as Markdown</a></li>
+          <li><a href={withBase('/sitemap.xml')}>Sitemap</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Project</h2>
+        <ul>
+          <li><a href={REPO_URL} rel="noopener">GitHub</a></li>
+          <li><a href={`${REPO_URL}/blob/main/LICENSE`} rel="noopener">License: {data.meta.license}</a></li>
+          <li><a href={`${REPO_URL}/issues`} rel="noopener">Issues</a></li>
+          <li><a href={`${REPO_URL}/blob/main/CHANGELOG.md`} rel="noopener">Changelog</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+  <div class="wrap footer-base">
+    <p>Free and open source under {data.meta.license}. Built from commit <a href={`${REPO_URL}/commit/${data.head}`} class="font-mono" rel="noopener">{data.head}</a>.</p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    margin-top: 6rem;
+    border-top: 1px solid var(--v2c-border);
+    background: var(--v2c-surface);
+    color: var(--v2c-muted);
+    font-size: 0.9rem;
+  }
+  .footer-inner {
+    display: grid;
+    gap: 2.5rem;
+    padding-block: 3.5rem 2rem;
+  }
+  @media (min-width: 900px) {
+    .footer-inner {
+      grid-template-columns: 1.1fr 2fr;
+    }
+  }
+  .footer-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--v2c-text);
+    font-weight: 650;
+    text-decoration: none;
+  }
+  .footer-brand p {
+    margin-top: 0.75rem;
+    max-width: 22rem;
+  }
+  .footer-cols {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2rem;
+  }
+  @media (min-width: 640px) {
+    .footer-cols {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  .footer h2 {
+    margin-bottom: 0.75rem;
+    color: var(--v2c-text);
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+  .footer li + li {
+    margin-top: 0.35rem;
+  }
+  .footer a {
+    color: var(--v2c-muted);
+    text-decoration: none;
+  }
+  .footer a:hover {
+    color: var(--v2c-text);
+    text-decoration: underline;
+  }
+  .footer-base {
+    padding-block: 1.25rem 2rem;
+    border-top: 1px solid var(--v2c-border);
+    font-size: 0.8125rem;
+  }
+</style>

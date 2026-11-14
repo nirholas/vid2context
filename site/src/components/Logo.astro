@@ -1,0 +1,16 @@
+---
+/** The project logo, inlined from packages/discovery/assets/logo.svg so it never drifts. */
+import { readFileSync } from 'node:fs';
+import { repoPath } from '../lib/paths.ts';
+
+interface Props {
+  size?: number;
+}
+const { size = 28 } = Astro.props;
+const svg = readFileSync(repoPath('packages/discovery/assets/logo.svg'), 'utf8')
+  .replace(/<title[^>]*>.*?<\/title>/, '')
+  .replace(/\s(width|height|role|aria-labelledby)="[^"]*"/g, '')
+  .replace('<svg ', `<svg width="${size}" height="${size}" aria-hidden="true" focusable="false" `);
+---
+
+<Fragment set:html={svg} />

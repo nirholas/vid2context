@@ -14,6 +14,7 @@ import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   buildBundle,
+  createContext,
   formatters,
   formatTimestamp,
   type Provider,
@@ -131,6 +132,115 @@ function ytdlpExtractorCount(): number | null {
     }
   }
   return null;
+}
+
+// ------------------------------------------------------------------ deploy targets
+
+interface DeployTarget {
+  name: string;
+  summary: string;
+  /** Repo path that proves the target exists. */
+  evidence: string;
+  /** docs/deploy page, when one exists. */
+  doc: string | null;
+  command: string | null;
+}
+
+/** A deploy target is listed only when the repo has something for it at build time. */
+function deployTargets(): DeployTarget[] {
+  const scripts = (JSON.parse(readFileSync(join(root, 'package.json'), 'utf8')) as { scripts?: Record<string, string> }).scripts ?? {};
+  const doc = (name: string) => (existsSync(join(root, `docs/deploy/${name}.md`)) ? `docs/deploy/${name}.md` : null);
+  const dockerComment = existsSync(join(root, 'Dockerfile'))
+    ? (readFileSync(join(root, 'Dockerfile'), 'utf8').match(/^#\s+(docker build[^\n]+)$/m)?.[1]?.trim() ?? null)
+    : null;
+  const candidates: (DeployTarget | null)[] = [
+    existsSync(join(root, 'deploy/containers/compose.yaml'))
+      ? {
+          name: 'Docker',
+          summary: 'Compose file for the full server (HTTP API, yt-dlp, ffmpeg), plus a small stdio MCP image at the repo root.',
+          evidence: 'deploy/containers/compose.yaml',
+          doc: doc('docker'),
+          command:
+            readFileSync(join(root, 'deploy/containers/compose.yaml'), 'utf8')
+              .match(/^#\s+(docker compose [^\n]+)$/m)?.[1]
+              ?.trim() ?? null,
+        }
+      : existsSync(join(root, 'Dockerfile'))
+        ? { name: 'Docker', summary: 'A stdio MCP server image built from source.', evidence: 'Dockerfile', doc: doc('docker'), command: dockerComment }
+        : null,
+    existsSync(join(root, 'wrangler.jsonc'))
+      ? {
+          name: 'Cloudflare',
+          summary: 'One Worker serves the site, the apps and the API, with Workers AI as an optional free rung.',
+          evidence: 'wrangler.jsonc',
+          doc: doc('cloudflare'),
+          command: scripts.deploy ? 'npm run deploy' : null,
+        }
+      : null,
+    existsSync(join(root, 'deploy/serverless/vercel')) || doc('vercel')
+      ? {
+          name: 'Vercel',
+          summary: 'A prebuilt Build Output tree: the same layout with the API as a function.',
+          evidence: existsSync(join(root, 'deploy/serverless/vercel')) ? 'deploy/serverless/vercel' : 'docs/deploy/vercel.md',
+          doc: doc('vercel'),
+          command: scripts['build:vercel'] ? 'npm run build:vercel' : null,
+        }
+      : null,
+    existsSync(join(root, 'railway.json')) || existsSync(join(root, 'railway.toml')) || doc('railway')
+      ? {
+          name: 'Railway',
+          summary: 'Deploy the server container on Railway.',
+          evidence: existsSync(join(root, 'railway.json')) ? 'railway.json' : existsSync(join(root, 'railway.toml')) ? 'railway.toml' : 'docs/deploy/railway.md',
+          doc: doc('railway'),
+          command: null,
+        }
+      : null,
+    existsSync(join(root, 'deploy/serverless/github-pages')) || doc('github-pages')
+      ? {
+          name: 'GitHub Pages',
+          summary: 'A client-only build: the apps run in the browser with your own keys or local models.',
+          evidence: existsSync(join(root, 'deploy/serverless/github-pages')) ? 'deploy/serverless/github-pages' : 'docs/deploy/github-pages.md',
+          doc: doc('github-pages'),
+          command: scripts['deploy:pages'] ? 'npm run deploy:pages' : null,
+        }
+      : null,
+  ];
+  return candidates.filter((c): c is DeployTarget => c !== null);
+}
+
+// ------------------------------------------------------------------ MCP tools
+
+interface ToolInfo {
+  name: string;
+  title: string;
+  description: string;
+}
+
+/** The MCP server's real tool list: start it in memory and call tools/list. Null when it does not start. */
+async function mcpTools(registry: Registry): Promise<ToolInfo[] | null> {
+  try {
+    const { createServer } = await import('@vid2context/mcp');
+    const { Client } = await import('@modelcontextprotocol/sdk/client/index.js');
+    const { InMemoryTransport } = await import('@modelcontextprotocol/sdk/inMemory.js');
+    const ctx = createContext({ runtime: 'node', env: {} });
+    const server = createServer(registry, ctx);
+    const [serverSide, clientSide] = InMemoryTransport.createLinkedPair();
+    const client = new Client({ name: 'vid2context-site-build', version: '0.0.0' });
+    await Promise.all([server.connect(serverSide), client.connect(clientSide)]);
+    const { tools } = await client.listTools();
+    await client.close();
+    await server.close();
+    return tools
+      .map((t) => ({
+        name: t.name,
+        title: t.title ?? t.annotations?.title ?? t.name,
+        description: (t.description ?? '').split(/(?<=\.)\s/)[0] ?? '',
+      }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+  } catch (err) {
+    log(`the MCP server did not start in memory (${(err as Error).message.split('\n')[0]}); the tool list is left out`);
+    return null;
+  }
 }
 
 // ------------------------------------------------------------------ git
@@ -261,6 +371,7 @@ async function main(): Promise<void> {
 
   const gwagonText = render(gwagon, 'text', { timestamps: true }).split('\n');
 
+  const tools = await mcpTools(registry);
   const mcpVersion = await npmVersion(discovery.MCP_PACKAGE.name);
   const stars = await githubStars();
 
@@ -331,6 +442,8 @@ async function main(): Promise<void> {
     providers,
     sources,
     ytdlpExtractors: ytdlpExtractorCount(),
+    deployTargets: deployTargets(),
+    mcpTools: tools,
     formatters: Object.values(formatters).map((f) => ({ id: f.id, description: f.description, extension: f.extension })),
     demo: {
       fixture: 'tests/fixtures/contexts/youtube-jNQXAC9IVRw.json',
