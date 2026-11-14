@@ -1,8 +1,14 @@
 /**
  * MCP tools for note exports. The MCP server calls registerExporterTools once.
  *
- *   export_obsidian  { urls?, collection?, vaultPath, folder?, overwrite? }  Node only: writes notes on this machine
+ *   export_obsidian  { urls?, collection?, vaultPath, folder?, overwrite? }  stdio on Node only: writes notes on this machine
  *   export_notion    { urls?, collection?, parentPageId? }                   creates or updates Notion pages
+ *
+ * export_obsidian writes into the filesystem of the machine running the
+ * server, which is only the user's own machine when the server runs over
+ * stdio. Two guards keep it off remote servers: `localFiles: false` leaves the
+ * tool out of the tool list, and any call that arrives over an HTTP transport
+ * (the SDK attaches `requestInfo` to those, never to stdio) is refused.
  *
  * Failures come back as tool results with isError and the standard JSON body
  * (error code, message, hint, attempts), never as protocol errors.
@@ -19,6 +25,23 @@ export interface ExporterToolDeps {
   ctx: Ctx;
   /** Library storage, needed for the `collection` argument. */
   storage?: Storage | null;
+  /**
+   * Whether export_obsidian may write files on this machine. Default: true on
+   * Node, false elsewhere. A remote (HTTP) MCP server should pass false so the
+   * tool is not listed; calls over HTTP are refused either way.
+   */
+  localFiles?: boolean;
+}
+
+/** Thrown when export_obsidian is called over a remote transport, where "this machine" is the server, not the user's. */
+function remoteRefusal(): Vid2ContextError {
+  return new Vid2ContextError(
+    'bad-request',
+    'export_obsidian writes files on the machine running the server, so it only works over stdio.',
+    {
+      hint: 'Run the vid2context MCP server locally over stdio to write into your vault, or call POST /exports/obsidian, which returns the notes for you to save.',
+    },
+  );
 }
 
 type ToolResult = { content: { type: 'text'; text: string }[]; isError?: boolean };
@@ -45,7 +68,7 @@ export function registerExporterTools(server: McpServer, deps: ExporterToolDeps)
     collection: z.string().optional().describe('A saved collection id to export'),
   };
 
-  if (deps.ctx.runtime === 'node') {
+  if (deps.localFiles ?? deps.ctx.runtime === 'node') {
     server.registerTool(
       'export_obsidian',
       {
@@ -66,6 +89,7 @@ export function registerExporterTools(server: McpServer, deps: ExporterToolDeps)
       },
       async (args, extra) => {
         try {
+          if (extra.requestInfo) throw remoteRefusal();
           const ctx = callCtx(extra.signal);
           const { writeObsidian } = await import('./node.ts');
           const loaded = await loadContexts(deps, { inputs: args.urls, collectionId: args.collection }, ctx);

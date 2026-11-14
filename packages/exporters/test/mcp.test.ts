@@ -1,9 +1,11 @@
-import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, readdirSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { WebStandardStreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js';
+import { LATEST_PROTOCOL_VERSION } from '@modelcontextprotocol/sdk/types.js';
 import { MemoryStorage, Registry, type Runtime, type VideoContext } from '@vid2context/core';
 import { replayFetch, testContext } from '@vid2context/core/testing';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
@@ -51,6 +53,75 @@ describe('registerExporterTools', () => {
     expect((await node.listTools()).tools.map((t) => t.name).sort()).toEqual(['export_notion', 'export_obsidian']);
     const workers = await connect('workers');
     expect((await workers.listTools()).tools.map((t) => t.name)).toEqual(['export_notion']);
+  });
+
+  it('leaves export_obsidian out when localFiles is false, as a remote server should', async () => {
+    const server = new McpServer({ name: 'test', version: '0.0.0' });
+    registerExporterTools(server, {
+      registry: new Registry([], 'node'),
+      ctx: testContext({ fetch, runtime: 'node' }),
+      storage,
+      localFiles: false,
+    });
+    const [a, b] = InMemoryTransport.createLinkedPair();
+    await server.connect(a);
+    const client = new Client({ name: 'test-client', version: '0.0.0' });
+    await client.connect(b);
+    expect((await client.listTools()).tools.map((t) => t.name)).toEqual(['export_notion']);
+  });
+
+  it('refuses export_obsidian calls that arrive over an HTTP transport and writes nothing', async () => {
+    const remoteDir = mkdtempSync(join(tmpdir(), 'v2c-mcp-remote-'));
+    try {
+      const server = new McpServer({ name: 'test', version: '0.0.0' });
+      registerExporterTools(server, {
+        registry: new Registry([], 'node'),
+        ctx: testContext({ fetch, runtime: 'node' }),
+        storage,
+      });
+      const transport = new WebStandardStreamableHTTPServerTransport({
+        sessionIdGenerator: () => crypto.randomUUID(),
+        enableJsonResponse: true,
+      });
+      await server.connect(transport);
+      let sessionId: string | undefined;
+      const post = (id: number | undefined, method: string, params: unknown) =>
+        transport.handleRequest(
+          new Request('http://127.0.0.1/mcp', {
+            method: 'POST',
+            headers: {
+              'content-type': 'application/json',
+              accept: 'application/json, text/event-stream',
+              'mcp-protocol-version': LATEST_PROTOCOL_VERSION,
+              ...(sessionId ? { 'mcp-session-id': sessionId } : {}),
+            },
+            body: JSON.stringify({ jsonrpc: '2.0', ...(id === undefined ? {} : { id }), method, params }),
+          }),
+        );
+      const init = await post(1, 'initialize', {
+        protocolVersion: LATEST_PROTOCOL_VERSION,
+        capabilities: {},
+        clientInfo: { name: 'test-client', version: '0.0.0' },
+      });
+      expect(init.status).toBe(200);
+      sessionId = init.headers.get('mcp-session-id') ?? undefined;
+      expect(sessionId).toBeTruthy();
+      expect((await post(undefined, 'notifications/initialized', {})).status).toBe(202);
+      const res = await post(2, 'tools/call', {
+        name: 'export_obsidian',
+        arguments: { collection: collectionId, vaultPath: remoteDir },
+      });
+      const body = (await res.json()) as { result: { isError?: boolean; content: { text: string }[] } };
+      expect(body.result.isError).toBe(true);
+      expect(JSON.parse(body.result.content[0]?.text ?? '{}')).toMatchObject({
+        error: 'bad-request',
+        hint: expect.stringContaining('stdio'),
+      });
+      expect(readdirSync(remoteDir)).toEqual([]);
+      await transport.close();
+    } finally {
+      rmSync(remoteDir, { recursive: true, force: true });
+    }
   });
 
   it('export_obsidian writes a collection into a vault and reports the paths', async () => {

@@ -130,6 +130,28 @@ describe('planNotionPage', () => {
     const callout = withBrief.blocks.find((b) => b.type === 'callout');
     expect(callout && plain(callout)).toBe(`Summary\n${brief}`);
   });
+
+  it('ends with a Comments heading and one bullet per comment, replies nested, only when comments exist', async () => {
+    expect((await planNotionPage(zoo)).blocks.some((b) => b.type === 'bulleted_list_item')).toBe(false);
+    const plan = await planNotionPage(withComments);
+    const heading = plan.blocks.findIndex((b) => b.type === 'heading_2' && plain(b) === 'Comments');
+    expect(heading).toBeGreaterThan(0);
+    const bullets = plan.blocks.slice(heading + 1);
+    expect(bullets.map((b) => b.type)).toEqual(comments.map(() => 'bulleted_list_item'));
+    const [pinned] = bullets;
+    expect(body(pinned as NotionBlock).rich_text?.[0]).toMatchObject({
+      text: { content: '@SanDiegoZoo' },
+      annotations: { bold: true },
+    });
+    expect(plain(pinned as NotionBlock)).toBe(
+      "@SanDiegoZoo (pinned, 4800000 likes): We're so honored that the first ever YouTube video was filmed here!",
+    );
+    expect((body(pinned as NotionBlock).children ?? []).map(plain)).toEqual(
+      (comments[0]?.replies ?? []).map((r) => `${r.author} (${r.likes} likes): ${r.text}`),
+    );
+    expect(plan.digest).not.toBe((await planNotionPage(zoo)).digest);
+    checkLimits(plan.batches);
+  });
 });
 
 describe('text and batching helpers', () => {
