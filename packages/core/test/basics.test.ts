@@ -46,7 +46,7 @@ describe('segments', () => {
   });
 
   it('decodes caption entities and joins text', () => {
-    expect(decodeEntities('it&#39;s &amp; &quot;fine&quot; &#x2014;')).toBe('it\'s & "fine" —');
+    expect(decodeEntities('it&#39;s &amp; &quot;fine&quot; &#x2014;')).toBe('it\'s & "fine" \u2014');
     const segs = [
       { startSec: 0, endSec: 2, text: ' All right, so here ' },
       { startSec: 2, endSec: 5, text: 'we are\n in front of the elephants' },
