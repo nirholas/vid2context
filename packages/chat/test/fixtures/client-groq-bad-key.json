@@ -1,0 +1,48 @@
+{
+  "recordedAt": "2026-11-14T17:51:20.389Z",
+  "case": "groq-bad-key",
+  "env": [
+    "GROQ_API_KEY"
+  ],
+  "request": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Which engine does the 2000 G500 have, and why do the hosts call it reliable? Cite the moments."
+      }
+    ],
+    "model": {
+      "rung": "llm/groq/openai/gpt-oss-120b",
+      "strict": true
+    }
+  },
+  "responses": [
+    {
+      "url": "https://api.groq.com/openai/v1/chat/completions",
+      "method": "POST",
+      "status": 401,
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": "{\"error\":{\"message\":\"Invalid API Key\",\"type\":\"invalid_request_error\",\"code\":\"invalid_api_key\"}}\n"
+    }
+  ],
+  "events": [
+    {
+      "type": "error",
+      "code": "all-rungs-failed",
+      "message": "Every llm rung failed (1 tried).",
+      "hint": "Each attempt below says why. Keyless models are rate-limited per IP; a free Groq, Mistral or Gemini key in Settings adds more models.",
+      "attempts": [
+        {
+          "id": "llm/groq/openai/gpt-oss-120b",
+          "stage": "llm",
+          "outcome": "error",
+          "reason": "auth-401",
+          "detail": "groq chat stream: HTTP 401 {\"error\":{\"message\":\"Invalid API Key\",\"type\":\"invalid_request_error\",\"code\":\"invalid_api_key\"}}\n",
+          "ms": 95
+        }
+      ]
+    }
+  ]
+}

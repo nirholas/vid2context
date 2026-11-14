@@ -1,0 +1,1999 @@
+{
+  "recordedAt": "2026-11-14T17:51:20.282Z",
+  "case": "ovh-gpt-oss",
+  "env": [],
+  "request": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Which engine does the 2000 G500 have, and why do the hosts call it reliable? Cite the moments."
+      }
+    ],
+    "model": {
+      "rung": "llm/ovh/gpt-oss-120b",
+      "strict": true
+    }
+  },
+  "responses": [
+    {
+      "url": "https://oai.endpoints.kepler.ai.cloud.ovh.net/v1/chat/completions",
+      "method": "POST",
+      "status": 200,
+      "headers": {
+        "content-type": "text/event-stream"
+      },
+      "body": "data: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"We need\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" to\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" answer\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\":\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" Which\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" engine\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" does\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" the\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" \",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"200\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"0\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" G\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"500\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" have\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\",\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" and\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" why\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" do\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" the\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" hosts\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" call\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" it\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" reliable\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"?\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" Use\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" transcript\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" excerpts\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\".\\n\\n\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"From\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" excerpt\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" [\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"2\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"]:\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" \\\"\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"the\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" \",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"2000 G500 ...\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" has\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" what\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" we\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" know\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" the legendary\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" m\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"113\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" V\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"8\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" ...\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" this\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" was\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" Mercedes big Harrah\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" into\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" the\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" V8\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"s\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" and this is probably\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" arguably\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" one\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" of\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" their\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" most\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" reliable\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" V\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"8\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"s\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" out\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" there\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"\\\".\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" Also\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" later\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" they\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" mention\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" \\\"\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"all\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" aluminum\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" ...\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" as\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" reliable\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" as\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" it\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" gets\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"\\\".\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" Let's\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" locate\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\".\\n\\n\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"Excerpt\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" [\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"2\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"]\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" mentions\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\":\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" \\\"\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"this\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" one\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" has\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" what\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" we\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" know\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" the\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" legendary\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" m\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"113\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" V\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"8\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"...\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" this\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" was\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" Mercedes\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" big\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" Har\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"rah\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" into\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" the\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" V\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"8\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"s\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" and\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" this\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" is\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" probably\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" arguably\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" one\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" of\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" their\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" most\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" reliable\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" V\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"8\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"s\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" out\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" there\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"\\\"\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" (\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"they\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" also\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" say\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" \\\"\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"some\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" call\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" it\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" the\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" Land\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" Cruiser\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" killer\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"...\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" I\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" really\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" like\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" this\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" motor\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"...\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" it's\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" all\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" aluminum\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"...\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" as\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" reliable\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" as\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" it\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" gets\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"\\\").\\n\\n\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"Also\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" excerpt\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" [\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"3\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"]\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" has\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" more\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" details\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\":\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" mentions\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" single\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" overhead\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" cam\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\",\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" timing\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" chains\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\",\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" two\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" spark\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" plugs\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" per\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" cylinder\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\",\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" cheap\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" parts\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\",\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" global\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" motor\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\",\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" easy\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" to\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" work\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" on\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\",\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" cheap\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" parts\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\", reliable.\\n\\nThus answer: The 2000 G500 uses the Mercedes\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" M\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"113\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" \",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"5\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\".0‑liter\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" V8\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" (the legendary M\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"113\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" V\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"8\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\").\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" The\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" hosts\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" say\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" it's\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" reliable\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" because\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" it's\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" a\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" simple\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" single\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"‑\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"over\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"head\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"‑\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"cam\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" design\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" with\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" timing\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" chains\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\",\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" two\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" spark\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" plugs\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" per\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" cylinder\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\",\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" all\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"‑\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"al\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"uminum\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" construction\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\",\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" cheap\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\",\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" widely\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" available\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" parts\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" worldwide\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\",\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" easy\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" to\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" work\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" on\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\",\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" and\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" considered\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" one\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" of\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" the\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" most\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" reliable\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" V\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"8\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"s\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\",\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" often\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" called\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" a\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" Land\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" Cruiser\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" killer\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\".\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" Cite\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" [\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"2\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"]\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" and [3\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\"].\\n\\nLet's craft\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" answer\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" with\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\" citations\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"reasoning\":\".\\n\\n\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"The\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" \",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"200\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"0\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"‑\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"model\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" G\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"500\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" is equipped with Mercedes‑\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"B\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"enz\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"’s\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" legendary\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" **\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"M\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"113\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" \",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"5\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\".\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"0\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"‑\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"liter\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" V\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"8\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"**\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" (\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"the\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" “\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"big\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"‑\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"Har\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"rah\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"”\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" V\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"8\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\").\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" The\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" hosts\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" point\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" to\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" several\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" reasons\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" why\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" they\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" consider\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" it\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" extremely\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" reliable\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\":\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" it\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"’s\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" a simple single\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"‑\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"over\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"head\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"‑\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"cam\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" engine\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" with\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" timing\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"‑\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"chain\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" drive\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\",\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" two\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" spark\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" plugs\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" per\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" cylinder\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\",\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" an\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" all\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"‑\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"al\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"uminum\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" block\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" that\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"’s\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" light\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" yet\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" tough\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\",\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" and\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" it\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" uses\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" parts\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" that\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" are\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" cheap\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" and\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" available\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" everywhere\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\",\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" making\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" it\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" easy\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" to\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" service\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" and\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" “\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"as\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" reliable\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" as\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" it\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" gets\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"”\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" –\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" even being nicknamed a\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" “\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"Land\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"‑\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"Cru\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"iser\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" killer” for its durability\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"【\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"2\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"】\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\".\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" They\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" also\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" note\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" its\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" straightforward\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" design\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" (\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"SO\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"HC\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\",\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" timing\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" chains\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\",\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" two\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" plugs\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" per\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" cylinder\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\")\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" and\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" global\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" parts\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" availability\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\",\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" which\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" further\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" contributes\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" to\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" its\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" reputation\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" for\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\" reliability\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"【\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"3\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"】\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\".\",\"name\":\"assistant\"}}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"name\":\"assistant\"},\"finish_reason\":\"stop\"}],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9ec5172fe423868\",\"choices\":[],\"created\":1794678676,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"vllm-0.33.0-214fa1f6\",\"object\":\"chat.completion.chunk\",\"usage\":{\"prompt_tokens\":5076,\"completion_tokens\":495,\"total_tokens\":5571,\"completion_tokens_details\":{\"reasoning_tokens\":318}}}\n\ndata: [DONE]\n\n"
+    }
+  ],
+  "events": [
+    {
+      "type": "meta",
+      "rung": "llm/ovh/gpt-oss-120b",
+      "model": "gpt-oss-120b",
+      "contextTokens": 131072,
+      "sources": [
+        {
+          "n": 1,
+          "videoId": "youtube:cCPsdFdlshc",
+          "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+          "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=0s",
+          "startSec": 0.64,
+          "endSec": 45.96
+        },
+        {
+          "n": 2,
+          "videoId": "youtube:cCPsdFdlshc",
+          "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+          "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=45s",
+          "startSec": 45.96,
+          "endSec": 91.24
+        },
+        {
+          "n": 3,
+          "videoId": "youtube:cCPsdFdlshc",
+          "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+          "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=91s",
+          "startSec": 91.24,
+          "endSec": 136.72
+        },
+        {
+          "n": 4,
+          "videoId": "youtube:cCPsdFdlshc",
+          "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+          "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=136s",
+          "startSec": 136.72,
+          "endSec": 182.72
+        },
+        {
+          "n": 5,
+          "videoId": "youtube:cCPsdFdlshc",
+          "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+          "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=182s",
+          "startSec": 182.72,
+          "endSec": 229.12
+        },
+        {
+          "n": 6,
+          "videoId": "youtube:cCPsdFdlshc",
+          "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+          "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=229s",
+          "startSec": 229.12,
+          "endSec": 275.36
+        },
+        {
+          "n": 7,
+          "videoId": "youtube:cCPsdFdlshc",
+          "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+          "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=275s",
+          "startSec": 275.36,
+          "endSec": 322.8
+        },
+        {
+          "n": 8,
+          "videoId": "youtube:cCPsdFdlshc",
+          "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+          "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=322s",
+          "startSec": 322.8,
+          "endSec": 368.72
+        },
+        {
+          "n": 9,
+          "videoId": "youtube:cCPsdFdlshc",
+          "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+          "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=368s",
+          "startSec": 368.72,
+          "endSec": 414.56
+        },
+        {
+          "n": 10,
+          "videoId": "youtube:cCPsdFdlshc",
+          "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+          "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=414s",
+          "startSec": 414.56,
+          "endSec": 460.44
+        },
+        {
+          "n": 11,
+          "videoId": "youtube:cCPsdFdlshc",
+          "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+          "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=460s",
+          "startSec": 460.44,
+          "endSec": 507.72
+        },
+        {
+          "n": 12,
+          "videoId": "youtube:cCPsdFdlshc",
+          "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+          "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=507s",
+          "startSec": 507.72,
+          "endSec": 554.279
+        },
+        {
+          "n": 13,
+          "videoId": "youtube:cCPsdFdlshc",
+          "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+          "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=554s",
+          "startSec": 554.279,
+          "endSec": 602.24
+        },
+        {
+          "n": 14,
+          "videoId": "youtube:cCPsdFdlshc",
+          "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+          "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=602s",
+          "startSec": 602.24,
+          "endSec": 647.92
+        },
+        {
+          "n": 15,
+          "videoId": "youtube:cCPsdFdlshc",
+          "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+          "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=647s",
+          "startSec": 647.92,
+          "endSec": 693.72
+        },
+        {
+          "n": 16,
+          "videoId": "youtube:cCPsdFdlshc",
+          "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+          "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=693s",
+          "startSec": 693.72,
+          "endSec": 740.639
+        },
+        {
+          "n": 17,
+          "videoId": "youtube:cCPsdFdlshc",
+          "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+          "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=740s",
+          "startSec": 740.639,
+          "endSec": 786.44
+        },
+        {
+          "n": 18,
+          "videoId": "youtube:cCPsdFdlshc",
+          "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+          "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=786s",
+          "startSec": 786.44,
+          "endSec": 832.8
+        },
+        {
+          "n": 19,
+          "videoId": "youtube:cCPsdFdlshc",
+          "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+          "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=832s",
+          "startSec": 832.8,
+          "endSec": 878.04
+        },
+        {
+          "n": 20,
+          "videoId": "youtube:cCPsdFdlshc",
+          "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+          "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=878s",
+          "startSec": 878.04,
+          "endSec": 923.759
+        },
+        {
+          "n": 21,
+          "videoId": "youtube:cCPsdFdlshc",
+          "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+          "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=923s",
+          "startSec": 923.759,
+          "endSec": 970.399
+        },
+        {
+          "n": 22,
+          "videoId": "youtube:cCPsdFdlshc",
+          "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+          "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=970s",
+          "startSec": 970.399,
+          "endSec": 1015.8
+        },
+        {
+          "n": 23,
+          "videoId": "youtube:cCPsdFdlshc",
+          "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+          "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=1015s",
+          "startSec": 1015.8,
+          "endSec": 1061.84
+        },
+        {
+          "n": 24,
+          "videoId": "youtube:cCPsdFdlshc",
+          "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+          "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=1061s",
+          "startSec": 1061.84,
+          "endSec": 1085.559
+        }
+      ],
+      "promptTokens": 5387
+    },
+    {
+      "type": "reasoning",
+      "text": "We need"
+    },
+    {
+      "type": "reasoning",
+      "text": " to"
+    },
+    {
+      "type": "reasoning",
+      "text": " answer"
+    },
+    {
+      "type": "reasoning",
+      "text": ":"
+    },
+    {
+      "type": "reasoning",
+      "text": " Which"
+    },
+    {
+      "type": "reasoning",
+      "text": " engine"
+    },
+    {
+      "type": "reasoning",
+      "text": " does"
+    },
+    {
+      "type": "reasoning",
+      "text": " the"
+    },
+    {
+      "type": "reasoning",
+      "text": " "
+    },
+    {
+      "type": "reasoning",
+      "text": "200"
+    },
+    {
+      "type": "reasoning",
+      "text": "0"
+    },
+    {
+      "type": "reasoning",
+      "text": " G"
+    },
+    {
+      "type": "reasoning",
+      "text": "500"
+    },
+    {
+      "type": "reasoning",
+      "text": " have"
+    },
+    {
+      "type": "reasoning",
+      "text": ","
+    },
+    {
+      "type": "reasoning",
+      "text": " and"
+    },
+    {
+      "type": "reasoning",
+      "text": " why"
+    },
+    {
+      "type": "reasoning",
+      "text": " do"
+    },
+    {
+      "type": "reasoning",
+      "text": " the"
+    },
+    {
+      "type": "reasoning",
+      "text": " hosts"
+    },
+    {
+      "type": "reasoning",
+      "text": " call"
+    },
+    {
+      "type": "reasoning",
+      "text": " it"
+    },
+    {
+      "type": "reasoning",
+      "text": " reliable"
+    },
+    {
+      "type": "reasoning",
+      "text": "?"
+    },
+    {
+      "type": "reasoning",
+      "text": " Use"
+    },
+    {
+      "type": "reasoning",
+      "text": " transcript"
+    },
+    {
+      "type": "reasoning",
+      "text": " excerpts"
+    },
+    {
+      "type": "reasoning",
+      "text": ".\n\n"
+    },
+    {
+      "type": "reasoning",
+      "text": "From"
+    },
+    {
+      "type": "reasoning",
+      "text": " excerpt"
+    },
+    {
+      "type": "reasoning",
+      "text": " ["
+    },
+    {
+      "type": "reasoning",
+      "text": "2"
+    },
+    {
+      "type": "reasoning",
+      "text": "]:"
+    },
+    {
+      "type": "reasoning",
+      "text": " \""
+    },
+    {
+      "type": "reasoning",
+      "text": "the"
+    },
+    {
+      "type": "reasoning",
+      "text": " "
+    },
+    {
+      "type": "reasoning",
+      "text": "2000 G500 ..."
+    },
+    {
+      "type": "reasoning",
+      "text": " has"
+    },
+    {
+      "type": "reasoning",
+      "text": " what"
+    },
+    {
+      "type": "reasoning",
+      "text": " we"
+    },
+    {
+      "type": "reasoning",
+      "text": " know"
+    },
+    {
+      "type": "reasoning",
+      "text": " the legendary"
+    },
+    {
+      "type": "reasoning",
+      "text": " m"
+    },
+    {
+      "type": "reasoning",
+      "text": "113"
+    },
+    {
+      "type": "reasoning",
+      "text": " V"
+    },
+    {
+      "type": "reasoning",
+      "text": "8"
+    },
+    {
+      "type": "reasoning",
+      "text": " ..."
+    },
+    {
+      "type": "reasoning",
+      "text": " this"
+    },
+    {
+      "type": "reasoning",
+      "text": " was"
+    },
+    {
+      "type": "reasoning",
+      "text": " Mercedes big Harrah"
+    },
+    {
+      "type": "reasoning",
+      "text": " into"
+    },
+    {
+      "type": "reasoning",
+      "text": " the"
+    },
+    {
+      "type": "reasoning",
+      "text": " V8"
+    },
+    {
+      "type": "reasoning",
+      "text": "s"
+    },
+    {
+      "type": "reasoning",
+      "text": " and this is probably"
+    },
+    {
+      "type": "reasoning",
+      "text": " arguably"
+    },
+    {
+      "type": "reasoning",
+      "text": " one"
+    },
+    {
+      "type": "reasoning",
+      "text": " of"
+    },
+    {
+      "type": "reasoning",
+      "text": " their"
+    },
+    {
+      "type": "reasoning",
+      "text": " most"
+    },
+    {
+      "type": "reasoning",
+      "text": " reliable"
+    },
+    {
+      "type": "reasoning",
+      "text": " V"
+    },
+    {
+      "type": "reasoning",
+      "text": "8"
+    },
+    {
+      "type": "reasoning",
+      "text": "s"
+    },
+    {
+      "type": "reasoning",
+      "text": " out"
+    },
+    {
+      "type": "reasoning",
+      "text": " there"
+    },
+    {
+      "type": "reasoning",
+      "text": "\"."
+    },
+    {
+      "type": "reasoning",
+      "text": " Also"
+    },
+    {
+      "type": "reasoning",
+      "text": " later"
+    },
+    {
+      "type": "reasoning",
+      "text": " they"
+    },
+    {
+      "type": "reasoning",
+      "text": " mention"
+    },
+    {
+      "type": "reasoning",
+      "text": " \""
+    },
+    {
+      "type": "reasoning",
+      "text": "all"
+    },
+    {
+      "type": "reasoning",
+      "text": " aluminum"
+    },
+    {
+      "type": "reasoning",
+      "text": " ..."
+    },
+    {
+      "type": "reasoning",
+      "text": " as"
+    },
+    {
+      "type": "reasoning",
+      "text": " reliable"
+    },
+    {
+      "type": "reasoning",
+      "text": " as"
+    },
+    {
+      "type": "reasoning",
+      "text": " it"
+    },
+    {
+      "type": "reasoning",
+      "text": " gets"
+    },
+    {
+      "type": "reasoning",
+      "text": "\"."
+    },
+    {
+      "type": "reasoning",
+      "text": " Let's"
+    },
+    {
+      "type": "reasoning",
+      "text": " locate"
+    },
+    {
+      "type": "reasoning",
+      "text": ".\n\n"
+    },
+    {
+      "type": "reasoning",
+      "text": "Excerpt"
+    },
+    {
+      "type": "reasoning",
+      "text": " ["
+    },
+    {
+      "type": "reasoning",
+      "text": "2"
+    },
+    {
+      "type": "reasoning",
+      "text": "]"
+    },
+    {
+      "type": "reasoning",
+      "text": " mentions"
+    },
+    {
+      "type": "reasoning",
+      "text": ":"
+    },
+    {
+      "type": "reasoning",
+      "text": " \""
+    },
+    {
+      "type": "reasoning",
+      "text": "this"
+    },
+    {
+      "type": "reasoning",
+      "text": " one"
+    },
+    {
+      "type": "reasoning",
+      "text": " has"
+    },
+    {
+      "type": "reasoning",
+      "text": " what"
+    },
+    {
+      "type": "reasoning",
+      "text": " we"
+    },
+    {
+      "type": "reasoning",
+      "text": " know"
+    },
+    {
+      "type": "reasoning",
+      "text": " the"
+    },
+    {
+      "type": "reasoning",
+      "text": " legendary"
+    },
+    {
+      "type": "reasoning",
+      "text": " m"
+    },
+    {
+      "type": "reasoning",
+      "text": "113"
+    },
+    {
+      "type": "reasoning",
+      "text": " V"
+    },
+    {
+      "type": "reasoning",
+      "text": "8"
+    },
+    {
+      "type": "reasoning",
+      "text": "..."
+    },
+    {
+      "type": "reasoning",
+      "text": " this"
+    },
+    {
+      "type": "reasoning",
+      "text": " was"
+    },
+    {
+      "type": "reasoning",
+      "text": " Mercedes"
+    },
+    {
+      "type": "reasoning",
+      "text": " big"
+    },
+    {
+      "type": "reasoning",
+      "text": " Har"
+    },
+    {
+      "type": "reasoning",
+      "text": "rah"
+    },
+    {
+      "type": "reasoning",
+      "text": " into"
+    },
+    {
+      "type": "reasoning",
+      "text": " the"
+    },
+    {
+      "type": "reasoning",
+      "text": " V"
+    },
+    {
+      "type": "reasoning",
+      "text": "8"
+    },
+    {
+      "type": "reasoning",
+      "text": "s"
+    },
+    {
+      "type": "reasoning",
+      "text": " and"
+    },
+    {
+      "type": "reasoning",
+      "text": " this"
+    },
+    {
+      "type": "reasoning",
+      "text": " is"
+    },
+    {
+      "type": "reasoning",
+      "text": " probably"
+    },
+    {
+      "type": "reasoning",
+      "text": " arguably"
+    },
+    {
+      "type": "reasoning",
+      "text": " one"
+    },
+    {
+      "type": "reasoning",
+      "text": " of"
+    },
+    {
+      "type": "reasoning",
+      "text": " their"
+    },
+    {
+      "type": "reasoning",
+      "text": " most"
+    },
+    {
+      "type": "reasoning",
+      "text": " reliable"
+    },
+    {
+      "type": "reasoning",
+      "text": " V"
+    },
+    {
+      "type": "reasoning",
+      "text": "8"
+    },
+    {
+      "type": "reasoning",
+      "text": "s"
+    },
+    {
+      "type": "reasoning",
+      "text": " out"
+    },
+    {
+      "type": "reasoning",
+      "text": " there"
+    },
+    {
+      "type": "reasoning",
+      "text": "\""
+    },
+    {
+      "type": "reasoning",
+      "text": " ("
+    },
+    {
+      "type": "reasoning",
+      "text": "they"
+    },
+    {
+      "type": "reasoning",
+      "text": " also"
+    },
+    {
+      "type": "reasoning",
+      "text": " say"
+    },
+    {
+      "type": "reasoning",
+      "text": " \""
+    },
+    {
+      "type": "reasoning",
+      "text": "some"
+    },
+    {
+      "type": "reasoning",
+      "text": " call"
+    },
+    {
+      "type": "reasoning",
+      "text": " it"
+    },
+    {
+      "type": "reasoning",
+      "text": " the"
+    },
+    {
+      "type": "reasoning",
+      "text": " Land"
+    },
+    {
+      "type": "reasoning",
+      "text": " Cruiser"
+    },
+    {
+      "type": "reasoning",
+      "text": " killer"
+    },
+    {
+      "type": "reasoning",
+      "text": "..."
+    },
+    {
+      "type": "reasoning",
+      "text": " I"
+    },
+    {
+      "type": "reasoning",
+      "text": " really"
+    },
+    {
+      "type": "reasoning",
+      "text": " like"
+    },
+    {
+      "type": "reasoning",
+      "text": " this"
+    },
+    {
+      "type": "reasoning",
+      "text": " motor"
+    },
+    {
+      "type": "reasoning",
+      "text": "..."
+    },
+    {
+      "type": "reasoning",
+      "text": " it's"
+    },
+    {
+      "type": "reasoning",
+      "text": " all"
+    },
+    {
+      "type": "reasoning",
+      "text": " aluminum"
+    },
+    {
+      "type": "reasoning",
+      "text": "..."
+    },
+    {
+      "type": "reasoning",
+      "text": " as"
+    },
+    {
+      "type": "reasoning",
+      "text": " reliable"
+    },
+    {
+      "type": "reasoning",
+      "text": " as"
+    },
+    {
+      "type": "reasoning",
+      "text": " it"
+    },
+    {
+      "type": "reasoning",
+      "text": " gets"
+    },
+    {
+      "type": "reasoning",
+      "text": "\").\n\n"
+    },
+    {
+      "type": "reasoning",
+      "text": "Also"
+    },
+    {
+      "type": "reasoning",
+      "text": " excerpt"
+    },
+    {
+      "type": "reasoning",
+      "text": " ["
+    },
+    {
+      "type": "reasoning",
+      "text": "3"
+    },
+    {
+      "type": "reasoning",
+      "text": "]"
+    },
+    {
+      "type": "reasoning",
+      "text": " has"
+    },
+    {
+      "type": "reasoning",
+      "text": " more"
+    },
+    {
+      "type": "reasoning",
+      "text": " details"
+    },
+    {
+      "type": "reasoning",
+      "text": ":"
+    },
+    {
+      "type": "reasoning",
+      "text": " mentions"
+    },
+    {
+      "type": "reasoning",
+      "text": " single"
+    },
+    {
+      "type": "reasoning",
+      "text": " overhead"
+    },
+    {
+      "type": "reasoning",
+      "text": " cam"
+    },
+    {
+      "type": "reasoning",
+      "text": ","
+    },
+    {
+      "type": "reasoning",
+      "text": " timing"
+    },
+    {
+      "type": "reasoning",
+      "text": " chains"
+    },
+    {
+      "type": "reasoning",
+      "text": ","
+    },
+    {
+      "type": "reasoning",
+      "text": " two"
+    },
+    {
+      "type": "reasoning",
+      "text": " spark"
+    },
+    {
+      "type": "reasoning",
+      "text": " plugs"
+    },
+    {
+      "type": "reasoning",
+      "text": " per"
+    },
+    {
+      "type": "reasoning",
+      "text": " cylinder"
+    },
+    {
+      "type": "reasoning",
+      "text": ","
+    },
+    {
+      "type": "reasoning",
+      "text": " cheap"
+    },
+    {
+      "type": "reasoning",
+      "text": " parts"
+    },
+    {
+      "type": "reasoning",
+      "text": ","
+    },
+    {
+      "type": "reasoning",
+      "text": " global"
+    },
+    {
+      "type": "reasoning",
+      "text": " motor"
+    },
+    {
+      "type": "reasoning",
+      "text": ","
+    },
+    {
+      "type": "reasoning",
+      "text": " easy"
+    },
+    {
+      "type": "reasoning",
+      "text": " to"
+    },
+    {
+      "type": "reasoning",
+      "text": " work"
+    },
+    {
+      "type": "reasoning",
+      "text": " on"
+    },
+    {
+      "type": "reasoning",
+      "text": ","
+    },
+    {
+      "type": "reasoning",
+      "text": " cheap"
+    },
+    {
+      "type": "reasoning",
+      "text": " parts"
+    },
+    {
+      "type": "reasoning",
+      "text": ", reliable.\n\nThus answer: The 2000 G500 uses the Mercedes"
+    },
+    {
+      "type": "reasoning",
+      "text": " M"
+    },
+    {
+      "type": "reasoning",
+      "text": "113"
+    },
+    {
+      "type": "reasoning",
+      "text": " "
+    },
+    {
+      "type": "reasoning",
+      "text": "5"
+    },
+    {
+      "type": "reasoning",
+      "text": ".0‑liter"
+    },
+    {
+      "type": "reasoning",
+      "text": " V8"
+    },
+    {
+      "type": "reasoning",
+      "text": " (the legendary M"
+    },
+    {
+      "type": "reasoning",
+      "text": "113"
+    },
+    {
+      "type": "reasoning",
+      "text": " V"
+    },
+    {
+      "type": "reasoning",
+      "text": "8"
+    },
+    {
+      "type": "reasoning",
+      "text": ")."
+    },
+    {
+      "type": "reasoning",
+      "text": " The"
+    },
+    {
+      "type": "reasoning",
+      "text": " hosts"
+    },
+    {
+      "type": "reasoning",
+      "text": " say"
+    },
+    {
+      "type": "reasoning",
+      "text": " it's"
+    },
+    {
+      "type": "reasoning",
+      "text": " reliable"
+    },
+    {
+      "type": "reasoning",
+      "text": " because"
+    },
+    {
+      "type": "reasoning",
+      "text": " it's"
+    },
+    {
+      "type": "reasoning",
+      "text": " a"
+    },
+    {
+      "type": "reasoning",
+      "text": " simple"
+    },
+    {
+      "type": "reasoning",
+      "text": " single"
+    },
+    {
+      "type": "reasoning",
+      "text": "‑"
+    },
+    {
+      "type": "reasoning",
+      "text": "over"
+    },
+    {
+      "type": "reasoning",
+      "text": "head"
+    },
+    {
+      "type": "reasoning",
+      "text": "‑"
+    },
+    {
+      "type": "reasoning",
+      "text": "cam"
+    },
+    {
+      "type": "reasoning",
+      "text": " design"
+    },
+    {
+      "type": "reasoning",
+      "text": " with"
+    },
+    {
+      "type": "reasoning",
+      "text": " timing"
+    },
+    {
+      "type": "reasoning",
+      "text": " chains"
+    },
+    {
+      "type": "reasoning",
+      "text": ","
+    },
+    {
+      "type": "reasoning",
+      "text": " two"
+    },
+    {
+      "type": "reasoning",
+      "text": " spark"
+    },
+    {
+      "type": "reasoning",
+      "text": " plugs"
+    },
+    {
+      "type": "reasoning",
+      "text": " per"
+    },
+    {
+      "type": "reasoning",
+      "text": " cylinder"
+    },
+    {
+      "type": "reasoning",
+      "text": ","
+    },
+    {
+      "type": "reasoning",
+      "text": " all"
+    },
+    {
+      "type": "reasoning",
+      "text": "‑"
+    },
+    {
+      "type": "reasoning",
+      "text": "al"
+    },
+    {
+      "type": "reasoning",
+      "text": "uminum"
+    },
+    {
+      "type": "reasoning",
+      "text": " construction"
+    },
+    {
+      "type": "reasoning",
+      "text": ","
+    },
+    {
+      "type": "reasoning",
+      "text": " cheap"
+    },
+    {
+      "type": "reasoning",
+      "text": ","
+    },
+    {
+      "type": "reasoning",
+      "text": " widely"
+    },
+    {
+      "type": "reasoning",
+      "text": " available"
+    },
+    {
+      "type": "reasoning",
+      "text": " parts"
+    },
+    {
+      "type": "reasoning",
+      "text": " worldwide"
+    },
+    {
+      "type": "reasoning",
+      "text": ","
+    },
+    {
+      "type": "reasoning",
+      "text": " easy"
+    },
+    {
+      "type": "reasoning",
+      "text": " to"
+    },
+    {
+      "type": "reasoning",
+      "text": " work"
+    },
+    {
+      "type": "reasoning",
+      "text": " on"
+    },
+    {
+      "type": "reasoning",
+      "text": ","
+    },
+    {
+      "type": "reasoning",
+      "text": " and"
+    },
+    {
+      "type": "reasoning",
+      "text": " considered"
+    },
+    {
+      "type": "reasoning",
+      "text": " one"
+    },
+    {
+      "type": "reasoning",
+      "text": " of"
+    },
+    {
+      "type": "reasoning",
+      "text": " the"
+    },
+    {
+      "type": "reasoning",
+      "text": " most"
+    },
+    {
+      "type": "reasoning",
+      "text": " reliable"
+    },
+    {
+      "type": "reasoning",
+      "text": " V"
+    },
+    {
+      "type": "reasoning",
+      "text": "8"
+    },
+    {
+      "type": "reasoning",
+      "text": "s"
+    },
+    {
+      "type": "reasoning",
+      "text": ","
+    },
+    {
+      "type": "reasoning",
+      "text": " often"
+    },
+    {
+      "type": "reasoning",
+      "text": " called"
+    },
+    {
+      "type": "reasoning",
+      "text": " a"
+    },
+    {
+      "type": "reasoning",
+      "text": " Land"
+    },
+    {
+      "type": "reasoning",
+      "text": " Cruiser"
+    },
+    {
+      "type": "reasoning",
+      "text": " killer"
+    },
+    {
+      "type": "reasoning",
+      "text": "."
+    },
+    {
+      "type": "reasoning",
+      "text": " Cite"
+    },
+    {
+      "type": "reasoning",
+      "text": " ["
+    },
+    {
+      "type": "reasoning",
+      "text": "2"
+    },
+    {
+      "type": "reasoning",
+      "text": "]"
+    },
+    {
+      "type": "reasoning",
+      "text": " and [3"
+    },
+    {
+      "type": "reasoning",
+      "text": "].\n\nLet's craft"
+    },
+    {
+      "type": "reasoning",
+      "text": " answer"
+    },
+    {
+      "type": "reasoning",
+      "text": " with"
+    },
+    {
+      "type": "reasoning",
+      "text": " citations"
+    },
+    {
+      "type": "reasoning",
+      "text": ".\n\n"
+    },
+    {
+      "type": "delta",
+      "text": "The"
+    },
+    {
+      "type": "delta",
+      "text": " "
+    },
+    {
+      "type": "delta",
+      "text": "200"
+    },
+    {
+      "type": "delta",
+      "text": "0"
+    },
+    {
+      "type": "delta",
+      "text": "‑"
+    },
+    {
+      "type": "delta",
+      "text": "model"
+    },
+    {
+      "type": "delta",
+      "text": " G"
+    },
+    {
+      "type": "delta",
+      "text": "500"
+    },
+    {
+      "type": "delta",
+      "text": " is equipped with Mercedes‑"
+    },
+    {
+      "type": "delta",
+      "text": "B"
+    },
+    {
+      "type": "delta",
+      "text": "enz"
+    },
+    {
+      "type": "delta",
+      "text": "’s"
+    },
+    {
+      "type": "delta",
+      "text": " legendary"
+    },
+    {
+      "type": "delta",
+      "text": " **"
+    },
+    {
+      "type": "delta",
+      "text": "M"
+    },
+    {
+      "type": "delta",
+      "text": "113"
+    },
+    {
+      "type": "delta",
+      "text": " "
+    },
+    {
+      "type": "delta",
+      "text": "5"
+    },
+    {
+      "type": "delta",
+      "text": "."
+    },
+    {
+      "type": "delta",
+      "text": "0"
+    },
+    {
+      "type": "delta",
+      "text": "‑"
+    },
+    {
+      "type": "delta",
+      "text": "liter"
+    },
+    {
+      "type": "delta",
+      "text": " V"
+    },
+    {
+      "type": "delta",
+      "text": "8"
+    },
+    {
+      "type": "delta",
+      "text": "**"
+    },
+    {
+      "type": "delta",
+      "text": " ("
+    },
+    {
+      "type": "delta",
+      "text": "the"
+    },
+    {
+      "type": "delta",
+      "text": " “"
+    },
+    {
+      "type": "delta",
+      "text": "big"
+    },
+    {
+      "type": "delta",
+      "text": "‑"
+    },
+    {
+      "type": "delta",
+      "text": "Har"
+    },
+    {
+      "type": "delta",
+      "text": "rah"
+    },
+    {
+      "type": "delta",
+      "text": "”"
+    },
+    {
+      "type": "delta",
+      "text": " V"
+    },
+    {
+      "type": "delta",
+      "text": "8"
+    },
+    {
+      "type": "delta",
+      "text": ")."
+    },
+    {
+      "type": "delta",
+      "text": " The"
+    },
+    {
+      "type": "delta",
+      "text": " hosts"
+    },
+    {
+      "type": "delta",
+      "text": " point"
+    },
+    {
+      "type": "delta",
+      "text": " to"
+    },
+    {
+      "type": "delta",
+      "text": " several"
+    },
+    {
+      "type": "delta",
+      "text": " reasons"
+    },
+    {
+      "type": "delta",
+      "text": " why"
+    },
+    {
+      "type": "delta",
+      "text": " they"
+    },
+    {
+      "type": "delta",
+      "text": " consider"
+    },
+    {
+      "type": "delta",
+      "text": " it"
+    },
+    {
+      "type": "delta",
+      "text": " extremely"
+    },
+    {
+      "type": "delta",
+      "text": " reliable"
+    },
+    {
+      "type": "delta",
+      "text": ":"
+    },
+    {
+      "type": "delta",
+      "text": " it"
+    },
+    {
+      "type": "delta",
+      "text": "’s"
+    },
+    {
+      "type": "delta",
+      "text": " a simple single"
+    },
+    {
+      "type": "delta",
+      "text": "‑"
+    },
+    {
+      "type": "delta",
+      "text": "over"
+    },
+    {
+      "type": "delta",
+      "text": "head"
+    },
+    {
+      "type": "delta",
+      "text": "‑"
+    },
+    {
+      "type": "delta",
+      "text": "cam"
+    },
+    {
+      "type": "delta",
+      "text": " engine"
+    },
+    {
+      "type": "delta",
+      "text": " with"
+    },
+    {
+      "type": "delta",
+      "text": " timing"
+    },
+    {
+      "type": "delta",
+      "text": "‑"
+    },
+    {
+      "type": "delta",
+      "text": "chain"
+    },
+    {
+      "type": "delta",
+      "text": " drive"
+    },
+    {
+      "type": "delta",
+      "text": ","
+    },
+    {
+      "type": "delta",
+      "text": " two"
+    },
+    {
+      "type": "delta",
+      "text": " spark"
+    },
+    {
+      "type": "delta",
+      "text": " plugs"
+    },
+    {
+      "type": "delta",
+      "text": " per"
+    },
+    {
+      "type": "delta",
+      "text": " cylinder"
+    },
+    {
+      "type": "delta",
+      "text": ","
+    },
+    {
+      "type": "delta",
+      "text": " an"
+    },
+    {
+      "type": "delta",
+      "text": " all"
+    },
+    {
+      "type": "delta",
+      "text": "‑"
+    },
+    {
+      "type": "delta",
+      "text": "al"
+    },
+    {
+      "type": "delta",
+      "text": "uminum"
+    },
+    {
+      "type": "delta",
+      "text": " block"
+    },
+    {
+      "type": "delta",
+      "text": " that"
+    },
+    {
+      "type": "delta",
+      "text": "’s"
+    },
+    {
+      "type": "delta",
+      "text": " light"
+    },
+    {
+      "type": "delta",
+      "text": " yet"
+    },
+    {
+      "type": "delta",
+      "text": " tough"
+    },
+    {
+      "type": "delta",
+      "text": ","
+    },
+    {
+      "type": "delta",
+      "text": " and"
+    },
+    {
+      "type": "delta",
+      "text": " it"
+    },
+    {
+      "type": "delta",
+      "text": " uses"
+    },
+    {
+      "type": "delta",
+      "text": " parts"
+    },
+    {
+      "type": "delta",
+      "text": " that"
+    },
+    {
+      "type": "delta",
+      "text": " are"
+    },
+    {
+      "type": "delta",
+      "text": " cheap"
+    },
+    {
+      "type": "delta",
+      "text": " and"
+    },
+    {
+      "type": "delta",
+      "text": " available"
+    },
+    {
+      "type": "delta",
+      "text": " everywhere"
+    },
+    {
+      "type": "delta",
+      "text": ","
+    },
+    {
+      "type": "delta",
+      "text": " making"
+    },
+    {
+      "type": "delta",
+      "text": " it"
+    },
+    {
+      "type": "delta",
+      "text": " easy"
+    },
+    {
+      "type": "delta",
+      "text": " to"
+    },
+    {
+      "type": "delta",
+      "text": " service"
+    },
+    {
+      "type": "delta",
+      "text": " and"
+    },
+    {
+      "type": "delta",
+      "text": " “"
+    },
+    {
+      "type": "delta",
+      "text": "as"
+    },
+    {
+      "type": "delta",
+      "text": " reliable"
+    },
+    {
+      "type": "delta",
+      "text": " as"
+    },
+    {
+      "type": "delta",
+      "text": " it"
+    },
+    {
+      "type": "delta",
+      "text": " gets"
+    },
+    {
+      "type": "delta",
+      "text": "”"
+    },
+    {
+      "type": "delta",
+      "text": " –"
+    },
+    {
+      "type": "delta",
+      "text": " even being nicknamed a"
+    },
+    {
+      "type": "delta",
+      "text": " “"
+    },
+    {
+      "type": "delta",
+      "text": "Land"
+    },
+    {
+      "type": "delta",
+      "text": "‑"
+    },
+    {
+      "type": "delta",
+      "text": "Cru"
+    },
+    {
+      "type": "delta",
+      "text": "iser"
+    },
+    {
+      "type": "delta",
+      "text": " killer” for its durability"
+    },
+    {
+      "type": "delta",
+      "text": "【"
+    },
+    {
+      "type": "delta",
+      "text": "2"
+    },
+    {
+      "type": "delta",
+      "text": "】"
+    },
+    {
+      "type": "delta",
+      "text": "."
+    },
+    {
+      "type": "delta",
+      "text": " They"
+    },
+    {
+      "type": "delta",
+      "text": " also"
+    },
+    {
+      "type": "delta",
+      "text": " note"
+    },
+    {
+      "type": "delta",
+      "text": " its"
+    },
+    {
+      "type": "delta",
+      "text": " straightforward"
+    },
+    {
+      "type": "delta",
+      "text": " design"
+    },
+    {
+      "type": "delta",
+      "text": " ("
+    },
+    {
+      "type": "delta",
+      "text": "SO"
+    },
+    {
+      "type": "delta",
+      "text": "HC"
+    },
+    {
+      "type": "delta",
+      "text": ","
+    },
+    {
+      "type": "delta",
+      "text": " timing"
+    },
+    {
+      "type": "delta",
+      "text": " chains"
+    },
+    {
+      "type": "delta",
+      "text": ","
+    },
+    {
+      "type": "delta",
+      "text": " two"
+    },
+    {
+      "type": "delta",
+      "text": " plugs"
+    },
+    {
+      "type": "delta",
+      "text": " per"
+    },
+    {
+      "type": "delta",
+      "text": " cylinder"
+    },
+    {
+      "type": "delta",
+      "text": ")"
+    },
+    {
+      "type": "delta",
+      "text": " and"
+    },
+    {
+      "type": "delta",
+      "text": " global"
+    },
+    {
+      "type": "delta",
+      "text": " parts"
+    },
+    {
+      "type": "delta",
+      "text": " availability"
+    },
+    {
+      "type": "delta",
+      "text": ","
+    },
+    {
+      "type": "delta",
+      "text": " which"
+    },
+    {
+      "type": "delta",
+      "text": " further"
+    },
+    {
+      "type": "delta",
+      "text": " contributes"
+    },
+    {
+      "type": "delta",
+      "text": " to"
+    },
+    {
+      "type": "delta",
+      "text": " its"
+    },
+    {
+      "type": "delta",
+      "text": " reputation"
+    },
+    {
+      "type": "delta",
+      "text": " for"
+    },
+    {
+      "type": "delta",
+      "text": " reliability"
+    },
+    {
+      "type": "delta",
+      "text": "【"
+    },
+    {
+      "type": "delta",
+      "text": "3"
+    },
+    {
+      "type": "delta",
+      "text": "】"
+    },
+    {
+      "type": "delta",
+      "text": "."
+    },
+    {
+      "type": "done",
+      "text": "The 2000‑model G500 is equipped with Mercedes‑Benz’s legendary **M113 5.0‑liter V8** (the “big‑Harrah” V8). The hosts point to several reasons why they consider it extremely reliable: it’s a simple single‑overhead‑cam engine with timing‑chain drive, two spark plugs per cylinder, an all‑aluminum block that’s light yet tough, and it uses parts that are cheap and available everywhere, making it easy to service and “as reliable as it gets” – even being nicknamed a “Land‑Cruiser killer” for its durability【2】. They also note its straightforward design (SOHC, timing chains, two plugs per cylinder) and global parts availability, which further contributes to its reputation for reliability【3】.",
+      "rung": "llm/ovh/gpt-oss-120b",
+      "model": "gpt-oss-120b",
+      "usage": {
+        "inputTokens": 5076,
+        "outputTokens": 495
+      },
+      "citations": [
+        {
+          "n": 2,
+          "videoId": "youtube:cCPsdFdlshc",
+          "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+          "startSec": 45.96,
+          "endSec": 91.24,
+          "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=45s"
+        },
+        {
+          "n": 3,
+          "videoId": "youtube:cCPsdFdlshc",
+          "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+          "startSec": 91.24,
+          "endSec": 136.72,
+          "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=91s"
+        }
+      ],
+      "attempts": [
+        {
+          "id": "llm/ovh/gpt-oss-120b",
+          "stage": "llm",
+          "outcome": "ok",
+          "ms": 4042
+        }
+      ]
+    }
+  ]
+}

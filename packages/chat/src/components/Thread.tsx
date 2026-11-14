@@ -179,6 +179,21 @@ function modelTag(
   return { label, ...(service ? { service: serviceLabel(service) } : {}), ...(fallbackFrom ? { fallbackFrom } : {}) };
 }
 
+/**
+ * The server's done.citations can pin a cited source to the quoted moment
+ * (citation n with a narrower start inside the source). Use that time for the
+ * chip and the seek when it falls inside the source's range.
+ */
+export function refineSources(message: MessageRecord): ChatSource[] | undefined {
+  const { sources, citations } = message;
+  if (!sources || !citations?.length) return sources;
+  return sources.map((s) => {
+    const c = citations.find((x) => x.n === s.n && x.videoId === s.videoId);
+    if (!c || c.startSec < s.startSec || c.startSec > s.endSec) return s;
+    return { ...s, startSec: c.startSec, endSec: Math.min(c.endSec ?? s.endSec, s.endSec), ...(c.url ? { url: c.url } : {}) };
+  });
+}
+
 function AssistantMessage(props: {
   message: MessageRecord;
   rows: ModelRow[] | null;
@@ -189,11 +204,12 @@ function AssistantMessage(props: {
   const { message } = props;
   const streaming = message.status === 'streaming';
   const tag = modelTag(message, props.rows);
+  const sources = refineSources(message);
   // The panel's switcher lists only the sources this answer actually cited.
   const cited = citedNumbers(message.content)
-    .map((n) => sourceByNumber(message.sources, n))
+    .map((n) => sourceByNumber(sources, n))
     .filter((x): x is ChatSource => x !== undefined);
-  const scope = { sources: message.sources, onOpen: (s: ChatSource) => props.onOpenSource(s, cited.length ? cited : [s]) };
+  const scope = { sources, onOpen: (s: ChatSource) => props.onOpenSource(s, cited.length ? cited : [s]) };
 
   return (
     <div className="group flex flex-col gap-2" data-role="assistant" data-status={message.status}>

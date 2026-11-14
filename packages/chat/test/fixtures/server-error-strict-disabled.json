@@ -1,0 +1,32 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/chat",
+    "body": {
+      "messages": [
+        {
+          "role": "user",
+          "content": "hi"
+        }
+      ],
+      "context": {
+        "inputs": [
+          "https://www.youtube.com/watch?v=cCPsdFdlshc"
+        ]
+      },
+      "model": {
+        "rung": "llm/groq/openai/gpt-oss-120b",
+        "strict": true
+      }
+    }
+  },
+  "status": 400,
+  "body": {
+    "error": {
+      "code": "bad-request",
+      "message": "Model \"llm/groq/openai/gpt-oss-120b\" is not enabled on this server.",
+      "hint": "Set GROQ_API_KEY to enable it, pick an enabled model from GET /api/v1/models, or send strict: false to fall back."
+    },
+    "attempts": []
+  }
+}

@@ -132,20 +132,32 @@ export async function* localChat(opts: LocalChatOptions): AsyncGenerator<ChatEve
     if (ctx.signal?.aborted) return;
     const attempts: Attempt[] = attemptsOf(err);
     const data = toErrorData(err);
-    yield { type: 'error', ...data, ...(attempts.length ? { attempts } : {}), ...hintFor(data.code, data.hint) };
+    yield { type: 'error', ...data, ...(attempts.length ? { attempts } : {}), ...hintFor(data.code, data.hint, attempts) };
   }
 }
 
-function hintFor(code: string, hint: string | undefined): { hint?: string } {
+/** A recovery hint for client-only failures, from what the attempts say went wrong. */
+export function hintFor(code: string, hint: string | undefined, attempts: Attempt[] = []): { hint?: string } {
   if (code === 'no-provider') {
     return {
       hint: 'No model can answer from this browser. Add a free key (Groq, Mistral or Gemini) in Settings, or allow keyless models.',
     };
   }
   if (code === 'all-rungs-failed') {
-    return {
-      hint: 'Each attempt below says why. Keyless models are rate-limited per IP; a free Groq, Mistral or Gemini key in Settings adds more models.',
-    };
+    const failed = attempts.filter((a) => a.outcome === 'error');
+    const auth = failed.filter((a) => a.reason?.startsWith('auth'));
+    if (failed.length > 0 && auth.length === failed.length) {
+      return { hint: 'The service rejected the key (401 or 403). Check or replace it in Settings.' };
+    }
+    if (failed.some((a) => a.reason?.startsWith('rate-limited'))) {
+      return {
+        hint: 'Rate-limited: keyless models allow a few requests per minute per IP. Wait a minute, or add a free Groq, Mistral or Gemini key in Settings.',
+      };
+    }
+    if (failed.some((a) => a.reason === 'network')) {
+      return { hint: 'The browser could not reach the service (network or CORS). Check your connection, or use server mode.' };
+    }
+    return { hint: 'Each attempt below says why. Adding a free Groq, Mistral or Gemini key in Settings adds more models.' };
   }
   return hint ? { hint } : {};
 }
