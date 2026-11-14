@@ -115,6 +115,29 @@ Keyless rungs send data to a third party without an account. They are on by defa
 
 Free model ids are retired without notice. Pin ids only where the provider keeps them stable, make every id overridable through env, and never pin an OpenRouter `:free` id (pick from the live list instead).
 
+### Streaming
+
+An LLM rung streams by also implementing `StreamingLlmRung` from [packages/core/src/llm-stream.ts](../../packages/core/src/llm-stream.ts): an `LlmRung` plus `stream(req, ctx): AsyncIterable<ChatStreamEvent>`. `canStream(rung)` tells them apart, and `listModels` adds the `stream` capability to such rungs (do not list `stream` in `capabilities` yourself). Rungs without `stream` still work behind a streaming UI: `streamFromRung` calls `chat()` and emits the whole answer as one delta.
+
+Events a rung yields, in order:
+
+| Event | Rule |
+|---|---|
+| `{ type: 'reasoning', text }` | Zero or more. Chain of thought when the upstream exposes it (`delta.reasoning_content`, `delta.reasoning`, inline `<think>`). Never mixed into the answer. |
+| `{ type: 'delta', text }` | One or more. Answer text in order. Their concatenation is the final text. |
+| `{ type: 'done', result }` | Exactly one, last. `result` is a `ChatResult`: full text, model as the upstream reported it, `usage` when sent. |
+
+Errors are thrown, never yielded: a non-2xx before the stream goes through `errorFromResponse`, an error object inside the stream becomes a `Vid2ContextError`, a body that ends with neither `[DONE]` nor a `finish_reason` is an `upstream` error, and an empty answer is an `upstream` error (as in `chat()`).
+
+Fallback rule (`chatStream` in [packages/core/src/llm/stream.ts](../../packages/core/src/llm/stream.ts)): rungs are ranked exactly as `chat()` ranks them. A rung that fails before its first `delta` is skipped and the next one is tried, with the chain's cooldowns (opening a stream runs through `runChain`, so a 429 cools the rung down for `chat()` too). After the first `delta` the stream never switches rungs: a failure ends it with an error that carries `attempts`. `chatStream` adds a leading `{ type: 'meta', rung, model, contextTokens? }` event, sent again with `restart: true` only when a rung failed after reasoning but before any answer text, and its `done` also carries `rung` and `attempts`.
+
+How a provider adds streaming:
+
+- OpenAI-compatible APIs: call `streamOpenAiChat({ url, model, key?, label?, headers?, body? }, req, ctx)` from `@vid2context/core`. Pass `body: (req) => <your non-streaming body builder>` so both paths send the same request; it adds `stream: true` and `stream_options: { include_usage: true }`, and retries once without `stream_options` when a service answers 400 naming it (set `noStreamOptions: true` to skip it from the start).
+- Other wire formats: parse the body with `parseSSE(res.body, signal)` from `@vid2context/core` and yield the events above.
+- Type the rung object as `StreamingLlmRung` where you build it, then return it in the `LlmRung[]`.
+- Test with real recorded stream bodies (raw bytes) replayed through `replayFetch`; never hand-write an SSE stream.
+
 ## Platform bindings (`ctx.bindings`)
 
 `ctx.bindings` is an optional `Record<string, unknown>` of platform objects that are not strings: on Cloudflare Workers, `createWorkersContext(env)` puts every non-string env value there (the `AI`, D1, R2, KV and Vectorize bindings) and keeps strings in `ctx.env`. On Node and in the browser it is usually absent.
