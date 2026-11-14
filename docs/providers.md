@@ -41,6 +41,12 @@ Model overrides: `GROQ_STT_MODEL`, `MISTRAL_STT_MODEL`, `OVH_STT_MODEL`, `DEEPIN
 |---|---|---|---|
 | `stt/whisper-cpp/<model>` | local | `WHISPER_CPP_MODEL` (a model name or a path to a ggml `.bin`) | Runs on this machine: no limits, nothing leaves it. `npx tsx providers/stt-whisper-cpp/src/setup.ts` installs whisper.cpp (official prebuilt binary, SHA-256 checked, or a CMake build with CUDA or Metal), downloads a model verified against Hugging Face's published SHA-256, and prints the env lines. Ordered before other local rungs when `WHISPER_CPP_GPU=1`, after them otherwise. Optional: `WHISPER_CPP_BIN`, `WHISPER_CPP_THREADS`, `WHISPER_CPP_SERVER=1` (managed whisper-server keeps the model loaded), `WHISPER_CPP_SERVER_URL` (existing server). Needs ffmpeg (`FFMPEG_PATH`). Measured 2026-11-14 on a 31-thread CPU VM (no GPU), 24 s clip: base.en about 25x realtime, small about 5x. See [guides/whisper-cpp.md](guides/whisper-cpp.md). |
 
+## Speech-to-text (`stt-transformers`, Node and browser)
+
+| Rung id | Tier | Enabled by | Free limits and notes |
+|---|---|---|---|
+| `stt/transformers/<model>` | local | `TRANSFORMERS_STT_MODEL` (a Hugging Face repo id or a short `onnx-community` name: `whisper-base`, `whisper-small`, `whisper-large-v3-turbo`; comma-separated for several rungs) | Whisper on Transformers.js: onnxruntime-node in Node (CPU, or `cuda`/`dml`/`coreml`), WebGPU or WASM in the browser. Fully offline after the first download (whisper-base about 290 MB in fp32), cached in `.vid2context/models/transformers/` (`VID2CONTEXT_HOME`) or the browser's Cache Storage. Detects the spoken language itself; `translate` on non-turbo multilingual models. Optional: `TRANSFORMERS_DEVICE` (`auto`, `cpu`, `cuda`, `dml`, `coreml`, `wasm`, `webgpu`), `TRANSFORMERS_DTYPE` (`fp32`, or `encoder=fp32,decoder=q4`), `TRANSFORMERS_WASM_PATH` (browser: self-hosted ONNX Runtime WASM files instead of cdn.jsdelivr.net). Node needs ffmpeg (`FFMPEG_PATH`). Measured 2026-11-14, Apollo clip (24 s), whisper-base: Node CPU about 4 to 7x realtime, headless Chromium WASM about realtime. See [guides/offline-and-browser.md](guides/offline-and-browser.md). |
+
 ## LLMs (`llm-openai-compatible`)
 
 | Rung id | Tier | Enabled by | Free limits and notes |
