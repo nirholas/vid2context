@@ -251,10 +251,10 @@ export const COMMANDS: CommandSpec[] = [
   {
     name: 'doctor',
     args: '',
-    summary: 'Check Node, ffmpeg, yt-dlp, GPU, data directory, keys and network',
+    summary: 'Check Node, ffmpeg, yt-dlp, GPU, local servers, data directory, keys and network',
     flags: [],
     notes: [
-      'Exits 1 when any check fails. Makes two small network requests: the keyless models list and a YouTube captions probe.',
+      'Exits 1 when any check fails. Makes two small network requests (the keyless models list and a YouTube captions probe) and probes localhost for model servers.',
     ],
     examples: ['vid2context doctor', 'vid2context doctor --json'],
   },

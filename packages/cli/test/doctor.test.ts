@@ -9,13 +9,14 @@ import {
   checkGpu,
   checkKeyless,
   checkKeys,
+  checkLocalServers,
   checkNode,
   checkTool,
   checkYouTube,
   parseFfVersion,
   TOOLS,
 } from '../src/doctor/checks.ts';
-import { dataDir, findBinary, keyNames, probeKeyless, probeYouTube, renderChecks } from '../src/doctor/run.ts';
+import { dataDir, findBinary, keyNames, probeKeyless, probeLocalServers, probeYouTube, renderChecks } from '../src/doctor/run.ts';
 import { fixture, read, registry, routes } from './helpers.ts';
 
 const tmp = mkdtempSync(join(tmpdir(), 'v2c-doctor-'));
@@ -85,6 +86,16 @@ describe('probes through recorded responses', () => {
   it('fetches captions for jNQXAC9IVRw', async () => {
     const obs = await probeYouTube(registry(), testContext({ fetch: replayFetch(routes()) }));
     expect(checkYouTube(obs)).toMatchObject({ status: 'ok', detail: 'fetched 6 creator-captions segments for jNQXAC9IVRw' });
+  });
+
+  it('reports no local servers when every localhost probe fails, with a setup hint', async () => {
+    // replayFetch with no routes rejects every request, as a machine with nothing listening does.
+    const obs = await probeLocalServers(testContext({ fetch: replayFetch([]) }));
+    expect(obs.error).toBeUndefined();
+    const check = checkLocalServers(obs);
+    expect(check).toMatchObject({ status: 'warn', detail: 'none found on the usual local ports (optional)' });
+    expect(check.fix).toMatch(/^No local model server found\. Install Ollama .*, then run: ollama pull \S+/);
+    expect(checkLocalServers({ servers: [], suggestions: [], error: 'boom' }).fix).toContain('stt-whisper-cpp/src/setup.ts');
   });
 
   it('detects an IP block from the real 429 page and prints the hint', async () => {

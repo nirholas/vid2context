@@ -111,7 +111,7 @@ export const TOOLS: Record<
     version: (o) => firstLine(o) || undefined,
     missing: 'warn',
     purpose: 'Downloads audio for videos without captions, and covers most non-YouTube sites.',
-    fix: 'Install yt-dlp (pipx install yt-dlp, brew install yt-dlp, or the release binary in ~/.local/bin), or set YTDLP_PATH.',
+    fix: 'The yt-dlp provider installs a managed copy into <data dir>/bin on first use; or install it yourself (pipx install yt-dlp, brew install yt-dlp), or set YTDLP_PATH.',
   },
   deno: {
     id: 'deno',
@@ -252,4 +252,32 @@ export function checkYouTube(obs: YouTubeObservation): Check {
     detail: `captions probe failed: ${msg}`,
     fix: err instanceof Vid2ContextError && err.hint ? err.hint : 'Check the network, then run with --verbose.',
   };
+}
+
+/** What `detectLocalServers` from @vid2context/provider-llm-local found: only the fields the check reads. */
+export interface LocalServersObservation {
+  servers: { name: string; baseUrl: string; models: { task: string }[] }[];
+  suggestions: string[];
+  /** Set when the provider is not installed or detection threw. */
+  error?: string;
+}
+
+export function checkLocalServers(obs: LocalServersObservation): Check {
+  const base = { id: 'local-servers', label: 'Local model servers' };
+  const setup =
+    'For local speech-to-text run `npx tsx providers/stt-whisper-cpp/src/setup.ts`; for local LLMs install Ollama (https://ollama.com).';
+  if (obs.error) return { ...base, status: 'warn', detail: `not checked: ${obs.error}`, fix: setup };
+  if (!obs.servers.length) {
+    return {
+      ...base,
+      status: 'warn',
+      detail: 'none found on the usual local ports (optional)',
+      fix: obs.suggestions.length ? obs.suggestions.map((l) => l.trim()).join(' ') : setup,
+    };
+  }
+  const list = obs.servers.map((s) => {
+    const n = s.models.length;
+    return `${s.name} at ${s.baseUrl} (${n} model${n === 1 ? '' : 's'})`;
+  });
+  return { ...base, status: 'ok', detail: list.join('; ') };
 }

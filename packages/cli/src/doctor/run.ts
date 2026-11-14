@@ -10,10 +10,12 @@ import {
   checkGpu,
   checkKeyless,
   checkKeys,
+  checkLocalServers,
   checkNode,
   checkTool,
   checkYouTube,
   type HttpObservation,
+  type LocalServersObservation,
   PROBE_VIDEO,
   TOOLS,
   type ToolObservation,
@@ -128,6 +130,17 @@ export async function probeYouTube(registry: Registry, ctx: Ctx): Promise<YouTub
   }
 }
 
+/** Probe localhost for Ollama, llama.cpp, vLLM and whisper.cpp servers with the local LLM provider's detector. */
+export async function probeLocalServers(ctx: Ctx): Promise<LocalServersObservation> {
+  try {
+    const { detectLocalServers } = await import('@vid2context/provider-llm-local');
+    const report = await detectLocalServers(ctx);
+    return { servers: report.servers, suggestions: report.suggestions };
+  } catch (err) {
+    return { servers: [], suggestions: [], error: err instanceof Error ? err.message : String(err) };
+  }
+}
+
 export async function runDoctor(opts: {
   registry: Registry;
   ctx: Ctx;
@@ -139,7 +152,7 @@ export async function runDoctor(opts: {
   const env = ctx.env;
   const dir = dataDir(env, cwd);
   const keys = keyNames(registry, env);
-  const [ffmpeg, ffprobe, ytdlp, deno, gpu, keyless, youtube] = await Promise.all([
+  const [ffmpeg, ffprobe, ytdlp, deno, gpu, keyless, youtube, local] = await Promise.all([
     observeTool(TOOLS.ffmpeg, env, cwd, exec),
     observeTool(TOOLS.ffprobe, env, cwd, exec),
     observeTool(TOOLS.ytdlp, env, cwd, exec),
@@ -147,6 +160,7 @@ export async function runDoctor(opts: {
     exec('nvidia-smi', ['--query-gpu=name,memory.total,driver_version', '--format=csv,noheader'], { timeoutMs: 15_000 }),
     keylessAllowed(env) ? probeKeyless(ctx) : Promise.resolve({}),
     probeYouTube(registry, ctx),
+    probeLocalServers(ctx),
   ]);
   return [
     checkNode(opts.nodeVersion),
@@ -155,6 +169,7 @@ export async function runDoctor(opts: {
     checkTool(TOOLS.ytdlp, ytdlp),
     checkTool(TOOLS.deno, deno),
     checkGpu(gpu && gpu.code === 0 ? gpu.stdout : null),
+    checkLocalServers(local),
     checkDataDir(dir, probeDataDir(dir)),
     checkKeys(keys.set, keys.known),
     checkKeyless(keyless, keylessAllowed(env)),

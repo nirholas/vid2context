@@ -17,6 +17,7 @@
     "@vid2context/core": "*",
     "@vid2context/library": "*",
     "@vid2context/mcp": "*",
+    "@vid2context/provider-llm-local": "*",
     "@vid2context/registry": "*",
     "@vid2context/server": "*"
   },
