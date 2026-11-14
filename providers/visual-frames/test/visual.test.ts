@@ -256,7 +256,7 @@ describe('vision rungs', () => {
   });
 
   it('keeps code verbatim, including the en dash in the wikitext', () => {
-    expect(recordedNote('085').text).toContain('[[1230]]–[[1253]]');
+    expect(recordedNote('085').text).toContain('[[1230]]\u2013[[1253]]');
     expect(recordedNote('085').text.split('\n').length).toBeGreaterThan(10);
   });
 
