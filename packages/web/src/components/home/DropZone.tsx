@@ -43,7 +43,9 @@ export function DropZone({ onFile, note }: { onFile: (file: File) => void; note?
       >
         <Upload className="size-5 text-muted" aria-hidden />
         <span className="text-sm text-fg">or drop a video or audio file</span>
-        <span className="text-xs text-muted">{note ?? 'mp3, m4a, wav, ogg, webm, mp4, mov and more. Click to choose a file.'}</span>
+        <span className="text-xs text-muted">
+          {note ?? 'mp3, m4a, wav, ogg, webm, mp4, mov and more. Click to choose a file.'}
+        </span>
       </button>
     </div>
   );

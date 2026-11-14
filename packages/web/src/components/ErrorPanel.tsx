@@ -1,5 +1,5 @@
 /** Every failure shows its message, its hint and what was tried. Never a bare "something went wrong". */
-import { RefreshCw, Settings, AlertTriangle } from 'lucide-react';
+import { AlertTriangle, RefreshCw, Settings } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { type AppError, toAppError } from '../lib/errors.ts';
 import { appHref, onAppLinkClick } from '../lib/route.ts';

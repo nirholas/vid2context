@@ -30,7 +30,9 @@ export async function sttKeyNames(): Promise<string[]> {
 function ApiSection() {
   const { state, recheck } = useApiStatus();
   const [value, setValue] = useState(apiBase());
-  const [test, setTest] = useState<{ status: 'idle' | 'testing' | 'ok' | 'error'; detail?: string; error?: unknown }>({ status: 'idle' });
+  const [test, setTest] = useState<{ status: 'idle' | 'testing' | 'ok' | 'error'; detail?: string; error?: unknown }>({
+    status: 'idle',
+  });
   const id = useId();
   const save = async (e: FormEvent) => {
     e.preventDefault();
@@ -50,7 +52,8 @@ function ApiSection() {
       <div>
         <h2 className="text-base font-semibold text-fg">API server</h2>
         <p className="text-sm text-muted">
-          Where the app fetches links. Default: <code className="font-mono">{DEFAULT_API_BASE}</code>. Stored in this browser only.
+          Where the app fetches links. Default: <code className="font-mono">{DEFAULT_API_BASE}</code>. Stored in this browser
+          only.
         </p>
       </div>
       <form onSubmit={save} className="space-y-2">
@@ -168,7 +171,10 @@ function KeysSection() {
       },
       (err) => {
         setRows([]);
-        setStatus({ kind: 'error', text: `This browser's IndexedDB is unavailable, so keys cannot be stored: ${String(err?.message ?? err)}` });
+        setStatus({
+          kind: 'error',
+          text: `This browser's IndexedDB is unavailable, so keys cannot be stored: ${String(err?.message ?? err)}`,
+        });
       },
     );
   }, []);
@@ -205,8 +211,8 @@ function KeysSection() {
       <div className="space-y-2">
         <h2 className="text-base font-semibold text-fg">Provider keys for client-only mode</h2>
         <p className="text-sm text-fg">
-          Keys are stored in this browser's IndexedDB (database <code className="font-mono">v2c-settings</code>) and never leave this
-          device except in requests to the provider each key belongs to. They are never sent to the vid2context server.
+          Keys are stored in this browser's IndexedDB (database <code className="font-mono">v2c-settings</code>) and never leave
+          this device except in requests to the provider each key belongs to. They are never sent to the vid2context server.
         </p>
         <p className="text-sm text-muted">
           They are used only when this app transcribes a file in your browser. No key is needed: Whisper runs locally by default.

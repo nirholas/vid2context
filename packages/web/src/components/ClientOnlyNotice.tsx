@@ -25,7 +25,11 @@ export function ClientOnlyNotice({ api, input }: { api: ApiState; input?: string
             Files still work: drop a video or audio file on the home page and it is transcribed here in your browser.
           </p>
           <div className="flex flex-wrap gap-2">
-            <a href={appHref('?view=settings')} onClick={(e) => onAppLinkClick(e, '?view=settings')} className={buttonClass('secondary')}>
+            <a
+              href={appHref('?view=settings')}
+              onClick={(e) => onAppLinkClick(e, '?view=settings')}
+              className={buttonClass('secondary')}
+            >
               <Settings className="size-4" aria-hidden /> Set the API base
             </a>
             <a href={appHref('')} onClick={(e) => onAppLinkClick(e, '')} className={buttonClass('ghost')}>

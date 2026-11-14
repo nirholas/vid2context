@@ -81,7 +81,12 @@ export function MetadataTab({ context }: { context: VideoContext }) {
       {m.channel && (
         <Row label="Channel">
           {m.channel.url ? (
-            <a href={m.channel.url} target="_blank" rel="noopener noreferrer" className="text-accent underline-offset-4 hover:underline">
+            <a
+              href={m.channel.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-accent underline-offset-4 hover:underline"
+            >
               {m.channel.name}
             </a>
           ) : (
@@ -102,7 +107,12 @@ export function MetadataTab({ context }: { context: VideoContext }) {
       </Row>
       {m.ref.url && (
         <Row label="Link">
-          <a href={m.ref.url} target="_blank" rel="noopener noreferrer" className="text-accent underline-offset-4 hover:underline">
+          <a
+            href={m.ref.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-accent underline-offset-4 hover:underline"
+          >
             {m.ref.url}
           </a>
         </Row>
@@ -167,7 +177,10 @@ export function CommentsTab({ context, params }: { context: VideoContext; params
           'Comments were requested but could not be fetched for this video.'
         ) : (
           <>
-            Comments were not requested. <RerunLink params={params} change={{ comments: true }}>Run again with comments</RerunLink>
+            Comments were not requested.{' '}
+            <RerunLink params={params} change={{ comments: true }}>
+              Run again with comments
+            </RerunLink>
           </>
         )}
       </Empty>
@@ -209,7 +222,9 @@ export function VisualTab({ context, params }: { context: VideoContext; params?:
             <p className="text-xs text-muted">
               {n.kind} by <code className="font-mono">{n.producer}</code>
             </p>
-            <p className={`text-sm text-fg ${n.kind === 'code' ? 'whitespace-pre-wrap font-mono' : 'whitespace-pre-wrap'}`}>{n.text}</p>
+            <p className={`text-sm text-fg ${n.kind === 'code' ? 'whitespace-pre-wrap font-mono' : 'whitespace-pre-wrap'}`}>
+              {n.text}
+            </p>
           </div>
         </li>
       ))}

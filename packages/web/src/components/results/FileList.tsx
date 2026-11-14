@@ -1,7 +1,7 @@
 /** The bundle's files, each with its size. Selecting one shows it in the viewer. */
 import { Braces, FileCode, FileText } from 'lucide-react';
-import { formatBytes } from '../../lib/format.ts';
 import type { ViewFile } from '../../lib/bundle.ts';
+import { formatBytes } from '../../lib/format.ts';
 
 function iconFor(path: string) {
   if (path.endsWith('.json')) return Braces;
@@ -9,7 +9,15 @@ function iconFor(path: string) {
   return FileText;
 }
 
-export function FileList({ files, selected, onSelect }: { files: ViewFile[]; selected: string; onSelect: (path: string) => void }) {
+export function FileList({
+  files,
+  selected,
+  onSelect,
+}: {
+  files: ViewFile[];
+  selected: string;
+  onSelect: (path: string) => void;
+}) {
   return (
     <nav aria-label="Files">
       <ul className="space-y-1" data-testid="file-list">

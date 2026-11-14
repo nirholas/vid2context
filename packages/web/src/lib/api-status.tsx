@@ -30,7 +30,9 @@ const PROBE_TIMEOUT_MS = 6000;
 export function ApiStatusProvider({ children, initial }: { children: ReactNode; initial?: ApiState }) {
   const [state, setState] = useState<ApiState>(
     initial ??
-      (CLIENT_ONLY_BUILD && !hasApiOverride() ? { status: 'client-only-build', base: apiBase() } : { status: 'checking', base: apiBase() }),
+      (CLIENT_ONLY_BUILD && !hasApiOverride()
+        ? { status: 'client-only-build', base: apiBase() }
+        : { status: 'checking', base: apiBase() }),
   );
   const recheck = useCallback(async () => {
     if (CLIENT_ONLY_BUILD && !hasApiOverride()) {

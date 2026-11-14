@@ -1,19 +1,21 @@
 // @vitest-environment jsdom
 import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { agentPrompt } from '@vid2context/core';
 import { createElement } from 'react';
 import { afterEach, describe, expect, it } from 'vitest';
-import { CopyButton } from '../src/components/ui.tsx';
 import { FileViewer } from '../src/components/results/FileViewer.tsx';
+import { CopyButton } from '../src/components/ui.tsx';
 import { fileText, resultBundle, viewFiles } from '../src/lib/bundle.ts';
 import { toBlob } from '../src/lib/download.ts';
-import { agentPrompt } from '@vid2context/core';
 import { sharedContext } from './helpers.ts';
 
 afterEach(cleanup);
 
 async function file(path: string) {
-  const files = viewFiles(await resultBundle([sharedContext('youtube-cCPsdFdlshc')], { createdAt: new Date('2026-11-14T16:00:00Z') }));
+  const files = viewFiles(
+    await resultBundle([sharedContext('youtube-cCPsdFdlshc')], { createdAt: new Date('2026-11-14T16:00:00Z') }),
+  );
   const f = files.find((x) => x.path === path);
   if (!f) throw new Error(`no ${path}`);
   return f;

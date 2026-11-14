@@ -5,8 +5,9 @@
  *   /app/?url=<input>&mode=&lang=&comments=1&timestamps=1   run and show the result
  *   /app/?view=settings                     settings
  */
-import { useEffect, useState } from 'react';
+
 import type { TranscriptMode } from '@vid2context/core';
+import { useEffect, useState } from 'react';
 
 export const MODES: { id: TranscriptMode; label: string; hint: string }[] = [
   { id: 'auto', label: 'Auto', hint: 'Captions when they exist, otherwise speech-to-text.' },

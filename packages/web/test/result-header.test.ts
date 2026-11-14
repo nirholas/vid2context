@@ -1,10 +1,10 @@
 // @vitest-environment jsdom
 import { cleanup, render, screen, within } from '@testing-library/react';
+import type { VideoContext } from '@vid2context/core';
 import { createElement } from 'react';
 import { afterEach, describe, expect, it } from 'vitest';
 import { ResultHeader } from '../src/components/results/ResultHeader.tsx';
 import { recorded, sharedContext } from './helpers.ts';
-import type { VideoContext } from '@vid2context/core';
 
 afterEach(cleanup);
 
@@ -40,6 +40,9 @@ describe('ResultHeader', () => {
     const base = sharedContext('youtube-jNQXAC9IVRw');
     const context = { ...base, transcript: { ...base.transcript, translated: true } };
     render(createElement(ResultHeader, { context }));
-    expect(screen.getAllByTestId('origin-badge').map((b) => b.firstChild?.textContent)).toEqual(['Creator captions', 'Machine-translated']);
+    expect(screen.getAllByTestId('origin-badge').map((b) => b.firstChild?.textContent)).toEqual([
+      'Creator captions',
+      'Machine-translated',
+    ]);
   });
 });

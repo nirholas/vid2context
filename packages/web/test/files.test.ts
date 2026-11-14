@@ -24,7 +24,9 @@ describe('ResultView files', () => {
     const srtButton = within(list).getByRole('button', { name: /transcript\.srt/ });
     expect(srtButton.textContent).toContain(formatBytes(srt?.bytes.length ?? 0));
     expect(screen.getByTestId('download-zip').textContent).toBe(`Download .zip (${bundle.files.length} files)`);
-    expect(screen.getByTestId('file-content').textContent).toBe(fileText(bundle.files.find((f) => f.path === 'context.md') as typeof srt & {}));
+    expect(screen.getByTestId('file-content').textContent).toBe(
+      fileText(bundle.files.find((f) => f.path === 'context.md') as typeof srt & {}),
+    );
     await userEvent.click(srtButton);
     await waitFor(() => expect(screen.getByTestId('file-content').textContent).toBe(fileText(srt as typeof srt & {})));
     expect(srtButton.getAttribute('aria-current')).toBe('true');

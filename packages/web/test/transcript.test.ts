@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
-import { timestampUrl } from '@vid2context/core';
+
 import { cleanup, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { timestampUrl } from '@vid2context/core';
 import { createElement } from 'react';
 import { afterEach, describe, expect, it } from 'vitest';
 import { findMatches, segmentForChapter, TranscriptTab } from '../src/components/results/TranscriptTab.tsx';
@@ -53,7 +54,11 @@ describe('TranscriptTab', () => {
     const context = sharedContext('youtube-jNQXAC9IVRw');
     render(createElement(TranscriptTab, { context }));
     const nav = screen.getByRole('navigation', { name: 'Jump to chapter' });
-    expect(within(nav).getAllByRole('button').map((b) => b.textContent)).toEqual(['0:00 Intro', '0:05 The cool thing', '0:17 End']);
+    expect(
+      within(nav)
+        .getAllByRole('button')
+        .map((b) => b.textContent),
+    ).toEqual(['0:00 Intro', '0:05 The cool thing', '0:17 End']);
     const second = context.metadata.chapters[1];
     if (!second) throw new Error('fixture has chapters');
     const i = segmentForChapter(context.transcript.segments, second);

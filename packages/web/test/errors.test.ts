@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
-import type { VideoContext } from '@vid2context/core';
+
 import { cleanup, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import type { VideoContext } from '@vid2context/core';
 import { createElement } from 'react';
 import { afterEach, describe, expect, it } from 'vitest';
 import { AttemptsTimeline } from '../src/components/AttemptsTimeline.tsx';
@@ -64,7 +65,9 @@ describe('ErrorPanel', () => {
     expect(within(panel).getAllByRole('listitem')).toHaveLength(2);
     await userEvent.click(within(panel).getByRole('button', { name: 'Try again' }));
     expect(retried).toBe(1);
-    expect(within(panel).getByRole('link', { name: 'Settings' }).getAttribute('href')).toBe('/app/?view=settings');
+    expect(within(panel).getByRole('link', { name: 'Settings' }).getAttribute('href')).toBe(
+      `${import.meta.env.BASE_URL}?view=settings`,
+    );
   });
 
   it('explains an unreachable API with a hint, never a bare failure', async () => {

@@ -1,11 +1,11 @@
 /** App shell: header, the current view from the query string, footer. */
 import { MessageSquare, Settings as SettingsIcon } from 'lucide-react';
 import { lazy, Suspense, useEffect } from 'react';
-import { ApiStatusProvider, useApiStatus } from './lib/api-status.tsx';
-import { appHref, onAppLinkClick, type Route, useRoute } from './lib/route.ts';
 import { Home } from './components/home/Home.tsx';
 import { Loading, RunView } from './components/RunView.tsx';
+import { ApiStatusProvider, useApiStatus } from './lib/api-status.tsx';
 import { CHAT_PATH } from './lib/links.ts';
+import { appHref, onAppLinkClick, type Route, useRoute } from './lib/route.ts';
 
 const Settings = lazy(() => import('./components/Settings.tsx'));
 
@@ -54,7 +54,10 @@ function Header() {
         </a>
         <nav aria-label="Main" className="ml-auto flex items-center gap-1 sm:gap-2">
           <StatusDot />
-          <a href={CHAT_PATH} className="flex items-center gap-1.5 rounded-v2c-sm px-2.5 py-1.5 text-sm text-muted hover:bg-surface-2 hover:text-fg">
+          <a
+            href={CHAT_PATH}
+            className="flex items-center gap-1.5 rounded-v2c-sm px-2.5 py-1.5 text-sm text-muted hover:bg-surface-2 hover:text-fg"
+          >
             <MessageSquare className="size-4" aria-hidden /> Chat
           </a>
           <a
@@ -91,7 +94,8 @@ function Main() {
   useEffect(() => {
     document.title = TITLES[route.view];
   }, [route.view]);
-  const runKey = route.view === 'run' ? `${route.url}|${route.mode}|${route.lang}|${route.comments}|${route.timestamps}` : route.view;
+  const runKey =
+    route.view === 'run' ? `${route.url}|${route.mode}|${route.lang}|${route.comments}|${route.timestamps}` : route.view;
   return (
     <main id="main" className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6" tabIndex={-1}>
       {route.view === 'home' && <Home />}

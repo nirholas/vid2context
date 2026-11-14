@@ -110,7 +110,11 @@ async function withTimestampedText(bundle: Bundle, context: VideoContext): Promi
     ...bundle,
     files,
     manifest,
-    zip: () => zipStream(files.map((f) => ({ path: `${bundle.root}/${f.path}`, data: f.bytes })), { date }),
+    zip: () =>
+      zipStream(
+        files.map((f) => ({ path: `${bundle.root}/${f.path}`, data: f.bytes })),
+        { date },
+      ),
   };
 }
 

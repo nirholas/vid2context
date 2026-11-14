@@ -14,7 +14,10 @@ export function FileViewer({ file }: { file: ViewFile }) {
   const shown = text.length > VIEW_LIMIT ? text.slice(0, VIEW_LIMIT) : text;
   const name = file.path.split('/').at(-1) ?? file.path;
   return (
-    <section aria-labelledby="viewer-title" className="flex min-w-0 flex-col overflow-hidden rounded-v2c border border-border bg-surface">
+    <section
+      aria-labelledby="viewer-title"
+      className="flex min-w-0 flex-col overflow-hidden rounded-v2c border border-border bg-surface"
+    >
       <div className="flex flex-wrap items-center gap-2 border-b border-border px-3 py-2">
         <div className="min-w-0 flex-1">
           <h3 id="viewer-title" className="truncate font-mono text-sm text-fg">
@@ -44,8 +47,8 @@ export function FileViewer({ file }: { file: ViewFile }) {
       </pre>
       {shown.length < text.length && (
         <p className="border-t border-border px-3 py-2 text-xs text-muted">
-          Showing the first {VIEW_LIMIT.toLocaleString('en-US')} of {text.length.toLocaleString('en-US')} characters. Copy and Download
-          use the whole file.
+          Showing the first {VIEW_LIMIT.toLocaleString('en-US')} of {text.length.toLocaleString('en-US')} characters. Copy and
+          Download use the whole file.
         </p>
       )}
     </section>

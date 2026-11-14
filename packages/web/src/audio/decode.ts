@@ -88,7 +88,11 @@ export async function decodeToMono16k(bytes: ArrayBuffer, filename = 'file'): Pr
 }
 
 /** Read a file with progress events (File.arrayBuffer has none). */
-export function readFile(file: Blob, onProgress: (loaded: number, total: number) => void, signal?: AbortSignal): Promise<ArrayBuffer> {
+export function readFile(
+  file: Blob,
+  onProgress: (loaded: number, total: number) => void,
+  signal?: AbortSignal,
+): Promise<ArrayBuffer> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onprogress = (e) => onProgress(e.loaded, e.lengthComputable ? e.total : file.size);

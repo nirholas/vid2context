@@ -27,7 +27,12 @@ export function findMatches(segments: Segment[], query: string): Map<number, [nu
   return out;
 }
 
-function highlight(text: string, ranges: [number, number][] | undefined, currentKey: string | undefined, segIndex: number): ReactNode {
+function highlight(
+  text: string,
+  ranges: [number, number][] | undefined,
+  currentKey: string | undefined,
+  segIndex: number,
+): ReactNode {
   if (!ranges?.length) return text;
   const parts: ReactNode[] = [];
   let at = 0;
@@ -109,7 +114,11 @@ export function TranscriptTab({ context }: { context: VideoContext }) {
         </p>
         {keys.length > 1 && (
           <div className="flex gap-1">
-            <Button variant="ghost" aria-label="Previous match" onClick={() => setCursor((c) => (c - 1 + keys.length) % keys.length)}>
+            <Button
+              variant="ghost"
+              aria-label="Previous match"
+              onClick={() => setCursor((c) => (c - 1 + keys.length) % keys.length)}
+            >
               <ChevronUp className="size-4" aria-hidden />
             </Button>
             <Button variant="ghost" aria-label="Next match" onClick={() => setCursor((c) => (c + 1) % keys.length)}>

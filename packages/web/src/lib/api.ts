@@ -2,7 +2,7 @@
  * The vid2context HTTP API as the web app uses it. The server only returns
  * VideoContext JSON; formats, the .zip and agent text are made in the browser.
  */
-import { type TranscriptMode, type VideoContext, type VideoRef, Vid2ContextError } from '@vid2context/core';
+import { type TranscriptMode, Vid2ContextError, type VideoContext, type VideoRef } from '@vid2context/core';
 import { type AppError, fromApiBody, isAbort, isApiErrorBody, withAttempts } from './errors.ts';
 
 export const API_BASE_KEY = 'v2c.apiBase';
@@ -120,7 +120,11 @@ export async function getItems(input: string, call: CallOptions = {}, limit = 20
 
 /** GET /comments. */
 export async function getComments(input: string, call: CallOptions = {}, limit = 100): Promise<VideoContext['comments']> {
-  const res = await getJson<{ comments: NonNullable<VideoContext['comments']> }>('/comments', { url: input, limit: String(limit) }, call);
+  const res = await getJson<{ comments: NonNullable<VideoContext['comments']> }>(
+    '/comments',
+    { url: input, limit: String(limit) },
+    call,
+  );
   return res.comments;
 }
 
@@ -193,4 +197,3 @@ export function uploadFile(
     xhr.send(form);
   });
 }
-

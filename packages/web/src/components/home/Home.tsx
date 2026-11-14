@@ -63,9 +63,12 @@ export function Home() {
           <>
             <UrlForm onSubmit={run} />
             {clientOnly && (
-              <p className="rounded-v2c border border-border bg-surface px-4 py-3 text-sm text-fg" data-testid="client-only-banner">
-                {api.status === 'client-only-build' ? 'This copy runs without a server.' : `No API answered at ${api.base}.`} Links
-                need a server, because video sites block browser requests;{' '}
+              <p
+                className="rounded-v2c border border-border bg-surface px-4 py-3 text-sm text-fg"
+                data-testid="client-only-banner"
+              >
+                {api.status === 'client-only-build' ? 'This copy runs without a server.' : `No API answered at ${api.base}.`}{' '}
+                Links need a server, because video sites block browser requests;{' '}
                 <a
                   href={appHref('?view=settings')}
                   onClick={(e) => onAppLinkClick(e, '?view=settings')}

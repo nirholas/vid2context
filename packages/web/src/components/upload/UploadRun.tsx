@@ -40,7 +40,9 @@ export function UploadRun({
   clientOnly: boolean;
   onCancel: () => void;
 }) {
-  const steps: StepId[] = clientOnly ? ['read', 'decode', 'encode', 'model', 'transcribe'] : ['read', 'decode', 'encode', 'upload'];
+  const steps: StepId[] = clientOnly
+    ? ['read', 'decode', 'encode', 'model', 'transcribe']
+    : ['read', 'decode', 'encode', 'upload'];
   const [step, setStep] = useState<StepId>('read');
   const [percent, setPercent] = useState<number | undefined>(0);
   const [prepared, setPrepared] = useState<Prepared>();
@@ -72,7 +74,12 @@ export function UploadRun({
       if (!clientOnly) {
         setStep('upload');
         setPercent(0);
-        const res = await uploadFile(p.upload.blob, p.upload.filename, (loaded, total) => setPercent((loaded / total) * 100), signal);
+        const res = await uploadFile(
+          p.upload.blob,
+          p.upload.filename,
+          (loaded, total) => setPercent((loaded / total) * 100),
+          signal,
+        );
         navigate(runSearch({ ...options, url: res.input }));
         return;
       }
@@ -126,7 +133,9 @@ export function UploadRun({
       <Card className="p-5">
         <div className="flex flex-wrap items-start gap-3">
           <div className="min-w-0 flex-1">
-            <h2 className="text-base font-semibold text-fg">{clientOnly ? 'Transcribing in your browser' : 'Preparing your file'}</h2>
+            <h2 className="text-base font-semibold text-fg">
+              {clientOnly ? 'Transcribing in your browser' : 'Preparing your file'}
+            </h2>
             <p className="truncate font-mono text-sm text-muted">
               {file.name} ({formatBytes(file.size)})
             </p>
@@ -151,11 +160,11 @@ export function UploadRun({
                   )}
                   <span className={done || active ? 'text-fg' : 'text-muted'}>{LABELS[s]}</span>
                   <span className="sr-only">{done ? '(done)' : active ? '(in progress)' : '(waiting)'}</span>
-                  {active && percent !== undefined && <span className="text-xs text-muted tabular-nums">{Math.round(percent)}%</span>}
+                  {active && percent !== undefined && (
+                    <span className="text-xs text-muted tabular-nums">{Math.round(percent)}%</span>
+                  )}
                 </div>
-                {active && (s === 'read' || s === 'upload' || s === 'model') && (
-                  <ProgressBar value={percent} label={LABELS[s]} />
-                )}
+                {active && (s === 'read' || s === 'upload' || s === 'model') && <ProgressBar value={percent} label={LABELS[s]} />}
               </li>
             );
           })}
@@ -172,8 +181,9 @@ export function UploadRun({
             data-channels={1}
             data-upload-kind={prepared.upload.kind}
           >
-            Converted {formatDuration(prepared.durationSec)} of audio ({prepared.sourceChannels === 1 ? 'mono' : `${prepared.sourceChannels} channels`}) to{' '}
-            {prepared.sampleRate / 1000} kHz mono, {formatBytes(prepared.wav.length)} as WAV.{' '}
+            Converted {formatDuration(prepared.durationSec)} of audio (
+            {prepared.sourceChannels === 1 ? 'mono' : `${prepared.sourceChannels} channels`}) to {prepared.sampleRate / 1000} kHz
+            mono, {formatBytes(prepared.wav.length)} as WAV.{' '}
             {clientOnly
               ? 'The audio stays on this device.'
               : prepared.upload.kind === 'original'
@@ -189,7 +199,13 @@ export function UploadRun({
       </Card>
       {error !== undefined && (
         <ErrorPanel
-          title={step === 'upload' ? 'The upload failed' : clientOnly && current >= 3 ? 'Transcription failed' : 'This file could not be used'}
+          title={
+            step === 'upload'
+              ? 'The upload failed'
+              : clientOnly && current >= 3
+                ? 'Transcription failed'
+                : 'This file could not be used'
+          }
           error={error}
           onRetry={() => setAttempt((n) => n + 1)}
           showSettings={step === 'upload' || step === 'model' || step === 'transcribe'}

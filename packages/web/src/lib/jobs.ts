@@ -4,7 +4,7 @@
  * job, which reports stage progress and retries transient failures on the
  * server, then reads the saved VideoContext with GET /context.
  */
-import { type VideoContext, Vid2ContextError } from '@vid2context/core';
+import { Vid2ContextError, type VideoContext } from '@vid2context/core';
 import { apiBase, type CallOptions, getContext, type RunOptions, unreachable } from './api.ts';
 import { type AppError, fromApiBody, isAbort, isApiErrorBody, withAttempts } from './errors.ts';
 
@@ -75,7 +75,12 @@ function isNoRoute(err: unknown): boolean {
   return err instanceof Vid2ContextError && err.code === 'not-found' && /^No route for /.test(err.message);
 }
 
-export async function postJob(kind: string, input: unknown, options: Record<string, unknown>, call: CallOptions = {}): Promise<Job> {
+export async function postJob(
+  kind: string,
+  input: unknown,
+  options: Record<string, unknown>,
+  call: CallOptions = {},
+): Promise<Job> {
   const base = call.base ?? apiBase();
   const doFetch = call.fetch ?? globalThis.fetch.bind(globalThis);
   let res: Response;
@@ -154,7 +159,11 @@ export async function contextViaJob(
     job = await postJob(
       'context',
       input,
-      { ...(opts.mode ? { mode: opts.mode } : {}), ...(opts.lang ? { language: opts.lang } : {}), ...(opts.comments ? { comments: true } : {}) },
+      {
+        ...(opts.mode ? { mode: opts.mode } : {}),
+        ...(opts.lang ? { language: opts.lang } : {}),
+        ...(opts.comments ? { comments: true } : {}),
+      },
       call,
     );
   } catch (err) {

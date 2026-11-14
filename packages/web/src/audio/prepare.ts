@@ -7,10 +7,7 @@
 import { checkFile, decodeToMono16k, isAudioOnly, readFile, sha256Hex } from './decode.ts';
 import { encodeWav } from './wav.ts';
 
-export type PrepareStage =
-  | { stage: 'reading'; loaded: number; total: number }
-  | { stage: 'decoding' }
-  | { stage: 'encoding' };
+export type PrepareStage = { stage: 'reading'; loaded: number; total: number } | { stage: 'decoding' } | { stage: 'encoding' };
 
 export interface Prepared {
   file: File;

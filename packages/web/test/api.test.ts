@@ -69,10 +69,10 @@ describe('jobs', () => {
 
   it('shows a failed job with the attempts from a direct call', async () => {
     const fetch = replay('job-not-found.json', 'job-not-found-events.json', 'context-not-found.json');
-    const err = (await contextViaJob(MISSING, { mode: 'auto' }, () => undefined, { base: BASE, fetch }).catch((e) => e)) as AppError;
+    const err = (await contextViaJob(MISSING, {}, () => undefined, { base: BASE, fetch }).catch((e) => e)) as AppError;
     expect(err.code).toBe('not-found');
     expect(err.hint).toBe('The video does not exist or was removed. Check the video id or URL.');
     expect(err.attempts.length).toBe(2);
-    expect(JSON.parse(String(fetch.calls[0]?.body)).options).toEqual({ mode: 'auto' });
+    expect(fetch.calls.map((x) => x.method)).toEqual(['POST', 'GET', 'GET']);
   });
 });

@@ -9,7 +9,17 @@ export interface TabDef {
   render: () => ReactNode;
 }
 
-export function Tabs({ tabs, active, onChange, label }: { tabs: TabDef[]; active: string; onChange: (id: string) => void; label: string }) {
+export function Tabs({
+  tabs,
+  active,
+  onChange,
+  label,
+}: {
+  tabs: TabDef[];
+  active: string;
+  onChange: (id: string) => void;
+  label: string;
+}) {
   const base = useId();
   const refs = useRef<(HTMLButtonElement | null)[]>([]);
   const index = Math.max(
@@ -56,7 +66,9 @@ export function Tabs({ tabs, active, onChange, label }: { tabs: TabDef[]; active
               }`}
             >
               {t.label}
-              {t.badge !== undefined && <span className="ml-1.5 rounded-full bg-surface-3 px-1.5 text-xs text-muted">{t.badge}</span>}
+              {t.badge !== undefined && (
+                <span className="ml-1.5 rounded-full bg-surface-3 px-1.5 text-xs text-muted">{t.badge}</span>
+              )}
             </button>
           );
         })}

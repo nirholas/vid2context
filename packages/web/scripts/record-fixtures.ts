@@ -26,7 +26,10 @@ async function record(name: string, method: string, path: string, init: RequestI
   const text = await res.text();
   const body = contentType.includes('json') ? JSON.parse(text) : text;
   for (const field of STRIP[name] ?? []) delete (body as Record<string, unknown>)[field];
-  writeFileSync(new URL(name, out), `${JSON.stringify({ request: { method, path }, status: res.status, contentType, body }, null, 2)}\n`);
+  writeFileSync(
+    new URL(name, out),
+    `${JSON.stringify({ request: { method, path }, status: res.status, contentType, body }, null, 2)}\n`,
+  );
   console.error(`[record] ${name}: ${method} ${path} -> ${res.status}`);
   return body;
 }

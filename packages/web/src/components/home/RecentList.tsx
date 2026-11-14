@@ -11,7 +11,14 @@ function Thumb({ src }: { src?: string }) {
   return (
     <div className="aspect-video w-28 shrink-0 overflow-hidden rounded-v2c-sm border border-border bg-surface-2">
       {src && !failed ? (
-        <img src={src} alt="" referrerPolicy="no-referrer" loading="lazy" className="size-full object-cover" onError={() => setFailed(true)} />
+        <img
+          src={src}
+          alt=""
+          referrerPolicy="no-referrer"
+          loading="lazy"
+          className="size-full object-cover"
+          onError={() => setFailed(true)}
+        />
       ) : (
         <div className="flex size-full items-center justify-center text-subtle">
           <Film className="size-5" aria-hidden />
@@ -88,7 +95,9 @@ export function RecentList({
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium text-fg">{e.title}</p>
                   <p className="truncate text-xs text-muted">
-                    {[e.channel, e.durationSec !== undefined ? formatDuration(e.durationSec) : undefined].filter(Boolean).join(' · ')}
+                    {[e.channel, e.durationSec !== undefined ? formatDuration(e.durationSec) : undefined]
+                      .filter(Boolean)
+                      .join(' · ')}
                   </p>
                   <p className="text-xs text-muted">
                     {e.fileCount} files · {timeAgo(e.savedAt, now)}

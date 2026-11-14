@@ -40,7 +40,9 @@ describe('the bundle files', () => {
     expect(entry?.bytes).toBe(bytes.length);
     const digest = new Uint8Array(await crypto.subtle.digest('SHA-256', bytes as Uint8Array<ArrayBuffer>));
     expect(entry?.sha256).toBe(Array.from(digest, (b) => b.toString(16).padStart(2, '0')).join(''));
-    const manifestFile = JSON.parse(fileText(stamped.files.find((f) => f.path === 'manifest.json') as (typeof plain.files)[number]));
+    const manifestFile = JSON.parse(
+      fileText(stamped.files.find((f) => f.path === 'manifest.json') as (typeof plain.files)[number]),
+    );
     expect(manifestFile.files.find((f: { path: string }) => f.path === 'transcript.txt').sha256).toBe(entry?.sha256);
     const zip = new Uint8Array(await new Response(stamped.zip()).arrayBuffer());
     expect(String.fromCharCode(zip[0] as number, zip[1] as number)).toBe('PK');
@@ -53,7 +55,9 @@ describe('the bundle files', () => {
   });
 
   it('builds one combined bundle for several videos', async () => {
-    const bundle = await resultBundle([sharedContext('youtube-jNQXAC9IVRw'), sharedContext('youtube-cCPsdFdlshc')], { createdAt });
+    const bundle = await resultBundle([sharedContext('youtube-jNQXAC9IVRw'), sharedContext('youtube-cCPsdFdlshc')], {
+      createdAt,
+    });
     const paths = bundle.files.map((f) => f.path);
     expect(bundle.root).toBe('vid2context-2-videos');
     expect(paths).toContain('index.md');

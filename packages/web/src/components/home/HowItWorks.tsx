@@ -2,7 +2,11 @@
 import { Captions, Copy, Link2 } from 'lucide-react';
 
 const STEPS = [
-  { icon: Link2, title: 'Paste or drop', text: 'A link to a video, playlist or podcast, or a video or audio file from your computer.' },
+  {
+    icon: Link2,
+    title: 'Paste or drop',
+    text: 'A link to a video, playlist or podcast, or a video or audio file from your computer.',
+  },
   {
     icon: Captions,
     title: 'We get the words',

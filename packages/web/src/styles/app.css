@@ -89,7 +89,6 @@ mark[data-current="true"] {
   background-image: var(--v2c-gradient);
 }
 
-
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

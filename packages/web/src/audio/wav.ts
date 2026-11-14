@@ -39,7 +39,12 @@ export function encodeWav(samples: Float32Array, sampleRate: number): Uint8Array
 }
 
 /** Read back the format of a WAV produced by encodeWav. */
-export function readWavHeader(bytes: Uint8Array): { sampleRate: number; channels: number; bitsPerSample: number; samples: number } {
+export function readWavHeader(bytes: Uint8Array): {
+  sampleRate: number;
+  channels: number;
+  bitsPerSample: number;
+  samples: number;
+} {
   const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
   const channels = view.getUint16(22, true);
   const bitsPerSample = view.getUint16(34, true);

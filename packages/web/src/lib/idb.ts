@@ -22,7 +22,11 @@ export function idbAvailable(): boolean {
 const opened = new Map<string, Promise<IDBDatabase>>();
 
 /** Open (and on first use create) a database. Connections are reused per name. */
-export function openDb(name: string, version: number, upgrade: (db: IDBDatabase, tx: IDBTransaction) => void): Promise<IDBDatabase> {
+export function openDb(
+  name: string,
+  version: number,
+  upgrade: (db: IDBDatabase, tx: IDBTransaction) => void,
+): Promise<IDBDatabase> {
   let p = opened.get(name);
   if (!p) {
     p = new Promise<IDBDatabase>((resolve, reject) => {

@@ -67,10 +67,18 @@ export function originBadges(t: Transcript): OriginBadge[] {
       out.push({ label: 'Creator captions', title: 'Captions uploaded by the creator: the most accurate source.', tone: 'good' });
       break;
     case 'auto-captions':
-      out.push({ label: 'Auto-captions', title: "The platform's automatic speech recognition. Names and terms may be misheard.", tone: 'ok' });
+      out.push({
+        label: 'Auto-captions',
+        title: "The platform's automatic speech recognition. Names and terms may be misheard.",
+        tone: 'ok',
+      });
       break;
     case 'native-transcript':
-      out.push({ label: 'Published transcript', title: 'A transcript the platform or publisher provides with the media.', tone: 'good' });
+      out.push({
+        label: 'Published transcript',
+        title: 'A transcript the platform or publisher provides with the media.',
+        tone: 'good',
+      });
       break;
     case 'stt':
       out.push({
@@ -88,7 +96,11 @@ export function originBadges(t: Transcript): OriginBadge[] {
       break;
   }
   if (t.translated) {
-    out.push({ label: 'Machine-translated', title: `Translated into ${t.language} by a machine, not by a person.`, tone: 'warn' });
+    out.push({
+      label: 'Machine-translated',
+      title: `Translated into ${t.language} by a machine, not by a person.`,
+      tone: 'warn',
+    });
   }
   return out;
 }

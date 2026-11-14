@@ -61,7 +61,13 @@ export async function transcribeInBrowser(
     const { transcript, attempts } = await transcribe(
       registry,
       ref,
-      { kind: 'bytes', data: prepared.wav, mimeType: 'audio/wav', filename: `${prepared.sha256}.wav`, durationSec: prepared.durationSec },
+      {
+        kind: 'bytes',
+        data: prepared.wav,
+        mimeType: 'audio/wav',
+        filename: `${prepared.sha256}.wav`,
+        durationSec: prepared.durationSec,
+      },
       { stt: opts.lang ? { language: opts.lang } : {} },
       ctx,
     );

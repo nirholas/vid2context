@@ -13,8 +13,8 @@ import { saveBlob, streamToBlob } from '../../lib/download.ts';
 import { type AppError, isAbort, toAppError } from '../../lib/errors.ts';
 import { putEntry, summarize } from '../../lib/history.ts';
 import { contextViaJob } from '../../lib/jobs.ts';
-import { appHref, onAppLinkClick, type RunParams, runSearch } from '../../lib/route.ts';
 import { runPool } from '../../lib/pool.ts';
+import { appHref, onAppLinkClick, type RunParams, runSearch } from '../../lib/route.ts';
 import { ErrorPanel } from '../ErrorPanel.tsx';
 import { Button, Card, CopyButton, ProgressBar, Spinner } from '../ui.tsx';
 
@@ -82,7 +82,9 @@ export function BatchView({ params }: { params: RunParams }) {
   }, [done, running]);
 
   if (loadError) {
-    return <ErrorPanel title="Could not list the videos" error={loadError} onRetry={() => setReload((n) => n + 1)} showSettings />;
+    return (
+      <ErrorPanel title="Could not list the videos" error={loadError} onRetry={() => setReload((n) => n + 1)} showSettings />
+    );
   }
   if (!items) {
     return (
@@ -219,7 +221,11 @@ export function BatchView({ params }: { params: RunParams }) {
                       <p className="truncate text-sm text-fg">
                         <span className="mr-2 text-muted tabular-nums">{i + 1}.</span>
                         {s.status === 'done' ? (
-                          <a href={appHref(open)} onClick={(e) => onAppLinkClick(e, open)} className="underline-offset-4 hover:underline">
+                          <a
+                            href={appHref(open)}
+                            onClick={(e) => onAppLinkClick(e, open)}
+                            className="underline-offset-4 hover:underline"
+                          >
                             {title}
                           </a>
                         ) : (

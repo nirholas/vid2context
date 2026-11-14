@@ -3,7 +3,7 @@
  * there, otherwise fetch it from the API. Lists (playlists, channels, feeds)
  * go to the batch view; failures show the error panel.
  */
-import { type Bundle, type VideoContext, Vid2ContextError } from '@vid2context/core';
+import { type Bundle, Vid2ContextError, type VideoContext } from '@vid2context/core';
 import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
 import { getComments, getContext, isListError } from '../lib/api.ts';
 import { isClientOnly, useApiStatus } from '../lib/api-status.tsx';
@@ -116,16 +116,22 @@ export function RunView({ params }: { params: RunParams }) {
   const onBundle = useCallback(
     (bundle: Bundle) => {
       if (!fresh) return;
-      putEntry(summarize(fresh, { input: params.url, mode: params.mode, lang: params.lang }, bundle.files.length)).catch((err) => {
-        console.error('[vid2context] could not save the result to history', err);
-      });
+      putEntry(summarize(fresh, { input: params.url, mode: params.mode, lang: params.lang }, bundle.files.length)).catch(
+        (err) => {
+          console.error('[vid2context] could not save the result to history', err);
+        },
+      );
     },
     [fresh, params],
   );
 
   switch (state.kind) {
     case 'loading':
-      return api.status === 'checking' ? <Loading label="Connecting to the API" /> : <Fetching url={params.url} startedAt={state.startedAt} />;
+      return api.status === 'checking' ? (
+        <Loading label="Connecting to the API" />
+      ) : (
+        <Fetching url={params.url} startedAt={state.startedAt} />
+      );
     case 'needs-api':
       return <ClientOnlyNotice api={api} input={params.url} />;
     case 'missing-local':
@@ -141,7 +147,12 @@ export function RunView({ params }: { params: RunParams }) {
       );
     case 'error':
       return (
-        <ErrorPanel title="Could not get context for this link" error={state.error} onRetry={() => setRefresh((n) => n + 1)} showSettings />
+        <ErrorPanel
+          title="Could not get context for this link"
+          error={state.error}
+          onRetry={() => setRefresh((n) => n + 1)}
+          showSettings
+        />
       );
     case 'list':
       return (
