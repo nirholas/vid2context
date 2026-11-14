@@ -5,7 +5,9 @@
 FROM node:22-slim AS build
 WORKDIR /src
 COPY . .
-RUN npm ci --no-audit --no-fund && npm run build:npm
+# --ignore-scripts skips native builds (isolated-vm from packages/n8n-nodes) that the
+# bundle never uses; build:npm runs the registry generator itself.
+RUN npm ci --no-audit --no-fund --ignore-scripts && npm run build:npm
 
 FROM node:22-slim
 ENV NODE_ENV=production

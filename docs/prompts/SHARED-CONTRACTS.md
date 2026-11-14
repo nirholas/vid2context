@@ -496,18 +496,20 @@ Design tokens: copy this into `src/styles/tokens.css` of every web package, unch
 ```css
 :root {
   --v2c-bg: #000000;
-  --v2c-surface: #0b0b0d;
-  --v2c-surface-2: #141417;
-  --v2c-surface-3: #1c1c21;
-  --v2c-border: #26262b;
-  --v2c-border-strong: #3a3a42;
+  --v2c-sidebar: #000000;
+  --v2c-panel: #0e0e0e;
+  --v2c-surface: #161616;
+  --v2c-surface-2: #1e1e1e;
+  --v2c-surface-3: #282828;
+  --v2c-border: #2a2a2a;
+  --v2c-border-strong: #3d3d3d;
   --v2c-text: #fafafa;
-  --v2c-muted: #a1a1aa;
-  --v2c-subtle: #71717a;
-  --v2c-accent: #3b82f6;
-  --v2c-accent-2: #22d3ee;
-  --v2c-accent-fg: #ffffff;
-  --v2c-gradient: linear-gradient(135deg, var(--v2c-accent) 0%, var(--v2c-accent-2) 100%);
+  --v2c-muted: #a3a3a3;
+  --v2c-subtle: #8a8a8a;
+  --v2c-accent: #fafafa;
+  --v2c-accent-2: #a3a3a3;
+  --v2c-accent-fg: #0a0a0a;
+  --v2c-gradient: linear-gradient(180deg, #ffffff 0%, #d4d4d4 100%);
   --v2c-success: #22c55e;
   --v2c-warning: #f59e0b;
   --v2c-danger: #ef4444;
@@ -527,16 +529,20 @@ Design tokens: copy this into `src/styles/tokens.css` of every web package, unch
 
 :root[data-theme="light"] {
   --v2c-bg: #ffffff;
-  --v2c-surface: #f7f7f8;
-  --v2c-surface-2: #efeff1;
-  --v2c-surface-3: #e6e6ea;
-  --v2c-border: #e4e4e7;
-  --v2c-border-strong: #d4d4d8;
-  --v2c-text: #09090b;
-  --v2c-muted: #52525b;
-  --v2c-subtle: #71717a;
-  --v2c-accent: #2563eb;
-  --v2c-accent-2: #0891b2;
+  --v2c-sidebar: #f5f5f5;
+  --v2c-panel: #ffffff;
+  --v2c-surface: #fafafa;
+  --v2c-surface-2: #f4f4f4;
+  --v2c-surface-3: #e9e9e9;
+  --v2c-border: #e5e5e5;
+  --v2c-border-strong: #d4d4d4;
+  --v2c-text: #0a0a0a;
+  --v2c-muted: #525252;
+  --v2c-subtle: #6b6b6b;
+  --v2c-accent: #0a0a0a;
+  --v2c-accent-2: #525252;
+  --v2c-accent-fg: #ffffff;
+  --v2c-gradient: linear-gradient(180deg, #262626 0%, #0a0a0a 100%);
   --v2c-shadow: 0 1px 2px rgb(0 0 0 / 0.06), 0 8px 24px rgb(0 0 0 / 0.08);
   color-scheme: light;
 }
@@ -544,23 +550,27 @@ Design tokens: copy this into `src/styles/tokens.css` of every web package, unch
 @media (prefers-color-scheme: light) {
   :root[data-theme="system"] {
     --v2c-bg: #ffffff;
-    --v2c-surface: #f7f7f8;
-    --v2c-surface-2: #efeff1;
-    --v2c-surface-3: #e6e6ea;
-    --v2c-border: #e4e4e7;
-    --v2c-border-strong: #d4d4d8;
-    --v2c-text: #09090b;
-    --v2c-muted: #52525b;
-    --v2c-subtle: #71717a;
-    --v2c-accent: #2563eb;
-    --v2c-accent-2: #0891b2;
+    --v2c-sidebar: #f5f5f5;
+    --v2c-panel: #ffffff;
+    --v2c-surface: #fafafa;
+    --v2c-surface-2: #f4f4f4;
+    --v2c-surface-3: #e9e9e9;
+    --v2c-border: #e5e5e5;
+    --v2c-border-strong: #d4d4d4;
+    --v2c-text: #0a0a0a;
+    --v2c-muted: #525252;
+    --v2c-subtle: #6b6b6b;
+    --v2c-accent: #0a0a0a;
+    --v2c-accent-2: #525252;
+    --v2c-accent-fg: #ffffff;
+    --v2c-gradient: linear-gradient(180deg, #262626 0%, #0a0a0a 100%);
     --v2c-shadow: 0 1px 2px rgb(0 0 0 / 0.06), 0 8px 24px rgb(0 0 0 / 0.08);
     color-scheme: light;
   }
 }
 ```
 
-Visual language, from the owner's references (llm.energy, xactions.app/video, the LobeHub chat UI): black background, white type, thin borders, large rounded inputs, one accent gradient used sparingly on primary buttons and focus rings, monospace for transcripts and file viewers, generous spacing, no stock illustrations, no emojis in UI copy.
+Visual language, from the owner's references (llm.energy, xactions.app/video, the LobeHub chat UI): monochrome: black background, white type, thin borders, large rounded inputs, and a white accent (near-black in the light theme) on primary buttons and focus rings, with color kept for status and provider tiers only. App shells use a sidebar on `--v2c-sidebar` and a framed main panel on `--v2c-panel`, monospace for transcripts and file viewers, generous spacing, no stock illustrations, no emojis in UI copy.
 
 ## 7. Shared test fixtures
 
