@@ -3,7 +3,8 @@
 #
 # Cloud Build has no built-in cache, so the npm download cache is kept as a
 # tarball in a GCS bucket (set _CACHE_BUCKET on the trigger; leave it empty to
-# build without a cache). /workspace and /builder/home persist across steps.
+# build without a cache). /workspace and /builder/home persist across steps;
+# the cache lives in /builder/home, outside the source tree the checks scan.
 steps:
   # GitHub triggers may deliver the source without .git. The hygiene checks
   # list files with `git ls-files`, so index the snapshot when .git is missing.
@@ -25,9 +26,9 @@ steps:
     args:
       - -ceu
       - |
-        mkdir -p /workspace/.npm-cache
+        mkdir -p /builder/home/.npm-cache
         if [ -n "${_CACHE_BUCKET}" ]; then
-          gcloud storage cat "gs://${_CACHE_BUCKET}/npm-cache-node24.tgz" | tar -xz -C /workspace/.npm-cache || echo "no npm cache yet"
+          gcloud storage cat "gs://${_CACHE_BUCKET}/npm-cache-node24.tgz" | tar -xz -C /builder/home/.npm-cache || echo "no npm cache yet"
         else
           echo "_CACHE_BUCKET not set: building without an npm cache"
         fi
@@ -36,13 +37,13 @@ steps:
     name: node:24
     entrypoint: npm
     args: [ci, --no-audit, --no-fund]
-    env: [npm_config_cache=/workspace/.npm-cache]
+    env: [npm_config_cache=/builder/home/.npm-cache]
 
   - id: ci
     name: node:24
     entrypoint: npm
     args: [run, ci, --, --keep-going]
-    env: [npm_config_cache=/workspace/.npm-cache]
+    env: [npm_config_cache=/builder/home/.npm-cache]
 
   - id: save-cache
     name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
@@ -51,7 +52,7 @@ steps:
       - -ceu
       - |
         if [ -n "${_CACHE_BUCKET}" ]; then
-          tar -cz -C /workspace/.npm-cache . | gcloud storage cp - "gs://${_CACHE_BUCKET}/npm-cache-node24.tgz"
+          tar -cz -C /builder/home/.npm-cache . | gcloud storage cp - "gs://${_CACHE_BUCKET}/npm-cache-node24.tgz"
         fi
 
 substitutions:
