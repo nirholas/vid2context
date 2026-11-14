@@ -339,7 +339,7 @@ describe('provider wiring', () => {
     expect(isPostgresEnabled({ VID2CONTEXT_DATABASE_URL: 'postgres://u:p@localhost/db' })).toBe(true);
     expect(isPostgresEnabled({ DATABASE_URL: 'postgres://u:p@localhost/db', VID2CONTEXT_STORAGE: 'sqlite' })).toBe(false);
     expect(isPostgresEnabled({ VID2CONTEXT_STORAGE: 'postgres' })).toBe(true);
-    expect(provider).toMatchObject({ id: 'storage-postgres', kind: 'storage', runtimes: ['node'] });
+    expect(provider).toMatchObject({ id: 'storage-postgres', kind: 'storage', runtimes: ['node', 'workers'] });
   });
 
   it('prefers VID2CONTEXT_DATABASE_URL and reads the other settings', () => {

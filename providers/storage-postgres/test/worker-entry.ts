@@ -6,7 +6,8 @@
  * exercises contexts, search, collections, KV and vectors.
  */
 import { createContext, type Env, type VideoContext } from '@vid2context/core';
-import provider from '../src/index.ts';
+// Imported by package name so the bundler applies the Workers export condition.
+import provider from '@vid2context/provider-storage-postgres';
 
 export default {
   async fetch(request: Request, workerEnv: Record<string, unknown>): Promise<Response> {

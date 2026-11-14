@@ -4,14 +4,17 @@
  * own schema named v2c_live_<random> and drops it afterwards.
  */
 import { randomBytes } from 'node:crypto';
+import { fileURLToPath } from 'node:url';
 import { type Ctx, createContext, type Env } from '@vid2context/core';
+import { build } from 'esbuild';
+import { convertV4MiniflareOptions, Miniflare } from 'miniflare';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import type { Db } from '../src/db.ts';
 import { connectPostgres } from '../src/db-postgres.ts';
 import { createPostgresStorage, migrations, openPostgresStorage, type PostgresStorage } from '../src/index.ts';
 import { quoteIdent } from '../src/migrate.ts';
 import { storageContract } from './contract.ts';
-import { loadEmbeddings } from './fixtures.ts';
+import { loadContext, loadEmbeddings } from './fixtures.ts';
 import { type LiveDb, startLiveDb } from './live-db.ts';
 
 const LIVE = Boolean(process.env.LIVE);
@@ -63,7 +66,7 @@ describe.skipIf(!LIVE)('storage-postgres live', () => {
     });
 
     it('is the backend the generated Node registry opens when DATABASE_URL is set', async (t) => {
-      if (!db.live) t.skip();
+      if (!db.live) return t.skip();
       const { createRegistry } = await import('@vid2context/registry/node');
       const registry = createRegistry();
       const storage = await registry.openStorage(ctxFor({ DATABASE_URL: db.live.url, VID2CONTEXT_PG_SCHEMA: newSchema() }));
@@ -78,7 +81,7 @@ describe.skipIf(!LIVE)('storage-postgres live', () => {
     });
 
     it('serialises concurrent first starts with the advisory lock', async (t) => {
-      if (!db.live) t.skip();
+      if (!db.live) return t.skip();
       const url = db.live.url;
       for (let round = 0; round < 3; round++) {
         const schema = newSchema();
@@ -97,7 +100,7 @@ describe.skipIf(!LIVE)('storage-postgres live', () => {
     });
 
     it('two pools started at once through openPostgresStorage both work', async (t) => {
-      if (!db.live) t.skip();
+      if (!db.live) return t.skip();
       const schema = newSchema();
       const [a, b] = await Promise.all([
         openPostgresStorage(ctxFor({ DATABASE_URL: db.live.url, VID2CONTEXT_PG_SCHEMA: schema, VID2CONTEXT_PG_POOL_MAX: '2' })),
@@ -117,7 +120,7 @@ describe.skipIf(!LIVE)('storage-postgres live', () => {
     });
 
     it('reports a wrong password as auth without leaking it', async (t) => {
-      if (db.live?.source !== 'docker') t.skip();
+      if (db.live?.source !== 'docker') return t.skip();
       const bad = db.live.url.replace(/:([^:@/]+)@/, ':wrong-password-123@');
       const err = await openPostgresStorage(ctxFor({ DATABASE_URL: bad, VID2CONTEXT_PG_SCHEMA: newSchema() })).then(
         () => null,
@@ -129,7 +132,7 @@ describe.skipIf(!LIVE)('storage-postgres live', () => {
     });
 
     it('answers vector queries from the HNSW index on a real server', async (t) => {
-      if (!db.live) t.skip();
+      if (!db.live) return t.skip();
       const live = db.live as LiveDb;
       // The 12 real bge-m3 vectors recorded from OVH, each stored under 400
       // ids (4,800 rows): enough rows that the planner's cost model prefers
@@ -196,8 +199,62 @@ describe.skipIf(!LIVE)('storage-postgres live', () => {
       return { storage, done: () => storage.close() };
     });
 
+    it('runs inside workerd (Miniflare, no nodejs_compat) through the Workers entry', async (t) => {
+      if (!db.live?.neon) return t.skip();
+      const neon = db.live?.neon as NonNullable<LiveDb['neon']>;
+      // Bundle the way wrangler does: Workers export conditions, nothing external but cloudflare:*.
+      const result = await build({
+        entryPoints: [fileURLToPath(new URL('./worker-entry.ts', import.meta.url))],
+        bundle: true,
+        write: false,
+        format: 'esm',
+        platform: 'neutral',
+        target: 'es2022',
+        conditions: ['workerd', 'worker', 'browser'],
+        mainFields: ['module', 'main'],
+        external: ['cloudflare:*'],
+        metafile: true,
+        logLevel: 'silent',
+      });
+      const script = result.outputFiles[0]?.text ?? '';
+      const inputs = Object.keys(result.metafile.inputs);
+      expect(inputs.some((f) => f.endsWith('storage-postgres/src/workers.ts'))).toBe(true);
+      expect(inputs.some((f) => f.includes('node_modules/postgres/'))).toBe(false);
+      expect(script).not.toMatch(/from ["']node:/);
+
+      const mf = new Miniflare(
+        convertV4MiniflareOptions({
+          modules: true,
+          script,
+          compatibilityDate: '2026-10-01',
+          bindings: {
+            DATABASE_URL: neon.url,
+            VID2CONTEXT_PG_SCHEMA: newSchema(),
+            VID2CONTEXT_TENANT: 'worker',
+            // The local proxy's host is not *.neon.tech, so name the driver and endpoint explicitly.
+            ...(neon.endpoint ? { VID2CONTEXT_PG_DRIVER: 'neon-http', VID2CONTEXT_PG_NEON_FETCH_ENDPOINT: neon.endpoint } : {}),
+          },
+        }),
+      );
+      try {
+        const zoo = loadContext('youtube-jNQXAC9IVRw.json');
+        const res = await mf.dispatchFetch('http://worker.test/', { method: 'POST', body: JSON.stringify(zoo) });
+        const body = (await res.json()) as Record<string, unknown>;
+        expect(body).toEqual({
+          backend: 'postgres',
+          segments: zoo.transcript.segments.length,
+          hits: ['really really long trunks'],
+          collection: [zoo.metadata.ref.id],
+          kv: { ran: 'workerd' },
+          near: ['y', 'x'],
+        });
+      } finally {
+        await mf.dispose();
+      }
+    }, 120_000);
+
     it('runs KV and vectors over Neon HTTP', async (t) => {
-      if (!db.live?.neon) t.skip();
+      if (!db.live?.neon) return t.skip();
       const storage = await openPostgresStorage(ctxFor(neonEnv()));
       await storage.kvSet('jobs:neon', { ok: true }, { ttlSec: 60 });
       expect(await storage.kvGet('jobs:neon')).toEqual({ ok: true });

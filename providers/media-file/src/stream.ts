@@ -1,7 +1,9 @@
 /**
  * `media-stream`: HLS (.m3u8) and DASH (.mpd) URLs, plus the audio of direct
- * video URLs on Node. ffmpeg reads the stream itself and extracts compact
- * speech audio, so a long video is never downloaded whole into memory.
+ * video URLs on Node. For streams, ffmpeg reads the playlist itself and
+ * extracts compact speech audio. Direct video URLs are downloaded through
+ * ctx.fetch to a temp file (VID2CONTEXT_MAX_MEDIA_MB enforced while streaming,
+ * never held in memory), then ffmpeg extracts the audio locally.
  *
  * Metadata comes from the playlist: total duration (sum of segment durations
  * for HLS, mediaPresentationDuration for DASH), live or on-demand, variants
@@ -12,6 +14,10 @@
  * ffmpeg only follows http and https (and TLS, TCP, AES) from these inputs,
  * never local files, so a hostile playlist cannot read the disk.
  */
+
+import { createWriteStream } from 'node:fs';
+import { join } from 'node:path';
+import { Writable } from 'node:stream';
 import {
   type AudioInput,
   type Ctx,
@@ -23,9 +29,10 @@ import {
   type VideoMetadata,
   type VideoRef,
 } from '@vid2context/core';
-import { extractAudio, type FfmpegTools, locateFfmpeg, probe, tryLocateFfmpeg } from '@vid2context/ffmpeg';
+import { extractAudio, type FfmpegTools, locateFfmpeg, probe, tryLocateFfmpeg, withTempDir } from '@vid2context/ffmpeg';
 import {
   AUDIO_SIZED_BYTES,
+  acceptableContentType,
   headMedia,
   isVideoUrl,
   maxMediaBytes,
@@ -314,6 +321,45 @@ async function ffmpegForAudio(ctx: Ctx): Promise<{ tools: FfmpegTools | null; er
   }
 }
 
+function tooLarge(size: number, cap: number): Vid2ContextError {
+  return new Vid2ContextError(
+    'too-large',
+    `The video is ${(size / 1048576).toFixed(1)} MB, over the ${(cap / 1048576).toFixed(0)} MB limit.`,
+    { hint: 'Raise VID2CONTEXT_MAX_MEDIA_MB, or link a shorter or audio-only file.' },
+  );
+}
+
+/** Stream a URL to a file through ctx.fetch, refusing more than `maxBytes` and non-media responses. */
+export async function downloadToFile(url: string, file: string, maxBytes: number, ctx: Ctx): Promise<number> {
+  const head = await headMedia(url, ctx).catch(() => null);
+  if (head?.sizeBytes !== undefined && head.sizeBytes > maxBytes) throw tooLarge(head.sizeBytes, maxBytes);
+  const res = await fetchWithTimeout(ctx, url, { redirect: 'follow' }, 60 * 60_000);
+  if (!res.ok) throw await errorFromResponse(res, 'media URL');
+  const type = res.headers.get('content-type')?.split(';')[0]?.trim().toLowerCase();
+  if (!acceptableContentType(type) || !res.body) {
+    await res.body?.cancel().catch(() => {});
+    throw new Vid2ContextError('unavailable', `The URL returned ${type ?? 'no body'}, not a video.`, {
+      hint: 'Link the media file itself, not the page that plays it.',
+    });
+  }
+  const declared = Number(res.headers.get('content-length'));
+  if (Number.isFinite(declared) && declared > maxBytes) {
+    await res.body.cancel().catch(() => {});
+    throw tooLarge(declared, maxBytes);
+  }
+  let total = 0;
+  const out = createWriteStream(file);
+  const counter = new TransformStream<Uint8Array, Uint8Array>({
+    transform(chunk, controller) {
+      total += chunk.byteLength;
+      if (total > maxBytes) controller.error(tooLarge(total, maxBytes));
+      else controller.enqueue(chunk);
+    },
+  });
+  await res.body.pipeThrough(counter).pipeTo(Writable.toWeb(out));
+  return total;
+}
+
 function slug(text: string): string {
   return text.replace(/[^\p{L}\p{N}._ -]+/gu, '_').slice(0, 80) || 'stream';
 }
@@ -371,20 +417,17 @@ export const mediaStream: SourceProvider = defineProvider({
       return extractAudio(info.audioUrl, { format: 'mp3', name: slug(info.title) }, ctx);
     }
 
-    // A direct video URL: check the size first, then let ffmpeg read only what it needs.
+    // A direct video URL: download it (capped) and extract the audio locally.
     const cap = maxMediaBytes(ctx.env);
-    const head = await headMedia(url, ctx).catch(() => null);
-    if (head?.sizeBytes !== undefined && head.sizeBytes > cap) {
-      throw new Vid2ContextError(
-        'too-large',
-        `The video is ${(head.sizeBytes / 1048576).toFixed(1)} MB, over the ${(cap / 1048576).toFixed(0)} MB limit.`,
-        { hint: 'Raise VID2CONTEXT_MAX_MEDIA_MB, or link a shorter or audio-only file.' },
-      );
-    }
     const { tools } = await ffmpegForAudio(ctx);
     if (tools) {
-      const name = urlFileName(url).replace(/\.[a-z0-9]+$/i, '');
-      return extractAudio(url, { format: 'mp3', name: slug(name) }, ctx);
+      const fileName = urlFileName(url);
+      const name = slug(fileName.replace(/\.[a-z0-9]+$/i, ''));
+      return withTempDir(async (dir) => {
+        const file = join(dir, `video${urlExtension(url) || '.bin'}`);
+        await downloadToFile(url, file, cap, ctx);
+        return extractAudio(file, { format: 'mp3', name }, ctx);
+      });
     }
     ctx.log.info('ffmpeg not found; downloading the video for speech-to-text as is', { url });
     return mediaUrlAudio(

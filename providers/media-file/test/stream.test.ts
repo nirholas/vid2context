@@ -117,6 +117,27 @@ describe('mediaStream.getMetadata', () => {
   });
 });
 
+const HAVE_FFMPEG = !findTools({ PATH: process.env.PATH }).problem;
+
+describe.skipIf(!HAVE_FFMPEG)('direct video URLs', () => {
+  it('refuses a video over VID2CONTEXT_MAX_MEDIA_MB from its HEAD before downloading', async () => {
+    // Real HEAD headers recorded from Wikimedia (a 206,115,140-byte file), see providers/media-url/test/fixtures.
+    const big = JSON.parse(readFileSync(join(import.meta.dirname, '../../media-url/test/fixtures/crew13.head.json'), 'utf8'));
+    const url = 'https://upload.wikimedia.org/wikipedia/commons/talk.mp4';
+    const fetch = replayFetch([{ method: 'HEAD', url, response: { status: big.status, headers: big.headers, body: '' } }]);
+    const ctx = testContext({
+      fetch,
+      env: { PATH: process.env.PATH, VID2CONTEXT_MAX_MEDIA_MB: '150', VID2CONTEXT_FFMPEG_DOWNLOAD: '0' },
+    });
+    const video = { input: url, platform: 'media', kind: 'video' as const, id: 'media:t', nativeId: 't', url };
+    await expect(mediaStream.getAudio?.(video, ctx)).rejects.toMatchObject({
+      code: 'too-large',
+      message: /196\.6 MB, over the 150 MB/,
+    });
+    expect(fetch.calls.map((c) => c.method)).toEqual(['HEAD']);
+  });
+});
+
 describe('mediaStream.canProvideAudio', () => {
   it('claims streams and direct video URLs on Node only', () => {
     const video = {
@@ -134,8 +155,6 @@ describe('mediaStream.canProvideAudio', () => {
     expect(mediaStream.canProvideAudio?.(video, testContext({ runtime: 'workers' }))).toBe(false);
   });
 });
-
-const HAVE_FFMPEG = !findTools({ PATH: process.env.PATH }).problem;
 
 describe.skipIf(!process.env.LIVE || !HAVE_FFMPEG)('media-stream (LIVE)', () => {
   const live = () => createContext({ runtime: 'node', env: { ...process.env } });
