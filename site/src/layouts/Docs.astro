@@ -48,6 +48,9 @@ const copyScript = `document.addEventListener('click',function(e){var b=e.target
           }
         </nav>
       </details>
+      <script is:inline>
+        if (window.matchMedia('(max-width: 899px)').matches) document.currentScript.previousElementSibling.removeAttribute('open');
+      </script>
     </aside>
 
     <main id="main" class="docs-main">

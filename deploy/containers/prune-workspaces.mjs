@@ -96,6 +96,18 @@ for (const tree of ['manifests', 'app']) {
 }
 
 const app = join(out, 'app');
+// Some packages read another package's manifest by relative path (for
+// example discovery imports ../../cli/package.json for version numbers)
+// without depending on it. Manifests are tiny, so ship every package's
+// package.json even when its code stays out. Providers are left out: the
+// registry generator scans providers/*/package.json, and every provider the
+// node registry needs is already kept.
+for (const [, ws] of workspaces) {
+  if (keep.has(ws.dir) || !ws.dir.startsWith('packages/')) continue;
+  mkdirSync(join(app, ws.dir), { recursive: true });
+  cpSync(join(repo, ws.dir, 'package.json'), join(app, ws.dir, 'package.json'));
+}
+
 for (const file of ['scripts/gen-registry.mjs', 'LICENSE', 'THIRD_PARTY_NOTICES.md']) {
   if (!existsSync(join(repo, file))) continue;
   mkdirSync(dirname(join(app, file)), { recursive: true });

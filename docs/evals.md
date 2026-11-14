@@ -45,9 +45,15 @@ Per rung it reports WER and CER (pooled: total errors over total reference words
 
 For each video in `datasets/captions.json`, YouTube's auto-captions are scored against the creator captions of the same video: WER, CER, timing, and punctuation and capitalization F1. The `cleanup` suite adds a second row per video with core's `cleanTranscript` (the rule-based steps, no LLM) applied to the auto-captions, so the effect of cleanup on every metric is visible side by side. The raw track is never replaced.
 
-### citations and search
+### citations
 
-The datasets exist (`citations.json`, `search.json`, labeled on the recorded G-Wagon transcript and verified by a unit test), and so do the metrics (`checkCitation`, `citationAccuracy`, `precisionAtK`, `recallAtK`, `reciprocalRank`). The runner suites need a producer of cited answers (prompt 32's briefs or prompt 34's ask) and the search engine (prompt 40). Until those packages export what the suites call, the runner says so and skips these suites.
+For each question in `datasets/citations.json`, over the collection's recorded transcripts, two producers answer through the free-first LLM chain: `ask` (`@vid2context/ask`, a grounded answer with `[n]` citations) and `brief` (`@vid2context/insights`, a cited brief for the question). Every citation they return is checked independently with `checkCitation`. Per producer the report gives citation accuracy (citations whose quote occurs within 30 s of their time, over all returned), the expected-place hit rate (questions where at least one citation lands within 30 s of a labeled answer), the share of citations the producer rejected itself (unverified brief claims, `[n]` refs that match no source) and LLM latency.
+
+The questions and their quotes were labeled by reading the recorded G-Wagon transcript (`tests/fixtures/contexts/youtube-cCPsdFdlshc.json`); a unit test checks that every labeled quote really occurs inside its range.
+
+### search
+
+The collection is indexed in memory with `@vid2context/search`, and every query in `datasets/search.json` runs in keyword mode (BM25) and, when an embedding rung is enabled, hybrid mode (BM25 fused with vectors). Per mode: precision@5, recall@5, MRR and the engine's total time per query. Precision@5 is capped by the number of labeled ranges: a query with one labeled range scores at most 20%.
 
 ### Chapters
 
