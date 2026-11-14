@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import type { CreateMessageRequest, ElicitRequest, Progress } from '@modelcontextprotocol/sdk/types.js';
 import { ResourceUpdatedNotificationSchema } from '@modelcontextprotocol/sdk/types.js';
 import { MemoryStorage } from '@vid2context/core';
@@ -19,6 +21,7 @@ import {
   chainSampler,
   chatMessages,
   connect,
+  FIXTURES,
   filledStorage,
   GWAGON,
   GWAGON_ID,
@@ -198,6 +201,33 @@ describe('citation validation on recorded model output', () => {
     const bad = checkDigest('- Elephants have long trunks [Me at the zoo @ 2:00]', sources);
     expect(bad.text).toBe('');
     expect(bad.dropped[0]?.reason).toContain('past the end of the video (0:19)');
+  });
+});
+
+describe('citation formats real models write', () => {
+  // The raw combine output gpt-oss returned in a live run (fixtures/reduce-gpt-oss-lenticular.md): citations in
+  // lenticular brackets, a non-breaking hyphen inside the title, and many bare timestamps.
+  const raw = readFileSync(join(FIXTURES, 'reduce-gpt-oss-lenticular.md'), 'utf8');
+  const sources = [sourceOf(zoo), sourceOf(gwagon)];
+
+  it('checks lenticular-bracket citations instead of letting them through unverified', () => {
+    expect(raw).toContain('\u3010Best & Worst G\u2011Wagon Years');
+    expect(invalidCitations(raw, sources).length).toBeGreaterThan(10);
+    const checked = checkDigest(raw, sources);
+    expect(checked.citations).toBeGreaterThan(20);
+    expect(invalidCitations(checked.text, sources)).toEqual([]);
+    expect(checked.text).toContain(
+      '[Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked! @ 8:34](https://www.youtube.com/watch?v=cCPsdFdlshc&t=514s)',
+    );
+    expect(checked.text).not.toContain('\u3010');
+  });
+
+  it('attributes a bare timestamp only to the one source where that moment exists', () => {
+    // 8:34 exists only in the 18-minute G-Wagon video; 0:05 exists in both videos, so it cannot be traced.
+    expect(checkDigest('- Early G500s are the best value \u30108:34\u3011', sources).citations).toBe(1);
+    const ambiguous = checkDigest('- Something was said \u30100:05\u3011', sources);
+    expect(ambiguous.text).toBe('');
+    expect(ambiguous.dropped[0]?.reason).toBe('[0:05] does not say which video it cites');
   });
 });
 

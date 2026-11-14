@@ -12,12 +12,27 @@ export const DEFAULT_TOLERANCE_SEC = 5;
 
 /** h:mm:ss or m:ss (also mm:ss). */
 const TS = String.raw`\d{1,2}:\d{2}(?::\d{2})?`;
-/** `[m:ss]` or a range `[m:ss-m:ss]` (hyphen, en dash or em dash, written as escapes per the house style). */
-const BARE = new RegExp(String.raw`\[(${TS})(?:\s*[-\u2013\u2014]\s*(${TS}))?\]`, 'g');
+/**
+ * Range separator: hyphen, or any Unicode dash models write (U+2010 to U+2015,
+ * minus sign U+2212), as escapes per the house style.
+ */
+const SEP = String.raw`\s*[-\u2010-\u2015\u2212]\s*`;
+/** `[m:ss]` or a range `[m:ss-m:ss]`. */
+const BARE = new RegExp(String.raw`\[(${TS})(?:${SEP}(${TS}))?\]`, 'g');
 /** A bare marker with an optional `(url)` right after it. */
-const BARE_LINKED = new RegExp(String.raw`\[(${TS})(?:\s*[-\u2013\u2014]\s*(${TS}))?\](?:\((\S+?)\))?`, 'g');
+const BARE_LINKED = new RegExp(String.raw`\[(${TS})(?:${SEP}(${TS}))?\](?:\((\S+?)\))?`, 'g');
 /** `[Title @ m:ss]` with an optional range and an optional `(url)` right after. */
-const TITLED = new RegExp(String.raw`\[([^\[\]]+?)\s+@\s+(${TS})(?:\s*[-\u2013\u2014]\s*(${TS}))?\](?:\((\S+?)\))?`, 'g');
+const TITLED = new RegExp(String.raw`\[([^\[\]]+?)\s+@\s+(${TS})(?:${SEP}(${TS}))?\](?:\((\S+?)\))?`, 'g');
+
+/**
+ * Some models (gpt-oss among them) write citations in CJK lenticular brackets
+ * (U+3010, U+3011) or fullwidth square brackets (U+FF3B, U+FF3D). Turn them
+ * into ASCII brackets first, so those citations are checked instead of
+ * slipping through unverified.
+ */
+export function normalizeMarkers(text: string): string {
+  return text.replace(/[\u3010\uff3b]/g, '[').replace(/[\u3011\uff3d]/g, ']');
+}
 
 export function parseTimestamp(ts: string): number {
   const parts = ts.split(':').map((p) => Number(p));
@@ -85,7 +100,7 @@ export function checkNotes(text: string, source: CitationSource, opts: CheckOpti
   const kept: string[] = [];
   const dropped: DroppedClaim[] = [];
   let verified = 0;
-  for (const line of text.split('\n')) {
+  for (const line of normalizeMarkers(text).split('\n')) {
     const stamps = [...line.matchAll(BARE)].flatMap((m) => [m[1], m[2]].filter((s): s is string => Boolean(s)));
     if (stamps.length === 0) {
       if (isBullet(line)) dropped.push({ text: line.trim(), reason: 'no timestamp' });
@@ -140,24 +155,29 @@ function link(source: CitationSource, startSec: number, label: string): string {
  * Check a digest that cites `[Title @ m:ss]`. Every citation must name a known
  * source and a timestamp that exists in it. Valid citations are rewritten to
  * the canonical title and a deep link built by `timestampUrl`, so the model
- * never has to produce URLs. A line with any failing citation is dropped. With
- * a single source, bare `[m:ss]` citations are checked against it; with several
- * sources a bare timestamp cannot be attributed, so its line is dropped.
+ * never has to produce URLs. A line with any failing citation is dropped.
+ *
+ * A bare `[m:ss]` is attributed only when that is unambiguous: to the source
+ * its URL names, else to the one source the line already cites by title, else
+ * to the only source in which that moment exists. Otherwise its line is
+ * dropped, because the claim cannot be traced to a video.
  */
 export function checkDigest(text: string, sources: CitationSource[], opts: CheckOptions = {}): DigestCheck {
   const kept: string[] = [];
   const dropped: DroppedClaim[] = [];
   let citations = 0;
-  for (const line of text.split('\n')) {
+  const stampsOf = (from: string, to?: string) => [from, to].filter((s): s is string => Boolean(s));
+  for (const line of normalizeMarkers(text).split('\n')) {
     let failure: string | undefined;
     let count = 0;
+    const cited = new Set<CitationSource>();
     let out = line.replace(TITLED, (whole, title: string, from: string, to: string | undefined, url: string | undefined) => {
       const source = findSource(sources, title, url);
       if (!source) {
         failure ??= `"${title.trim()}" is not one of the sources`;
         return whole;
       }
-      for (const ts of [from, to].filter((s): s is string => Boolean(s))) {
+      for (const ts of stampsOf(from, to)) {
         const reason = checkTimestamp(source, parseTimestamp(ts), opts);
         if (reason) {
           failure ??= `[${source.title} @ ${ts}] is ${reason}`;
@@ -165,23 +185,36 @@ export function checkDigest(text: string, sources: CitationSource[], opts: Check
         }
       }
       count++;
+      cited.add(source);
       const startSec = parseTimestamp(from);
       const label = `${source.title} @ ${formatTimestamp(startSec, source.long)}${to ? `-${formatTimestamp(parseTimestamp(to), source.long)}` : ''}`;
       return link(source, startSec, label);
     });
     if (!failure) {
       out = out.replace(BARE_LINKED, (whole, from: string, to: string | undefined, url: string | undefined) => {
-        const source = url ? findSource(sources, '', url) : sources.length === 1 ? sources[0] : undefined;
-        if (!source) {
-          failure ??= `[${from}] does not say which video it cites`;
-          return whole;
+        const stamps = stampsOf(from, to);
+        const fits = (s: CitationSource) => stamps.every((ts) => !checkTimestamp(s, parseTimestamp(ts), opts));
+        let candidates: CitationSource[];
+        if (url) {
+          const byUrl = findSource(sources, '', url);
+          candidates = byUrl ? [byUrl] : [];
+        } else {
+          candidates = cited.size > 0 ? [...cited] : sources;
         }
-        for (const ts of [from, to].filter((s): s is string => Boolean(s))) {
-          const reason = checkTimestamp(source, parseTimestamp(ts), opts);
-          if (reason) {
-            failure ??= `[${ts}] is ${reason}`;
-            return whole;
+        const matching = candidates.filter(fits);
+        const source = matching.length === 1 ? matching[0] : undefined;
+        if (!source) {
+          if (candidates.length === 1 && candidates[0]) {
+            const reason = stamps
+              .map((ts) => checkTimestamp(candidates[0] as CitationSource, parseTimestamp(ts), opts))
+              .find(Boolean);
+            failure ??= `[${from}] is ${reason}`;
+          } else if (matching.length === 0) {
+            failure ??= `[${from}] does not exist in any of the sources`;
+          } else {
+            failure ??= `[${from}] does not say which video it cites`;
           }
+          return whole;
         }
         count++;
         const startSec = parseTimestamp(from);
@@ -198,14 +231,20 @@ export function checkDigest(text: string, sources: CitationSource[], opts: Check
   return { text: kept.join('\n').trim(), citations, dropped };
 }
 
-/** Count citations in already checked text whose timestamp does not validate (used to re-verify a final digest). */
+/**
+ * Re-verify a checked digest: every titled citation whose source or timestamp
+ * does not validate, plus any bare `[m:ss]` marker left outside a link (it was
+ * never attributed to a video). Empty means every citation checks out.
+ */
 export function invalidCitations(text: string, sources: CitationSource[], opts: CheckOptions = {}): string[] {
   const bad: string[] = [];
-  for (const m of text.matchAll(TITLED)) {
+  const normalized = normalizeMarkers(text);
+  for (const m of normalized.matchAll(TITLED)) {
     const [whole, title, from, to, url] = m;
     const source = findSource(sources, title ?? '', url);
     const stamps = [from, to].filter((s): s is string => Boolean(s));
     if (!source || stamps.some((s) => checkTimestamp(source, parseTimestamp(s), opts))) bad.push(whole);
   }
+  for (const m of normalized.matchAll(BARE)) bad.push(m[0]);
   return bad;
 }
