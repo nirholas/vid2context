@@ -65,7 +65,11 @@ export function errorInfo(err: unknown): ErrorInfo {
       ...(cause && failedStep?.detail !== err.message ? { cause } : {}),
     };
   }
-  return { code: 'internal', message: (err instanceof Error ? err.message : String(err)).slice(0, 500), ...(cause ? { cause } : {}) };
+  return {
+    code: 'internal',
+    message: (err instanceof Error ? err.message : String(err)).slice(0, 500),
+    ...(cause ? { cause } : {}),
+  };
 }
 
 export function randomToken(): string {

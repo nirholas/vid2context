@@ -32,12 +32,14 @@ describe('schedules', () => {
     expect(iso(nextDueAt(s('hourly', '00:05'), from))).toBe('2026-11-14T11:05:00.000Z');
     expect(iso(nextDueAt(s('daily'), from))).toBe('2026-11-15T10:20:00.000Z');
     expect(iso(nextDueAt(s('daily', '06:00'), from))).toBe('2026-11-15T06:00:00.000Z');
-    expect(iso(nextDueAt(s('daily', '23:00'), from))).toBe('2026-11-15T23:00:00.000Z');
+    expect(iso(nextDueAt(s('daily', '23:00'), from))).toBe('2026-11-14T23:00:00.000Z');
     expect(iso(nextDueAt(s('weekly'), from))).toBe('2026-11-21T10:20:00.000Z');
     expect(iso(nextDueAt(s('weekly', '06:00'), from))).toBe('2026-11-21T06:00:00.000Z');
     expect(iso(nextDueAt(s({ minutes: 45 }), from))).toBe('2026-11-14T11:05:00.000Z');
-    // A run that starts late at 06:45 does not trigger a second run at 06:00 tomorrow morning minus an hour.
+    // A run at its slot, or late, waits for the next day's slot.
+    expect(iso(nextDueAt(s('daily', '06:00'), at('2026-11-14T06:00:00Z')))).toBe('2026-11-15T06:00:00.000Z');
     expect(iso(nextDueAt(s('daily', '06:00'), at('2026-11-14T06:45:00Z')))).toBe('2026-11-15T06:00:00.000Z');
+    expect(iso(nextDueAt(s('weekly', '06:00'), at('2026-11-14T06:00:00Z')))).toBe('2026-11-21T06:00:00.000Z');
   });
 
   it('runs a new watch list at once, or at its first slot when it has a time', () => {

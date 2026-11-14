@@ -82,16 +82,16 @@ function nextSlot(after: number, at: string, hourly: boolean): number {
 
 /**
  * When a collection checked at `from` is next due.
- * Without `at`: `from` plus the period. With `at`: the next matching slot,
- * at least one period minus a day (weekly) or minus an hour (daily) away, so
- * a late run never triggers a second run straight after.
+ * Without `at`: `from` plus the period. With `at`: the next matching slot
+ * more than an hour away (daily) or more than six days away (weekly), so a
+ * run that started late never triggers a second run straight after.
  */
 export function nextDueAt(schedule: Schedule, from: Date): Date {
   const t = from.getTime();
   const { every, at } = schedule;
   if (!at || typeof every === 'object') return new Date(t + periodMs(every));
   if (every === 'hourly') return new Date(nextSlot(t, at, true));
-  if (every === 'daily') return new Date(nextSlot(t + DAY - HOUR, at, false));
+  if (every === 'daily') return new Date(nextSlot(t + HOUR, at, false));
   return new Date(nextSlot(t + 6 * DAY, at, false));
 }
 

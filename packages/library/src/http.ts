@@ -7,20 +7,23 @@
  *   GET    /collections/:id             Collection & { videos, pending, watch }
  *   PATCH  /collections/:id             { name?, description?, sources?, watch? } -> Collection
  *   DELETE /collections/:id             204
- *   POST   /collections/:id/items       { inputs } -> { collection, summary }
+ *   POST   /collections/:id/items       { inputs, limit? } -> 202 Job (kind ingest), or { collection, summary } without a queue
  *   DELETE /collections/:id/items       { videoIds } -> Collection
- *   POST   /collections/:id/refresh     { limit? } -> { collection, summary }
+ *   POST   /collections/:id/refresh     { limit? } -> 202 Job (kind refresh), or { collection, summary } without a queue
  *   GET    /collections/:id/export      CollectionDefinition
  *   POST   /collections/import          CollectionDefinition (?refresh=1 ingests now) -> 201 { collection, summary? }
  *
- * The jobs engine (item 42) does not exist yet, so ingest and refresh run
- * inline and answer with the refresh summary instead of `202 Job`.
+ * With a jobs queue (deps.jobs), ingest and refresh run as jobs whose result
+ * is `{ collection, summary }`; without one they run inline and answer that
+ * directly.
  *
  * Errors are thrown as Vid2ContextError and handled by the main app's
  * onError, so they get the standard body and status.
  */
 import { type Ctx, hasKv, type KvStore, MemoryKv, type Registry, type Storage } from '@vid2context/core';
+import type { JobQueue } from '@vid2context/jobs';
 import { type Context, Hono } from 'hono';
+import { INGEST_KIND, REFRESH_KIND, registerLibraryJobs } from './jobs.ts';
 import { createLibrary, type Library, type LibraryDeps } from './library.ts';
 import { bad } from './util.ts';
 
@@ -32,6 +35,13 @@ export interface RouteDeps {
   kv?: KvStore | ((ctx: Ctx) => Promise<KvStore>);
   /** Extra library options (webhook retries, lease TTL, clock). */
   library?: Pick<LibraryDeps, 'webhook' | 'leaseTtlSec' | 'now'>;
+  /**
+   * The jobs queue (@vid2context/jobs). When given, ingest and refresh answer
+   * `202 Job` and run in the background (kinds `ingest` and `refresh`, which
+   * this factory registers if the queue lacks them). Without it they run
+   * inline and answer `{ collection, summary }`.
+   */
+  jobs?: Pick<JobQueue, 'enqueue' | 'kinds' | 'registerKind'>;
 }
 
 async function readBody(req: Request, example: string, optional = false): Promise<Record<string, unknown>> {
@@ -74,12 +84,17 @@ export function libraryRoutes(deps: RouteDeps): Hono {
   const app = new Hono();
   const fallbackKv = new MemoryKv();
 
+  const kvFor = async (ctx: Ctx, storage: Storage): Promise<KvStore> =>
+    typeof deps.kv === 'function' ? deps.kv(ctx) : (deps.kv ?? (hasKv(storage) ? storage : fallbackKv));
   const open = async (req: Request): Promise<Library> => {
     const ctx = deps.makeCtx(req);
     const storage = await deps.storage(ctx);
-    const kv = typeof deps.kv === 'function' ? await deps.kv(ctx) : (deps.kv ?? (hasKv(storage) ? storage : fallbackKv));
-    return createLibrary({ registry: deps.registry, storage, ctx, kv, ...deps.library });
+    return createLibrary({ registry: deps.registry, storage, ctx, kv: await kvFor(ctx, storage), ...deps.library });
   };
+  const jobs = deps.jobs;
+  if (jobs && !(jobs.kinds().includes(INGEST_KIND) && jobs.kinds().includes(REFRESH_KIND))) {
+    registerLibraryJobs(jobs, { kv: kvFor, library: deps.library });
+  }
 
   app.get('/collections', async (c) => {
     const lib = await open(c.req.raw);
@@ -134,9 +149,15 @@ export function libraryRoutes(deps: RouteDeps): Hono {
     const lib = await open(c.req.raw);
     const id = c.req.param('id');
     const body = await readBody(c.req.raw, '{"inputs": ["<video or playlist URL>"]}');
-    if (!Array.isArray(body.inputs))
-      throw bad('inputs must be an array of strings.', 'Send {"inputs": ["<video or playlist URL>"]}.');
-    const summary = await lib.addVideos(id, body.inputs as string[], { limit: optionalLimit(body.limit) });
+    if (!Array.isArray(body.inputs) || body.inputs.length === 0 || body.inputs.some((x) => typeof x !== 'string' || !x.trim()))
+      throw bad('inputs must be a non-empty array of strings.', 'Send {"inputs": ["<video or playlist URL>"]}.');
+    const inputs = body.inputs as string[];
+    const limit = optionalLimit(body.limit);
+    if (jobs) {
+      await lib.getCollection(id);
+      return c.json(await jobs.enqueue(INGEST_KIND, { collectionId: id, inputs, ...(limit ? { limit } : {}) }), 202);
+    }
+    const summary = await lib.addVideos(id, inputs, { limit });
     return c.json({ collection: await lib.getCollection(id), summary });
   });
 
@@ -153,7 +174,12 @@ export function libraryRoutes(deps: RouteDeps): Hono {
     const lib = await open(c.req.raw);
     const id = c.req.param('id');
     const body = await readBody(c.req.raw, '{"limit"?: 20}', true);
-    const summary = await lib.refresh(id, { limit: optionalLimit(body.limit) });
+    const limit = optionalLimit(body.limit);
+    if (jobs) {
+      await lib.getCollection(id);
+      return c.json(await jobs.enqueue(REFRESH_KIND, { collectionId: id, ...(limit ? { limit } : {}) }), 202);
+    }
+    const summary = await lib.refresh(id, { limit });
     keepAlive(c, lib.flush());
     return c.json({ collection: await lib.getCollection(id), summary });
   });

@@ -87,6 +87,17 @@ export interface IngestOptions {
   /** Pause between items on each worker, in ms. Default 300. */
   delayMs?: number;
   onProgress?: (p: Progress) => void;
+  /** One call per video fetched, as it finishes (the jobs engine streams these as `item` events). */
+  onItem?: (item: ItemOutcome) => void;
+}
+
+export interface ItemOutcome {
+  /** Video id (`platform:nativeId`). */
+  id: string;
+  input: string;
+  outcome: 'ok' | 'error';
+  title?: string;
+  error?: { code: string; message: string; hint?: string };
 }
 
 export interface RefreshOptions extends IngestOptions {
@@ -450,11 +461,14 @@ export class Library {
           await this.storage.addToCollection(collectionId, [context.metadata.ref.id]);
           added.push(summarize(context, context.transcript.createdAt));
           done++;
+          opts.onItem?.({ id: context.metadata.ref.id, input, outcome: 'ok', title: context.metadata.title });
           progress(`Added ${context.metadata.title}`);
         } catch (err) {
           const info = errorInfo(err);
           failed.push({ input, origin, ...info });
           done++;
+          const error = { code: info.code, message: info.message, ...(info.hint ? { hint: info.hint } : {}) };
+          opts.onItem?.({ id: ref.id, input, outcome: 'error', error });
           progress(`Failed ${input}: ${info.code}`);
         }
         const left = (remainingOf.get(origin) ?? 1) - 1;

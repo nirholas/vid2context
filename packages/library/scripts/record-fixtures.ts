@@ -131,7 +131,16 @@ async function main(): Promise<void> {
   await getVideoContext(registry, MISSING, {}, ctx).catch((err: Error) => console.error(`  ${MISSING}: ${err.message}`));
 
   const out = JSON.stringify({ recordedAt: new Date().toISOString(), playlist: PLAYLIST, calls }, null, 1);
-  for (const c of calls) if (ip && (c.body.includes(ip) || c.url.includes(ip))) console.error('IP in', c.method, c.url.slice(0, 120), c.body.includes(ip) ? `body: ...${c.body.slice(Math.max(0, c.body.indexOf(ip) - 200), c.body.indexOf(ip) + 40).replaceAll(ip, '<IP>')}` : 'url');
+  for (const c of calls)
+    if (ip && (c.body.includes(ip) || c.url.includes(ip)))
+      console.error(
+        'IP in',
+        c.method,
+        c.url.slice(0, 120),
+        c.body.includes(ip)
+          ? `body: ...${c.body.slice(Math.max(0, c.body.indexOf(ip) - 200), c.body.indexOf(ip) + 40).replaceAll(ip, '<IP>')}`
+          : 'url',
+      );
   if (ip && out.includes(ip)) throw new Error('the recording still contains this machine’s public IP; not writing it');
   writeFileSync(OUT, `${out}\n`);
   console.error(`wrote ${calls.length} calls to ${OUT}`);

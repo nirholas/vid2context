@@ -12,6 +12,7 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.32.2",
     "@vid2context/core": "*",
+    "@vid2context/jobs": "*",
     "hono": "^4.13.18",
     "zod": "^4.6.7"
   },

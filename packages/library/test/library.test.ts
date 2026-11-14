@@ -153,7 +153,11 @@ describe('videos', () => {
     const s = await lib.addVideos(c.id, ['xxxxxxxxxxx', 'https://youtu.be/jNQXAC9IVRw'], { delayMs: 0 });
     expect(s.added.map((a) => a.id)).toEqual([ZOO]);
     expect(s.failed).toEqual([
-      expect.objectContaining({ input: 'https://www.youtube.com/watch?v=xxxxxxxxxxx', code: 'not-found', hint: expect.any(String) }),
+      expect.objectContaining({
+        input: 'https://www.youtube.com/watch?v=xxxxxxxxxxx',
+        code: 'not-found',
+        hint: expect.any(String),
+      }),
     ]);
     const again = await lib.addVideos(c.id, ['jNQXAC9IVRw'], { delayMs: 0 });
     expect(again.added).toEqual([]);

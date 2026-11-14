@@ -40,4 +40,5 @@ export function setup(opts: SetupOptions = {}) {
 }
 
 /** Requests to innertube browse (playlist pages) in a replay's call log. */
-export const browseCalls = (replay: { calls: RecordedCall[] }) => replay.calls.filter((c) => c.url.includes('/youtubei/v1/browse'));
+export const browseCalls = (replay: { calls: RecordedCall[] }) =>
+  replay.calls.filter((c) => c.url.includes('/youtubei/v1/browse'));

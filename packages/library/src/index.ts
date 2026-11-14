@@ -1,3 +1,4 @@
+export * from './jobs.ts';
 export * from './library.ts';
 export * from './schedule.ts';
 export * from './scheduler.ts';
