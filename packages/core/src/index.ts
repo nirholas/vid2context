@@ -9,3 +9,4 @@ export * from './registry.ts';
 export * from './segments.ts';
 export * from './storage.ts';
 export * from './types.ts';
+export * from './storage-ext.ts';
