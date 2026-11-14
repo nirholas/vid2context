@@ -42,7 +42,19 @@ Helpers for item 44: `completeCollections(storage, prefix)`, `completeVideos(sto
 
 ## Client support and protocol version
 
-Built on `@modelcontextprotocol/sdk` 1.32.2, the newest release on 2026-11-14, which speaks protocol `2025-11-25`. Verified here: the official TypeScript SDK `Client` (used by the tests) supports all four features when the host implements the sampling and elicitation handlers. Which desktop and web clients (Claude Code, Claude Desktop, VS Code, Cursor, ChatGPT) declare `sampling` and `elicitation` today was not verified; check the client's `initialize` capabilities.
+Built on `@modelcontextprotocol/sdk` 1.32.2, the newest release on 2026-11-14, which speaks protocol `2025-11-25`. Verified here: the official TypeScript SDK `Client` (used by the tests) supports all four features when the host implements the sampling and elicitation handlers.
+
+Clients, as of 2026-11-14. Only Claude Code was tested directly; the other rows come from each vendor's documentation.
+
+| Client | Sampling | Elicitation | Source |
+|---|---|---|---|
+| Claude Code 2.1.325 | No: declares no `sampling` capability and answers `sampling/createMessage` with `-32601 Method not found`, so `digest_videos` returns the chunk plan | Yes: declares `elicitation: { form, url }`; in headless `claude -p` the answer is `cancel` because no user is present | Tested with a capability probe server loaded through `claude -p --mcp-config` |
+| claude.ai, Claude Desktop | No ("Claude doesn't yet support ... Sampling", also resource subscriptions) | Not stated | claude.com/docs/connectors/building |
+| VS Code (Copilot) | Yes, "on compatible connections during an active turn, with per-server approval" | Yes, form and URL requests | code.visualstudio.com/api/extension-guides/ai/mcp |
+| Cursor | Not stated | Yes | cursor.com/docs/context/mcp |
+| ChatGPT | Not stated (the docs describe tools only) | Not stated | developers.openai.com/api/docs/mcp |
+
+To check another client, read the capabilities it sends in `initialize` (`server.server.getClientCapabilities()`).
 
 Every feature degrades cleanly: a client that declares no `sampling` gets the chunk plan; no `elicitation` gets the track list or `unsupported`.
 
