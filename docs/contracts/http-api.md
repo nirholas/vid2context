@@ -112,14 +112,18 @@ Item 46 mounts every sub-app that exists when it runs (`app.route('/api/v1', lib
 | `GET /library/:id` | 46 | id URL-encoded (`youtube%3AjNQXAC9IVRw`) | `VideoContext` |
 | `DELETE /library/:id` | 46 | | `204` |
 | `GET /collections` | 41 | | `{ collections: Collection[] }` |
-| `POST /collections` | 41 | `{ name, description?, sources?: string[] }` | `201 Collection` |
-| `GET /collections/:id` | 41 | | `Collection & { videos: VideoSummary[] }` |
-| `PATCH /collections/:id` | 41 | `{ name?, description?, sources? }` | `Collection` |
-| `DELETE /collections/:id` | 41 | | `204` |
-| `POST /collections/:id/items` | 41 | `{ inputs: string[] }` (videos or lists) | `202 Job` (ingest runs as a job) |
-| `DELETE /collections/:id/items` | 41 | `{ videoIds: string[] }` | `Collection` |
-| `POST /collections/:id/refresh` | 41 | | `202 Job`: re-expand `sources` and ingest new uploads |
+| `POST /collections` | 41 | `{ name, description?, sources?: string[], watch?: Schedule }`; `sources` must be lists (playlist, channel, feed, page) | `201 Collection` |
+| `GET /collections/:id` | 41 | | `Collection & { videos: VideoSummary[], pending: string[], watch: { schedule, state } \| null }` |
+| `PATCH /collections/:id` | 41 | `{ name?, description?, sources?, watch?: Schedule \| null }` (`null` removes the watch list) | `Collection` |
+| `DELETE /collections/:id` | 41 | | `204`; saved transcripts stay in the library |
+| `POST /collections/:id/items` | 41 | `{ inputs: string[], limit? }` (videos or lists) | `202 Job` (kind `ingest`) when the server passes its jobs queue to `libraryRoutes({ jobs })`; without a queue it runs inline and answers `{ collection, summary: RefreshSummary }`. The job's result is that same object |
+| `DELETE /collections/:id/items` | 41 | `{ videoIds: string[] }` | `Collection`; removed videos are not re-added by a refresh |
+| `POST /collections/:id/refresh` | 41 | `{ limit? }` (optional body) | `202 Job` (kind `refresh`): re-expand `sources` and ingest new uploads. Without a queue: inline, `{ collection, summary: RefreshSummary }` |
+| `GET /collections/:id/export` | 41 | | `CollectionDefinition`: `{ format: 'vid2context.collection', version: 1, name, description?, sources, videos: string[], schedule? }`, no transcripts |
+| `POST /collections/import?refresh=` | 41 | `CollectionDefinition` | `201 { collection, summary? }`; `refresh=1` ingests at once, otherwise `videos` wait for the next refresh |
 | `GET /search?q=&collectionId=&videoIds=&limit=` | 40 | `videoIds` comma-separated | `{ hits: (SearchHit & { url?: string })[] }`; `url` is a timestamp link |
+
+Collection types (`@vid2context/library`): `Schedule` is `{ every: 'hourly' | 'daily' | 'weekly' | { minutes: number }, at?: 'HH:MM' (UTC), enabled }`. `RefreshSummary` is `{ collectionId, added: VideoSummary[], skipped: number, failed: { input, code, message, hint?, cause? }[], remaining: number, checkedAt }`. Ingest and refresh jobs report `progress` `{ done, total, message }` and one `item` event `{ id, outcome: 'ok' | 'error', title?, error? }` per video. See [guides/collections.md](../guides/collections.md).
 
 ### Intelligence
 

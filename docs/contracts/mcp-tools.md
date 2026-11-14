@@ -87,10 +87,12 @@ Every tool in the original plan is now implemented or wired. These are the input
 
 | Tool | Input | Returns |
 |---|---|---|
-| `list_collections` | `{}` | collections with counts |
-| `create_collection` | `{ name, description?, sources? }` | the collection; `sources` (playlists, channels, feeds) are followed |
-| `add_to_collection` | `{ collection, urls }` | ingests each video (or list) and returns the updated collection |
-| `get_collection` | `{ collection }` | the collection with video summaries |
+| `list_collections` | `{}` | `{ collections: { id, name, description?, videos (count), sources, updatedAt }[] }` |
+| `create_collection` | `{ name, description?, sources? }` | the collection; `sources` (playlists, channels, feeds) are followed; a single video as a source is a `bad-request` error |
+| `add_to_collection` | `{ collection, urls }` | ingests each video (or list, expanded) now and returns `{ collection, summary: { added: { id, title, url, origin }[], skipped, failed: { input, code, message, hint?, cause? }[], remaining, checkedAt } }`; one failed video never stops the others |
+| `get_collection` | `{ collection }` | the collection with `videos` (video summaries), `pending` (imported inputs not ingested yet) and `watch` (schedule and state, or null) |
+
+Refresh, watch lists, webhooks and import/export are on the HTTP API and the library package; see [guides/collections.md](../guides/collections.md).
 
 ## Prompts (implemented)
 
