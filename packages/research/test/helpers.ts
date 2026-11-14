@@ -59,7 +59,8 @@ export function llmRoute(fixture: LlmFixture): Route {
     response: (call: RecordedCall) => {
       const body = JSON.parse(String(call.body)) as RecordedLlmCall['request'];
       const hit = fixture.calls.find(
-        (c) => c.url === call.url && c.model === body.model && JSON.stringify(c.request.messages) === JSON.stringify(body.messages),
+        (c) =>
+          c.url === call.url && c.model === body.model && JSON.stringify(c.request.messages) === JSON.stringify(body.messages),
       );
       if (!hit) throw new Error(`no recorded LLM response for ${body.model} with these messages`);
       return { status: hit.status, body: hit.response, headers: { 'content-type': 'application/json' } };

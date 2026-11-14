@@ -22,7 +22,12 @@ describe.skipIf(!process.env.LIVE)('live research tools', () => {
   const registry = makeRegistry();
 
   it('research_videos answers a buying question in far fewer tokens than the transcripts', async () => {
-    const r = await research(PLAYLIST_VIDEOS, 'which years have engine reliability problems', {}, { registry, ctx, storage: new MemoryStorage() });
+    const r = await research(
+      PLAYLIST_VIDEOS,
+      'which years have engine reliability problems',
+      {},
+      { registry, ctx, storage: new MemoryStorage() },
+    );
     console.error(renderResearch(r));
     console.error(`research: ${r.tokens} tokens of excerpts vs ${r.transcriptTokens} tokens of full transcripts`);
     expect(r.failed).toEqual([]);

@@ -55,5 +55,7 @@ const out = {
   calls,
 };
 writeFileSync(join(import.meta.dirname, '../test/fixtures', name), `${JSON.stringify(out, null, 2)}\n`);
-console.error(`wrote ${name}: ${calls.length} calls, rung ${result.rung}, ${result.moments.length} moments, ${result.dropped} dropped`);
+console.error(
+  `wrote ${name}: ${calls.length} calls, rung ${result.rung}, ${result.moments.length} moments, ${result.dropped} dropped`,
+);
 for (const m of result.moments) console.error(`${m.timestamp} ${m.title}`);

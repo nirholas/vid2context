@@ -37,7 +37,8 @@ export function buildWindows(segments: Segment[], doc: number, opts: WindowOptio
   const strideSec = opts.strideSec ?? windowSec / 2;
   const segs = segments;
   if (segs.length === 0) return [];
-  const stems = segs.map((s) => tokenize(s.text).map(stem));
+  // Stop words are checked on the raw word, as the query does, before stemming ("really" stems to "real").
+  const words = segs.map((s) => tokenize(s.text).map((raw) => ({ raw, stem: stem(raw) })));
   const startOf = segs[0]?.startSec ?? 0;
   const endOf = segs.reduce((m, s) => Math.max(m, s.endSec), startOf);
   const out: Window[] = [];
@@ -55,10 +56,10 @@ export function buildWindows(segments: Segment[], doc: number, opts: WindowOptio
     const tf = new Map<string, number>();
     let length = 0;
     for (let i = lo; i <= hi; i++) {
-      for (const tok of stems[i] ?? []) {
-        sequence.push(tok);
-        if (STOP_WORDS.has(tok)) continue;
-        tf.set(tok, (tf.get(tok) ?? 0) + 1);
+      for (const w of words[i] ?? []) {
+        sequence.push(w.stem);
+        if (STOP_WORDS.has(w.raw)) continue;
+        tf.set(w.stem, (tf.get(w.stem) ?? 0) + 1);
         length++;
       }
     }

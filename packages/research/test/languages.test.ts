@@ -32,7 +32,13 @@ describe('listCaptionLanguages', () => {
     const r = await listCaptionLanguages(GWAGON, { registry: makeRegistry(), ctx, storage: null });
     expect(r.videoId).toBe('youtube:cCPsdFdlshc');
     expect(r.tracks).toEqual([
-      { language: 'en', name: 'English (auto-generated)', origin: 'auto-captions', translatable: true, provider: 'youtube-captions' },
+      {
+        language: 'en',
+        name: 'English (auto-generated)',
+        origin: 'auto-captions',
+        translatable: true,
+        provider: 'youtube-captions',
+      },
     ]);
     expect(r.translationTargets).toHaveLength(16);
     expect(r.translationTargets).toContainEqual({ language: 'de', name: 'German' });
@@ -52,7 +58,11 @@ describe('listCaptionLanguages', () => {
 
   it('reports a removed video as not-found', async () => {
     await expect(
-      listCaptionLanguages('https://youtu.be/xxxxxxxxxxx', { registry: makeRegistry(), ctx: ctxWith([playerRoute]), storage: null }),
+      listCaptionLanguages('https://youtu.be/xxxxxxxxxxx', {
+        registry: makeRegistry(),
+        ctx: ctxWith([playerRoute]),
+        storage: null,
+      }),
     ).rejects.toMatchObject({ code: 'not-found' });
   });
 

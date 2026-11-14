@@ -13,7 +13,10 @@ function app() {
   parent.onError((err, c) => {
     const e = err instanceof Vid2ContextError ? err : undefined;
     return c.json(
-      { error: { code: e?.code ?? 'internal', message: err.message, ...(e?.hint ? { hint: e.hint } : {}) }, attempts: attemptsOf(err) },
+      {
+        error: { code: e?.code ?? 'internal', message: err.message, ...(e?.hint ? { hint: e.hint } : {}) },
+        attempts: attemptsOf(err),
+      },
       e?.code === 'bad-request' || e?.code === 'unsupported-input' ? 400 : e?.code === 'not-found' ? 404 : 500,
     );
   });
@@ -29,7 +32,11 @@ function app() {
 }
 
 const post = (body: unknown) =>
-  app().request('/api/v1/research', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
+  app().request('/api/v1/research', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(body),
+  });
 
 beforeEach(() => clearCooldowns());
 
@@ -40,7 +47,10 @@ describe('HTTP research routes', () => {
     const body = await res.json();
     expect(body.results[0]).toMatchObject({ videoId: 'youtube:cCPsdFdlshc' });
     expect(body.results[0].excerpts).toHaveLength(2);
-    expect(body.results[0].excerpts[0]).toMatchObject({ startSec: 43.76, url: 'https://www.youtube.com/watch?v=cCPsdFdlshc&t=43s' });
+    expect(body.results[0].excerpts[0]).toMatchObject({
+      startSec: 43.76,
+      url: 'https://www.youtube.com/watch?v=cCPsdFdlshc&t=43s',
+    });
     expect(typeof body.results[0].excerpts[0].context.before).toBe('string');
   });
 

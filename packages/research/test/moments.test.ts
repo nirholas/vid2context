@@ -12,7 +12,16 @@ import {
   SNAP_SEC,
   validateMoments,
 } from '../src/moments.ts';
-import { ctxWith, filledStorage, GWAGON, type LlmFixture, llmRoute, loadContext, loadLlmFixture, makeRegistry } from './helpers.ts';
+import {
+  ctxWith,
+  filledStorage,
+  GWAGON,
+  type LlmFixture,
+  llmRoute,
+  loadContext,
+  loadLlmFixture,
+  makeRegistry,
+} from './helpers.ts';
 
 // Real keyless chain answers for this package's exact prompt (see test/fixtures/README.md).
 const single = loadLlmFixture('key-moments-cCPsdFdlshc.json');
@@ -42,7 +51,8 @@ describe('transcript compaction', () => {
     const lines = compactLines(gwagon.transcript.segments);
     expect(lines[0]?.startSec).toBe(0);
     expect(lines[0]?.text.startsWith("so you're going to buy G wagon")).toBe(true);
-    for (let i = 1; i < lines.length; i++) expect((lines[i]?.startSec ?? 0) - (lines[i - 1]?.startSec ?? 0)).toBeGreaterThanOrEqual(9);
+    for (let i = 1; i < lines.length; i++)
+      expect((lines[i]?.startSec ?? 0) - (lines[i - 1]?.startSec ?? 0)).toBeGreaterThanOrEqual(9);
     const words = (s: string) => s.split(/\s+/).filter(Boolean).length;
     expect(lines.reduce((n, l) => n + words(l.text), 0)).toBe(gwagon.transcript.segments.reduce((n, s) => n + words(s.text), 0));
   });
@@ -85,7 +95,8 @@ describe('keyMoments on the recorded keyless answer', () => {
       expect(m.title.length).toBeGreaterThan(0);
       expect(m.why.length).toBeGreaterThan(0);
     }
-    for (let i = 1; i < r.moments.length; i++) expect(r.moments[i]?.startSec ?? 0).toBeGreaterThan(r.moments[i - 1]?.startSec ?? 0);
+    for (let i = 1; i < r.moments.length; i++)
+      expect(r.moments[i]?.startSec ?? 0).toBeGreaterThan(r.moments[i - 1]?.startSec ?? 0);
     // Every rung tried is in attempts, the answering one last and ok.
     expect(r.attempts.at(-1)).toMatchObject({ id: single.rung, stage: 'llm', outcome: 'ok' });
     for (const c of single.calls.filter((x) => x.status === 429)) {
