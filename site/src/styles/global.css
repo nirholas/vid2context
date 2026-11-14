@@ -1,0 +1,411 @@
+@import "tailwindcss";
+@import "./tokens.css";
+
+/* Tailwind utilities read the shared tokens, so a theme switch is only a data-theme change on <html>. */
+@theme inline {
+  --color-bg: var(--v2c-bg);
+  --color-surface: var(--v2c-surface);
+  --color-surface-2: var(--v2c-surface-2);
+  --color-surface-3: var(--v2c-surface-3);
+  --color-line: var(--v2c-border);
+  --color-line-strong: var(--v2c-border-strong);
+  --color-fg: var(--v2c-text);
+  --color-muted: var(--v2c-muted);
+  --color-subtle: var(--v2c-subtle);
+  --color-accent: var(--v2c-accent);
+  --color-accent-2: var(--v2c-accent-2);
+  --color-success: var(--v2c-success);
+  --color-warning: var(--v2c-warning);
+  --color-danger: var(--v2c-danger);
+  --color-tier-local: var(--v2c-tier-local);
+  --color-tier-free: var(--v2c-tier-free);
+  --color-tier-keyless: var(--v2c-tier-keyless);
+  --color-tier-paid: var(--v2c-tier-paid);
+  --radius-sm: var(--v2c-radius-sm);
+  --radius-md: var(--v2c-radius);
+  --radius-lg: var(--v2c-radius-lg);
+  --radius-pill: var(--v2c-radius-pill);
+  --font-sans: var(--v2c-font-sans);
+  --font-mono: var(--v2c-font-mono);
+  --shadow-card: var(--v2c-shadow);
+}
+
+/*
+ * Site-only values that depend on the theme. Text on the gradient button is
+ * black in dark mode (5.7:1 or better on both ends) and white on a slightly
+ * darkened gradient in light mode (5:1 or better), so it passes WCAG AA at
+ * any size. Tier colors get a text-safe variant for the light theme.
+ */
+:root {
+  --site-btn-fg: #000000;
+  --site-btn-shade: transparent;
+  --site-tier-local-text: var(--v2c-tier-local);
+  --site-tier-free-text: #60a5fa;
+  --site-tier-keyless-text: #c084fc;
+  --site-tier-paid-text: var(--v2c-tier-paid);
+  --site-glow: rgb(59 130 246 / 0.18);
+}
+:root[data-theme="light"] {
+  --site-btn-fg: #ffffff;
+  --site-btn-shade: rgb(0 0 0 / 0.2);
+  --site-tier-local-text: #15803d;
+  --site-tier-free-text: #1d4ed8;
+  --site-tier-keyless-text: #7e22ce;
+  --site-tier-paid-text: #b45309;
+  --site-glow: rgb(37 99 235 / 0.1);
+}
+@media (prefers-color-scheme: light) {
+  :root[data-theme="system"] {
+    --site-btn-fg: #ffffff;
+    --site-btn-shade: rgb(0 0 0 / 0.2);
+    --site-tier-local-text: #15803d;
+    --site-tier-free-text: #1d4ed8;
+    --site-tier-keyless-text: #7e22ce;
+    --site-tier-paid-text: #b45309;
+    --site-glow: rgb(37 99 235 / 0.1);
+  }
+}
+
+@layer base {
+  html {
+    background: var(--v2c-bg);
+    color: var(--v2c-text);
+    font-family: var(--v2c-font-sans);
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 5rem;
+  }
+  body {
+    min-height: 100vh;
+    background: var(--v2c-bg);
+    line-height: 1.6;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection {
+    background: color-mix(in srgb, var(--v2c-accent) 35%, transparent);
+  }
+  :focus-visible {
+    outline: 2px solid var(--v2c-accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  code,
+  kbd,
+  pre,
+  samp {
+    font-family: var(--v2c-font-mono);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  .wrap {
+    width: 100%;
+    max-width: 72rem;
+    margin-inline: auto;
+    padding-inline: 1rem;
+  }
+  @media (min-width: 640px) {
+    .wrap {
+      padding-inline: 1.5rem;
+    }
+  }
+
+  .skip-link {
+    position: absolute;
+    left: 1rem;
+    top: -4rem;
+    z-index: 100;
+    padding: 0.5rem 1rem;
+    border-radius: var(--v2c-radius-sm);
+    background: var(--v2c-surface-3);
+    color: var(--v2c-text);
+  }
+  .skip-link:focus {
+    top: 1rem;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding: 0.625rem 1.125rem;
+    border-radius: var(--v2c-radius-pill);
+    font-weight: 600;
+    font-size: 0.9375rem;
+    line-height: 1.2;
+    white-space: nowrap;
+    border: 1px solid var(--v2c-border-strong);
+    color: var(--v2c-text);
+    background: var(--v2c-surface);
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      background-color 0.15s,
+      border-color 0.15s,
+      transform 0.15s;
+  }
+  .btn:hover {
+    background: var(--v2c-surface-2);
+    border-color: var(--v2c-muted);
+  }
+  .btn-primary {
+    border: 0;
+    color: var(--site-btn-fg);
+    background:
+      linear-gradient(var(--site-btn-shade), var(--site-btn-shade)),
+      var(--v2c-gradient);
+  }
+  .btn-primary:hover {
+    background:
+      linear-gradient(var(--site-btn-shade), var(--site-btn-shade)),
+      var(--v2c-gradient);
+    filter: brightness(1.08);
+  }
+  .btn:disabled {
+    opacity: 0.6;
+    cursor: progress;
+  }
+
+  .card {
+    border: 1px solid var(--v2c-border);
+    border-radius: var(--v2c-radius-lg);
+    background: var(--v2c-surface);
+  }
+
+  .eyebrow {
+    font-family: var(--v2c-font-mono);
+    font-size: 0.8125rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--v2c-accent-2);
+  }
+  :root[data-theme="light"] .eyebrow {
+    color: #0e7490;
+  }
+  @media (prefers-color-scheme: light) {
+    :root[data-theme="system"] .eyebrow {
+      color: #0e7490;
+    }
+  }
+
+  .gradient-text {
+    background: var(--v2c-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    min-height: 2rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--v2c-radius-pill);
+    border: 1px solid var(--v2c-border);
+    background: var(--v2c-surface);
+    color: var(--v2c-muted);
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition:
+      color 0.15s,
+      border-color 0.15s;
+  }
+  .chip:hover {
+    color: var(--v2c-text);
+    border-color: var(--v2c-border-strong);
+  }
+
+  .tier-local {
+    --tier: var(--v2c-tier-local);
+    --tier-text: var(--site-tier-local-text);
+  }
+  .tier-free {
+    --tier: var(--v2c-tier-free);
+    --tier-text: var(--site-tier-free-text);
+  }
+  .tier-keyless {
+    --tier: var(--v2c-tier-keyless);
+    --tier-text: var(--site-tier-keyless-text);
+  }
+  .tier-paid {
+    --tier: var(--v2c-tier-paid);
+    --tier-text: var(--site-tier-paid-text);
+  }
+
+  /* Code blocks: shiki dual themes, dark unless the page is light. */
+  .code {
+    position: relative;
+    border: 1px solid var(--v2c-border);
+    border-radius: var(--v2c-radius);
+    background: var(--v2c-surface);
+    overflow: hidden;
+  }
+  .code pre,
+  pre.shiki {
+    margin: 0;
+    padding: 1rem 1.125rem;
+    overflow-x: auto;
+    font-size: 0.8125rem;
+    line-height: 1.7;
+    background: transparent !important;
+  }
+  .code pre:focus-visible {
+    outline-offset: -2px;
+  }
+  .shiki span {
+    color: var(--shiki-dark);
+  }
+  :root[data-theme="light"] .shiki span {
+    color: var(--shiki-light);
+  }
+  @media (prefers-color-scheme: light) {
+    :root[data-theme="system"] .shiki span {
+      color: var(--shiki-light);
+    }
+  }
+}
+
+/* Rendered Markdown in the docs. */
+.prose {
+  color: var(--v2c-text);
+  font-size: 1rem;
+  line-height: 1.75;
+  max-width: 48rem;
+  overflow-wrap: break-word;
+}
+.prose > * + * {
+  margin-top: 1.1em;
+}
+.prose h1 {
+  font-size: clamp(2rem, 4vw, 2.5rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+}
+.prose h2 {
+  margin-top: 2.25em;
+  padding-top: 0.25em;
+  font-size: 1.5rem;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  font-weight: 650;
+}
+.prose h3 {
+  margin-top: 1.75em;
+  font-size: 1.1875rem;
+  font-weight: 600;
+}
+.prose h4 {
+  margin-top: 1.5em;
+  font-weight: 600;
+}
+.prose :is(h1, h2, h3, h4) a.anchor {
+  margin-left: 0.4em;
+  color: var(--v2c-muted);
+  text-decoration: none;
+  opacity: 0;
+}
+.prose :is(h1, h2, h3, h4):hover a.anchor,
+.prose a.anchor:focus-visible {
+  opacity: 1;
+}
+.prose p,
+.prose li {
+  color: var(--v2c-text);
+}
+.prose a {
+  color: var(--v2c-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+:root:not([data-theme="light"]) .prose a {
+  color: #60a5fa;
+}
+@media (prefers-color-scheme: light) {
+  :root[data-theme="system"] .prose a {
+    color: var(--v2c-accent);
+  }
+}
+.prose ul,
+.prose ol {
+  padding-left: 1.4em;
+}
+.prose ul {
+  list-style: disc;
+}
+.prose ol {
+  list-style: decimal;
+}
+.prose li + li {
+  margin-top: 0.35em;
+}
+.prose li::marker {
+  color: var(--v2c-muted);
+}
+.prose blockquote {
+  border-left: 3px solid var(--v2c-border-strong);
+  padding-left: 1em;
+  color: var(--v2c-muted);
+}
+.prose blockquote p {
+  color: var(--v2c-muted);
+}
+.prose hr {
+  border: 0;
+  border-top: 1px solid var(--v2c-border);
+  margin-block: 2.5em;
+}
+.prose :not(pre) > code {
+  font-size: 0.875em;
+  padding: 0.12em 0.4em;
+  border-radius: 6px;
+  border: 1px solid var(--v2c-border);
+  background: var(--v2c-surface-2);
+}
+.prose .table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--v2c-border);
+  border-radius: var(--v2c-radius);
+}
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+.prose th,
+.prose td {
+  padding: 0.6rem 0.85rem;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--v2c-border);
+}
+.prose th {
+  background: var(--v2c-surface-2);
+  font-weight: 600;
+}
+.prose tr:last-child td {
+  border-bottom: 0;
+}
+.prose img {
+  display: inline-block;
+  max-width: 100%;
+  height: auto;
+}
+.prose p > a > img {
+  vertical-align: middle;
+}

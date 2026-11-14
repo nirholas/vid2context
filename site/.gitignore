@@ -1,0 +1,6 @@
+# Written by scripts/gen-data.ts on every build.
+src/generated/
+.astro/
+test-results/
+playwright-report/
+lighthouse/
