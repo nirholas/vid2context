@@ -2,6 +2,7 @@ export * from './chain.ts';
 export * from './context.ts';
 export * from './errors.ts';
 export * from './format/index.ts';
+export * from './keys.ts';
 export * from './pipeline.ts';
 export * from './provider.ts';
 export * from './registry.ts';

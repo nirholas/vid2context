@@ -94,7 +94,11 @@ export interface CaptionsProvider extends ProviderBase {
  * own rung. Rungs are ordered by policy, then tried until one succeeds.
  */
 export interface Rung {
-  /** Unique: '<provider>/<lane>/<model>', e.g. 'llm/groq/openai/gpt-oss-120b'. */
+  /**
+   * Unique and stable: '<kind>/<service>/<model>', e.g. 'llm/groq/openai/gpt-oss-120b'.
+   * A pooled extra key adds '#n' to the service: 'llm/groq#2/openai/gpt-oss-120b'.
+   * Cooldowns are keyed by this id.
+   */
   id: string;
   provider: string;
   /** Upstream service name for health output: 'groq', 'ovh', 'ollama'. */
@@ -178,25 +182,31 @@ export interface VisualRung extends Rung {
   read(frame: { data: Uint8Array; mimeType: string; atSec: number }, ctx: Ctx): Promise<VisualNote[]>;
 }
 
+/**
+ * Rung providers build their rungs from env on every call (cheap, no network),
+ * so `<PROVIDER>_MODEL` overrides and `<PROVIDER>_FALLBACK_KEYS` pools take
+ * effect without code changes. Return every rung the provider knows, enabled
+ * or not, so health output can show what a key would unlock.
+ */
 export interface SttProvider extends ProviderBase {
   kind: 'stt';
-  rungs(): SttRung[];
+  rungs(env: Env): SttRung[];
 }
 export interface LlmProvider extends ProviderBase {
   kind: 'llm';
-  rungs(): LlmRung[];
+  rungs(env: Env): LlmRung[];
 }
 export interface EmbedProvider extends ProviderBase {
   kind: 'embed';
-  rungs(): EmbedRung[];
+  rungs(env: Env): EmbedRung[];
 }
 export interface VideoProvider extends ProviderBase {
   kind: 'video';
-  rungs(): VideoRung[];
+  rungs(env: Env): VideoRung[];
 }
 export interface VisualProvider extends ProviderBase {
   kind: 'visual';
-  rungs(): VisualRung[];
+  rungs(env: Env): VisualRung[];
 }
 
 // ---------------------------------------------------------------- storage

@@ -46,20 +46,20 @@ export class Registry {
   captions(): CaptionsProvider[] {
     return this.ofKind('captions');
   }
-  sttRungs(): SttRung[] {
-    return this.ofKind('stt').flatMap((p) => p.rungs());
+  sttRungs(env: Env): SttRung[] {
+    return this.ofKind('stt').flatMap((p) => p.rungs(env));
   }
-  llmRungs(): LlmRung[] {
-    return this.ofKind('llm').flatMap((p) => p.rungs());
+  llmRungs(env: Env): LlmRung[] {
+    return this.ofKind('llm').flatMap((p) => p.rungs(env));
   }
-  embedRungs(): EmbedRung[] {
-    return this.ofKind('embed').flatMap((p) => p.rungs());
+  embedRungs(env: Env): EmbedRung[] {
+    return this.ofKind('embed').flatMap((p) => p.rungs(env));
   }
-  videoRungs(): VideoRung[] {
-    return this.ofKind('video').flatMap((p) => p.rungs());
+  videoRungs(env: Env): VideoRung[] {
+    return this.ofKind('video').flatMap((p) => p.rungs(env));
   }
-  visualRungs(): VisualRung[] {
-    return this.ofKind('visual').flatMap((p) => p.rungs());
+  visualRungs(env: Env): VisualRung[] {
+    return this.ofKind('visual').flatMap((p) => p.rungs(env));
   }
   storages(): StorageProvider[] {
     return this.ofKind('storage');
@@ -94,7 +94,7 @@ export class Registry {
           id: p.id,
           kind: p.kind,
           name: p.name,
-          rungs: p.rungs().map((r) => ({
+          rungs: p.rungs(env).map((r) => ({
             id: r.id,
             service: r.service,
             model: r.model,

@@ -145,7 +145,7 @@ export async function transcribe(
 ): Promise<{ transcript: Transcript; attempts: Attempt[] }> {
   const pre: Attempt[] = [];
   const size = audio.kind === 'bytes' ? audio.data.byteLength : undefined;
-  const rungs = registry.sttRungs().filter((r) => {
+  const rungs = registry.sttRungs(ctx.env).filter((r) => {
     if (size !== undefined && r.maxBytes !== undefined && size > r.maxBytes) {
       pre.push({ id: r.id, stage: 'stt', outcome: 'skipped', reason: 'too-large', detail: `${size} > ${r.maxBytes} bytes` });
       return false;
@@ -184,7 +184,7 @@ export async function chat(
 ): Promise<ChatResult & { rung: string; attempts: Attempt[] }> {
   const needs = [...(chain.needs ?? [])];
   if (req.json && typeof req.json === 'object' && !needs.includes('json')) needs.push('json');
-  const res = await runChain<LlmRung, ChatResult>('llm', registry.llmRungs(), (r) => r.chat(req, ctx), { ...chain, needs }, ctx);
+  const res = await runChain<LlmRung, ChatResult>('llm', registry.llmRungs(ctx.env), (r) => r.chat(req, ctx), { ...chain, needs }, ctx);
   return { ...res.value, rung: res.rung.id, attempts: res.attempts };
 }
 
@@ -233,7 +233,7 @@ export async function getVideoContext(
   let visual: VideoContext['visual'];
 
   if (mode === 'video') {
-    const rungs = registry.videoRungs().filter((r) => r.supports(ref));
+    const rungs = registry.videoRungs(ctx.env).filter((r) => r.supports(ref));
     try {
       const res = await runChain(
         'video',
