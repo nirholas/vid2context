@@ -11,6 +11,7 @@
 import { createInterface } from 'node:readline';
 import { parseArgs } from 'node:util';
 import { serve } from '@hono/node-server';
+import { createFfmpegExtractor } from '@vid2context/live/node';
 import { createNodeContext, createRegistry, loadEnvFiles } from '@vid2context/registry/node';
 import pkg from '../package.json' with { type: 'json' };
 import { authConfigured, oauthEnabled } from './auth.ts';
@@ -98,6 +99,7 @@ async function main(): Promise<void> {
     registry: createRegistry(),
     makeCtx: (req) => createNodeContext({ signal: req.signal }),
     version: pkg.version,
+    serverOptions: { extractAudio: createFfmpegExtractor({ env: ctx.env }) },
     dnsRebindingProtection: LOOPBACK.has(hostname),
   });
 

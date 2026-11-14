@@ -15,6 +15,7 @@
     "@modelcontextprotocol/sdk": "^1.32.2",
     "@vid2context/core": "*",
     "@vid2context/discovery": "*",
+    "@vid2context/live": "*",
     "@vid2context/mcp": "*",
     "@vid2context/registry": "*",
     "hono": "^4.13.18"
