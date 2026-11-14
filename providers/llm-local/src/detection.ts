@@ -410,7 +410,8 @@ function envLines(servers: DetectedServer[], recs: Recommendation[]): string[] {
     const block: string[] = [];
     if (s.kind === 'ollama') {
       if (chat.length > 0) block.push(`OLLAMA_MODEL=${chat.join(',')}`);
-      if (s.baseUrl !== normalizeOllamaBase(undefined)) block.push(`OLLAMA_BASE_URL=${s.baseUrl}`);
+      // Written with /v1: the embed and visual-frames providers append OpenAI paths to it; this package strips it.
+      if (s.baseUrl !== normalizeOllamaBase(undefined)) block.push(`OLLAMA_BASE_URL=${s.baseUrl}/v1`);
       const embed = s.models.find((m) => m.task === 'embed');
       if (embed) block.push(`OLLAMA_EMBED_MODEL=${embed.id}`);
     } else if (chat.length > 0) {

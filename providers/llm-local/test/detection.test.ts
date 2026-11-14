@@ -77,7 +77,7 @@ describe('detectLocalServers', () => {
       ['speech-to-text', 'whisper-1'],
     ]);
     expect(r.env).toContain('OLLAMA_MODEL=qwen2.5:3b');
-    expect(r.env).toContain(`OLLAMA_BASE_URL=${OLLAMA}`);
+    expect(r.env).toContain(`OLLAMA_BASE_URL=${OLLAMA}/v1`);
     expect(r.env).toContain('OLLAMA_EMBED_MODEL=nomic-embed-text:latest');
     expect(r.env).toContain('LLAMACPP_MODEL=qwen2.5-0.5b-instruct-q4_k_m');
     expect(r.env).toContain(`LLAMACPP_BASE_URL=${LLAMACPP}`);
