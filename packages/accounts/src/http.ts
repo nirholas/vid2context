@@ -77,7 +77,6 @@ export interface HostedRequest {
   plan: Plan;
   meter: UsageMeter;
   kv: KvStore;
-  config: HostedConfig;
   /** The registry for this request, with speech-to-text, video and LLM rungs metered against the caller's plan. */
   registry(inner: Registry): Registry;
   /**
@@ -330,7 +329,11 @@ export function hostedMiddleware(deps: AccountsDeps): MiddlewareHandler {
     const collection = /^\/collections\/([^/]+)\/items$/.exec(rel);
     if (collection?.[1] && c.req.method === 'POST' && deps.storage) {
       const storage = await deps.storage(ctx);
-      const body = (await c.req.json().catch(() => null)) as { inputs?: unknown } | null;
+      // Read a clone so the route still gets the untouched body, however it reads it.
+      const body = (await c.req.raw
+        .clone()
+        .json()
+        .catch(() => null)) as { inputs?: unknown } | null;
       const adding = Array.isArray(body?.inputs) ? body.inputs.length : 0;
       const existing = storage ? await storage.getCollection(decodeURIComponent(collection[1])) : null;
       if (existing && existing.videoIds.length + adding > plan.maxCollectionSize) {
@@ -352,7 +355,6 @@ export function hostedMiddleware(deps: AccountsDeps): MiddlewareHandler {
       plan,
       meter,
       kv,
-      config,
       registry: (inner) => meter.wrapRegistry(inner),
       storage: (inner, opts) =>
         sharedCache(inner, {
