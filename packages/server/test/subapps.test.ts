@@ -85,3 +85,36 @@ describe('mounted sub-apps', () => {
     expect((await mcp.json()).error.hint).toContain('VID2CONTEXT_MCP_TOKENS');
   });
 });
+
+describe('hosted mode (@vid2context/accounts)', () => {
+  const HOSTED = {
+    VID2CONTEXT_HOSTED: '1',
+    VID2CONTEXT_ANONYMOUS: '1',
+    VID2CONTEXT_SESSION_SECRET: 'a-session-secret-of-at-least-32-characters-for-tests',
+    VID2CONTEXT_API_KEYS: 'plain-key-55e0aa',
+  };
+
+  it('keeps the account routes hidden when hosted mode is off', async () => {
+    const { app } = makeApp();
+    const me = await app.request('/api/v1/me');
+    expect(me.status).toBe(404);
+    expect((await me.json()).error.hint).toContain('VID2CONTEXT_HOSTED=1');
+  });
+
+  it('lets accounts guard /api/* instead of the server keys, and meters pipeline work per caller', async () => {
+    const { app } = makeApp({ env: HOSTED });
+    // Anonymous callers get the anonymous plan; the server's own API key is not asked for.
+    const res = await app.request('/api/v1/context?url=jNQXAC9IVRw&mode=captions', {
+      headers: { 'x-forwarded-for': '203.0.113.9' },
+    });
+    expect(res.status).toBe(200);
+    expect(((await res.json()) as { metadata: { title: string } }).metadata.title).toBe('Me at the zoo');
+    // /me needs a signed-in account.
+    const me = await app.request('/api/v1/me');
+    expect(me.status).toBe(401);
+    expect((await me.json()).error.code).toBeTruthy();
+    // A v2c_ key that does not exist is refused by accounts, not by the server's key list.
+    const bad = await app.request('/api/v1/formats', { headers: { authorization: 'Bearer v2c_notarealkey' } });
+    expect(bad.status).toBe(401);
+  });
+});
