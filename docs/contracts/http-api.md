@@ -169,21 +169,21 @@ Item 46 mounts every sub-app that exists when it runs (`app.route('/api/v1', lib
 
 | Method and path | Owner | Request | Response |
 |---|---|---|---|
-| `GET /metadata?url=` | 46 | | `VideoMetadata` |
-| `GET /formats` | 46 | | `{ formats: { id, description, mimeType, extension }[] }` |
-| `GET /items?url=&limit=` | 46 (uses 08, 13, 15) | | `{ items: VideoRef[] }`: a playlist, channel, feed or page expanded to videos |
-| `GET /section?url=&from=&to=&chapter=&format=` | 46 (uses 03) | `from`/`to` in seconds or `m:ss`, or a chapter index | the rendered slice; `Content-Type` from the formatter |
-| `GET /outline?url=` | 46 (uses 03) | | `{ metadata, chapters: (Chapter & { tokens: number })[], totalTokens }` |
-| `GET /comments?url=&limit=` | 46 (uses 09) | | `{ comments: Comment[] }` |
-| `GET /pack?url=` or `POST /pack` | 46 (uses 01) | POST: `{ inputs?: string[], collectionId?: string, maxTokens?: number }` | `text/markdown`: the context pack |
+| `GET /metadata?url=` | 46, implemented | | `VideoMetadata` |
+| `GET /formats` | 46, implemented | | `{ formats: { id, description, mimeType, extension }[] }` |
+| `GET /items?url=&limit=` | 46 (uses 08, 13, 15), implemented | | `{ items: VideoRef[] }`: a playlist, channel, feed or page expanded to videos |
+| `GET /section?url=&from=&to=&chapter=&format=` | 46 (uses 03), implemented | `from`/`to` in seconds or `m:ss`, or a chapter index | the rendered slice; `Content-Type` from the formatter |
+| `GET /outline?url=` | 46 (uses 03), implemented | | `{ metadata, chapters: (Chapter & { tokens: number })[], totalTokens }` |
+| `GET /comments?url=&limit=` | 46 (uses 09), implemented | | `{ comments: Comment[] }` |
+| `GET /pack?url=` or `POST /pack` | 46 (uses 01), implemented | POST: `{ inputs?: string[], collectionId?: string, maxTokens?: number }` | `text/markdown`: the context pack |
 
 ### Library and collections
 
 | Method and path | Owner | Request | Response |
 |---|---|---|---|
-| `GET /library?limit=&cursor=` | 46 | | `Page<VideoSummary>` |
-| `GET /library/:id` | 46 | id URL-encoded (`youtube%3AjNQXAC9IVRw`) | `VideoContext` |
-| `DELETE /library/:id` | 46 | | `204` |
+| `GET /library?limit=&cursor=` | 46, implemented | | `Page<VideoSummary>` |
+| `GET /library/:id` | 46, implemented | id URL-encoded (`youtube%3AjNQXAC9IVRw`) | `VideoContext` |
+| `DELETE /library/:id` | 46, implemented | | `204` |
 | `GET /collections` | 41 | | `{ collections: Collection[] }` |
 | `POST /collections` | 41 | `{ name, description?, sources?: string[], watch?: Schedule }`; `sources` must be lists (playlist, channel, feed, page) | `201 Collection` |
 | `GET /collections/:id` | 41 | | `Collection & { videos: VideoSummary[], pending: string[], watch: { schedule, state } \| null }` |
@@ -284,11 +284,24 @@ interface Job {
 | `POST /uploads` | 46, implemented | see [above](#post-apiv1uploads) |
 | `GET /bundle`, `POST /bundle` | 46, implemented | see [above](#get-apiv1bundleurlformatscommentsmaxtokens-and-post-apiv1bundle) |
 
-### Auth and limits (owner: 45 and 46)
+### Auth and limits (owner: 45 and 46, implemented by 46 for `/api/*`)
 
-- When `VID2CONTEXT_API_KEYS` is set (comma-separated), every route except `/health` requires `Authorization: Bearer <key>`; otherwise the server is open and binds to 127.0.0.1 by default.
-- Rate limiting is per key (or per IP when open), answering `429` with `Retry-After` and the standard error body (`code: rate-limited`).
-- CORS is off by default; `VID2CONTEXT_CORS_ORIGINS` lists allowed origins for the web app and the extension.
+- API keys: when `VID2CONTEXT_API_KEYS` is set (comma-separated), every `/api/*` route except `/health` requires `Authorization: Bearer <key>`; otherwise the server is open and the Node entry binds to 127.0.0.1 by default. Each entry is a plain key (full access) or a hashed entry `name:scope:sha256hex`, where the hex is the SHA-256 of the key and the scope is `read`, `write` or `admin`. `read` allows `GET` and the POST routes that only compute an answer (`/pack`, `/bundle`, `/ask`, `/chat`, `/research`, `/duplicates`, `/exports/obsidian`); `write` also allows every other POST, PUT, PATCH and DELETE; `admin` allows everything. Keys are compared by SHA-256 in constant time. Missing or wrong keys get `401 unauthorized`, a key without the scope `403 forbidden`. Logs name the key (`key-1` for the first plain key, or the hashed entry's name), never the key itself. `/mcp` and the OAuth paths use mcp-http's own credentials.
+- Rate limiting: a token bucket per key (or per client IP in open mode) in a KvStore (`ratelimit:` keys; the storage's own KV when it has one, else process memory). `VID2CONTEXT_RATE_LIMIT` requests per minute (default 120, `0` off) with bursts of `VID2CONTEXT_RATE_BURST` (default half the rate). Over the limit: `429` with `Retry-After` and the standard error body (`code: rate-limited`). `/health` and CORS preflights are not limited. The client IP is the socket address on Node and `CF-Connecting-IP` on Workers; `X-Forwarded-For` and `X-Real-IP` count only with `VID2CONTEXT_TRUST_PROXY=1`.
+- CORS is off by default; `VID2CONTEXT_CORS_ORIGINS` lists allowed origins (`https://vid2context.com`, `chrome-extension://<id>`, or `*`). Preflights are answered before auth. Allowed request headers: `Authorization`, `Content-Type`, `X-Request-Id`, `If-None-Match`; exposed: `X-Request-Id`, `Retry-After`, `ETag`, `Content-Disposition`, `X-Data-Attribution`, `X-RateLimit-*`.
+- Body limits: `VID2CONTEXT_MAX_BODY_KB` (default 1024) for JSON bodies, the upload cap for `POST /uploads`; larger bodies get `413 too-large`.
+- Timeout: a request that runs longer than `VID2CONTEXT_REQUEST_TIMEOUT_MS` (default 300000) is answered with `504 timeout`, and its Ctx signal aborts the providers' work.
+- Public mode: with `VID2CONTEXT_PUBLIC=1`, inputs that are local paths, `file://` URLs or private addresses are refused with `unsupported-input` before any provider runs (route check plus the pipeline's own).
+- Access logs: one JSON line per request on stderr: `ts`, `method`, `path`, `status`, `ms`, `requestId`, `key` (name), `ip`. `VID2CONTEXT_ACCESS_LOG=0` turns them off.
+- Node shutdown: on `SIGTERM` or `SIGINT` the server stops accepting connections, lets in-flight requests finish for up to `VID2CONTEXT_SHUTDOWN_TIMEOUT_MS` (default 10000), closes MCP sessions and the jobs queue, then exits.
+
+### Worker: site discovery (item 51)
+
+The Worker entry (`packages/server/src/workers.ts`) sends `/api/*` and, with mcp-http mounted, its paths to the app; everything else is a static asset, through `serveSite` in `packages/server/src/discovery.ts`:
+
+- A `GET` or `HEAD` whose `Accept` ranks `text/markdown` above `text/html` gets the page's `.md` twin (`/index.md` for `/`, then `<path>.md`, then `<path>/index.md`) with `Content-Type: text/markdown; charset=utf-8` and `Vary: Accept`. Without a twin, the HTML is served.
+- HTML responses get `Vary: Accept` and `Link: </llms.txt>; rel="alternate"; type="text/plain", </api/v1/openapi.json>; rel="service-desc"; type="application/openapi+json", </mcp>; rel="service"` (the last only when mcp-http is mounted).
+- `www` and `http` are redirected at the zone, not in code.
 
 ## Wave 2 routes (prompts 51 to 62)
 
@@ -297,7 +310,7 @@ Same conventions as above. Each package exports a Hono sub-app factory from its 
 | Method and path | Owner | Request | Response |
 |---|---|---|---|
 | `GET /skips?url=&categories=` | 53 | `categories` comma-separated | `{ segments: SkipSegment[], coveredSec, source: 'sponsorblock', attribution }` |
-| `GET /transcript?...&skip=sponsor,selfpromo` | 53 (option), 46 (route) | | the transcript with those segments removed; the raw transcript stays stored |
+| `GET /transcript?...&skip=sponsor,selfpromo` | 53 (option), 46 (route), implemented | | the transcript with those segments removed; the raw transcript stays stored |
 | `POST /research` | 54 | `{ urls: string[], query, contextSec?, maxExcerpts? }` | `{ results: { videoId, title, excerpts: { startSec, endSec, text, context, url? }[] }[] }` |
 | `GET /caption-languages?url=` | 54 | | `{ tracks: CaptionTrackInfo[], translationTargets: { language, name }[] }` |
 | `GET /key-moments?url=&count=` | 54 | | `{ moments: { startSec, title, why, url? }[], rung }` |

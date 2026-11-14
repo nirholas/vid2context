@@ -72,7 +72,7 @@ const chatgptCmd = chatgpt.steps.find((s) => s.code)?.code;
     </div>
 
     <p class="agents-more">
-      Also:
+      Also:{' '}
       {
         rest.map((c, n) => (
           <>
@@ -183,6 +183,7 @@ const chatgptCmd = chatgpt.steps.find((s) => s.code)?.code;
   }
   .tools li {
     display: grid;
+    align-content: start;
     gap: 0.15rem;
     padding-block: 0.55rem;
     border-top: 1px solid var(--v2c-border);

@@ -128,3 +128,31 @@ Check that the video has a creator track in `language` (the YouTube captions pro
 ## Regression checks
 
 `packages/evals/thresholds.json` holds per-suite, per-rung limits (`maxWer`, `maxCer`, `maxP90LatencyMs`, `maxTimingMedianSec`, `minPunctuationF1`). `--check` exits 1 when a scored rung breaks one. Rungs with no successful items are not checked, so a missing key or an outage is not a regression. Local CI (prompt 38) decides whether to run it.
+
+## Results
+
+### 2026-11-14: search and citations
+
+Run on this repository's VM with only free and keyless rungs (`policy free`, no paid keys). Raw results: `packages/evals/results/2026-11-14-search.json` and `2026-11-14-citations.json`, with Markdown reports next to them.
+
+**search**: `datasets/search.json`, 15 labeled queries over part 1 of the G-Wagon series (one 18-minute video, 521 auto-caption segments).
+
+| Mode | Queries | Precision@5 | Recall@5 | MRR | p50 latency | p90 latency |
+|---|---|---|---|---|---|---|
+| keyword (BM25) | 15 | 24.2% | 100.0% | 0.967 | 3 ms | 8 ms |
+| hybrid (BM25 + Cloudflare `@cf/baai/bge-m3`) | 15 | 22.7% | 100.0% | 0.922 | 242 ms | 290 ms |
+
+Every labeled range was in the top 5 for both modes. On one video, hybrid ranked the right range lower than keyword alone for `m278-engine` and `g63-power`, so vectors did not help on this collection. A multi-video collection is needed before the comparison says much.
+
+**citations**: `datasets/citations.json`, 8 questions over the same video. Both producers were answered by `llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast` (free tier).
+
+| Producer | Questions | Citation accuracy | Expected place hit | Self-rejected | p50 LLM latency | p90 LLM latency |
+|---|---|---|---|---|---|---|
+| ask | 8 | 100.0% (14 / 14) | 100.0% | 0.0% | 2.6 s | 4.5 s |
+| brief | 8 | 96.2% (50 / 52) | 87.5% | 5.5% | 23.5 s | 45.5 s |
+
+Reading these numbers: `ask` quotes are transcript excerpts it chooses from the numbered sources, not text the model writes, so its citation accuracy is high by construction; the meaningful number is that all 8 questions got a citation on the labeled place. `brief` quotes are written by the model and verified by insights with an 80% fuzzy word overlap; 2 of the 50 claims insights accepted fail this suite's exact-quote check (`g55-oil` and `add-tech`), and `add-tech` produced 15 cited claims, none on the labeled CarPlay passage. Those are findings for prompt 32 (brief), not fixed here.
+
+### Not yet measured
+
+The `stt`, `captions` and `cleanup` suites need creator-caption references from YouTube. During this session YouTube answered every caption download from this VM with HTTP 429 (automated-traffic block, through both the innertube client and yt-dlp), so no WER table has been produced yet. The pipeline itself was verified end to end on "Me at the zoo" (whose creator captions are already recorded in the shared fixtures): audio through yt-dlp, three free and keyless rungs, scoring and report. That smoke run is not a results table: one 19-second clip is too small to compare rungs.
