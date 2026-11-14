@@ -1,7 +1,7 @@
 import { type Ctx, createContext, type Env, Registry } from '@vid2context/core';
-import { providers } from './generated/workers.ts';
+import { providerPackages, providers } from './generated/workers.ts';
 
-export { providers };
+export { providerPackages, providers };
 
 /** Registry of every provider package that supports the workers runtime. */
 export function createRegistry(): Registry {
