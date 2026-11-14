@@ -2,7 +2,8 @@ import { join } from 'node:path';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { clearCooldowns, Vid2ContextError } from '@vid2context/core';
+import { clearCooldowns, type Segment, Vid2ContextError } from '@vid2context/core';
+import { parseVerboseJson } from '@vid2context/provider-stt-openai-compatible';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { createFfmpegExtractor, ffmpegAvailable } from '../src/ffmpeg.ts';
 import { parsePlaylist, pickAudioUri } from '../src/hls.ts';
@@ -182,36 +183,29 @@ describe('resolving live inputs', () => {
   });
 });
 
-describe('overlap dedupe', () => {
-  it('drops the words a chunk repeats from the previous one, tolerating a garbled first word', () => {
-    const prev = wordsOf([{ startSec: 0, endSec: 10, text: "I'm going to step off the limb now." }]);
-    const next = [
-      { startSec: 8, endSec: 10, text: 'imb now. That is one small step' },
-      { startSec: 10, endSec: 14, text: 'for man.' },
-    ];
-    const out = dedupeOverlap(prev, next, 10);
+describe('overlap dedupe (real keyless speech-to-text output for the Apollo chunks)', () => {
+  // apollo-dedupe: 8 s windows with 3 s overlap, so chunk 2 covers 5 to 16 s and chunk 3 covers 13 to 24.2 s.
+  const responses = (JSON.parse(read(join(FIXTURES, 'stt', 'apollo-dedupe.json'))) as { body: string }[]).map(
+    (r) => parseVerboseJson(JSON.parse(r.body)).segments,
+  );
+  const shift = (segs: Segment[], by: number) => segs.map((x) => ({ ...x, startSec: x.startSec + by, endSec: x.endSec + by }));
+  const [c1, c2, c3] = [shift(responses[0] ?? [], 0), shift(responses[1] ?? [], 5), shift(responses[2] ?? [], 13)];
+
+  it('drops the words a chunk repeats from the end of the previous one', () => {
+    expect(c2.map((x) => x.text)).toEqual(["That's one"]);
+    expect(c3[0]?.text.startsWith("That's one small step")).toBe(true);
+    const out = dedupeOverlap(wordsOf([...c1, ...c2]), c3, 16);
     expect(out.method).toBe('words');
-    expect(out.segments.map((s) => s.text)).toEqual(['That is one small step', 'for man.']);
-    expect(out.segments[0]?.startSec).toBe(10);
+    expect(out.droppedWords).toBe(2);
+    expect(out.segments[0]?.text).toBe('small step for man, one giant leap for mankind.');
+    // The trimmed segment starts where the new audio starts, not inside the overlap.
+    expect(out.segments[0]?.startSec).toBe(16);
   });
 
-  it('falls back to dropping segments that lie inside the overlap when no words match', () => {
-    const out = dedupeOverlap(
-      ['hello', 'world'],
-      [
-        { startSec: 8, endSec: 9.9, text: 'something else' },
-        { startSec: 9.9, endSec: 12, text: 'new words' },
-      ],
-      10,
-    );
-    expect(out.method).toBe('time');
-    expect(out.segments.map((s) => s.text)).toEqual(['new words']);
-  });
-
-  it('does not treat one short common word as a repeat', () => {
-    const out = dedupeOverlap(['over', 'the'], [{ startSec: 10.5, endSec: 12, text: 'the moon' }], 10);
+  it('leaves a chunk alone when nothing at its start repeats the previous text', () => {
+    const out = dedupeOverlap(wordsOf(c1), c2, 8);
     expect(out.method).toBe('none');
-    expect(out.segments[0]?.text).toBe('the moon');
+    expect(out.segments).toEqual(c2);
   });
 });
 
@@ -315,14 +309,12 @@ describe.skipIf(!hasFfmpeg)('watching a stream (recorded HLS, recorded keyless s
     const stt = replayStt('apollo-overlap');
     const { events } = await runScenario(SCENARIOS.apolloOverlap as never, stt);
     expect(stt.served()).toBe(3);
-    const spans = statusesOf(events)
-      .filter((s) => s.code === 'rung')
-      .map((s) => s.message.match(/Transcribed (\S+) to (\S+) /)?.slice(1));
-    // 10 s windows, each repeating 2 s of the previous one; the last one is the tail after ENDLIST.
-    expect(spans).toEqual([
-      ['0:00', '0:10'],
-      ['0:08', '0:20'],
-      ['0:18', '0:24'],
+    // 10 s windows, each repeating 2 s of the previous one, the last one the tail after ENDLIST: [0, 10), [8, 20), [18, 24.2).
+    // Each response's times are relative to its chunk, so the shifted starts show where each chunk began.
+    expect(segmentsOf(events).map((e) => [e.segment.text, Number(e.segment.startSec.toFixed(2))])).toEqual([
+      ["I'm going to step off the land now.", 3.62],
+      ["That's one small step for man", 8 + 6.94],
+      ['one giant leap for mankind', 18 + 2.9],
     ]);
     expect(statusesOf(events).some((s) => s.code === 'ended' && s.message.includes('EXT-X-ENDLIST'))).toBe(true);
     const done = doneOf(events);
@@ -344,6 +336,23 @@ describe.skipIf(!hasFfmpeg)('watching a stream (recorded HLS, recorded keyless s
       expect((segs[i] as Seg).segment.startSec).toBeGreaterThanOrEqual((segs[i - 1] as Seg).segment.startSec);
     }
     expect(segs[0]?.at?.startsWith('2026-11-14T17:23:')).toBe(true);
+  });
+});
+
+describe.skipIf(!hasFfmpeg)('watching with overlaps that land on speech', () => {
+  beforeEach(() => clearCooldowns());
+
+  it('removes the repeated words across chunks in the emitted transcript', async () => {
+    const stt = replayStt('apollo-dedupe');
+    const { events } = await runScenario(SCENARIOS.apolloDedupe as never, stt);
+    expect(stt.served()).toBe(3);
+    const done = doneOf(events);
+    expect(done?.reason).toBe('ended');
+    expect(done?.transcript.segments.map((x) => x.text)).toEqual([
+      "I'm going to step off the land now.",
+      "That's one",
+      'small step for man, one giant leap for mankind.',
+    ]);
   });
 });
 
