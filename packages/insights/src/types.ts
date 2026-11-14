@@ -114,6 +114,8 @@ export interface Brief {
   sources: SourceSummary[];
   rungs: RungUse[];
   attempts: Attempt[];
+  /** Steps that failed or degraded (a map chunk with no answer, a reduce batch that fell back). */
+  notes: string[];
   /** ISO 8601. */
   createdAt: string;
 }
@@ -130,6 +132,7 @@ export interface ExtractionResult {
   sources: SourceSummary[];
   rungs: RungUse[];
   attempts: Attempt[];
+  notes: string[];
   createdAt: string;
 }
 

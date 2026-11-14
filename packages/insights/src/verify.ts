@@ -190,16 +190,20 @@ function rawStart(v: unknown): number | undefined {
  * Verify every claim against the transcripts. Verified claims get ids (c1,
  * c2, ...), a snapped startSec and a timestamp link. The rest are returned as
  * unverified with the reason; callers must never present them as cited.
+ * `ids[i]` is the id input claim i was verified under, or null.
  */
 export function verifyCitations(
   claims: RawClaim[],
   contexts: VideoContext[] | SourceSet,
   opts: { windowSec?: number; threshold?: number } = {},
-): { verified: Claim[]; unverified: UnverifiedClaim[] } {
+): { verified: Claim[]; unverified: UnverifiedClaim[]; ids: (string | null)[] } {
   const set = Array.isArray(contexts) ? sourceSet(contexts) : contexts;
   const verified: Claim[] = [];
   const unverified: UnverifiedClaim[] = [];
+  /** For each input claim, the id it was verified under, or null. */
+  const ids: (string | null)[] = [];
   for (const c of claims) {
+    ids.push(null);
     const source: Source | undefined = set.find(c.videoId);
     const base = {
       claim: String(c.claim ?? ''),
@@ -228,6 +232,7 @@ export function verifyCitations(
       continue;
     }
     const ref = source.context.metadata.ref;
+    ids[ids.length - 1] = `c${verified.length + 1}`;
     verified.push({
       id: `c${verified.length + 1}`,
       claim: base.claim,
@@ -245,5 +250,5 @@ export function verifyCitations(
       score: r.score,
     });
   }
-  return { verified, unverified };
+  return { verified, unverified, ids };
 }
