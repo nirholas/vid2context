@@ -94,7 +94,9 @@ function fromCode(label: string, err: CfError, status?: number): Vid2ContextErro
   if (typeof err.code !== 'number') return null;
   const mapped = mapCloudflareCode(err.code);
   if (!mapped) return null;
-  return new Vid2ContextError(mapped.code, `${label}: ${err.code} ${err.message ?? ''}`.trim(), {
+  const text = err.message ?? '';
+  const detail = text.includes(String(err.code)) ? text : `${err.code} ${text}`.trim();
+  return new Vid2ContextError(mapped.code, `${label}: ${detail}`, {
     hint: mapped.hint,
     status,
     retryAfterSec: mapped.retryAfterSec,

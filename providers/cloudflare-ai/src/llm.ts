@@ -80,7 +80,8 @@ export async function chat(
 
 /** Parse a Workers AI SSE byte stream into chat stream events. */
 export async function* parseSse(stream: ReadableStream<Uint8Array>, model: string): AsyncIterable<ChatStreamEvent> {
-  const reader = stream.pipeThrough(new TextDecoderStream()).getReader();
+  const reader = stream.getReader();
+  const decoder = new TextDecoder();
   let buf = '';
   let text = '';
   let usage: Usage | undefined;
@@ -118,7 +119,7 @@ export async function* parseSse(stream: ReadableStream<Uint8Array>, model: strin
     for (;;) {
       const { value, done } = await reader.read();
       if (done) break;
-      buf += value;
+      buf += decoder.decode(value, { stream: true });
       let nl = buf.indexOf('\n');
       while (nl >= 0) {
         yield* handle(buf.slice(0, nl).replace(/\r$/, ''));

@@ -1,0 +1,1 @@
+5007: No such model @cf/openai/whisper-does-not-exist or task
