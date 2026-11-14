@@ -18,12 +18,24 @@ import { entryRef, toComments, toMetadata, type YtDlpInfo } from './info.ts';
 import { matchUrl } from './refs.ts';
 import { fetchInfo, parseJson, prepare, urlOf, withFallbackUrl, workingUrl, ytdlp } from './run.ts';
 
-export { audioArgs, commentsArgs, metadataArgs, playlistArgs, safeUrl, subtitleArgs } from './args.ts';
+export {
+  audioArgs,
+  commentsArgs,
+  commonArgs,
+  configFrom,
+  metadataArgs,
+  playlistArgs,
+  type RunConfig,
+  safeUrl,
+  subtitleArgs,
+} from './args.ts';
 export { ensureYtDlp, type JsRuntime, type YtDlpInfo as YtDlpBinary } from './binary.ts';
 export { chooseSubtitle } from './captions.ts';
-export { errorFromStderr } from './errors.ts';
-export { toComments, toMetadata } from './info.ts';
+export { errorFromStderr, lastError } from './errors.ts';
+export { toComments, toMetadata, type YtDlpInfo } from './info.ts';
+export { type RunOptions, type RunResult, run } from './process.ts';
 export { matchUrl } from './refs.ts';
+export { fetchInfo, type InfoResult, type Prepared, prepare, timeoutMs, withFallbackUrl } from './run.ts';
 export { parseVtt } from './vtt.ts';
 
 const DEFAULT_COMMENTS = 100;

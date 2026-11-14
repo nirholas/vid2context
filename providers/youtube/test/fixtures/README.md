@@ -37,6 +37,7 @@ Recorded from this repo's VM on 2026-11-14 with `POST /youtubei/v1/player` (`hl=
 | `player-private-yZIXLfi8CZQ.json` | ANDROID: `LOGIN_REQUIRED` "This video is private" |
 | `player-removed-6SJNVb0GnPI.json` | ANDROID: `ERROR` "This video has been removed for violating YouTube's policy on hate speech..." |
 | `player-upcoming-w8DxIwCbsVc.json` | ANDROID, a scheduled live stream: `LIVE_STREAM_OFFLINE` with `scheduledStartTime` 1794717000 (2026-11-15T04:30:00Z) |
+| `player-autodubbed-r3UXC_U6iCQ.json` | ANDROID, "Are Older G's Still Worthwhile?" (Alliance Motorworks): spoken in English with YouTube auto-dubs in 19 languages, so 20 auto-caption tracks listed alphabetically (Bangla first). Every audio track's `captionTrackIndices` starts with index 2 (en) and the original audio is `en-US.4`. The email address and phone number in the description are replaced with `[email redacted]` and `[phone redacted]` |
 | `player-live-0U8ykcdZL2g.json` | ANDROID, a 24/7 live stream: `OK`, `isLive`, no captions |
 
 The player endpoint itself was never blocked from the VM, so the block-during-fallback test serves the real `timedtext-429-blocked.html` page as a player answer.
@@ -93,6 +94,14 @@ Files for `src/metadata/` live in [metadata/](metadata/). All were recorded from
 |---|---|
 | `maxres-status.json` | HTTP status of the maxresdefault `HEAD` for each video (200, or 404 for jNQXAC9IVRw) |
 | `descriptions.json` | 74 real descriptions that contain timestamps, from 220 videos found through innertube search on 2026-11-14 (`next`, `attributedDescriptionBodyText`), each with the chapters YouTube derived from it (`DESCRIPTION_CHAPTERS` markers, `null` when it showed none) and whether it had auto chapters |
+
+Metadata without a player (`fallbackMetadata`), recorded on 2026-11-14 with `test/record-fallback-fixtures.ts` (real code path: `fetchNext`, `oembedUrl`):
+
+| File | Source |
+|---|---|
+| `next-fallback-jNQXAC9IVRw.json` | `POST /youtubei/v1/next`, WEB client `2.20261112.10.00`, trimmed like the other `next` files but keeping `attributedDescription.content` (the full description, which the player normally provides). Its uploader has since edited the description to add links about microplastics and chapters `00:00 Intro`, `00:05 The cool thing`, `00:17 End` |
+| `oembed-jNQXAC9IVRw.json` | `GET https://www.youtube.com/oembed?url=...&format=json`, HTTP 200 |
+| `oembed-400-xxxxxxxxxxx.txt` | The same request for the id `xxxxxxxxxxx`: HTTP 400, body `Bad Request` |
 
 Not found: a video whose description markers exist while its description has no parseable timestamps (class (b) in prompt 07). In the 220-video sample, every `DESCRIPTION_CHAPTERS` list also parsed from the description.
 

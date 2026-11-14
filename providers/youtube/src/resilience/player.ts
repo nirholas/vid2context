@@ -51,7 +51,7 @@ export interface PlayerResponse {
   captions?: {
     playerCaptionsTracklistRenderer?: {
       captionTracks?: RawCaptionTrack[];
-      audioTracks?: { captionTrackIndices?: number[]; defaultCaptionTrackIndex?: number }[];
+      audioTracks?: { captionTrackIndices?: number[]; defaultCaptionTrackIndex?: number; audioTrackId?: string }[];
       translationLanguages?: TranslationLanguage[];
     };
   };

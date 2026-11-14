@@ -10,7 +10,7 @@ import { backoffDelayMs, isRetryable, MAX_RETRIES } from '../src/resilience/back
 import { breakerRemainingSec, resetBreaker } from '../src/resilience/breaker.ts';
 import { CLIENTS, resolveClients } from '../src/resilience/clients.ts';
 import { BLOCKED_HINT, classifyPlayability, playabilityError, youtubeHttpError } from '../src/resilience/errors.ts';
-import { fetchPlayer, getPlayer, type PlayerResponse } from '../src/resilience/player.ts';
+import { clearPlayerCache, fetchPlayer, getPlayer, type PlayerResponse } from '../src/resilience/player.ts';
 import { innertubeRequest } from '../src/resilience/transport.ts';
 import { matchYouTube } from '../src/url.ts';
 
@@ -262,17 +262,41 @@ describe('circuit breaker', () => {
     // Not retried: one timedtext request.
     expect(fetch.calls.filter((c) => c.url.includes('timedtext'))).toHaveLength(1);
     expect(breakerRemainingSec()).toBe(600);
+    expect(breakerRemainingSec('direct', 'timedtext')).toBe(600);
+    expect(breakerRemainingSec('direct', 'player')).toBe(0);
 
-    const before = fetch.calls.length;
-    const err = (await fetchPlayer(ZOO, ctx).catch((e: unknown) => e)) as Vid2ContextError & { attempts: Attempt[] };
+    // Another caption download fails fast without touching the network, and says which requests are paused.
+    clearPlayerCache(ctx);
+    const before = fetch.calls.filter((c) => c.url.includes('timedtext')).length;
+    const err = (await youtubeCaptions.getCaptions(ref('cCPsdFdlshc'), {}, ctx).catch((e: unknown) => e)) as Vid2ContextError & {
+      attempts: Attempt[];
+    };
     expect(err).toMatchObject({ code: 'blocked', hint: BLOCKED_HINT });
+    expect(err.message).toMatch(/^YouTube caption downloads are paused for 600s more: .* this request was not sent/);
     expect(err.attempts.some((a) => a.reason === 'circuit-open' && a.outcome === 'skipped')).toBe(true);
-    expect(fetch.calls.length).toBe(before);
+    expect(fetch.calls.filter((c) => c.url.includes('timedtext')).length).toBe(before);
+
+    // A caption block says nothing about the player: it still answers, so metadata keeps working.
+    const players = replayFetch([byClient({ ANDROID: json('player-jNQXAC9IVRw.json') })]);
+    expect((await fetchPlayer(ZOO, testContext({ fetch: players }))).client).toBe('ANDROID');
 
     vi.advanceTimersByTime(600_000);
     expect(breakerRemainingSec()).toBe(0);
-    const ok = replayFetch([byClient({ ANDROID: json('player-jNQXAC9IVRw.json') })]);
-    expect((await fetchPlayer(ZOO, testContext({ fetch: ok }))).client).toBe('ANDROID');
+  });
+
+  it('pauses only the player after a bot check on every client, not next or oEmbed', async () => {
+    const fetch = replayFetch([
+      byClient({ ANDROID: json('player-android_vr-bot-jNQXAC9IVRw.json'), IOS: json('player-android_vr-bot-jNQXAC9IVRw.json') }),
+    ]);
+    await expect(fetchPlayer(ZOO, testContext({ fetch }))).rejects.toMatchObject({ code: 'blocked' });
+    expect(breakerRemainingSec('direct', 'player')).toBe(600);
+    expect(breakerRemainingSec('direct', 'web')).toBe(0);
+    expect(breakerRemainingSec('direct', 'timedtext')).toBe(0);
+    // The next player call is not sent, and its error names this request, not the earlier video.
+    const err = (await fetchPlayer('cCPsdFdlshc', testContext({ fetch })).catch((e: unknown) => e)) as Vid2ContextError;
+    expect(err.message).toMatch(
+      /^YouTube player requests are paused for 600s more: YouTube blocked this IP address \d+s ago, so this request was not sent\. The blocked request: YouTube player jNQXAC9IVRw/,
+    );
   });
 
   it('opens when every client gets the bot check, and honours YOUTUBE_BLOCK_COOLDOWN_SEC', async () => {

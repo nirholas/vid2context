@@ -92,8 +92,9 @@ async function fetchCaptions(
   opts: GetContextOptions,
   ctx: Ctx,
   attempts: Attempt[],
+  seen: { blocked?: Vid2ContextError } = {},
 ): Promise<Transcript | null> {
-  for (const provider of registry.captions().filter((p) => p.supports(ref))) {
+  for (const provider of registry.captions(ctx.env).filter((p) => p.supports(ref))) {
     const started = Date.now();
     try {
       const t = await provider.getCaptions(ref, { language: opts.language, allowAuto: opts.allowAuto ?? true }, ctx);
@@ -103,6 +104,7 @@ async function fetchCaptions(
       }
       attempts.push({ id: provider.id, stage: 'captions', outcome: 'empty', reason: 'no-tracks', ms: Date.now() - started });
     } catch (err) {
+      if (err instanceof Vid2ContextError && err.code === 'blocked') seen.blocked ??= err;
       attempts.push({ id: provider.id, stage: 'captions', outcome: 'error', ...errInfo(err), ms: Date.now() - started });
       ctx.log.warn('captions provider failed', { provider: provider.id, ...errInfo(err) });
     }
@@ -192,7 +194,12 @@ export async function transcribe(
     if (collapsed + guard.report.flagged > 0) {
       transcript.segments = guard.segments;
       const flagged = guard.report.flagged ? `, flagged ${guard.report.flagged}` : '';
-      attempts.push({ id: 'clean/repetition-guard', stage: 'stt', outcome: 'ok', detail: `collapsed ${collapsed} segments${flagged}` });
+      attempts.push({
+        id: 'clean/repetition-guard',
+        stage: 'stt',
+        outcome: 'ok',
+        detail: `collapsed ${collapsed} segments${flagged}`,
+      });
     }
     return { transcript, attempts };
   } catch (err) {
@@ -271,15 +278,24 @@ async function buildVideoContext(registry: Registry, input: string, opts: GetCon
 
   opts.onProgress?.({ stage: 'metadata' });
   let metadata: VideoMetadata;
+  // The first block seen (metadata or captions): when no rung gets a transcript, it is the error to report.
+  const seen: { blocked?: Vid2ContextError } = {};
   const mStart = Date.now();
   try {
     metadata = await (tel ? tracedStage(tel, 'metadata', ref, () => source.getMetadata(ref, ctx)) : source.getMetadata(ref, ctx));
     attempts.push({ id: source.id, stage: 'metadata', outcome: 'ok', ms: Date.now() - mStart });
   } catch (err) {
-    if (err instanceof Vid2ContextError && (err.code === 'not-found' || err.code === 'unavailable' || err.code === 'blocked')) {
+    if (err instanceof Vid2ContextError && (err.code === 'not-found' || err.code === 'unavailable')) {
       throw Object.assign(err, {
         attempts: [...attempts, { id: source.id, stage: 'metadata', outcome: 'error', ...errInfo(err) }],
       });
+    }
+    // A block is about this server's IP address, not the video: other rungs (a relay, a proxy,
+    // yt-dlp, a transcript API, speech-to-text) may still get the transcript, so they get their turn.
+    // When none does, the block is what the caller sees (below), with its hint.
+    if (err instanceof Vid2ContextError && err.code === 'blocked') {
+      seen.blocked = err;
+      attempts.push(...attemptsOf(err));
     }
     attempts.push({ id: source.id, stage: 'metadata', outcome: 'error', ...errInfo(err), ms: Date.now() - mStart });
     metadata = minimalMetadata(ref);
@@ -306,8 +322,8 @@ async function buildVideoContext(registry: Registry, input: string, opts: GetCon
   if (!transcript && (mode === 'auto' || mode === 'captions')) {
     opts.onProgress?.({ stage: 'captions' });
     transcript = await (tel
-      ? tracedStage(tel, 'captions', ref, () => fetchCaptions(registry, ref, opts, ctx, attempts))
-      : fetchCaptions(registry, ref, opts, ctx, attempts));
+      ? tracedStage(tel, 'captions', ref, () => fetchCaptions(registry, ref, opts, ctx, attempts, seen))
+      : fetchCaptions(registry, ref, opts, ctx, attempts, seen));
   }
 
   if (!transcript && (mode === 'auto' || mode === 'stt')) {
@@ -327,6 +343,15 @@ async function buildVideoContext(registry: Registry, input: string, opts: GetCon
         attempts.push(...attemptsOf(err));
       }
     }
+  }
+
+  // Every rung had its turn; a block is the most useful thing to report, because its hint says how to get past it.
+  if (!transcript && seen.blocked) {
+    const b = seen.blocked;
+    throw Object.assign(
+      new Vid2ContextError('blocked', b.message, { hint: b.hint, status: b.status, retryAfterSec: b.retryAfterSec }),
+      { attempts },
+    );
   }
 
   if (!transcript) {

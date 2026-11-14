@@ -15,7 +15,7 @@
  */
 import { type Ctx, fetchWithTimeout, Vid2ContextError } from '@vid2context/core';
 import { withRetry } from './backoff.ts';
-import { assertBreakerClosed, tripBreaker } from './breaker.ts';
+import { assertBreakerClosed, type Scope, tripBreaker } from './breaker.ts';
 import { type ClientSpec, clientByName } from './clients.ts';
 import { youtubeHttpError } from './errors.ts';
 
@@ -51,16 +51,29 @@ export async function credentialHeaders(ctx: Ctx): Promise<Record<string, string
   return headers;
 }
 
-/** Run a YouTube call under the breaker and retry policy, opening the breaker on a block. */
-export async function guarded<T>(ctx: Ctx, stage: Stage, label: string, fn: () => Promise<T>): Promise<T> {
-  assertBreakerClosed(stage);
+/**
+ * Run a YouTube call under the breaker and retry policy, opening the breaker
+ * on a block. `scope` is the endpoint family (player, timedtext, web): YouTube
+ * blocks them independently, so a block pauses only its own family.
+ */
+export async function guarded<T>(
+  ctx: Ctx,
+  stage: Stage,
+  label: string,
+  fn: () => Promise<T>,
+  scope: Scope = 'player',
+): Promise<T> {
+  assertBreakerClosed(stage, 'direct', scope);
   try {
     return await withRetry(ctx, label, fn);
   } catch (err) {
-    if (err instanceof Vid2ContextError && err.code === 'blocked') tripBreaker(err, ctx);
+    if (err instanceof Vid2ContextError && err.code === 'blocked') tripBreaker(err, ctx, 'direct', scope);
     throw err;
   }
 }
+
+/** The breaker scope of an innertube endpoint. */
+export const scopeOf = (endpoint: string): Scope => (endpoint === 'player' ? 'player' : 'web');
 
 /**
  * POST /youtubei/v1/<endpoint> as the given client. The client context
@@ -93,30 +106,42 @@ export async function innertubeRequest<T = unknown>(
     },
   };
   const label = `YouTube ${endpoint} (${spec.key})`;
-  return guarded(ctx, opts.stage ?? 'metadata', label, async () => {
-    const res = await fetchWithTimeout(ctx, `${INNERTUBE}${endpoint}?prettyPrint=false`, {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-        'user-agent': spec.userAgent(spec.version),
-        'x-youtube-client-name': String(spec.clientId),
-        'x-youtube-client-version': spec.version,
-        origin: ORIGIN,
-        ...(visitorData ? { 'x-goog-visitor-id': visitorData } : {}),
-        ...(await credentialHeaders(ctx)),
-      },
-      body: JSON.stringify(payload),
-    });
-    if (!res.ok) throw await youtubeHttpError(res, label);
-    return (await res.json()) as T;
-  });
+  return guarded(
+    ctx,
+    opts.stage ?? 'metadata',
+    label,
+    async () => {
+      const res = await fetchWithTimeout(ctx, `${INNERTUBE}${endpoint}?prettyPrint=false`, {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'user-agent': spec.userAgent(spec.version),
+          'x-youtube-client-name': String(spec.clientId),
+          'x-youtube-client-version': spec.version,
+          origin: ORIGIN,
+          ...(visitorData ? { 'x-goog-visitor-id': visitorData } : {}),
+          ...(await credentialHeaders(ctx)),
+        },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw await youtubeHttpError(res, label);
+      return (await res.json()) as T;
+    },
+    scopeOf(endpoint),
+  );
 }
 
 /** GET a YouTube URL (timedtext) under the breaker and retry policy. Returns the OK response or throws the mapped error. */
 export function youtubeGet(url: string, ctx: Ctx, label: string, stage: Stage = 'captions'): Promise<Response> {
-  return guarded(ctx, stage, label, async () => {
-    const res = await fetchWithTimeout(ctx, url, { headers: await credentialHeaders(ctx) });
-    if (!res.ok) throw await youtubeHttpError(res, label);
-    return res;
-  });
+  return guarded(
+    ctx,
+    stage,
+    label,
+    async () => {
+      const res = await fetchWithTimeout(ctx, url, { headers: await credentialHeaders(ctx) });
+      if (!res.ok) throw await youtubeHttpError(res, label);
+      return res;
+    },
+    'timedtext',
+  );
 }

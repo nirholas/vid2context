@@ -10,17 +10,20 @@
  * "Metadata and chapters".
  */
 import { type Chapter, type Ctx, Vid2ContextError, type VideoMetadata, type VideoRef } from '@vid2context/core';
+import { originalLanguage } from '../captions/tracks.ts';
 import { playabilityError } from '../resilience/errors.ts';
 import { getPlayer, type PlayerResponse } from '../resilience/player.ts';
 import { type ChapterSource, parseDescriptionChapters, withEnds } from './chapters.ts';
 import { extractLinks } from './links.ts';
 import { fetchNext } from './next.ts';
+import { fetchOEmbed, type OEmbedInfo } from './oembed.ts';
 import { findMaxres, largestThumbnail } from './thumbnail.ts';
 import { parseWatch, type WatchInfo } from './watch.ts';
 
 export { type ChapterSource, cleanTitle, parseChapterLine, parseClock, parseDescriptionChapters, withEnds } from './chapters.ts';
 export { extractLinks } from './links.ts';
 export { DEFAULT_WEB_VERSION, fetchNext, webClient } from './next.ts';
+export { fetchOEmbed, type OEmbedInfo, oembedUrl, parseOEmbed } from './oembed.ts';
 export { findMaxres, largestThumbnail, maxresUrl } from './thumbnail.ts';
 export { parseDateText, parseWatch, type WatchInfo } from './watch.ts';
 
@@ -98,7 +101,6 @@ export function toMetadata(ref: VideoRef, player: Player, extras: MetadataExtras
   const durationSec = Number(d?.lengthSeconds) || undefined;
   const isLive = d?.isLive === true;
   const isUpcoming = d?.isUpcoming === true;
-  const tracks = player.captions?.playerCaptionsTracklistRenderer?.captionTracks ?? [];
   const { chapters, source } = pickChapters(d?.shortDescription, durationSec, watch);
   const links = extractLinks(d?.shortDescription);
   const channelId = d?.channelId ?? watch?.channelId;
@@ -112,7 +114,7 @@ export function toMetadata(ref: VideoRef, player: Player, extras: MetadataExtras
     durationSec,
     publishedAt: watch?.publishedAt,
     thumbnailUrl: extras.maxresThumbnail ?? largestThumbnail(d?.thumbnail?.thumbnails),
-    language: tracks.find((t) => t.kind === 'asr')?.languageCode,
+    language: originalLanguage(player),
     tags: d?.keywords,
     chapters,
     isLive,
@@ -160,9 +162,94 @@ async function loadWatch(videoId: string, ctx: Ctx): Promise<WatchInfo | undefin
   }
 }
 
-/** youtube.getMetadata: throws only when the player gives no videoDetails (removed, private, blocked). */
+/**
+ * Metadata without a player response, for when YouTube blocks the player
+ * from this IP. `next` (the watch page's data) and oEmbed often still answer:
+ * on 2026-11-14 a GCP VM got HTTP 429 on every caption download and the bot
+ * check on the player at times, while both kept working. Pure: no I/O.
+ *
+ * Missing compared to toMetadata: duration, tags, the spoken language and
+ * Shorts detection (only the player has them). `extra.metadataSource` says
+ * which sources answered and `extra.playerBlocked` is true.
+ */
+export function fallbackMetadata(
+  ref: VideoRef,
+  watch: WatchInfo | undefined,
+  oembed: OEmbedInfo | undefined,
+  maxres?: string,
+): VideoMetadata | null {
+  const title = watch?.title ?? oembed?.title;
+  if (!title) return null;
+  const description = watch?.description;
+  const { chapters, source } = pickChapters(description, undefined, watch);
+  const links = extractLinks(description);
+  const channelName = watch?.channelName ?? oembed?.authorName;
+  const handleFromUrl = oembed?.authorUrl && /\/(@[^/?#]+)/.exec(oembed.authorUrl)?.[1];
+  const channelHandle = watch?.channelHandle ?? (handleFromUrl || undefined);
+  const sources = [watch ? 'next' : undefined, oembed ? 'oembed' : undefined].filter(Boolean).join('+');
+  const meta: VideoMetadata = {
+    ref,
+    title,
+    description,
+    publishedAt: watch?.publishedAt,
+    thumbnailUrl: maxres ?? oembed?.thumbnailUrl,
+    chapters,
+    isLive: watch?.liveViewers !== undefined ? true : undefined,
+    extra: compact({
+      viewCount: watch?.viewCount,
+      likeCount: watch?.likeCount,
+      liveViewers: watch?.liveViewers,
+      dateText: watch?.dateText,
+      channelHandle,
+      channelHandleUrl: channelHandle ? `https://www.youtube.com/${channelHandle}` : undefined,
+      subscriberCountText: watch?.subscriberCountText,
+      membersOnly: watch?.membersOnly === true ? true : undefined,
+      chapterSource: source,
+      links: links.length > 0 ? links : undefined,
+      metadataSource: sources,
+      playerBlocked: true,
+    }),
+  };
+  if (channelName) {
+    const id = watch?.channelId;
+    meta.channel = {
+      name: channelName,
+      id,
+      url: id ? `https://www.youtube.com/channel/${id}` : (oembed?.authorUrl ?? undefined),
+    };
+  }
+  return meta;
+}
+
+/** When the player is blocked: metadata from `next` and oEmbed, or the original block when neither answers. */
+async function metadataWithoutPlayer(ref: VideoRef, ctx: Ctx, blocked: Vid2ContextError): Promise<VideoMetadata> {
+  const [watch, oembed, maxres] = await Promise.all([
+    loadWatch(ref.nativeId, ctx),
+    fetchOEmbed(ref.nativeId, ctx),
+    findMaxres(ref.nativeId, ctx),
+  ]);
+  const meta = fallbackMetadata(ref, watch, oembed, maxres);
+  if (!meta) throw blocked;
+  ctx.log.warn('youtube: player blocked; metadata from the watch page data and oEmbed', {
+    videoId: ref.nativeId,
+    sources: meta.extra?.metadataSource,
+  });
+  return meta;
+}
+
+/**
+ * youtube.getMetadata. Throws when the player gives no videoDetails (removed,
+ * private), or when YouTube blocks the player and neither `next` nor oEmbed
+ * answers either.
+ */
 export async function getYouTubeMetadata(ref: VideoRef, ctx: Ctx): Promise<VideoMetadata> {
-  const player = (await getPlayer(ref.nativeId, ctx)) as Player;
+  let player: Player;
+  try {
+    player = (await getPlayer(ref.nativeId, ctx)) as Player;
+  } catch (err) {
+    if (err instanceof Vid2ContextError && err.code === 'blocked') return metadataWithoutPlayer(ref, ctx, err);
+    throw err;
+  }
   if (!player.videoDetails) {
     throw (
       playabilityError(player, ref.nativeId) ??

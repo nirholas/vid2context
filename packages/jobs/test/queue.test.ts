@@ -96,9 +96,10 @@ describe('items job', () => {
       .map((e) => e.data as { id: string; outcome: string; error?: { code: string } });
     expect(items.map((i) => i.id)).toEqual(PLAYLIST_FIRST3);
     expect(items.map((i) => i.outcome)).toEqual(['ok', 'error', 'error']);
-    // Ay22n7jR2j4 answered LOGIN_REQUIRED; cBsRvPSWXQk's only track answered HTTP 429, leaving no transcript.
+    // Ay22n7jR2j4 answered LOGIN_REQUIRED; cBsRvPSWXQk's only track answered HTTP 429 (the block page), so the
+    // run reports the block, whose hint says how to get past it.
     expect(items[1]?.error?.code).toBe('unavailable');
-    expect(items[2]?.error?.code).toBe('no-transcript');
+    expect(items[2]?.error?.code).toBe('blocked');
 
     const final = await q.get(job.id);
     expect(final?.status).toBe('succeeded');

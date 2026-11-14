@@ -12,6 +12,24 @@ export interface RunConfig {
   ffmpeg?: string;
   cookiesFile?: string;
   cookiesFromBrowser?: string;
+  /** First entry of YOUTUBE_PROXY: passed as --proxy for YouTube URLs only (yt-dlp takes one proxy). */
+  youtubeProxy?: string;
+}
+
+/** The first http(s) entry of YOUTUBE_PROXY, the same proxy the Node fetch uses for YouTube. */
+function firstProxy(raw: string | undefined): string | undefined {
+  const first = raw
+    ?.split(',')
+    .map((s) => s.trim())
+    .find(Boolean);
+  return first && /^https?:\/\//i.test(first) ? first : undefined;
+}
+
+const YOUTUBE_URL = /^https?:\/\/([a-z0-9-]+\.)*(youtube\.com|youtu\.be|youtube-nocookie\.com)(?=[/:?#]|$)/i;
+
+/** True for youtube.com, youtu.be and youtube-nocookie.com URLs (any subdomain). */
+export function isYouTubeUrl(url: string): boolean {
+  return YOUTUBE_URL.test(url.trim());
 }
 
 export function configFrom(env: Env, jsRuntime: JsRuntime, ffmpeg?: string): RunConfig {
@@ -20,6 +38,7 @@ export function configFrom(env: Env, jsRuntime: JsRuntime, ffmpeg?: string): Run
     ...(ffmpeg ? { ffmpeg } : {}),
     ...(env.YTDLP_COOKIES_FILE ? { cookiesFile: env.YTDLP_COOKIES_FILE } : {}),
     ...(env.YTDLP_COOKIES_FROM_BROWSER ? { cookiesFromBrowser: env.YTDLP_COOKIES_FROM_BROWSER } : {}),
+    ...(firstProxy(env.YOUTUBE_PROXY) ? { youtubeProxy: firstProxy(env.YOUTUBE_PROXY) } : {}),
   };
 }
 
@@ -45,23 +64,28 @@ export function safeUrl(input: string): string {
   return url;
 }
 
-/** Options shared by every command: no config files, no colour, the JS runtime, cookies and ffmpeg. */
-export function commonArgs(cfg: RunConfig): string[] {
+/**
+ * Options shared by every command: no config files, no colour, the JS runtime,
+ * cookies and ffmpeg, and --proxy when `url` is a YouTube URL and
+ * YOUTUBE_PROXY is set (other sites are fetched directly).
+ */
+export function commonArgs(cfg: RunConfig, url?: string): string[] {
   const args = ['--ignore-config', '--no-color', '--no-progress'];
   // deno is yt-dlp's default runtime; Node must be named (with its path when it is not on PATH).
   if (cfg.jsRuntime.name === 'node') args.push('--js-runtimes', `node:${cfg.jsRuntime.path}`);
   if (cfg.ffmpeg) args.push('--ffmpeg-location', cfg.ffmpeg);
   if (cfg.cookiesFile) args.push('--cookies', cfg.cookiesFile);
   if (cfg.cookiesFromBrowser) args.push('--cookies-from-browser', cfg.cookiesFromBrowser);
+  if (cfg.youtubeProxy && url && isYouTubeUrl(url)) args.push('--proxy', cfg.youtubeProxy);
   return args;
 }
 
 export function metadataArgs(url: string, cfg: RunConfig): string[] {
-  return [...commonArgs(cfg), '-J', '--no-download', '--no-playlist', '--no-warnings', '--', safeUrl(url)];
+  return [...commonArgs(cfg, url), '-J', '--no-download', '--no-playlist', '--no-warnings', '--', safeUrl(url)];
 }
 
 export function playlistArgs(url: string, cfg: RunConfig, limit?: number): string[] {
-  const args = [...commonArgs(cfg), '--flat-playlist', '-J', '--no-warnings'];
+  const args = [...commonArgs(cfg, url), '--flat-playlist', '-J', '--no-warnings'];
   if (limit && limit > 0) args.push('--playlist-end', String(Math.floor(limit)));
   return [...args, '--', safeUrl(url)];
 }
@@ -74,7 +98,7 @@ export function playlistArgs(url: string, cfg: RunConfig, limit?: number): strin
 export function commentsArgs(url: string, cfg: RunConfig, limit: number): string[] {
   const n = Math.max(1, Math.floor(limit));
   return [
-    ...commonArgs(cfg),
+    ...commonArgs(cfg, url),
     '-J',
     '--no-download',
     '--no-playlist',
@@ -94,7 +118,7 @@ export function subtitleArgs(
   opts: { language: string; auto: boolean; outTemplate: string },
 ): string[] {
   const args = [
-    ...commonArgs(cfg),
+    ...commonArgs(cfg, url),
     '--skip-download',
     '--no-playlist',
     '--no-warnings',
@@ -112,7 +136,7 @@ export function subtitleArgs(
 /** Best audio, extracted to 16 kHz mono 32 kbps mp3 (about 14 MB per hour). Prints the duration when done. */
 export function audioArgs(url: string, cfg: RunConfig, outTemplate: string): string[] {
   return [
-    ...commonArgs(cfg),
+    ...commonArgs(cfg, url),
     '--no-playlist',
     '--no-warnings',
     '-f',

@@ -1,0 +1,379 @@
+{
+  "contents": {
+    "twoColumnWatchNextResults": {
+      "results": {
+        "results": {
+          "contents": [
+            {
+              "videoPrimaryInfoRenderer": {
+                "title": {
+                  "runs": [
+                    {
+                      "text": "Me at the zoo"
+                    }
+                  ]
+                },
+                "viewCount": {
+                  "videoViewCountRenderer": {
+                    "viewCount": {
+                      "simpleText": "448,539,222 views"
+                    },
+                    "shortViewCount": {
+                      "simpleText": "448M views"
+                    },
+                    "originalViewCount": "0"
+                  }
+                },
+                "videoActions": {
+                  "menuRenderer": {
+                    "items": [
+                      {
+                        "menuServiceItemRenderer": {
+                          "text": {
+                            "runs": [
+                              {
+                                "text": "Report"
+                              }
+                            ]
+                          },
+                          "icon": {
+                            "iconType": "FLAG"
+                          }
+                        }
+                      }
+                    ],
+                    "topLevelButtons": [
+                      {
+                        "segmentedLikeDislikeButtonViewModel": {
+                          "likeButtonViewModel": {
+                            "likeButtonViewModel": {
+                              "toggleButtonViewModel": {
+                                "toggleButtonViewModel": {
+                                  "defaultButtonViewModel": {
+                                    "buttonViewModel": {
+                                      "iconName": "LIKE",
+                                      "title": "20M",
+                                      "accessibilityText": "like this video along with 20,138,479 other people",
+                                      "style": "BUTTON_VIEW_MODEL_STYLE_MONO",
+                                      "isFullWidth": false,
+                                      "type": "BUTTON_VIEW_MODEL_TYPE_TONAL",
+                                      "buttonSize": "BUTTON_VIEW_MODEL_SIZE_DEFAULT",
+                                      "accessibilityId": "id.video.like.button",
+                                      "tooltip": "I like this"
+                                    }
+                                  },
+                                  "toggledButtonViewModel": {
+                                    "buttonViewModel": {
+                                      "iconName": "LIKE",
+                                      "title": "20M",
+                                      "accessibilityText": "like this video along with 20,138,479 other people",
+                                      "style": "BUTTON_VIEW_MODEL_STYLE_MONO",
+                                      "isFullWidth": false,
+                                      "type": "BUTTON_VIEW_MODEL_TYPE_TONAL",
+                                      "buttonSize": "BUTTON_VIEW_MODEL_SIZE_DEFAULT",
+                                      "accessibilityId": "id.video.like.button",
+                                      "tooltip": "Unlike"
+                                    }
+                                  },
+                                  "identifier": "watch-like",
+                                  "isTogglingDisabled": true
+                                }
+                              },
+                              "likeStatusEntityKey": "EgtqTlFYQUM5SVZSdyA-KAE%3D",
+                              "likeStatusEntity": {
+                                "key": "EgtqTlFYQUM5SVZSdyA-KAE%3D",
+                                "likeStatus": "INDIFFERENT"
+                              }
+                            }
+                          },
+                          "dislikeButtonViewModel": {
+                            "dislikeButtonViewModel": {
+                              "toggleButtonViewModel": {
+                                "toggleButtonViewModel": {
+                                  "defaultButtonViewModel": {
+                                    "buttonViewModel": {
+                                      "iconName": "DISLIKE",
+                                      "title": "Dislike",
+                                      "accessibilityText": "Dislike this video",
+                                      "style": "BUTTON_VIEW_MODEL_STYLE_MONO",
+                                      "isFullWidth": false,
+                                      "type": "BUTTON_VIEW_MODEL_TYPE_TONAL",
+                                      "buttonSize": "BUTTON_VIEW_MODEL_SIZE_DEFAULT",
+                                      "accessibilityId": "id.video.dislike.button",
+                                      "tooltip": "I dislike this"
+                                    }
+                                  },
+                                  "toggledButtonViewModel": {
+                                    "buttonViewModel": {
+                                      "iconName": "DISLIKE",
+                                      "title": "Dislike",
+                                      "accessibilityText": "Dislike this video",
+                                      "style": "BUTTON_VIEW_MODEL_STYLE_MONO",
+                                      "isFullWidth": false,
+                                      "type": "BUTTON_VIEW_MODEL_TYPE_TONAL",
+                                      "buttonSize": "BUTTON_VIEW_MODEL_SIZE_DEFAULT",
+                                      "accessibilityId": "id.video.dislike.button",
+                                      "tooltip": "I dislike this"
+                                    }
+                                  },
+                                  "isTogglingDisabled": true
+                                }
+                              },
+                              "dislikeEntityKey": "EgtqTlFYQUM5SVZSdyA-KAE%3D"
+                            }
+                          },
+                          "iconType": "LIKE_ICON_TYPE_UNKNOWN",
+                          "likeCountEntity": {
+                            "key": "unset_like_count_entity_key"
+                          },
+                          "dynamicLikeCountUpdateData": {
+                            "updateStatusKey": "like_count_update_status_key",
+                            "placeholderLikeCountValuesKey": "like_count_placeholder_values_key",
+                            "updateDelayLoopId": "like_count_update_delay_loop_id",
+                            "updateDelaySec": 5
+                          },
+                          "teasersOrderEntityKey": "EgtqTlFYQUM5SVZSdyD8AygB"
+                        }
+                      },
+                      {
+                        "buttonViewModel": {
+                          "iconName": "SHARE",
+                          "title": "Share",
+                          "accessibilityText": "Share",
+                          "style": "BUTTON_VIEW_MODEL_STYLE_MONO",
+                          "isFullWidth": false,
+                          "type": "BUTTON_VIEW_MODEL_TYPE_TONAL",
+                          "buttonSize": "BUTTON_VIEW_MODEL_SIZE_DEFAULT",
+                          "state": "BUTTON_VIEW_MODEL_STATE_ACTIVE",
+                          "accessibilityId": "id.video.share.button",
+                          "tooltip": "Share"
+                        }
+                      }
+                    ],
+                    "flexibleItems": [
+                      {
+                        "menuFlexibleItemRenderer": {
+                          "menuItem": {
+                            "menuServiceItemDownloadRenderer": {}
+                          },
+                          "topLevelButton": {
+                            "downloadButtonRenderer": {
+                              "style": "STYLE_DEFAULT",
+                              "size": "SIZE_DEFAULT",
+                              "targetId": "watch-download-button",
+                              "hasLabel": true
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "menuFlexibleItemRenderer": {
+                          "menuItem": {
+                            "menuServiceItemRenderer": {
+                              "text": {
+                                "runs": [
+                                  {
+                                    "text": "Save"
+                                  }
+                                ]
+                              },
+                              "icon": {
+                                "iconType": "PLAYLIST_ADD"
+                              }
+                            }
+                          },
+                          "topLevelButton": {
+                            "buttonViewModel": {
+                              "iconName": "PLAYLIST_ADD",
+                              "title": "Save",
+                              "accessibilityText": "Save to playlist",
+                              "style": "BUTTON_VIEW_MODEL_STYLE_MONO",
+                              "isFullWidth": false,
+                              "type": "BUTTON_VIEW_MODEL_TYPE_TONAL",
+                              "buttonSize": "BUTTON_VIEW_MODEL_SIZE_DEFAULT",
+                              "tooltip": "Save"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                "superTitleLink": {
+                  "runs": [
+                    {
+                      "text": "SAN DIEGO ZOO",
+                      "navigationEndpoint": {
+                        "searchEndpoint": {
+                          "query": "San Diego Zoo",
+                          "params": "EiG4AQHCARtDaElKeVlCX1NaVlUyWUFSUi1JMUpqZjA4RjA%3D"
+                        }
+                      }
+                    }
+                  ]
+                },
+                "superTitleIcon": {
+                  "iconType": "LOCATION_PIN"
+                },
+                "dateText": {
+                  "simpleText": "Apr 23, 2005"
+                },
+                "relativeDateText": {
+                  "simpleText": "21 years ago"
+                }
+              }
+            },
+            {
+              "videoSecondaryInfoRenderer": {
+                "owner": {
+                  "videoOwnerRenderer": {
+                    "title": {
+                      "runs": [
+                        {
+                          "text": "jawed",
+                          "navigationEndpoint": {
+                            "browseEndpoint": {
+                              "browseId": "UC4QobU6STFB0P71PMvOGN5A",
+                              "canonicalBaseUrl": "/@jawed"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "subscriptionButton": {
+                      "type": "FREE"
+                    },
+                    "navigationEndpoint": {
+                      "browseEndpoint": {
+                        "browseId": "UC4QobU6STFB0P71PMvOGN5A",
+                        "canonicalBaseUrl": "/@jawed"
+                      }
+                    },
+                    "subscriberCountText": {
+                      "simpleText": "6.74M subscribers"
+                    },
+                    "badges": [
+                      {
+                        "metadataBadgeRenderer": {
+                          "icon": {
+                            "iconType": "CHECK_CIRCLE_THICK"
+                          },
+                          "style": "BADGE_STYLE_TYPE_VERIFIED",
+                          "tooltip": "Verified"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "metadataRowContainer": {
+                  "metadataRowContainerRenderer": {
+                    "collapsedItemCount": 0
+                  }
+                },
+                "showMoreText": {
+                  "simpleText": "...more"
+                },
+                "showLessText": {
+                  "simpleText": "Show less"
+                },
+                "defaultExpanded": false,
+                "descriptionCollapsedLines": 3,
+                "attributedDescription": {
+                  "content": "Microplastics are accumulating in human brains at an alarming rate\n   • Microplastics are accumulating in human br...  \n\n“Nanoplastics and Human Health” with Matthew J Campen, PhD, MSPH\n   • “Nanoplastics and Human Health” with Matth...  \n\n00:00 Intro\n00:05 The cool thing\n00:17 End"
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "playerOverlays": {
+    "playerOverlayRenderer": {
+      "decoratedPlayerBarRenderer": {
+        "decoratedPlayerBarRenderer": {
+          "playerBar": {
+            "multiMarkersPlayerBarRenderer": {
+              "visibleOnLoad": {
+                "key": "DESCRIPTION_CHAPTERS"
+              },
+              "markersMap": [
+                {
+                  "key": "DESCRIPTION_CHAPTERS",
+                  "value": {
+                    "chapters": [
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Intro"
+                          },
+                          "timeRangeStartMillis": 0
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "The cool thing"
+                          },
+                          "timeRangeStartMillis": 5000
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "End"
+                          },
+                          "timeRangeStartMillis": 17000
+                        }
+                      }
+                    ],
+                    "onChapterRepeat": {
+                      "openPopupAction": {
+                        "popup": {
+                          "notificationActionRenderer": {
+                            "responseText": {
+                              "runs": [
+                                {
+                                  "text": "Chapter repeat is on"
+                                }
+                              ]
+                            },
+                            "actionButton": {
+                              "buttonRenderer": {
+                                "style": "STYLE_BLUE_TEXT",
+                                "text": {
+                                  "runs": [
+                                    {
+                                      "text": "Turn off"
+                                    }
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "popupType": "TOAST"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "playerBarActionButton": {
+            "buttonRenderer": {
+              "text": {
+                "runs": [
+                  {
+                    "text": "View Chapters"
+                  }
+                ]
+              }
+            }
+          },
+          "buttonType": "DECORATED_PLAYER_BAR_BUTTON_TYPE_CHAPTERS"
+        }
+      }
+    }
+  }
+}

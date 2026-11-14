@@ -10,6 +10,7 @@
     "./browser": "./src/browser.ts"
   },
   "dependencies": {
-    "@vid2context/core": "*"
+    "@vid2context/core": "*",
+    "undici": "^7.16.0"
   }
 }

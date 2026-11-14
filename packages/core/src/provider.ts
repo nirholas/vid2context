@@ -80,6 +80,14 @@ export interface CaptionTrackInfo {
 
 export interface CaptionsProvider extends ProviderBase {
   kind: 'captions';
+  /**
+   * Run order among captions providers: lower runs first. Default 0; ties keep
+   * registry order (provider package name). Metered fallbacks (a hosted API
+   * on the user's monthly quota) use a high number so keyless providers run first.
+   */
+  order?: number;
+  /** Synchronous check from env only (no network). Default: always enabled. `Registry.captions(env)` leaves disabled providers out. */
+  isEnabled?(env: Env): boolean;
   supports(ref: VideoRef): boolean;
   listTracks?(ref: VideoRef, ctx: Ctx): Promise<CaptionTrackInfo[]>;
   /** Resolve the best track for the options, or null when the video has none. Throw only on real failures. */

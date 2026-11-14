@@ -23,6 +23,21 @@ export interface RunOptions {
   cwd?: string;
   /** Label for errors, e.g. "yt-dlp metadata". */
   label: string;
+  /**
+   * Called with each complete stdout line as it arrives (progress templates).
+   * Lines are still collected into `stdout` unless `discardStdout` is set.
+   */
+  onStdoutLine?: (line: string) => void;
+  /** Called with each complete stderr line (postprocessor progress is printed there). */
+  onStderrLine?: (line: string) => void;
+  /** Do not keep stdout (long runs that only report through onStdoutLine). */
+  discardStdout?: boolean;
+  /**
+   * Skip the shared YTDLP_CONCURRENCY semaphore. Media downloads take
+   * minutes and queue under their own limit, so they must not hold the slots
+   * that metadata and caption calls need.
+   */
+  ownQueue?: boolean;
 }
 
 const DEFAULT_STDOUT = 64 * 1024 * 1024;
@@ -77,6 +92,7 @@ function killTree(pid: number | undefined): void {
 /** Run a binary with an argument array. Resolves with the exit code; rejects only on spawn failure, timeout or abort. */
 export async function run(bin: string, args: string[], ctx: Ctx, opts: RunOptions): Promise<RunResult> {
   if (ctx.signal?.aborted) throw abortError(ctx.signal);
+  if (opts.ownQueue) return spawnOnce(bin, args, ctx, opts);
   await acquire(concurrencyLimit(ctx.env), ctx.signal);
   try {
     return await spawnOnce(bin, args, ctx, opts);
@@ -101,6 +117,8 @@ function spawnOnce(bin: string, args: string[], ctx: Ctx, opts: RunOptions): Pro
     let outLen = 0;
     let err = '';
     let failure: Error | null = null;
+    let partial = '';
+    let errPartial = '';
 
     const fail = (e: Error) => {
       if (failure) return;
@@ -118,6 +136,13 @@ function spawnOnce(bin: string, args: string[], ctx: Ctx, opts: RunOptions): Pro
     ctx.signal?.addEventListener('abort', onAbort, { once: true });
 
     child.stdout.on('data', (chunk: Buffer) => {
+      if (opts.onStdoutLine) {
+        partial += chunk.toString('utf8');
+        const lines = partial.split(/\r?\n|\r/);
+        partial = lines.pop() ?? '';
+        for (const line of lines) if (line) opts.onStdoutLine(line);
+      }
+      if (opts.discardStdout) return;
       outLen += chunk.length;
       if (outLen > maxStdout) {
         fail(new Vid2ContextError('too-large', `${opts.label} printed more than ${maxStdout} bytes.`));
@@ -126,7 +151,14 @@ function spawnOnce(bin: string, args: string[], ctx: Ctx, opts: RunOptions): Pro
       out.push(chunk);
     });
     child.stderr.on('data', (chunk: Buffer) => {
-      err += chunk.toString('utf8');
+      const text = chunk.toString('utf8');
+      if (opts.onStderrLine) {
+        errPartial += text;
+        const lines = errPartial.split(/\r?\n|\r/);
+        errPartial = lines.pop() ?? '';
+        for (const line of lines) if (line) opts.onStderrLine(line);
+      }
+      err += text;
       if (err.length > maxStderr) err = err.slice(err.length - maxStderr);
     });
     child.on('error', (e: NodeJS.ErrnoException) => {
@@ -145,6 +177,8 @@ function spawnOnce(bin: string, args: string[], ctx: Ctx, opts: RunOptions): Pro
     });
     child.on('close', (code) => {
       clearTimeout(timer);
+      if (partial && opts.onStdoutLine) opts.onStdoutLine(partial);
+      if (errPartial && opts.onStderrLine) opts.onStderrLine(errPartial);
       ctx.signal?.removeEventListener('abort', onAbort);
       if (failure) reject(failure);
       else resolve({ code, stdout: Buffer.concat(out).toString('utf8'), stderr: err });

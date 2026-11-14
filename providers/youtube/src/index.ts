@@ -24,13 +24,17 @@ export {
   type TimedTextFormat,
 } from './captions/formats.ts';
 export { youtubeCaptions } from './captions/provider.ts';
-export { chooseTrack, spokenLanguage, type TrackChoice } from './captions/tracks.ts';
+export { chooseTrack, originalLanguage, spokenLanguage, type TrackChoice } from './captions/tracks.ts';
 export { type CommentOptions, type CommentSort, getYouTubeComments } from './comments/index.ts';
 export {
   type ChapterSource,
   extractLinks,
+  fallbackMetadata,
+  fetchOEmbed,
   getYouTubeMetadata,
+  type OEmbedInfo,
   parseDescriptionChapters,
+  parseOEmbed,
   parseWatch,
   toMetadata,
   type WatchInfo,

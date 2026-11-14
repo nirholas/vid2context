@@ -59,6 +59,8 @@ providers/<name>/
 - `getCaptions(ref, opts, ctx)` returns the best `Transcript` for `opts`, or `null` when the video has no usable track. Throw only on real failures (network, blocking).
 - Respect `opts.language`, `opts.allowAuto` (default true) and `opts.allowTranslated` (default true). A machine-translated result sets `translated: true` and keeps the source track's `origin`.
 - `origin` is `creator-captions`, `auto-captions` or `native-transcript`.
+- Order: providers run by `order` (lower first, default 0), then registry order (provider package name). A metered fallback, such as a hosted transcript API on the user's monthly quota, sets a high `order` so keyless providers run before it.
+- `isEnabled(env)` (optional, synchronous, env only) gates a provider on a key. `Registry.captions(env)` leaves disabled providers out and health reports them as disabled. Until every caller passes env, such a provider also returns `null` from `getCaptions` when its key is missing.
 
 ## Rung providers (`stt`, `llm`, `embed`, `video`, `visual`)
 

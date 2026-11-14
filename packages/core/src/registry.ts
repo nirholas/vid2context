@@ -43,8 +43,14 @@ export class Registry {
   sources(): SourceProvider[] {
     return this.ofKind('source');
   }
-  captions(): CaptionsProvider[] {
-    return this.ofKind('captions');
+  /**
+   * Captions providers in run order: `order` (default 0), then registry order.
+   * Given env, providers whose `isEnabled(env)` is false are left out.
+   */
+  captions(env?: Env): CaptionsProvider[] {
+    return this.ofKind('captions')
+      .filter((p) => !env || !p.isEnabled || p.isEnabled(env))
+      .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
   }
   sttRungs(env: Env): SttRung[] {
     return this.ofKind('stt').flatMap((p) => p.rungs(env));
@@ -105,6 +111,7 @@ export class Registry {
         };
       }
       if (p.kind === 'storage') return { id: p.id, kind: p.kind, name: p.name, enabled: p.isEnabled(env) };
+      if (p.kind === 'captions' && p.isEnabled) return { id: p.id, kind: p.kind, name: p.name, enabled: p.isEnabled(env) };
       return { id: p.id, kind: p.kind, name: p.name, enabled: true };
     });
   }

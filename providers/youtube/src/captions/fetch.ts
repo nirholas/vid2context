@@ -56,7 +56,7 @@ export async function fetchTrack(track: RawCaptionTrack, ctx: Ctx, translateTo?:
       status: 403,
       hint: BLOCKED_HINT,
     });
-    tripBreaker(err, ctx);
+    tripBreaker(err, ctx, 'direct', 'timedtext');
     throw err;
   }
   throw new Vid2ContextError('upstream', `${label}: the caption payload was empty.`, {

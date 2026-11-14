@@ -13,6 +13,12 @@ export interface MarkerChapter {
 }
 
 export interface WatchInfo {
+  /** The video title (videoPrimaryInfoRenderer). Used when the player is blocked. */
+  title?: string;
+  /** The full description (videoSecondaryInfoRenderer.attributedDescription). Used when the player is blocked. */
+  description?: string;
+  /** Total views from "448,539,222 views"; absent for live streams, whose count is liveViewers. */
+  viewCount?: number;
   /** The date line under the title, as shown: "Apr 23, 2005", "Streamed live on Jul 12, 2022", "Scheduled for Nov 15, 2026". */
   dateText?: string;
   /** ISO 8601 date (YYYY-MM-DD) read from dateText; absent for relative ("3 hours ago") and scheduled dates. */
@@ -134,11 +140,16 @@ export function parseWatch(next: unknown): WatchInfo {
   const views = at(primary, 'viewCount', 'videoViewCountRenderer');
   const dateText = textOf(at(primary, 'dateText'));
   const badges = at(primary, 'badges');
+  const description = at(first(next, 'videoSecondaryInfoRenderer'), 'attributedDescription', 'content');
+  const isLive = at(views, 'isLive') === true;
   const info: WatchInfo = {
+    title: textOf(at(primary, 'title'))?.trim() || undefined,
+    description: typeof description === 'string' ? description : undefined,
+    viewCount: isLive ? undefined : count(textOf(at(views, 'viewCount'))),
     dateText,
     publishedAt: parseDateText(dateText),
     likeCount: likeCount(primary),
-    liveViewers: at(views, 'isLive') === true ? count(textOf(at(views, 'viewCount'))) : undefined,
+    liveViewers: isLive ? count(textOf(at(views, 'viewCount'))) : undefined,
     channelName: textOf(at(owner, 'title')),
     channelId: typeof at(browse, 'browseId') === 'string' ? (at(browse, 'browseId') as string) : undefined,
     channelHandle: typeof handlePath === 'string' && handlePath.startsWith('/@') ? handlePath.slice(1) : undefined,

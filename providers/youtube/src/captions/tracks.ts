@@ -7,9 +7,10 @@
  *   3. YouTube's machine translation (tlang) of the best translatable track
  *      (unless allowTranslated is false)
  * Without:
- *   1. a creator track in the spoken language (the asr track's language reveals it)
+ *   1. a creator track in the spoken language (the asr track's language reveals it;
+ *      on auto-dubbed videos, the original audio's asr track, see originalLanguage)
  *   2. any creator track, the video's default track first
- *   3. the asr track (unless allowAuto is false)
+ *   3. the asr track in the spoken language, then any asr track (unless allowAuto is false)
  *
  * Languages match exactly first, then by primary subtag (en matches en-GB).
  */
@@ -44,9 +45,35 @@ export function trackInfo(t: RawCaptionTrack): CaptionTrackInfo {
   };
 }
 
-/** The spoken language, revealed by the auto-caption track's language when there is one. */
-export function spokenLanguage(tracks: RawCaptionTrack[]): string | undefined {
-  return tracks.find(isAsr)?.languageCode;
+/**
+ * The spoken language, revealed by the auto-caption track's language when
+ * there is one. `original` (from originalLanguage) picks among several
+ * auto-caption tracks, which auto-dubbed videos have.
+ */
+export function spokenLanguage(tracks: RawCaptionTrack[], original?: string): string | undefined {
+  const asr = tracks.filter(isAsr);
+  return (original ? byLanguage(asr, original) : undefined)?.languageCode ?? asr[0]?.languageCode;
+}
+
+/**
+ * The language of the original audio. Usually the only auto-caption (asr)
+ * track's language. Auto-dubbed videos have one asr track per dubbed
+ * language, listed alphabetically: on 2026-11-14, r3UXC_U6iCQ (spoken in
+ * English, dubbed into 19 languages) listed Bangla first. There, every audio
+ * track's captionTrackIndices starts with the original language's track
+ * (index 2, en) and the original audio's id ends in ".4" (en-US.4, the dubs
+ * end in ".10"). Both signals are read, in that order.
+ */
+export function originalLanguage(player: PlayerResponse): string | undefined {
+  const tracks = tracksOf(player);
+  const asr = tracks.filter(isAsr);
+  if (asr.length <= 1) return asr[0]?.languageCode;
+  const audio = player.captions?.playerCaptionsTracklistRenderer?.audioTracks ?? [];
+  const firstAsr = audio[0]?.captionTrackIndices?.map((i) => tracks[i]).find((t) => t !== undefined && isAsr(t));
+  if (firstAsr) return firstAsr.languageCode;
+  const originalId = audio.find((a) => /\.4$/.test(a.audioTrackId ?? ''))?.audioTrackId;
+  const fromId = originalId ? byLanguage(asr, originalId.split('.')[0] ?? '') : undefined;
+  return (fromId ?? asr[0])?.languageCode;
 }
 
 const primary = (code: string): string => code.toLowerCase().split(/[-_]/)[0] ?? '';
@@ -82,16 +109,18 @@ export function chooseTrack(
   opts: CaptionOptions,
   defaultIndex?: number,
   translationLanguages?: string[],
+  original?: string,
 ): TrackChoice | null {
   const allowAuto = opts.allowAuto ?? true;
   const creator = tracks.filter((t) => !isAsr(t));
   const auto = allowAuto ? tracks.filter(isAsr) : [];
   const def = defaultIndex === undefined ? undefined : tracks[defaultIndex];
   const defCreator = def && !isAsr(def) ? def : undefined;
-  const spoken = spokenLanguage(tracks);
+  const spoken = spokenLanguage(tracks, original);
 
   // Best tracks without a language preference, in order.
-  const ranked = [spoken ? byLanguage(creator, spoken) : undefined, defCreator, ...creator, ...auto].filter(
+  const spokenAuto = spoken ? auto.find((t) => t.languageCode === spoken) : undefined;
+  const ranked = [spoken ? byLanguage(creator, spoken) : undefined, defCreator, ...creator, spokenAuto, ...auto].filter(
     (t, i, all): t is RawCaptionTrack => t !== undefined && all.indexOf(t) === i,
   );
 
@@ -111,5 +140,5 @@ export function chooseTrack(
 }
 
 export function choose(player: PlayerResponse, opts: CaptionOptions): TrackChoice | null {
-  return chooseTrack(tracksOf(player), opts, defaultTrackIndex(player), translationTargets(player));
+  return chooseTrack(tracksOf(player), opts, defaultTrackIndex(player), translationTargets(player), originalLanguage(player));
 }

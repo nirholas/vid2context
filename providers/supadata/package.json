@@ -1,0 +1,22 @@
+{
+  "name": "@vid2context/provider-supadata",
+  "version": "0.1.0",
+  "description": "YouTube captions through the Supadata transcript API (free tier with your key), tried after the keyless YouTube and yt-dlp caption providers.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "vid2context": {
+    "runtimes": [
+      "node",
+      "workers"
+    ]
+  },
+  "dependencies": {
+    "@vid2context/core": "*"
+  },
+  "devDependencies": {
+    "@vid2context/registry": "*"
+  }
+}

@@ -12,7 +12,9 @@ With a language (`--lang de`, `language: 'de'`):
 2. an auto-generated (asr) track in that language, unless `allowAuto` is false,
 3. YouTube's machine translation (`tlang`) of the best translatable track, unless `allowTranslated` is false. The transcript is marked `translated: true`. When the player lists translation targets, only a listed language is used, with YouTube's own code for it (`pt-BR` becomes `pt`).
 
-Without a language: a creator track in the spoken language (an asr track's language reveals it), then any creator track (the video's default first), then the asr track.
+Without a language: a creator track in the spoken language (an asr track's language reveals it), then any creator track (the video's default first), then the asr track in the spoken language.
+
+Auto-dubbed videos have one asr track per dubbed language, listed alphabetically, so the first one is not the spoken language (r3UXC_U6iCQ, spoken in English, listed Bangla first on 2026-11-14). The original language comes from the player's audio tracks instead: each audio track lists the original language's caption track first, and the original audio's id ends in `.4` (dubs end in `.10`). `metadata.language` uses the same rule.
 
 Languages match exactly first, then by primary subtag (`en` matches `en-GB`). Tracks download as srv3, then srv1. Parsers also handle json3 and WebVTT, and the format is detected from the body, never from the request, because the endpoint does not always honour `fmt`. The raw track text is kept as is; cleaning and translation by an LLM are separate layers.
 
@@ -60,16 +62,45 @@ YouTube flags many cloud and datacenter IPs. Two shapes were seen from a GCP VM 
 - the player API answers `LOGIN_REQUIRED` "Sign in to confirm you're not a bot" (for some clients; vid2context moves on to the next one, and reports `blocked` only when every client gets it),
 - `timedtext` answers HTTP 429 with an HTML page: "Sorry... your computer or network may be sending automated queries". On that day the player API kept answering while every caption request got this page.
 
-Retries never help with a block and tend to extend it. So a `blocked` result is not retried, and it opens a circuit breaker: for `YOUTUBE_BLOCK_COOLDOWN_SEC` (default 600, 0 turns it off) every YouTube call in the process fails fast with the same error and hint, and an attempt with reason `circuit-open`. Rate limits and 5xx get exponential backoff with full jitter instead (at most 3 retries, Retry-After honoured).
+Retries never help with a block and tend to extend it. So a `blocked` result is not retried, and it opens a circuit breaker for `YOUTUBE_BLOCK_COOLDOWN_SEC` (default 600, 0 turns it off). YouTube blocks its endpoints independently, so there is one breaker per endpoint family: `player` (the player API), `timedtext` (caption downloads) and `web` (`next`, `browse`, `search`, `resolve_url`). A caption block pauses caption downloads but not metadata, and a player block leaves `next` and oEmbed working. While a breaker is open, requests of that family fail fast with an attempt of reason `circuit-open` and a message that says this request was not sent, which family is paused, for how long, and quotes the earlier blocked request (so it never reads as if this video failed with another video's error). Rate limits and 5xx get exponential backoff with full jitter instead (at most 3 retries, Retry-After honoured).
 
 ### Fixes for a block, best first
 
 1. Run vid2context on your own machine. A home connection is rarely blocked.
 2. Keep the server where it is but send its YouTube traffic through your home network: see `docs/guides/cloudflare-tunnel.md`.
-3. Route through a proxy. vid2context has no proxy code of its own: Node 24 honours `HTTPS_PROXY` when started with `NODE_USE_ENV_PROXY=1`, for example `NODE_USE_ENV_PROXY=1 HTTPS_PROXY=http://host:port npx vid2context <url>`.
+3. Route YouTube through a proxy with `YOUTUBE_PROXY` (Node: CLI, server, MCP). See [YouTube-only proxy](#youtube-only-proxy) below. This is what hosted transcript sites do: they send YouTube requests through pools of residential IP addresses.
 4. Set `YOUTUBE_COOKIE` to the Cookie header of a signed-in youtube.com tab. With a `SAPISID` cookie, the matching `SAPISIDHASH` Authorization header is derived. Warning: the cookie ties every request to that Google account, and heavy use can get the account flagged, so use a spare account. The provider runs on Node, Workers and in the browser and never reads files, so reading a Netscape cookies file (`YOUTUBE_COOKIES_FILE`) into `YOUTUBE_COOKIE` is left to the Node surfaces (CLI, server); until they do, paste the header value itself. YouTube honours account cookies mainly for its web clients, so with the default app clients the gain is uncertain. Not verified live (no account was used).
 5. Install the yt-dlp provider, which has its own client rotation and cookie support.
 6. Wait. Blocks usually lift after some time without requests.
+7. Get the transcript from the user's side: the web app's error panel offers "Get it from my browser" (the vid2context extension fetches the captions from the user's own IP), pasting YouTube's "Show transcript" text, or uploading a subtitle file. All three end in `POST /api/v1/imports` (docs/contracts/transcript-import.md).
+
+#### YouTube-only proxy
+
+`YOUTUBE_PROXY` takes one HTTP(S) proxy URL or several separated by commas: `http://host:port`, or `http://user:pass@host:port` for a provider that needs a login. Only requests to `youtube.com` (and subdomains), `youtu.be`, `youtube-nocookie.com`, `googlevideo.com` and `youtubei.googleapis.com` go through it. LLM, speech-to-text and storage calls stay direct, so the proxy operator never sees your API keys and proxy bandwidth is spent only on YouTube. yt-dlp gets the first proxy as `--proxy` for YouTube URLs only.
+
+- Several proxies rotate per request. Every proxied request opens a new connection, so a rotating residential gateway gives each request (and each retry after a block) a new exit IP.
+- Works with any HTTP CONNECT proxy: a paid rotating residential service, or a small proxy such as tinyproxy or Squid on a machine in your home network (reachable over a VPN such as Tailscale or WireGuard).
+- SOCKS is not supported. Workers and the browser build cannot use it (Workers have no outbound proxy support): use a relay or the import routes there.
+- The value can hold a password, so it is never logged, and errors name the proxy host only.
+- Verified with a local CONNECT proxy in `packages/registry/test/proxy.test.ts` (routing, credentials, a new tunnel per request, rotation). Not verified with a commercial residential proxy (none was available on 2026-11-14).
+
+#### What still works while the player is blocked
+
+A block is about this server's IP address, not the video, so it does not end a run:
+
+- Metadata falls back to the WEB `next` response (title, description, channel, publish date, views, likes, chapters) and YouTube's oEmbed endpoint (title, channel, thumbnail). oEmbed is a separate service and is never paused by the breaker. Only the duration, tags, spoken language and Shorts detection are missing, and `extra.playerBlocked` is true with `extra.metadataSource` (`next+oembed`, `next` or `oembed`). On 2026-11-14 both kept answering from a GCP VM that got HTTP 429 on every caption download. If neither answers, the original `blocked` error is raised.
+- The pipeline records a blocked metadata step and goes on to the captions providers (yt-dlp, Supadata), audio sources and speech-to-text. When none produces a transcript, the run fails with `blocked` and the block's hint (not `no-transcript`), with every attempt listed.
+
+#### Hosted transcript API (Supadata)
+
+Hosted transcript APIs fetch captions from their own IPs, so they work where this machine is blocked. vid2context ships one: set `SUPADATA_API_KEY` (free plan: 100 credits a month at https://dash.supadata.ai) and the `supadata-captions` provider runs after `youtube-captions` and `ytdlp-captions` have found nothing, so credits are spent only when the keyless paths fail. Without the key it never runs.
+
+- It asks only for existing captions (`mode=native`), never Supadata's AI transcription; speech-to-text stays with vid2context's own rungs.
+- Each lookup costs 1 credit, including a "transcript unavailable" answer. Async jobs are polled every second for up to `SUPADATA_MAX_WAIT_SEC` (default 120).
+- Supadata does not say whether a track is the creator's or YouTube's automatic one, so results are labelled `auto-captions`; with auto-captions turned off it is skipped.
+- If the requested language is missing, Supadata answers in another language; vid2context then returns nothing from it rather than the wrong language.
+- Errors: `auth` (bad key or plan), `rate-limited` (1 request a second, or monthly credits used up; the hint says which), `unavailable` (private or restricted video), `not-found`, `timeout`, `upstream`.
+- The video id goes to a third party. Not verified live yet (no key was available on 2026-11-14).
 
 ### PO tokens
 
