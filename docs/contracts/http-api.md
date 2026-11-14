@@ -127,11 +127,42 @@ Item 46 mounts every sub-app that exists when it runs (`app.route('/api/v1', lib
 |---|---|---|---|
 | `POST /briefs` | 32 | `{ collectionId?, inputs?: string[], question?, template?: string }` | `202 Job`; result `Brief` (claims with citations, consensus and disagreement) |
 | `POST /extract` | 33 | `{ inputs?: string[], collectionId?, template?: string, schema?: object }` | `202 Job`; result JSON matching the template or schema, with citations |
-| `POST /ask` | 34 | `{ question, collectionId?, inputs?: string[], stream?: boolean }` | `{ answer, citations: Citation[], rung, attempts }`, or `text/event-stream` when `stream` is true |
+| `POST /ask` | 34 | `{ question, collectionId?, inputs?: string[], stream?: boolean, history?: { role, content }[], model?: ModelChoice, maxTokens?, temperature? }` | `{ answer, citations: Citation[], unverified: number[], sources, rung, model, usage?, attempts }`, or `text/event-stream` with the `/chat` events when `stream` is true |
+| `POST /chat` | 34 | `ChatApiRequest` (below) | `text/event-stream`: `meta`, `reasoning`*, `delta`+, then `done` or `error` (below) |
 | `GET /transcript?...&lang=xx&translate=1` | 35 | `translate=1` allows LLM translation when the platform has no track in `lang` | as `/transcript`; the transcript has `translated: true` |
 | `POST /chapters` | 36 | `{ url }` | `{ chapters: Chapter[], producer, rung }` for videos without chapters |
 
-`Citation` is `{ videoId, title, startSec, endSec?, url?, quote? }`, where `url` is a timestamp link from `timestampUrl`.
+`Citation` is `{ videoId, title, startSec, endSec?, url?, quote? }`, where `url` is a timestamp link from `timestampUrl`. `/ask` and `/chat` add `n`, the `[n]` in the answer the citation backs; `startSec` is narrowed to the segment that best supports the citing sentence.
+
+#### `POST /chat` (and `POST /ask` with `stream: true`)
+
+Multi-turn, model-selectable answers grounded in videos. Implemented by `askRoutes` in [packages/ask/src/http.ts](../../packages/ask/src/http.ts); see [guides/ask.md](../guides/ask.md).
+
+```ts
+interface ChatApiRequest {
+  messages: { role: 'user' | 'assistant'; content: string }[]; // oldest first, ending with the user's question
+  /** Omit for Auto (the server's policy, free-first). */
+  model?: { rung: string; strict?: boolean } | { policy: 'free' | 'quality' | 'local-only' };
+  /** What to ground the answer in: URLs, ids like youtube:abc, or upload:<sha256>, and/or a collection. */
+  context?: { inputs?: string[]; collectionId?: string };
+  maxTokens?: number;
+  temperature?: number;
+}
+```
+
+`model.rung` with `strict: false` (the default) starts with that rung, then falls back along the chain; `strict: true` means that rung or an error. `/ask` takes the same `model`.
+
+Events, in order (`event:` name, `data:` one JSON object). A comment line (`: keep-alive`) is sent every 15 seconds; a client disconnect aborts the upstream call.
+
+| event | data |
+|---|---|
+| `meta` | `{ rung, model, contextTokens?, promptTokens, sources: { n, videoId, title, url?, startSec, endSec }[] }`; `contextTokens` is the answering rung's window |
+| `reasoning` | `{ text }` (zero or more, only when the model exposes reasoning) |
+| `delta` | `{ text }` (one or more) |
+| `done` | `{ text, rung, model, usage?, citations: Citation[], unverified: number[], attempts }` |
+| `error` | `{ code, message, hint?, attempts? }` (instead of `done`) |
+
+The answer cites sources as `[n]`, matching `meta.sources[].n`. A number that matches no source is removed from the streamed text and from `done.text`, and listed in `done.unverified`. Request errors (bad body, unknown collection, a video that cannot be had) are answered before streaming with the standard error body and status; failures after streaming starts (every rung failed, a broken stream) arrive as an `error` event.
 
 ### Jobs
 

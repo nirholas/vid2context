@@ -68,7 +68,7 @@ Item 44 calls every registration function that exists when it runs; one that lan
 | `create_collection` | 44 (uses 41) | `{ name, description?, sources? }` | the collection; `sources` (playlists, channels, feeds) are followed |
 | `add_to_collection` | 44 (uses 41) | `{ collection, urls }` | ingests each video (or list) and returns the updated collection |
 | `get_collection` | 44 (uses 41) | `{ collection }` | the collection with video summaries |
-| `ask` | 44 (uses 34) | `{ question, collection?, urls? }` | an answer with timestamp citations (server-side RAG) |
+| `ask` | 44 (uses 34: `registerAskTools` in `packages/ask/src/mcp.ts`) | `{ question, collection?, urls? }` | the answer with `[n]` markers, then one line per cited source: `[n] Title @ m:ss <timestamp URL>` and the supporting quote; a tool error with `{ error: { code, message, hint }, attempts }` on failure |
 | `extract` | 44 (uses 33) | `{ template? , schema?, urls?, collection? }` | structured JSON with citations |
 | `build_brief` | 44 (uses 32) | `{ collection?, urls?, question? }` | a server-side cited brief (map-reduce on a free model) |
 

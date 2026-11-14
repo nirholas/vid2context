@@ -13,8 +13,11 @@ Limits below come from the providers' published free tiers or from live checks; 
 | Provider id | What | Enabled by | Notes |
 |---|---|---|---|
 | `youtube` | YouTube URLs and ids: metadata, description chapters | always | innertube ANDROID client, no key. `YOUTUBE_ANDROID_VERSION` overrides the client version if YouTube rejects the pinned one. Datacenter IPs may be blocked (`blocked` error); run locally or behind a tunnel. |
+| `youtube` (comments) | top or newest comments with pinned and creator flags, likes, approximate dates and a few replies per thread | always, when comments are requested | innertube `next` with the WEB client, no key. `YOUTUBE_COMMENT_REPLIES` (default 5, 0 turns replies off), `YOUTUBE_COMMENTS_SORT` (`top` or `newest`), `YOUTUBE_WEB_VERSION` (WEB client version, shared with metadata and browse). See [guides/youtube.md](guides/youtube.md#comments). |
 | `youtube-captions` | creator captions, auto-captions, YouTube translation (`tlang`) | always | translated tracks were rate-limited (HTTP 429) from a GCP VM on 2026-11-14 |
 | `media-file` | local files and `file://` URLs (Node only) | always | metadata from the filesystem; audio bytes for speech-to-text |
+| `ytdlp` | catch-all for any http(s) URL (Vimeo, TikTok, X, Reddit, Twitch, TED, ...): metadata, playlists, comments, 16 kHz mono mp3 audio; also audio for YouTube refs (Node only) | always | yt-dlp is found (`YTDLP_PATH`, `PATH`) or installed into `.vid2context/bin/` from the official release with SHA-256 verification, updated weekly (`YTDLP_AUTO_UPDATE=0` disables). Audio needs ffmpeg (`FFMPEG_PATH`). Also `YTDLP_TIMEOUT_SEC`, `YTDLP_CONCURRENCY` (default 2), `YTDLP_COOKIES_FILE`, `YTDLP_COOKIES_FROM_BROWSER`. See [guides/ytdlp.md](guides/ytdlp.md). |
+| `ytdlp-captions` | creator subtitles and automatic captions through yt-dlp (Node only) | always | runs after `youtube-captions` for YouTube. YouTube subtitle downloads through yt-dlp were rate-limited (HTTP 429) from a GCP VM on 2026-11-14; `vimeo.com/<id>` pages wanted a login there, so the provider retries through `player.vimeo.com`. |
 
 ## Speech-to-text (`stt-openai-compatible`)
 
@@ -104,6 +107,24 @@ Check what answers today: `npm run check:llm` (see [guides/llm.md](guides/llm.md
 | `VID2CONTEXT_PRICE_<RUNG_ID>` | price used to estimate paid spend: `in,out` USD per million tokens, or USD per audio minute |
 | `OTEL_EXPORTER_OTLP_ENDPOINT` and other `OTEL_*` | OpenTelemetry export of traces and metrics; see [observability.md](observability.md) |
 | `VID2CONTEXT_ENV_FILE` | an env file to load before `./.env` (shell variables always win) |
+| `VID2CONTEXT_CONFIRM_STT_MINUTES` | MCP: ask the user (elicitation) before speech-to-text on audio at least this many minutes long; default 20, `0` always asks; clients without elicitation get no question (`@vid2context/mcp-agentic`) |
+
+## Library storage
+
+The library (saved contexts, collections, search, key-value state, vectors) uses the enabled storage backend with the lowest priority. Guide: [guides/library-sqlite.md](guides/library-sqlite.md).
+
+| Priority | Backend | Runtime | Enabled when |
+|---|---|---|---|
+| lower than 50 | Postgres (`storage-postgres`) | node | a database URL is set (see that provider's rows) |
+| 50 | SQLite (`storage-sqlite`), FTS5 search, one local file | node (22.13+) | by default, unless `VID2CONTEXT_STORAGE` names another backend |
+| none | in-process `MemoryStorage`, lost on exit | any | no backend is enabled, or `VID2CONTEXT_STORAGE=memory` |
+
+| Env var | Used by | Notes |
+|---|---|---|
+| `VID2CONTEXT_STORAGE` | storage providers | pick one backend: `sqlite`, `postgres`, `cloudflare`, or `memory` (no persistent backend). Unset: the priority order above |
+| `VID2CONTEXT_DB` | `storage-sqlite` | path of the SQLite file, or `:memory:`; default `<VID2CONTEXT_HOME>/library.db` |
+| `VID2CONTEXT_HOME` | `storage-sqlite` and other local data | data directory; default `.vid2context` in the working directory |
+| `VID2CONTEXT_DB_BUSY_TIMEOUT_MS` | `storage-sqlite` | how long a write waits for another process holding the file; default 5000 |
 
 ## Security and limits
 
@@ -127,6 +148,15 @@ See [security/hardening.md](security/hardening.md) and [security/threat-model.md
 | `NOTION_PARENT_PAGE_ID` | `@vid2context/exporters` | id or link of the Notion page the video pages go under; a per-call `parentPageId` wins |
 
 Obsidian exports need no variable: they are local files.
+
+## Client libraries
+
+Read by the Python client in `clients/python` (and its LangChain and LlamaIndex loaders), not by the server. The LangChain.js loader in `packages/langchain` takes the same values as `baseUrl` and `apiKey` options instead of reading the environment.
+
+| Env var | Effect |
+|---|---|
+| `VID2CONTEXT_API_URL` | vid2context server the client calls; default `http://127.0.0.1:8787` |
+| `VID2CONTEXT_API_KEY` | sent as `Authorization: Bearer <key>` when the server sets `VID2CONTEXT_API_KEYS` |
 
 ## Content filters
 
