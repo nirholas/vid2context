@@ -52,7 +52,7 @@ function list(v: string | undefined, fallback: string[]): string[] {
 
 /** A relative path on this site, never a scheme-relative or absolute URL (no open redirects). */
 export function safeLocalPath(v: string | undefined | null): string | null {
-  if (!v || !v.startsWith('/') || v.startsWith('//') || v.startsWith('/\\')) return null;
+  if (!v?.startsWith('/') || v.startsWith('//') || v.startsWith('/\\')) return null;
   if (/[\r\n\t\0]/.test(v) || v.length > 512) return null;
   return v;
 }

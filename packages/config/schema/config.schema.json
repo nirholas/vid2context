@@ -39,11 +39,7 @@
             "anyOf": [
               {
                 "type": "string",
-                "enum": [
-                  "free",
-                  "local-only",
-                  "quality"
-                ],
+                "enum": ["free", "local-only", "quality"],
                 "description": "free: local, free, keyless, then paid. local-only: nothing leaves the machine. quality: best first."
               },
               {
@@ -51,56 +47,32 @@
                 "properties": {
                   "default": {
                     "type": "string",
-                    "enum": [
-                      "free",
-                      "local-only",
-                      "quality"
-                    ],
+                    "enum": ["free", "local-only", "quality"],
                     "description": "Rung order policy for every stage without its own value."
                   },
                   "stt": {
                     "type": "string",
-                    "enum": [
-                      "free",
-                      "local-only",
-                      "quality"
-                    ],
+                    "enum": ["free", "local-only", "quality"],
                     "description": "Rung order policy for stt rungs."
                   },
                   "llm": {
                     "type": "string",
-                    "enum": [
-                      "free",
-                      "local-only",
-                      "quality"
-                    ],
+                    "enum": ["free", "local-only", "quality"],
                     "description": "Rung order policy for llm rungs."
                   },
                   "embed": {
                     "type": "string",
-                    "enum": [
-                      "free",
-                      "local-only",
-                      "quality"
-                    ],
+                    "enum": ["free", "local-only", "quality"],
                     "description": "Rung order policy for embed rungs."
                   },
                   "video": {
                     "type": "string",
-                    "enum": [
-                      "free",
-                      "local-only",
-                      "quality"
-                    ],
+                    "enum": ["free", "local-only", "quality"],
                     "description": "Rung order policy for video rungs."
                   },
                   "visual": {
                     "type": "string",
-                    "enum": [
-                      "free",
-                      "local-only",
-                      "quality"
-                    ],
+                    "enum": ["free", "local-only", "quality"],
                     "description": "Rung order policy for visual rungs."
                   }
                 },
@@ -956,12 +928,7 @@
               },
               "mode": {
                 "type": "string",
-                "enum": [
-                  "auto",
-                  "captions",
-                  "stt",
-                  "video"
-                ],
+                "enum": ["auto", "captions", "stt", "video"],
                 "description": "Default transcript mode."
               },
               "language": {
@@ -1025,9 +992,6 @@
       }
     }
   },
-  "required": [
-    "version",
-    "profiles"
-  ],
+  "required": ["version", "profiles"],
   "additionalProperties": false
 }

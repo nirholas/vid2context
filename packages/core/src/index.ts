@@ -16,3 +16,4 @@ export * from './llm-stream.ts';
 export * from './longform/index.ts';
 export * from './bundle/index.ts';
 export * from './security/index.ts';
+export * from './chunk/index.ts';

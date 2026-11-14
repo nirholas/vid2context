@@ -2,7 +2,7 @@
  * The slice of the vid2context HTTP API the loader needs (docs/contracts/http-api.md):
  * GET /api/v1/context, with the contract's error body parsed into a Vid2ContextError.
  */
-import { type Attempt, type ErrorCode, type TranscriptMode, type VideoContext, Vid2ContextError } from '@vid2context/core';
+import { type Attempt, type ErrorCode, type TranscriptMode, Vid2ContextError, type VideoContext } from '@vid2context/core';
 
 export const DEFAULT_BASE_URL = 'http://127.0.0.1:8787';
 
@@ -39,7 +39,11 @@ export class Vid2ContextApiError extends Vid2ContextError {
   /** The code exactly as the server sent it (`internal` maps to `code: 'upstream'`). */
   readonly serverCode: string;
 
-  constructor(serverCode: string, message: string, opts: { hint?: string; status?: number; attempts?: Attempt[]; cause?: unknown }) {
+  constructor(
+    serverCode: string,
+    message: string,
+    opts: { hint?: string; status?: number; attempts?: Attempt[]; cause?: unknown },
+  ) {
     super(serverCode in CODES ? (serverCode as ErrorCode) : 'upstream', message, opts);
     this.name = 'Vid2ContextApiError';
     this.serverCode = serverCode;
@@ -107,10 +111,14 @@ export async function fetchContext(
   try {
     return JSON.parse(body) as VideoContext;
   } catch (cause) {
-    throw new Vid2ContextApiError('upstream', `Expected JSON from ${endpoint}, got ${res.headers.get('content-type') ?? 'no content type'}.`, {
-      hint: 'Check that the base URL points at a vid2context server.',
-      status: res.status,
-      cause,
-    });
+    throw new Vid2ContextApiError(
+      'upstream',
+      `Expected JSON from ${endpoint}, got ${res.headers.get('content-type') ?? 'no content type'}.`,
+      {
+        hint: 'Check that the base URL points at a vid2context server.',
+        status: res.status,
+        cause,
+      },
+    );
   }
 }

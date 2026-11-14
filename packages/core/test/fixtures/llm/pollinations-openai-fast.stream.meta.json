@@ -1,0 +1,24 @@
+{
+  "url": "https://text.pollinations.ai/openai",
+  "status": 200,
+  "headers": {
+    "content-type": "text/event-stream; charset=utf-8",
+    "cache-control": "no-cache",
+    "transfer-encoding": "chunked"
+  },
+  "request": {
+    "model": "openai-fast",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Which year did Apollo 11 land on the moon? Answer in one short sentence."
+      }
+    ],
+    "max_tokens": 300,
+    "stream": true,
+    "stream_options": {
+      "include_usage": true
+    }
+  },
+  "recordedAt": "2026-11-14T17:07:54.944Z"
+}

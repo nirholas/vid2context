@@ -1,0 +1,8 @@
+HTTP/1.1 200 OK
+Server: llama.cpp
+Access-Control-Allow-Origin: 
+Content-Type: application/json; charset=utf-8
+Keep-Alive: timeout=5, max=100
+Content-Length: 737
+
+{"models":[{"name":"qwen2.5-0.5b-instruct-q4_k_m","model":"qwen2.5-0.5b-instruct-q4_k_m","modified_at":"","size":"","digest":"","type":"model","description":"","tags":[""],"capabilities":["completion"],"parameters":"","details":{"parent_model":"","format":"gguf","family":"","families":[""],"parameter_size":"","quantization_level":""}}],"object":"list","data":[{"id":"qwen2.5-0.5b-instruct-q4_k_m","aliases":["qwen2.5-0.5b-instruct-q4_k_m"],"tags":[],"object":"model","architecture":{"input_modalities":["text"],"output_modalities":["text"]},"created":1794676066,"owned_by":"llamacpp","meta":{"vocab_type":2,"n_vocab":151936,"n_ctx":8192,"n_ctx_train":32768,"n_embd":896,"n_params":494032768,"size":391859712,"ftype":"Q4_K - Medium"}}]}

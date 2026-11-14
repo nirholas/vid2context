@@ -1,0 +1,36 @@
+{
+  "recordedAt": "2026-11-14",
+  "model": "onnx-community/whisper-base",
+  "device": "cpu",
+  "runtime": "node",
+  "input": "apollo",
+  "durationSec": 24.1229375,
+  "detectedLanguage": "en",
+  "ms": 3888,
+  "output": {
+    "text": " And they'll step off the land now. It's one small step for man. One by a three for man.",
+    "chunks": [
+      {
+        "timestamp": [
+          0,
+          7
+        ],
+        "text": " And they'll step off the land now."
+      },
+      {
+        "timestamp": [
+          7,
+          19
+        ],
+        "text": " It's one small step for man."
+      },
+      {
+        "timestamp": [
+          19,
+          23
+        ],
+        "text": " One by a three for man."
+      }
+    ]
+  }
+}

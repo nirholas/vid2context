@@ -11,7 +11,7 @@
  *
  * Chunk text is the raw transcript text (whitespace collapsed), never a summary.
  */
-import { type Segment, segmentsToText, timestampUrl, type VideoContext, Vid2ContextError } from '@vid2context/core';
+import { type Segment, segmentsToText, timestampUrl, Vid2ContextError, type VideoContext } from '@vid2context/core';
 
 export type Chunking = 'chapters' | 'segments' | 'window';
 export const CHUNKING_MODES: readonly Chunking[] = ['chapters', 'segments', 'window'];
@@ -45,7 +45,13 @@ function makeChunk(
   extra: Record<string, string | number>,
 ): Chunk {
   const base = baseMetadata(ctx);
-  const all = { ...base, start_sec: startSec, end_sec: endSec, url: timestampUrl(ctx.metadata.ref, startSec) ?? base.source, ...extra };
+  const all = {
+    ...base,
+    start_sec: startSec,
+    end_sec: endSec,
+    url: timestampUrl(ctx.metadata.ref, startSec) ?? base.source,
+    ...extra,
+  };
   // Vector stores (Chroma, Pinecone and others) reject null and undefined values, so unknown fields are left out.
   const metadata: ChunkMetadata = {};
   for (const [k, v] of Object.entries(all)) if (v !== undefined) metadata[k] = v;
@@ -54,13 +60,17 @@ function makeChunk(
 
 function assertWindow(windowSec: number): void {
   if (!(windowSec > 0)) {
-    throw new Vid2ContextError('bad-request', `windowSec must be positive, got ${windowSec}.`, { hint: 'Use a value such as 60.' });
+    throw new Vid2ContextError('bad-request', `windowSec must be positive, got ${windowSec}.`, {
+      hint: 'Use a value such as 60.',
+    });
   }
 }
 
 export function byWindow(ctx: VideoContext, windowSec: number, fellBack = false): Chunk[] {
   assertWindow(windowSec);
-  const extra: Record<string, string> = fellBack ? { chunking: 'window', chunking_requested: 'chapters' } : { chunking: 'window' };
+  const extra: Record<string, string> = fellBack
+    ? { chunking: 'window', chunking_requested: 'chapters' }
+    : { chunking: 'window' };
   const out: Chunk[] = [];
   let current: Segment[] = [];
   const flush = () => {

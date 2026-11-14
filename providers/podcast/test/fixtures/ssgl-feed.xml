@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:googleplay="http://www.google.com/schemas/play-podcasts/1.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <atom:link href="https://feeds.megaphone.fm/NATIONALAERONAUTICSANDSPACEADMINISTRATION5360639309" rel="self" type="application/rss+xml"/>
+    <title>Small Steps, Giant Leaps</title>
+    <link>https://www.nasa.gov/podcasts/small-steps-giant-leaps/</link>
+    <language>en-US</language>
+    <copyright>NASA/APPEL Knowledge Services</copyright>
+    <description>NASA’s technical workforce put boots on the Moon, tire tracks on Mars, and the first reusable spacecraft in orbit around the Earth. Learn what’s next as they build missions that redefine the future with amazing discoveries and remarkable innovations.</description>
+    <image>
+      <url>https://megaphone.imgix.net/podcasts/7a3bb104-6a1b-11ef-899d-334707aa843d/image/dc587d80aa91a06b8f38ae62739fc4f5.png?ixlib=rails-4.3.1&amp;max-w=3000&amp;max-h=3000&amp;fit=crop&amp;auto=format,compress</url>
+      <title>Small Steps, Giant Leaps</title>
+      <link>https://www.nasa.gov/podcasts/small-steps-giant-leaps/</link>
+    </image>
+    <itunes:explicit>no</itunes:explicit>
+    <itunes:type>episodic</itunes:type>
+    <itunes:subtitle>Small Steps, Giant Leaps audio podcast episodes</itunes:subtitle>
+    <itunes:author>National Aeronautics and Space Administration (NASA)</itunes:author>
+    <itunes:summary>NASA’s technical workforce put boots on the Moon, tire tracks on Mars, and the first reusable spacecraft in orbit around the Earth. Learn what’s next as they build missions that redefine the future with amazing discoveries and remarkable innovations.</itunes:summary>
+    <content:encoded>
+      <![CDATA[NASA’s technical workforce put boots on the Moon, tire tracks on Mars, and the first reusable spacecraft in orbit around the Earth. Learn what’s next as they build missions that redefine the future with amazing discoveries and remarkable innovations.]]>
+    </content:encoded>
+    <itunes:image href="https://megaphone.imgix.net/podcasts/7a3bb104-6a1b-11ef-899d-334707aa843d/image/dc587d80aa91a06b8f38ae62739fc4f5.png?ixlib=rails-4.3.1&amp;max-w=3000&amp;max-h=3000&amp;fit=crop&amp;auto=format,compress"/>
+    <itunes:category text="Science">
+    </itunes:category>
+    <item>
+      <title>Supercomputing</title>
+      <link>https://www.nasa.gov/podcasts/small-steps-giant-leaps/episode-186-supercomputing/</link>
+      <description>Dr. Marian Nemec, chief of the Computational Physics Branch at NASA Ames Research Center in Silicon Valley, California, takes us inside the world of NASA Advanced Supercomputing.</description>
+      <pubDate>Tue, 10 Nov 2026 23:10:00 -0000</pubDate>
+      <itunes:title>Supercomputing</itunes:title>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:episode>186</itunes:episode>
+      <itunes:author>National Aeronautics and Space Administration (NASA)</itunes:author>
+      <itunes:image href="https://megaphone.imgix.net/podcasts/f7a05c70-dd5b-11f1-b073-879875e7952e/image/c46a75caa92d3eacc6dc088792eb098b.jpg?ixlib=rails-4.3.1&amp;max-w=3000&amp;max-h=3000&amp;fit=crop&amp;auto=format,compress"/>
+      <itunes:subtitle>Dr. Marian Nemec, chief of the Computational Physics Branch at NASA Ames Research Center in Silicon Valley, California, takes us inside the world of NASA Advanced Supercomputing.</itunes:subtitle>
+      <itunes:summary>Dr. Marian Nemec, chief of the Computational Physics Branch at NASA Ames Research Center in Silicon Valley, California, takes us inside the world of NASA Advanced Supercomputing.</itunes:summary>
+      <content:encoded>
+        <![CDATA[<p>Dr. Marian Nemec, chief of the Computational Physics Branch at NASA Ames Research Center in Silicon Valley, California, takes us inside the world of NASA Advanced Supercomputing.</p>]]>
+      </content:encoded>
+      <itunes:duration>1031</itunes:duration>
+      <itunes:explicit>no</itunes:explicit>
+      <guid isPermaLink="false"><![CDATA[f7a05c70-dd5b-11f1-b073-879875e7952e]]></guid>
+      <enclosure url="https://traffic.megaphone.fm/NATIONALAERONAUTICSANDSPACEADMINISTRATION1474801934.mp3" length="0" type="audio/mpeg"/>
+    </item>
+    <item>
+      <title>NASA's Flight Dynamics Facility</title>
+      <description>The Flight Dynamics Facility provides tracking data on spacecraft including the Orion crew capsule and the Roman Space Telescope. The facility’s history stretches back to the earliest days of Mercury, Gemini and Apollo.</description>
+      <pubDate>Wed, 28 Oct 2026 21:33:00 -0000</pubDate>
+      <itunes:title>NASA's Flight Dynamics Facility</itunes:title>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:episode>185</itunes:episode>
+      <itunes:author>National Aeronautics and Space Administration (NASA)</itunes:author>
+      <itunes:image href="https://megaphone.imgix.net/podcasts/3959dce4-d317-11f1-ada2-e7c5c1b324fc/image/c46a75caa92d3eacc6dc088792eb098b.jpg?ixlib=rails-4.3.1&amp;max-w=3000&amp;max-h=3000&amp;fit=crop&amp;auto=format,compress"/>
+      <itunes:subtitle>The Flight Dynamics Facility provides tracking data on spacecraft including the Orion crew capsule and the Roman Space Telescope. The facility’s history stretches back to the earliest days of Mercury, Gemini and Apollo.</itunes:subtitle>
+      <itunes:summary>The Flight Dynamics Facility provides tracking data on spacecraft including the Orion crew capsule and the Roman Space Telescope. The facility’s history stretches back to the earliest days of Mercury, Gemini and Apollo.</itunes:summary>
+      <content:encoded>
+        <![CDATA[<p>The Flight Dynamics Facility provides tracking data on spacecraft including the Orion crew capsule and the Roman Space Telescope. The facility’s history stretches back to the earliest days of Mercury, Gemini and Apollo.</p>]]>
+      </content:encoded>
+      <itunes:duration>998</itunes:duration>
+      <itunes:explicit>no</itunes:explicit>
+      <guid isPermaLink="false"><![CDATA[3959dce4-d317-11f1-ada2-e7c5c1b324fc]]></guid>
+      <enclosure url="https://traffic.megaphone.fm/NATIONALAERONAUTICSANDSPACEADMINISTRATION7257246022.mp3" length="0" type="audio/mpeg"/>
+    </item>
+    <item>
+      <title>State Hubs: Opening Doors for Technical Students</title>
+      <description>NASA, through the Office of STEM Engagement, has launched the State Hubs Initiative, awarding $10.5 million to seven institutions with the goal of getting more students into highly skilled manufacturing jobs in the aerospace industry.</description>
+      <pubDate>Wed, 14 Oct 2026 18:31:00 -0000</pubDate>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:author>National Aeronautics and Space Administration (NASA)</itunes:author>
+      <itunes:image href="https://megaphone.imgix.net/podcasts/6cf7c0c2-c7fd-11f1-82ad-2765dd59474d/image/c46a75caa92d3eacc6dc088792eb098b.jpg?ixlib=rails-4.3.1&amp;max-w=3000&amp;max-h=3000&amp;fit=crop&amp;auto=format,compress"/>
+      <itunes:subtitle></itunes:subtitle>
+      <itunes:summary>NASA, through the Office of STEM Engagement, has launched the State Hubs Initiative, awarding $10.5 million to seven institutions with the goal of getting more students into highly skilled manufacturing jobs in the aerospace industry.</itunes:summary>
+      <content:encoded>
+        <![CDATA[<p>NASA, through the Office of STEM Engagement, has launched the State Hubs Initiative, awarding $10.5 million to seven institutions with the goal of getting more students into highly skilled manufacturing jobs in the aerospace industry.</p>]]>
+      </content:encoded>
+      <itunes:duration>1109</itunes:duration>
+      <itunes:explicit>no</itunes:explicit>
+      <guid isPermaLink="false"><![CDATA[6cf7c0c2-c7fd-11f1-82ad-2765dd59474d]]></guid>
+      <enclosure url="https://traffic.megaphone.fm/NATIONALAERONAUTICSANDSPACEADMINISTRATION5643462700.mp3" length="0" type="audio/mpeg"/>
+    </item>
+    <item>
+      <title>Small Steps, Giant Leaps: Episode 0, Preview</title>
+      <link>https://www.nasa.gov/podcasts/small-steps-giant-leaps/small-steps-giant-leaps-episode-0-preview/</link>
+      <description>APPEL Knowledge Services presents a preview of the new Small Steps, Giant Leaps podcast.</description>
+      <pubDate>Tue, 04 Dec 2018 23:24:00 -0000</pubDate>
+      <itunes:title>Small Steps, Giant Leaps: Episode 0, Preview</itunes:title>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:author>National Aeronautics and Space Administration (NASA)</itunes:author>
+      <itunes:image href="https://megaphone.imgix.net/podcasts/9fb9f396-6a1b-11ef-979d-9bd84a4db7e8/image/089a6125b80b7fae67eabb777590342f.png?ixlib=rails-4.3.1&amp;max-w=3000&amp;max-h=3000&amp;fit=crop&amp;auto=format,compress"/>
+      <itunes:subtitle>APPEL Knowledge Services presents a preview of the new Small Steps, Giant Leaps podcast.</itunes:subtitle>
+      <itunes:summary>APPEL Knowledge Services presents a preview of the new Small Steps, Giant Leaps podcast.</itunes:summary>
+      <content:encoded>
+        <![CDATA[APPEL Knowledge Services presents a preview of the new Small Steps, Giant Leaps podcast.]]>
+      </content:encoded>
+      <itunes:duration>229</itunes:duration>
+      <itunes:explicit>no</itunes:explicit>
+      <guid isPermaLink="false"><![CDATA[b5dd1cca224abb4ee87651e059a3e8c5]]></guid>
+      <enclosure url="https://traffic.megaphone.fm/NATIONALAERONAUTICSANDSPACEADMINISTRATION7823859867.mp3?updated=1725385535" length="0" type="audio/mpeg"/>
+    </item>
+  </channel>
+</rss>

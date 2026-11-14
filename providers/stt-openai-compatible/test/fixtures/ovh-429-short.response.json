@@ -1,0 +1,10 @@
+{
+  "status": 429,
+  "headers": {
+    "content-type": "application/json; charset=utf-8",
+    "retry-after": "11",
+    "x-ratelimit-limit-minute": "2",
+    "x-ratelimit-remaining-minute": "0"
+  },
+  "body": "{\n  \"message\":\"API rate limit exceeded\",\n  \"request_id\":\"a268ba73a4f7b27708c0d62dbcc7511b\"\n}"
+}

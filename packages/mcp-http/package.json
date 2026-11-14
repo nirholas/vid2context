@@ -1,0 +1,22 @@
+{
+  "name": "@vid2context/mcp-http",
+  "version": "0.1.0",
+  "description": "Remote vid2context MCP server over Streamable HTTP, with static bearer tokens or a single-owner OAuth 2.1 server, for ChatGPT and Claude.ai connectors.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "bin": {
+    "vid2context-mcp-http": "./src/bin.ts"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@hono/node-server": "^2.1.8",
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "@vid2context/core": "*",
+    "@vid2context/discovery": "*",
+    "@vid2context/mcp": "*",
+    "@vid2context/registry": "*",
+    "hono": "^4.13.18"
+  }
+}

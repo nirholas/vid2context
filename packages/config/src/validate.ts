@@ -102,7 +102,8 @@ function semanticErrors(config: Config): SchemaError[] {
       }
       if (Array.isArray(value)) {
         value.forEach((m, i) => {
-          if (m.startsWith('env:')) errors.push({ path: `${at}[${i}]`, message: 'an "env:NAME" reference must be the whole value' });
+          if (m.startsWith('env:'))
+            errors.push({ path: `${at}[${i}]`, message: 'an "env:NAME" reference must be the whole value' });
           if (m.includes(',')) errors.push({ path: `${at}[${i}]`, message: 'a model id in a list cannot contain a comma' });
         });
       }
@@ -116,7 +117,7 @@ function semanticErrors(config: Config): SchemaError[] {
     while (cur !== undefined && config.profiles[cur]) {
       if (seen.includes(cur)) {
         const cycle = [...seen.slice(seen.indexOf(cur)), cur];
-        const key = [...cycle].sort().join(',');
+        const key = [...new Set(cycle)].sort().join(',');
         if (!reported.has(key)) {
           reported.add(key);
           errors.push({ path: joinPath('profiles', cur) + '.extends', message: `extends cycle: ${cycle.join(' -> ')}` });

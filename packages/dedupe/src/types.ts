@@ -27,6 +27,11 @@ export interface DedupeOptions {
   reuploadOverlap?: number;
   /** Largest relative duration difference for a reupload. Default 0.1 (10 percent). */
   durationTolerance?: number;
+  /**
+   * Absolute duration difference, in seconds, that still counts as similar length even when it exceeds
+   * `durationTolerance` (a 4-second channel bumper on a 19-second video). Default 5.
+   */
+  durationSlackSec?: number;
   /** Covered share of the shorter transcript, in time order, above which it is a clip of the longer one. Default 0.6. */
   clipOverlap?: number;
   /** Words a single shared run needs before a pair is reported as related. Default 25. */
@@ -54,6 +59,7 @@ export const DEFAULTS: Required<DedupeOptions> = {
   maxOccurrences: 8,
   reuploadOverlap: 0.8,
   durationTolerance: 0.1,
+  durationSlackSec: 5,
   clipOverlap: 0.6,
   relatedMinWords: 25,
   metadataMargin: 0.05,

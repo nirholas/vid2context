@@ -3,51 +3,52 @@
  *
  *   npx tsx packages/core/test/longform/record-ovh.ts
  *
- * It runs the real long-audio orchestrator on doubleday-ch00.mp3 (4 chunks of
- * about 70 s, concurrency 1, waiting through OVH's 2 requests per minute) and
- * then sends the whole file once as a single-pass baseline. Each 200 response
- * body is written to packages/core/test/fixtures/longform/ovh-<upload name>.json.
- * Nothing personal is in these bodies (OVH echoes no IP or account data).
+ * Run it from a network you are happy to have OVH see; it makes about seven
+ * requests and waits through OVH's 2 requests per minute, so it takes a few
+ * minutes. Each response body is written to
+ * packages/core/test/fixtures/longform/ovh-<upload name>.json (with the status
+ * before .json when it is not 200). OVH echoes no IP or account data.
  */
-import { readFileSync, writeFileSync } from 'node:fs';
+import { writeFileSync } from 'node:fs';
 import { createContext, MemoryKv, Registry, stderrLogger, transcribeLong } from '@vid2context/core';
 import sttProvider from '@vid2context/provider-stt-openai-compatible';
-
-const dir = new URL('../fixtures/longform/', import.meta.url);
-const data = new Uint8Array(readFileSync(new URL('doubleday-ch00.mp3', dir)));
+import { doubleday58, fileRef, fixtureBytes, fixtureDir } from './helpers.ts';
 
 const recording: typeof fetch = async (input, init) => {
   const res = await fetch(input, init);
   const body = init?.body;
-  if (res.ok && body instanceof FormData) {
+  if (res.status !== 429 && body instanceof FormData) {
     const file = body.get('file');
     if (file instanceof File) {
       const text = await res.clone().text();
-      writeFileSync(new URL(`ovh-${file.name.replace(/\.[^.]+$/, '')}.json`, dir), `${text.trim()}\n`);
-      console.error(`recorded ${file.name}`);
+      const name = `ovh-${file.name.replace(/\.[^.]+$/, '')}${res.ok ? '' : `.${res.status}`}.json`;
+      writeFileSync(new URL(name, fixtureDir), `${text.trim()}\n`);
+      console.error(`recorded ${name}`);
     }
   }
   return res;
 };
 
-const ctx = createContext({ runtime: 'node', env: { VID2CONTEXT_POLICY: 'free' }, fetch: recording, log: stderrLogger('info') });
+const ctx = createContext({ runtime: 'node', env: {}, fetch: recording, log: stderrLogger('info') });
 const registry = new Registry([sttProvider], 'node');
-const ref = { input: 'doubleday-ch00.mp3', platform: 'file', kind: 'video' as const, id: 'file:doubleday-ch00', nativeId: 'doubleday-ch00' };
-const audio = { kind: 'bytes' as const, data, mimeType: 'audio/mpeg', filename: 'doubleday-ch00.mp3' };
+const chain = { only: ['ovh'] };
 
-const started = Date.now();
-const res = await transcribeLong(
-  registry,
-  ref,
-  audio,
-  { targetSec: 75, concurrency: 1, kv: new MemoryKv(), chain: { only: ['ovh'] } },
-  ctx,
-);
-console.error(`longform: ${res.chunks} chunks, ${res.transcript.segments.length} segments, ${Date.now() - started} ms`);
-console.error(JSON.stringify(res.seams));
+// 1. Stitching: 58 s split into 3 chunks of about 21 s.
+const short = { kind: 'bytes' as const, data: doubleday58(), mimeType: 'audio/mpeg', filename: 'doubleday-ch00-58s.mp3' };
+let t = Date.now();
+const a = await transcribeLong(registry, fileRef('doubleday-ch00-58s'), short, { targetSec: 22, concurrency: 1, kv: new MemoryKv(), chain }, ctx);
+console.error(`58s: ${a.chunks} chunks in ${Date.now() - t} ms`, JSON.stringify(a.seams));
 
-// Single-pass baseline, after the rate-limit window clears.
-await new Promise((r) => setTimeout(r, 65_000));
+// 2. Single-pass baseline of the same 58 s.
 const [ovh] = registry.sttRungs(ctx.env).filter((r) => r.service === 'ovh');
 if (!ovh) throw new Error('OVH rung missing');
-await ovh.transcribe({ ...audio, filename: 'doubleday-ch00-full.mp3' }, {}, ctx);
+await new Promise((r) => setTimeout(r, 61_000));
+await ovh.transcribe(short, {}, ctx);
+
+// 3. Duration cap: 90 s in one chunk, refused with 413, re-split into pieces under 60 s.
+const long = { kind: 'bytes' as const, data: fixtureBytes('doubleday-ch00-90s.mp3'), mimeType: 'audio/mpeg', filename: 'doubleday-ch00-90s.mp3' };
+await new Promise((r) => setTimeout(r, 61_000));
+t = Date.now();
+const b = await transcribeLong(registry, fileRef('doubleday-ch00-90s'), long, { concurrency: 1, kv: new MemoryKv(), chain }, ctx);
+console.error(`90s: ${b.chunks} chunks in ${Date.now() - t} ms`);
+for (const at of b.attempts) console.error(JSON.stringify(at));

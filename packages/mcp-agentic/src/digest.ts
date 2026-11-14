@@ -19,9 +19,24 @@ import {
   type ServerNotification,
   type ServerRequest,
 } from '@modelcontextprotocol/sdk/types.js';
-import { type Ctx, formatTimestamp, type Registry, type Storage, timestampUrl, Vid2ContextError, type VideoContext } from '@vid2context/core';
+import {
+  type Ctx,
+  formatTimestamp,
+  type Registry,
+  type Storage,
+  timestampUrl,
+  Vid2ContextError,
+  type VideoContext,
+} from '@vid2context/core';
 import { z } from 'zod';
-import { chunkTranscript, DEFAULT_MAX_TOKENS_PER_CHUNK, MIN_TOKENS_PER_CHUNK, needsHours, type TranscriptChunk, videoDuration } from './chunking.ts';
+import {
+  chunkTranscript,
+  DEFAULT_MAX_TOKENS_PER_CHUNK,
+  MIN_TOKENS_PER_CHUNK,
+  needsHours,
+  type TranscriptChunk,
+  videoDuration,
+} from './chunking.ts';
 import { type CitationSource, checkDigest, checkNotes, DEFAULT_TOLERANCE_SEC, type DroppedClaim, sourceOf } from './citations.ts';
 import { type InputProblem, resolveSources } from './inputs.ts';
 import {
@@ -58,7 +73,9 @@ export const digestInputSchema = {
     .min(MIN_TOKENS_PER_CHUNK)
     .max(200_000)
     .optional()
-    .describe(`Most transcript tokens sent in one sampling call; longer videos are split by chapter or time. Default ${DEFAULT_MAX_TOKENS_PER_CHUNK}`),
+    .describe(
+      `Most transcript tokens sent in one sampling call; longer videos are split by chapter or time. Default ${DEFAULT_MAX_TOKENS_PER_CHUNK}`,
+    ),
 };
 
 export interface DigestArgs {
@@ -101,7 +118,9 @@ async function mapLimit<T, R>(
 function resultText(content: unknown): string {
   const blocks = Array.isArray(content) ? content : [content];
   return blocks
-    .map((b) => (b && typeof b === 'object' && (b as { type?: string }).type === 'text' ? String((b as { text?: unknown }).text ?? '') : ''))
+    .map((b) =>
+      b && typeof b === 'object' && (b as { type?: string }).type === 'text' ? String((b as { text?: unknown }).text ?? '') : '',
+    )
     .join('')
     .trim();
 }
@@ -238,11 +257,12 @@ export async function runDigest(
   const total = chunks.length + 1;
   let done = 0;
   const progressToken = extra._meta?.progressToken;
-  const progress = async (message: string) => {
+  // Progress must increase with every notification: map calls count 1..n, combining is n + 0.5, done is n + 1.
+  const progress = async (message: string, value = done) => {
     if (progressToken === undefined) return;
     await extra.sendNotification({
       method: 'notifications/progress',
-      params: { progressToken, progress: done, total, message },
+      params: { progressToken, progress: value, total, message },
     });
   };
 
@@ -312,7 +332,7 @@ export async function runDigest(
   );
   const models = new Set(ok.map((o) => o.model).filter((m): m is string => Boolean(m)));
 
-  await progress('Combining notes');
+  await progress('Combining notes', chunks.length + 0.5);
   let digestText: string;
   let digestCitations = 0;
   let droppedDigest: DroppedClaim[] = [];
@@ -331,7 +351,7 @@ export async function runDigest(
     digestCitations = checked.citations;
     droppedDigest = checked.dropped;
     done++;
-    await progress('Digest ready');
+    await progress('Digest ready', total);
   } catch (err) {
     if (extra.signal.aborted) {
       return toolError(new Vid2ContextError('timeout', 'digest_videos was cancelled.', { hint: 'Call it again to restart.' }));

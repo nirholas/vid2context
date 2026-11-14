@@ -136,11 +136,7 @@ function units(context: VideoContext): { chapter?: string; segments: Segment[] }
 }
 
 /** Split one video's transcript into chunks of at most `maxTokens` estimated tokens each. */
-export function chunkTranscript(
-  context: VideoContext,
-  videoIndex: number,
-  opts: { maxTokens?: number } = {},
-): TranscriptChunk[] {
+export function chunkTranscript(context: VideoContext, videoIndex: number, opts: { maxTokens?: number } = {}): TranscriptChunk[] {
   const budget = Math.max(MIN_TOKENS_PER_CHUNK, Math.floor(opts.maxTokens ?? DEFAULT_MAX_TOKENS_PER_CHUNK));
   const long = needsHours(context);
 

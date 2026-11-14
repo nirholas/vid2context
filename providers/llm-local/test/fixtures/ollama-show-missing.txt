@@ -1,0 +1,2 @@
+{"error":"model 'llama3.3:70b' not found"}
+404

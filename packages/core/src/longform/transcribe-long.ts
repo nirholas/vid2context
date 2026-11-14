@@ -66,14 +66,47 @@ export interface LongformResult {
   seams: SeamReport[];
 }
 
-interface Checkpoint {
-  startSec: number;
-  durationSec: number;
+interface Piece {
   producer: string;
   model: string;
   language: string;
   segments: Segment[];
 }
+
+interface Checkpoint extends Piece {
+  startSec: number;
+  durationSec: number;
+}
+
+/**
+ * Optional, duck-typed: a rung may declare the longest audio it accepts in
+ * seconds (OVH keyless allows 60). The planner keeps chunks under it.
+ */
+export interface SttDurationLimit {
+  maxDurationSec?: number;
+}
+
+function maxDurationOf(r: SttRung): number | undefined {
+  const d = (r as SttRung & SttDurationLimit).maxDurationSec;
+  return typeof d === 'number' && d > 0 ? d : undefined;
+}
+
+/** Every rung tried refused the audio as too large (413 or a declared limit); nothing else went wrong. */
+function everyRungTooLarge(attempts: Attempt[]): boolean {
+  const errors = attempts.filter((a) => a.outcome === 'error');
+  return errors.length > 0 && errors.every((a) => a.reason?.startsWith('too-large'));
+}
+
+/** A duration limit stated in an upstream message, e.g. "max duration allowed ... is 60 seconds". */
+function durationLimitFrom(attempts: Attempt[]): number | undefined {
+  for (const a of attempts) {
+    const m = /duration[^0-9]{0,120}?(\d+(?:\.\d+)?)\s*(?:s|secs?|seconds)\b/i.exec(a.detail ?? '');
+    if (m) return Number(m[1]);
+  }
+  return undefined;
+}
+
+const MAX_DEPTH = 4;
 
 const MB = 1024 * 1024;
 const CHECKPOINT_TTL_SEC = 7 * 24 * 3600;
@@ -210,6 +243,10 @@ export async function transcribeLong(
   const limits = starters.map((r) => r.maxBytes).filter((b): b is number => b !== undefined);
   let maxBytes = limits.length > 0 ? Math.floor(Math.min(...limits) * 0.95) : Number.MAX_SAFE_INTEGER;
   if (opts.maxChunkBytes) maxBytes = Math.min(maxBytes, opts.maxChunkBytes);
+  const durations = starters.map(maxDurationOf).filter((d): d is number => d !== undefined);
+  let learnedMaxSec: number | undefined = durations.length > 0 ? Math.min(...durations) * 0.95 : undefined;
+  const targetSec = Math.min(opts.targetSec ?? 600, learnedMaxSec ?? Number.POSITIVE_INFINITY);
+  const overlapSec = opts.overlapSec ?? 2;
 
   const splitters = [...(opts.splitters ?? []), ...builtinSplitters];
   if (input.kind === 'url' && !splitters.some((s) => s.canSplit(input))) {
@@ -244,11 +281,7 @@ export async function transcribeLong(
   // Split.
   const splitStarted = Date.now();
   const chunks: AudioChunk[] = [];
-  for await (const c of splitter.split(
-    audio,
-    { maxBytes, targetSec: opts.targetSec ?? 600, overlapSec: opts.overlapSec ?? 2 },
-    ctx,
-  )) {
+  for await (const c of splitter.split(audio, { maxBytes, targetSec, overlapSec }, ctx)) {
     chunks.push(c);
   }
   const total = chunks.length;
@@ -274,32 +307,29 @@ export async function transcribeLong(
   let done = 0;
 
   const label = (i: number, detail?: string) => `chunk ${i + 1}/${total}${detail ? `: ${detail}` : ''}`;
+  const tagged = (tag: string, a: Attempt): Attempt => ({ ...a, detail: a.detail ? `${tag}: ${a.detail}` : tag });
 
-  async function runOne(i: number): Promise<void> {
-    const chunk = chunks[i] as AudioChunk;
-    const log = chunkAttempts[i] as Attempt[];
-    const saved = await kv.kvGet<Checkpoint>(keyOf(i));
-    if (saved && Math.abs(saved.startSec - chunk.startSec) < 1e-3 && Math.abs(saved.durationSec - chunk.durationSec) < 1e-3) {
-      results[i] = saved;
-      log.push({ id: saved.producer, stage: 'stt', outcome: 'ok', reason: 'resumed', detail: label(i) });
-      return;
-    }
-    const size = chunk.audio.data.byteLength;
-    const fits = ranked.filter((r) => r.maxBytes === undefined || size <= r.maxBytes);
+  /** One request per rung order, waiting out rate limits. Throws with the last round's attempts attached. */
+  async function chainWithWait(
+    piece: AudioBytes,
+    durationSec: number,
+    seed: number,
+    tag: string,
+    log: Attempt[],
+  ): Promise<Piece> {
+    const size = piece.data.byteLength;
+    const fits = ranked.filter(
+      (r) =>
+        (r.maxBytes === undefined || size <= r.maxBytes) &&
+        (maxDurationOf(r) === undefined || durationSec <= (maxDurationOf(r) as number)),
+    );
     for (const r of ranked) {
-      if (!fits.includes(r))
-        log.push({
-          id: r.id,
-          stage: 'stt',
-          outcome: 'skipped',
-          reason: 'too-large',
-          detail: label(i, `${size} > ${r.maxBytes} bytes`),
-        });
+      if (!fits.includes(r)) log.push({ id: r.id, stage: 'stt', outcome: 'skipped', reason: 'too-large', detail: tag });
     }
     // Start at a different rung per chunk (round-robin over the starters), then fall back along the rest in rank order.
-    const first = starters[i % starters.length] as SttRung;
+    const first = starters[seed % starters.length] as SttRung;
     const order = fits.includes(first) ? [first, ...fits.filter((r) => r !== first)] : fits;
-    const call = (rung: SttRung) => rung.transcribe(chunk.audio, opts.stt ?? {}, ctx);
+    const call = (rung: SttRung) => rung.transcribe(piece, opts.stt ?? {}, ctx);
     let waited = 0;
     for (;;) {
       const round: Attempt[] = [];
@@ -315,36 +345,104 @@ export async function transcribeLong(
           }
         }
         if (!res) {
-          const rest = order.slice(1);
           const max = Math.max(1, (chain.maxAttempts ?? 8) - 1);
-          res = await runChain<SttRung, SttResult>('stt', rest, call, { ...chain, maxAttempts: max }, ctx);
+          res = await runChain<SttRung, SttResult>('stt', order.slice(1), call, { ...chain, maxAttempts: max }, ctx);
         }
         round.push(...res.attempts);
-        log.push(...round.map((a) => ({ ...a, detail: label(i, a.detail) })));
-        const cp: Checkpoint = {
-          startSec: chunk.startSec,
-          durationSec: chunk.durationSec,
-          producer: res.rung.id,
-          model: res.value.model,
-          language: res.value.language,
-          segments: res.value.segments,
-        };
-        results[i] = cp;
-        await kv.kvSet(keyOf(i), cp, { ttlSec: CHECKPOINT_TTL_SEC });
-        return;
+        log.push(...round.map((a) => tagged(tag, a)));
+        return { producer: res.rung.id, model: res.value.model, language: res.value.language, segments: res.value.segments };
       } catch (err) {
         if (ctx.signal?.aborted) throw ctx.signal.reason ?? err;
         const all = [...round, ...attemptsOf(err)];
-        log.push(...all.map((a) => ({ ...a, detail: label(i, a.detail) })));
-        if (!onlyRateLimited(all) || waited >= waitBudget) {
-          throw Object.assign(err as object, { attempts: log });
-        }
+        log.push(...all.map((a) => tagged(tag, a)));
+        if (!onlyRateLimited(all) || waited >= waitBudget) throw Object.assign(err as object, { attempts: all });
         const step = Math.min(RETRY_STEP_MS, waitBudget - waited);
-        ctx.log.info('every stt rung is rate limited, waiting', { chunk: i + 1, waitMs: step });
+        ctx.log.info('every stt rung is rate limited, waiting', { piece: tag, waitMs: step });
         await sleep(step, ctx.signal);
         waited += step;
       }
     }
+  }
+
+  /**
+   * Transcribe one piece. When every rung refuses it as too large (a duration
+   * cap such as OVH keyless's 60 seconds), learn the limit, split the piece
+   * again and stitch the parts.
+   */
+  async function transcribePiece(
+    piece: AudioBytes,
+    durationSec: number,
+    seed: number,
+    tag: string,
+    log: Attempt[],
+    depth: number,
+  ): Promise<Piece> {
+    if (learnedMaxSec !== undefined && durationSec > learnedMaxSec && depth < MAX_DEPTH) {
+      return resplit(piece, seed, tag, log, depth);
+    }
+    try {
+      return await chainWithWait(piece, durationSec, seed, tag, log);
+    } catch (err) {
+      const round = attemptsOf(err);
+      if (depth >= MAX_DEPTH || !everyRungTooLarge(round)) throw err;
+      const said = durationLimitFrom(round);
+      // Use the stated limit when there is one that this piece breaks; otherwise halve.
+      let limit = said !== undefined ? said * 0.95 : durationSec / 2;
+      if (limit >= durationSec) limit = durationSec / 2;
+      learnedMaxSec = Math.min(learnedMaxSec ?? Number.POSITIVE_INFINITY, limit);
+      log.push({
+        id: 'longform',
+        stage: 'stt',
+        outcome: 'ok',
+        reason: 'resplit',
+        detail: `${tag}: every rung refused ${durationSec.toFixed(1)}s as too large; splitting to ${learnedMaxSec.toFixed(1)}s pieces`,
+      });
+      ctx.log.info('stt rungs refused a chunk as too large, splitting it further', { piece: tag, maxSec: learnedMaxSec });
+      return resplit(piece, seed, tag, log, depth);
+    }
+  }
+
+  async function resplit(piece: AudioBytes, seed: number, tag: string, log: Attempt[], depth: number): Promise<Piece> {
+    const sub = splitters.find((s) => s.canSplit(piece));
+    if (!sub) throw tooLargeError(piece, 'no splitter for a chunk');
+    const parts: AudioChunk[] = [];
+    for await (const p of sub.split(piece, { maxBytes, targetSec: learnedMaxSec, overlapSec }, ctx)) parts.push(p);
+    const pieces: Piece[] = [];
+    for (const p of parts) {
+      pieces.push(
+        await transcribePiece(
+          p.audio,
+          p.durationSec,
+          seed + p.index,
+          `${tag} part ${p.index + 1}/${parts.length}`,
+          log,
+          depth + 1,
+        ),
+      );
+    }
+    const { segments } = stitchChunks(parts.map((p, k) => ({ ...p, segments: (pieces[k] as Piece).segments })));
+    const producer = majority(pieces.map((p) => p.producer));
+    return {
+      producer,
+      model: majority(pieces.filter((p) => p.producer === producer).map((p) => p.model)),
+      language: majority(pieces.map((p) => p.language)),
+      segments,
+    };
+  }
+
+  async function runOne(i: number): Promise<void> {
+    const chunk = chunks[i] as AudioChunk;
+    const log = chunkAttempts[i] as Attempt[];
+    const saved = await kv.kvGet<Checkpoint>(keyOf(i));
+    if (saved && Math.abs(saved.startSec - chunk.startSec) < 1e-3 && Math.abs(saved.durationSec - chunk.durationSec) < 1e-3) {
+      results[i] = saved;
+      log.push({ id: saved.producer, stage: 'stt', outcome: 'ok', reason: 'resumed', detail: label(i) });
+      return;
+    }
+    const piece = await transcribePiece(chunk.audio, chunk.durationSec, i, label(i), log, 0);
+    const cp: Checkpoint = { startSec: chunk.startSec, durationSec: chunk.durationSec, ...piece };
+    results[i] = cp;
+    await kv.kvSet(keyOf(i), cp, { ttlSec: CHECKPOINT_TTL_SEC });
   }
 
   // Run with bounded concurrency.

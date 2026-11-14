@@ -1,0 +1,24 @@
+;FFMETADATA1
+title=Apollo 11 Landing - first steps on the moon
+artist=NASA
+date=1969
+[CHAPTER]
+TIMEBASE=1/1000
+START=0
+END=3260
+title=At the foot of the ladder
+[CHAPTER]
+TIMEBASE=1/1000
+START=3260
+END=36746
+title=Describing the surface
+[CHAPTER]
+TIMEBASE=1/1000
+START=36746
+END=47772
+title=Stepping off the LEM
+[CHAPTER]
+TIMEBASE=1/1000
+START=47772
+END=61518
+title=One small step

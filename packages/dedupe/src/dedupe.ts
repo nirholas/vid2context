@@ -6,17 +6,17 @@ import type { VideoContext } from '@vid2context/core';
 import { type Alignment, align, runWords } from './align.ts';
 import { candidatePairs } from './minhash.ts';
 import { normalizeWords } from './normalize.ts';
+import { resolveOptions } from './options.ts';
 import { type ShingledDoc, shingle } from './shingles.ts';
-import {
-  DEFAULTS,
-  type DedupeOptions,
-  type DuplicateGroup,
-  type DuplicatesResult,
-  type Evidence,
-  type EvidenceMethod,
-  type GroupMember,
-  type RelatedPair,
-  type TimeRange,
+import type {
+  DedupeOptions,
+  DuplicateGroup,
+  DuplicatesResult,
+  Evidence,
+  EvidenceMethod,
+  GroupMember,
+  RelatedPair,
+  TimeRange,
 } from './types.ts';
 
 type Kind = 'reupload' | 'clip' | 'related' | 'distinct';
@@ -129,7 +129,7 @@ const METHOD_WEAKNESS: Record<EvidenceMethod, number> = { shingles: 0, 'shingles
  * appears in `representativeOf`, mapped to the original it counts as.
  */
 export function findDuplicates(contexts: VideoContext[], options: DedupeOptions = {}): DuplicatesResult {
-  const o = { ...DEFAULTS, ...options };
+  const o = resolveOptions(options);
   const skipped: DuplicatesResult['skipped'] = [];
   const representativeOf: Record<string, string> = {};
 
@@ -171,7 +171,7 @@ export function findDuplicates(contexts: VideoContext[], options: DedupeOptions 
     const dx = (docs[x] as ShingledDoc).durationSec;
     const dy = (docs[y] as ShingledDoc).durationSec;
     const longer = Math.max(dx, dy);
-    return longer > 0 && Math.abs(dx - dy) / longer <= o.durationTolerance;
+    return longer > 0 && Math.abs(dx - dy) <= Math.max(o.durationTolerance * longer, o.durationSlackSec);
   };
 
   /** Shorter first: by duration, then by word count, then by input order. */
@@ -438,56 +438,4 @@ export function findDuplicates(contexts: VideoContext[], options: DedupeOptions 
       sharedSpans: swap ? spans.map((s) => ({ a: s.b, b: s.a, words: s.words })) : spans,
     });
   }
-  related.sort((x, y) => (x.a === y.a ? (x.b < y.b ? -1 : 1) : x.a < y.a ? -1 : 1));
-
-  for (const s of skipped) {
-    if (s.reason === 'duplicate-input') representativeOf[s.videoId] ??= s.videoId;
-  }
-
-  return {
-    groups: groups.map((g) => g.group),
-    related,
-    representativeOf,
-    skipped,
-    stats: { videos: docs.length, windows, candidatePairs: candidates.length },
-  };
-}
-
-function rangeOf(doc: ShingledDoc, fromWord: number, toWord: number): TimeRange {
-  return {
-    startSec: round2(doc.wordStart[fromWord] as number),
-    endSec: round2(doc.wordEnd[Math.min(doc.words - 1, toWord)] as number),
-  };
-}
-
-/** The span of video `side` (one of the pair) that the pair's matched runs cover, in that video's own time. */
-function matchedRangeOn(p: Pair, side: number, docs: ShingledDoc[], k: number): TimeRange | undefined {
-  const first = p.al.runs[0];
-  const last = p.al.runs[p.al.runs.length - 1];
-  if (!first || !last) return undefined;
-  const doc = docs[side] as ShingledDoc;
-  return side === p.a ? rangeOf(doc, first.aFrom, last.aTo + k - 1) : rangeOf(doc, first.bFrom, last.bTo + k - 1);
-}
-
-function roundRange(r: TimeRange | undefined): TimeRange | undefined {
-  return r ? { startSec: round2(r.startSec), endSec: round2(r.endSec) } : undefined;
-}
-
-/**
- * One context per independent source: every video that is in no group, plus
- * the original of each group, in input order. Use this (or
- * `representativeOf` from findDuplicates) so a brief never counts a clip or a
- * reupload as a second source agreeing with its original.
- */
-export function independentSources(contexts: VideoContext[], options: DedupeOptions = {}): VideoContext[] {
-  const { representativeOf } = findDuplicates(contexts, options);
-  const seen = new Set<string>();
-  const out: VideoContext[] = [];
-  for (const c of contexts) {
-    const id = c.metadata.ref.id;
-    if (seen.has(id)) continue;
-    seen.add(id);
-    if (representativeOf[id] === id) out.push(c);
-  }
-  return out;
-}
+  related.sort((x, y) => (x

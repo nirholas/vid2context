@@ -155,11 +155,15 @@ export async function chooseCaptionTrack(
     { signal: extra.signal, relatedRequestId: extra.requestId },
   );
   if (res.action !== 'accept') {
-    return text(trackList(metadata.title, link, options, `The user ${res.action === 'decline' ? 'declined' : 'dismissed'} the picker.`));
+    return text(
+      trackList(metadata.title, link, options, `The user ${res.action === 'decline' ? 'declined' : 'dismissed'} the picker.`),
+    );
   }
   const chosen = options.find((o) => o.value === res.content?.track);
   if (!chosen) {
-    return text(trackList(metadata.title, link, options, `The picker returned an unknown track (${String(res.content?.track)}).`));
+    return text(
+      trackList(metadata.title, link, options, `The picker returned an unknown track (${String(res.content?.track)}).`),
+    );
   }
   return fetchTrack(provider, metadata, chosen, ctx);
 }

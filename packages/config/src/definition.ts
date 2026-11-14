@@ -58,7 +58,9 @@ const PROFILE_NAME = '^[A-Za-z0-9][A-Za-z0-9_.-]*$';
 const ID = '^[a-z0-9][a-z0-9-]*$';
 
 function perStage(value: SchemaNode, what: string): SchemaNode {
-  const props: Record<string, SchemaNode> = { default: { ...value, description: `${what} for every stage without its own value.` } };
+  const props: Record<string, SchemaNode> = {
+    default: { ...value, description: `${what} for every stage without its own value.` },
+  };
   for (const stage of STAGES) props[stage] = { ...value, description: `${what} for ${stage} rungs.` };
   return s.union([value, s.object(props)], `${what}: one value for every stage, or an object with default and per-stage values.`);
 }
@@ -89,7 +91,9 @@ export const profileSchema: SchemaNode = s.object(
     skip: perStage(rungList, 'Rungs, services or providers to drop'),
     only: perStage(rungList, 'Restrict to these rungs, services or providers'),
     models: s.object(
-      Object.fromEntries(Object.entries(MODEL_KEYS).map(([key, envVar]) => [key, { ...modelValue, description: `Sets ${envVar}.` }])),
+      Object.fromEntries(
+        Object.entries(MODEL_KEYS).map(([key, envVar]) => [key, { ...modelValue, description: `Sets ${envVar}.` }]),
+      ),
       { description: 'Model overrides per provider. "groq" sets chat models; "groq:stt" sets the speech-to-text model.' },
     ),
     storage: s.string('Storage backend id, e.g. memory, sqlite, postgres, cloudflare. Sets VID2CONTEXT_STORAGE.', {

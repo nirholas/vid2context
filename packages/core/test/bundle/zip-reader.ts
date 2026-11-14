@@ -55,7 +55,8 @@ export function readZip(bytes: Uint8Array): ReadEntry[] {
     const lNameLen = v.getUint16(local + 26, true);
     const lExtraLen = v.getUint16(local + 28, true);
     const lPath = dec.decode(bytes.subarray(local + 30, local + 30 + lNameLen));
-    if (lPath !== path || lFlags !== flags || lMethod !== method) throw new Error(`local and central headers disagree for ${path}`);
+    if (lPath !== path || lFlags !== flags || lMethod !== method)
+      throw new Error(`local and central headers disagree for ${path}`);
     if (lCrc !== crc || lCompressed !== compressedSize || lSize !== size) throw new Error(`sizes or CRC disagree for ${path}`);
     const start = local + 30 + lNameLen + lExtraLen;
     const raw = bytes.subarray(start, start + compressedSize);

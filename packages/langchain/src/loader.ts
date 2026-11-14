@@ -7,7 +7,7 @@ import { BaseDocumentLoader } from '@langchain/core/document_loaders/base';
 import { Document } from '@langchain/core/documents';
 import { type TranscriptMode, Vid2ContextError } from '@vid2context/core';
 import { type ApiOptions, fetchContext } from './api.ts';
-import { CHUNKING_MODES, type Chunk, type ChunkMetadata, type Chunking, chunkContext } from './chunking.ts';
+import { CHUNKING_MODES, type Chunk, type Chunking, type ChunkMetadata, chunkContext } from './chunking.ts';
 
 export interface VideoContextLoaderOptions extends ApiOptions {
   /** chapters (default), segments or window. */
@@ -26,7 +26,11 @@ export interface VideoContextLoaderOptions extends ApiOptions {
 
 function toDocument(chunk: Chunk, index: number): Document<ChunkMetadata> {
   // Stable ids, so loading the same video again lets a vector store upsert instead of duplicating.
-  return new Document({ id: `${chunk.metadata.video_id}#${chunk.metadata.chunking}-${index}`, pageContent: chunk.text, metadata: chunk.metadata });
+  return new Document({
+    id: `${chunk.metadata.video_id}#${chunk.metadata.chunking}-${index}`,
+    pageContent: chunk.text,
+    metadata: chunk.metadata,
+  });
 }
 
 export class VideoContextLoader extends BaseDocumentLoader {
@@ -36,13 +40,19 @@ export class VideoContextLoader extends BaseDocumentLoader {
   constructor(urls: string | string[], options: VideoContextLoaderOptions = {}) {
     super();
     this.urls = typeof urls === 'string' ? [urls] : [...urls];
-    if (this.urls.length === 0) throw new Vid2ContextError('bad-request', 'No video URLs given.', { hint: 'Pass one URL or an array of URLs.' });
+    if (this.urls.length === 0)
+      throw new Vid2ContextError('bad-request', 'No video URLs given.', { hint: 'Pass one URL or an array of URLs.' });
     const chunking = options.chunking ?? 'chapters';
     if (!CHUNKING_MODES.includes(chunking)) {
-      throw new Vid2ContextError('bad-request', `Unknown chunking "${chunking}".`, { hint: `Use one of: ${CHUNKING_MODES.join(', ')}.` });
+      throw new Vid2ContextError('bad-request', `Unknown chunking "${chunking}".`, {
+        hint: `Use one of: ${CHUNKING_MODES.join(', ')}.`,
+      });
     }
     const windowSec = options.windowSec ?? 60;
-    if (!(windowSec > 0)) throw new Vid2ContextError('bad-request', `windowSec must be positive, got ${windowSec}.`, { hint: 'Use a value such as 60.' });
+    if (!(windowSec > 0))
+      throw new Vid2ContextError('bad-request', `windowSec must be positive, got ${windowSec}.`, {
+        hint: 'Use a value such as 60.',
+      });
     this.options = options;
   }
 

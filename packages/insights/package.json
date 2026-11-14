@@ -1,0 +1,22 @@
+{
+  "name": "@vid2context/insights",
+  "version": "0.1.0",
+  "description": "Cited briefs and structured extraction for vid2context: prompt builders for agent-side synthesis, server-side map-reduce on free models, citation verification against real transcripts, and buyer-guide, tutorial, comparison and summary templates.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./http": "./src/http.ts",
+    "./mcp": "./src/mcp.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "@vid2context/core": "*",
+    "hono": "^4.13.18",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@vid2context/provider-llm-openai-compatible": "*",
+    "@vid2context/provider-youtube": "*"
+  }
+}

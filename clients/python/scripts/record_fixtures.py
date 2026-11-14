@@ -49,6 +49,7 @@ CALLS: list[tuple[str, str, dict[str, str], int]] = [
     ),
     ("transcript-missing-url", "/api/v1/transcript", {}, 400),
     ("transcript-unknown-format", "/api/v1/transcript", {"url": "https://youtu.be/jNQXAC9IVRw", "format": "pdf"}, 400),
+    ("route-not-found", "/api/v1/no-such-route", {}, 404),
 ]
 RETRIES = 4
 
@@ -56,8 +57,30 @@ EMAIL = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")
 PHONE = re.compile(r"(?<![\d.])(?:\+?1[ .-]?)?\(?\d{3}\)?[ .-]\d{3}[ .-]\d{4}(?![\d.])")
 
 
+def _redact_text(s: str) -> str:
+    return PHONE.sub("[phone redacted]", EMAIL.sub("[email redacted]", s))
+
+
+def _redact_json(v: object) -> object:
+    if isinstance(v, str):
+        return _redact_text(v)
+    if isinstance(v, list):
+        return [_redact_json(x) for x in v]
+    if isinstance(v, dict):
+        return {k: _redact_json(x) for k, x in v.items()}
+    return v
+
+
 def redact(body: str) -> str:
-    return PHONE.sub("[phone redacted]", EMAIL.sub("[email redacted]", body))
+    """Redact inside JSON strings (so escapes stay valid); the raw body is kept when nothing matched."""
+    try:
+        data = json.loads(body)
+    except ValueError:
+        return _redact_text(body)
+    clean = _redact_json(data)
+    if clean == data:
+        return body
+    return json.dumps(clean, ensure_ascii=False, separators=(",", ":"))
 
 
 def wait_for(base: str, proc: subprocess.Popen[bytes], seconds: float = 60) -> None:
@@ -118,8 +141,9 @@ def main() -> None:
         if failed:
             sys.exit(f"{failed} fixture(s) not recorded")
     finally:
-        os.killpg(proc.pid, signal.SIGTERM)
-        proc.wait(timeout=10)
+        if proc.poll() is None:
+            os.killpg(proc.pid, signal.SIGTERM)
+            proc.wait(timeout=10)
 
 
 if __name__ == "__main__":

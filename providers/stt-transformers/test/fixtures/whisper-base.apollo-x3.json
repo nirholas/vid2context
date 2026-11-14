@@ -1,0 +1,64 @@
+{
+  "recordedAt": "2026-11-14",
+  "model": "onnx-community/whisper-base",
+  "device": "cpu",
+  "runtime": "node",
+  "input": "apollo-x3",
+  "durationSec": 72.4041875,
+  "detectedLanguage": "en",
+  "ms": 15026,
+  "output": {
+    "text": " have no step off the land now. It's one small step for man. One time lead for man. now go step of the land. And a step off the land now. That's one small step to man. One by three to man. 1-4-4-3-4-3-4-3-4-3-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4- It's one small spare for man, one by a wheel for man, so...",
+    "chunks": [
+      {
+        "timestamp": [
+          0,
+          7
+        ],
+        "text": " have no step off the land now."
+      },
+      {
+        "timestamp": [
+          7,
+          18
+        ],
+        "text": " It's one small step for man."
+      },
+      {
+        "timestamp": [
+          18,
+          23
+        ],
+        "text": " One time lead for man."
+      },
+      {
+        "timestamp": [
+          23,
+          27
+        ],
+        "text": " now go step of the land."
+      },
+      {
+        "timestamp": [
+          27,
+          30
+        ],
+        "text": " And a step off the land now."
+      },
+      {
+        "timestamp": [
+          30,
+          37
+        ],
+        "text": " That's one small step to man."
+      },
+      {
+        "timestamp": [
+          37,
+          72.16
+        ],
+        "text": " One by three to man. 1-4-4-3-4-3-4-3-4-3-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4- It's one small spare for man, one by a wheel for man, so..."
+      }
+    ]
+  }
+}

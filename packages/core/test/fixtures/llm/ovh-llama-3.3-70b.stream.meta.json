@@ -1,0 +1,24 @@
+{
+  "url": "https://oai.endpoints.kepler.ai.cloud.ovh.net/v1/chat/completions",
+  "status": 200,
+  "headers": {
+    "content-type": "text/event-stream",
+    "cache-control": "no-cache",
+    "transfer-encoding": "chunked"
+  },
+  "request": {
+    "model": "Meta-Llama-3_3-70B-Instruct",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Which year did Apollo 11 land on the moon? Answer in one short sentence."
+      }
+    ],
+    "max_tokens": 200,
+    "stream": true,
+    "stream_options": {
+      "include_usage": true
+    }
+  },
+  "recordedAt": "2026-11-14T17:07:48.591Z"
+}

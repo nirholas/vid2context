@@ -1,0 +1,23 @@
+{
+  "name": "@vid2context/provider-storage-postgres",
+  "version": "0.1.0",
+  "description": "Postgres and pgvector library storage for vid2context: saved contexts, collections, full-text search, KV and vector search, scoped per tenant. Node, and Workers through Neon's HTTP driver.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "vid2context": {
+    "runtimes": [
+      "node"
+    ]
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.2.0",
+    "@vid2context/core": "*",
+    "postgres": "^3.4.9"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.13"
+  }
+}

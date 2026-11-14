@@ -19,19 +19,28 @@ const BARE = `(${TS})(?:\\s*[-\\u2013\\u2014~]\\s*${TS})?`;
 
 /** "0:00 Intro", "- 00:05 - The cool thing", "(1:02:03) Outro", "[12:00] Q&A", "0:00 - 1:30 Setup". */
 const LEADING = new RegExp(`^\\s*${BULLET}(?:${BRACKETED}|${BARE})(?:\\s*${SEP}\\s*|\\s+)(\\S.*?)\\s*$`, 'u');
-/** "Intro - 0:00", "Intro | 0:00", "Intro (0:00)", "Intro [0:00]". A separator or brackets are required. */
-const TRAILING = new RegExp(`^\\s*${BULLET}(\\S.*?)\\s*(?:${SEP}\\s*(${TS})|${BRACKETED})\\s*$`, 'u');
+/** "Intro - 0:00", "Intro | 0:00", "Intro (0:00)", "Song by Artist 5:20". A list number stays part of the title, as on YouTube. */
+const TRAILING = new RegExp(`^\\s*(\\S.*?)\\s*(?:(?:${SEP}\\s*|\\s)(${TS})|${BRACKETED})\\s*$`, 'u');
+/** A bare trailing timestamp after one of these words is a reference in a sentence ("skip to 3:45"), not a chapter. */
+const REFERENCE = /(?:^|\s)(?:at|from|to|till|until|around|after|before|since|about|starts?|starting|@)$/iu;
 
 /** Seconds from "h:mm:ss", "mm:ss" or "m:ss". */
 export function parseClock(s: string): number {
   return s.split(':').reduce((acc, part) => acc * 60 + Number(part), 0);
 }
 
-const cleanTitle = (t: string): string =>
-  t
-    .replace(/^[\s\-:|.~–—]+/u, '')
-    .replace(/[\s\-:|~–—]+$/u, '')
-    .trim();
+/** Emoji, variation selectors and joiners that YouTube strips from the ends of chapter titles. */
+const EDGE_SYMBOLS = '[\\p{Extended_Pictographic}\\u{1F1E6}-\\u{1F1FF}\\u{FE0F}\\u{200D}\\u{20E3}]';
+const LEADING_JUNK = new RegExp(`^(?:[\\s\\-:|.~\\u2013\\u2014]|${EDGE_SYMBOLS})+`, 'u');
+const TRAILING_JUNK = new RegExp(`(?:[\\s\\-:|~\\u2013\\u2014]|${EDGE_SYMBOLS})+$`, 'u');
+const QUOTED = /^(["\u201C\u2018'])(.+)(["\u201D\u2019'])$/u;
+
+/** Trim separators and edge emoji, collapse spaces, and drop quotes that wrap the whole title (as YouTube does). */
+export function cleanTitle(raw: string): string {
+  const t = raw.replace(LEADING_JUNK, '').replace(TRAILING_JUNK, '').replace(/\s+/gu, ' ').trim();
+  const q = QUOTED.exec(t);
+  return q?.[2] ? q[2].trim() : t;
+}
 
 /** One timestamped line, or null. Timestamps in the middle of a sentence never match. */
 export function parseChapterLine(line: string): { title: string; startSec: number } | null {
@@ -44,6 +53,8 @@ export function parseChapterLine(line: string): { title: string; startSec: numbe
   const trail = TRAILING.exec(line);
   if (trail) {
     const clock = trail[2] ?? trail[3];
+    const bare = trail[2] !== undefined && !/[-:|.~\u2013\u2014\u2022\u25B6\u27A4>]\s*$/u.test(line.slice(0, line.lastIndexOf(trail[2])));
+    if (bare && REFERENCE.test(trail[1] ?? '')) return null;
     const title = cleanTitle(trail[1] ?? '');
     if (clock && title) return { title, startSec: parseClock(clock) };
   }
@@ -60,8 +71,11 @@ export function withEnds(chapters: { title: string; startSec: number }[], durati
 
 /**
  * Chapters the way YouTube derives them from a description: the list starts
- * at a line stamped 0:00, continues while timestamps ascend, has at least
- * three entries, and every chapter but the last runs at least 10 seconds.
+ * at a line stamped 0:00, continues while timestamps ascend (and stay inside
+ * the video), and has at least three entries. YouTube's help page also asks
+ * for 10-second chapters, but YouTube itself accepts shorter ones (the 5 s
+ * "Intro" of jNQXAC9IVRw, the 6 s intro of WHRTbEgRYps), so this parser
+ * does not enforce it either.
  * Lines before the 0:00 line and after the list ends are ignored, so stray
  * timestamps elsewhere in the description do not leak in. Returns [] when
  * the description does not qualify.
@@ -81,18 +95,7 @@ export function parseDescriptionChapters(description: string | undefined, durati
     if (durationSec && entry.startSec >= durationSec) break;
     list.push(entry);
   }
-  if (!validList(list)) return [];
+  if (list.length < 3) return [];
   return withEnds(list, durationSec);
 }
 
-const MIN_CHAPTER_SEC = 10;
-
-function validList(list: { startSec: number }[]): boolean {
-  if (list.length < 3 || list[0]?.startSec !== 0) return false;
-  for (let i = 1; i < list.length; i++) {
-    const prev = list[i - 1];
-    const cur = list[i];
-    if (!prev || !cur || cur.startSec - prev.startSec < MIN_CHAPTER_SEC) return false;
-  }
-  return true;
-}

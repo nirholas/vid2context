@@ -1,0 +1,9 @@
+{
+  "status": 200,
+  "headers": {
+    "content-type": "application/json",
+    "x-ratelimit-limit-minute": "2",
+    "x-ratelimit-remaining-minute": "1"
+  },
+  "body": "{\"task\":\"transcribe\",\"success\":true,\"language\":\"en\",\"duration\":24.112688,\"text\":\" I'm going to step off the limb now. That's one small step for man, one giant leap for mankind.\",\"words\":[{\"word\":\"I'm\",\"start\":3.5,\"end\":3.94},{\"word\":\"going\",\"start\":3.94,\"end\":4.04},{\"word\":\"to\",\"start\":4.04,\"end\":4.14},{\"word\":\"step\",\"start\":4.14,\"end\":4.36},{\"word\":\"off\",\"start\":4.36,\"end\":4.56},{\"word\":\"the\",\"start\":4.56,\"end\":4.72},{\"word\":\"limb\",\"start\":4.72,\"end\":4.94},{\"word\":\"now.\",\"start\":4.94,\"end\":5.16},{\"word\":\"That's\",\"start\":14.98,\"end\":15.7},{\"word\":\"one\",\"start\":15.7,\"end\":15.96},{\"word\":\"small\",\"start\":15.96,\"end\":16.48},{\"word\":\"step\",\"start\":16.48,\"end\":16.92},{\"word\":\"for\",\"start\":16.92,\"end\":17.26},{\"word\":\"man,\",\"start\":17.26,\"end\":17.62},{\"word\":\"one\",\"start\":17.84,\"end\":21.0},{\"word\":\"giant\",\"start\":21.0,\"end\":22.08},{\"word\":\"leap\",\"start\":22.08,\"end\":22.42},{\"word\":\"for\",\"start\":22.42,\"end\":22.7},{\"word\":\"mankind.\",\"start\":22.7,\"end\":23.04}],\"segments\":[{\"id\":1,\"seek\":0,\"start\":3.5,\"end\":5.16,\"text\":\" I'm going to step off the limb now.\",\"tokens\":[50365,286,478,516,281,1823,766,264,30390,586,13,50715],\"temperature\":0.0,\"avg_logprob\":-0.65625,\"compression_ratio\":0.81395346,\"no_speech_prob\":0.0},{\"id\":2,\"seek\":516,\"start\":14.98,\"end\":23.04,\"text\":\" That's one small step for man, one giant leap for mankind.\",\"tokens\":[50365,663,311,472,1359,1823,337,587,11,472,7410,19438,337,21220,13,51261],\"temperature\":0.0,\"avg_logprob\":-0.265625,\"compression_ratio\":1.0545454,\"no_speech_prob\":0.0}],\"diarization\":[],\"usage\":{\"type\":\"duration\",\"seconds\":25.0}}"
+}

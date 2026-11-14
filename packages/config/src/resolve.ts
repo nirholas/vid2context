@@ -1,5 +1,5 @@
 import { type Policy, Vid2ContextError } from '@vid2context/core';
-import { type Config, type PerStage, type Profile, type ProfileDefaults, type ProfileLimits, type Stage } from './definition.ts';
+import type { Config, PerStage, Profile, ProfileDefaults, ProfileLimits, Stage } from './definition.ts';
 import { DOCS_HINT } from './validate.ts';
 
 export type StageKey = 'default' | Stage;

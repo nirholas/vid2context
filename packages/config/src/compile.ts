@@ -64,7 +64,8 @@ export function compileProfile(r: ResolvedProfile, env: Env = {}): { entries: En
     add('VID2CONTEXT_COMMENTS', typeof d.comments === 'number' ? String(d.comments) : bool(d.comments), 'defaults.comments');
   }
   const l = r.limits;
-  if (l.maxPlaylistItems !== undefined) add('VID2CONTEXT_MAX_PLAYLIST_ITEMS', String(l.maxPlaylistItems), 'limits.maxPlaylistItems');
+  if (l.maxPlaylistItems !== undefined)
+    add('VID2CONTEXT_MAX_PLAYLIST_ITEMS', String(l.maxPlaylistItems), 'limits.maxPlaylistItems');
   if (l.maxUploadMb !== undefined) add('VID2CONTEXT_MAX_UPLOAD_MB', String(l.maxUploadMb), 'limits.maxUploadMb');
   if (l.maxAudioMb !== undefined) add('VID2CONTEXT_MAX_AUDIO_MB', String(l.maxAudioMb), 'limits.maxAudioMb');
   for (const [name, value] of Object.entries(r.env)) addRef(name, value, `env.${name}`);

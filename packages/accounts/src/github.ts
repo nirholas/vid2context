@@ -97,10 +97,14 @@ export async function exchangeGithubCode(
   );
   const data = (await res.json().catch(() => ({}))) as { access_token?: string; error?: string; error_description?: string };
   if (!res.ok) {
-    throw new Vid2ContextError('upstream', `GitHub token endpoint answered HTTP ${res.status}${data.error ? ` (${data.error})` : ''}.`, {
-      status: res.status,
-      hint: 'Check GITHUB_OAUTH_CLIENT_ID and GITHUB_OAUTH_CLIENT_SECRET: GitHub answers 404 for an unknown OAuth app.',
-    });
+    throw new Vid2ContextError(
+      'upstream',
+      `GitHub token endpoint answered HTTP ${res.status}${data.error ? ` (${data.error})` : ''}.`,
+      {
+        status: res.status,
+        hint: 'Check GITHUB_OAUTH_CLIENT_ID and GITHUB_OAUTH_CLIENT_SECRET: GitHub answers 404 for an unknown OAuth app.',
+      },
+    );
   }
   if (data.error || !data.access_token) {
     const code = data.error ?? 'no_access_token';

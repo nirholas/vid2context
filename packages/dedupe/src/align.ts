@@ -140,12 +140,15 @@ export function align(a: ShingledDoc, b: ShingledDoc, opts: AlignOptions): Align
   const kept = runs.filter((r) => r.matches >= opts.minRunMatches);
   // Document edges are anchors too: when both transcripts start (or end) within maxGap of the first (or last) shared
   // run, the words before (after) it are the same passage misheard, like any other small gap.
+  // The bridged edge may not be longer than the run that vouches for it, so one short shared phrase cannot claim a
+  // whole short transcript.
+  const vouch = (r: Run) => Math.min(opts.maxGap, r.aTo - r.aFrom + opts.shingleSize);
   const head = kept[0];
-  if (head && head.aFrom <= opts.maxGap && head.bFrom <= opts.maxGap) kept[0] = { ...head, aFrom: 0, bFrom: 0 };
+  if (head && Math.max(head.aFrom, head.bFrom) <= vouch(head)) kept[0] = { ...head, aFrom: 0, bFrom: 0 };
   const tail = kept[kept.length - 1];
   const lastA = a.keys.length - 1;
   const lastB = b.keys.length - 1;
-  if (tail && lastA - tail.aTo <= opts.maxGap && lastB - tail.bTo <= opts.maxGap) {
+  if (tail && Math.max(lastA - tail.aTo, lastB - tail.bTo) <= vouch(tail)) {
     kept[kept.length - 1] = { ...tail, aTo: lastA, bTo: lastB };
   }
 

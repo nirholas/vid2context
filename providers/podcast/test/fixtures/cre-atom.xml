@@ -1,0 +1,967 @@
+<?xml version="1.0" encoding="UTF-8"?><feed
+	xmlns="http://www.w3.org/2005/Atom"
+	xmlns:thr="http://purl.org/syndication/thread/1.0"
+	xml:lang="de"
+	>
+	<title type="text">CRE: Technik, Kultur, Gesellschaft</title>
+	<subtitle type="text">Der Interview-Podcast mit Tim Pritlove</subtitle>
+
+	<updated>2024-11-18T18:32:56Z</updated>
+
+	<link rel="alternate" type="text/html" href="https://cre.fm" />
+	<id>https://cre.fm/feed/atom</id>
+	<link rel="self" type="application/atom+xml" href="https://cre.fm/feed/atom" />
+
+	
+<icon>https://cre.fm/files/2014/06/cropped-cre-logo-2400x2400-32x32.png</icon>
+	<entry>
+		<author>
+			<name>Tim Pritlove</name>
+							<uri>https://metaebene.me/</uri>
+						</author>
+
+		<title type="html"><![CDATA[CRE225 Permakultur ]]></title>
+		<link rel="alternate" type="text/html" href="https://cre.fm/cre225-permakultur" />
+
+		<id></id>
+		<updated>2022-05-05T07:34:27Z</updated>
+		<published>2022-05-03T21:20:47Z</published>
+		
+		<summary type="html"><![CDATA[Die moderne Landwirtschaft betreibt einen Raubbau an der Natur, weil sie die Böden langfristig ihrer Nährstoffe beraubt, durch Überdüngung aus der Balance bringt, den Bodenschichten der Erosion preisgibt und am Ende versalzt. Bleibt es bei den aktuellen Methoden wird die verfügbare Fläche mit fruchtbarem Humusboden weiter zurückgehen und mittelfristig zu Versorgungsproblemen führen.
+
+Die Permakultur liefert hier einen neuen Ansatz und lässt sich direkt von der Natur inspirieren. Das Ziel ist, einen permanenten natürlichen Kreislauf in Gang zu halten und dabei nicht gegen sondern mit der Natur die gewünschten landwirtschaftlichen Erträge zu erzielen.
+
+Ich spreche mit Falk Gärtner, der auf einem kleinen Grundstück in Brandenburg unter denkbar schlechtesten Bedingungen durch ein auf Permakultur basierenden Designs eine hochwertiger Lebensmittel produziert und nicht nur auf künstliche Düngung verzichten kann sondern durch den Anbau ertragreichen Boden zusätzlich aufbaut.]]></summary>
+
+					<content type="html" xml:base="https://cre.fm/cre225-permakultur"><![CDATA[<style>
+    img.episode {
+        float: right;
+        padding: 5px;
+        margin: 5px;
+        margin-left: 20px;
+        border-style: solid;
+        border-width: 1px;
+        border-color: black; }
+</style>
+
+<p>
+    <strong>Landwirtschaft im Einklang mit der Natur</strong>
+</p>
+<div>
+  <a target="_blank" href="https://media.metaebene.me/media/cre/cre225-permakultur.jpg">
+      
+<img decoding="async" class="episode" alt="Episode image forCRE225 Permakultur " width="200" src="https://cre.fm/wp-content/cache/podlove/b7/32ec64c44b191149612bbdb410bad2/cre225-permakultur_200x.jpg" srcset="https://cre.fm/wp-content/cache/podlove/b7/32ec64c44b191149612bbdb410bad2/cre225-permakultur_200x.jpg 1x, https://cre.fm/wp-content/cache/podlove/b7/32ec64c44b191149612bbdb410bad2/cre225-permakultur_400x.jpg 2x, https://cre.fm/wp-content/cache/podlove/b7/32ec64c44b191149612bbdb410bad2/cre225-permakultur_600x.jpg 3x"/>
+
+  </a>
+  <p>
+  Die moderne Landwirtschaft betreibt einen Raubbau an der Natur, weil sie die Böden langfristig ihrer Nährstoffe beraubt, durch Überdüngung aus der Balance bringt, den Bodenschichten der Erosion preisgibt und am Ende versalzt. Bleibt es bei den aktuellen Methoden wird die verfügbare Fläche mit fruchtbarem Humusboden weiter zurückgehen und mittelfristig zu Versorgungsproblemen führen.<br />
+<br />
+Die Permakultur liefert hier einen neuen Ansatz und lässt sich direkt von der Natur inspirieren. Das Ziel ist, einen permanenten natürlichen Kreislauf in Gang zu halten und dabei nicht gegen sondern mit der Natur die gewünschten landwirtschaftlichen Erträge zu erzielen.<br />
+<br />
+Ich spreche mit Falk Gärtner, der auf einem kleinen Grundstück in Brandenburg unter denkbar schlechtesten Bedingungen durch ein auf Permakultur basierenden Designs eine hochwertiger Lebensmittel produziert und nicht nur auf künstliche Düngung verzichten kann sondern durch den Anbau ertragreichen Boden zusätzlich aufbaut.
+  </p>
+</div>
+
+
+
+<div>
+
+	<ul>
+									<li>
+					<strong>Tim Pritlove</strong>
+										<ul>
+													<li>
+								<a href="https://twitter.com/timpritlove">Twitter</a>
+							</li>
+													<li>
+								<a href="https://mastodon.social/@timpritlove">[address removed]</a>
+							</li>
+													<li>
+								<a href="https://metaebene.me">Website</a>
+							</li>
+																											<li>
+									<a href="https://paypal.me/timpritlove">Spenden via PayPal</a>
+								</li>
+																		</ul>
+				</li>
+												<li>
+					<strong>Falk Gärtner</strong>
+										<ul>
+													<li>
+								<a href="https://twitter.com/protofalk">Twitter</a>
+							</li>
+													<li>
+								<a href="https://de.linkedin.com/in/protofalk">Linkedin</a>
+							</li>
+													<li>
+								<a href="https://prototopia.de">Website</a>
+							</li>
+																											<li>
+									<a href="">Amazon Wishlist</a>
+								</li>
+																		</ul>
+				</li>
+						</ul>
+
+</div>
+
+<details>
+    <summary><strong>Shownotes</strong></summary>
+
+    <div><div class='osfx-shownote-block'>
+			    		<ul>
+	    
+
+		<li><span style="display: inline-block" class="glossary"><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DSyw1yfaWieQ" alt="Permaculture The Documentary: How it started - YouTube" title="Permaculture The Documentary: How it started - YouTube" /> <a href="https://www.youtube.com/watch?v=Syw1yfaWieQ">Permaculture The Documentary: How it started - YouTube</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class="glossary"><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fprototopia.de" alt="Protopia" title="Protopia" /> <a href="https://prototopia.de">Protopia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class="glossary"><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FDavid_Holmgren" alt="David Holmgren – Wikipedia" title="David Holmgren – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/David_Holmgren">David Holmgren – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class="glossary"><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FPermakultur" alt="Permakultur – Wikipedia" title="Permakultur – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Permakultur">Permakultur – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class="glossary"><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FBill_Mollison" alt="Bill Mollison – Wikipedia" title="Bill Mollison – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Bill_Mollison">Bill Mollison – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class="glossary"><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fstore.holmgren.com.au%2Fproduct%2Fpermaculture-one%2F" alt="Permaculture One - Holmgren Store" title="Permaculture One - Holmgren Store" /> <a href="https://store.holmgren.com.au/product/permaculture-one/">Permaculture One - Holmgren Store</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class="glossary"><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FMasanobu_Fukuoka" alt="Masanobu Fukuoka – Wikipedia" title="Masanobu Fukuoka – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Masanobu_Fukuoka">Masanobu Fukuoka – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class="glossary"><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FGrundnahrungsmittel" alt="Grundnahrungsmittel – Wikipedia" title="Grundnahrungsmittel – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Grundnahrungsmittel">Grundnahrungsmittel – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class="glossary"><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FPionierpflanze" alt="Pionierpflanze – Wikipedia" title="Pionierpflanze – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Pionierpflanze">Pionierpflanze – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class="glossary"><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FAgent_Orange" alt="Agent Orange – Wikipedia" title="Agent Orange – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Agent_Orange">Agent Orange – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class="glossary"><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FVersalzung" alt="Versalzung – Wikipedia" title="Versalzung – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Versalzung">Versalzung – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class="glossary"><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FSander" alt="Sander – Wikipedia" title="Sander – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Sander">Sander – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class="glossary"><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FFl%25C3%25A4ming" alt="Fläming – Wikipedia" title="Fläming – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Fl%C3%A4ming">Fläming – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class="glossary"><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fsiebenlinden.org%2Fde%2Fstart%2F" alt="Start - Ökodorf Sieben Linden" title="Start - Ökodorf Sieben Linden" /> <a href="https://siebenlinden.org/de/start/">Start - Ökodorf Sieben Linden</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class="glossary"><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fwww.zegg.de%2Fde%2F" alt="ZEGG Bildungszentrum gGmbH - ZEGG Gemeinschaft und Bildungszentrum gGmbH" title="ZEGG Bildungszentrum gGmbH - ZEGG Gemeinschaft und Bildungszentrum gGmbH" /> <a href="https://www.zegg.de/de/">ZEGG Bildungszentrum gGmbH - ZEGG Gemeinschaft und Bildungszentrum gGmbH</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class="glossary"><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FW%25C3%25BChlm%25C3%25A4use" alt="Wühlmäuse – Wikipedia" title="Wühlmäuse – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/W%C3%BChlm%C3%A4use">Wühlmäuse – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class="glossary"><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FRhizom" alt="Rhizom – Wikipedia" title="Rhizom – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Rhizom">Rhizom – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class="glossary"><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FWeather_Underground_%28weather_service%29" alt="Weather Underground (weather service) - Wikipedia" title="Weather Underground (weather service) - Wikipedia" /> <a href="https://en.wikipedia.org/wiki/Weather_Underground_(weather_service)">Weather Underground (weather service) - Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class="glossary"><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FArides_Klima" alt="Arides Klima – Wikipedia" title="Arides Klima – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Arides_Klima">Arides Klima – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class="glossary"><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FWildnisp%25C3%25A4dagogik" alt="Wildnispädagogik – Wikipedia" title="Wildnispädagogik – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Wildnisp%C3%A4dagogik">Wildnispädagogik – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class="glossary"><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FRigole" alt="Rigole – Wikipedia" title="Rigole – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Rigole">Rigole – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class="glossary"><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FLandwirtschaftliche_Produktionsgenossenschaft" alt="Landwirtschaftliche Produktionsgenossenschaft – Wikipedia" title="Landwirtschaftliche Produktionsgenossenschaft – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Landwirtschaftliche_Produktionsgenossenschaft">Landwirtschaftliche Produktionsgenossenschaft – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class="glossary"><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FGem%25C3%25BCse" alt="Gemüse – Wikipedia" title="Gemüse – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Gem%C3%BCse">Gemüse – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class="glossary"><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FPilze" alt="Pilze – Wikipedia" title="Pilze – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Pilze">Pilze – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class="glossary"><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FBaumschule" alt="Baumschule – Wikipedia" title="Baumschule – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Baumschule">Baumschule – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class="glossary"><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FNiederwald" alt="Niederwald – Wikipedia" title="Niederwald – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Niederwald">Niederwald – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class="glossary"><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FRegenerative_Landwirtschaft" alt="Regenerative Landwirtschaft – Wikipedia" title="Regenerative Landwirtschaft – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Regenerative_Landwirtschaft">Regenerative Landwirtschaft – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class="glossary"><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FNutzgarten" alt="Nutzgarten – Wikipedia" title="Nutzgarten – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Nutzgarten">Nutzgarten – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class="glossary"><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fwww.hermanns-restaurant.de%2F" alt="Hermanns Restaurant - Das Restaurant Hermanns" title="Hermanns Restaurant - Das Restaurant Hermanns" /> <a href="https://www.hermanns-restaurant.de/">Hermanns Restaurant - Das Restaurant Hermanns</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class="glossary"><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FKreuzbl%25C3%25BCtler" alt="Kreuzblütler – Wikipedia" title="Kreuzblütler – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Kreuzbl%C3%BCtler">Kreuzblütler – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class="glossary"><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FTaglilien" alt="Taglilien – Wikipedia" title="Taglilien – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Taglilien">Taglilien – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class="glossary"><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FGew%25C3%25B6hnliche_Vogelmiere" alt="Gewöhnliche Vogelmiere – Wikipedia" title="Gewöhnliche Vogelmiere – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Gew%C3%B6hnliche_Vogelmiere">Gewöhnliche Vogelmiere – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class="glossary"><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FPortulak" alt="Portulak – Wikipedia" title="Portulak – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Portulak">Portulak – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class="glossary"><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fwww.dw.com%2Fde%2Fpermakultur-zur%25C3%25BCck-zum-kreislauf-der-natur%2Fav-59832302" alt="Permakultur: Zurück zum Kreislauf der Natur | Made in Germany | DW | 16.11.2021" title="Permakultur: Zurück zum Kreislauf der Natur | Made in Germany | DW | 16.11.2021" /> <a href="https://www.dw.com/de/permakultur-zur%C3%BCck-zum-kreislauf-der-natur/av-59832302">Permakultur: Zurück zum Kreislauf der Natur | Made in Germany | DW | 16.11.2021</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class="glossary"><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fopensprinkler.com%2F" alt="OpenSprinkler | OpenSprinkler" title="OpenSprinkler | OpenSprinkler" /> <a href="https://opensprinkler.com/">OpenSprinkler | OpenSprinkler</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class="glossary"><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FBroadfork" alt="Broadfork - Wikipedia" title="Broadfork - Wikipedia" /> <a href="https://en.wikipedia.org/wiki/Broadfork">Broadfork - Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class="glossary"><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FGr%25C3%25BCnschnitt" alt="Grünschnitt – Wikipedia" title="Grünschnitt – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Gr%C3%BCnschnitt">Grünschnitt – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class="glossary"><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FBor" alt="Bor – Wikipedia" title="Bor – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Bor">Bor – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class="glossary"><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FBentonit" alt="Bentonit – Wikipedia" title="Bentonit – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Bentonit">Bentonit – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class="glossary"><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FRiesen-Tr%25C3%25A4uschling" alt="Riesen-Träuschling – Wikipedia" title="Riesen-Träuschling – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Riesen-Tr%C3%A4uschling">Riesen-Träuschling – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class="glossary"><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FPaul_Stamets" alt="Paul Stamets - Wikipedia" title="Paul Stamets - Wikipedia" /> <a href="https://en.wikipedia.org/wiki/Paul_Stamets">Paul Stamets - Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class="glossary"><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fmakingpermaculturestronger.net%2F" alt="Making Permaculture Stronger - re-sourcing permaculture design in life" title="Making Permaculture Stronger - re-sourcing permaculture design in life" /> <a href="https://makingpermaculturestronger.net/">Making Permaculture Stronger - re-sourcing permaculture design in life</a></li>
+
+		    		</ul>
+    	
+
+</div></div>
+
+</details>
+
+<hr/>
+]]></content>
+		
+					<link rel="replies" type="text/html" href="https://cre.fm/cre225-permakultur#comments" thr:count="46" />
+			<link rel="replies" type="application/atom+xml" href="https://cre.fm/cre225-permakultur/feed/atom" thr:count="46" />
+			<thr:total>46</thr:total>
+			</entry>
+		<entry>
+		<author>
+			<name>Tim Pritlove</name>
+							<uri>https://metaebene.me/</uri>
+						</author>
+
+		<title type="html"><![CDATA[CRE224 Elektronisches Geld 2]]></title>
+		<link rel="alternate" type="text/html" href="https://cre.fm/cre224-elektronisches-geld-2" />
+
+		<id></id>
+		<updated>2022-01-08T22:54:35Z</updated>
+		<published>2022-01-08T22:54:14Z</published>
+		
+		<summary type="html"><![CDATA[In Fortsetzung des Gesprächs in CRE182 reden Tim Pritlove und Andreas Bogk erneut über das Thema und Problem der digitalen Repräsentation von Geld. War bei der letzten Sendung - vor mehr als zehn Jahren - Bitcoin noch ein recht neues und ungetestetes System, hat es sich zum Platzhirschen und zentralen Symbol einer Kryptowährungs-Szene entwickelt, in dessen Fahrwasser zahlreiche ähnliche Projekte groß geworden sind und die es geschafft hat, sehr viel Geld aus klassischen Investionszielen in die dieigtale Tokenwelt abzuziehen.
+
+Der Nutzen dieser Systeme steht dabei weiter infrage. Denn technisch hat sich in den letzten zehn Jahren im Prinzip nicht viel verändert. Dabei steht das Prinzip des "Proof of work", dass heute noch die Basis der Sicherheit und Funktionsweise aller Kryptowährungen ist, im Mittelpunkt der Diskussion, denn die benötigte Energie steht dem Konsum von kleineren Staaaten in nichts nach. Ankündigungen, diese Methode in Zukunft auf eine energiesparende Variante umzustellen, sind bisher keine konkreten Taten gefolgt.
+
+Jenseits dieses Kritikpunkts steht aber auch der gesellschaftliche Nutzen dieser Technologien am Pranger, denn es sind neben der reinen Spekulation bislang vor allem eher kriminelle Aktivitäten wie Drogenhandel und Erpressung, die durch Kryptowährungen ermächtigt werden.
+
+Wir besprechen die technische und gesellschaftliche Realität und welche Optionen die klassische Finanzwelt hat, auf die Herausforderung durch Kryptowährungen zu reagieren.]]></summary>
+
+					<content type="html" xml:base="https://cre.fm/cre224-elektronisches-geld-2"><![CDATA[<style>
+    img.episode {
+        float: right;
+        padding: 5px;
+        margin: 5px;
+        margin-left: 20px;
+        border-style: solid;
+        border-width: 1px;
+        border-color: black; }
+</style>
+
+<p>
+    <strong>Die Entwicklung der Kryptowährungen und ihr Einfluss auf die Gesellschaft</strong>
+</p>
+<div>
+  <a target="_blank" href="https://media.metaebene.me/media/cre/cre224-elektronisches-geld-2.jpg">
+      
+<img decoding="async" class="episode" alt="Episode image forCRE224 Elektronisches Geld 2" width="200" src="https://cre.fm/wp-content/cache/podlove/17/d14cc97e1cf25ca1b2b0a666eb42bb/cre224-elektronisches-geld-2_200x.jpg" srcset="https://cre.fm/wp-content/cache/podlove/17/d14cc97e1cf25ca1b2b0a666eb42bb/cre224-elektronisches-geld-2_200x.jpg 1x, https://cre.fm/wp-content/cache/podlove/17/d14cc97e1cf25ca1b2b0a666eb42bb/cre224-elektronisches-geld-2_400x.jpg 2x, https://cre.fm/wp-content/cache/podlove/17/d14cc97e1cf25ca1b2b0a666eb42bb/cre224-elektronisches-geld-2_600x.jpg 3x"/>
+
+  </a>
+  <p>
+  In Fortsetzung des Gesprächs in CRE182 reden Tim Pritlove und Andreas Bogk erneut über das Thema und Problem der digitalen Repräsentation von Geld. War bei der letzten Sendung - vor mehr als zehn Jahren - Bitcoin noch ein recht neues und ungetestetes System, hat es sich zum Platzhirschen und zentralen Symbol einer Kryptowährungs-Szene entwickelt, in dessen Fahrwasser zahlreiche ähnliche Projekte groß geworden sind und die es geschafft hat, sehr viel Geld aus klassischen Investionszielen in die dieigtale Tokenwelt abzuziehen.<br />
+<br />
+Der Nutzen dieser Systeme steht dabei weiter infrage. Denn technisch hat sich in den letzten zehn Jahren im Prinzip nicht viel verändert. Dabei steht das Prinzip des &quot;Proof of work&quot;, dass heute noch die Basis der Sicherheit und Funktionsweise aller Kryptowährungen ist, im Mittelpunkt der Diskussion, denn die benötigte Energie steht dem Konsum von kleineren Staaaten in nichts nach. Ankündigungen, diese Methode in Zukunft auf eine energiesparende Variante umzustellen, sind bisher keine konkreten Taten gefolgt.<br />
+<br />
+Jenseits dieses Kritikpunkts steht aber auch der gesellschaftliche Nutzen dieser Technologien am Pranger, denn es sind neben der reinen Spekulation bislang vor allem eher kriminelle Aktivitäten wie Drogenhandel und Erpressung, die durch Kryptowährungen ermächtigt werden.<br />
+<br />
+Wir besprechen die technische und gesellschaftliche Realität und welche Optionen die klassische Finanzwelt hat, auf die Herausforderung durch Kryptowährungen zu reagieren.
+  </p>
+</div>
+
+
+
+<div>
+
+	<ul>
+									<li>
+					<strong>Tim Pritlove</strong>
+										<ul>
+													<li>
+								<a href="https://twitter.com/timpritlove">Twitter</a>
+							</li>
+													<li>
+								<a href="https://mastodon.social/@timpritlove">[address removed]</a>
+							</li>
+													<li>
+								<a href="https://metaebene.me">Website</a>
+							</li>
+																											<li>
+									<a href="https://paypal.me/timpritlove">Spenden via PayPal</a>
+								</li>
+																		</ul>
+				</li>
+												<li>
+					<strong>Andreas Bogk</strong>
+										<ul>
+													<li>
+								<a href="https://twitter.com/andreasdotorg">Twitter</a>
+							</li>
+													<li>
+								<a href="http://blog.andreas.org">Website</a>
+							</li>
+																														</ul>
+				</li>
+						</ul>
+
+</div>
+
+<details>
+    <summary><strong>Shownotes</strong></summary>
+
+    <div><div class='osfx-shownote-block'>
+			    		<ul>
+	    
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3Dg6iDZspbRMg" alt="Cryptocurrencies: Last Week Tonight with John Oliver (HBO) - YouTube" title="Cryptocurrencies: Last Week Tonight with John Oliver (HBO) - YouTube" /> <a href="https://www.youtube.com/watch?v=g6iDZspbRMg">Cryptocurrencies: Last Week Tonight with John Oliver (HBO) - YouTube</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fcre.fm%2Fcre182-elektronisches-geld" alt="CRE182 Elektronisches Geld | CRE: Technik, Kultur, Gesellschaft" title="CRE182 Elektronisches Geld | CRE: Technik, Kultur, Gesellschaft" /> <a href="https://cre.fm/cre182-elektronisches-geld">CRE182 Elektronisches Geld | CRE: Technik, Kultur, Gesellschaft</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FECash" alt="eCash – Wikipedia" title="eCash – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/ECash">eCash – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FMt.Gox" alt="Mt.Gox – Wikipedia" title="Mt.Gox – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Mt.Gox">Mt.Gox – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FProof_of_Work" alt="Proof of Work – Wikipedia" title="Proof of Work – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Proof_of_Work">Proof of Work – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FField_Programmable_Gate_Array" alt="Field Programmable Gate Array – Wikipedia" title="Field Programmable Gate Array – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Field_Programmable_Gate_Array">Field Programmable Gate Array – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FAnwendungsspezifische_integrierte_Schaltung" alt="Anwendungsspezifische integrierte Schaltung – Wikipedia" title="Anwendungsspezifische integrierte Schaltung – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Anwendungsspezifische_integrierte_Schaltung">Anwendungsspezifische integrierte Schaltung – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FDezentralisierte_Autonome_Organisation" alt="Dezentralisierte Autonome Organisation – Wikipedia" title="Dezentralisierte Autonome Organisation – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Dezentralisierte_Autonome_Organisation">Dezentralisierte Autonome Organisation – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FLightning-Netzwerk" alt="Lightning-Netzwerk – Wikipedia" title="Lightning-Netzwerk – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Lightning-Netzwerk">Lightning-Netzwerk – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FSilk_Road" alt="Silk Road – Wikipedia" title="Silk Road – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Silk_Road">Silk Road – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FLibertarismus" alt="Libertarismus – Wikipedia" title="Libertarismus – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Libertarismus">Libertarismus – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FAnarchokapitalismus" alt="Anarchokapitalismus – Wikipedia" title="Anarchokapitalismus – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Anarchokapitalismus">Anarchokapitalismus – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fccaf.io%2Fcbeci%2Findex" alt="Cambridge Bitcoin Electricity Consumption Index (CBECI)" title="Cambridge Bitcoin Electricity Consumption Index (CBECI)" /> <a href="https://ccaf.io/cbeci/index">Cambridge Bitcoin Electricity Consumption Index (CBECI)</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FProof_of_Stake" alt="Proof of Stake – Wikipedia" title="Proof of Stake – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Proof_of_Stake">Proof of Stake – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FIota_%28Kommunikationsprotokoll%29" alt="Iota (Kommunikationsprotokoll) – Wikipedia" title="Iota (Kommunikationsprotokoll) – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Iota_(Kommunikationsprotokoll)">Iota (Kommunikationsprotokoll) – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FBitcoin_Cash" alt="Bitcoin Cash – Wikipedia" title="Bitcoin Cash – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Bitcoin_Cash">Bitcoin Cash – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FInitial_Coin_Offering" alt="Initial Coin Offering – Wikipedia" title="Initial Coin Offering – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Initial_Coin_Offering">Initial Coin Offering – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FEthereum" alt="Ethereum – Wikipedia" title="Ethereum – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Ethereum">Ethereum – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FSmart_Contract" alt="Smart Contract – Wikipedia" title="Smart Contract – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Smart_Contract">Smart Contract – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FBlockchain" alt="Blockchain – Wikipedia" title="Blockchain – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Blockchain">Blockchain – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FHash-Baum" alt="Hash-Baum – Wikipedia" title="Hash-Baum – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Hash-Baum">Hash-Baum – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FNon-Fungible_Token" alt="Non-Fungible Token – Wikipedia" title="Non-Fungible Token – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Non-Fungible_Token">Non-Fungible Token – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FASCII-Art" alt="ASCII-Art – Wikipedia" title="ASCII-Art – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/ASCII-Art">ASCII-Art – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FProof_of_Concept" alt="Proof of Concept – Wikipedia" title="Proof of Concept – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Proof_of_Concept">Proof of Concept – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fboredapeyachtclub.com%2F%23%2F" alt="BAYC" title="BAYC" /> <a href="https://boredapeyachtclub.com/#/">BAYC</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FZcash" alt="Zcash – Wikipedia" title="Zcash – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Zcash">Zcash – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FZero-Knowledge-Beweis" alt="Zero-Knowledge-Beweis – Wikipedia" title="Zero-Knowledge-Beweis – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Zero-Knowledge-Beweis">Zero-Knowledge-Beweis – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FIota_%28Kommunikationsprotokoll%29" alt="Iota (Kommunikationsprotokoll) – Wikipedia" title="Iota (Kommunikationsprotokoll) – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Iota_(Kommunikationsprotokoll)">Iota (Kommunikationsprotokoll) – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fwww.springerprofessional.de%2Findustrie-4-0%2Fzahlungsverkehr%2Fbosch-geht-partnerschaft-mit-kryptowaehrung-iota-ein%2F15476982" alt="Industrie 4.0 | Bosch geht Partnerschaft mit Krypto-Währung IOTA ein | springerprofessional.de" title="Industrie 4.0 | Bosch geht Partnerschaft mit Krypto-Währung IOTA ein | springerprofessional.de" /> <a href="https://www.springerprofessional.de/industrie-4-0/zahlungsverkehr/bosch-geht-partnerschaft-mit-kryptowaehrung-iota-ein/15476982">Industrie 4.0 | Bosch geht Partnerschaft mit Krypto-Währung IOTA ein | springerprofessional.de</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FGeldmenge" alt="Geldmenge – Wikipedia" title="Geldmenge – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Geldmenge">Geldmenge – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FFederal_Reserve_System" alt="Federal Reserve System – Wikipedia" title="Federal Reserve System – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Federal_Reserve_System">Federal Reserve System – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FDeckung_%28Wirtschaft%29" alt="Deckung (Wirtschaft) – Wikipedia" title="Deckung (Wirtschaft) – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Deckung_(Wirtschaft)">Deckung (Wirtschaft) – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FKeynesianismus" alt="Keynesianismus – Wikipedia" title="Keynesianismus – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Keynesianismus">Keynesianismus – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FModern_Monetary_Theory" alt="Modern Monetary Theory – Wikipedia" title="Modern Monetary Theory – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Modern_Monetary_Theory">Modern Monetary Theory – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Ftwitter.com%2Fcrypto_bitlord7%2Fstatus%2F1473231965927063553" alt="Sen Crypto Monglord auf Twitter: &quot;This morning at 5:40am my desktop metamask was hacked and drained of all funds and NFTs. The only thing I did differently was charge a brand new dildo on my computer and installed the app Still trying to wrap my head around this but I think I was just hacked by a fucking dildo&quot; / Twitter" title="Sen Crypto Monglord auf Twitter: &quot;This morning at 5:40am my desktop metamask was hacked and drained of all funds and NFTs. The only thing I did differently was charge a brand new dildo on my computer and installed the app Still trying to wrap my head around this but I think I was just hacked by a fucking dildo&quot; / Twitter" /> <a href="https://twitter.com/crypto_bitlord7/status/1473231965927063553">Sen Crypto Monglord auf Twitter: &quot;This morning at 5:40am my desktop metamask was hacked and drained of all funds and NFTs. The only thing I did differently was charge a brand new dildo on my computer and installed the app Still trying to wrap my head around this but I think I was just hacked by a fucking dildo&quot; / Twitter</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FDiem_%28Internetw%25C3%25A4hrung%29" alt="Diem (Internetwährung) – Wikipedia" title="Diem (Internetwährung) – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Diem_(Internetw%C3%A4hrung)">Diem (Internetwährung) – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FTether" alt="Tether – Wikipedia" title="Tether – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Tether">Tether – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3Djf3ajS5me78" alt="CRYPTOLAND - YouTube" title="CRYPTOLAND - YouTube" /> <a href="https://www.youtube.com/watch?v=jf3ajS5me78">CRYPTOLAND - YouTube</a></li>
+
+		    		</ul>
+    	
+
+</div></div>
+
+</details>
+
+<hr/>
+
+
+
+<p class="wp-block-paragraph"></p>
+]]></content>
+		
+					<link rel="replies" type="text/html" href="https://cre.fm/cre224-elektronisches-geld-2#comments" thr:count="118" />
+			<link rel="replies" type="application/atom+xml" href="https://cre.fm/cre224-elektronisches-geld-2/feed/atom" thr:count="118" />
+			<thr:total>118</thr:total>
+			</entry>
+		<entry>
+		<author>
+			<name>Tim Pritlove</name>
+							<uri>https://metaebene.me/</uri>
+						</author>
+
+		<title type="html"><![CDATA[CRE223 Die Sendung mit der Maus]]></title>
+		<link rel="alternate" type="text/html" href="https://cre.fm/cre223-die-sendung-mit-der-maus" />
+
+		<id></id>
+		<updated>2022-01-08T22:49:04Z</updated>
+		<published>2021-11-23T19:40:15Z</published>
+		
+		<summary type="html"><![CDATA[Die Sendung mit der Maus, die Lach- und Sachgeschichten, hat nicht nur das Genre des Kinderfernsehens geprägt, sie ist auch ein Stück (west-)deutscher Geschichte und kulturelle Blaupause für die Wissensvermittlung an sich. Im Gespräch mit Tim Pritlove erzählt einer der Erfinder und einer bekanntesten Figuren und Sprecher der "Maus", Armin Maiwald, von seiner persönlichen Geschichte im Nachkriegsdeutschland, dem Entstehen des Fernsehens und Kinderfernsehens in Deutschland und Europa, den ersten Gehversuchen der Lach- und Sachgeschichten, der Geburt der Maus und der "Mausmethode", die nach fünfzig Jahren heutzutage jedem so geläufig ist wie kaum ein anderes Fernsehformat.]]></summary>
+
+					<content type="html" xml:base="https://cre.fm/cre223-die-sendung-mit-der-maus"><![CDATA[<style>
+    img.episode {
+        float: right;
+        padding: 5px;
+        margin: 5px;
+        margin-left: 20px;
+        border-style: solid;
+        border-width: 1px;
+        border-color: black; }
+</style>
+
+<p>
+    <strong>Die Mutter aller Erklärbärfilme sendet seit einem halben Jahrhundert in die Kinderzimmer</strong>
+</p>
+<div>
+  <a target="_blank" href="https://media.metaebene.me/media/cre/cre223-die-sendung-mit-der-maus.jpg">
+      
+<img decoding="async" class="episode" alt="Episode image forCRE223 Die Sendung mit der Maus" width="200" src="https://cre.fm/wp-content/cache/podlove/f9/6a730a398a28527ee89d9f1f166092/cre223-die-sendung-mit-der-maus_200x.jpg" srcset="https://cre.fm/wp-content/cache/podlove/f9/6a730a398a28527ee89d9f1f166092/cre223-die-sendung-mit-der-maus_200x.jpg 1x, https://cre.fm/wp-content/cache/podlove/f9/6a730a398a28527ee89d9f1f166092/cre223-die-sendung-mit-der-maus_400x.jpg 2x, https://cre.fm/wp-content/cache/podlove/f9/6a730a398a28527ee89d9f1f166092/cre223-die-sendung-mit-der-maus_600x.jpg 3x"/>
+
+  </a>
+  <p>
+  Die Sendung mit der Maus, die Lach- und Sachgeschichten, hat nicht nur das Genre des Kinderfernsehens geprägt, sie ist auch ein Stück (west-)deutscher Geschichte und kulturelle Blaupause für die Wissensvermittlung an sich. Im Gespräch mit Tim Pritlove erzählt einer der Erfinder und einer bekanntesten Figuren und Sprecher der &quot;Maus&quot;, Armin Maiwald, von seiner persönlichen Geschichte im Nachkriegsdeutschland, dem Entstehen des Fernsehens und Kinderfernsehens in Deutschland und Europa, den ersten Gehversuchen der Lach- und Sachgeschichten, der Geburt der Maus und der &quot;Mausmethode&quot;, die nach fünfzig Jahren heutzutage jedem so geläufig ist wie kaum ein anderes Fernsehformat.
+  </p>
+</div>
+
+
+
+<div>
+
+	<ul>
+									<li>
+					<strong>Tim Pritlove</strong>
+										<ul>
+													<li>
+								<a href="https://twitter.com/timpritlove">Twitter</a>
+							</li>
+													<li>
+								<a href="https://mastodon.social/@timpritlove">[address removed]</a>
+							</li>
+													<li>
+								<a href="https://metaebene.me">Website</a>
+							</li>
+																											<li>
+									<a href="https://paypal.me/timpritlove">Spenden via PayPal</a>
+								</li>
+																		</ul>
+				</li>
+												<li>
+					<strong>Armin Maiwald</strong>
+										<ul>
+																														</ul>
+				</li>
+						</ul>
+
+</div>
+
+
+<details>
+    <summary><strong>Shownotes</strong></summary>
+
+    <div><div class='osfx-shownote-block'>
+			    		<ul>
+	    
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FFreising" alt="Freising – Wikipedia" title="Freising – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Freising">Freising – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FUffing_am_Staffelsee" alt="Uffing am Staffelsee – Wikipedia" title="Uffing am Staffelsee – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Uffing_am_Staffelsee">Uffing am Staffelsee – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FDeutsche_Schrift" alt="Deutsche Schrift – Wikipedia" title="Deutsche Schrift – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Deutsche_Schrift">Deutsche Schrift – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FDruckschrift" alt="Druckschrift – Wikipedia" title="Druckschrift – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Druckschrift">Druckschrift – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FMansarde" alt="Mansarde – Wikipedia" title="Mansarde – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Mansarde">Mansarde – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FNeuss" alt="Neuss – Wikipedia" title="Neuss – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Neuss">Neuss – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FMitl%25C3%25A4ufer" alt="Mitläufer – Wikipedia" title="Mitläufer – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Mitl%C3%A4ufer">Mitläufer – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FPersilschein" alt="Persilschein – Wikipedia" title="Persilschein – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Persilschein">Persilschein – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FFernsehstube" alt="Fernsehstube – Wikipedia" title="Fernsehstube – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Fernsehstube">Fernsehstube – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FHonnefer_Modell" alt="Honnefer Modell – Wikipedia" title="Honnefer Modell – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Honnefer_Modell">Honnefer Modell – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FPanorama_%28Magazin%29" alt="Panorama (Magazin) – Wikipedia" title="Panorama (Magazin) – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Panorama_(Magazin)">Panorama (Magazin) – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FPeter_von_Zahn" alt="Peter von Zahn – Wikipedia" title="Peter von Zahn – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Peter_von_Zahn">Peter von Zahn – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FHanno_Br%25C3%25BChl" alt="Hanno Brühl – Wikipedia" title="Hanno Brühl – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Hanno_Br%C3%BChl">Hanno Brühl – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FDaniel_Br%25C3%25BChl" alt="Daniel Brühl – Wikipedia" title="Daniel Brühl – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Daniel_Br%C3%BChl">Daniel Brühl – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FGert_K._M%25C3%25BCntefering" alt="Gert K. Müntefering – Wikipedia" title="Gert K. Müntefering – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Gert_K._M%C3%BCntefering">Gert K. Müntefering – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FSesamstra%25C3%259Fe" alt="Sesamstraße – Wikipedia" title="Sesamstraße – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Sesamstra%C3%9Fe">Sesamstraße – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FHase_C%25C3%25A4sar" alt="Hase Cäsar – Wikipedia" title="Hase Cäsar – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Hase_C%C3%A4sar">Hase Cäsar – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FDer_Spatz_vom_Wallrafplatz" alt="Der Spatz vom Wallrafplatz – Wikipedia" title="Der Spatz vom Wallrafplatz – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Der_Spatz_vom_Wallrafplatz">Der Spatz vom Wallrafplatz – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2F16-mm-Film" alt="16-mm-Film – Wikipedia" title="16-mm-Film – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/16-mm-Film">16-mm-Film – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FDie_Sendung_mit_der_Maus" alt="Die Sendung mit der Maus – Wikipedia" title="Die Sendung mit der Maus – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Die_Sendung_mit_der_Maus">Die Sendung mit der Maus – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FMagnetaufzeichnung" alt="Magnetaufzeichnung – Wikipedia" title="Magnetaufzeichnung – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Magnetaufzeichnung">Magnetaufzeichnung – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FVideo_Home_System" alt="Video Home System – Wikipedia" title="Video Home System – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Video_Home_System">Video Home System – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FSuper_Video_Home_System" alt="Super Video Home System – Wikipedia" title="Super Video Home System – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Super_Video_Home_System">Super Video Home System – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FRobbi%2C_Tobbi_und_das_Fliewat%25C3%25BC%25C3%25BCt" alt="Robbi, Tobbi und das Fliewatüüt – Wikipedia" title="Robbi, Tobbi und das Fliewatüüt – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Robbi,_Tobbi_und_das_Fliewat%C3%BC%C3%BCt">Robbi, Tobbi und das Fliewatüüt – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FFriedrich_Nowottny" alt="Friedrich Nowottny – Wikipedia" title="Friedrich Nowottny – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Friedrich_Nowottny">Friedrich Nowottny – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FPan_Tau" alt="Pan Tau – Wikipedia" title="Pan Tau – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Pan_Tau">Pan Tau – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FDer_kleine_Maulwurf" alt="Der kleine Maulwurf – Wikipedia" title="Der kleine Maulwurf – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Der_kleine_Maulwurf">Der kleine Maulwurf – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FDie_Besucher_%28Fernsehserie%29" alt="Die Besucher (Fernsehserie) – Wikipedia" title="Die Besucher (Fernsehserie) – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Die_Besucher_(Fernsehserie)">Die Besucher (Fernsehserie) – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FEiserner_Vorhang" alt="Eiserner Vorhang – Wikipedia" title="Eiserner Vorhang – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Eiserner_Vorhang">Eiserner Vorhang – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FMax_von_der_Gr%25C3%25BCn" alt="Max von der Grün – Wikipedia" title="Max von der Grün – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Max_von_der_Gr%C3%BCn">Max von der Grün – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FVorstadtkrokodile" alt="Vorstadtkrokodile – Wikipedia" title="Vorstadtkrokodile – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Vorstadtkrokodile">Vorstadtkrokodile – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FMainzelm%25C3%25A4nnchen" alt="Mainzelmännchen – Wikipedia" title="Mainzelmännchen – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Mainzelm%C3%A4nnchen">Mainzelmännchen – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FComic_Relief_%28Stilmittel%29" alt="Comic Relief (Stilmittel) – Wikipedia" title="Comic Relief (Stilmittel) – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Comic_Relief_(Stilmittel)">Comic Relief (Stilmittel) – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FPresseclub_%28WDR%29" alt="Presseclub (WDR) – Wikipedia" title="Presseclub (WDR) – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Presseclub_(WDR)">Presseclub (WDR) – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FZDF-Fernsehgarten" alt="ZDF-Fernsehgarten – Wikipedia" title="ZDF-Fernsehgarten – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/ZDF-Fernsehgarten">ZDF-Fernsehgarten – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DfpqhjEtznVk%26t%3D168s" alt="Wie funktioniert das Internet? - YouTube" title="Wie funktioniert das Internet? - YouTube" /> <a href="https://www.youtube.com/watch?v=fpqhjEtznVk&#038;t=168s">Wie funktioniert das Internet? - YouTube</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DYdCvACZLuBg" alt="Herstellung Brötchen: Früher - Heute - YouTube" title="Herstellung Brötchen: Früher - Heute - YouTube" /> <a href="https://www.youtube.com/watch?v=YdCvACZLuBg">Herstellung Brötchen: Früher - Heute - YouTube</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FL%25C3%25B6wenzahn_%28Fernsehsendung%29" alt="Löwenzahn (Fernsehsendung) – Wikipedia" title="Löwenzahn (Fernsehsendung) – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/L%C3%B6wenzahn_(Fernsehsendung)">Löwenzahn (Fernsehsendung) – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FPeter_Lustig" alt="Peter Lustig – Wikipedia" title="Peter Lustig – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Peter_Lustig">Peter Lustig – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DbaHrjGUP70Y" alt="Peter Lustig in der Sendung mit der Maus (1972) | WDR - YouTube" title="Peter Lustig in der Sendung mit der Maus (1972) | WDR - YouTube" /> <a href="https://www.youtube.com/watch?v=baHrjGUP70Y">Peter Lustig in der Sendung mit der Maus (1972) | WDR - YouTube</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DbID0caK2SNQ" alt="Peter Lustig und das Elektroauto (1983) - YouTube" title="Peter Lustig und das Elektroauto (1983) - YouTube" /> <a href="https://www.youtube.com/watch?v=bID0caK2SNQ">Peter Lustig und das Elektroauto (1983) - YouTube</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FElsbett-Motor" alt="Elsbett-Motor – Wikipedia" title="Elsbett-Motor – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Elsbett-Motor">Elsbett-Motor – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FLudwig_Elsbett" alt="Ludwig Elsbett – Wikipedia" title="Ludwig Elsbett – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Ludwig_Elsbett">Ludwig Elsbett – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FWissen_macht_Ah%21" alt="Wissen macht Ah! – Wikipedia" title="Wissen macht Ah! – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Wissen_macht_Ah!">Wissen macht Ah! – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FTeletubbies" alt="Teletubbies – Wikipedia" title="Teletubbies – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Teletubbies">Teletubbies – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FSesamstra%25C3%259Fe" alt="Sesamstraße – Wikipedia" title="Sesamstraße – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Sesamstra%C3%9Fe">Sesamstraße – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FWerner_H%25C3%25B6fer" alt="Werner Höfer – Wikipedia" title="Werner Höfer – Wikipedia" /> <a href="https://de.wikipedia.org/wiki/Werner_H%C3%B6fer">Werner Höfer – Wikipedia</a></li>
+
+		
+		
+
+		<li><span style="display: inline-block" class=""><img decoding="async" src="https://www.google.com/s2/favicons?domain=https%3A%2F%2Fmuppet.fandom.com%2Fwiki%2FLefty_the_Salesman" alt="Lefty the Salesman | Muppet Wiki | Fandom" title="Lefty the Salesman | Muppet Wiki | Fandom" /> <a href="https://muppet.fandom.com/wiki/Lefty_the_Salesman">Lefty the Salesman | Muppet Wiki | Fandom</a></li>
+
+		    		</ul>
+    	
+
+</div></div>
+
+</details>
+
+<hr/>
+]]></content>
+		
+					<link rel="replies" type="text/html" href="https://cre.fm/cre223-die-sendung-mit-der-maus#comments" thr:count="29" />
+			<link rel="replies" type="application/atom+xml" href="https://cre.fm/cre223-die-sendung-mit-der-maus/feed/atom" thr:count="29" />
+			<thr:total>29</thr:total>
+			</entry>
+	</feed>

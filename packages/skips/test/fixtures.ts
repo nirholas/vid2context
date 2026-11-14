@@ -27,7 +27,11 @@ export function requestedCategories(url: string): string[] {
 export const routes: Route[] = [
   {
     url: (u) => u.pathname === '/api/skipSegments/9007' && requestedCategories(u.href).join() === 'exclusive_access',
-    response: { status: 404, headers: { 'content-type': 'application/json; charset=utf-8' }, body: fixture('skipSegments-9007-exclusive_access-404.json') },
+    response: {
+      status: 404,
+      headers: { 'content-type': 'application/json; charset=utf-8' },
+      body: fixture('skipSegments-9007-exclusive_access-404.json'),
+    },
   },
   {
     url: (u) => u.pathname === '/api/skipSegments/9007',

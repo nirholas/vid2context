@@ -90,7 +90,11 @@ export function trace(config: Config | undefined, profileName: string | undefine
   for (const name of extras) envLine(name);
 
   for (const m of missing) {
-    out.push({ setting: m.path, value: '(not set)', source: `${r ? profileSource(r, m.from) : 'config'}: env ${m.ref} is unset` });
+    out.push({
+      setting: m.path,
+      value: '(not set)',
+      source: `${r ? profileSource(r, m.from) : 'config'}: env ${m.ref} is unset`,
+    });
   }
   return out;
 }

@@ -159,7 +159,8 @@ function callout(type: string, title: string, body: string, folded = false): str
     .replace(/\r\n?/g, '\n')
     .trim()
     .split('\n')
-    .map((l) => (l.trim() ? `> ${l}` : '>'));
+    .map((l) => l.trimEnd())
+    .map((l) => (l ? `> ${l}` : '>'));
   return [head, ...lines].join('\n');
 }
 
@@ -285,14 +286,21 @@ function indexNote(
       collection.sources.map((s) => (/^https?:\/\//i.test(s) ? `- <${s}>` : `- ${escapeMarkdown(s)}`)).join('\n'),
     );
   }
+  const showPublished = rows.some((r) => datePart(r.context.metadata.publishedAt));
   const table = [
-    '| # | Video | Channel | Duration | Published | Transcript |',
-    '|---|---|---|---|---|---|',
+    `| # | Video | Channel | Duration |${showPublished ? ' Published |' : ''} Transcript |`,
+    `|---|---|---|---|${showPublished ? '---|' : ''}---|`,
     ...rows.map(({ context, target }, i) => {
       const m = context.metadata;
-      return `| ${i + 1} | [[${target}\\|${aliasText(m.title)}]] | ${tableCell(m.channel?.name ?? '')} | ${
-        m.durationSec !== undefined ? formatTimestamp(m.durationSec) : ''
-      } | ${datePart(m.publishedAt) ?? ''} | ${context.transcript.origin} |`;
+      const cells = [
+        String(i + 1),
+        `[[${target}\\|${aliasText(m.title)}]]`,
+        tableCell(m.channel?.name ?? ''),
+        m.durationSec !== undefined ? formatTimestamp(m.durationSec) : '',
+        ...(showPublished ? [datePart(m.publishedAt) ?? ''] : []),
+        context.transcript.origin,
+      ];
+      return `| ${cells.join(' | ')} |`;
     }),
   ];
   const total = rows.reduce((sum, r) => sum + (r.context.metadata.durationSec ?? 0), 0);

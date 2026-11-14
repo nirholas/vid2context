@@ -4,7 +4,16 @@
  * chain options, so providers keep reading ctx.env and need no changes.
  * File loading lives in `@vid2context/config/node`.
  */
-export { applyPrefer, chainOptionsFor, compileProfile, type EnvEntry, type MissingRef, mergeEnv, type StageChainOptions, toEnv } from './compile.ts';
+export {
+  applyPrefer,
+  chainOptionsFor,
+  compileProfile,
+  type EnvEntry,
+  type MissingRef,
+  mergeEnv,
+  type StageChainOptions,
+  toEnv,
+} from './compile.ts';
 export {
   type Config,
   configSchema,

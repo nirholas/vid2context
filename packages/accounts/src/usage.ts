@@ -158,7 +158,10 @@ export class UsageMeter {
       const left = await this.sttSecondsLeft();
       if (left <= 0) this.refuse('stt');
       if (audio.durationSec !== undefined && audio.durationSec > left) {
-        this.refuse('stt', `This audio is ${Math.ceil(audio.durationSec / 60)} min; ${Math.floor(left / 60)} min are left today.`);
+        this.refuse(
+          'stt',
+          `This audio is ${Math.ceil(audio.durationSec / 60)} min; ${Math.floor(left / 60)} min are left today.`,
+        );
       }
       const res = await rung.transcribe(audio, opts, ctx);
       await this.add({ sttSeconds: Math.ceil(audio.durationSec ?? lastEnd(res.segments)) });

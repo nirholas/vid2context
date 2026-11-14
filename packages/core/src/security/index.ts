@@ -11,4 +11,12 @@ export { blockedAddress, isIpLiteral, parseIPv4, parseIPv6 } from './ip.ts';
 export { type Limits, limits } from './limits.ts';
 export { assertSafeArg, safeFilename, safeJoin } from './paths.ts';
 export { REDACTED, redact } from './redact.ts';
-export { checkUrl, checkUrlSync, getHostResolver, type HostResolver, setHostResolver, type UrlCheck, type UrlPolicy } from './url.ts';
+export {
+  checkUrl,
+  checkUrlSync,
+  getHostResolver,
+  type HostResolver,
+  setHostResolver,
+  type UrlCheck,
+  type UrlPolicy,
+} from './url.ts';

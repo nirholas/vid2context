@@ -1,0 +1,6 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Sat, 14 Nov 2026 17:07:46 GMT
+Content-Length: 279
+
+{"object":"list","data":[{"id":"qwen2.5:3b","object":"model","created":1794676000,"owned_by":"library"},{"id":"nomic-embed-text:latest","object":"model","created":1794675963,"owned_by":"library"},{"id":"qwen2.5:0.5b","object":"model","created":1794675959,"owned_by":"library"}]}

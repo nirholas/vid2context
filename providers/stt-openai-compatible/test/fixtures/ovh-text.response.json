@@ -1,0 +1,8 @@
+{
+  "status": 200,
+  "headers": {
+    "x-ratelimit-limit-minute": "2",
+    "x-ratelimit-remaining-minute": "1"
+  },
+  "body": " I'm going to step off the limb now. That's one small step for man, one giant leap for mankind."
+}

@@ -88,7 +88,8 @@ export function checkUrlSync(input: string | URL, policy: UrlPolicy = {}): UrlCh
   if (host === '') return { ok: false, reason: 'the URL has no host' };
   if (policy.allowPorts?.length) {
     const port = url.port ? Number(url.port) : DEFAULT_PORT[url.protocol];
-    if (port === undefined || !policy.allowPorts.includes(port)) return { ok: false, reason: `port ${port ?? '(none)'} is not allowed` };
+    if (port === undefined || !policy.allowPorts.includes(port))
+      return { ok: false, reason: `port ${port ?? '(none)'} is not allowed` };
   }
   const exempt = hostAllowed(url, host, policy);
   if (!exempt && METADATA_HOSTS.has(host)) return { ok: false, reason: `${host} is a cloud metadata endpoint` };

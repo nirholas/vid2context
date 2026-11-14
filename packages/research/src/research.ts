@@ -27,7 +27,7 @@ import {
 } from '@vid2context/core';
 import { buildWindows, DEFAULT_WINDOW_SEC, documentFrequency, type ScoredWindow, scoreWindows, type Window } from './bm25.ts';
 import { mapLimit, openStorage, type ResearchDeps } from './deps.ts';
-import { editDistance, type ParsedQuery, parseQuery, STOP_WORDS, stem, tokenize } from './text.ts';
+import { editDistance, type ParsedQuery, parseQuery, STOP_WORDS, stem, terms, tokenize } from './text.ts';
 
 export const MAX_VIDEOS = 10;
 export const DEFAULTS = { contextSec: 20, maxExcerpts: 3, maxTokens: 2000, concurrency: 3 } as const;
@@ -184,9 +184,11 @@ interface Draft {
 
 /**
  * Pick up to `max` excerpts for one video from its scored windows, best first.
- * A window close to an excerpt already picked (its context would repeat that
- * excerpt's text) is merged into it when it scores at least half as well and
- * the result stays under `maxSpan` seconds; otherwise it is skipped.
+ * Each excerpt is trimmed to the segments that actually contain a query word,
+ * so the matched text is tight and the context does the rest. A window close
+ * to an excerpt already picked (their contexts would repeat each other) is
+ * merged into it when it scores at least half as well and the result stays
+ * under `maxSpan` seconds; otherwise it is skipped.
  */
 export function pickExcerpts(
   scored: ScoredWindow[],
@@ -197,22 +199,43 @@ export function pickExcerpts(
   const startOf = (i: number) => segments[i]?.startSec ?? 0;
   const endOf = (i: number) => segments[i]?.endSec ?? 0;
   const gap = 2 * opts.contextSec;
+  const segTerms = new Map<number, Set<string>>();
+  const termsAt = (i: number): Set<string> => {
+    let t = segTerms.get(i);
+    if (!t) {
+      t = new Set(terms(segments[i]?.text ?? ''));
+      segTerms.set(i, t);
+    }
+    return t;
+  };
   for (const sw of scored) {
     const w = sw.window;
-    const near = drafts.find((d) => w.startSec <= endOf(d.last) + gap && w.endSec >= startOf(d.first) - gap);
+    let first = w.last;
+    let last = w.first;
+    for (let i = w.first; i <= w.last; i++) {
+      const t = termsAt(i);
+      if (sw.matched.some((m) => t.has(m))) {
+        first = Math.min(first, i);
+        last = Math.max(last, i);
+      }
+    }
+    if (last < first) {
+      first = w.first;
+      last = w.last;
+    }
+    const near = drafts.find((d) => startOf(first) <= endOf(d.last) + gap && endOf(last) >= startOf(d.first) - gap);
     if (near) {
-      const first = Math.min(near.first, w.first);
-      const last = Math.max(near.last, w.last);
-      if (sw.score >= near.score / 2 && endOf(last) - startOf(first) <= opts.maxSpan) {
-        near.first = first;
-        near.last = last;
+      const lo = Math.min(near.first, first);
+      const hi = Math.max(near.last, last);
+      if (sw.score >= near.score / 2 && endOf(hi) - startOf(lo) <= opts.maxSpan) {
+        near.first = lo;
+        near.last = hi;
         near.score = Math.max(near.score, sw.score);
         for (const m of sw.matched) near.matched.add(m);
       }
       continue;
     }
-    if (drafts.length < opts.max)
-      drafts.push({ doc: w.doc, first: w.first, last: w.last, score: sw.score, matched: new Set(sw.matched) });
+    if (drafts.length < opts.max) drafts.push({ doc: w.doc, first, last, score: sw.score, matched: new Set(sw.matched) });
   }
   return drafts.sort((a, b) => b.score - a.score);
 }
@@ -257,6 +280,16 @@ export function toExcerpt(
   };
 }
 
+/** Everyday spoken words that say nothing about a video's topic; left out of the topic suggestions only. */
+const FILLER: ReadonlySet<string> = new Set(
+  (
+    'want wants got get gets getting going goes thing things lot lots look looking know think thought said say says ' +
+    'make makes made right good well little kind actually started start one two three see seen come came take took ' +
+    'way much many even still back give put need something someone everything anything nothing guys stuff pretty ' +
+    'sure maybe probably basically literally obviously definitely gonna let lets talk talking tell told mean'
+  ).split(/\s+/),
+);
+
 /** Words the transcripts use that resemble the query words, and the transcripts' most distinctive words. */
 export function suggest(query: ParsedQuery, windows: Window[], contexts: VideoContext[]): ResearchSuggestions {
   const surface = new Map<string, Map<string, number>>();
@@ -294,9 +327,10 @@ export function suggest(query: ParsedQuery, windows: Window[], contexts: VideoCo
 
   const df = documentFrequency(windows);
   const n = windows.length || 1;
+  // Squared IDF favours words concentrated in a few passages (model names, parts) over words spread everywhere.
   const topics = [...count.entries()]
-    .filter(([s]) => s.length >= 3)
-    .map(([s, c]) => ({ s, w: c * Math.log(1 + n / (df.get(s) ?? 1)) }))
+    .filter(([s, c]) => c >= 2 && !FILLER.has(wordOf(s)))
+    .map(([s, c]) => ({ s, w: c * Math.log(1 + n / (df.get(s) ?? 1)) ** 2 }))
     .sort((a, b) => b.w - a.w)
     .slice(0, 12)
     .map((x) => wordOf(x.s));
@@ -318,7 +352,8 @@ function videoHeader(v: ResearchVideoResult): string {
 export function renderResearch(r: ResearchResult): string {
   const total = r.results.reduce((n, v) => n + v.excerpts.length, 0);
   const lines: string[] = [
-    `Research: "${r.query}" in ${r.results.length} video${r.results.length === 1 ? '' : 's'}: ${total} excerpt${total === 1 ? '' : 's'}, about ${r.tokens} tokens (the full transcripts are about ${r.transcriptTokens} tokens).`,
+    `Research in ${r.results.length} video${r.results.length === 1 ? '' : 's'} for: ${r.query}`,
+    `${total} excerpt${total === 1 ? '' : 's'}, about ${r.tokens} tokens (the full transcripts are about ${r.transcriptTokens} tokens).`,
   ];
   for (const note of r.notes) lines.push(`Note: ${note}`);
   if (r.suggestions) {
@@ -418,7 +453,7 @@ export async function research(
     const drafts = pickExcerpts(
       scored.filter((s) => s.window.doc === doc),
       c.transcript.segments,
-      { max: maxExcerpts, contextSec, maxSpan: 2 * windowSec },
+      { max: maxExcerpts, contextSec, maxSpan: windowSec },
     );
     return {
       videoId: c.metadata.ref.id,

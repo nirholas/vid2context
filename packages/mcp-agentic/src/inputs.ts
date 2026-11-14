@@ -120,7 +120,8 @@ export async function resolveSources(
     try {
       refs = (await expandInput(registry, input, ctx, { limit: MAX_VIDEOS })).map((r) => ({ input: r.url ?? r.input }));
     } catch (err) {
-      const saved = err instanceof Vid2ContextError && err.code === 'unsupported-input' && storage ? await findSaved(storage, input) : null;
+      const saved =
+        err instanceof Vid2ContextError && err.code === 'unsupported-input' && storage ? await findSaved(storage, input) : null;
       if (saved) add(saved);
       else problems.push(problem(input, err));
       continue;

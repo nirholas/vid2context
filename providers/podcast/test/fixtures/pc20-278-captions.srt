@@ -1,0 +1,319 @@
+1
+00:00:00,500 --> 00:00:06,349
+Podcasting 2.0 for November 13, 2026, episode 278, 1 Billion
+
+2
+00:00:06,349 --> 00:00:11,640
+Tokens! Hello everybody, we were gone for a week and
+
+3
+00:00:11,640 --> 00:00:15,349
+we're back. It is time for Podcasting 2.0, another beautiful
+
+4
+00:00:15,349 --> 00:00:18,359
+Friday in the hill country. Podcasting 2.0. We're going to
+
+5
+00:00:18,359 --> 00:00:21,039
+talk about podcasting. We're going to talk about everything that
+
+6
+00:00:21,039 --> 00:00:23,420
+affects it. We're going to talk about making money. We're
+
+7
+00:00:23,420 --> 00:00:25,660
+going to talk about all kinds of groovy things. This
+
+8
+00:00:25,660 --> 00:00:28,179
+is the boardroom where the board meeting takes place. And
+
+9
+00:00:28,179 --> 00:00:30,449
+just so you know, we're the only boardroom that has
+
+10
+00:00:30,449 --> 00:00:33,039
+room in the lifeboat for everyone. I'm Adam Curry in
+
+11
+00:00:33,039 --> 00:00:35,920
+the heart of the Texas Hill Country and in Alabama.
+
+12
+00:00:36,320 --> 00:00:38,700
+The man who blocked the Pottinger flood and is still
+
+13
+00:00:38,700 --> 00:00:42,409
+fighting. Stryper's wearing his own usual agent. Say hello to
+
+14
+00:00:42,409 --> 00:00:45,320
+my friend on the other end, the one, the only,
+
+15
+00:00:45,320 --> 00:00:51,000
+the Podsage, Dave Jones! Dave Jones! I think I could
+
+16
+00:00:51,000 --> 00:00:54,710
+give a clinic. on how to eat and do a
+
+17
+00:00:54,710 --> 00:00:57,109
+podcast at the same time. I've been doing it for
+
+18
+00:00:57,109 --> 00:01:00,460
+so many years now. Does it involve the mute button?
+
+19
+00:01:00,700 --> 00:01:02,700
+Do you use that a lot? I have heavy use
+
+20
+00:01:02,700 --> 00:01:05,700
+of the mute button. Yeah. Heavy use of the mute
+
+21
+00:01:05,700 --> 00:01:12,519
+button. It's a... You have to... It's a... A careful
+
+22
+00:01:12,519 --> 00:01:16,569
+dance of the size of the bites you take when
+
+23
+00:01:16,569 --> 00:01:22,359
+you take a drink, estimating how long you, as I
+
+24
+00:01:22,359 --> 00:01:28,049
+learned over time, your cadences – I can tell when
+
+25
+00:01:28,049 --> 00:01:32,790
+you start a sentence about how long you're going to
+
+26
+00:01:32,790 --> 00:01:36,370
+run for before it comes back to me. It's a
+
+27
+00:01:36,370 --> 00:01:40,670
+push – it's like watching somebody drive a stick shift
+
+28
+00:01:40,670 --> 00:01:43,049
+and eat and type on the – and talk on
+
+29
+00:01:43,049 --> 00:01:45,180
+the phone at the same time. And roll a joint.
+
+30
+00:01:45,900 --> 00:01:50,120
+And roll a joint. And roll a doobie. Yeah, well,
+
+31
+00:01:50,120 --> 00:01:52,379
+with you, I mean, it's the same thing. I know
+
+32
+00:01:52,379 --> 00:01:54,370
+when you're launching into something like, oh, I got to
+
+33
+00:01:54,370 --> 00:01:56,959
+pee. Okay, I'll be right back. I just like mute,
+
+34
+00:01:56,959 --> 00:02:00,310
+turn the speakers up, leave the door open. Is Dave
+
+35
+00:02:00,310 --> 00:02:02,900
+still talking? Yeah, it's good. Okay, yeah, I'm back. Yeah,
+
+36
+00:02:02,900 --> 00:02:06,379
+baby, that was interesting. Okay, honesty time. Yes. Spin the
+
+37
+00:02:06,379 --> 00:02:10,590
+bottle. Oh, here we go. How many times in the
+
+38
+00:02:10,590 --> 00:02:14,479
+past six years have you gone to use the bathroom
+
+39
+00:02:14,479 --> 00:02:19,620
+while I've been on a soliloquy? Twice to the bathroom,
+
+40
+00:02:19,620 --> 00:02:23,620
+one time to let the dog in. I never even
+
+41
+00:02:23,620 --> 00:02:31,870
+knew. Well, there's also every single show. I'm looking, you
+
+42
+00:02:31,870 --> 00:02:35,500
+know, I'm using the ISO bot. I'm downloading ISOs. I'm
+
+43
+00:02:35,500 --> 00:02:37,750
+previewing them once in a while. I forget to hit
+
+44
+00:02:37,750 --> 00:02:40,789
+PFL or mute something and then you hear it. Yeah,
+
+45
+00:02:40,789 --> 00:02:43,219
+I'm doing that too during these soliloquies. So I have
+
+46
+00:02:43,219 --> 00:02:45,800
+to put myself on mute so the headphone doesn't bleed
+
+47
+00:02:45,800 --> 00:02:50,780
+through. Then I've got to put you on pre-fader listening.
+
+48
+00:02:51,219 --> 00:02:54,330
+Put the clip on pre-fader listening. So I'm listening. I'm
+
+49
+00:02:54,330 --> 00:02:56,229
+setting the in and the out points on the clip
+
+50
+00:02:56,229 --> 00:02:59,150
+while you're talking. Sometimes you say something, got to hit
+
+51
+00:02:59,150 --> 00:03:01,129
+my mute button, go, mm-hmm. And then I hit the
+
+52
+00:03:01,129 --> 00:03:03,659
+mute button again, and then I'm back to it. Yeah.
+
+53
+00:03:03,759 --> 00:03:05,639
+Oh, yeah. This is the life of a disco jockey,
+
+54
+00:03:05,639 --> 00:03:07,719
+man. This is what I do. You should. You should
+
+55
+00:03:07,719 --> 00:03:10,349
+just automate that. You should just automate to where every
+
+56
+00:03:10,349 --> 00:03:15,240
+now and then it'll listen. Listening noises. Yeah, listening noise.
+
+57
+00:03:15,379 --> 00:03:17,340
+Oh, yeah, that's a good idea. I can create a
+
+58
+00:03:17,340 --> 00:03:20,530
+bot for that. No problem. I have been going bot
+
+59
+00:03:20,530 --> 00:03:24,539
+crazy, baby. If I'm on PFL. It should just occasionally
+
+60
+00:03:24,539 --> 00:03:30,099
+go. Oh, interesting. It's the Ed McMahon mode. You put
+
+61
+00:03:30,099 --> 00:03:33,110
+it in Ed McMahon mode. Ed McMahon mode. No, Ed
+
+62
+00:03:33,110 --> 00:03:37,240
+McMahon. Oh, Ed McMahon. From Johnny Carson. Oh, just throw
+
+63
+00:03:37,240 --> 00:03:39,800
+one of those. Give a chuckle every now and then.
+
+64
+00:03:39,919 --> 00:03:45,930
+A hearty chuckle. So I released the code. You curry
+
+65
+00:03:45,930 --> 00:03:50,620
+castored. Yeah, this has been, I'd say, a runaway success,
+
+66
+00:03:50,620 --> 00:03:53,719
+mainly because it's free. But I've already given it out
+
+67
+00:03:53,719 --> 00:03:56,599
+to a to a newbie podcaster. I got I got
+
+68
+00:03:56,599 --> 00:04:02,439
+a message yesterday from the CEO of Clean Feet. Oh,
+
+69
+00:04:02,439 --> 00:04:05,039
+no. You don't want to hear from that guy. No,
+
+70
+00:04:05,039 --> 00:04:07,310
+I know him. I met him in Dallas when we
+
+71
+00:04:07,310 --> 00:04:09,550
+went to the... Me and you met him. We had
+
+72
+00:04:09,550 --> 00:04:11,900
+dinner with him. Yeah, that's what I mean. We met
+
+73
+00:04:11,900 --> 00:04:14,030
+him. We had dinner with him. Yeah. I don't remember
+
+74
+00:04:14,030 --> 00:04:16,759
+dinner. I remember the bar. I don't remember. I remember
+
+75
+00:04:16,759 --> 00:04:21,439
+drinking with him. After that, things are vague. We... Oh,
+
+76
+00:04:21,439 --> 00:04:26,259
+what happened? Excuse me. I coughed. No. So he said,
+
+77
+00:04:26,259 --> 00:04:29,139
+hey, for the first time today, I had a customer
+
+78
+00:04:29,139 --> 00:04:34,610
+ask about Currycaster. I'm like, uh-huh. Uh-huh. Oh, no. Oh,
+
+79
+00:04:34,610 --> 00:04:39,160
+no. Well, I mean, in essence, I just... Took a
+
+80
+00:04:39,160 --> 00:04:42,879
+great idea and an open source codec that they use

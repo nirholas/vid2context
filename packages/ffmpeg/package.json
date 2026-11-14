@@ -1,0 +1,13 @@
+{
+  "name": "@vid2context/ffmpeg",
+  "version": "0.1.0",
+  "description": "ffmpeg and ffprobe for vid2context: locate or download the binaries, probe media, extract and normalize audio, split on silence, extract subtitles and frames. Node only.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@vid2context/core": "*"
+  }
+}

@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<?xml-stylesheet href="https://rss.buzzsprout.com/styles.xsl" type="text/xsl"?>
+<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:podcast="https://podcastindex.org/namespace/1.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:psc="http://podlove.org/simple-chapters" xmlns:atom="http://www.w3.org/2005/Atom">
+<script xmlns="http://www.w3.org/1999/xhtml" src="https://www.buzzsprout.com/vendor/xslt-polyfill/xslt-polyfill-1.0.33.min.js" charset="utf-8"></script>
+<channel>
+  <atom:link href="https://rss.buzzsprout.com/1538779.rss" rel="self" type="application/rss+xml" />
+  <atom:link href="https://pubsubhubbub.appspot.com/" rel="hub" xmlns="http://www.w3.org/2005/Atom" />
+  <title>Podnews Weekly Review</title>
+
+  <lastBuildDate>Fri, 13 Nov 2026 13:31:11 +1000</lastBuildDate>
+  <link>https://podnews.net</link>
+  <language>en</language>
+  <copyright>© 2026 Amazingly Brilliant Pty Ltd. Podnews® is used under licence from Podnews LLC</copyright>
+  <podcast:locked>yes</podcast:locked>
+  <podcast:funding url="https://www.buzzsprout.com/1538779/support">Support this Podcast</podcast:funding>
+  <podcast:guid>396d9ae0-da7e-5557-b894-b606231fa3ea</podcast:guid>
+  <podcast:txt purpose="verify">[address removed]</podcast:txt>
+<podcast:podroll>
+    <podcast:remoteItem feedGuid="9b024349-ccf0-5f69-a609-6b82873eab3c" feedUrl="https://podnews.net/rss" />
+    <podcast:remoteItem feedGuid="917393e3-1b1e-5cef-ace4-edaa54e1f810" feedUrl="http://mp3s.nashownotes.com/pc20rss.xml" />
+    <podcast:remoteItem feedGuid="d04f3195-25e8-52d9-b87f-969251009f1e" feedUrl="https://feeds.buzzsprout.com/2105583.rss" />
+    <podcast:remoteItem feedGuid="dc87f50b-8c0d-5980-8f2d-067dde67c7e4" feedUrl="https://podnews.net/sitemap/trailers.xml" />
+    <podcast:remoteItem feedGuid="29cdca4a-32d8-56ba-b48b-09a011c5daa9" feedUrl="https://feeds.buzzsprout.com/231452.rss" />
+    <podcast:remoteItem feedGuid="5a484326-8f88-5a11-8a10-a80f7972365a" feedUrl="https://feeds.captivate.fm/inandaroundpodcasting/" />
+    <podcast:remoteItem feedGuid="62b413c2-81c1-51d6-8c16-66b0663fe3bc" feedUrl="https://feeds.captivate.fm/podcasting-2-in-practice/" />
+    <podcast:remoteItem feedGuid="8bcb6090-d0a4-5ffe-867d-5770b526f588" feedUrl="https://feeds.acast.com/public/shows/68343e1669c98f151d8f0020" />
+    <podcast:remoteItem feedGuid="913b7a37-d2cf-5266-a205-fbfd5be39b99" feedUrl="https://feeds.megaphone.fm/LI6529969937" />
+  </podcast:podroll>
+  <itunes:author>James Cridland and Sam Sethi</itunes:author>
+  <itunes:type>episodic</itunes:type>
+  <itunes:explicit>false</itunes:explicit>
+  <description><![CDATA[<p>The last word in podcasting news.<br><br>Every Friday, James Cridland and Sam Sethi review the week's top stories from Podnews; and interview some of the biggest names making the news from across the podcast industry.<br><br></p><p>Winner, "Best Podcasting Podcast", 2025 Ear Worthy Awards</p><p><br>Support the show at https://weekly.podnews.net - or hit the boost button! Sponsored by Buzzsprout: start podcasting - keep podcasting!</p>]]></description>
+  <generator>Buzzsprout (https://www.buzzsprout.com)</generator>
+  <itunes:keywords>Podcast, Podcasting, Weekly, Review, Sam Sethi, James Cridland, UK, Australia, USA</itunes:keywords>
+  <image>
+     <url>https://storage.buzzsprout.com/h0w7hpcbjj7237mrrbhi6dshp83v?.jpg</url>
+     <title>Podnews Weekly Review</title>
+     <link>https://podnews.net</link>
+  </image>
+  <itunes:image href="https://storage.buzzsprout.com/h0w7hpcbjj7237mrrbhi6dshp83v?.jpg" />
+  <itunes:category text="News">
+    <itunes:category text="News Commentary" />
+  </itunes:category>
+  <itunes:category text="News">
+    <itunes:category text="Tech News" />
+  </itunes:category>
+  <itunes:category text="News">
+    <itunes:category text="Business News" />
+  </itunes:category>
+  <podcast:person role="host" href="https://james.cridland.net" img="https://storage.buzzsprout.com/oqng3px45tr1jciayms6skkz13ej">James Cridland</podcast:person>
+  <podcast:person role="host" href="https://podid.org/samsethi" img="https://storage.buzzsprout.com/yilw7l7p8q26zp1y5k9ga4kl2l5r">Sam Sethi</podcast:person>
+  <item>
+    <itunes:title>iHeart - the business deal that doesn&#39;t make any sense</itunes:title>
+    <title>iHeart - the business deal that doesn&#39;t make any sense</title>
+    <itunes:summary><![CDATA[Send James and Sam a message or voicemail Sam gets out of his sick bed and joins James for a discussion of the latest podcast industry news.  • iHeartMedia sale rumours versus a financial reporting split for investors  • Radio’s share of listening in the UK, US, and Canada versus podcasting’s smaller base  • Duplicate podcast feeds and hosting accountability through an industry code of practice  • Meta-hosted AI podcast production at scale and the risks of unpoliced synthetic c...]]></itunes:summary>
+    <description><![CDATA[<p><a target="_blank" href="https://www.buzzsprout.com/1538779/fan_mail/new">Send James and Sam a message or voicemail</a></p><p>Sam gets out of his sick bed and joins James for a discussion of the latest podcast industry news.<br/><br/>• iHeartMedia sale rumours versus a financial reporting split for investors <br/>• Radio’s share of listening in the UK, US, and Canada versus podcasting’s smaller base <br/>• Duplicate podcast feeds and hosting accountability through an industry code of practice <br/>• Meta-hosted AI podcast production at scale and the risks of unpoliced synthetic content <br/>• Spoofed user agents, broken analytics, and Common Access Tokens as a practical signal <br/>• Podcast ad load growth, listener tolerance, and how it compares with radio ad minutes <br/>• AI-assisted video repackaging for YouTube and LinkedIn and what actually moves numbers <br/>• Unified creator dashboards, why downloads persist, and the missing “plays” debate <br/>• Membership bundles, newsletters, and using the Podcasting 2.0 funding tag for paid offers <br/>• Webby credits registry as an IMDB-like ledger for podcast and digital work <br/>• Industry moves including SiriusXM’s new CEO and the collapse of Message Heard <br/>• HLS video support, “video-first” marketing confusion, and why RSS video still matters </p><p><a rel="payment" href="https://www.buzzsprout.com/1538779/support">Support the show</a></p><p><b>Connect With Us: </b></p><ul><li>Email: <a href='mailto:[address removed]'>[address removed]</a></li><li>Fediverse: <a href='https://podcastindex.social/[address removed]'>[address removed]</a> and <a href='https://podcastindex.social/@samsethi'>[address removed]</a></li><li>Support us: <a href='https://www.buzzsprout.com/1538779/support'>www.buzzsprout.com/1538779/support</a></li><li>Get Podnews: <a href='https://podnews.net'>podnews.net</a></li></ul>]]></description>
+    <content:encoded><![CDATA[<p><a target="_blank" href="https://www.buzzsprout.com/1538779/fan_mail/new">Send James and Sam a message or voicemail</a></p><p>Sam gets out of his sick bed and joins James for a discussion of the latest podcast industry news.<br/><br/>• iHeartMedia sale rumours versus a financial reporting split for investors <br/>• Radio’s share of listening in the UK, US, and Canada versus podcasting’s smaller base <br/>• Duplicate podcast feeds and hosting accountability through an industry code of practice <br/>• Meta-hosted AI podcast production at scale and the risks of unpoliced synthetic content <br/>• Spoofed user agents, broken analytics, and Common Access Tokens as a practical signal <br/>• Podcast ad load growth, listener tolerance, and how it compares with radio ad minutes <br/>• AI-assisted video repackaging for YouTube and LinkedIn and what actually moves numbers <br/>• Unified creator dashboards, why downloads persist, and the missing “plays” debate <br/>• Membership bundles, newsletters, and using the Podcasting 2.0 funding tag for paid offers <br/>• Webby credits registry as an IMDB-like ledger for podcast and digital work <br/>• Industry moves including SiriusXM’s new CEO and the collapse of Message Heard <br/>• HLS video support, “video-first” marketing confusion, and why RSS video still matters </p><p><a rel="payment" href="https://www.buzzsprout.com/1538779/support">Support the show</a></p><p><b>Connect With Us: </b></p><ul><li>Email: <a href='mailto:[address removed]'>[address removed]</a></li><li>Fediverse: <a href='https://podcastindex.social/[address removed]'>[address removed]</a> and <a href='https://podcastindex.social/@samsethi'>[address removed]</a></li><li>Support us: <a href='https://www.buzzsprout.com/1538779/support'>www.buzzsprout.com/1538779/support</a></li><li>Get Podnews: <a href='https://podnews.net'>podnews.net</a></li></ul>]]></content:encoded>
+    <enclosure url="https://op3.dev/e/www.buzzsprout.com/1538779/episodes/20117890-iheart-the-business-deal-that-doesn-t-make-any-sense.mp3" length="114719364" type="audio/mpeg" />
+    <podcast:image href="https://storage.buzzsprout.com/oh4d77hx53o17beqa76pyzufy84w" purpose="poster" aspect-ratio="16/9" width="1920" height="1080" />
+    <podcast:alternateEnclosure type="application/vnd.apple.mpegurl" length="0">
+      <podcast:source uri="https://www.buzzsprout.com/1538779/episodes/20117890.m3u8" />
+    </podcast:alternateEnclosure>
+    <itunes:author>James Cridland and Sam Sethi</itunes:author>
+    <guid isPermaLink="false">Buzzsprout-20117890</guid>
+    <pubDate>Fri, 13 Nov 2026 13:00:00 +1000</pubDate>
+    <podcast:transcript url="https://www.buzzsprout.com/1538779/20117890/transcript" type="text/html" />
+    <podcast:transcript url="https://www.buzzsprout.com/1538779/20117890/transcript.json" type="application/json" />
+    <podcast:transcript url="https://www.buzzsprout.com/1538779/20117890/transcript.srt" type="application/x-subrip" />
+    <podcast:transcript url="https://www.buzzsprout.com/1538779/20117890/transcript.vtt" type="text/vtt" />
+    <podcast:chapters url="https://www.buzzsprout.com/1538779/20117890/chapters.json" type="application/json" />
+    <psc:chapters>
+  <psc:chapter start="0:00" title="Welcome And Top Stories" />
+  <psc:chapter start="0:16" title="Is iHeart Selling Podcasts" />
+  <psc:chapter start="4:35" title="Radio Listening Data Puts Podcasts In Context" />
+  <psc:chapter start="10:04" title="Hosting Dupes Crackdown And COP5" />
+  <psc:chapter start="13:58" title="Meta AI Podcast Factories And Industry Risks" />
+  <psc:chapter start="19:56" title="Proving Who Is Really Downloading" />
+  <psc:chapter start="23:57" title="Ad Load Growth And Radio Comparisons" />
+  <psc:chapter start="26:35" title="AI Video Versions That Actually Work" />
+  <psc:chapter start="31:22" title="Unified Creator Dashboards And Missing Plays" />
+  <psc:chapter start="36:22" title="Memberships Newsletters And The Funding Tag" />
+  <psc:chapter start="40:43" title="Webby Credits As A Career Ledger" />
+  <psc:chapter start="43:43" title="New CEO Watch And Company Collapse" />
+  <psc:chapter start="48:59" title="HLS Video Rollouts And Broken &quot;Video Podcasts&quot;" />
+  <psc:chapter start="55:06" title="Shopping Live Streams And Platform Power Plays" />
+  <psc:chapter start="1:04:58" title="Listener Mail Discovery Metrics And Wrap" />
+</psc:chapters>
+    <itunes:duration>4778</itunes:duration>
+    <itunes:keywords></itunes:keywords>
+    <itunes:season>4</itunes:season>
+    <itunes:episode>46</itunes:episode>
+    <itunes:episodeType>full</itunes:episodeType>
+    <itunes:explicit>false</itunes:explicit>
+  </item>
+  <item>
+    <itunes:title>Libraries, networks and Kickstarters: podcasters growing audiences and revenue</itunes:title>
+    <title>Libraries, networks and Kickstarters: podcasters growing audiences and revenue</title>
+    <itunes:summary><![CDATA[Send James and Sam a message or voicemail One podcast earned $311,000 in a month - using the revolutionary idea of... asking their listeners. We chat with Myke Hurley, and also learn more about the Health Podcast Library.  • liquid content research from France and Australia and what multi-platform listening means for creators  • algorithmic recommendations and the reality behind the death of the follower  • Instagram paying for creator content and why platform promises can flip fast...]]></itunes:summary>
+    <description><![CDATA[<p><a target="_blank" href="https://www.buzzsprout.com/1538779/fan_mail/new">Send James and Sam a message or voicemail</a></p><p>One podcast earned $311,000 in a month - using the revolutionary idea of... asking their listeners. We chat with Myke Hurley, and also learn more about the Health Podcast Library.</p><p><br/>• liquid content research from France and Australia and what multi-platform listening means for creators <br/>• algorithmic recommendations and the reality behind the death of the follower <br/>• Instagram paying for creator content and why platform promises can flip fast <br/>• Triton’s AI-to-AI audio ad buy and how automation could change pricing and ad load <br/>• AI for coding and operations versus AI replacing creative work <br/>• Dan Kendall on Health Podcast Library, credibility in healthcare, playlists, and discovery beyond Apple and Spotify search <br/>• Myke Hurley on Relay, Kickstarter as pre-sold memberships, and why Designed In California raised $311,000 <br/>• Netflix pushing into mobile clips and what it signals for media companies entering podcasting <br/>• Flightcast workflow that ports YouTube catalogues into Spotify monetisation <br/>• Safari blocking resolution infrastructure and the knock-on effects for ad targeting <br/>• Spreaker piracy copies, Podcast Index look-alike feeds, lock tag limits, and PodProtect monitoring <br/><br/></p><p><a rel="payment" href="https://www.buzzsprout.com/1538779/support">Support the show</a></p><p><b>Connect With Us: </b></p><ul><li>Email: <a href='mailto:[address removed]'>[address removed]</a></li><li>Fediverse: <a href='https://podcastindex.social/[address removed]'>[address removed]</a> and <a href='https://podcastindex.social/@samsethi'>[address removed]</a></li><li>Support us: <a href='https://www.buzzsprout.com/1538779/support'>www.buzzsprout.com/1538779/support</a></li><li>Get Podnews: <a href='https://podnews.net'>podnews.net</a></li></ul>]]></description>
+    <content:encoded><![CDATA[<p><a target="_blank" href="https://www.buzzsprout.com/1538779/fan_mail/new">Send James and Sam a message or voicemail</a></p><p>One podcast earned $311,000 in a month - using the revolutionary idea of... asking their listeners. We chat with Myke Hurley, and also learn more about the Health Podcast Library.</p><p><br/>• liquid content research from France and Australia and what multi-platform listening means for creators <br/>• algorithmic recommendations and the reality behind the death of the follower <br/>• Instagram paying for creator content and why platform promises can flip fast <br/>• Triton’s AI-to-AI audio ad buy and how automation could change pricing and ad load <br/>• AI for coding and operations versus AI replacing creative work <br/>• Dan Kendall on Health Podcast Library, credibility in healthcare, playlists, and discovery beyond Apple and Spotify search <br/>• Myke Hurley on Relay, Kickstarter as pre-sold memberships, and why Designed In California raised $311,000 <br/>• Netflix pushing into mobile clips and what it signals for media companies entering podcasting <br/>• Flightcast workflow that ports YouTube catalogues into Spotify monetisation <br/>• Safari blocking resolution infrastructure and the knock-on effects for ad targeting <br/>• Spreaker piracy copies, Podcast Index look-alike feeds, lock tag limits, and PodProtect monitoring <br/><br/></p><p><a rel="payment" href="https://www.buzzsprout.com/1538779/support">Support the show</a></p><p><b>Connect With Us: </b></p><ul><li>Email: <a href='mailto:[address removed]'>[address removed]</a></li><li>Fediverse: <a href='https://podcastindex.social/[address removed]'>[address removed]</a> and <a href='https://podcastindex.social/@samsethi'>[address removed]</a></li><li>Support us: <a href='https://www.buzzsprout.com/1538779/support'>www.buzzsprout.com/1538779/support</a></li><li>Get Podnews: <a href='https://podnews.net'>podnews.net</a></li></ul>]]></content:encoded>
+    <enclosure url="https://op3.dev/e/www.buzzsprout.com/1538779/episodes/20081931-libraries-networks-and-kickstarters-podcasters-growing-audiences-and-revenue.mp3" length="144007855" type="audio/mpeg" />
+    <itunes:image href="https://storage.buzzsprout.com/px2lcyvf1zjnmj3mimy9ro5uabgj?.jpg" />
+    <podcast:image href="https://storage.buzzsprout.com/i8levup022axfwxnriqmdsosav33" purpose="poster" aspect-ratio="16/9" width="1920" height="1080" />
+    <podcast:alternateEnclosure type="application/vnd.apple.mpegurl" length="0">
+      <podcast:source uri="https://www.buzzsprout.com/1538779/episodes/20081931.m3u8" />
+    </podcast:alternateEnclosure>
+    <itunes:author>James Cridland and Sam Sethi</itunes:author>
+    <guid isPermaLink="false">Buzzsprout-20081931</guid>
+    <pubDate>Fri, 06 Nov 2026 12:00:00 +1000</pubDate>
+    <podcast:transcript url="https://www.buzzsprout.com/1538779/20081931/transcript" type="text/html" />
+    <podcast:transcript url="https://www.buzzsprout.com/1538779/20081931/transcript.json" type="application/json" />
+    <podcast:transcript url="https://www.buzzsprout.com/1538779/20081931/transcript.srt" type="application/x-subrip" />
+    <podcast:transcript url="https://www.buzzsprout.com/1538779/20081931/transcript.vtt" type="text/vtt" />
+    <podcast:chapters url="https://www.buzzsprout.com/1538779/20081931/chapters.json" type="application/json" />
+    <psc:chapters>
+  <psc:chapter start="0:00" title="What Liquid Content Really Means" />
+  <psc:chapter start="2:06" title="Algorithms And The Death Of Following" />
+  <psc:chapter start="4:27" title="Instagram Pays For Talent Again" />
+  <psc:chapter start="6:25" title="AI Agents Buying Audio Ads" />
+  <psc:chapter start="10:05" title="When AI Helps And When It Hurts" />
+  <psc:chapter start="12:56" title="The Real Cost Of AI Tools" />
+  <psc:chapter start="15:11" title="Health Podcast Library And Curation" />
+  <psc:chapter start="33:53" title="Kickstarter Funded Apple History Podcast" />
+  <psc:chapter start="59:05" title="Netflix Chases Mobile Discovery" />
+  <psc:chapter start="1:03:03" title="Moving Catalogues Between YouTube And Spotify" />
+  <psc:chapter start="1:08:33" title="Podcast Awards And Podcast Show London" />
+  <psc:chapter start="1:13:36" title="Tools And Tech For Podcasters" />
+  <psc:chapter start="1:18:25" title="Podcast Piracy Copies And Protection" />
+  <psc:chapter start="1:22:47" title="Listener Mail And Power Supporters" />
+  <psc:chapter start="1:25:51" title="Creator Drama And TrueFans Updates" />
+  <psc:chapter start="1:31:23" title="AWS Headaches And E-Ink Joy" />
+  <psc:chapter start="1:36:25" title="Guinness Talk And Final Goodbyes" />
+</psc:chapters>
+    <itunes:duration>5998</itunes:duration>
+    <itunes:keywords></itunes:keywords>
+    <itunes:season>4</itunes:season>
+    <itunes:episode>45</itunes:episode>
+    <itunes:episodeType>full</itunes:episodeType>
+    <itunes:explicit>false</itunes:explicit>
+  </item>
+  <item>
+    <itunes:title>Beehiv podcast ads can make money - while Spreaker steals shows</itunes:title>
+    <title>Beehiv podcast ads can make money - while Spreaker steals shows</title>
+    <itunes:summary><![CDATA[Send James and Sam a message or voicemail We dig into how podcast theft actually works, why one-click importing and monetization can turn into an engine for piracy, and what hosting platforms should change right now. We also look at where the creator economy is heading as newsletters, subscriptions, AI tools, and algorithmic discovery reshape how people find and fund audio. • Spreaker’s import and monetisation flow enabling cloned podcasts and chart manipulation • RSS.com handling of a hijack...]]></itunes:summary>
+    <description><![CDATA[<p><a target="_blank" href="https://www.buzzsprout.com/1538779/fan_mail/new">Send James and Sam a message or voicemail</a></p><p>We dig into how podcast theft actually works, why one-click importing and monetization can turn into an engine for piracy, and what hosting platforms should change right now. We also look at where the creator economy is heading as newsletters, subscriptions, AI tools, and algorithmic discovery reshape how people find and fund audio.<br/>• Spreaker’s import and monetisation flow enabling cloned podcasts and chart manipulation<br/>• RSS.com handling of a hijacked show including ad revenue repayment and feed recovery<br/>• PodProtect and the need for detection plus a hosting code of conduct<br/>• Newsletter and membership convergence with Supercast adding newsletters<br/>• Beehive’s monetisation suite including dynamic ad insertion, targeting, and ad-free subscriptions<br/>• Instagram testing 90-minute horizontal video and what it means for podcasters<br/>• Kate Cocker’s 3,000 consecutive daily episodes and how community drives content<br/>• The business reality of ads in short-form daily podcasts and listener expectations<br/>• The shift from followers to algorithms plus new discovery-first podcast apps<br/>• Spotify’s AI agent questions, subscription risk, and the subscription model trend<br/>• Progress on transcripts accessibility as SiriusXM lawsuit nears settlement<br/>• Tooling updates including Buzzsprout’s admin app and Riverside’s AI agents</p><p><a rel="payment" href="https://www.buzzsprout.com/1538779/support">Support the show</a></p><p><b>Connect With Us: </b></p><ul><li>Email: <a href='mailto:[address removed]'>[address removed]</a></li><li>Fediverse: <a href='https://podcastindex.social/[address removed]'>[address removed]</a> and <a href='https://podcastindex.social/@samsethi'>[address removed]</a></li><li>Support us: <a href='https://www.buzzsprout.com/1538779/support'>www.buzzsprout.com/1538779/support</a></li><li>Get Podnews: <a href='https://podnews.net'>podnews.net</a></li></ul>]]></description>
+    <content:encoded><![CDATA[<p><a target="_blank" href="https://www.buzzsprout.com/1538779/fan_mail/new">Send James and Sam a message or voicemail</a></p><p>We dig into how podcast theft actually works, why one-click importing and monetization can turn into an engine for piracy, and what hosting platforms should change right now. We also look at where the creator economy is heading as newsletters, subscriptions, AI tools, and algorithmic discovery reshape how people find and fund audio.<br/>• Spreaker’s import and monetisation flow enabling cloned podcasts and chart manipulation<br/>• RSS.com handling of a hijacked show including ad revenue repayment and feed recovery<br/>• PodProtect and the need for detection plus a hosting code of conduct<br/>• Newsletter and membership convergence with Supercast adding newsletters<br/>• Beehive’s monetisation suite including dynamic ad insertion, targeting, and ad-free subscriptions<br/>• Instagram testing 90-minute horizontal video and what it means for podcasters<br/>• Kate Cocker’s 3,000 consecutive daily episodes and how community drives content<br/>• The business reality of ads in short-form daily podcasts and listener expectations<br/>• The shift from followers to algorithms plus new discovery-first podcast apps<br/>• Spotify’s AI agent questions, subscription risk, and the subscription model trend<br/>• Progress on transcripts accessibility as SiriusXM lawsuit nears settlement<br/>• Tooling updates including Buzzsprout’s admin app and Riverside’s AI agents</p><p><a rel="payment" href="https://www.buzzsprout.com/1538779/support">Support the show</a></p><p><b>Connect With Us: </b></p><ul><li>Email: <a href='mailto:[address removed]'>[address removed]</a></li><li>Fediverse: <a href='https://podcastindex.social/[address removed]'>[address removed]</a> and <a href='https://podcastindex.social/@samsethi'>[address removed]</a></li><li>Support us: <a href='https://www.buzzsprout.com/1538779/support'>www.buzzsprout.com/1538779/support</a></li><li>Get Podnews: <a href='https://podnews.net'>podnews.net</a></li></ul>]]></content:encoded>
+    <enclosure url="https://op3.dev/e/www.buzzsprout.com/1538779/episodes/20044916-beehiv-podcast-ads-can-make-money-while-spreaker-steals-shows.mp3" length="135206831" type="audio/mpeg" />
+    <itunes:image href="https://storage.buzzsprout.com/6dxjlkjoicuufdlzzyn5hwjtgtlf?.jpg" />
+    <podcast:image href="https://storage.buzzsprout.com/vm2z0qljyjv03rii8570dl3zunhy" purpose="poster" aspect-ratio="16/9" width="1920" height="1080" />
+    <podcast:alternateEnclosure type="application/vnd.apple.mpegurl" length="0">
+      <podcast:source uri="https://www.buzzsprout.com/1538779/episodes/20044916.m3u8" />
+    </podcast:alternateEnclosure>
+    <itunes:author>James Cridland and Sam Sethi</itunes:author>
+    <guid isPermaLink="false">Buzzsprout-20044916</guid>
+    <pubDate>Fri, 30 Oct 2026 12:00:00 +1000</pubDate>
+    <podcast:transcript url="https://www.buzzsprout.com/1538779/20044916/transcript" type="text/html" />
+    <podcast:transcript url="https://www.buzzsprout.com/1538779/20044916/transcript.json" type="application/json" />
+    <podcast:transcript url="https://www.buzzsprout.com/1538779/20044916/transcript.srt" type="application/x-subrip" />
+    <podcast:transcript url="https://www.buzzsprout.com/1538779/20044916/transcript.vtt" type="text/vtt" />
+    <podcast:chapters url="https://www.buzzsprout.com/1538779/20044916/chapters.json" type="application/json" />
+    <psc:chapters>
+  <psc:chapter start="0:00" title="Headlines And Sponsor Welcome" />
+  <psc:chapter start="0:19" title="Spreaker Import Loophole Fuels Piracy" />
+  <psc:chapter start="2:58" title="RSS.com Fixes A Hijacked Feed" />
+  <psc:chapter start="5:51" title="A Code Of Conduct For Hosts" />
+  <psc:chapter start="11:22" title="Newsletters Meet Podcast Memberships" />
+  <psc:chapter start="14:47" title="Beehive Monetization Tools For Podcasters" />
+  <psc:chapter start="27:40" title="Instagram Long Video Test For Creators" />
+  <psc:chapter start="31:57" title="3,000 Straight Days Of Positivity" />
+  <psc:chapter start="45:46" title="Monetizing A Two Minute Daily Show" />
+  <psc:chapter start="52:18" title="Are Followers Dying In Audio" />
+  <psc:chapter start="1:03:32" title="Spotify And The Coming AI Agent Era" />
+  <psc:chapter start="1:06:41" title="Subscriptions Grow While Standards Lag" />
+  <psc:chapter start="1:10:30" title="SiriusXM Transcript Lawsuit Near Settlement" />
+  <psc:chapter start="1:11:34" title="New Apps And AI Production Tools" />
+  <psc:chapter start="1:21:00" title="Listener Mail On Reviews And Voicemail" />
+  <psc:chapter start="1:26:46" title="Host Updates And Weekly Send Off" />
+</psc:chapters>
+    <itunes:duration>5632</itunes:duration>
+    <itunes:keywords></itunes:keywords>
+    <itunes:season>4</itunes:season>
+    <itunes:episode>44</itunes:episode>
+    <itunes:episodeType>full</itunes:episodeType>
+    <itunes:explicit>false</itunes:explicit>
+  </item>
+  <item>
+    <itunes:title>The Podnews Weekly Review - the last word in podcast news</itunes:title>
+    <title>The Podnews Weekly Review - the last word in podcast news</title>
+    <itunes:summary><![CDATA[Send James and Sam a message or voicemail Every week, the Podnews Weekly Review is the last word in podcasting news - with a look back at the most important news in podcasting, and interviews with the people that matter.  Hear from James Cridland, the Editor of Podnews; Sam Sethi, the CEO of Podfans; and interviews with the people that matter.  The Podnews Weekly Review. With Buzzsprout - podcast hosting made easy. Support the show Connect With Us:  Email: [address removed]: @j...]]></itunes:summary>
+    <description><![CDATA[<p><a target="_blank" href="https://www.buzzsprout.com/1538779/fan_mail/new">Send James and Sam a message or voicemail</a></p><p>Every week, the Podnews Weekly Review is the last word in podcasting news - with a look back at the most important news in podcasting, and interviews with the people that matter.<br/><br/>Hear from James Cridland, the Editor of Podnews; Sam Sethi, the CEO of Podfans; and interviews with the people that matter.<br/><br/>The Podnews Weekly Review. With Buzzsprout - podcast hosting made easy.</p><p><a rel="payment" href="https://www.buzzsprout.com/1538779/support">Support the show</a></p><p><b>Connect With Us: </b></p><ul><li>Email: <a href='mailto:[address removed]'>[address removed]</a></li><li>Fediverse: <a href='https://podcastindex.social/[address removed]'>[address removed]</a> and <a href='https://podcastindex.social/@samsethi'>[address removed]</a></li><li>Support us: <a href='https://www.buzzsprout.com/1538779/support'>www.buzzsprout.com/1538779/support</a></li><li>Get Podnews: <a href='https://podnews.net'>podnews.net</a></li></ul>]]></description>
+    <content:encoded><![CDATA[<p><a target="_blank" href="https://www.buzzsprout.com/1538779/fan_mail/new">Send James and Sam a message or voicemail</a></p><p>Every week, the Podnews Weekly Review is the last word in podcasting news - with a look back at the most important news in podcasting, and interviews with the people that matter.<br/><br/>Hear from James Cridland, the Editor of Podnews; Sam Sethi, the CEO of Podfans; and interviews with the people that matter.<br/><br/>The Podnews Weekly Review. With Buzzsprout - podcast hosting made easy.</p><p><a rel="payment" href="https://www.buzzsprout.com/1538779/support">Support the show</a></p><p><b>Connect With Us: </b></p><ul><li>Email: <a href='mailto:[address removed]'>[address removed]</a></li><li>Fediverse: <a href='https://podcastindex.social/[address removed]'>[address removed]</a> and <a href='https://podcastindex.social/@samsethi'>[address removed]</a></li><li>Support us: <a href='https://www.buzzsprout.com/1538779/support'>www.buzzsprout.com/1538779/support</a></li><li>Get Podnews: <a href='https://podnews.net'>podnews.net</a></li></ul>]]></content:encoded>
+    <enclosure url="https://op3.dev/e/www.buzzsprout.com/1538779/episodes/6749611-the-podnews-weekly-review-the-last-word-in-podcast-news.mp3" length="916092" type="audio/mpeg" />
+    <itunes:author>Amazingly Brilliant Pty Ltd</itunes:author>
+    <guid isPermaLink="false">616dcd50-8387-46a2-a149-bdee833c4a47</guid>
+    <pubDate>Sat, 28 Nov 2020 19:00:00 +1000</pubDate>
+    <itunes:duration>73</itunes:duration>
+    <itunes:keywords></itunes:keywords>
+    <itunes:season>1</itunes:season>
+    <itunes:episode>0</itunes:episode>
+    <itunes:episodeType>trailer</itunes:episodeType>
+    <itunes:explicit>false</itunes:explicit>
+  </item>
+</channel>
+</rss>

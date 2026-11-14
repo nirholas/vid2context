@@ -1,0 +1,20 @@
+{
+  "name": "@vid2context/provider-stt-whisper-cpp",
+  "version": "0.1.0",
+  "description": "Local speech-to-text through whisper.cpp: installs the binary, downloads a verified model for your hardware, transcribes with segment timestamps. Node only.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./setup": "./src/setup.ts"
+  },
+  "vid2context": {
+    "runtimes": [
+      "node"
+    ]
+  },
+  "dependencies": {
+    "@vid2context/core": "*",
+    "@vid2context/provider-stt-openai-compatible": "*"
+  }
+}

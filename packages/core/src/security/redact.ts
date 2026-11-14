@@ -43,6 +43,9 @@ const HEADER_IN_TEXT =
 const SECRET_QUERY =
   /([?&;](?:key|api_key|apikey|api-key|token|access_token|refresh_token|id_token|sig|signature|client_secret|password|x-goog-api-key)=)[^&#\s"'<>]*/gi;
 
+/** The password part of `scheme://user:password@host` in URLs. */
+const URL_USERINFO = /(\b[a-z][a-z0-9+.-]*:\/\/[^/\s:@]*:)[^@\s/]+@/gi;
+
 const envMatchers = new WeakMap<Env, RegExp | null>();
 
 function escapeRegExp(s: string): string {
@@ -77,6 +80,7 @@ function redactString(s: string, env: Env | undefined): string {
   out = out.replace(HEADER_IN_TEXT, `$1${REDACTED}`);
   out = out.replace(AUTH_SCHEME, `$1 ${REDACTED}`);
   out = out.replace(SECRET_QUERY, `$1${REDACTED}`);
+  out = out.replace(URL_USERINFO, `$1${REDACTED}@`);
   for (const re of KEY_SHAPES) out = out.replace(re, REDACTED);
   return out;
 }

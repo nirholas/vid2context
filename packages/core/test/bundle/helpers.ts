@@ -5,7 +5,9 @@ import { join } from 'node:path';
 import type { VideoContext } from '../../src/types.ts';
 
 export function loadContext(file: string): VideoContext {
-  return JSON.parse(readFileSync(new URL(`../../../../tests/fixtures/contexts/${file}`, import.meta.url), 'utf8')) as VideoContext;
+  return JSON.parse(
+    readFileSync(new URL(`../../../../tests/fixtures/contexts/${file}`, import.meta.url), 'utf8'),
+  ) as VideoContext;
 }
 
 /** "Me at the zoo": 19 s, creator captions, three chapters. */

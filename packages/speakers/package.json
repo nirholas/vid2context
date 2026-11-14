@@ -1,0 +1,16 @@
+{
+  "name": "@vid2context/speakers",
+  "version": "0.1.0",
+  "description": "Turn anonymous diarization labels (Speaker 0, Speaker A) into real names when the video itself makes them clear, with quoted evidence checked against the transcript.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@vid2context/core": "*"
+  },
+  "devDependencies": {
+    "@vid2context/provider-llm-openai-compatible": "*"
+  }
+}
