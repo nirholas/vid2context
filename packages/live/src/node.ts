@@ -4,5 +4,6 @@
  * server); the main entry stays free of Node built-ins so it can be bundled
  * anywhere.
  */
+
+export { createFfmpegExtractor, ffmpegAvailable } from './ffmpeg.ts';
 export * from './index.ts';
-export { createFfmpegExtractor, FFMPEG_MISSING_HINT, findFfmpeg, fixWavHeader } from './ffmpeg.ts';

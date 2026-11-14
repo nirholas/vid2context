@@ -44,6 +44,13 @@ const SEGMENT_RETRIES = 2;
 const MIN_TAIL_SEC = 1;
 /** Words of already emitted text kept for overlap matching. */
 const TAIL_WORDS = 24;
+/**
+ * When transcription is behind by two chunks or more, the next request takes
+ * up to this many chunks of audio at once. Fewer, longer requests let a
+ * rate-limited rung (the keyless one allows about 2 per minute) catch up
+ * before the maxLagSec skip has to drop audio.
+ */
+const MAX_CATCHUP_CHUNKS = 3;
 
 type DoneReason = Extract<LiveEvent, { type: 'done' }>['reason'];
 
@@ -151,7 +158,8 @@ function validate(opts: WatchLiveOptions): { chunkSec: number; overlapSec: numbe
   const overlapSec = opts.overlapSec ?? LIVE_DEFAULTS.overlapSec;
   const maxLagSec = opts.maxLagSec ?? LIVE_DEFAULTS.maxLagSec;
   const bad = (msg: string, hint: string) => new Vid2ContextError('bad-request', msg, { hint });
-  if (!(chunkSec >= 2 && chunkSec <= 600)) throw bad(`chunkSec ${chunkSec} is out of range.`, 'Use 2 to 600 seconds (default 30).');
+  if (!(chunkSec >= 2 && chunkSec <= 600))
+    throw bad(`chunkSec ${chunkSec} is out of range.`, 'Use 2 to 600 seconds (default 30).');
   if (!(overlapSec >= 0 && overlapSec < chunkSec / 2)) {
     throw bad(`overlapSec ${overlapSec} is out of range.`, 'Use 0 up to half of chunkSec (default 2).');
   }
@@ -298,7 +306,11 @@ export async function* watchLive(input: string, opts: WatchLiveOptions, deps: Li
       const { start, gap } = chooseStartSequence(pl, { fromSequence: opts.fromSequence, chunkSec });
       if (gap) {
         const sec = Math.round((gap.to - gap.from + 1) * nominal);
-        pushStatus('resume-gap', `Sequences ${gap.from} to ${gap.to} are no longer in the playlist (about ${sec} s); resuming at ${start}.`, start);
+        pushStatus(
+          'resume-gap',
+          `Sequences ${gap.from} to ${gap.to} are no longer in the playlist (about ${sec} s); resuming at ${start}.`,
+          start,
+        );
       }
       lastSeq = start - 1;
       lastEndSec = start * nominal;
@@ -497,7 +509,8 @@ export async function* watchLive(input: string, opts: WatchLiveOptions, deps: Li
 
       const windowStart = cursor as number;
       const chunkStart = Math.max(windowStart - (overlapNext ? overlapSec : 0), (buffer[0] as Buffered).startSec);
-      const chunkEnd = Math.min(windowStart + chunkSec, end as number);
+      const chunkLen = avail >= 2 * chunkSec ? Math.min(avail, chunkSec * MAX_CATCHUP_CHUNKS) : chunkSec;
+      const chunkEnd = Math.min(windowStart + chunkLen, end as number);
       const parts = buffer.filter((b) => endOf(b) > chunkStart && b.startSec < chunkEnd);
       const firstPart = parts[0] as Buffered;
       const init = firstPart.initUri ? inits.get(firstPart.initUri) : undefined;
@@ -595,7 +608,9 @@ export async function* watchLive(input: string, opts: WatchLiveOptions, deps: Li
       for (const seg of fresh) {
         const part = parts.find((p) => seg.startSec < endOf(p)) ?? firstPart;
         const at =
-          part.programDateMs !== undefined ? new Date(part.programDateMs + (seg.startSec - part.startSec) * 1000).toISOString() : undefined;
+          part.programDateMs !== undefined
+            ? new Date(part.programDateMs + (seg.startSec - part.startSec) * 1000).toISOString()
+            : undefined;
         segments.push(seg);
         yield { type: 'segment', segment: seg, ...(at ? { at } : {}), resumeSequence: resumeAt };
       }

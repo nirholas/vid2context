@@ -91,7 +91,7 @@ for (let seq = lastA.sequence; seq <= lastA.sequence + 2; seq++) {
   const seg = b.pl.segments.find((s) => s.sequence === seq);
   if (!seg) throw new Error(`segment ${seq} missing from the second playlist`);
   const bytes = new Uint8Array(await (await ctx.fetch(seg.uri)).arrayBuffer());
-  writeFileSync(join(out, `seg-${seq}.ts`), bytes);
-  console.error(`seg-${seq}.ts ${bytes.byteLength} bytes`);
+  writeFileSync(join(out, `seg-${seq}.mpegts`), bytes);
+  console.error(`seg-${seq}.mpegts ${bytes.byteLength} bytes`);
 }
 console.error(`recorded ${videoId}: media sequences ${a.pl.mediaSequence} and ${b.pl.mediaSequence} into ${out}`);

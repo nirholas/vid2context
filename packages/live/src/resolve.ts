@@ -6,7 +6,7 @@
  */
 import { type Ctx, errorFromResponse, fetchWithTimeout, type Registry, Vid2ContextError, type VideoRef } from '@vid2context/core';
 import { isPlaylist, parsePlaylist, pickAudioUri } from './hls.ts';
-import { NOT_LIVE_HINT, youtubeLiveHls } from './youtube.ts';
+import { matchYouTubeVideo, NOT_LIVE_HINT, youtubeLiveHls } from './youtube.ts';
 
 export interface LiveSource {
   ref: VideoRef;
@@ -51,12 +51,20 @@ async function fetchText(url: string, ctx: Ctx): Promise<{ text: string; content
 }
 
 /** Reduce a playlist URL (master or media) to the media playlist to follow. */
-export async function resolvePlaylistUrl(url: string, ctx: Ctx, language?: string): Promise<{ mediaUrl: string; masterUrl?: string }> {
+export async function resolvePlaylistUrl(
+  url: string,
+  ctx: Ctx,
+  language?: string,
+): Promise<{ mediaUrl: string; masterUrl?: string }> {
   const { text, contentType } = await fetchText(url, ctx);
   if (!isPlaylist(text)) {
-    throw new Vid2ContextError('unsupported-input', `${url.slice(0, 200)} did not return an HLS playlist (${contentType || 'unknown type'}).`, {
-      hint: 'Pass a live YouTube URL or the .m3u8 URL of a live HLS stream.',
-    });
+    throw new Vid2ContextError(
+      'unsupported-input',
+      `${url.slice(0, 200)} did not return an HLS playlist (${contentType || 'unknown type'}).`,
+      {
+        hint: 'Pass a live YouTube URL or the .m3u8 URL of a live HLS stream.',
+      },
+    );
   }
   const playlist = parsePlaylist(text, url);
   if (playlist.kind === 'media') return { mediaUrl: url };
@@ -87,29 +95,30 @@ export async function resolveLive(
     return { ref: await hlsRef(raw, raw), mediaUrl, ...(masterUrl ? { masterUrl } : {}) };
   }
 
-  let resolved: ReturnType<Registry['resolve']> | null = null;
-  try {
-    resolved = registry.resolve(raw);
-  } catch {
-    resolved = null;
-  }
-
-  if (resolved?.ref.platform === 'youtube') {
-    if (resolved.ref.kind !== 'video') {
-      throw new Vid2ContextError('unsupported-input', `"${raw}" is a YouTube ${resolved.ref.kind}, not a live video.`, {
-        hint: 'Pass the live video itself (its watch URL, or a channel URL ending in /live opened in a browser).',
-      });
-    }
-    const live = await youtubeLiveHls(resolved.ref.nativeId, ctx);
+  const youtube = matchYouTubeVideo(raw);
+  if (youtube) {
+    const live = await youtubeLiveHls(youtube.nativeId, ctx);
     const { mediaUrl, masterUrl } = await resolvePlaylistUrl(live.hlsUrl, ctx, opts.language);
     return {
-      ref: resolved.ref,
+      ref: youtube,
       mediaUrl,
       ...(masterUrl ? { masterUrl } : {}),
       ...(live.title ? { title: live.title } : {}),
       ...(live.channel ? { channel: live.channel } : {}),
       ...(live.expiresAtMs ? { expiresAtMs: live.expiresAtMs } : {}),
     };
+  }
+
+  let resolved: ReturnType<Registry['resolve']> | null = null;
+  try {
+    resolved = registry.resolve(raw);
+  } catch {
+    resolved = null;
+  }
+  if (resolved?.ref.platform === 'youtube' && resolved.ref.kind !== 'video') {
+    throw new Vid2ContextError('unsupported-input', `"${raw}" is a YouTube ${resolved.ref.kind}, not a live video.`, {
+      hint: "Pass the live video itself: open the channel's /live page in a browser and copy the watch URL.",
+    });
   }
 
   if (resolved) {

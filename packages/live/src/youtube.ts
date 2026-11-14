@@ -8,7 +8,7 @@
  * Same request as providers/youtube/src/innertube.ts, which does not export
  * its player call; the integration pass can point both at one function.
  */
-import { type Ctx, errorFromResponse, fetchWithTimeout, Vid2ContextError } from '@vid2context/core';
+import { type Ctx, errorFromResponse, fetchWithTimeout, Vid2ContextError, type VideoRef } from '@vid2context/core';
 
 const PLAYER_URL = 'https://www.youtube.com/youtubei/v1/player?prettyPrint=false';
 const DEFAULT_ANDROID_VERSION = '20.10.38';
@@ -20,6 +20,49 @@ export const BLOCKED_HINT =
 export const NOT_LIVE_HINT =
   'This video is not live right now. For a recording or a finished stream, use the normal pipeline: ' +
   'get_transcript (MCP), GET /api/v1/transcript (HTTP) or `vid2context <url>` (CLI).';
+
+const VIDEO_ID = /^[A-Za-z0-9_-]{11}$/;
+const HOSTS = new Set([
+  'youtube.com',
+  'www.youtube.com',
+  'm.youtube.com',
+  'youtu.be',
+  'youtube-nocookie.com',
+  'www.youtube-nocookie.com',
+]);
+
+/**
+ * Recognise a single YouTube video without any network call: a bare
+ * 11-character id, watch?v=, youtu.be/, /live/, /embed/ and /shorts/ URLs.
+ * Returns a ref shaped like the YouTube provider's, so ids match the library.
+ */
+export function matchYouTubeVideo(raw: string): VideoRef | null {
+  const input = raw.trim();
+  const ref = (id: string): VideoRef => ({
+    input,
+    platform: 'youtube',
+    kind: 'video',
+    id: `youtube:${id}`,
+    nativeId: id,
+    url: `https://www.youtube.com/watch?v=${id}`,
+  });
+  if (VIDEO_ID.test(input)) return ref(input);
+  let url: URL;
+  try {
+    url = new URL(/^[a-z][a-z0-9+.-]*:\/\//i.test(input) ? input : `https://${input}`);
+  } catch {
+    return null;
+  }
+  const host = url.hostname.toLowerCase();
+  if (!HOSTS.has(host)) return null;
+  const parts = url.pathname.split('/').filter(Boolean);
+  if (host === 'youtu.be') return parts[0] && VIDEO_ID.test(parts[0]) ? ref(parts[0]) : null;
+  const v = url.searchParams.get('v');
+  if (v && VIDEO_ID.test(v)) return ref(v);
+  const [first, second] = parts;
+  if (first && second && ['live', 'embed', 'shorts', 'v'].includes(first) && VIDEO_ID.test(second)) return ref(second);
+  return null;
+}
 
 interface LivePlayerResponse {
   playabilityStatus?: { status?: string; reason?: string };

@@ -98,7 +98,8 @@ export function dedupeOverlap(prevTail: string[], segments: Segment[], boundaryS
       }
       const keep = tokens.slice(last.tok + 1);
       dropped += last.tok + 1;
-      if (keep.length > 0) out.push({ ...s, startSec: Math.min(Math.max(s.startSec, boundarySec), s.endSec), text: keep.join(' ') });
+      if (keep.length > 0)
+        out.push({ ...s, startSec: Math.min(Math.max(s.startSec, boundarySec), s.endSec), text: keep.join(' ') });
     });
     return { segments: out, droppedWords: dropped, method: 'words' };
   }

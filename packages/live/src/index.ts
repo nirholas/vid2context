@@ -11,4 +11,4 @@ export * from './overlap.ts';
 export * from './resolve.ts';
 export * from './types.ts';
 export * from './watch.ts';
-export { BLOCKED_HINT, NOT_LIVE_HINT, youtubeLiveHls } from './youtube.ts';
+export { BLOCKED_HINT, matchYouTubeVideo, NOT_LIVE_HINT, youtubeLiveHls } from './youtube.ts';
