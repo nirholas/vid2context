@@ -101,8 +101,8 @@ Every tool in the original plan is now implemented or wired. These are the input
 | Tool | Owner | Input | Returns |
 |---|---|---|---|
 | `search_transcript` | 40 | `{ query, collection?, urls?, limit?, rerank? }`; `query` takes `"exact phrases"` and `-excluded` words; `urls` not yet in the library are fetched and saved first | hits with title, `[m:ss-m:ss]`, highlighted text and timestamp URL, then one status line (which sides ran, embedding model, why vector search was off), as text |
-| `extract` | 33 | `{ template? , schema?, urls?, collection? }` | structured JSON with citations |
-| `build_brief` | 32 | `{ collection?, urls?, question? }` | a server-side cited brief (map-reduce on a free model) |
+| `extract` | 33 | `{ template?, schema?, urls?, collection?, question? }` | `ExtractionResult` JSON: data matching the template or schema, verified citations, unverified ones listed |
+| `build_brief` | 32 | `{ collection?, urls?, question?, template?, format?: 'markdown' \| 'json' }` | a server-side cited brief (single pass or map-reduce on a free model); Markdown by default, the full `Brief` with `format: 'json'` |
 
 ## Collection tools (item 41)
 
