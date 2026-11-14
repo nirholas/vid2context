@@ -4,9 +4,10 @@
  * own schema named v2c_live_<random> and drops it afterwards.
  */
 import { randomBytes } from 'node:crypto';
-import { createContext, type Ctx, type Env } from '@vid2context/core';
+import { type Ctx, createContext, type Env } from '@vid2context/core';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { connect, type Db } from '../src/db.ts';
+import type { Db } from '../src/db.ts';
+import { connectPostgres } from '../src/db-postgres.ts';
 import { createPostgresStorage, migrations, openPostgresStorage, type PostgresStorage } from '../src/index.ts';
 import { quoteIdent } from '../src/migrate.ts';
 import { storageContract } from './contract.ts';
@@ -24,17 +25,24 @@ const newSchema = () => {
 };
 
 function ctxFor(env: Env): Ctx {
-  return createContext({ runtime: 'node', env, log: { debug() {}, info() {}, warn() {}, error: (m, d) => console.error(m, d ?? '') } });
+  return createContext({
+    runtime: 'node',
+    env,
+    log: { debug() {}, info() {}, warn() {}, error: (m, d) => console.error(m, d ?? '') },
+  });
 }
 
 async function rawDb(url: string): Promise<Db> {
-  return connect({ url, driver: 'postgres', poolMax: 2 }, ctxFor({}));
+  return connectPostgres({ url, driver: 'postgres', poolMax: 2 }, ctxFor({}));
 }
 
 describe.skipIf(!LIVE)('storage-postgres live', () => {
   beforeAll(async () => {
     db.live = await startLiveDb();
-    if (!db.live) console.error('[storage-postgres live] No DATABASE_URL and no Docker: live Postgres tests skipped, nothing verified on a server.');
+    if (!db.live)
+      console.error(
+        '[storage-postgres live] No DATABASE_URL and no Docker: live Postgres tests skipped, nothing verified on a server.',
+      );
     else console.error(`[storage-postgres live] using ${db.live.source}${db.live.neon ? ' with Neon HTTP' : ''}`);
   }, 180_000);
 
@@ -54,18 +62,23 @@ describe.skipIf(!LIVE)('storage-postgres live', () => {
       return { storage, done: () => storage.close() };
     });
 
-    it('is the backend the generated Node registry opens when DATABASE_URL is set', async () => {
-      if (!db.live) return;
+    it('is the backend the generated Node registry opens when DATABASE_URL is set', async (t) => {
+      if (!db.live) t.skip();
       const { createRegistry } = await import('@vid2context/registry/node');
       const registry = createRegistry();
       const storage = await registry.openStorage(ctxFor({ DATABASE_URL: db.live.url, VID2CONTEXT_PG_SCHEMA: newSchema() }));
       expect(storage?.backend).toBe('postgres');
       await (storage as PostgresStorage).close();
-      expect(registry.storages().find((s) => s.id === 'storage-postgres')?.isEnabled({})).toBe(false);
+      expect(
+        registry
+          .storages()
+          .find((s) => s.id === 'storage-postgres')
+          ?.isEnabled({}),
+      ).toBe(false);
     });
 
-    it('serialises concurrent first starts with the advisory lock', async () => {
-      if (!db.live) return;
+    it('serialises concurrent first starts with the advisory lock', async (t) => {
+      if (!db.live) t.skip();
       const url = db.live.url;
       for (let round = 0; round < 3; round++) {
         const schema = newSchema();
@@ -75,18 +88,27 @@ describe.skipIf(!LIVE)('storage-postgres live', () => {
         // Exactly one instance applied everything; the others found it done.
         expect(applied.filter((a) => a.length === migrations.length)).toHaveLength(1);
         expect(applied.filter((a) => a.length === 0)).toHaveLength(conns.length - 1);
-        const rows = await conns[0]?.query<{ version: number }>(`SELECT version FROM ${quoteIdent(schema)}.schema_migrations ORDER BY version`);
+        const rows = await conns[0]?.query<{ version: number }>(
+          `SELECT version FROM ${quoteIdent(schema)}.schema_migrations ORDER BY version`,
+        );
         expect(rows?.map((r) => r.version)).toEqual(migrations.map((m) => m.version));
         await Promise.all(conns.map((c) => c.close()));
       }
     });
 
-    it('two pools started at once through openPostgresStorage both work', async () => {
-      if (!db.live) return;
+    it('two pools started at once through openPostgresStorage both work', async (t) => {
+      if (!db.live) t.skip();
       const schema = newSchema();
       const [a, b] = await Promise.all([
         openPostgresStorage(ctxFor({ DATABASE_URL: db.live.url, VID2CONTEXT_PG_SCHEMA: schema, VID2CONTEXT_PG_POOL_MAX: '2' })),
-        openPostgresStorage(ctxFor({ DATABASE_URL: db.live.url, VID2CONTEXT_PG_SCHEMA: schema, VID2CONTEXT_PG_POOL_MAX: '3', VID2CONTEXT_TENANT: 't2' })),
+        openPostgresStorage(
+          ctxFor({
+            DATABASE_URL: db.live.url,
+            VID2CONTEXT_PG_SCHEMA: schema,
+            VID2CONTEXT_PG_POOL_MAX: '3',
+            VID2CONTEXT_TENANT: 't2',
+          }),
+        ),
       ]);
       await a.kvSet('config:x', 1);
       expect(await b.kvGet('config:x')).toBeNull();
@@ -94,8 +116,8 @@ describe.skipIf(!LIVE)('storage-postgres live', () => {
       await Promise.all([a.close(), b.close()]);
     });
 
-    it('reports a wrong password as auth without leaking it', async () => {
-      if (!db.live || db.live.source !== 'docker') return;
+    it('reports a wrong password as auth without leaking it', async (t) => {
+      if (db.live?.source !== 'docker') t.skip();
       const bad = db.live.url.replace(/:([^:@/]+)@/, ':wrong-password-123@');
       const err = await openPostgresStorage(ctxFor({ DATABASE_URL: bad, VID2CONTEXT_PG_SCHEMA: newSchema() })).then(
         () => null,
@@ -118,11 +140,21 @@ describe.skipIf(!LIVE)('storage-postgres live', () => {
       const records = [];
       for (let copy = 0; copy < 400; copy++) {
         for (const [i, c] of fx.chunks.entries()) {
-          records.push({ id: `${c.videoId}#${c.startSec}#${copy}`, videoId: c.videoId, startSec: c.startSec, endSec: c.endSec, text: c.text, model, vector: vectorOf(i) });
+          records.push({
+            id: `${c.videoId}#${c.startSec}#${copy}`,
+            videoId: c.videoId,
+            startSec: c.startSec,
+            endSec: c.endSec,
+            text: c.text,
+            model,
+            vector: vectorOf(i),
+          });
         }
       }
       const schema = newSchema();
-      const storage = await openPostgresStorage(ctxFor({ DATABASE_URL: live.url, VID2CONTEXT_PG_SCHEMA: schema, VID2CONTEXT_TENANT: 'plan' }));
+      const storage = await openPostgresStorage(
+        ctxFor({ DATABASE_URL: live.url, VID2CONTEXT_PG_SCHEMA: schema, VID2CONTEXT_TENANT: 'plan' }),
+      );
       await storage.upsertVectors(records);
       const q = vectorOf(fx.chunks.length); // "elephants with long trunks"
       const hits = await storage.queryVectors({ model, vector: q, limit: 5 });
@@ -164,8 +196,8 @@ describe.skipIf(!LIVE)('storage-postgres live', () => {
       return { storage, done: () => storage.close() };
     });
 
-    it('runs KV and vectors over Neon HTTP', async () => {
-      if (!db.live?.neon) return;
+    it('runs KV and vectors over Neon HTTP', async (t) => {
+      if (!db.live?.neon) t.skip();
       const storage = await openPostgresStorage(ctxFor(neonEnv()));
       await storage.kvSet('jobs:neon', { ok: true }, { ttlSec: 60 });
       expect(await storage.kvGet('jobs:neon')).toEqual({ ok: true });

@@ -125,7 +125,12 @@ export function storageContract(name: string, open: () => Promise<{ storage: Sto
         name: 'G-Wagon',
         sources: ['https://www.youtube.com/playlist?list=PLx'],
       });
-      expect(updated).toMatchObject({ id: c.id, name: 'G-Wagon', description: 'Buyer guides', sources: ['https://www.youtube.com/playlist?list=PLx'] });
+      expect(updated).toMatchObject({
+        id: c.id,
+        name: 'G-Wagon',
+        description: 'Buyer guides',
+        sources: ['https://www.youtube.com/playlist?list=PLx'],
+      });
       expect(updated.updatedAt >= c.updatedAt).toBe(true);
       expect(updated.createdAt).toBe(c.createdAt);
 

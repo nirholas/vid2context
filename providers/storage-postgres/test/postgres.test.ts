@@ -65,11 +65,13 @@ describe('PostgresStorage on PGlite', () => {
       await migrate(db, 'lib');
       // Simulate an instance that read the version before another one migrated:
       // it takes the slow path, and the DO blocks see every version applied.
-      const before = (await fresh.query<{ n: number }>("SELECT count(*)::int AS n FROM pg_indexes WHERE schemaname = 'lib'")).rows[0]?.n;
+      const before = (await fresh.query<{ n: number }>("SELECT count(*)::int AS n FROM pg_indexes WHERE schemaname = 'lib'"))
+        .rows[0]?.n;
       await fresh.query('DELETE FROM lib.schema_migrations WHERE version = $1', [migrations.at(-1)?.version]);
       const again = await migrate(db, 'lib');
       expect(again.applied).toEqual([migrations.at(-1)?.version]);
-      const after = (await fresh.query<{ n: number }>("SELECT count(*)::int AS n FROM pg_indexes WHERE schemaname = 'lib'")).rows[0]?.n;
+      const after = (await fresh.query<{ n: number }>("SELECT count(*)::int AS n FROM pg_indexes WHERE schemaname = 'lib'"))
+        .rows[0]?.n;
       expect(after).toBe(before);
       await fresh.close();
     });
@@ -90,7 +92,8 @@ describe('PostgresStorage on PGlite', () => {
       expect(tsConfigFor('en')).toBe('english');
       expect(tsConfigFor('pt-BR')).toBe('portuguese');
       expect(tsConfigFor('ja')).toBe('simple');
-      const row = (await pg.query<{ c: string }>(`SELECT ts_config::text AS c FROM vid2context.videos WHERE id = $1`, [ZOO])).rows[0];
+      const row = (await pg.query<{ c: string }>(`SELECT ts_config::text AS c FROM vid2context.videos WHERE id = $1`, [ZOO]))
+        .rows[0];
       expect(row?.c).toBe('english');
       // "elephant" matches "elephants" through the English stemmer.
       const hits = await storage.search({ text: 'elephant' });
@@ -203,7 +206,8 @@ describe('PostgresStorage on PGlite', () => {
     });
 
     it('lists by prefix in lexical order with cursors, treating LIKE wildcards literally', async () => {
-      for (const k of ['auth:apikey:b', 'auth:apikey:a', 'auth:apikey:c', 'auth:oauth:a', 'auth_apikey:x', 'auth%apikey:y']) await storage.kvSet(k, k);
+      for (const k of ['auth:apikey:b', 'auth:apikey:a', 'auth:apikey:c', 'auth:oauth:a', 'auth_apikey:x', 'auth%apikey:y'])
+        await storage.kvSet(k, k);
       const p1 = await storage.kvList('auth:apikey:', { limit: 2 });
       expect(p1).toEqual({ keys: ['auth:apikey:a', 'auth:apikey:b'], cursor: 'auth:apikey:b' });
       const p2 = await storage.kvList('auth:apikey:', { limit: 2, cursor: p1.cursor });
@@ -294,10 +298,14 @@ describe('PostgresStorage on PGlite', () => {
 
     it('creates one partial HNSW index per model that matches the query', async () => {
       const idx = (
-        await pg.query<{ indexdef: string }>(`SELECT indexdef FROM pg_indexes WHERE schemaname = 'vid2context' AND indexname LIKE 'vectors_hnsw_%'`)
+        await pg.query<{ indexdef: string }>(
+          `SELECT indexdef FROM pg_indexes WHERE schemaname = 'vid2context' AND indexname LIKE 'vectors_hnsw_%'`,
+        )
       ).rows;
       expect(idx).toHaveLength(1);
-      expect(idx[0]?.indexdef).toMatch(/USING hnsw \(\(\(embedding\)::vector\(1024\)\) vector_cosine_ops\) WHERE \(model = 'embed\/ovh\/bge-m3'::text\)/);
+      expect(idx[0]?.indexdef).toMatch(
+        /USING hnsw \(\(\(embedding\)::vector\(1024\)\) vector_cosine_ops\) WHERE \(model = 'embed\/ovh\/bge-m3'::text\)/,
+      );
 
       const plan = await storage.vectorQuerySql({ model, vector: query(0), limit: 5 });
       const select = plan?.statements.at(-1);
@@ -306,7 +314,9 @@ describe('PostgresStorage on PGlite', () => {
       // the graph, so sorting is switched off to show the index matches the
       // query's predicate and ORDER BY. test/live.test.ts checks the real plan.
       await pg.exec('SET enable_seqscan = off; SET enable_sort = off');
-      const explain = (await pg.query<{ 'QUERY PLAN': string }>(`EXPLAIN ${select?.text}`, select?.params)).rows.map((r) => r['QUERY PLAN']).join('\n');
+      const explain = (await pg.query<{ 'QUERY PLAN': string }>(`EXPLAIN ${select?.text}`, select?.params)).rows
+        .map((r) => r['QUERY PLAN'])
+        .join('\n');
       await pg.exec('RESET enable_seqscan; RESET enable_sort');
       expect(explain).toMatch(/Index Scan using vectors_hnsw_[0-9a-f]{16} on vectors/);
     });
@@ -352,7 +362,11 @@ describe('provider wiring', () => {
       statementTimeoutMs: 15000,
       driver: 'postgres',
     });
-    expect(readConfig({ DATABASE_URL: 'postgres://a@one/db' }, 'node')).toMatchObject({ schema: 'vid2context', tenant: 'default', poolMax: 10 });
+    expect(readConfig({ DATABASE_URL: 'postgres://a@one/db' }, 'node')).toMatchObject({
+      schema: 'vid2context',
+      tenant: 'default',
+      poolMax: 10,
+    });
   });
 
   it('rejects bad settings with hints naming the variable', () => {
@@ -399,7 +413,9 @@ describe('provider wiring', () => {
       hint: expect.stringContaining('VID2CONTEXT_PG_STATEMENT_TIMEOUT_MS'),
     });
     expect(toStorageError({ code: '0A000', message: 'extension "vector" is not available' }, secrets).hint).toContain('pgvector');
-    expect(toStorageError({ code: '42501', message: 'permission denied for database app' }, secrets).hint).toContain('VID2CONTEXT_PG_SCHEMA');
+    expect(toStorageError({ code: '42501', message: 'permission denied for database app' }, secrets).hint).toContain(
+      'VID2CONTEXT_PG_SCHEMA',
+    );
     expect(toStorageError({ code: 'ENOTFOUND', message: 'getaddrinfo ENOTFOUND db.internal' }, secrets).code).toBe('unavailable');
     expect(scrub('see postgresql://x:y@h/d now', [])).toBe('see postgres://*** now');
   });
