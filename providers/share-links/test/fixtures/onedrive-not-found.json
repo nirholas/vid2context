@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "https://my.microsoftpersonalcontent.com/_api/v2.0/shares/u!aHR0cHM6Ly8xZHJ2Lm1zL3UvYy82YjgzYjQ5NDExY2E4MWE3L0FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUE/driveitem"
+  },
+  "finalHost": "my.microsoftpersonalcontent.com",
+  "status": 404,
+  "headers": {
+    "content-type": "application/json;charset=utf-8",
+    "content-length": "115"
+  },
+  "body": "{\"error\":{\"code\":\"itemNotFound\",\"message\":\"Requested sharing link could not be found\",\"@onedrive.linkFeatures\":[]}}"
+}

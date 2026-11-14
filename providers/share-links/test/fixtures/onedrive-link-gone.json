@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "https://my.microsoftpersonalcontent.com/_api/v2.0/shares/u!aHR0cHM6Ly8xZHJ2Lm1zL3UvcyFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB/driveitem"
+  },
+  "finalHost": "my.microsoftpersonalcontent.com",
+  "status": 403,
+  "headers": {
+    "content-type": "application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8",
+    "content-length": "224"
+  },
+  "body": "{\"error\":{\"code\":\"accessDenied\",\"message\":\"The sharing link no longer exists, or you do not have permission to access it.\",\"onedrive.linkFeatures@odata.type\":\"#Collection(oneDrive.linkFeatures)\",\"@onedrive.linkFeatures\":[]}}"
+}

@@ -1,0 +1,15 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "https://my.microsoftpersonalcontent.com/personal/7be8ecfc440137f7/_layouts/15/download.aspx?UniqueId=d5772209-e4a6-4ef6-836a-19b27c898f3b&Translate=false&tempauth=[removed]&ApiVersion=2.0"
+  },
+  "finalHost": "my.microsoftpersonalcontent.com",
+  "status": 206,
+  "headers": {
+    "content-type": "video/mp4",
+    "content-length": "1",
+    "content-range": "bytes 0-0/22113859",
+    "content-disposition": "attachment;filename*=utf-8''%E7%BB%BF%E7%81%AF%E6%89%8D%E8%83%BD%E8%BF%87%E9%A9%AC%E8%B7%AF%E5%93%A6%2Emp4;filename=\"%E7%BB%BF%E7%81%AF%E6%89%8D%E8%83%BD%E8%BF%87%E9%A9%AC%E8%B7%AF%E5%93%A6.mp4\""
+  },
+  "body": ""
+}

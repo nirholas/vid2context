@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "https://api-badgerp.svc.ms/v1.0/token"
+  },
+  "finalHost": "api-badgerp.svc.ms",
+  "status": 200,
+  "headers": {
+    "content-type": "application/json; charset=utf-8",
+    "content-length": "983"
+  },
+  "body": "{\n  \"authScheme\": \"badger\",\n  \"token\": \"[anonymous token removed]\",\n  \"expiryTimeUtc\": \"2026-11-21T17:15:56.3777758Z\"\n}"
+}

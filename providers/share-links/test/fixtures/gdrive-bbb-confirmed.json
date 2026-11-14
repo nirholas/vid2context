@@ -1,0 +1,15 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "https://drive.usercontent.google.com/download?id=0ByeS4oOUV-49Zzh4R1J6R09zazQ&export=download&confirm=t&uuid=43d0dfba-e13d-4592-8129-2c1ab03c6519"
+  },
+  "finalHost": "drive.usercontent.google.com",
+  "status": 206,
+  "headers": {
+    "content-type": "video/mp4",
+    "content-length": "1",
+    "content-range": "bytes 0-0/185972864",
+    "content-disposition": "attachment; filename=\"Big Buck Bunny.mp4\""
+  },
+  "body": ""
+}

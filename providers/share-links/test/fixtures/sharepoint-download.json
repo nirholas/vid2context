@@ -1,0 +1,15 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "https://greaternyace.sharepoint.com/sites/acementornydrive/_layouts/15/download.aspx?share=ETski5eAfNVEoPRZUAyy1wEBpLgVFYWso5bjbZjfBLlPUg"
+  },
+  "finalHost": "greaternyace.sharepoint.com",
+  "status": 206,
+  "headers": {
+    "content-type": "video/mp4",
+    "content-length": "1",
+    "content-range": "bytes 0-0/351866951",
+    "content-disposition": "attachment;filename*=utf-8''930103681233985536%2Emp4;filename=\"930103681233985536.mp4\""
+  },
+  "body": ""
+}

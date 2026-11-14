@@ -1,0 +1,22 @@
+{
+  "name": "@vid2context/provider-share-links",
+  "version": "0.1.0",
+  "description": "Google Drive, Dropbox and OneDrive or SharePoint share links for vid2context: file metadata and a direct download URL for speech-to-text. Plain fetch, no key.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "vid2context": {
+    "runtimes": [
+      "node",
+      "workers"
+    ]
+  },
+  "dependencies": {
+    "@vid2context/core": "*"
+  },
+  "devDependencies": {
+    "@vid2context/provider-stt-openai-compatible": "*"
+  }
+}

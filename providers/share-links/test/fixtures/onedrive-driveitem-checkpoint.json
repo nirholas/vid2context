@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "https://my.microsoftpersonalcontent.com/_api/v2.0/shares/u!aHR0cHM6Ly8xZHJ2Lm1zL3UvcyFBcWVCeWhHVXRJTnJnY3NGZGJqZ2NFdURod04zdmc_ZT1FRjN1c2I/driveitem"
+  },
+  "finalHost": "my.microsoftpersonalcontent.com",
+  "status": 200,
+  "headers": {
+    "content-type": "application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8",
+    "content-length": "2051"
+  },
+  "body": "{\n  \"@odata.context\": \"https://my.microsoftpersonalcontent.com/personal/6b83b49411ca81a7/_api/v2.0/$metadata#items/$entity\",\n  \"@content.downloadUrl\": \"https://my.microsoftpersonalcontent.com/personal/6b83b49411ca81a7/_layouts/15/download.aspx?UniqueId=11ca81a7-b494-2083-806b-856500000000&Translate=false&tempauth=[removed]&ApiVersion=2.0\",\n  \"@content.downloadUrlNoAuth\": \"https://my.microsoftpersonalcontent.com/personal/6b83b49411ca81a7/_layouts/15/download.aspx?UniqueId=11ca81a7-b494-2083-806b-856500000000&Translate=false&ApiVersion=2.0\",\n  \"onedrive.linkFeatures@odata.type\": \"#Collection(oneDrive.linkFeatures)\",\n  \"@onedrive.linkFeatures\": [],\n  \"createdDateTime\": \"2024-04-05T05:12:40Z\",\n  \"id\": \"6B83B49411CA81A7!25989\",\n  \"lastModifiedDateTime\": \"2024-04-05T05:10:24Z\",\n  \"name\": \"speechlmp_large_checkpoint_clean.pt\",\n  \"file\": {\n    \"fileExtension\": \".pt\",\n    \"irmEffectivelyEnabled\": false,\n    \"irmEnabled\": false,\n    \"mimeType\": \"application/octet-stream\"\n  },\n  \"fileSystemInfo\": {\n    \"createdDateTime\": \"2024-04-05T05:12:40Z\",\n    \"lastModifiedDateTime\": \"2024-04-05T05:10:24Z\"\n  },\n  \"isAuthoritative\": false,\n  \"size\": 1276520843\n}"
+}

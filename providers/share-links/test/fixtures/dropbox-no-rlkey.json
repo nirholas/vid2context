@@ -1,0 +1,12 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "https://www.dropbox.com/scl/fi/x44vurh6m7k27kbx17k6w/en_sample.wav?dl=1"
+  },
+  "finalHost": "www.dropbox.com",
+  "status": 200,
+  "headers": {
+    "content-type": "text/html; charset=utf-8"
+  },
+  "body": "<title>Log in to Dropbox</title>"
+}

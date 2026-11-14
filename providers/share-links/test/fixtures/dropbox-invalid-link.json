@@ -1,0 +1,12 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "https://www.dropbox.com/scl/fi/zq9qzq9qzq9qzq9qzq9qz/missing.mp3?rlkey=abcdefghijklmnopqrstuvwxy&dl=1"
+  },
+  "finalHost": "www.dropbox.com",
+  "status": 200,
+  "headers": {
+    "content-type": "text/html; charset=utf-8"
+  },
+  "body": "<title>Dropbox - Invalid Link - Simplify your life</title>"
+}

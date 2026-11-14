@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "https://my.microsoftpersonalcontent.com/_api/v2.0/shares/u!aHR0cHM6Ly8xZHJ2Lm1zL3YvYy83YmU4ZWNmYzQ0MDEzN2Y3L0lRQUpJbmZWcHVUMlRvTnFHYko4aVk4N0FZOFNVeU9SV3BOMjB3czZxWU1sSTVJ/driveitem"
+  },
+  "finalHost": "my.microsoftpersonalcontent.com",
+  "status": 200,
+  "headers": {
+    "content-type": "application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8",
+    "content-length": "2478"
+  },
+  "body": "{\n  \"@odata.context\": \"https://my.microsoftpersonalcontent.com/personal/7be8ecfc440137f7/_api/v2.0/$metadata#items/$entity\",\n  \"@content.downloadUrl\": \"https://my.microsoftpersonalcontent.com/personal/7be8ecfc440137f7/_layouts/15/download.aspx?UniqueId=d5772209-e4a6-4ef6-836a-19b27c898f3b&Translate=false&tempauth=[removed]&ApiVersion=2.0\",\n  \"@content.downloadUrlNoAuth\": \"https://my.microsoftpersonalcontent.com/personal/7be8ecfc440137f7/_layouts/15/download.aspx?UniqueId=d5772209-e4a6-4ef6-836a-19b27c898f3b&Translate=false&ApiVersion=2.0\",\n  \"onedrive.linkFeatures@odata.type\": \"#Collection(oneDrive.linkFeatures)\",\n  \"@onedrive.linkFeatures\": [],\n  \"createdDateTime\": \"2026-04-27T06:43:02Z\",\n  \"id\": \"7BE8ECFC440137F7!sd5772209e4a64ef6836a19b27c898f3b\",\n  \"lastModifiedDateTime\": \"2026-04-27T06:43:02Z\",\n  \"name\": \"绿灯才能过马路哦.mp4\",\n  \"file\": {\n    \"fileExtension\": \".mp4\",\n    \"irmEffectivelyEnabled\": false,\n    \"irmEnabled\": false,\n    \"mimeType\": \"video/mp4\"\n  },\n  \"fileSystemInfo\": {\n    \"createdDateTime\": \"2026-04-27T06:43:02Z\",\n    \"lastModifiedDateTime\": \"2026-04-27T06:43:02Z\"\n  },\n  \"isAuthoritative\": false,\n  \"photo\": {\n    \"alternateTakenDateTime\": \"2026-04-27T06:43:01.309Z\"\n  },\n  \"size\": 22113859,\n  \"video\": {\n    \"audioBitsPerSample\": 16,\n    \"audioChannels\": 2,\n    \"audioSamplesPerSecond\": 48000,\n    \"bitRate\": 3085192,\n    \"duration\": 53767,\n    \"fourCC\": \"H264\",\n    \"frameRate\": 30,\n    \"height\": 1334,\n    \"width\": 800\n  }\n}"
+}
