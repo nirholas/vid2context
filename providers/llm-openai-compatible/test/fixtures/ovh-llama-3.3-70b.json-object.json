@@ -1,0 +1,1 @@
+{"id":"chatcmpl-b5f724b24bd0e240","choices":[{"index":0,"message":{"role":"assistant","content":"{\"year\": 1969, \"mission\": \"Apollo 11\"}"},"finish_reason":"stop"}],"created":1794671992,"model":"Meta-Llama-3_3-70B-Instruct","object":"chat.completion","usage":{"prompt_tokens":59,"completion_tokens":16,"total_tokens":75}}

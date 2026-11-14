@@ -1,0 +1,16 @@
+{
+  "name": "@vid2context/provider-llm-openai-compatible",
+  "version": "0.1.0",
+  "description": "Chat-completion rungs for any OpenAI-compatible API, free first: local servers, Groq, Cerebras, Mistral, GitHub Models, Gemini, OVH and Pollinations keyless, OpenAI paid.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "vid2context": {
+    "runtimes": ["node", "workers", "browser"]
+  },
+  "dependencies": {
+    "@vid2context/core": "*"
+  }
+}
