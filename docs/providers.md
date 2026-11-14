@@ -94,6 +94,26 @@ More free lanes on top of `llm-openai-compatible`. "Verified live" means a real 
 Check what answers today: `npm run check:llm` (see [guides/llm.md](guides/llm.md)).
 
 ## Chain controls
+## Embeddings (`embed`, `embed-transformers`)
+
+Guide, dimensions and the one-model-per-index rule: [guides/embeddings.md](guides/embeddings.md). "Live" means verified against the real service on 2026-11-14; "docs" means built from the provider's current documentation without a key.
+
+| Rung id | Tier | Enabled by | Free limits and notes |
+|---|---|---|---|
+| `embed/ollama/<model>` | local | `OLLAMA_EMBED_MODEL` (`OLLAMA_BASE_URL`, default `http://localhost:11434/v1`) | `/v1/embeddings`; for example `bge-m3` or `nomic-embed-text`. Docs |
+| `embed/lmstudio/<model>` | local | `LMSTUDIO_EMBED_MODEL` (`LMSTUDIO_BASE_URL`) | docs |
+| `embed/local/<model>` | local | `LOCAL_EMBED_BASE_URL` + `LOCAL_EMBED_MODEL` (optional `LOCAL_EMBED_API_KEY`) | any OpenAI-compatible `/embeddings` server. Docs |
+| `embed/transformers/<model>` | local | `TRANSFORMERS_EMBED_MODEL`, for example `Xenova/multilingual-e5-small` | Node and browser only; 384 dimensions; 118 MB download into `.vid2context/models`. Live (Node) |
+| `embed/gemini/gemini-embedding-2` | free | `GEMINI_API_KEY` (+ `GEMINI_FALLBACK_KEYS`) | AI Studio free tier; 3072 dimensions. Not verified live (no key) |
+| `embed/jina/jina-embeddings-v3` | free | `JINA_API_KEY` (+ `JINA_FALLBACK_KEYS`) | free key with a token allowance, 100 requests and 100K tokens per minute. Not verified live (no key) |
+| `embed/cloudflare/@cf/baai/bge-m3` | free | `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID` | Workers AI REST, 10,000 neurons per day free (8 sentences cost 0.28 neurons). Tokens are not pooled. Live |
+| `embed/mistral/mistral-embed` | free | `MISTRAL_API_KEY` (+ `MISTRAL_FALLBACK_KEYS`) | Experiment plan; 1024 dimensions. Not verified live (no key) |
+| `embed/ovh/bge-m3` | keyless | none | 2 requests per minute per model per IP, 25 inputs per request, 8192 tokens per input. Live |
+| `embed/ovh/Qwen3-Embedding-8B` | keyless | none | separate quota; 4096 dimensions. Live |
+| `embed/openai/text-embedding-3-small` | paid | `OPENAI_API_KEY` (+ `OPENAI_FALLBACK_KEYS`, `OPENAI_BASE_URL`) | 1536 dimensions. Docs |
+
+Model overrides: `OLLAMA_EMBED_MODEL`, `LMSTUDIO_EMBED_MODEL`, `LOCAL_EMBED_MODEL`, `TRANSFORMERS_EMBED_MODEL`, `GEMINI_EMBED_MODEL`, `JINA_EMBED_MODEL`, `CLOUDFLARE_EMBED_MODEL`, `MISTRAL_EMBED_MODEL`, `OVH_EMBED_MODEL`, `OPENAI_EMBED_MODEL`. `VID2CONTEXT_EMBED_MODEL` (a rung id such as `embed/ovh/bge-m3`) fixes the model new indexes use.
+
 
 | Env var | Effect |
 |---|---|
@@ -202,5 +222,4 @@ Outbound, signed Standard Webhooks from `@vid2context/webhooks` (`GET/POST /webh
 |---|---|---|---|---|
 | llm | Anthropic `claude-haiku-4-5-20251001`, native | paid | `ANTHROPIC_API_KEY` | |
 | stt | whisper.cpp, Transformers.js, Workers AI Whisper, Gemini, Deepgram, AssemblyAI | local / free | per prompt | |
-| embed | OVH `bge-m3` (keyless), Ollama, Transformers.js, Gemini, Cloudflare, paid | mixed | per prompt | |
 | video | Gemini video understanding | free | `GEMINI_API_KEY` | |
