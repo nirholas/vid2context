@@ -1,10 +1,10 @@
 import { join } from 'node:path';
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { clearCooldowns, Vid2ContextError } from '@vid2context/core';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { ffmpegAvailable } from '../src/ffmpeg.ts';
+import { createFfmpegExtractor, ffmpegAvailable } from '../src/ffmpeg.ts';
 import { parsePlaylist, pickAudioUri } from '../src/hls.ts';
 import { liveRoutes } from '../src/http.ts';
 import { registerLiveTools } from '../src/mcp.ts';
@@ -13,7 +13,6 @@ import { resolveLive } from '../src/resolve.ts';
 import type { LiveEvent } from '../src/types.ts';
 import { chooseStartSequence, watchLive } from '../src/watch.ts';
 import { matchYouTubeVideo } from '../src/youtube.ts';
-import { createFfmpegExtractor } from '../src/ffmpeg.ts';
 import {
   APOLLO_URL,
   apolloRoutes,
@@ -43,7 +42,10 @@ const segmentsOf = (events: LiveEvent[]) => events.filter((e): e is Seg => e.typ
 const statusesOf = (events: LiveEvent[]) => events.filter((e): e is Status => e.type === 'status');
 const doneOf = (events: LiveEvent[]) => events.find((e): e is Done => e.type === 'done');
 const segmentFetches = (urls: string[]) =>
-  urls.map((u) => /\/sq\/(\d+)\//.exec(u)?.[1]).filter((s): s is string => Boolean(s)).map(Number);
+  urls
+    .map((u) => /\/sq\/(\d+)\//.exec(u)?.[1])
+    .filter((s): s is string => Boolean(s))
+    .map(Number);
 
 describe('HLS playlists (recorded from NASA live on YouTube)', () => {
   it('picks the lowest-bitrate variant that carries audio from the master playlist', () => {
@@ -139,7 +141,11 @@ describe('resolving live inputs', () => {
 
   it('refuses a stream whose playlist has already ended', async () => {
     const { ctx } = liveContext(apolloRoutes({ startState: 7 }));
-    const run = watchLive(APOLLO_URL, {}, { registry: sttRegistry(), ctx, extractAudio: createFfmpegExtractor({ env: ctx.env }) });
+    const run = watchLive(
+      APOLLO_URL,
+      {},
+      { registry: sttRegistry(), ctx, extractAudio: createFfmpegExtractor({ env: ctx.env }) },
+    );
     const err = await run.next().catch((e) => e);
     expect(err.code).toBe('unsupported-input');
     expect(err.message).toContain('EXT-X-ENDLIST');
@@ -153,15 +159,23 @@ describe('resolving live inputs', () => {
     expect(noExtractor.code).toBe('no-provider');
     expect(noExtractor.hint).toContain('createFfmpegExtractor');
     const extractAudio = createFfmpegExtractor({ env: ctx.env });
-    const badOverlap = await watchLive(APOLLO_URL, { chunkSec: 10, overlapSec: 6 }, { registry: sttRegistry(), ctx, extractAudio })
+    const badOverlap = await watchLive(
+      APOLLO_URL,
+      { chunkSec: 10, overlapSec: 6 },
+      { registry: sttRegistry(), ctx, extractAudio },
+    )
       .next()
       .catch((e) => e);
     expect(badOverlap.code).toBe('bad-request');
-    const keylessOff = await watchLive(APOLLO_URL, {}, {
-      registry: sttRegistry(),
-      ctx: { ...ctx, env: { VID2CONTEXT_KEYLESS: '0' } },
-      extractAudio,
-    })
+    const keylessOff = await watchLive(
+      APOLLO_URL,
+      {},
+      {
+        registry: sttRegistry(),
+        ctx: { ...ctx, env: { VID2CONTEXT_KEYLESS: '0' } },
+        extractAudio,
+      },
+    )
       .next()
       .catch((e) => e);
     expect(keylessOff.code).toBe('no-provider');
@@ -182,10 +196,14 @@ describe('overlap dedupe', () => {
   });
 
   it('falls back to dropping segments that lie inside the overlap when no words match', () => {
-    const out = dedupeOverlap(['hello', 'world'], [
-      { startSec: 8, endSec: 9.9, text: 'something else' },
-      { startSec: 9.9, endSec: 12, text: 'new words' },
-    ], 10);
+    const out = dedupeOverlap(
+      ['hello', 'world'],
+      [
+        { startSec: 8, endSec: 9.9, text: 'something else' },
+        { startSec: 9.9, endSec: 12, text: 'new words' },
+      ],
+      10,
+    );
     expect(out.method).toBe('time');
     expect(out.segments.map((s) => s.text)).toEqual(['new words']);
   });
@@ -385,7 +403,10 @@ describe.skipIf(!hasFfmpeg)('surfaces', () => {
     expect(res.status).toBe(200);
     expect(res.headers.get('content-type')).toContain('text/event-stream');
     const body = await res.text();
-    const events = [...body.matchAll(/event: (\w+)\ndata: (.*)\n/g)].map((m) => ({ event: m[1], data: JSON.parse(m[2] ?? '{}') }));
+    const events = [...body.matchAll(/event: (\w+)\ndata: (.*)\n/g)].map((m) => ({
+      event: m[1],
+      data: JSON.parse(m[2] ?? '{}'),
+    }));
     expect(events[0]).toMatchObject({ event: 'status', data: { code: 'started' } });
     expect(events.some((e) => e.event === 'segment' && /small step/i.test(e.data.segment.text))).toBe(true);
     const done = events.at(-1);
@@ -396,7 +417,11 @@ describe.skipIf(!hasFfmpeg)('surfaces', () => {
 
   it('GET /live answers bad requests as JSON and stream failures as error events', async () => {
     const { ctx } = liveContext(nasaRoutes());
-    const app = liveRoutes({ registry: sttRegistry(), makeCtx: () => ctx, extractAudio: createFfmpegExtractor({ env: ctx.env }) });
+    const app = liveRoutes({
+      registry: sttRegistry(),
+      makeCtx: () => ctx,
+      extractAudio: createFfmpegExtractor({ env: ctx.env }),
+    });
     const missing = await app.request('/live');
     expect(missing.status).toBe(400);
     expect(await missing.json()).toMatchObject({ error: { code: 'bad-request' } });

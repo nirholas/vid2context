@@ -23,7 +23,11 @@ describe.skipIf(!process.env.LIVE || !ffmpegAvailable(env))('live stream (LIVE=1
     const started = Date.now();
     const events: LiveEvent[] = [];
     const lags: number[] = [];
-    for await (const e of watchLive(url, { maxMinutes: 2 }, { registry: new Registry([stt], 'node'), ctx, extractAudio: createFfmpegExtractor({ env }) })) {
+    for await (const e of watchLive(
+      url,
+      { maxMinutes: 2 },
+      { registry: new Registry([stt], 'node'), ctx, extractAudio: createFfmpegExtractor({ env }) },
+    )) {
       events.push(e);
       const t = ((Date.now() - started) / 1000).toFixed(1);
       if (e.type === 'segment') {
@@ -38,7 +42,9 @@ describe.skipIf(!process.env.LIVE || !ffmpegAvailable(env))('live stream (LIVE=1
     expect(events.some((e) => e.type === 'status' && e.code === 'rung')).toBe(true);
     if (lags.length > 0) {
       const avg = lags.reduce((a, b) => a + b, 0) / lags.length;
-      console.error(`lines: ${lags.length}, lag min ${Math.min(...lags).toFixed(1)}s, avg ${avg.toFixed(1)}s, max ${Math.max(...lags).toFixed(1)}s`);
+      console.error(
+        `lines: ${lags.length}, lag min ${Math.min(...lags).toFixed(1)}s, avg ${avg.toFixed(1)}s, max ${Math.max(...lags).toFixed(1)}s`,
+      );
     }
   }, 200_000);
 });

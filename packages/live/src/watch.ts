@@ -249,8 +249,9 @@ export async function* watchLive(input: string, opts: WatchLiveOptions, deps: Li
   };
   const resumeSequence = (): number | undefined => {
     const at = cursor;
-    if (at === null) return buffer[0]?.sequence;
-    return buffer.find((b) => endOf(b) > at)?.sequence ?? (lastSeq !== null ? lastSeq + 1 : undefined);
+    const next = lastSeq !== null ? lastSeq + 1 : undefined;
+    if (at === null) return buffer[0]?.sequence ?? next;
+    return buffer.find((b) => endOf(b) > at)?.sequence ?? next;
   };
 
   const loadPlaylist = async (): Promise<MediaPlaylist> => {

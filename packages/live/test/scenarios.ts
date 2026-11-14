@@ -150,6 +150,13 @@ export const SCENARIOS: Record<string, Scenario> = {
     routes: () => apolloRoutes(),
     opts: { chunkSec: 10, overlapSec: 2, catchUpChunks: 1 },
   },
+  apolloDedupe: {
+    name: 'apollo-dedupe',
+    input: APOLLO_URL,
+    routes: () => apolloRoutes(),
+    // 3 s overlaps land on speech ("the limb now", "That's one small"), so the repeats need word-level dedupe.
+    opts: { chunkSec: 8, overlapSec: 3, catchUpChunks: 1 },
+  },
   apolloWhole: {
     name: 'apollo-whole',
     input: APOLLO_URL,

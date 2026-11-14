@@ -54,6 +54,7 @@ for (const s of Object.values(SCENARIOS)) {
   console.error(`scenario ${s.name}`);
   const saved: RecordedResponse[] = [];
   const { events } = await runScenario(s, recorder(saved), { limitMs: 30 * 60_000 });
-  for (const e of events) console.error(`  ${e.type}: ${e.type === 'segment' ? e.segment.text : e.type === 'status' ? e.message : e.reason}`);
+  for (const e of events)
+    console.error(`  ${e.type}: ${e.type === 'segment' ? e.segment.text : e.type === 'status' ? e.message : e.reason}`);
   writeFileSync(join(FIXTURES, 'stt', `${s.name}.json`), `${JSON.stringify(saved, null, 2)}\n`);
 }

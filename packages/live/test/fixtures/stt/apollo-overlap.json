@@ -1,0 +1,29 @@
+[
+  {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json",
+      "x-ratelimit-limit-minute": "2",
+      "x-ratelimit-remaining-minute": "1"
+    },
+    "body": "{\"task\":\"transcribe\",\"success\":true,\"language\":\"en\",\"duration\":10.0,\"text\":\" I'm going to step off the land now.\",\"words\":[{\"word\":\"I'm\",\"start\":3.62,\"end\":4.02},{\"word\":\"going\",\"start\":4.02,\"end\":4.1},{\"word\":\"to\",\"start\":4.1,\"end\":4.22},{\"word\":\"step\",\"start\":4.22,\"end\":4.44},{\"word\":\"off\",\"start\":4.44,\"end\":4.64},{\"word\":\"the\",\"start\":4.64,\"end\":4.8},{\"word\":\"land\",\"start\":4.8,\"end\":5.0},{\"word\":\"now.\",\"start\":5.0,\"end\":5.24}],\"segments\":[{\"id\":1,\"seek\":0,\"start\":3.62,\"end\":5.24,\"text\":\" I'm going to step off the land now.\",\"tokens\":[50365,286,478,516,281,1823,766,264,2117,586,13,50865],\"temperature\":0.0,\"avg_logprob\":-0.43118992,\"compression_ratio\":0.81395346,\"no_speech_prob\":0.0}],\"diarization\":[],\"usage\":{\"type\":\"duration\",\"seconds\":10.0}}"
+  },
+  {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json",
+      "x-ratelimit-limit-minute": "2",
+      "x-ratelimit-remaining-minute": "0"
+    },
+    "body": "{\"task\":\"transcribe\",\"success\":true,\"language\":\"en\",\"duration\":12.0,\"text\":\" That's one small step for man\",\"words\":[{\"word\":\"That's\",\"start\":6.94,\"end\":7.76},{\"word\":\"one\",\"start\":7.76,\"end\":8.04},{\"word\":\"small\",\"start\":8.04,\"end\":8.56},{\"word\":\"step\",\"start\":8.56,\"end\":8.98},{\"word\":\"for\",\"start\":8.98,\"end\":9.28},{\"word\":\"man\",\"start\":9.28,\"end\":9.68}],\"segments\":[{\"id\":1,\"seek\":0,\"start\":6.94,\"end\":9.68,\"text\":\" That's one small step for man\",\"tokens\":[50365,663,311,472,1359,1823,337,587,50965],\"temperature\":0.0,\"avg_logprob\":-0.4542969,\"compression_ratio\":0.7837838,\"no_speech_prob\":0.0}],\"diarization\":[],\"usage\":{\"type\":\"duration\",\"seconds\":12.0}}"
+  },
+  {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json",
+      "x-ratelimit-limit-minute": "2",
+      "x-ratelimit-remaining-minute": "0"
+    },
+    "body": "{\"task\":\"transcribe\",\"success\":true,\"language\":\"en\",\"duration\":6.1766877,\"text\":\" one giant leap for mankind\",\"words\":[{\"word\":\"one\",\"start\":2.9,\"end\":3.54},{\"word\":\"giant\",\"start\":3.54,\"end\":4.18},{\"word\":\"leap\",\"start\":4.18,\"end\":4.5},{\"word\":\"for\",\"start\":4.5,\"end\":4.78},{\"word\":\"mankind\",\"start\":4.78,\"end\":5.1}],\"segments\":[{\"id\":1,\"seek\":0,\"start\":2.9,\"end\":5.1,\"text\":\" one giant leap for mankind\",\"tokens\":[50365,472,7410,19438,337,21220,50673],\"temperature\":0.0,\"avg_logprob\":-0.52685547,\"compression_ratio\":0.7647059,\"no_speech_prob\":0.0}],\"diarization\":[],\"usage\":{\"type\":\"duration\",\"seconds\":7.0}}"
+  }
+]
