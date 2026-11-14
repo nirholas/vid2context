@@ -67,12 +67,15 @@ export interface SearchEngineOptions {
   storage?: Storage | null;
   /** Default context for embedding and rerank calls; each call can pass its own. */
   ctx: Ctx;
-  /** Pin the embedding model: a rung model ('bge-m3'), '<service>/<model>' ('ovh/bge-m3') or a rung id. Default: the first enabled embed rung in free-first order. */
+  /**
+   * Pin the embedding model: a rung id ('embed/ovh/bge-m3') or a model name ('bge-m3').
+   * Default: VID2CONTEXT_EMBED_MODEL from the call's env, else the first enabled embed rung in free-first order.
+   */
   embedModel?: string;
   /** Keyword backend. 'auto' (default) uses storage full-text search when the backend has it, else BM25. */
   keyword?: 'auto' | 'bm25' | 'storage';
   chunk?: ChunkOptions;
-  /** Texts per embedding request. Default 24 (the keyless OVH endpoint accepts at most 25). */
+  /** Most texts per embedding request. Default: the rung's own maxBatch when it declares one, else 24 (the keyless OVH endpoint accepts at most 25). */
   embedBatchSize?: number;
   fusion?: FusionOptions;
   /** Candidates taken from each side before fusion. Default 50. */
@@ -199,9 +202,52 @@ const MANIFEST_PREFIX = 'search:v1:manifest:';
 
 // ---------------------------------------------------------------- helpers
 
-/** '<service without #n>/<model>': the same model from the same service gives the same vectors, whichever pooled key served it. */
+/**
+ * The model id an index records: the rung id without a pooled-key suffix
+ * ('embed/mistral#2/mistral-embed' becomes 'embed/mistral/mistral-embed'),
+ * because pooled keys of one service and model return identical vectors. This
+ * is the same id provider-embed's pickEmbedModel and canonicalRungId produce,
+ * so indexes built by either package agree.
+ */
 export function embedModelKey(rung: EmbedRung): string {
-  return `${rung.service.replace(/#\d+$/, '')}/${rung.model}`;
+  return canonicalRungId(rung.id);
+}
+
+function canonicalRungId(id: string): string {
+  return id.replace(/^([^/]+\/[^/#]+)#\d+(?=\/|$)/, '$1');
+}
+
+/** Optional fields embedding rungs from provider-embed expose; read by duck typing so search depends only on core. */
+interface RetrievalFields {
+  maxBatch?: number;
+  embedQueries?: (texts: string[], ctx: Ctx) => Promise<number[][]>;
+}
+
+/** Longest rate-limit reset worth waiting for while indexing, in seconds (OVH keyless resets within a minute). */
+const MAX_WAIT_SEC = 75;
+/** Waits per embedding batch while indexing. */
+const MAX_WAITS = 3;
+
+function sleep(ms: number, signal?: AbortSignal): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (signal?.aborted) return reject(signal.reason ?? new DOMException('Aborted', 'AbortError'));
+    const t = setTimeout(() => {
+      signal?.removeEventListener('abort', onAbort);
+      resolve();
+    }, ms);
+    const onAbort = () => {
+      clearTimeout(t);
+      reject(signal?.reason ?? new DOMException('Aborted', 'AbortError'));
+    };
+    signal?.addEventListener('abort', onAbort, { once: true });
+  });
+}
+
+/** The shortest Retry-After among rate-limited attempts, when every error in the chain was a rate limit. */
+function rateLimitWait(err: unknown): number | null {
+  const tried = attemptsOf(err).filter((a) => a.outcome === 'error');
+  if (tried.length === 0 || tried.some((a) => !a.reason?.startsWith('rate-limited'))) return null;
+  return err instanceof Vid2ContextError && err.retryAfterSec ? err.retryAfterSec : 60;
 }
 
 function fnv1a(text: string): string {
@@ -247,7 +293,7 @@ class HybridSearchEngine implements SearchEngine {
   private readonly pinned?: string;
   private readonly keywordMode: 'bm25' | 'storage';
   private readonly chunkOpts: ChunkOptions;
-  private readonly batchSize: number;
+  private readonly batchSize?: number;
   private readonly fusion: Required<FusionOptions>;
   private readonly candidates: number;
   private readonly vectors: VectorStore;
@@ -270,7 +316,7 @@ class HybridSearchEngine implements SearchEngine {
     }
     this.keywordMode = wantStorage ? 'storage' : 'bm25';
     this.chunkOpts = { ...CHUNK_DEFAULTS, ...o.chunk };
-    this.batchSize = clampInt(o.embedBatchSize, 24, 1, 2048);
+    this.batchSize = o.embedBatchSize === undefined ? undefined : clampInt(o.embedBatchSize, 24, 1, 2048);
     this.fusion = {
       k: o.fusion?.k ?? 60,
       keywordWeight: o.fusion?.keywordWeight ?? 1,
@@ -299,9 +345,9 @@ class HybridSearchEngine implements SearchEngine {
   private embedRungs(ctx: Ctx): { model: string; rungs: EmbedRung[] } | { reason: string } {
     const all = this.registry.embedRungs(ctx.env);
     const ranked = rankRungs(all, {}, ctx.env);
-    if (this.pinned) {
-      const p = this.pinned;
-      const matching = ranked.filter((r) => r.model === p || embedModelKey(r) === p || r.id === p);
+    const p = this.pinned ?? ctx.env.VID2CONTEXT_EMBED_MODEL?.trim();
+    if (p) {
+      const matching = ranked.filter((r) => r.model === p || embedModelKey(r) === canonicalRungId(p));
       const first = matching[0];
       if (!first) {
         return { reason: `The pinned embedding model "${p}" has no enabled rung.` };
@@ -327,23 +373,51 @@ class HybridSearchEngine implements SearchEngine {
     return 'model' in r ? r.model : null;
   }
 
-  private async embed(texts: string[], rungs: EmbedRung[], ctx: Ctx, attempts: Attempt[]): Promise<number[][]> {
+  /**
+   * Embed with exactly the pinned model (its pooled keys may stand in, never
+   * another model). `mode: 'query'` uses the rung's query convention when it
+   * has one. `wait` waits out short rate limits (indexing); queries never wait.
+   */
+  private async embed(
+    texts: string[],
+    rungs: EmbedRung[],
+    ctx: Ctx,
+    attempts: Attempt[],
+    opts: { mode: 'passage' | 'query'; wait: boolean },
+  ): Promise<number[][]> {
     const out: number[][] = [];
     const only = rungs.map((r) => r.id);
-    for (let i = 0; i < texts.length; i += this.batchSize) {
-      const batch = texts.slice(i, i + this.batchSize);
-      try {
-        const res = await runChain('embed', rungs, (r) => r.embed(batch, ctx), { only }, ctx);
-        attempts.push(...res.attempts);
-        if (res.value.length !== batch.length) {
-          throw new Vid2ContextError('upstream', `Embedding returned ${res.value.length} vectors for ${batch.length} texts.`, {
-            hint: 'Retry; if it persists, pin another embedding model.',
+    const first = rungs[0] as EmbedRung & RetrievalFields;
+    const declared = typeof first.maxBatch === 'number' && first.maxBatch > 0 ? first.maxBatch : undefined;
+    const size = Math.max(1, Math.min(this.batchSize ?? declared ?? 24, declared ?? Number.POSITIVE_INFINITY));
+    const call = (r: EmbedRung, batch: string[]) => {
+      const q = (r as EmbedRung & RetrievalFields).embedQueries;
+      return opts.mode === 'query' && typeof q === 'function' ? q.call(r, batch, ctx) : r.embed(batch, ctx);
+    };
+    for (let i = 0; i < texts.length; i += size) {
+      const batch = texts.slice(i, i + size);
+      for (let waits = 0; ; waits++) {
+        try {
+          const res = await runChain('embed', rungs, (r) => call(r, batch), { only }, ctx);
+          attempts.push(...res.attempts);
+          if (res.value.length !== batch.length) {
+            throw new Vid2ContextError('upstream', `Embedding returned ${res.value.length} vectors for ${batch.length} texts.`, {
+              hint: 'Retry; if it persists, pin another embedding model and re-index.',
+            });
+          }
+          out.push(...res.value);
+          break;
+        } catch (err) {
+          attempts.push(...attemptsOf(err));
+          const wait = opts.wait ? rateLimitWait(err) : null;
+          if (wait === null || wait > MAX_WAIT_SEC || waits >= MAX_WAITS || ctx.signal?.aborted) throw err;
+          ctx.log.info('search: embedding model is rate-limited, waiting for its quota to reset', {
+            model: embedModelKey(first),
+            seconds: wait,
           });
+          // One second past the reset, so the chain's cooldown on the rung has expired too.
+          await sleep((wait + 1) * 1000, ctx.signal);
         }
-        out.push(...res.value);
-      } catch (err) {
-        attempts.push(...attemptsOf(err));
-        throw err;
       }
     }
     return out;
@@ -407,6 +481,7 @@ class HybridSearchEngine implements SearchEngine {
               embed.rungs,
               ctx,
               attempts,
+              { mode: 'passage', wait: true },
             )
           : [];
       // One model per index: drop every older vector of this video, whatever its model.
@@ -681,7 +756,7 @@ class HybridSearchEngine implements SearchEngine {
         if (covered.length > 0) {
           const attempts: Attempt[] = [];
           try {
-            const [vector] = await this.embed([q.text], embed.rungs, ctx, attempts);
+            const [vector] = await this.embed([q.text], embed.rungs, ctx, attempts, { mode: 'query', wait: false });
             const hits = await this.vectors.queryVectors({
               vector: vector as number[],
               model: embed.model,

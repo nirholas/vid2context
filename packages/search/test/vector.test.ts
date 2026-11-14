@@ -6,6 +6,7 @@
  */
 import { clearCooldowns, type EmbedRung } from '@vid2context/core';
 import { replayFetch, testContext } from '@vid2context/core/testing';
+import embedProviderReal from '@vid2context/provider-embed';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { chunkTranscript } from '../src/chunk.ts';
 import { createSearchEngine } from '../src/engine.ts';
@@ -19,6 +20,7 @@ import {
   MemoryLibrary,
   OVH_EMBED_URL,
   ovhEmbedRung,
+  PROVIDER_FIXTURE,
   registryWith,
   SECOND_FIXTURE,
   SECOND_MODEL,
@@ -39,16 +41,16 @@ describe('hybrid search with real embeddings', () => {
   it('finds a paraphrase through the vector side and reports the pinned model', async () => {
     const fetch = replayFetch([embedRoute(fixture)]);
     const engine = createSearchEngine({ registry, ctx: testContext({ fetch }) });
-    expect(engine.embedModel()).toBe('ovh/bge-m3');
+    expect(engine.embedModel()).toBe('embed/ovh/bge-m3');
     const indexed = await engine.index(gwagon);
-    expect(indexed).toMatchObject({ vector: 'indexed', model: 'ovh/bge-m3' });
+    expect(indexed).toMatchObject({ vector: 'indexed', model: 'embed/ovh/bge-m3' });
     expect(indexed.attempts.every((a) => a.id === 'embed/ovh/bge-m3' && a.outcome === 'ok')).toBe(true);
     await engine.index(zoo);
 
     const out = await engine.search({ query: 'does the engine use a cam chain or a belt', limit: 5 });
     expect(out.meta).toMatchObject({
       vector: 'ok',
-      model: 'ovh/bge-m3',
+      model: 'embed/ovh/bge-m3',
       vectorCoverage: { videos: 2, withVectors: 2 },
       keyword: { ran: true, backend: 'bm25' },
     });
@@ -68,7 +70,7 @@ describe('hybrid search with real embeddings', () => {
     await engine.index(zoo);
     const after = embedCalls(fetch.calls);
     const again = await engine.index(zoo);
-    expect(again).toMatchObject({ vector: 'reused', model: 'ovh/bge-m3' });
+    expect(again).toMatchObject({ vector: 'reused', model: 'embed/ovh/bge-m3' });
     expect(embedCalls(fetch.calls)).toBe(after);
   });
 
@@ -103,24 +105,24 @@ describe('hybrid search with real embeddings', () => {
     const engine = createSearchEngine({ registry: reg, storage: library, ctx: testContext({ fetch }) });
 
     const before = await engine.search({ query: SECOND_MODEL_QUERY });
-    expect(before.meta.model).toBe('ovh/bge-m3');
+    expect(before.meta.model).toBe('embed/ovh/bge-m3');
 
     const withKey = testContext({ fetch, env: { SEARCH_TEST_SECOND_MODEL: '1' } });
-    expect(engine.embedModel(withKey)).toBe(`ovh/${SECOND_MODEL}`);
+    expect(engine.embedModel(withKey)).toBe(`embed/ovh/${SECOND_MODEL}`);
     const after = await engine.search({ query: SECOND_MODEL_QUERY }, { ctx: withKey });
-    expect(after.meta.model).toBe(`ovh/${SECOND_MODEL}`);
-    expect(after.meta.reindexed).toEqual([{ videoId: Z, from: 'ovh/bge-m3', to: `ovh/${SECOND_MODEL}` }]);
+    expect(after.meta.model).toBe(`embed/ovh/${SECOND_MODEL}`);
+    expect(after.meta.reindexed).toEqual([{ videoId: Z, from: 'embed/ovh/bge-m3', to: `embed/ovh/${SECOND_MODEL}` }]);
     expect(after.meta.vector).toBe('ok');
     expect(after.hits[0]?.videoId).toBe(Z);
     expect(after.hits[0]?.sources).toContain('vector');
     // Old-model vectors are gone: one model per index.
-    const old = await library.queryVectors({ vector: new Array(1024).fill(0.01), model: 'ovh/bge-m3' });
+    const old = await library.queryVectors({ vector: new Array(1024).fill(0.01), model: 'embed/ovh/bge-m3' });
     expect(old).toEqual([]);
   });
 
   it('pins a model by name and reports a pinned model that is not enabled', async () => {
     const pinned = createSearchEngine({ registry, ctx: testContext(), embedModel: 'bge-m3' });
-    expect(pinned.embedModel()).toBe('ovh/bge-m3');
+    expect(pinned.embedModel()).toBe('embed/ovh/bge-m3');
     const missing = createSearchEngine({ registry, ctx: testContext(), embedModel: 'nomic-embed-text' });
     expect(missing.embedModel()).toBeNull();
     const res = await missing.index(zoo);
@@ -128,6 +130,27 @@ describe('hybrid search with real embeddings', () => {
       vector: 'disabled',
       reason: 'The pinned embedding model "nomic-embed-text" has no enabled rung.',
     });
+  });
+
+  it('takes the pin from VID2CONTEXT_EMBED_MODEL when no option is given, pooled-key ids included', () => {
+    const gemma: EmbedRung = { ...ovhEmbedRung(SECOND_MODEL), tier: 'free', requires: [] };
+    const reg = registryWith([embedProvider([gemma, ovhEmbedRung()])]);
+    const engine = createSearchEngine({ registry: reg, ctx: testContext() });
+    expect(engine.embedModel()).toBe(`embed/ovh/${SECOND_MODEL}`);
+    expect(engine.embedModel(testContext({ env: { VID2CONTEXT_EMBED_MODEL: 'embed/ovh/bge-m3' } }))).toBe('embed/ovh/bge-m3');
+    expect(engine.embedModel(testContext({ env: { VID2CONTEXT_EMBED_MODEL: 'embed/ovh#2/bge-m3' } }))).toBe('embed/ovh/bge-m3');
+  });
+});
+
+describe('with the real provider-embed OVH rung', () => {
+  it('indexes and searches through the shipped embedding provider, recording the same model id', async () => {
+    const fetch = replayFetch([embedRoute(loadEmbedFixture(PROVIDER_FIXTURE))]);
+    const engine = createSearchEngine({ registry: registryWith([embedProviderReal].flat()), ctx: testContext({ fetch }) });
+    expect(engine.embedModel()).toBe('embed/ovh/bge-m3');
+    expect(await engine.index(zoo)).toMatchObject({ vector: 'indexed', model: 'embed/ovh/bge-m3' });
+    const out = await engine.search({ query: SECOND_MODEL_QUERY, mode: 'vector', limit: 1 });
+    expect(out.meta.vector).toBe('ok');
+    expect(out.hits[0]?.text).toContain('trunks');
   });
 });
 

@@ -1,6 +1,7 @@
 /**
- * POST /uploads: multipart form with a `file` field. The file is held in
- * memory for VID2CONTEXT_UPLOAD_TTL_MIN minutes under `upload:<sha256>`, which
+ * POST /uploads: multipart form with a `file` field. The file is kept for
+ * VID2CONTEXT_UPLOAD_TTL_MIN minutes (in R2 when the storage backend has a
+ * bucket, else in memory) under `upload:<sha256>`, which
  * any route taking a `url` (and POST /pack, POST /bundle) accepts while it
  * lives. Large video files should be reduced to audio in the browser first
  * (the web app does this), both for the size cap and for speech-to-text
@@ -10,11 +11,9 @@ import { Vid2ContextError } from '@vid2context/core';
 import { Hono } from 'hono';
 import { badRequest } from '../errors.ts';
 import { json, ref } from '../openapi.ts';
+import { UPLOADS_HELD_AT_CAP } from '../services.ts';
 import type { AppEnv, RouteDeps } from '../types.ts';
 import { cleanFilename, guessMimeType, UPLOAD_PREFIX } from '../uploads.ts';
-
-/** How many uploads at the size cap may be held at once; older ones are dropped first. */
-const UPLOADS_HELD_AT_CAP = 4;
 
 export function tooLarge(maxMb: number): Vid2ContextError {
   return new Vid2ContextError('too-large', `The upload is larger than ${maxMb} MB.`, {
@@ -30,7 +29,7 @@ export function uploadRoutes({ services, docs }: RouteDeps): Hono<AppEnv> {
     path: '/api/v1/uploads',
     summary: 'Upload an audio or video file; returns an input (upload:<sha256>) for the other routes.',
     description:
-      'Size cap VID2CONTEXT_MAX_UPLOAD_MB (default 100). Held in memory for VID2CONTEXT_UPLOAD_TTL_MIN minutes (default 60) and never saved to the library. Reduce large videos to audio before uploading.',
+      'Size cap VID2CONTEXT_MAX_UPLOAD_MB (default 100). Kept for VID2CONTEXT_UPLOAD_TTL_MIN minutes (default 60), in R2 when the storage backend has a bucket bound, else in memory, and never saved to the library. Reduce large videos to audio before uploading.',
     tags: ['uploads'],
     body: {
       content: {
@@ -66,9 +65,10 @@ export function uploadRoutes({ services, docs }: RouteDeps): Hono<AppEnv> {
     if (file.size === 0) throw badRequest('The uploaded file is empty.', 'Pick a non-empty audio or video file.');
     const filename = cleanFilename(file.name || 'upload');
     const mimeType = guessMimeType(filename, file.type);
-    const entry = await services.uploads.put(new Uint8Array(await file.arrayBuffer()), filename, mimeType, {
+    const { entry } = await services.uploads.put(new Uint8Array(await file.arrayBuffer()), filename, mimeType, {
       ttlMs: cfg.uploadTtlMin * 60_000,
       maxTotalBytes: UPLOADS_HELD_AT_CAP * cfg.maxUploadBytes,
+      backend: await services.uploadBackend(services.ctxFor(c.req.raw)),
     });
     return c.json(
       {

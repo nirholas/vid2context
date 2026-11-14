@@ -25,7 +25,18 @@ import {
   type VideoMetadata,
 } from '@vid2context/core';
 import { type ServerConfig, serverConfig } from './config.ts';
-import { isUploadInput, UploadStore, uploadAudio, uploadMetadata, uploadRef } from './uploads.ts';
+import {
+  isUploadInput,
+  type UploadBackend,
+  type UploadEntry,
+  UploadStore,
+  uploadAudio,
+  uploadMetadata,
+  uploadRef,
+} from './uploads.ts';
+
+/** How many uploads at the size cap this process keeps in memory at once; older ones are dropped first. */
+export const UPLOADS_HELD_AT_CAP = 4;
 
 export interface LoadOptions {
   mode?: TranscriptMode;
@@ -56,6 +67,10 @@ export interface Services {
   checkInput(input: string, ctx: Ctx): void;
   loadContext(input: string, opts: LoadOptions, ctx: Ctx): Promise<VideoContext>;
   loadMetadata(input: string, ctx: Ctx): Promise<VideoMetadata>;
+  /** Where uploads persist for this request: the library storage (R2 blobs when it has them) and the KvStore. */
+  uploadBackend(ctx: Ctx): Promise<UploadBackend>;
+  /** The live upload for an `upload:<sha256>` input. */
+  getUpload(input: string, ctx: Ctx): Promise<UploadEntry>;
   /** Contexts for a batch: inputs (playlists expanded) and/or a collection's saved videos. */
   loadBatch(sel: { inputs?: string[]; collectionId?: string }, opts: LoadOptions, ctx: Ctx): Promise<VideoContext[]>;
 }
@@ -135,9 +150,19 @@ export function createServices(
     return p;
   };
 
-  const loadUpload = async (input: string, opts: LoadOptions, ctx: Ctx): Promise<VideoContext> => {
+  const uploadBackend = async (ctx: Ctx): Promise<UploadBackend> => ({ storage: await storage(ctx), kv: await kv(ctx) });
+
+  const getUpload = async (input: string, ctx: Ctx): Promise<UploadEntry> => {
     const cfg = serverConfig(ctx.env);
-    const entry = uploads.get(input, cfg.uploadTtlMin);
+    return uploads.get(input, {
+      ttlMin: cfg.uploadTtlMin,
+      maxTotalBytes: UPLOADS_HELD_AT_CAP * cfg.maxUploadBytes,
+      backend: await uploadBackend(ctx),
+    });
+  };
+
+  const loadUpload = async (input: string, opts: LoadOptions, ctx: Ctx): Promise<VideoContext> => {
+    const entry = await getUpload(input, ctx);
     const mode = opts.mode ?? 'auto';
     if (mode === 'captions' || mode === 'video') {
       throw new Vid2ContextError(
@@ -149,7 +174,8 @@ export function createServices(
       );
     }
     const langKey = opts.language ?? '';
-    const cached = entry.contexts.get(langKey);
+    const backend = await uploadBackend(ctx);
+    const cached = await uploads.getContext(entry, langKey, backend);
     if (cached) return cached;
     return shared(`upload\u0000${entry.sha256}\u0000${langKey}`, ctx, async (runCtx) => {
       const ref = uploadRef(entry);
@@ -161,7 +187,7 @@ export function createServices(
           transcript: res.transcript,
           attempts: [...attempts, ...res.attempts],
         };
-        entry.contexts.set(langKey, context);
+        await uploads.putContext(entry, langKey, context, backend);
         return context;
       } catch (err) {
         attempts.push(...attemptsOf(err));
@@ -201,7 +227,7 @@ export function createServices(
 
   const loadMetadata = async (input: string, ctx: Ctx): Promise<VideoMetadata> => {
     check(input, ctx);
-    if (isUploadInput(input)) return uploadMetadata(uploads.get(input, serverConfig(ctx.env).uploadTtlMin));
+    if (isUploadInput(input)) return uploadMetadata(await getUpload(input, ctx));
     await enforceInputPolicy(input, ctx);
     const { source, ref } = registry.resolve(input);
     return source.getMetadata(ref, ctx);
@@ -273,6 +299,8 @@ export function createServices(
     checkInput: check,
     loadContext,
     loadMetadata,
+    uploadBackend,
+    getUpload,
     loadBatch,
   };
 }

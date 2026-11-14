@@ -88,10 +88,13 @@ export interface RecordedEmbedCall {
 export interface EmbedFixture {
   endpoint: string;
   model: string;
-  encoding: 'base64';
+  encoding: 'base64' | 'float';
   recordedAt: string;
   calls: RecordedEmbedCall[];
 }
+
+/** Zoo chunks and one query embedded through the real @vid2context/provider-embed OVH rung (float vectors). */
+export const PROVIDER_FIXTURE = new URL('./fixtures/embeddings-provider-embed-zoo.json', import.meta.url);
 
 export const SECOND_MODEL = 'bge-multilingual-gemma2';
 export const SECOND_MODEL_QUERY = 'animals with long noses';

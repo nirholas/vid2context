@@ -6,17 +6,20 @@
  *     (keyless OVH bge-m3, base64 float32)
  *   test/fixtures/embeddings-ovh-gemma2-zoo.json  the zoo chunks embedded with a second
  *     model (bge-multilingual-gemma2), for the model-change test
+ *   test/fixtures/embeddings-provider-embed-zoo.json  the zoo chunks and one query through
+ *     the real @vid2context/provider-embed OVH rung (float vectors)
  *   test/fixtures/rerank-ovh.json             one rerank chat call through the real
  *     llm-openai-compatible provider (keyless lanes only, no key needed)
  *
- * Run: npx tsx packages/search/scripts/record-fixtures.ts [--embeddings] [--second-model] [--rerank]
- * (all three when no flag is given). OVH keyless allows about 2 requests per minute
+ * Run: npx tsx packages/search/scripts/record-fixtures.ts [--embeddings] [--second-model] [--provider] [--rerank]
+ * (all of them when no flag is given). OVH keyless allows about 2 requests per minute
  * per model, so the script waits out 429s; a full run takes 10 to 15 minutes.
  * Re-run after changing the chunker or the evaluation queries.
  */
 import { writeFileSync } from 'node:fs';
 import { createContext, MemoryStorage, stderrLogger } from '@vid2context/core';
 import { replayFetch } from '@vid2context/core/testing';
+import embedProviderReal from '@vid2context/provider-embed';
 import llmProvider from '@vid2context/provider-llm-openai-compatible';
 import { createSearchEngine } from '../src/engine.ts';
 import {
@@ -30,6 +33,7 @@ import {
   loadQueries,
   OVH_EMBED_URL,
   ovhEmbedRung,
+  PROVIDER_FIXTURE,
   type RecordedEmbedCall,
   registryWith,
   SECOND_FIXTURE,
@@ -39,7 +43,7 @@ import {
 } from '../test/helpers.ts';
 
 const args = new Set(process.argv.slice(2));
-const all = !args.has('--embeddings') && !args.has('--second-model') && !args.has('--rerank');
+const all = !['--embeddings', '--second-model', '--provider', '--rerank'].some((a) => args.has(a));
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 /** A fetch that waits out 429s and keeps every successful exchange for the given URL. */
@@ -125,6 +129,19 @@ async function recordSecondModel(): Promise<void> {
   console.error(`wrote ${calls.length} calls to ${SECOND_FIXTURE.pathname}`);
 }
 
+async function recordProviderEmbed(): Promise<void> {
+  const calls: RecordedEmbedCall[] = [];
+  const ctx = createContext({ runtime: 'node', env: {}, fetch: embedRecorder(calls), log: stderrLogger('info') });
+  const engine = createSearchEngine({ registry: registryWith([embedProviderReal].flat()), ctx });
+  const res = await engine.index(loadContext(ZOO));
+  if (res.vector !== 'indexed') throw new Error(`indexing the zoo video through provider-embed failed: ${res.reason}`);
+  const found = await engine.search({ query: SECOND_MODEL_QUERY, mode: 'vector' });
+  if (found.meta.vector !== 'ok') throw new Error(`query through provider-embed failed: ${found.meta.vectorReason}`);
+  const fixture = { endpoint: OVH_EMBED_URL, model: 'bge-m3', encoding: 'float', recordedAt: new Date().toISOString(), calls };
+  writeFileSync(PROVIDER_FIXTURE, `${JSON.stringify(fixture, null, 1)}\n`);
+  console.error(`wrote ${calls.length} calls to ${PROVIDER_FIXTURE.pathname}`);
+}
+
 const RERANK_QUERY = 'does the engine use a cam chain or a belt';
 
 async function recordRerank(): Promise<void> {
@@ -164,4 +181,5 @@ async function recordRerank(): Promise<void> {
 
 if (all || args.has('--embeddings')) await recordEmbeddings();
 if (all || args.has('--second-model')) await recordSecondModel();
+if (all || args.has('--provider')) await recordProviderEmbed();
 if (all || args.has('--rerank')) await recordRerank();
