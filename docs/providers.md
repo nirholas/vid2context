@@ -95,6 +95,19 @@ More free lanes on top of `llm-openai-compatible`. "Verified live" means a real 
 
 Check what answers today: `npm run check:llm` (see [guides/llm.md](guides/llm.md)).
 
+## LLMs: native Anthropic, Gemini and Vertex AI (`llm-native`)
+
+| Rung id | Tier | Enabled by | Notes |
+|---|---|---|---|
+| `llm/gemini-native/gemini-3.8-flash` | free | `GEMINI_API_KEY` (+ `GEMINI_FALLBACK_KEYS`) | native `generateContent`: SSE streaming with thought summaries, `responseJsonSchema`, 1M-token context, implicit caching. Shares the AI Studio quota with `llm/gemini/...` |
+| `llm/gemini-native/gemini-3.5-flash-lite` | free | `GEMINI_API_KEY` | free-tier Flash-Lite |
+| `llm/anthropic/claude-haiku-5-5` | paid | `ANTHROPIC_API_KEY` (+ `ANTHROPIC_FALLBACK_KEYS`) | Messages API: prompt caching for long transcripts, structured outputs, streaming with thinking summaries; 1M context |
+| `llm/anthropic/claude-sonnet-5-5` | paid | `ANTHROPIC_API_KEY` | the higher-quality Claude rung |
+| `llm/vertex-gemini/gemini-3.8-flash` | paid | `GOOGLE_CLOUD_PROJECT` + `GOOGLE_ACCESS_TOKEN` or `VID2CONTEXT_GCE_METADATA=1` | Gemini on Vertex AI, location `GOOGLE_CLOUD_LOCATION` (default `us-central1`) |
+| `llm/vertex-anthropic/claude-haiku-5-5` | paid | same as above | Claude on Vertex AI (`rawPredict`), location `VERTEX_ANTHROPIC_LOCATION` (default `global`) |
+
+Model lists: `GEMINI_NATIVE_MODEL`, `ANTHROPIC_MODEL`, `VERTEX_GEMINI_MODEL`, `VERTEX_ANTHROPIC_MODEL` (comma-separated). `ANTHROPIC_BASE_URL` overrides `https://api.anthropic.com`. `VID2CONTEXT_GCE_METADATA=1` reads tokens from the GCE metadata server (Node on Google Cloud only). Verified live on 2026-11-14: only the error paths (invalid keys, and Vertex refusing a project with locked billing); answers, streaming, JSON and caching are not yet verified live. See [guides/anthropic-and-gemini.md](guides/anthropic-and-gemini.md).
+
 ## Embeddings (`embed`, `embed-transformers`)
 
 Guide, dimensions and the one-model-per-index rule: [guides/embeddings.md](guides/embeddings.md). "Live" means verified against the real service on 2026-11-14; "docs" means built from the provider's current documentation without a key.
@@ -270,6 +283,5 @@ Telegram, Discord and Slack bots from `@vid2context/bots` (`POST /bots/telegram`
 
 | Kind | Provider | Tier | Enabled by | Known limits |
 |---|---|---|---|---|
-| llm | Anthropic `claude-haiku-4-5-20251001`, native | paid | `ANTHROPIC_API_KEY` | |
 | stt | whisper.cpp, Transformers.js, Gemini, Deepgram, AssemblyAI | local / free | per prompt | |
 | video | Gemini video understanding | free | `GEMINI_API_KEY` | |
