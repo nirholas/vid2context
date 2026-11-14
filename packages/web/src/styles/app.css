@@ -54,9 +54,12 @@ body {
   background: var(--v2c-bg);
 }
 
-:focus-visible {
-  outline: 2px solid var(--v2c-accent);
-  outline-offset: 2px;
+/* In the base layer, so a utility such as focus-visible:outline-none can drop it where a container shows focus instead. */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--v2c-accent);
+    outline-offset: 2px;
+  }
 }
 
 ::selection {

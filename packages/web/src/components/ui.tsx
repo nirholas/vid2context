@@ -1,13 +1,12 @@
 /** Small shared pieces: buttons, icon buttons, the copy button with feedback, a spinner, a progress bar and the brand mark. */
 import { Check, Copy, LoaderCircle } from 'lucide-react';
-import { type ButtonHTMLAttributes, type ReactNode, useEffect, useRef, useState } from 'react';
+import { type ButtonHTMLAttributes, type ComponentProps, type ReactNode, useEffect, useRef, useState } from 'react';
 import { copyText } from '../lib/clipboard.ts';
 
 type Variant = 'primary' | 'accent' | 'secondary' | 'ghost';
 
 const VARIANTS: Record<Variant, string> = {
-  primary:
-    'v2c-gradient text-on-accent font-semibold shadow-v2c hover:opacity-90 disabled:opacity-60 disabled:hover:opacity-60',
+  primary: 'v2c-gradient text-on-accent font-semibold shadow-v2c hover:opacity-90 disabled:opacity-60 disabled:hover:opacity-60',
   accent: 'bg-accent text-on-accent font-medium hover:opacity-90 disabled:opacity-60',
   secondary: 'bg-surface-2 text-fg border border-border hover:border-border-strong hover:bg-surface-3 disabled:opacity-60',
   ghost: 'text-muted hover:text-fg hover:bg-surface-2 disabled:opacity-60',
@@ -41,7 +40,7 @@ export function IconButton({
   type = 'button',
   children,
   ...rest
-}: ButtonHTMLAttributes<HTMLButtonElement> & { label: string; round?: boolean }) {
+}: ComponentProps<'button'> & { label: string; round?: boolean }) {
   return (
     <button type={type} aria-label={label} title={label} className={iconButtonClass(className, round)} {...rest}>
       {children}
@@ -52,7 +51,10 @@ export function IconButton({
 /** The vid2context mark: a play triangle on the accent. */
 export function BrandMark({ className = 'size-7' }: { className?: string }) {
   return (
-    <span className={`flex shrink-0 items-center justify-center rounded-v2c-sm bg-accent text-on-accent ${className}`} aria-hidden>
+    <span
+      className={`flex shrink-0 items-center justify-center rounded-v2c-sm bg-accent text-on-accent ${className}`}
+      aria-hidden
+    >
       <svg viewBox="0 0 16 16" className="size-1/2" fill="currentColor" aria-hidden>
         <path d="M5 3.5v9l7-4.5z" />
       </svg>

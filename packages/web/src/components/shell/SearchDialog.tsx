@@ -20,7 +20,7 @@ export function SearchDialog({ open, onClose }: { open: boolean; onClose: () => 
   const input = useRef<HTMLInputElement>(null);
   const { entries, loaded } = useRecentResults(MAX_ENTRIES);
   const [query, setQuery] = useState('');
-  const [active, setActive] = useState(0);
+  const list = useRef<HTMLUListElement>(null);
   const id = useId();
   const hits = useMemo(() => entries.filter((e) => matchesQuery(e, query)), [entries, query]);
 
@@ -29,7 +29,6 @@ export function SearchDialog({ open, onClose }: { open: boolean; onClose: () => 
     if (!d) return;
     if (open && !d.open) {
       setQuery('');
-      setActive(0);
       d.showModal();
       input.current?.focus();
     } else if (!open && d.open) d.close();
@@ -57,35 +56,29 @@ export function SearchDialog({ open, onClose }: { open: boolean; onClose: () => 
       <h2 id={`${id}-title`} className="sr-only">
         Search saved results
       </h2>
+      <p id={`${id}-help`} className="sr-only">
+        Enter opens the first match. Arrow down moves into the list.
+      </p>
       <div className="flex items-center gap-3 border-b border-border px-4">
         <Search className="size-[18px] shrink-0 text-muted" aria-hidden />
         <input
           ref={input}
           type="search"
-          role="combobox"
-          aria-expanded
-          aria-controls={`${id}-list`}
-          aria-activedescendant={hits[active] ? `${id}-opt-${active}` : undefined}
           aria-label="Search saved results"
           placeholder="Search saved results by title, channel or link"
           value={query}
-          onChange={(e) => {
-            setQuery(e.target.value);
-            setActive(0);
-          }}
+          aria-describedby={`${id}-help`}
+          onChange={(e) => setQuery(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'ArrowDown') {
               e.preventDefault();
-              setActive((a) => Math.min(a + 1, hits.length - 1));
-            } else if (e.key === 'ArrowUp') {
-              e.preventDefault();
-              setActive((a) => Math.max(a - 1, 0));
+              list.current?.querySelector('button')?.focus();
             } else if (e.key === 'Enter') {
               e.preventDefault();
-              go(hits[active]);
+              go(hits[0]);
             }
           }}
-          className="min-w-0 flex-1 bg-transparent py-3.5 text-[15px] text-fg placeholder:text-subtle focus:outline-none"
+          className="min-w-0 flex-1 bg-transparent py-3.5 text-[15px] text-fg placeholder:text-subtle focus:outline-none focus-visible:outline-none"
         />
         <kbd className="hidden rounded border border-border px-1.5 py-0.5 font-mono text-[11px] text-muted sm:block">Esc</kbd>
       </div>
@@ -97,28 +90,43 @@ export function SearchDialog({ open, onClose }: { open: boolean; onClose: () => 
               : `No saved result matches "${query}".`}
           </p>
         ) : (
-          <ul id={`${id}-list`} role="listbox" aria-label="Saved results">
-            {hits.map((e, i) => (
-              // biome-ignore lint/a11y/useKeyWithClickEvents: keyboard selection runs through the combobox input (arrows and Enter).
-              <li
-                key={e.key}
-                id={`${id}-opt-${i}`}
-                role="option"
-                aria-selected={i === active}
-                onMouseMove={() => setActive(i)}
-                onClick={() => go(e)}
-                className={`flex cursor-pointer items-center gap-3 rounded-v2c-sm px-3 py-2.5 ${i === active ? 'bg-surface-3' : ''}`}
-              >
-                <Film className="size-4 shrink-0 text-subtle" aria-hidden />
-                <span className="min-w-0 flex-1">
-                  <span className="block truncate text-sm text-fg">{e.title}</span>
-                  <span className="block truncate text-xs text-muted">
-                    {[e.channel, e.durationSec !== undefined ? formatDuration(e.durationSec) : undefined, timeAgo(e.savedAt)]
-                      .filter(Boolean)
-                      .join(' · ')}
+          <ul
+            ref={list}
+            aria-label="Saved results"
+            onKeyDown={(e) => {
+              const buttons = Array.from(list.current?.querySelectorAll('button') ?? []);
+              const i = buttons.indexOf(document.activeElement as HTMLButtonElement);
+              if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                buttons[Math.min(i + 1, buttons.length - 1)]?.focus();
+              } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (i <= 0) input.current?.focus();
+                else buttons[i - 1]?.focus();
+              }
+            }}
+          >
+            {hits.map((e) => (
+              <li key={e.key}>
+                <button
+                  type="button"
+                  onClick={() => go(e)}
+                  className="group flex w-full items-center gap-3 rounded-v2c-sm px-3 py-2.5 text-left hover:bg-surface-3 focus-visible:bg-surface-3 focus-visible:outline-none"
+                >
+                  <Film className="size-4 shrink-0 text-subtle" aria-hidden />
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-sm text-fg">{e.title}</span>
+                    <span className="block truncate text-xs text-muted">
+                      {[e.channel, e.durationSec !== undefined ? formatDuration(e.durationSec) : undefined, timeAgo(e.savedAt)]
+                        .filter(Boolean)
+                        .join(' · ')}
+                    </span>
                   </span>
-                </span>
-                {i === active && <CornerDownLeft className="size-4 shrink-0 text-muted" aria-hidden />}
+                  <CornerDownLeft
+                    className="size-4 shrink-0 text-muted opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100"
+                    aria-hidden
+                  />
+                </button>
               </li>
             ))}
           </ul>

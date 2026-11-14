@@ -1,52 +1,42 @@
-/** "or drop a video or audio file": drag and drop, or click to pick. */
+/**
+ * "or drop a video or audio file": the strip under the composer. Click to
+ * pick a file, or drop one on it (home also accepts a drop anywhere).
+ */
 import { Upload } from 'lucide-react';
-import { type DragEvent, useId, useRef, useState } from 'react';
+import { type DragEvent, useState } from 'react';
 
-export function DropZone({ onFile, note }: { onFile: (file: File) => void; note?: string }) {
+/** File types the file picker offers. */
+export const ACCEPT = 'audio/*,video/*,.mp3,.m4a,.wav,.ogg,.opus,.flac,.webm,.mp4,.mov,.mkv';
+
+export function DropZone({ onFile, onPick, note }: { onFile: (file: File) => void; onPick: () => void; note?: string }) {
   const [over, setOver] = useState(false);
-  const input = useRef<HTMLInputElement>(null);
-  const id = useId();
   const onDrop = (e: DragEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     setOver(false);
     const file = e.dataTransfer.files[0];
     if (file) onFile(file);
   };
   return (
-    <div>
-      <input
-        ref={input}
-        id={id}
-        type="file"
-        accept="audio/*,video/*,.mp3,.m4a,.wav,.ogg,.opus,.flac,.webm,.mp4,.mov,.mkv"
-        hidden
-        onChange={(e) => {
-          const file = e.target.files?.[0];
-          if (file) onFile(file);
-          e.target.value = '';
-        }}
-        data-testid="file-input"
-      />
-      <button
-        type="button"
-        onClick={() => input.current?.click()}
-        onDragOver={(e) => {
-          e.preventDefault();
-          setOver(true);
-        }}
-        onDragLeave={() => setOver(false)}
-        onDrop={onDrop}
-        className={`flex w-full flex-col items-center justify-center gap-1.5 rounded-v2c-lg border border-dashed px-4 py-6 text-center transition ${
-          over ? 'border-accent bg-surface-2' : 'border-border-strong hover:border-accent hover:bg-surface'
-        }`}
-        data-testid="drop-zone"
-      >
-        <Upload className="size-5 text-muted" aria-hidden />
-        <span className="text-sm text-fg">or drop a video or audio file</span>
-        <span className="text-xs text-muted">
-          {note ?? 'mp3, m4a, wav, ogg, webm, mp4, mov and more. Click to choose a file.'}
-        </span>
-      </button>
-    </div>
+    <button
+      type="button"
+      onClick={onPick}
+      onDragOver={(e) => {
+        e.preventDefault();
+        setOver(true);
+      }}
+      onDragLeave={() => setOver(false)}
+      onDrop={onDrop}
+      className={`flex w-full flex-wrap items-center gap-x-3 gap-y-1 rounded-b-[21px] px-5 py-3 text-left transition ${
+        over ? 'bg-surface-3' : 'hover:bg-surface-2'
+      }`}
+      data-testid="drop-zone"
+    >
+      <Upload className="size-[18px] shrink-0 text-muted" strokeWidth={1.75} aria-hidden />
+      <span className="text-sm text-fg">or drop a video or audio file</span>
+      <span className="text-xs text-muted sm:ml-auto">
+        {note ?? 'mp3, m4a, wav, ogg, webm, mp4, mov and more. Click to choose a file.'}
+      </span>
+    </button>
   );
 }

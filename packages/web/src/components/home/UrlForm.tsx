@@ -1,10 +1,26 @@
-/** The big link input with the "Get context" button. Enter submits. */
-import { ArrowRight, Link2 } from 'lucide-react';
-import { type FormEvent, useId, useRef, useState } from 'react';
+/**
+ * The composer: a large link input, a row of tools, the round "Get context"
+ * button, and an optional strip under it (the file drop zone on home).
+ * Enter submits.
+ */
+import { ArrowUp } from 'lucide-react';
+import { type FormEvent, type ReactNode, useId, useRef, useState } from 'react';
 
 export const PLACEHOLDER = 'Paste a YouTube, Vimeo, TikTok, podcast or any video link';
 
-export function UrlForm({ onSubmit, initial = '' }: { onSubmit: (url: string) => void; initial?: string }) {
+export function UrlForm({
+  onSubmit,
+  initial = '',
+  tools,
+  footer,
+}: {
+  onSubmit: (url: string) => void;
+  initial?: string;
+  /** Controls shown left of the submit button. */
+  tools?: ReactNode;
+  /** A strip attached under the composer. */
+  footer?: ReactNode;
+}) {
   const [value, setValue] = useState(initial);
   const [error, setError] = useState('');
   const input = useRef<HTMLInputElement>(null);
@@ -22,34 +38,37 @@ export function UrlForm({ onSubmit, initial = '' }: { onSubmit: (url: string) =>
   };
   return (
     <form onSubmit={submit} className="w-full" aria-label="Get context for a video link">
-      <label htmlFor={id} className="sr-only">
-        Video link
-      </label>
-      <div className="flex flex-col gap-2 rounded-v2c-lg border border-border-strong bg-surface p-2 shadow-v2c focus-within:border-accent sm:flex-row sm:items-center">
-        <div className="flex min-w-0 flex-1 items-center gap-2 px-3">
-          <Link2 className="size-5 shrink-0 text-muted" aria-hidden />
-          <input
-            ref={input}
-            id={id}
-            type="text"
-            inputMode="url"
-            autoComplete="off"
-            autoCapitalize="off"
-            spellCheck={false}
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-            placeholder={PLACEHOLDER}
-            aria-invalid={error ? true : undefined}
-            aria-describedby={error ? `${id}-error` : undefined}
-            className="min-w-0 flex-1 bg-transparent py-3 text-base text-fg placeholder:text-muted focus:outline-none"
-          />
+      <div className="rounded-[22px] border border-border bg-surface shadow-v2c transition focus-within:border-border-strong">
+        <label htmlFor={id} className="sr-only">
+          Video link
+        </label>
+        <input
+          ref={input}
+          id={id}
+          type="text"
+          inputMode="url"
+          autoComplete="off"
+          autoCapitalize="off"
+          spellCheck={false}
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          placeholder={PLACEHOLDER}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={error ? `${id}-error` : undefined}
+          className="block w-full min-w-0 bg-transparent px-5 pb-6 pt-5 text-base text-fg placeholder:text-subtle focus:outline-none focus-visible:outline-none sm:pb-8"
+        />
+        <div className="flex items-end gap-2 px-3 pb-3">
+          <div className="min-w-0 flex-1">{tools}</div>
+          <button
+            type="submit"
+            aria-label="Get context"
+            title="Get context (Enter)"
+            className="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-accent text-on-accent transition hover:opacity-90"
+          >
+            <ArrowUp className="size-5" strokeWidth={2.25} aria-hidden />
+          </button>
         </div>
-        <button
-          type="submit"
-          className="v2c-gradient inline-flex items-center justify-center gap-2 rounded-v2c px-6 py-3 text-[1.1875rem] font-bold text-on-accent transition hover:brightness-110"
-        >
-          Get context <ArrowRight className="size-5" aria-hidden />
-        </button>
+        {footer && <div className="rounded-b-[21px] border-t border-border bg-surface-2/50">{footer}</div>}
       </div>
       {error && (
         <p id={`${id}-error`} className="mt-2 px-2 text-sm text-fg" role="alert">

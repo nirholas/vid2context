@@ -1,10 +1,16 @@
-/** App shell: header, the current view from the query string, footer. */
-import { MessageSquare, Settings as SettingsIcon } from 'lucide-react';
-import { lazy, Suspense, useEffect } from 'react';
+/**
+ * App shell: a sidebar (a column on wide screens, a drawer on narrow ones)
+ * and a framed main panel that scrolls on its own. The current view comes
+ * from the query string.
+ */
+import { Menu, PanelLeftOpen } from 'lucide-react';
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { Home } from './components/home/Home.tsx';
 import { Loading, RunView } from './components/RunView.tsx';
+import { SearchDialog } from './components/shell/SearchDialog.tsx';
+import { Sidebar } from './components/shell/Sidebar.tsx';
+import { IconButton } from './components/ui.tsx';
 import { ApiStatusProvider, useApiStatus } from './lib/api-status.tsx';
-import { CHAT_PATH } from './lib/links.ts';
 import { appHref, onAppLinkClick, type Route, useRoute } from './lib/route.ts';
 
 const Settings = lazy(() => import('./components/Settings.tsx'));
@@ -15,7 +21,19 @@ const TITLES: Record<Route['view'], string> = {
   settings: 'Settings | vid2context',
 };
 
-function StatusDot() {
+/** localStorage key for the collapsed sidebar on wide screens. */
+export const SIDEBAR_KEY = 'v2c.sidebar';
+const WIDE = '(min-width: 768px)';
+
+function readCollapsed(): boolean {
+  try {
+    return localStorage.getItem(SIDEBAR_KEY) === 'collapsed';
+  } catch {
+    return false;
+  }
+}
+
+function StatusPill() {
   const { state } = useApiStatus();
   const label =
     state.status === 'online'
@@ -30,99 +48,147 @@ function StatusDot() {
     <a
       href={appHref('?view=settings')}
       onClick={(e) => onAppLinkClick(e, '?view=settings')}
-      className="hidden items-center gap-1.5 rounded-full border border-border px-2.5 py-1 text-xs text-muted hover:text-fg sm:flex"
+      className="flex items-center gap-2 rounded-full px-3 py-1.5 text-xs text-muted transition hover:bg-surface-2 hover:text-fg"
       data-testid="api-status"
       data-status={state.status}
     >
       <span className={`size-2 rounded-full ${color}`} aria-hidden />
-      {label}
+      <span className="hidden sm:inline">{label}</span>
+      <span className="sr-only sm:hidden">{label}</span>
     </a>
   );
 }
 
-function Header() {
-  return (
-    <header className="sticky top-0 z-10 border-b border-border bg-bg/85 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3 sm:px-6">
-        <a href={appHref('')} onClick={(e) => onAppLinkClick(e, '')} className="flex items-center gap-2 font-semibold text-fg">
-          <span className="v2c-gradient flex size-7 items-center justify-center rounded-v2c-sm" aria-hidden>
-            <svg viewBox="0 0 16 16" className="size-3.5" fill="currentColor" aria-hidden>
-              <path d="M5 3.5v9l7-4.5z" className="text-black" />
-            </svg>
-          </span>
-          vid2context
-        </a>
-        <nav aria-label="Main" className="ml-auto flex items-center gap-1 sm:gap-2">
-          <StatusDot />
-          <a
-            href={CHAT_PATH}
-            className="flex items-center gap-1.5 rounded-v2c-sm px-2.5 py-1.5 text-sm text-muted hover:bg-surface-2 hover:text-fg"
-          >
-            <MessageSquare className="size-4" aria-hidden /> Chat
-          </a>
-          <a
-            href={appHref('?view=settings')}
-            onClick={(e) => onAppLinkClick(e, '?view=settings')}
-            className="flex items-center gap-1.5 rounded-v2c-sm px-2.5 py-1.5 text-sm text-muted hover:bg-surface-2 hover:text-fg"
-          >
-            <SettingsIcon className="size-4" aria-hidden /> Settings
-          </a>
-        </nav>
-      </div>
-    </header>
-  );
-}
-
-function Footer() {
-  return (
-    <footer className="border-t border-border">
-      <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-6 text-sm text-muted sm:px-6">
-        <span>vid2context turns any video into context for AI agents. Free first, open source.</span>
-        <a href="/" className="hover:text-fg">
-          About
-        </a>
-        <a href="https://github.com/nirholas/vid2context" className="hover:text-fg" rel="noopener noreferrer">
-          Source on GitHub
-        </a>
-      </div>
-    </footer>
-  );
-}
-
-function Main() {
+function Shell() {
   const route = useRoute();
-  useEffect(() => {
-    document.title = TITLES[route.view];
-  }, [route.view]);
+  const [collapsed, setCollapsed] = useState(readCollapsed);
+  const [drawer, setDrawer] = useState(false);
+  const [searching, setSearching] = useState(false);
+  const main = useRef<HTMLElement>(null);
+  const sidebar = useRef<HTMLElement>(null);
+  const opener = useRef<HTMLButtonElement>(null);
+
+  const setCollapsedSaved = useCallback((c: boolean) => {
+    setCollapsed(c);
+    try {
+      localStorage.setItem(SIDEBAR_KEY, c ? 'collapsed' : 'open');
+    } catch {
+      // Storage blocked: the choice lasts for this page only.
+    }
+  }, []);
+
   const runKey =
     route.view === 'run' ? `${route.url}|${route.mode}|${route.lang}|${route.comments}|${route.timestamps}` : route.view;
+
+  // New view: set the title, close the drawer and start the panel at the top.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: runKey is the trigger: a new run in the same view also starts at the top.
+  useEffect(() => {
+    document.title = TITLES[route.view];
+    setDrawer(false);
+    main.current?.scrollTo({ top: 0 });
+  }, [route.view, runKey]);
+
+  // Ctrl+K or Cmd+K opens search from anywhere.
+  useEffect(() => {
+    const on = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && !e.altKey && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setSearching(true);
+      }
+    };
+    window.addEventListener('keydown', on);
+    return () => window.removeEventListener('keydown', on);
+  }, []);
+
+  // The drawer: move focus into it, close on Escape, give focus back on close.
+  useEffect(() => {
+    if (!drawer) return;
+    sidebar.current?.querySelector<HTMLElement>('a, button')?.focus();
+    const on = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setDrawer(false);
+    };
+    window.addEventListener('keydown', on);
+    return () => {
+      window.removeEventListener('keydown', on);
+      opener.current?.focus();
+    };
+  }, [drawer]);
+
+  const wide = () => window.matchMedia(WIDE).matches;
+  const openSidebar = () => (wide() ? setCollapsedSaved(false) : setDrawer(true));
+  const closeSidebar = () => (wide() ? setCollapsedSaved(true) : setDrawer(false));
+
   return (
-    <main id="main" className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6" tabIndex={-1}>
-      {route.view === 'home' && <Home />}
-      {route.view === 'run' && <RunView key={runKey} params={route} />}
-      {route.view === 'settings' && (
-        <Suspense fallback={<Loading label="Loading settings" />}>
-          <Settings />
-        </Suspense>
-      )}
-    </main>
+    <div className="flex h-dvh overflow-hidden bg-sidebar text-fg">
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-v2c focus:bg-surface-2 focus:px-4 focus:py-2 focus:text-fg"
+      >
+        Skip to content
+      </a>
+
+      {drawer && <div className="fixed inset-0 z-30 bg-black/60 md:hidden" aria-hidden onClick={() => setDrawer(false)} />}
+      <aside
+        ref={sidebar}
+        id="sidebar"
+        aria-label="Sidebar"
+        className={`w-[260px] shrink-0 bg-sidebar max-md:fixed max-md:inset-y-0 max-md:left-0 max-md:z-40 max-md:border-r max-md:border-border max-md:transition-transform ${
+          drawer ? 'max-md:translate-x-0' : 'max-md:invisible max-md:-translate-x-full'
+        } ${collapsed ? 'md:hidden' : ''}`}
+      >
+        <Sidebar
+          route={route}
+          onSearch={() => setSearching(true)}
+          onCollapse={closeSidebar}
+          collapseLabel={drawer ? 'Close sidebar' : 'Collapse sidebar'}
+        />
+      </aside>
+
+      <div className={`flex min-w-0 flex-1 flex-col md:p-2 ${collapsed ? '' : 'md:pl-0'}`}>
+        <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-panel md:rounded-v2c-lg md:border md:border-border">
+          <div className="flex h-12 shrink-0 items-center gap-1 px-2 sm:px-3">
+            <IconButton
+              ref={opener}
+              label="Open sidebar"
+              aria-controls="sidebar"
+              aria-expanded={drawer}
+              className="md:hidden"
+              onClick={openSidebar}
+            >
+              <Menu className="size-[18px]" strokeWidth={1.75} aria-hidden />
+            </IconButton>
+            {collapsed && (
+              <IconButton label="Expand sidebar" className="max-md:hidden" onClick={openSidebar}>
+                <PanelLeftOpen className="size-[18px]" strokeWidth={1.75} aria-hidden />
+              </IconButton>
+            )}
+            <div className="ml-auto">
+              <StatusPill />
+            </div>
+          </div>
+          <main ref={main} id="main" tabIndex={-1} className="min-h-0 flex-1 overflow-y-auto focus:outline-none">
+            <div className={`mx-auto w-full px-4 pb-16 sm:px-6 ${route.view === 'home' ? 'max-w-4xl' : 'max-w-6xl pt-2'}`}>
+              {route.view === 'home' && <Home />}
+              {route.view === 'run' && <RunView key={runKey} params={route} />}
+              {route.view === 'settings' && (
+                <Suspense fallback={<Loading label="Loading settings" />}>
+                  <Settings />
+                </Suspense>
+              )}
+            </div>
+          </main>
+        </div>
+      </div>
+
+      <SearchDialog open={searching} onClose={() => setSearching(false)} />
+    </div>
   );
 }
 
 export function App() {
   return (
     <ApiStatusProvider>
-      <div className="flex min-h-screen flex-col">
-        <a
-          href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-v2c focus:bg-surface-2 focus:px-4 focus:py-2 focus:text-fg"
-        >
-          Skip to content
-        </a>
-        <Header />
-        <Main />
-        <Footer />
-      </div>
+      <Shell />
     </ApiStatusProvider>
   );
 }

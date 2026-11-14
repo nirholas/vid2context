@@ -23,8 +23,9 @@ for (const theme of ['dark', 'light'] as const) {
     await expect(page.getByRole('button', { name: 'Me at the zoo (0:19)' })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'How it works' })).toBeVisible();
     await expect(page.getByTestId('api-status')).toHaveAttribute('data-status', 'online');
-    await page.getByRole('button', { name: 'Options' }).click();
-    await expect(page.getByLabel('Mode')).toBeVisible();
+    await page.getByRole('button', { name: 'Mode: Auto' }).click();
+    await expect(page.getByRole('radio', { name: /Captions only/ })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Include comments' })).toHaveAttribute('aria-pressed', 'false');
     await expectAccessible(page);
   });
 }
@@ -35,6 +36,21 @@ test('home works at 360 px without horizontal scrolling', async ({ page }) => {
   await expect(page.getByRole('textbox', { name: 'Video link' })).toBeVisible();
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(overflow).toBeLessThanOrEqual(0);
+  await page.getByRole('button', { name: 'Open sidebar' }).click();
+  await expect(page.getByRole('link', { name: 'vid2context' })).toBeFocused();
+  await expect(page.getByRole('navigation', { name: 'Main' })).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('navigation', { name: 'Main' })).toBeHidden();
+  await expect(page.getByRole('button', { name: 'Open sidebar' })).toBeFocused();
+});
+
+test('Ctrl+K opens search over saved results', async ({ page }) => {
+  await page.goto('/app/');
+  await page.keyboard.press('Control+k');
+  await expect(page.getByRole('searchbox', { name: 'Search saved results' })).toBeFocused();
+  await expect(page.getByRole('dialog')).toContainText('Nothing saved yet');
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('searchbox', { name: 'Search saved results' })).toBeHidden();
 });
 
 test('everything on home is reachable by keyboard', async ({ page }) => {
@@ -42,8 +58,17 @@ test('everything on home is reachable by keyboard', async ({ page }) => {
   await page.keyboard.press('Tab');
   await expect(page.getByRole('link', { name: 'Skip to content' })).toBeFocused();
   await page.getByRole('textbox', { name: 'Video link' }).focus();
-  await page.keyboard.press('Tab');
-  await expect(page.getByRole('button', { name: /Get context/ })).toBeFocused();
+  for (const name of [
+    'Mode: Auto',
+    'Language: automatic',
+    'Include comments',
+    'Timestamps in transcript.txt',
+    'Attach a video or audio file',
+    'Get context',
+  ]) {
+    await page.keyboard.press('Tab');
+    await expect(page.getByRole('button', { name, exact: true })).toBeFocused();
+  }
   await page.keyboard.press('Tab');
   await expect(page.getByTestId('drop-zone')).toBeFocused();
 });
