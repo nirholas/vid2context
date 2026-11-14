@@ -23,8 +23,8 @@ const { positionals, values } = parseArgs({
 });
 const input = positionals[0];
 if (!input) {
-  console.error(
-    'usage: visual-notes.ts <file-or-url> [--max-frames N] [--scene 0.3] [--min 2] [--max 30] [--policy free|local-only|quality]',
+  process.stderr.write(
+    'usage: visual-notes.ts <file-or-url> [--max-frames N] [--scene 0.3] [--min 2] [--max 30] [--policy free|local-only|quality]\n',
   );
   process.exit(2);
 }
@@ -47,10 +47,10 @@ try {
     },
     ctx,
   );
-  console.log(JSON.stringify(res, null, 2));
+  process.stdout.write(`${JSON.stringify(res, null, 2)}\n`);
 } catch (err) {
   const e = err as { message?: string; hint?: string };
-  console.error(`error: ${e.message ?? String(err)}`);
-  if (e.hint) console.error(`hint: ${e.hint}`);
+  process.stderr.write(`error: ${e.message ?? String(err)}\n`);
+  if (e.hint) process.stderr.write(`hint: ${e.hint}\n`);
   process.exitCode = 1;
 }
