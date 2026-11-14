@@ -32,13 +32,14 @@ Tests serve these at `http://localhost:8000/apollo/`, the way any static file se
 
 ## stt/
 
-Responses from OVH AI Endpoints (keyless, `whisper-large-v3-turbo`, `POST /v1/audio/transcriptions`, `response_format=verbose_json`) for the exact chunk audio each test scenario sends, recorded in order with `LIVE=1 npx tsx packages/live/scripts/record-stt.ts`. Calls were spaced 32 s apart (the keyless tier allows about 2 per minute per IP). Only the `content-type`, `retry-after` and `x-ratelimit-*` headers were kept.
+Responses from OVH AI Endpoints (keyless, `whisper-large-v3-turbo`, `POST /v1/audio/transcriptions`, `response_format=verbose_json`) for the exact chunk audio each test scenario sends, recorded in order with `LIVE=1 npx tsx packages/live/scripts/record-stt.ts [scenario]` between 17:27 and 17:46 UTC. The keyless quota (about 2 requests per minute per IP) was shared with other work on the VM, so the recorder waited out each 429 and sent the same request again; only the final answer is saved, except in `nasa-ratelimit.json`. Only the `content-type`, `retry-after` and `x-ratelimit-*` headers were kept. Nothing personal is in the bodies (text, timings and a request id).
 
 | File | Scenario (see `test/scenarios.ts`) | Responses |
 |---|---|---|
-| `nasa-ratelimit.json` | `nasa-sequence` with a quota already spent by an earlier run | 429 `API rate limit exceeded` with `retry-after: 46`, then 200 " Thank you." |
-| `nasa-sequence.json` | 15 s chunk over segments 323509 to 323511 | 200 |
-| `nasa-backpressure.json` | 5 s chunks, `maxLagSec` 6: segment 323509, then 323511 after the skip | 200, 200 |
-| `nasa-resume.json` | `fromSequence` 323510, one 10 s chunk | 200 |
-| `apollo-overlap.json` | 10 s chunks with 2 s overlap: 0 to 10 s, 8 to 20 s, 18 to 24.2 s | 200, 200, 200 |
-| `apollo-whole.json` | default 30 s chunks: the whole 24.2 s after `EXT-X-ENDLIST` | 200 |
+| `nasa-ratelimit.json` | the `nasa-sequence` chunk, sent while an earlier run had spent the quota | 429 `API rate limit exceeded` with `retry-after: 46`, then 200 " Thank you." |
+| `nasa-sequence.json` | one 15 s chunk over segments 323509 to 323511 | 200 " Thank you." (Whisper on silence) |
+| `nasa-backpressure.json` | 5 s chunks with `maxLagSec` 6: segment 323509, then 323511 after the skip | 200, 200: " ギギギギギギギ" (Whisper on 5 s of silence) |
+| `nasa-resume.json` | `fromSequence` 323510, one 10 s chunk | 200 " Thank you." |
+| `apollo-overlap.json` | 10 s chunks with 2 s overlap: 0 to 10 s, 8 to 20 s, 18 to 24.2 s | "I'm going to step off the land now.", "That's one small step for man", "one giant leap for mankind" (Whisper leaves out the words cut at a chunk start) |
+| `apollo-dedupe.json` | 8 s chunks with 3 s overlap: 0 to 8 s, 5 to 16 s, 13 to 24.2 s | "I'm going to step off the land now.", "That's one", "That's one small step for man, one giant leap for mankind." (the third repeats "That's one" from the overlap) |
+| `apollo-whole.json` | default 30 s chunks: the whole 24.2 s after `EXT-X-ENDLIST` | the whole quote in one response |

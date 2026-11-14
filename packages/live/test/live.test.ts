@@ -313,8 +313,8 @@ describe.skipIf(!hasFfmpeg)('watching a stream (recorded HLS, recorded keyless s
     // Each response's times are relative to its chunk, so the shifted starts show where each chunk began.
     expect(segmentsOf(events).map((e) => [e.segment.text, Number(e.segment.startSec.toFixed(2))])).toEqual([
       ["I'm going to step off the land now.", 3.62],
-      ["That's one small step for man", 8 + 6.94],
-      ['one giant leap for mankind', 18 + 2.9],
+      ["That's one small step for man", 14.94], // 8 + 6.94
+      ['one giant leap for mankind', 20.9], // 18 + 2.9
     ]);
     expect(statusesOf(events).some((s) => s.code === 'ended' && s.message.includes('EXT-X-ENDLIST'))).toBe(true);
     const done = doneOf(events);
