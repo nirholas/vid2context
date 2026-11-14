@@ -8,6 +8,7 @@
  */
 import { isInputError, Vid2ContextError } from './errors.ts';
 import type { ChainOptions, Rung } from './provider.ts';
+import { redact } from './security/redact.ts';
 import type { Attempt, Ctx, Env, Policy, Tier } from './types.ts';
 
 const TIER_ORDER: Record<Tier, number> = { local: 0, free: 1, keyless: 2, paid: 3 };
@@ -150,7 +151,7 @@ export async function runChain<R extends Rung, T>(
         stage,
         outcome: 'error',
         reason: reasonFor(err),
-        detail: errMessage(err).slice(0, 300),
+        detail: redact(errMessage(err), ctx.env).slice(0, 300),
         ms: Date.now() - started,
       });
       ctx.log.warn(`${stage} rung failed, trying the next one`, { rung: rung.id, reason: reasonFor(err) });

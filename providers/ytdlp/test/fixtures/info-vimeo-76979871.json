@@ -1,0 +1,85 @@
+{
+ "id": "76979871",
+ "title": "The New Vimeo Player (You Know, For Videos)",
+ "uploader": "Vimeo",
+ "uploader_id": "staff",
+ "uploader_url": "https://vimeo.com/staff",
+ "thumbnails": [
+  {
+   "id": "0"
+  }
+ ],
+ "duration": 62,
+ "chapters": null,
+ "subtitles": {
+  "es": [
+   {},
+   {},
+   {},
+   {},
+   {}
+  ],
+  "en": [
+   {},
+   {},
+   {},
+   {},
+   {}
+  ],
+  "fr": [
+   {},
+   {},
+   {},
+   {},
+   {}
+  ],
+  "de": [
+   {},
+   {},
+   {},
+   {},
+   {}
+  ]
+ },
+ "live_status": null,
+ "release_timestamp": null,
+ "webpage_url": "https://player.vimeo.com/video/76979871",
+ "original_url": "https://player.vimeo.com/video/76979871",
+ "webpage_url_basename": "76979871",
+ "webpage_url_domain": "player.vimeo.com",
+ "extractor": "vimeo",
+ "extractor_key": "Vimeo",
+ "playlist": null,
+ "playlist_index": null,
+ "thumbnail": "https://i.vimeocdn.com/video/452001751-8216e0571c251a09d7a8387550942d89f7f86f6398f8ed886e639b0dd50d3c90-d",
+ "display_id": "76979871",
+ "fulltitle": "The New Vimeo Player (You Know, For Videos)",
+ "duration_string": "1:02",
+ "release_year": null,
+ "_has_drm": true,
+ "epoch": 1794675666,
+ "language": "en",
+ "format_note": "English, high",
+ "filesize_approx": null,
+ "tbr": 2644,
+ "width": 1280,
+ "height": 720,
+ "resolution": "1280x720",
+ "fps": 23.976,
+ "dynamic_range": "SDR",
+ "vcodec": "avc1.64001F",
+ "vbr": 2644,
+ "stretched_ratio": null,
+ "aspect_ratio": 1.78,
+ "acodec": null,
+ "abr": null,
+ "asr": null,
+ "audio_channels": null,
+ "_type": "video",
+ "_version": {
+  "version": "2026.10.26",
+  "current_git_head": null,
+  "release_git_head": null,
+  "repository": "yt-dlp/yt-dlp"
+ }
+}

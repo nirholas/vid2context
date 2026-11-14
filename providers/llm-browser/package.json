@@ -1,0 +1,19 @@
+{
+  "name": "@vid2context/provider-llm-browser",
+  "version": "0.1.0",
+  "description": "Local chat rungs that run inside the browser: WebLLM on WebGPU and Chrome's built-in Prompt API.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "vid2context": {
+    "runtimes": [
+      "browser"
+    ]
+  },
+  "dependencies": {
+    "@mlc-ai/web-llm": "^0.2.88",
+    "@vid2context/core": "*"
+  }
+}

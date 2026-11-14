@@ -165,7 +165,10 @@ export const mp3FramesSplitter: AudioSplitter = {
   id: 'mp3-frames',
   canSplit(audio) {
     if (audio.kind !== 'bytes') return isMp3Type(audio);
-    return looksLikeMp3(audio.data) && (isMp3Type(audio) || !/^(audio|video)\/(mp4|x-m4a|m4a|webm|ogg|aac|wav|x-wav)/i.test(audio.mimeType));
+    return (
+      looksLikeMp3(audio.data) &&
+      (isMp3Type(audio) || !/^(audio|video)\/(mp4|x-m4a|m4a|webm|ogg|aac|wav|x-wav)/i.test(audio.mimeType))
+    );
   },
   async *split(audio, opts: SplitOptions) {
     if (audio.kind !== 'bytes') {

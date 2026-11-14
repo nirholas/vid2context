@@ -1,0 +1,17 @@
+{
+  "playabilityStatus": {
+    "status": "OK"
+  },
+  "videoDetails": {
+    "videoId": "M3HKLzjvKPc",
+    "title": "Live Video from the International Space Station (Official NASA Stream)",
+    "author": "NASA",
+    "channelId": "UCLA_DiR1FfKNvjuUpBHmylQ",
+    "isLive": true,
+    "isLiveContent": true
+  },
+  "streamingData": {
+    "expiresInSeconds": "21540",
+    "hlsManifestUrl": "https://manifest.googlevideo.com/api/manifest/hls_variant/expire/1794697557/ei/9ZT4avmYE4OpsfIPmtj_mAE/ip/0.0.0.0/id/M3HKLzjvKPc.26/source/yt_live_broadcast/requiressl/yes/xpc/EgVo2aDSNQ%3D%3D/hfr/1/playlist_duration/30/manifest_duration/30/maudio/1/bui/AZFAFb_yrzviybcXpXWNn4XsE-3kce_r8vTyeWNEJ7iWv0JNX75jSJvGvEDOMaVzMnYTH0zDDKI7ZT4A/spc/nfZ8ZsdvyAdD-1VAqhQZ99dNNxDcBll5uYQ6W3AlyF5H1-g6PfWPXNDmOg/vprv/1/go/1/rqh/5/reg/0/pacing/0/epbp/1/nvgoi/1/ncsapi/1/keepalive/yes/fexp/51565116/dover/11/itag/0/playlist_type/DVR/sparams/expire%2Cei%2Cip%2Cid%2Csource%2Crequiressl%2Cxpc%2Chfr%2Cplaylist_duration%2Cmanifest_duration%2Cmaudio%2Cbui%2Cspc%2Cvprv%2Cgo%2Crqh%2Creg%2Citag%2Cplaylist_type/sig/AE0s2JYwRAIgQWuNy4v9Rw51JSVlJCCT6-NqGPE8tBsS2rBfAcgLeeECIDh_gEvB53Zdfz0k0T6Jq_nZAb2jj_mOrl9YXo1cS7VJ/file/index.m3u8"
+  }
+}

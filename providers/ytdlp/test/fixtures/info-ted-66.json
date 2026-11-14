@@ -1,0 +1,257 @@
+{
+ "id": "66",
+ "title": "Do schools kill creativity?",
+ "uploader": "Sir Ken Robinson",
+ "thumbnail": "https://pe.tedcdn.com/images/ted/0fa21bf9f73bd5815bf7fcc9f95682ff4e80c6db_2400x1800.jpg",
+ "description": "Sir Ken Robinson makes an entertaining and profoundly moving case for creating an education system that nurtures (rather than undermines) creativity.",
+ "subtitles": {
+  "pt-br": [
+   {}
+  ],
+  "mfe": [
+   {}
+  ],
+  "el": [
+   {}
+  ],
+  "eo": [
+   {}
+  ],
+  "en": [
+   {}
+  ],
+  "vi": [
+   {}
+  ],
+  "ca": [
+   {}
+  ],
+  "it": [
+   {}
+  ],
+  "sv": [
+   {}
+  ],
+  "cs": [
+   {}
+  ],
+  "ar": [
+   {}
+  ],
+  "inh": [
+   {}
+  ],
+  "eu": [
+   {}
+  ],
+  "et": [
+   {}
+  ],
+  "az": [
+   {}
+  ],
+  "id": [
+   {}
+  ],
+  "es": [
+   {}
+  ],
+  "ru": [
+   {}
+  ],
+  "gl": [
+   {}
+  ],
+  "nl": [
+   {}
+  ],
+  "pt": [
+   {}
+  ],
+  "zh-cn": [
+   {}
+  ],
+  "lo": [
+   {}
+  ],
+  "nb": [
+   {}
+  ],
+  "af": [
+   {}
+  ],
+  "tr": [
+   {}
+  ],
+  "ne": [
+   {}
+  ],
+  "lv": [
+   {}
+  ],
+  "hr": [
+   {}
+  ],
+  "lt": [
+   {}
+  ],
+  "th": [
+   {}
+  ],
+  "ro": [
+   {}
+  ],
+  "fil": [
+   {}
+  ],
+  "be": [
+   {}
+  ],
+  "fr": [
+   {}
+  ],
+  "bg": [
+   {}
+  ],
+  "uk": [
+   {}
+  ],
+  "sl": [
+   {}
+  ],
+  "fr-ca": [
+   {}
+  ],
+  "bn": [
+   {}
+  ],
+  "de": [
+   {}
+  ],
+  "uz": [
+   {}
+  ],
+  "da": [
+   {}
+  ],
+  "fa": [
+   {}
+  ],
+  "fi": [
+   {}
+  ],
+  "hy": [
+   {}
+  ],
+  "hu": [
+   {}
+  ],
+  "ja": [
+   {}
+  ],
+  "zh-tw": [
+   {}
+  ],
+  "he": [
+   {}
+  ],
+  "ka": [
+   {}
+  ],
+  "sr": [
+   {}
+  ],
+  "sq": [
+   {}
+  ],
+  "mn": [
+   {}
+  ],
+  "ko": [
+   {}
+  ],
+  "mk": [
+   {}
+  ],
+  "ur": [
+   {}
+  ],
+  "sk": [
+   {}
+  ],
+  "pl": [
+   {}
+  ],
+  "mr": [
+   {}
+  ],
+  "kmr": [
+   {}
+  ],
+  "kn": [
+   {}
+  ],
+  "si": [
+   {}
+  ],
+  "ckb": [
+   {}
+  ]
+ },
+ "duration": 1151,
+ "view_count": 80769846,
+ "upload_date": "20060627",
+ "release_date": "20060225",
+ "tags": [
+  "creativity",
+  "culture",
+  "dance",
+  "education",
+  "parenting",
+  "teaching",
+  "kids"
+ ],
+ "webpage_url": "https://www.ted.com/talks/ken_robinson_do_schools_kill_creativity",
+ "original_url": "https://www.ted.com/talks/ken_robinson_do_schools_kill_creativity",
+ "webpage_url_basename": "ken_robinson_do_schools_kill_creativity",
+ "webpage_url_domain": "ted.com",
+ "extractor": "TedTalk",
+ "extractor_key": "TedTalk",
+ "playlist": null,
+ "playlist_index": null,
+ "thumbnails": [
+  {
+   "id": "0"
+  }
+ ],
+ "display_id": "66",
+ "fulltitle": "Do schools kill creativity?",
+ "duration_string": "19:11",
+ "release_year": 2006,
+ "_has_drm": null,
+ "epoch": 1794675726,
+ "language": "en",
+ "format_note": "medium",
+ "filesize_approx": null,
+ "tbr": 1017.657,
+ "width": 640,
+ "height": 480,
+ "resolution": "640x480",
+ "fps": 29.97,
+ "dynamic_range": "SDR",
+ "vcodec": "avc1.64001f",
+ "vbr": 1017.657,
+ "stretched_ratio": null,
+ "aspect_ratio": 1.33,
+ "acodec": null,
+ "abr": null,
+ "asr": null,
+ "audio_channels": null,
+ "_type": "video",
+ "_version": {
+  "version": "2026.10.26",
+  "current_git_head": null,
+  "release_git_head": null,
+  "repository": "yt-dlp/yt-dlp"
+ }
+}

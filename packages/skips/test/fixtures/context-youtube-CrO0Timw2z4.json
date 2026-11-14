@@ -1,0 +1,3071 @@
+{
+  "metadata": {
+    "ref": {
+      "input": "https://www.youtube.com/watch?v=CrO0Timw2z4",
+      "platform": "youtube",
+      "kind": "video",
+      "id": "youtube:CrO0Timw2z4",
+      "nativeId": "CrO0Timw2z4",
+      "url": "https://www.youtube.com/watch?v=CrO0Timw2z4"
+    },
+    "title": "I Let My Staff Upgrade the Office (They Almost Ruined It)",
+    "description": "LiberNovo Black Friday Early Access: Limited gift cards for up to $100 USD extra off on top of Black Friday prices! Omni from $609 USD (up to 39% off) and Maxis from $849 USD (up to 42% off). Starts Nov 9, 6 PM PST: https://libernovo.com/pages/black-friday-cyber-monday-sale?ref=LMG\n\nBulk orders: up to 42% off, plus an extra $180 off for every $4,000 spent, starting Nov 9, 6 PM PST: https://libernovo.com/pages/bulk-order?ref=LMG\n\nCheck out the Nanoleaf lighting products we used in our setups: https://links.nanoleaf.me/linustech\n\nIt’s been years, but thanks to our sponsors Libernovo and Nanoleaf, we’re finally giving the LTT writers a MASSIVE office upgrade! Did I say giving? I meant, they’re DOING the upgrade themselves. Which… May have been a terrible mistake… But hey, it also gave us an opportunity to peek behind the curtain, meet some of the newer faces on the team, and tour the space where all the magic actually happens.\n\nDiscuss on the forum: https://linustechtips.com/topic/1644328-i-let-my-staff-upgrade-the-office-they-almost-ruined-it/\n\nCheck out our Channel Partners:\n\nPIA \n- Get the VPN of our choice: https://www.piavpn.com/ltt\n\ndbrand \n- Buy a \"Circuit\" series skin for your device: https://dbrand.com/pcb\n\n► SHOP LTT PRODUCTS: https://lttstore.com\n► GET EXCLUSIVE CONTENT ON FLOATPLANE: https://lmg.gg/lttfloatplane\n► DIVE DEEPER ON THE LTT LABS WEBSITE: https://lmg.gg/labs\n► SPONSORS, AFFILIATES, AND PARTNERS: https://lmg.gg/partners\n\nPurchases made through some store links may provide some compensation to Linus Media Group. Affiliate links powered in part by https://affilimate.com/?aid=ghz1izbpb\n\nLinus Sebastian is an investor in Framework Computer, Inc and HexOS by Eshtek.\n\nCHAPTERS\n---------------------------------------------------\n0:00 Intro\n1:10 Everyone's setups \n1:08 Checking in with the Writers\n4:38 The Plan to Reorganize the Space\n5:35 Demo \n6:14 Raiding Creator Warehouse\n7:30 Reece Lost the Power \n8:45 Building & Fixing Shelf Reinforcements\n9:26 Skylight Light Panels\n10:03 Checking out the New Chairs\n12:20 Tearing Down the OSB Divider\n13:08 New Translucent Wall Dividers\n13:57 Home Assistant Office Automations & Tablet Dashboard\n15:30 Final Walkthrough & Desk Reveals\n17:50 Outro",
+    "durationSec": 1077,
+    "thumbnailUrl": "https://i.ytimg.com/vi/CrO0Timw2z4/sddefault.jpg",
+    "language": "en",
+    "chapters": [],
+    "isLive": false,
+    "extra": {
+      "viewCount": 2380724,
+      "isLiveContent": false,
+      "playability": "OK"
+    },
+    "channel": {
+      "name": "Linus Tech Tips",
+      "id": "UCXuqSBlHAE6Xw-yeJA0Tunw",
+      "url": "https://www.youtube.com/channel/UCXuqSBlHAE6Xw-yeJA0Tunw"
+    }
+  },
+  "transcript": {
+    "ref": {
+      "input": "https://www.youtube.com/watch?v=CrO0Timw2z4",
+      "platform": "youtube",
+      "kind": "video",
+      "id": "youtube:CrO0Timw2z4",
+      "nativeId": "CrO0Timw2z4",
+      "url": "https://www.youtube.com/watch?v=CrO0Timw2z4"
+    },
+    "language": "en",
+    "origin": "auto-captions",
+    "producer": "youtube-captions",
+    "segments": [
+      {
+        "startSec": 0.654,
+        "endSec": 1.309,
+        "text": "[screaming]"
+      },
+      {
+        "startSec": 1.309,
+        "endSec": 3.3,
+        "text": "[groaning]"
+      },
+      {
+        "startSec": 3.3,
+        "endSec": 4.2,
+        "text": ">> What did you do that for?"
+      },
+      {
+        "startSec": 4.2,
+        "endSec": 7.1,
+        "text": ">> Because you're getting A SETUP UPGRADE,"
+      },
+      {
+        "startSec": 7.1,
+        "endSec": 9.2,
+        "text": "BABY. IN FACT, YOU'RE ALL GETTING"
+      },
+      {
+        "startSec": 9.2,
+        "endSec": 11.8,
+        "text": "UPGRADES. You [cheering] get an upgrade."
+      },
+      {
+        "startSec": 11.8,
+        "endSec": 13.9,
+        "text": "YOU GET AN UPGRADE."
+      },
+      {
+        "startSec": 13.9,
+        "endSec": 16.5,
+        "text": "YOU GET AN UPGRADE. [cheering]"
+      },
+      {
+        "startSec": 16.5,
+        "endSec": 18.2,
+        "text": ">> WHO'S DOING THE UPGRADE FOR US?"
+      },
+      {
+        "startSec": 18.2,
+        "endSec": 21.2,
+        "text": ">> YOU ARE."
+      },
+      {
+        "startSec": 21.2,
+        "endSec": 23.5,
+        "text": "WE'RE ALL GOING TO DO IT TOGETHER. IT'S"
+      },
+      {
+        "startSec": 23.5,
+        "endSec": 25.8,
+        "text": "LONG OVERDUE, but the writer's block is"
+      },
+      {
+        "startSec": 25.8,
+        "endSec": 27.7,
+        "text": "finally getting a major overhaul"
+      },
+      {
+        "startSec": 27.7,
+        "endSec": 30.2,
+        "text": "including setting up a home assistant"
+      },
+      {
+        "startSec": 30.2,
+        "endSec": 32.4,
+        "text": "server for the office with some very"
+      },
+      {
+        "startSec": 32.4,
+        "endSec": 34.8,
+        "text": "important automations. This gives us an"
+      },
+      {
+        "startSec": 34.8,
+        "endSec": 36.4,
+        "text": "opportunity to optimize our workflows"
+      },
+      {
+        "startSec": 36.4,
+        "endSec": 38.6,
+        "text": "and make better videos than ever before"
+      },
+      {
+        "startSec": 38.6,
+        "endSec": 40.2,
+        "text": "and it gives you an opportunity to get"
+      },
+      {
+        "startSec": 40.2,
+        "endSec": 41.8,
+        "text": "to know some of the fresher faces on our"
+      },
+      {
+        "startSec": 41.8,
+        "endSec": 43.5,
+        "text": "team, some of which are newer and some"
+      },
+      {
+        "startSec": 43.5,
+        "endSec": 45.1,
+        "text": "of which have actually been around for a"
+      },
+      {
+        "startSec": 45.1,
+        "endSec": 47.1,
+        "text": "long time just in other departments. And"
+      },
+      {
+        "startSec": 47.1,
+        "endSec": 48.9,
+        "text": "finally, it'll give me an opportunity to"
+      },
+      {
+        "startSec": 48.9,
+        "endSec": 50.4,
+        "text": "show off all this cool stuff from our"
+      },
+      {
+        "startSec": 50.4,
+        "endSec": 52.4,
+        "text": "sponsors. Look at that. We got Nano"
+      },
+      {
+        "startSec": 52.4,
+        "endSec": 55,
+        "text": "Leaves, we got Liber Novo chairs. It's"
+      },
+      {
+        "startSec": 55,
+        "endSec": 57.6,
+        "text": "going to be great."
+      },
+      {
+        "startSec": 57.6,
+        "endSec": 59.4,
+        "text": "Yeah."
+      },
+      {
+        "startSec": 59.4,
+        "endSec": 59.605,
+        "text": ">> Woo."
+      },
+      {
+        "startSec": 59.605,
+        "endSec": 61.625,
+        "text": ">> [cheering and applause]"
+      },
+      {
+        "startSec": 63.535,
+        "endSec": 65.555,
+        "text": "[music]"
+      },
+      {
+        "startSec": 68.6,
+        "endSec": 69.6,
+        "text": ">> First thing we're going to need to do is"
+      },
+      {
+        "startSec": 69.6,
+        "endSec": 71,
+        "text": "some cleanup and while we're working on"
+      },
+      {
+        "startSec": 71,
+        "endSec": 72.6,
+        "text": "that, I want to check in with everyone"
+      },
+      {
+        "startSec": 72.6,
+        "endSec": 74.67,
+        "text": "and see what exactly would make the day"
+      },
+      {
+        "startSec": 74.67,
+        "endSec": 76.6,
+        "text": "[music] of a David Pancakes just a"
+      },
+      {
+        "startSec": 76.6,
+        "endSec": 77.8,
+        "text": "little bit better."
+      },
+      {
+        "startSec": 77.8,
+        "endSec": 79.8,
+        "text": ">> I mean, a bit more light in this area"
+      },
+      {
+        "startSec": 79.8,
+        "endSec": 81.5,
+        "text": "would be great because I [music] use"
+      },
+      {
+        "startSec": 81.5,
+        "endSec": 83,
+        "text": "this for building machines and it's"
+      },
+      {
+        "startSec": 83,
+        "endSec": 84.7,
+        "text": "really hard to see inside cases right"
+      },
+      {
+        "startSec": 84.7,
+        "endSec": 85.4,
+        "text": "now."
+      },
+      {
+        "startSec": 85.4,
+        "endSec": 87.9,
+        "text": ">> Oh, okay. Well, that's reasonable. I"
+      },
+      {
+        "startSec": 87.9,
+        "endSec": 90.6,
+        "text": "assume you would like maybe a desk pad"
+      },
+      {
+        "startSec": 90.6,
+        "endSec": 92,
+        "text": "and or a larger monitor"
+      },
+      {
+        "startSec": 92,
+        "endSec": 94,
+        "text": ">> Can I have a computer, please? My"
+      },
+      {
+        "startSec": 94,
+        "endSec": 95.8,
+        "text": "previous role didn't require a computer"
+      },
+      {
+        "startSec": 95.8,
+        "endSec": 97.6,
+        "text": "and now they won't give me one until I"
+      },
+      {
+        "startSec": 97.6,
+        "endSec": 99,
+        "text": "make enough videos, please."
+      },
+      {
+        "startSec": 99,
+        "endSec": 101.6,
+        "text": ">> Okay, stop. That's not how it went, but"
+      },
+      {
+        "startSec": 101.6,
+        "endSec": 103,
+        "text": "yeah, we should get you a computer. Do"
+      },
+      {
+        "startSec": 103,
+        "endSec": 104.2,
+        "text": "you really not have a computer yet?"
+      },
+      {
+        "startSec": 104.2,
+        "endSec": 105.8,
+        "text": ">> Desk pad is the previous occupant of"
+      },
+      {
+        "startSec": 105.8,
+        "endSec": 106.3,
+        "text": "this desk."
+      },
+      {
+        "startSec": 106.3,
+        "endSec": 107.9,
+        "text": ">> What? Oh, it's dirty. Oh."
+      },
+      {
+        "startSec": 107.9,
+        "endSec": 109.6,
+        "text": ">> I mean, it would be. This was Elijah's"
+      },
+      {
+        "startSec": 109.6,
+        "endSec": 110,
+        "text": "desk."
+      },
+      {
+        "startSec": 110,
+        "endSec": 110.9,
+        "text": ">> that down there."
+      },
+      {
+        "startSec": 110.9,
+        "endSec": 113.1,
+        "text": ">> Mr. Jordan, what can I do for you? You"
+      },
+      {
+        "startSec": 113.1,
+        "endSec": 114.5,
+        "text": "actually seem pretty well up."
+      },
+      {
+        "startSec": 114.5,
+        "endSec": 116.4,
+        "text": ">> I'm not doing too bad."
+      },
+      {
+        "startSec": 116.4,
+        "endSec": 118.4,
+        "text": "Uh I could use a new desk pad."
+      },
+      {
+        "startSec": 118.4,
+        "endSec": 119.2,
+        "text": "It's getting a little dirty. It's been"
+      },
+      {
+        "startSec": 119.2,
+        "endSec": 120.592,
+        "text": "like [music] 3 four years I've been"
+      },
+      {
+        "startSec": 120.592,
+        "endSec": 120.992,
+        "text": "here."
+      },
+      {
+        "startSec": 120.992,
+        "endSec": 121.592,
+        "text": ">> Okay."
+      },
+      {
+        "startSec": 121.592,
+        "endSec": 123.292,
+        "text": ">> Maybe a new footstool if someone stole"
+      },
+      {
+        "startSec": 123.292,
+        "endSec": 123.792,
+        "text": "mine."
+      },
+      {
+        "startSec": 123.792,
+        "endSec": 125.792,
+        "text": ">> You've got a 10 gig switch, three"
+      },
+      {
+        "startSec": 125.792,
+        "endSec": 128.592,
+        "text": "monitors, a coveted mod mat."
+      },
+      {
+        "startSec": 128.592,
+        "endSec": 129.592,
+        "text": ">> The mod mat doesn't exist. What are you"
+      },
+      {
+        "startSec": 129.592,
+        "endSec": 130.592,
+        "text": "talking about?"
+      },
+      {
+        "startSec": 130.592,
+        "endSec": 132.392,
+        "text": ">> Yeah, I know. [music] Mr. David, I"
+      },
+      {
+        "startSec": 132.392,
+        "endSec": 134.292,
+        "text": "noticed that you hacked and tidied up"
+      },
+      {
+        "startSec": 134.292,
+        "endSec": 136.192,
+        "text": "your desk before we shot it."
+      },
+      {
+        "startSec": 136.192,
+        "endSec": 138.092,
+        "text": ">> always looked exactly like this."
+      },
+      {
+        "startSec": 138.092,
+        "endSec": 139.292,
+        "text": ">> Uh-huh. Yeah, lies."
+      },
+      {
+        "startSec": 139.292,
+        "endSec": 142.136,
+        "text": ">> It's not that bad compared to this."
+      },
+      {
+        "startSec": 142.136,
+        "endSec": 143.592,
+        "text": "[laughter] It's usually a fair bit"
+      },
+      {
+        "startSec": 143.592,
+        "endSec": 144.192,
+        "text": "worse."
+      },
+      {
+        "startSec": 144.192,
+        "endSec": 145.492,
+        "text": ">> Linus knows not to ask me what I want"
+      },
+      {
+        "startSec": 145.492,
+        "endSec": 146.592,
+        "text": "cuz I'm going to have a long list of"
+      },
+      {
+        "startSec": 146.592,
+        "endSec": 147.892,
+        "text": "expensive things."
+      },
+      {
+        "startSec": 147.892,
+        "endSec": 148.992,
+        "text": ">> A soda machine with a straw that goes"
+      },
+      {
+        "startSec": 148.992,
+        "endSec": 150.592,
+        "text": "right into my mouth, a better massage"
+      },
+      {
+        "startSec": 150.592,
+        "endSec": 152.592,
+        "text": "chair, maybe a staff member that can rub"
+      },
+      {
+        "startSec": 152.592,
+        "endSec": 155.692,
+        "text": "my shoulders throughout the day."
+      },
+      {
+        "startSec": 158.092,
+        "endSec": 158.692,
+        "text": ">> Peter."
+      },
+      {
+        "startSec": 158.692,
+        "endSec": 160.292,
+        "text": ">> Hello."
+      },
+      {
+        "startSec": 160.292,
+        "endSec": 162.192,
+        "text": ">> What can we do for you?"
+      },
+      {
+        "startSec": 162.192,
+        "endSec": 164.492,
+        "text": ">> Well, ever since I left the editing den,"
+      },
+      {
+        "startSec": 164.492,
+        "endSec": 166.392,
+        "text": "I've been downgraded in my monitors to"
+      },
+      {
+        "startSec": 166.392,
+        "endSec": 169.092,
+        "text": "these like 24 and 27 inch monitors. Can"
+      },
+      {
+        "startSec": 169.092,
+        "endSec": 170.956,
+        "text": "I get a 32 inch monitor again, please?"
+      },
+      {
+        "startSec": 170.956,
+        "endSec": 174.492,
+        "text": "[music] Like a real person."
+      },
+      {
+        "startSec": 174.592,
+        "endSec": 176.592,
+        "text": ">> A lot of way to phrase that. Freya, I"
+      },
+      {
+        "startSec": 176.592,
+        "endSec": 177.992,
+        "text": "assume you'd like a replacement for your"
+      },
+      {
+        "startSec": 177.992,
+        "endSec": 178.892,
+        "text": "second desk?"
+      },
+      {
+        "startSec": 178.892,
+        "endSec": 180.192,
+        "text": ">> No, I think this is more contained."
+      },
+      {
+        "startSec": 180.192,
+        "endSec": 182.492,
+        "text": "Yeah, this is fine now. Thanks for that."
+      },
+      {
+        "startSec": 182.492,
+        "endSec": 185.892,
+        "text": "Yes, I would love another desk. Um I"
+      },
+      {
+        "startSec": 185.892,
+        "endSec": 187.492,
+        "text": "think just like some organization for"
+      },
+      {
+        "startSec": 187.492,
+        "endSec": 189.192,
+        "text": "little bits. I use post-it notes a lot"
+      },
+      {
+        "startSec": 189.192,
+        "endSec": 191.392,
+        "text": "to track the things I need to do and"
+      },
+      {
+        "startSec": 191.392,
+        "endSec": 192.492,
+        "text": "I've kind of got just all these little"
+      },
+      {
+        "startSec": 192.492,
+        "endSec": 194.892,
+        "text": "bits strewn about on my desk. Any better"
+      },
+      {
+        "startSec": 194.892,
+        "endSec": 197.092,
+        "text": "organization and maybe some monitor arms"
+      },
+      {
+        "startSec": 197.092,
+        "endSec": 199.792,
+        "text": "would let me have more room. Do you work"
+      },
+      {
+        "startSec": 199.792,
+        "endSec": 200.992,
+        "text": "here?"
+      },
+      {
+        "startSec": 200.992,
+        "endSec": 202.992,
+        "text": ">> No, at the company, yes. I just mean is"
+      },
+      {
+        "startSec": 202.992,
+        "endSec": 204.292,
+        "text": "this your desk?"
+      },
+      {
+        "startSec": 204.292,
+        "endSec": 205.672,
+        "text": ">> Only for right now."
+      },
+      {
+        "startSec": 205.672,
+        "endSec": 206.292,
+        "text": ">> [laughter]"
+      },
+      {
+        "startSec": 206.292,
+        "endSec": 207.692,
+        "text": ">> Okay, see you later."
+      },
+      {
+        "startSec": 207.692,
+        "endSec": 209.092,
+        "text": "Sven used to work with the Disneyland"
+      },
+      {
+        "startSec": 209.092,
+        "endSec": 210.992,
+        "text": "team, but now he helps me with projects."
+      },
+      {
+        "startSec": 210.992,
+        "endSec": 212.092,
+        "text": ">> Yeah, I do."
+      },
+      {
+        "startSec": 212.092,
+        "endSec": 213.592,
+        "text": "I don't really need anything except to"
+      },
+      {
+        "startSec": 213.592,
+        "endSec": 215.392,
+        "text": "cable manage under my desk cuz it's"
+      },
+      {
+        "startSec": 215.392,
+        "endSec": 216.152,
+        "text": "horrendous."
+      },
+      {
+        "startSec": 216.152,
+        "endSec": 216.592,
+        "text": ">> [music]"
+      },
+      {
+        "startSec": 216.592,
+        "endSec": 217.192,
+        "text": ">> It is horrendous."
+      },
+      {
+        "startSec": 217.192,
+        "endSec": 219.092,
+        "text": ">> Yeah, and I think I'm stealing Ethernet"
+      },
+      {
+        "startSec": 219.092,
+        "endSec": 220.892,
+        "text": "from Elijah when he sat there."
+      },
+      {
+        "startSec": 220.892,
+        "endSec": 221.592,
+        "text": ">> Oh, cool."
+      },
+      {
+        "startSec": 221.592,
+        "endSec": 223.092,
+        "text": ">> Yeah."
+      },
+      {
+        "startSec": 223.092,
+        "endSec": 223.792,
+        "text": ">> So from Reese."
+      },
+      {
+        "startSec": 223.792,
+        "endSec": 225.392,
+        "text": ">> Yeah, but [laughter] I need a computer"
+      },
+      {
+        "startSec": 225.392,
+        "endSec": 227.292,
+        "text": "first. Can we make"
+      },
+      {
+        "startSec": 227.292,
+        "endSec": 228.792,
+        "text": ">> Finally, Nicole. I'm not sure. Are you"
+      },
+      {
+        "startSec": 228.792,
+        "endSec": 230.892,
+        "text": "part of the writers upgrade?"
+      },
+      {
+        "startSec": 230.892,
+        "endSec": 231.692,
+        "text": ">> Kind of. [music]"
+      },
+      {
+        "startSec": 231.692,
+        "endSec": 233.492,
+        "text": ">> Kind of. Okay, I see you got a lava lamp"
+      },
+      {
+        "startSec": 233.492,
+        "endSec": 233.992,
+        "text": "already."
+      },
+      {
+        "startSec": 233.992,
+        "endSec": 235.692,
+        "text": ">> Yeah, I reap the benefits."
+      },
+      {
+        "startSec": 235.692,
+        "endSec": 237.892,
+        "text": ">> Okay, wonderful. By the way, I looked"
+      },
+      {
+        "startSec": 237.892,
+        "endSec": 239.692,
+        "text": "this up [music] and no, these are not"
+      },
+      {
+        "startSec": 239.692,
+        "endSec": 242.394,
+        "text": "Worksafe BC um"
+      },
+      {
+        "startSec": 242.394,
+        "endSec": 244.694,
+        "text": "approved. So"
+      },
+      {
+        "startSec": 244.694,
+        "endSec": 246.594,
+        "text": "she [music] used these in front of me to"
+      },
+      {
+        "startSec": 246.594,
+        "endSec": 249.294,
+        "text": "scoot over to the uh coffee station over"
+      },
+      {
+        "startSec": 249.294,
+        "endSec": 251.094,
+        "text": "there, and I was like"
+      },
+      {
+        "startSec": 251.094,
+        "endSec": 253.294,
+        "text": "I really don't know about that, Nicole."
+      },
+      {
+        "startSec": 253.294,
+        "endSec": 254.994,
+        "text": ">> Yeah, I'm sorry."
+      },
+      {
+        "startSec": 254.994,
+        "endSec": 257.294,
+        "text": ">> Finally, James, whose desk actually"
+      },
+      {
+        "startSec": 257.294,
+        "endSec": 259.594,
+        "text": "always does look this tidy."
+      },
+      {
+        "startSec": 259.594,
+        "endSec": 260.894,
+        "text": "Uh what can I do for you, sir?"
+      },
+      {
+        "startSec": 260.894,
+        "endSec": 262.694,
+        "text": ">> Well, I'm stoked that we're getting more"
+      },
+      {
+        "startSec": 262.694,
+        "endSec": 265.194,
+        "text": "Vibe Based equipment. In that same line,"
+      },
+      {
+        "startSec": 265.194,
+        "endSec": 269.194,
+        "text": "I'm kind of known for my my buttons."
+      },
+      {
+        "startSec": 271.194,
+        "endSec": 272.594,
+        "text": "So I want more."
+      },
+      {
+        "startSec": 272.594,
+        "endSec": 274.448,
+        "text": "I want a whole soundboard"
+      },
+      {
+        "startSec": 274.448,
+        "endSec": 274.494,
+        "text": ">> [music]"
+      },
+      {
+        "startSec": 274.494,
+        "endSec": 274.994,
+        "text": ">> Okay."
+      },
+      {
+        "startSec": 274.994,
+        "endSec": 276.994,
+        "text": ">> for every occasion."
+      },
+      {
+        "startSec": 276.994,
+        "endSec": 277.694,
+        "text": ">> All right."
+      },
+      {
+        "startSec": 277.694,
+        "endSec": 279.994,
+        "text": ">> But like seriously, we have [music] a TV"
+      },
+      {
+        "startSec": 279.994,
+        "endSec": 281.794,
+        "text": "here. We have meetings here. Everyone"
+      },
+      {
+        "startSec": 281.794,
+        "endSec": 283.294,
+        "text": "kind of gathers around and faces this"
+      },
+      {
+        "startSec": 283.294,
+        "endSec": 285.294,
+        "text": "way, but the room is not set up for that"
+      },
+      {
+        "startSec": 285.294,
+        "endSec": 288.994,
+        "text": "at all. So what I propose we do is"
+      },
+      {
+        "startSec": 288.994,
+        "endSec": 290.794,
+        "text": "especially right here, take this shelf,"
+      },
+      {
+        "startSec": 290.794,
+        "endSec": 292.894,
+        "text": "take all the shelves and push them this"
+      },
+      {
+        "startSec": 292.894,
+        "endSec": 293.894,
+        "text": "way."
+      },
+      {
+        "startSec": 293.894,
+        "endSec": 296.194,
+        "text": "Come on."
+      },
+      {
+        "startSec": 296.794,
+        "endSec": 298.794,
+        "text": "And what that's going to do is [music]"
+      },
+      {
+        "startSec": 298.794,
+        "endSec": 300.894,
+        "text": "make basically a hallway here that we"
+      },
+      {
+        "startSec": 300.894,
+        "endSec": 303.594,
+        "text": "walk down that's lined with shelves. So"
+      },
+      {
+        "startSec": 303.594,
+        "endSec": 305.233,
+        "text": "it gives some separation. It gives some"
+      },
+      {
+        "startSec": 305.233,
+        "endSec": 306.894,
+        "text": "[music] privacy between the writer's"
+      },
+      {
+        "startSec": 306.894,
+        "endSec": 309.694,
+        "text": "block and the meeting room."
+      },
+      {
+        "startSec": 309.694,
+        "endSec": 311.494,
+        "text": "And it'll make this way more open so"
+      },
+      {
+        "startSec": 311.494,
+        "endSec": 313.694,
+        "text": "everyone [music] can see"
+      },
+      {
+        "startSec": 313.694,
+        "endSec": 315.594,
+        "text": "the TV."
+      },
+      {
+        "startSec": 315.594,
+        "endSec": 316.594,
+        "text": ">> Cool."
+      },
+      {
+        "startSec": 316.594,
+        "endSec": 317.894,
+        "text": "I couldn't help notice that everyone's"
+      },
+      {
+        "startSec": 317.894,
+        "endSec": 319.594,
+        "text": "just working right now instead of"
+      },
+      {
+        "startSec": 319.594,
+        "endSec": 322.263,
+        "text": "actually doing this."
+      },
+      {
+        "startSec": 322.263,
+        "endSec": 322.894,
+        "text": "[laughter]"
+      },
+      {
+        "startSec": 322.894,
+        "endSec": 324.794,
+        "text": "Hey guys,"
+      },
+      {
+        "startSec": 324.794,
+        "endSec": 326.594,
+        "text": "is anyone going to actually work on the"
+      },
+      {
+        "startSec": 326.594,
+        "endSec": 328.494,
+        "text": "workspace upgrade or are you all just"
+      },
+      {
+        "startSec": 328.494,
+        "endSec": 329.394,
+        "text": "going to keep doing work?"
+      },
+      {
+        "startSec": 329.394,
+        "endSec": 330.594,
+        "text": ">> I think we're trying to cram the stuff"
+      },
+      {
+        "startSec": 330.594,
+        "endSec": 332.494,
+        "text": "that we can do before we turn off our"
+      },
+      {
+        "startSec": 332.494,
+        "endSec": 334.094,
+        "text": "computers and start getting to work on"
+      },
+      {
+        "startSec": 334.094,
+        "endSec": 334.994,
+        "text": "this."
+      },
+      {
+        "startSec": 334.994,
+        "endSec": 339.194,
+        "text": ">> Okay. I think we should get started."
+      },
+      {
+        "startSec": 343.494,
+        "endSec": 345.094,
+        "text": ">> Are we building a pile of stuff that we"
+      },
+      {
+        "startSec": 345.094,
+        "endSec": 346.894,
+        "text": "want to get rid of but want to take no"
+      },
+      {
+        "startSec": 346.894,
+        "endSec": 348.294,
+        "text": "part in responsibility of getting rid of"
+      },
+      {
+        "startSec": 348.294,
+        "endSec": 348.894,
+        "text": "such things?"
+      },
+      {
+        "startSec": 348.894,
+        "endSec": 350.294,
+        "text": ">> What is that?"
+      },
+      {
+        "startSec": 350.294,
+        "endSec": 352.094,
+        "text": ">> It's I think it's for Proof's spoiler."
+      },
+      {
+        "startSec": 352.094,
+        "endSec": 352.894,
+        "text": ">> That's for Proof's wing."
+      },
+      {
+        "startSec": 352.894,
+        "endSec": 354.494,
+        "text": ">> for the splitter for Proof's car."
+      },
+      {
+        "startSec": 354.494,
+        "endSec": 355.894,
+        "text": ">> Oh."
+      },
+      {
+        "startSec": 355.894,
+        "endSec": 357.894,
+        "text": ">> One unintended consequence of moving the"
+      },
+      {
+        "startSec": 357.894,
+        "endSec": 359.094,
+        "text": "shelves is that we're actually going to"
+      },
+      {
+        "startSec": 359.094,
+        "endSec": 360.794,
+        "text": "be blocking some of this light. So I"
+      },
+      {
+        "startSec": 360.794,
+        "endSec": 361.994,
+        "text": "think we're going to need to find some"
+      },
+      {
+        "startSec": 361.994,
+        "endSec": 363.694,
+        "text": "alternative lighting."
+      },
+      {
+        "startSec": 363.694,
+        "endSec": 365.295,
+        "text": ">> The office reno went a lot better"
+      },
+      {
+        "startSec": 365.295,
+        "endSec": 367.295,
+        "text": ">> when Yvonne and Janice did it."
+      },
+      {
+        "startSec": 367.295,
+        "endSec": 369.195,
+        "text": "In terms of like,"
+      },
+      {
+        "startSec": 369.195,
+        "endSec": 370.495,
+        "text": "you know,"
+      },
+      {
+        "startSec": 370.495,
+        "endSec": 372.695,
+        "text": "aesthetics."
+      },
+      {
+        "startSec": 372.695,
+        "endSec": 374.895,
+        "text": "We'll see how this turns out."
+      },
+      {
+        "startSec": 374.895,
+        "endSec": 375.795,
+        "text": "This is Ashley."
+      },
+      {
+        "startSec": 375.795,
+        "endSec": 376.195,
+        "text": ">> Yeah."
+      },
+      {
+        "startSec": 376.195,
+        "endSec": 379.195,
+        "text": ">> Odd request for you. We are doing kind"
+      },
+      {
+        "startSec": 379.195,
+        "endSec": 382.195,
+        "text": "of like a reno in the writers block and"
+      },
+      {
+        "startSec": 382.195,
+        "endSec": 383.695,
+        "text": "people have like really old Northern"
+      },
+      {
+        "startSec": 383.695,
+        "endSec": 385.495,
+        "text": "Lights V1 desk pads and they're"
+      },
+      {
+        "startSec": 385.495,
+        "endSec": 386.895,
+        "text": "wondering if we have any like of our"
+      },
+      {
+        "startSec": 386.895,
+        "endSec": 388.495,
+        "text": "newer designs, [music] just kind of"
+      },
+      {
+        "startSec": 388.495,
+        "endSec": 390.095,
+        "text": "picking around any samples that I can"
+      },
+      {
+        "startSec": 390.095,
+        "endSec": 390.895,
+        "text": "steal?"
+      },
+      {
+        "startSec": 390.895,
+        "endSec": 391.895,
+        "text": ">> No, I don't think so."
+      },
+      {
+        "startSec": 391.895,
+        "endSec": 392.995,
+        "text": ">> No, you guys keep them all for"
+      },
+      {
+        "startSec": 392.995,
+        "endSec": 394.495,
+        "text": "yourselves?"
+      },
+      {
+        "startSec": 394.495,
+        "endSec": 396.895,
+        "text": ">> Because this one's mine, but but"
+      },
+      {
+        "startSec": 396.895,
+        "endSec": 398.695,
+        "text": "I do have an extra one."
+      },
+      {
+        "startSec": 398.695,
+        "endSec": 401.195,
+        "text": ">> The story for this one is great. I"
+      },
+      {
+        "startSec": 401.195,
+        "endSec": 403.695,
+        "text": "basically was like, yeah, you know, you"
+      },
+      {
+        "startSec": 403.695,
+        "endSec": 405.095,
+        "text": "know what, Ashley?"
+      },
+      {
+        "startSec": 405.095,
+        "endSec": 406.895,
+        "text": "I love your designs when you don't try"
+      },
+      {
+        "startSec": 406.895,
+        "endSec": 409.895,
+        "text": "very hard. And then just like to kind of"
+      },
+      {
+        "startSec": 409.895,
+        "endSec": 412.495,
+        "text": "take the piss, she did this Bliss desk"
+      },
+      {
+        "startSec": 412.495,
+        "endSec": 414.895,
+        "text": "pad that was kind of, I think to prove a"
+      },
+      {
+        "startSec": 414.895,
+        "endSec": 417.395,
+        "text": "point that like a little bit more work"
+      },
+      {
+        "startSec": 417.395,
+        "endSec": 419.095,
+        "text": "is actually a good thing, but then"
+      },
+      {
+        "startSec": 419.095,
+        "endSec": 421.295,
+        "text": "actually I saw it and I freaking"
+      },
+      {
+        "startSec": 421.295,
+        "endSec": 422.995,
+        "text": "immediately fell in love with it and I"
+      },
+      {
+        "startSec": 422.995,
+        "endSec": 424.895,
+        "text": "was like change nothing, send it, print"
+      },
+      {
+        "startSec": 424.895,
+        "endSec": 427.295,
+        "text": "it. Mr. Stack,"
+      },
+      {
+        "startSec": 427.295,
+        "endSec": 428.195,
+        "text": "um"
+      },
+      {
+        "startSec": 428.195,
+        "endSec": 431.295,
+        "text": "if any of the writers needed a like mod"
+      },
+      {
+        "startSec": 431.295,
+        "endSec": 434.095,
+        "text": "mat sample or something like that, do we"
+      },
+      {
+        "startSec": 434.095,
+        "endSec": 435.095,
+        "text": "I know, I know."
+      },
+      {
+        "startSec": 435.095,
+        "endSec": 436.295,
+        "text": ">> Oh, why do this?"
+      },
+      {
+        "startSec": 436.295,
+        "endSec": 438.495,
+        "text": ">> Um do we have any that are like"
+      },
+      {
+        "startSec": 438.495,
+        "endSec": 439.895,
+        "text": "functional enough?"
+      },
+      {
+        "startSec": 439.895,
+        "endSec": 440.595,
+        "text": ">> I mean, we have some that are"
+      },
+      {
+        "startSec": 440.595,
+        "endSec": 441.595,
+        "text": "functional."
+      },
+      {
+        "startSec": 441.595,
+        "endSec": 442.295,
+        "text": ">> Okay, cool."
+      },
+      {
+        "startSec": 442.295,
+        "endSec": 443.595,
+        "text": ">> This one's like one I think is"
+      },
+      {
+        "startSec": 443.595,
+        "endSec": 444.395,
+        "text": ">> Okay."
+      },
+      {
+        "startSec": 444.395,
+        "endSec": 445.995,
+        "text": ">> Yeah, like they work. It's just the pink"
+      },
+      {
+        "startSec": 445.995,
+        "endSec": 446.895,
+        "text": "point like up."
+      },
+      {
+        "startSec": 446.895,
+        "endSec": 449.495,
+        "text": ">> Okay, cool."
+      },
+      {
+        "startSec": 450.595,
+        "endSec": 453.595,
+        "text": "Why are they standing inside a lake of"
+      },
+      {
+        "startSec": 453.595,
+        "endSec": 454.295,
+        "text": ">> We lost power."
+      },
+      {
+        "startSec": 454.295,
+        "endSec": 456.195,
+        "text": ">> Our power fell into the floor."
+      },
+      {
+        "startSec": 456.195,
+        "endSec": 456.695,
+        "text": ">> What?"
+      },
+      {
+        "startSec": 456.695,
+        "endSec": 457.995,
+        "text": ">> Yeah."
+      },
+      {
+        "startSec": 457.995,
+        "endSec": 459.595,
+        "text": ">> They literally lost power."
+      },
+      {
+        "startSec": 459.595,
+        "endSec": 460.695,
+        "text": ">> Yeah."
+      },
+      {
+        "startSec": 460.695,
+        "endSec": 462.395,
+        "text": "Like I can see it."
+      },
+      {
+        "startSec": 462.395,
+        "endSec": 463.395,
+        "text": ">> It's there."
+      },
+      {
+        "startSec": 463.395,
+        "endSec": 463.995,
+        "text": ">> But it's"
+      },
+      {
+        "startSec": 463.995,
+        "endSec": 464.395,
+        "text": ">> It's gone."
+      },
+      {
+        "startSec": 464.395,
+        "endSec": 465.195,
+        "text": ">> unobtainable."
+      },
+      {
+        "startSec": 465.195,
+        "endSec": 467.095,
+        "text": ">> If you can see it, is it really lost?"
+      },
+      {
+        "startSec": 467.095,
+        "endSec": 467.895,
+        "text": ">> Well"
+      },
+      {
+        "startSec": 467.895,
+        "endSec": 468.395,
+        "text": ">> Oh, what?"
+      },
+      {
+        "startSec": 468.395,
+        "endSec": 469.895,
+        "text": ">> Yeah, just fell into the I went to plug"
+      },
+      {
+        "startSec": 469.895,
+        "endSec": 471.795,
+        "text": "in the the UPS and it just went"
+      },
+      {
+        "startSec": 471.795,
+        "endSec": 473.495,
+        "text": ">> That's not a drop ceiling below us."
+      },
+      {
+        "startSec": 473.495,
+        "endSec": 473.895,
+        "text": ">> No. [music]"
+      },
+      {
+        "startSec": 473.895,
+        "endSec": 474.795,
+        "text": ">> Why did you do that?"
+      },
+      {
+        "startSec": 474.795,
+        "endSec": 476.295,
+        "text": ">> Why did I do What do you mean why did I"
+      },
+      {
+        "startSec": 476.295,
+        "endSec": 477.995,
+        "text": "do that? Well, I I tried to plug it in."
+      },
+      {
+        "startSec": 477.995,
+        "endSec": 479.495,
+        "text": "I don't need a power."
+      },
+      {
+        "startSec": 479.495,
+        "endSec": 480.195,
+        "text": ">> What the heck?"
+      },
+      {
+        "startSec": 480.195,
+        "endSec": 481.195,
+        "text": ">> Not you're telling me."
+      },
+      {
+        "startSec": 481.195,
+        "endSec": 482.995,
+        "text": ">> Can we get like a magic hand or"
+      },
+      {
+        "startSec": 482.995,
+        "endSec": 484.495,
+        "text": "something and reach in and grab it?"
+      },
+      {
+        "startSec": 484.495,
+        "endSec": 486.495,
+        "text": ">> Yeah, give me a full metal coat rack and"
+      },
+      {
+        "startSec": 486.495,
+        "endSec": 487.897,
+        "text": "I'll just shove it in there and try."
+      },
+      {
+        "startSec": 487.897,
+        "endSec": 489.697,
+        "text": ">> a really strong magnet."
+      },
+      {
+        "startSec": 489.697,
+        "endSec": 491.597,
+        "text": ">> Uh in the meantime, I brought some desk"
+      },
+      {
+        "startSec": 491.597,
+        "endSec": 491.897,
+        "text": "pads."
+      },
+      {
+        "startSec": 491.897,
+        "endSec": 492.297,
+        "text": ">> I think this one."
+      },
+      {
+        "startSec": 492.297,
+        "endSec": 493.497,
+        "text": ">> rope."
+      },
+      {
+        "startSec": 493.497,
+        "endSec": 495.097,
+        "text": "Okay, Reese wants the kitty one."
+      },
+      {
+        "startSec": 495.097,
+        "endSec": 495.897,
+        "text": ">> Yep."
+      },
+      {
+        "startSec": 495.897,
+        "endSec": 498.997,
+        "text": ">> Oh, wait. No, there's Why is there"
+      },
+      {
+        "startSec": 498.997,
+        "endSec": 500.697,
+        "text": ">> Oh, well, you see"
+      },
+      {
+        "startSec": 500.697,
+        "endSec": 502.297,
+        "text": "That That's two. That's two."
+      },
+      {
+        "startSec": 502.297,
+        "endSec": 503.397,
+        "text": ">> Okay, I'll take one."
+      },
+      {
+        "startSec": 503.397,
+        "endSec": 505.01,
+        "text": ">> Oh, it's just one."
+      },
+      {
+        "startSec": 505.01,
+        "endSec": 506.097,
+        "text": ">> [laughter]"
+      },
+      {
+        "startSec": 506.097,
+        "endSec": 507.497,
+        "text": ">> I will take"
+      },
+      {
+        "startSec": 507.497,
+        "endSec": 508.697,
+        "text": "I'll take this one, but I don't want the"
+      },
+      {
+        "startSec": 508.697,
+        "endSec": 508.997,
+        "text": "the"
+      },
+      {
+        "startSec": 508.997,
+        "endSec": 509.597,
+        "text": ">> Oh, it's kind of gross."
+      },
+      {
+        "startSec": 509.597,
+        "endSec": 511.697,
+        "text": ">> I I don't have another one. I literally"
+      },
+      {
+        "startSec": 511.697,
+        "endSec": 512.997,
+        "text": "stole this. It was rolled up on"
+      },
+      {
+        "startSec": 512.997,
+        "endSec": 514.835,
+        "text": "someone's desk at CW. I guess cuz"
+      },
+      {
+        "startSec": 514.835,
+        "endSec": 515.897,
+        "text": "[laughter] they were tired of looking at"
+      },
+      {
+        "startSec": 515.897,
+        "endSec": 518.897,
+        "text": "the coffee stain."
+      },
+      {
+        "startSec": 522.695,
+        "endSec": 524.715,
+        "text": "[music]"
+      },
+      {
+        "startSec": 524.897,
+        "endSec": 526.897,
+        "text": "Okay, so this"
+      },
+      {
+        "startSec": 526.897,
+        "endSec": 528.797,
+        "text": "is going to go here"
+      },
+      {
+        "startSec": 528.797,
+        "endSec": 530.497,
+        "text": "with the idea being just that it'll kind"
+      },
+      {
+        "startSec": 530.497,
+        "endSec": 532.497,
+        "text": "of like"
+      },
+      {
+        "startSec": 532.497,
+        "endSec": 534.497,
+        "text": "make it rigid again."
+      },
+      {
+        "startSec": 534.497,
+        "endSec": 535.397,
+        "text": "All right."
+      },
+      {
+        "startSec": 535.397,
+        "endSec": 538.197,
+        "text": "There we go with our reinforcement here."
+      },
+      {
+        "startSec": 538.197,
+        "endSec": 539.897,
+        "text": "You can see it's"
+      },
+      {
+        "startSec": 539.897,
+        "endSec": 542.597,
+        "text": "not flexing anymore. Here we go. Look at"
+      },
+      {
+        "startSec": 542.597,
+        "endSec": 543.597,
+        "text": "that."
+      },
+      {
+        "startSec": 543.597,
+        "endSec": 545.397,
+        "text": "Repaired."
+      },
+      {
+        "startSec": 545.397,
+        "endSec": 547.197,
+        "text": "I got called away for a meeting, so I'm"
+      },
+      {
+        "startSec": 547.197,
+        "endSec": 549.397,
+        "text": "doing a quick check-in on how things are"
+      },
+      {
+        "startSec": 549.397,
+        "endSec": 550.697,
+        "text": "going."
+      },
+      {
+        "startSec": 550.697,
+        "endSec": 552.097,
+        "text": "Um"
+      },
+      {
+        "startSec": 552.097,
+        "endSec": 554.997,
+        "text": "that OSB is not the prettiest thing I've"
+      },
+      {
+        "startSec": 554.997,
+        "endSec": 557.297,
+        "text": "ever seen. Uh looks like they're doing"
+      },
+      {
+        "startSec": 557.297,
+        "endSec": 558.997,
+        "text": "something on the other side of it. We're"
+      },
+      {
+        "startSec": 558.997,
+        "endSec": 561.997,
+        "text": "putting gaff tape on the seams."
+      },
+      {
+        "startSec": 561.997,
+        "endSec": 562.697,
+        "text": ">> For now."
+      },
+      {
+        "startSec": 562.697,
+        "endSec": 563.697,
+        "text": ">> Okay."
+      },
+      {
+        "startSec": 563.697,
+        "endSec": 564.897,
+        "text": ">> I didn't buy enough trim."
+      },
+      {
+        "startSec": 564.897,
+        "endSec": 566.597,
+        "text": ">> Okay. Apparently, you know the plan for"
+      },
+      {
+        "startSec": 566.597,
+        "endSec": 567.597,
+        "text": "the skylights?"
+      },
+      {
+        "startSec": 567.597,
+        "endSec": 569.497,
+        "text": ">> That's what I just found out, too."
+      },
+      {
+        "startSec": 569.497,
+        "endSec": 570.997,
+        "text": "Come on this way. These are what?"
+      },
+      {
+        "startSec": 570.997,
+        "endSec": 572.597,
+        "text": "Skylight panels they're called?"
+      },
+      {
+        "startSec": 572.597,
+        "endSec": 574.097,
+        "text": ">> The power of the sun."
+      },
+      {
+        "startSec": 574.097,
+        "endSec": 575.997,
+        "text": ">> We're putting six onto each one and"
+      },
+      {
+        "startSec": 575.997,
+        "endSec": 577.997,
+        "text": "they'll go into each window."
+      },
+      {
+        "startSec": 577.997,
+        "endSec": 578.097,
+        "text": ">> Oh."
+      },
+      {
+        "startSec": 578.097,
+        "endSec": 579.397,
+        "text": ">> And they'll be behind diffusion."
+      },
+      {
+        "startSec": 579.397,
+        "endSec": 581.097,
+        "text": ">> This is at 20% right now."
+      },
+      {
+        "startSec": 581.097,
+        "endSec": 582.397,
+        "text": ">> And then we have sunlight."
+      },
+      {
+        "startSec": 582.397,
+        "endSec": 583.297,
+        "text": ">> They get pretty bright."
+      },
+      {
+        "startSec": 583.297,
+        "endSec": 584.697,
+        "text": ">> You know, more than Vancouver sunlight"
+      },
+      {
+        "startSec": 584.697,
+        "endSec": 585.997,
+        "text": "cuz Vancouver sunlight's kind of crap"
+      },
+      {
+        "startSec": 585.997,
+        "endSec": 586.897,
+        "text": "this time of year."
+      },
+      {
+        "startSec": 586.897,
+        "endSec": 588.897,
+        "text": ">> he's not wrong. I mean, that's the sun."
+      },
+      {
+        "startSec": 588.897,
+        "endSec": 592.297,
+        "text": ">> It's dark out. It's about 2:00."
+      },
+      {
+        "startSec": 593.197,
+        "endSec": 594.197,
+        "text": "Crank it up, David."
+      },
+      {
+        "startSec": 594.197,
+        "endSec": 594.697,
+        "text": ">> Okay."
+      },
+      {
+        "startSec": 594.697,
+        "endSec": 595.997,
+        "text": ">> I got to wait for it to boot up, but"
+      },
+      {
+        "startSec": 595.997,
+        "endSec": 597.097,
+        "text": "just give it a second."
+      },
+      {
+        "startSec": 597.097,
+        "endSec": 599.331,
+        "text": ">> We have to wait for our windows to boot."
+      },
+      {
+        "startSec": 599.331,
+        "endSec": 599.697,
+        "text": ">> [laughter]"
+      },
+      {
+        "startSec": 599.697,
+        "endSec": 601.597,
+        "text": ">> Let's hope it doesn't need an update."
+      },
+      {
+        "startSec": 601.597,
+        "endSec": 603.297,
+        "text": ">> Oh god. Should have gone Linux."
+      },
+      {
+        "startSec": 603.297,
+        "endSec": 604.797,
+        "text": ">> Meanwhile, in the meeting room, we've"
+      },
+      {
+        "startSec": 604.797,
+        "endSec": 607.397,
+        "text": "got all of our new chairs. We wanted"
+      },
+      {
+        "startSec": 607.397,
+        "endSec": 608.597,
+        "text": "them out of the way while while working"
+      },
+      {
+        "startSec": 608.597,
+        "endSec": 609.998,
+        "text": "on the upgrade, but these are awesome."
+      },
+      {
+        "startSec": 609.998,
+        "endSec": 611.298,
+        "text": "LiberNovus sent these over. They"
+      },
+      {
+        "startSec": 611.298,
+        "endSec": 613.298,
+        "text": "sponsored this video and they've got a"
+      },
+      {
+        "startSec": 613.298,
+        "endSec": 615.098,
+        "text": "bunch of great features. For one thing,"
+      },
+      {
+        "startSec": 615.098,
+        "endSec": 616.898,
+        "text": "they've got adjustable motorized lumb-"
+      },
+      {
+        "startSec": 616.898,
+        "endSec": 618.198,
+        "text": "bar support."
+      },
+      {
+        "startSec": 618.198,
+        "endSec": 621.198,
+        "text": "For another, they've got Swas fans that"
+      },
+      {
+        "startSec": 621.198,
+        "endSec": 623.698,
+        "text": "run for 9 hours on full tilt or up to"
+      },
+      {
+        "startSec": 623.698,
+        "endSec": 624.698,
+        "text": ">> 36 hours."
+      },
+      {
+        "startSec": 624.698,
+        "endSec": 627.898,
+        "text": ">> on low settings. And best part, instead"
+      },
+      {
+        "startSec": 627.898,
+        "endSec": 630.898,
+        "text": "of just having a binary toggle between"
+      },
+      {
+        "startSec": 630.898,
+        "endSec": 634.098,
+        "text": "locking and all the way down,"
+      },
+      {
+        "startSec": 634.098,
+        "endSec": 635.398,
+        "text": "they've actually got in between"
+      },
+      {
+        "startSec": 635.398,
+        "endSec": 638.098,
+        "text": "settings, too. So you can lock it"
+      },
+      {
+        "startSec": 638.098,
+        "endSec": 639.898,
+        "text": "after just a little bit or just a little"
+      },
+      {
+        "startSec": 639.898,
+        "endSec": 641.098,
+        "text": "bit more"
+      },
+      {
+        "startSec": 641.098,
+        "endSec": 643.217,
+        "text": "or all the way."
+      },
+      {
+        "startSec": 643.217,
+        "endSec": 645.237,
+        "text": "[snorts]"
+      },
+      {
+        "startSec": 645.898,
+        "endSec": 646.798,
+        "text": "Maybe I should bring these out to"
+      },
+      {
+        "startSec": 646.798,
+        "endSec": 649.098,
+        "text": "people."
+      },
+      {
+        "startSec": 655.098,
+        "endSec": 657.398,
+        "text": ">> NO, LINUS, WAIT. STOP. YOU'RE KILLING"
+      },
+      {
+        "startSec": 657.398,
+        "endSec": 659.298,
+        "text": "THEM. They're killing them. OH GOD, THAT"
+      },
+      {
+        "startSec": 659.298,
+        "endSec": 661.798,
+        "text": "THING'S FALLING. He's too relaxed."
+      },
+      {
+        "startSec": 661.798,
+        "endSec": 663.998,
+        "text": ">> Cash, I'll probably put this away. Wow,"
+      },
+      {
+        "startSec": 663.998,
+        "endSec": 666.298,
+        "text": "this skirt to avoid seeing any of the"
+      },
+      {
+        "startSec": 666.298,
+        "endSec": 668.398,
+        "text": "like junk in there is really great and"
+      },
+      {
+        "startSec": 668.398,
+        "endSec": 670.098,
+        "text": "it's even almost straight."
+      },
+      {
+        "startSec": 670.098,
+        "endSec": 671.598,
+        "text": ">> It almost looks as good on this side as"
+      },
+      {
+        "startSec": 671.598,
+        "endSec": 673.298,
+        "text": "it does on that side."
+      },
+      {
+        "startSec": 673.298,
+        "endSec": 675.698,
+        "text": ">> Yeah, that seems to be a bit of a theme."
+      },
+      {
+        "startSec": 675.698,
+        "endSec": 676.998,
+        "text": "This is what happens when you let men do"
+      },
+      {
+        "startSec": 676.998,
+        "endSec": 679.242,
+        "text": "the shopping."
+      },
+      {
+        "startSec": 679.242,
+        "endSec": 679.398,
+        "text": ">> [snorts]"
+      },
+      {
+        "startSec": 679.398,
+        "endSec": 681.207,
+        "text": ">> It's sexist, but it's right."
+      },
+      {
+        "startSec": 681.207,
+        "endSec": 681.998,
+        "text": ">> [laughter]"
+      },
+      {
+        "startSec": 681.998,
+        "endSec": 683.598,
+        "text": ">> I've been instructed to build a sunlight"
+      },
+      {
+        "startSec": 683.598,
+        "endSec": 684.198,
+        "text": "panel."
+      },
+      {
+        "startSec": 684.198,
+        "endSec": 685.398,
+        "text": ">> Oh,"
+      },
+      {
+        "startSec": 685.398,
+        "endSec": 686.898,
+        "text": "we're kind of almost done. No, no, no."
+      },
+      {
+        "startSec": 686.898,
+        "endSec": 687.698,
+        "text": "There's lots left."
+      },
+      {
+        "startSec": 687.698,
+        "endSec": 688.598,
+        "text": ">> Oh, never mind. Never mind."
+      },
+      {
+        "startSec": 688.598,
+        "endSec": 690.198,
+        "text": ">> Nice. Three or four more empty ones"
+      },
+      {
+        "startSec": 690.198,
+        "endSec": 690.698,
+        "text": "here."
+      },
+      {
+        "startSec": 690.698,
+        "endSec": 692.098,
+        "text": ">> Did we mention that NanoLeaf sponsored"
+      },
+      {
+        "startSec": 692.098,
+        "endSec": 692.598,
+        "text": "the video?"
+      },
+      {
+        "startSec": 692.598,
+        "endSec": 693.798,
+        "text": ">> NanoLeaf sponsored the video?"
+      },
+      {
+        "startSec": 693.798,
+        "endSec": 694.698,
+        "text": ">> Didn't they?"
+      },
+      {
+        "startSec": 694.698,
+        "endSec": 695.898,
+        "text": ">> Wow."
+      },
+      {
+        "startSec": 695.898,
+        "endSec": 696.698,
+        "text": ">> Thanks, NanoLeaf."
+      },
+      {
+        "startSec": 696.698,
+        "endSec": 698.998,
+        "text": ">> Yeah."
+      },
+      {
+        "startSec": 699.098,
+        "endSec": 700.898,
+        "text": ">> How do they mount to the window?"
+      },
+      {
+        "startSec": 700.898,
+        "endSec": 702.598,
+        "text": ">> They just press fit and then little"
+      },
+      {
+        "startSec": 702.598,
+        "endSec": 704.598,
+        "text": "magnets."
+      },
+      {
+        "startSec": 704.598,
+        "endSec": 707.498,
+        "text": ">> This is the most man renovation [snorts]"
+      },
+      {
+        "startSec": 707.498,
+        "endSec": 709.798,
+        "text": "that I have ever seen."
+      },
+      {
+        "startSec": 709.798,
+        "endSec": 711.698,
+        "text": ">> Uh, I don't know if man is the right"
+      },
+      {
+        "startSec": 711.698,
+        "endSec": 712.298,
+        "text": "word."
+      },
+      {
+        "startSec": 712.298,
+        "endSec": 712.898,
+        "text": ">> I think it is."
+      },
+      {
+        "startSec": 712.898,
+        "endSec": 714.898,
+        "text": ">> I think it's I think it's lazy,"
+      },
+      {
+        "startSec": 714.898,
+        "endSec": 715.798,
+        "text": "unskilled."
+      },
+      {
+        "startSec": 715.798,
+        "endSec": 717.298,
+        "text": ">> You said two different words. All I"
+      },
+      {
+        "startSec": 717.298,
+        "endSec": 718.398,
+        "text": "heard was man, man."
+      },
+      {
+        "startSec": 718.398,
+        "endSec": 721.098,
+        "text": ">> all right. Fair enough."
+      },
+      {
+        "startSec": 725.198,
+        "endSec": 726.798,
+        "text": "I can't believe this mounting system."
+      },
+      {
+        "startSec": 726.798,
+        "endSec": 728.198,
+        "text": ">> Nope, can you move that battery?"
+      },
+      {
+        "startSec": 728.198,
+        "endSec": 730.698,
+        "text": ">> I sure can."
+      },
+      {
+        "startSec": 734.698,
+        "endSec": 736.699,
+        "text": "I mean, in fairness, it's not really"
+      },
+      {
+        "startSec": 736.699,
+        "endSec": 737.599,
+        "text": "going anywhere."
+      },
+      {
+        "startSec": 737.599,
+        "endSec": 738.999,
+        "text": ">> And it doesn't look that bad once you"
+      },
+      {
+        "startSec": 738.999,
+        "endSec": 740.299,
+        "text": "put the blind in front of it."
+      },
+      {
+        "startSec": 740.299,
+        "endSec": 742.199,
+        "text": ">> We've done some self-reflection and"
+      },
+      {
+        "startSec": 742.199,
+        "endSec": 743.699,
+        "text": "we're iterating on our design because"
+      },
+      {
+        "startSec": 743.699,
+        "endSec": 745.299,
+        "text": "Linus is right."
+      },
+      {
+        "startSec": 745.299,
+        "endSec": 746.899,
+        "text": "That is ugly."
+      },
+      {
+        "startSec": 746.899,
+        "endSec": 748.899,
+        "text": "And that's not the only problem with it."
+      },
+      {
+        "startSec": 748.899,
+        "endSec": 750.499,
+        "text": "If you look over here, we have the"
+      },
+      {
+        "startSec": 750.499,
+        "endSec": 751.899,
+        "text": "privilege of having natural light in"
+      },
+      {
+        "startSec": 751.899,
+        "endSec": 753.199,
+        "text": "this space,"
+      },
+      {
+        "startSec": 753.199,
+        "endSec": 754.899,
+        "text": "but we're blocking it. This light no"
+      },
+      {
+        "startSec": 754.899,
+        "endSec": 757.199,
+        "text": "longer passes through into the room and"
+      },
+      {
+        "startSec": 757.199,
+        "endSec": 758.599,
+        "text": "that sucks too. [music] But we do not"
+      },
+      {
+        "startSec": 758.599,
+        "endSec": 760.599,
+        "text": "believe in sunk cost fallacy in this"
+      },
+      {
+        "startSec": 760.599,
+        "endSec": 761.999,
+        "text": "organization, okay? So we're going to"
+      },
+      {
+        "startSec": 761.999,
+        "endSec": 764.199,
+        "text": "actually tear down what we put up so far"
+      },
+      {
+        "startSec": 764.199,
+        "endSec": 766.099,
+        "text": "and replace them with these. These are"
+      },
+      {
+        "startSec": 766.099,
+        "endSec": 769.099,
+        "text": "the kinds of like plastic, obscury,"
+      },
+      {
+        "startSec": 769.099,
+        "endSec": 771.299,
+        "text": "blurry sheets that you would put as the"
+      },
+      {
+        "startSec": 771.299,
+        "endSec": 773.999,
+        "text": "roof of like a sun deck, for example."
+      },
+      {
+        "startSec": 773.999,
+        "endSec": 776.299,
+        "text": "And as you can see, Jordan already put"
+      },
+      {
+        "startSec": 776.299,
+        "endSec": 777.999,
+        "text": "one up over there."
+      },
+      {
+        "startSec": 777.999,
+        "endSec": 779.699,
+        "text": "So it will hide the mess, it'll obscure"
+      },
+      {
+        "startSec": 779.699,
+        "endSec": 781.699,
+        "text": "the mess while also letting the light"
+      },
+      {
+        "startSec": 781.699,
+        "endSec": 783.899,
+        "text": "through."
+      },
+      {
+        "startSec": 789.199,
+        "endSec": 793.199,
+        "text": ">> Wow, this turned out great actually."
+      },
+      {
+        "startSec": 793.199,
+        "endSec": 796.599,
+        "text": "The divider got some trim pieces."
+      },
+      {
+        "startSec": 796.599,
+        "endSec": 799.099,
+        "text": "The OSB is gone. That's actually an"
+      },
+      {
+        "startSec": 799.099,
+        "endSec": 802.099,
+        "text": "amazingly better solution."
+      },
+      {
+        "startSec": 802.099,
+        "endSec": 803.799,
+        "text": "Everybody's napping. Very funny you"
+      },
+      {
+        "startSec": 803.799,
+        "endSec": 805.599,
+        "text": "guys. I guess this is a perfect"
+      },
+      {
+        "startSec": 805.599,
+        "endSec": 807.599,
+        "text": "opportunity for us to show off the"
+      },
+      {
+        "startSec": 807.599,
+        "endSec": 809.599,
+        "text": "larger model of the Libre Novo chair,"
+      },
+      {
+        "startSec": 809.599,
+        "endSec": 811.399,
+        "text": "which also has the same cooling"
+      },
+      {
+        "startSec": 811.399,
+        "endSec": 814.399,
+        "text": "functions, lumbar adjustment, and"
+      },
+      {
+        "startSec": 814.399,
+        "endSec": 817.799,
+        "text": "supports up to 400 lbs. It also has this"
+      },
+      {
+        "startSec": 817.799,
+        "endSec": 818.899,
+        "text": "omni stretch feature that moves the"
+      },
+      {
+        "startSec": 818.899,
+        "endSec": 820.699,
+        "text": "lumbar support forward and back. What"
+      },
+      {
+        "startSec": 820.699,
+        "endSec": 821.899,
+        "text": "What else did you get as part of your"
+      },
+      {
+        "startSec": 821.899,
+        "endSec": 823.199,
+        "text": "upgrade?"
+      },
+      {
+        "startSec": 823.199,
+        "endSec": 825.199,
+        "text": "Oh, I like your controller holder. Yeah."
+      },
+      {
+        "startSec": 825.199,
+        "endSec": 826.299,
+        "text": ">> We've got a little controller holder"
+      },
+      {
+        "startSec": 826.299,
+        "endSec": 828.099,
+        "text": "over there. We've got a light here so I"
+      },
+      {
+        "startSec": 828.099,
+        "endSec": 830.499,
+        "text": "can point that down into builds."
+      },
+      {
+        "startSec": 830.499,
+        "endSec": 832.399,
+        "text": "It's on a warm white right now, but I"
+      },
+      {
+        "startSec": 832.399,
+        "endSec": 833.399,
+        "text": "can change that."
+      },
+      {
+        "startSec": 833.399,
+        "endSec": 836.999,
+        "text": ">> But wait, there's so much more."
+      },
+      {
+        "startSec": 838.299,
+        "endSec": 840.499,
+        "text": "Remember when I teased earlier that home"
+      },
+      {
+        "startSec": 840.499,
+        "endSec": 841.999,
+        "text": "assistant automations were going to be a"
+      },
+      {
+        "startSec": 841.999,
+        "endSec": 844.599,
+        "text": "major part of this upgrade?"
+      },
+      {
+        "startSec": 844.599,
+        "endSec": 847.299,
+        "text": "This is a bathroom occupancy sensor that"
+      },
+      {
+        "startSec": 847.299,
+        "endSec": 847.799,
+        "text": "tells us"
+      },
+      {
+        "startSec": 847.799,
+        "endSec": 849.999,
+        "text": ">> think I got to go."
+      },
+      {
+        "startSec": 849.999,
+        "endSec": 852.399,
+        "text": ">> that that's an appropriate thing to do"
+      },
+      {
+        "startSec": 852.399,
+        "endSec": 855.099,
+        "text": "right now. But wait, there's more. We're"
+      },
+      {
+        "startSec": 855.099,
+        "endSec": 857.001,
+        "text": "going to be adding sensors to all of the"
+      },
+      {
+        "startSec": 857.001,
+        "endSec": 858.501,
+        "text": "other bathrooms in the building. So,"
+      },
+      {
+        "startSec": 858.501,
+        "endSec": 860.601,
+        "text": "when this one is occupied, all we've got"
+      },
+      {
+        "startSec": 860.601,
+        "endSec": 862.801,
+        "text": "to do is check this tablet, which, by"
+      },
+      {
+        "startSec": 862.801,
+        "endSec": 864.301,
+        "text": "the way, has a whole bunch of other"
+      },
+      {
+        "startSec": 864.301,
+        "endSec": 866.101,
+        "text": "really cool functions as well. We can"
+      },
+      {
+        "startSec": 866.101,
+        "endSec": 868.101,
+        "text": "see which sets are in use. [music] We"
+      },
+      {
+        "startSec": 868.101,
+        "endSec": 870.101,
+        "text": "can see this week's shooting schedule."
+      },
+      {
+        "startSec": 870.101,
+        "endSec": 872.901,
+        "text": "We can also notify logistics if our"
+      },
+      {
+        "startSec": 872.901,
+        "endSec": 874.501,
+        "text": "break room snacks are out of stock."
+      },
+      {
+        "startSec": 874.501,
+        "endSec": 875.401,
+        "text": ">> Yo."
+      },
+      {
+        "startSec": 875.401,
+        "endSec": 876.601,
+        "text": ">> We still have a little bit of cleanup to"
+      },
+      {
+        "startSec": 876.601,
+        "endSec": 877.901,
+        "text": "do here. Don't Don't worry too much"
+      },
+      {
+        "startSec": 877.901,
+        "endSec": 880.201,
+        "text": "about that. And"
+      },
+      {
+        "startSec": 880.201,
+        "endSec": 882.401,
+        "text": "we could start a Lunch Buddies group."
+      },
+      {
+        "startSec": 882.401,
+        "endSec": 884.601,
+        "text": "How cool is that? The best part is we"
+      },
+      {
+        "startSec": 884.601,
+        "endSec": 886.501,
+        "text": "don't have to use the tablet. All the"
+      },
+      {
+        "startSec": 886.501,
+        "endSec": 888.001,
+        "text": "writers got a handy-dandy little"
+      },
+      {
+        "startSec": 888.001,
+        "endSec": 889.901,
+        "text": "extension in their browsers that allows"
+      },
+      {
+        "startSec": 889.901,
+        "endSec": 891.901,
+        "text": "them to do this from their newly"
+      },
+      {
+        "startSec": 891.901,
+        "endSec": 893.701,
+        "text": "cleaned-up desks. Coming back to home"
+      },
+      {
+        "startSec": 893.701,
+        "endSec": 896.501,
+        "text": "automation, our skylight windows"
+      },
+      {
+        "startSec": 896.501,
+        "endSec": 899.201,
+        "text": "um are extremely bright, actually giving"
+      },
+      {
+        "startSec": 899.201,
+        "endSec": 902.001,
+        "text": "us more daylight than our real windows"
+      },
+      {
+        "startSec": 902.001,
+        "endSec": 903.401,
+        "text": "over there."
+      },
+      {
+        "startSec": 903.401,
+        "endSec": 905.201,
+        "text": "And coming back to our tablet here, if"
+      },
+      {
+        "startSec": 905.201,
+        "endSec": 906.501,
+        "text": "we're on the way out for the evening and"
+      },
+      {
+        "startSec": 906.501,
+        "endSec": 907.801,
+        "text": "we want to turn off all of our"
+      },
+      {
+        "startSec": 907.801,
+        "endSec": 909.501,
+        "text": "smart-controlled lights, we can do it"
+      },
+      {
+        "startSec": 909.501,
+        "endSec": 911.301,
+        "text": "with just one button. James got his"
+      },
+      {
+        "startSec": 911.301,
+        "endSec": 914.601,
+        "text": "upgraded soundboard."
+      },
+      {
+        "startSec": 915.401,
+        "endSec": 917.665,
+        "text": "Okay, don't get us copyright struck."
+      },
+      {
+        "startSec": 917.665,
+        "endSec": 918.501,
+        "text": "[laughter]"
+      },
+      {
+        "startSec": 918.501,
+        "endSec": 920.301,
+        "text": "And if you take a broader look at the"
+      },
+      {
+        "startSec": 920.301,
+        "endSec": 922.101,
+        "text": "overall layout, pretty [music] much"
+      },
+      {
+        "startSec": 922.101,
+        "endSec": 924.101,
+        "text": "everyone can see the TV directly from"
+      },
+      {
+        "startSec": 924.101,
+        "endSec": 925.301,
+        "text": "their desk. We're going to need a bigger"
+      },
+      {
+        "startSec": 925.301,
+        "endSec": 927.801,
+        "text": "TV."
+      },
+      {
+        "startSec": 930.11,
+        "endSec": 931.501,
+        "text": "[laughter]"
+      },
+      {
+        "startSec": 931.501,
+        "endSec": 933.901,
+        "text": "Who thought this was a good idea? How do"
+      },
+      {
+        "startSec": 933.901,
+        "endSec": 935.301,
+        "text": "you feel about the Did you not get a"
+      },
+      {
+        "startSec": 935.301,
+        "endSec": 935.801,
+        "text": "computer?"
+      },
+      {
+        "startSec": 935.801,
+        "endSec": 938.301,
+        "text": ">> Linus, I have everything I need except"
+      },
+      {
+        "startSec": 938.301,
+        "endSec": 939.701,
+        "text": "for a computer. Please Please for the"
+      },
+      {
+        "startSec": 939.701,
+        "endSec": 940.901,
+        "text": "love of God, can I have a computer?"
+      },
+      {
+        "startSec": 940.901,
+        "endSec": 942.501,
+        "text": ">> Are you like miming? Like, where's your"
+      },
+      {
+        "startSec": 942.501,
+        "endSec": 942.901,
+        "text": "computer?"
+      },
+      {
+        "startSec": 942.901,
+        "endSec": 944.201,
+        "text": ">> I don't have a computer."
+      },
+      {
+        "startSec": 944.201,
+        "endSec": 945.801,
+        "text": ">> Jordan, how'd the upgrade turn out for"
+      },
+      {
+        "startSec": 945.801,
+        "endSec": 946.401,
+        "text": "you?"
+      },
+      {
+        "startSec": 946.401,
+        "endSec": 948.201,
+        "text": ">> Love what has changed. Um"
+      },
+      {
+        "startSec": 948.201,
+        "endSec": 949.701,
+        "text": ">> Oh yeah, yours is probably the least"
+      },
+      {
+        "startSec": 949.701,
+        "endSec": 950.401,
+        "text": "changed."
+      },
+      {
+        "startSec": 950.401,
+        "endSec": 951.601,
+        "text": ">> blinds now."
+      },
+      {
+        "startSec": 951.601,
+        "endSec": 952.101,
+        "text": ">> Okay."
+      },
+      {
+        "startSec": 952.101,
+        "endSec": 954.101,
+        "text": ">> And I got these things."
+      },
+      {
+        "startSec": 954.101,
+        "endSec": 955.801,
+        "text": ">> And Steamy has a nice little place to"
+      },
+      {
+        "startSec": 955.801,
+        "endSec": 956.001,
+        "text": "sit."
+      },
+      {
+        "startSec": 956.001,
+        "endSec": 957.301,
+        "text": ">> he's got a new place up there."
+      },
+      {
+        "startSec": 957.301,
+        "endSec": 958.275,
+        "text": ">> Why is he looking down?"
+      },
+      {
+        "startSec": 958.275,
+        "endSec": 958.701,
+        "text": ">> [music]"
+      },
+      {
+        "startSec": 958.701,
+        "endSec": 960.001,
+        "text": ">> Cuz the magnet's in his back."
+      },
+      {
+        "startSec": 960.001,
+        "endSec": 962.701,
+        "text": ">> Ah. Okay. David."
+      },
+      {
+        "startSec": 962.701,
+        "endSec": 963.501,
+        "text": ">> Yeah."
+      },
+      {
+        "startSec": 963.501,
+        "endSec": 964.501,
+        "text": ">> I like your desk pad."
+      },
+      {
+        "startSec": 964.501,
+        "endSec": 966.201,
+        "text": ">> Yeah, it's a pretty nice desk pad. Where"
+      },
+      {
+        "startSec": 966.201,
+        "endSec": 967.001,
+        "text": "can you get it?"
+      },
+      {
+        "startSec": 967.001,
+        "endSec": 969.701,
+        "text": ">> Uh LTTstore.com, baby. We've actually"
+      },
+      {
+        "startSec": 969.701,
+        "endSec": 973.401,
+        "text": "got some uh new Siberia stuff coming."
+      },
+      {
+        "startSec": 973.401,
+        "endSec": 975.501,
+        "text": "We're like a light peak [music] uh like"
+      },
+      {
+        "startSec": 975.501,
+        "endSec": 977.001,
+        "text": "etched water bottle design got some"
+      },
+      {
+        "startSec": 977.001,
+        "endSec": 978.502,
+        "text": "really cool stuff and we're going to"
+      },
+      {
+        "startSec": 978.502,
+        "endSec": 980.702,
+        "text": "build out like a whole lore around this."
+      },
+      {
+        "startSec": 980.702,
+        "endSec": 982.402,
+        "text": "Your desk is organized. That's nice."
+      },
+      {
+        "startSec": 982.402,
+        "endSec": 985.302,
+        "text": ">> It was almost this organized before."
+      },
+      {
+        "startSec": 985.302,
+        "endSec": 987.002,
+        "text": ">> Yeah, I think everything was just shoved"
+      },
+      {
+        "startSec": 987.002,
+        "endSec": 988.502,
+        "text": "in a pile somewhere. Oh, there it is."
+      },
+      {
+        "startSec": 988.502,
+        "endSec": 991.081,
+        "text": "There's the pile. [laughter]"
+      },
+      {
+        "startSec": 992.302,
+        "endSec": 993.402,
+        "text": "I like your setup, Frey."
+      },
+      {
+        "startSec": 993.402,
+        "endSec": 994.702,
+        "text": ">> Oh, thank you."
+      },
+      {
+        "startSec": 994.702,
+        "endSec": 996.502,
+        "text": "I got a nice little monitor stand here."
+      },
+      {
+        "startSec": 996.502,
+        "endSec": 998.302,
+        "text": "I think it adds some class, you know?"
+      },
+      {
+        "startSec": 998.302,
+        "endSec": 999.702,
+        "text": ">> Why do you need a monitor stand when you"
+      },
+      {
+        "startSec": 999.702,
+        "endSec": 1000.702,
+        "text": "have a monitor arm?"
+      },
+      {
+        "startSec": 1000.702,
+        "endSec": 1002.102,
+        "text": ">> Extra storage."
+      },
+      {
+        "startSec": 1002.102,
+        "endSec": 1004.202,
+        "text": ">> I see. Okay. The better with which to"
+      },
+      {
+        "startSec": 1004.202,
+        "endSec": 1005.902,
+        "text": "store your 4090s."
+      },
+      {
+        "startSec": 1005.902,
+        "endSec": 1008.502,
+        "text": ">> Yes. Broken specifically."
+      },
+      {
+        "startSec": 1008.502,
+        "endSec": 1009.002,
+        "text": ">> Hi."
+      },
+      {
+        "startSec": 1009.002,
+        "endSec": 1009.702,
+        "text": ">> How's it going?"
+      },
+      {
+        "startSec": 1009.702,
+        "endSec": 1011.902,
+        "text": ">> Good. I cable managed."
+      },
+      {
+        "startSec": 1011.902,
+        "endSec": 1013.702,
+        "text": "Look, it's so much nicer now."
+      },
+      {
+        "startSec": 1013.702,
+        "endSec": 1015.302,
+        "text": ">> It's all right. Couple more finishing"
+      },
+      {
+        "startSec": 1015.302,
+        "endSec": 1017.202,
+        "text": "touches in addition to our lava lamps,"
+      },
+      {
+        "startSec": 1017.202,
+        "endSec": 1019.502,
+        "text": "we have these awesome like [music]"
+      },
+      {
+        "startSec": 1019.502,
+        "endSec": 1020.802,
+        "text": "How do I even describe these? They're"
+      },
+      {
+        "startSec": 1020.802,
+        "endSec": 1022.902,
+        "text": "little like pegboard lights so you can"
+      },
+      {
+        "startSec": 1022.902,
+        "endSec": 1024.502,
+        "text": "mount something on them and then they"
+      },
+      {
+        "startSec": 1024.502,
+        "endSec": 1026.702,
+        "text": "just put like a a cool backlight shine"
+      },
+      {
+        "startSec": 1026.702,
+        "endSec": 1028.302,
+        "text": "against the wall behind them. That looks"
+      },
+      {
+        "startSec": 1028.302,
+        "endSec": 1031.502,
+        "text": "freaking awesome with the nuclear green"
+      },
+      {
+        "startSec": 1031.502,
+        "endSec": 1034.002,
+        "text": "screwdriver. And we've got another spot"
+      },
+      {
+        "startSec": 1034.002,
+        "endSec": 1035.902,
+        "text": "for the schedule whenever the TV is"
+      },
+      {
+        "startSec": 1035.902,
+        "endSec": 1037.502,
+        "text": "occupied with other content with this"
+      },
+      {
+        "startSec": 1037.502,
+        "endSec": 1039.302,
+        "text": "little pixel display here."
+      },
+      {
+        "startSec": 1039.302,
+        "endSec": 1040.802,
+        "text": "That looks freaking cool."
+      },
+      {
+        "startSec": 1040.802,
+        "endSec": 1044.402,
+        "text": "Not the most legible thing, but"
+      },
+      {
+        "startSec": 1045.102,
+        "endSec": 1046.602,
+        "text": "Overall, I'm really happy with how this"
+      },
+      {
+        "startSec": 1046.602,
+        "endSec": 1048.402,
+        "text": "turned out and I can't express how much"
+      },
+      {
+        "startSec": 1048.402,
+        "endSec": 1050.502,
+        "text": "better it is than what I expected after"
+      },
+      {
+        "startSec": 1050.502,
+        "endSec": 1054.002,
+        "text": "the first few hours of progress. Things"
+      },
+      {
+        "startSec": 1054.002,
+        "endSec": 1056.502,
+        "text": "really do get much worse sometimes"
+      },
+      {
+        "startSec": 1056.502,
+        "endSec": 1059.102,
+        "text": "before they get better. Great work to"
+      },
+      {
+        "startSec": 1059.102,
+        "endSec": 1060.802,
+        "text": "the team and massive shout out to our"
+      },
+      {
+        "startSec": 1060.802,
+        "endSec": 1064.002,
+        "text": "sponsors, Libre Novo and Nano Leaf who"
+      },
+      {
+        "startSec": 1064.002,
+        "endSec": 1066.202,
+        "text": "sent over all the cool lighting products"
+      },
+      {
+        "startSec": 1066.202,
+        "endSec": 1068.402,
+        "text": "and these awesome chairs that we're all"
+      },
+      {
+        "startSec": 1068.402,
+        "endSec": 1069.902,
+        "text": "enjoying now. If you guys enjoyed this"
+      },
+      {
+        "startSec": 1069.902,
+        "endSec": 1072.002,
+        "text": "video, why not check out Man, it's been"
+      },
+      {
+        "startSec": 1072.002,
+        "endSec": 1073.202,
+        "text": "a long [music] time since we've done"
+      },
+      {
+        "startSec": 1073.202,
+        "endSec": 1074.802,
+        "text": "like a moving vlog or something. I don't"
+      },
+      {
+        "startSec": 1074.802,
+        "endSec": 1076.102,
+        "text": "know. We'll throw to something like"
+      },
+      {
+        "startSec": 1076.102,
+        "endSec": 1078.302,
+        "text": "that."
+      }
+    ],
+    "createdAt": "2026-11-14T16:58:24.697Z"
+  },
+  "attempts": [
+    {
+      "id": "youtube",
+      "stage": "resolve",
+      "outcome": "ok",
+      "detail": "youtube:CrO0Timw2z4"
+    },
+    {
+      "id": "youtube",
+      "stage": "metadata",
+      "outcome": "ok",
+      "ms": 319
+    },
+    {
+      "id": "youtube-captions",
+      "stage": "captions",
+      "outcome": "ok",
+      "detail": "auto-captions",
+      "ms": 268
+    }
+  ]
+}

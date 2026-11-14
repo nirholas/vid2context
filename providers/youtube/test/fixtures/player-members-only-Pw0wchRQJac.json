@@ -1,0 +1,98 @@
+{
+  "playabilityStatus": {
+    "status": "UNPLAYABLE",
+    "reason": "Join this channel to get access to members-only content like this video, and other exclusive perks.",
+    "playableInEmbed": true,
+    "skip": {
+      "playabilityErrorSkipConfig": {
+        "skipOnPlayabilityError": false
+      }
+    }
+  },
+  "videoDetails": {
+    "videoId": "Pw0wchRQJac",
+    "title": "【メンバー限定】ハロウィン🎃お菓子作り【ホロライブ/兎田ぺこら】",
+    "lengthSeconds": "5844",
+    "keywords": [
+      "兎田ぺこら",
+      "ホロライブ",
+      "歌ってみた",
+      "大神ミオ",
+      "Vtuber",
+      "ホロライブゲーマーズ",
+      "ゲーム実況",
+      "実況",
+      "VTuber",
+      "バーチャルYouTuber",
+      "VR",
+      "白 上フブキ",
+      "湊あくあ",
+      "赤井はあと",
+      "ときのそら",
+      "ロボ子さん",
+      "夜空 メル",
+      "大空スバル",
+      "夏色まつり",
+      "さくらみこ",
+      "百鬼あやめ",
+      "ア キ・ローゼンタール",
+      "戌神ころね",
+      "猫又おかゆ",
+      "紫咲シオン",
+      "潤羽るしあ",
+      "不知火フレア",
+      "白銀ノエル",
+      "宝鐘マリン",
+      "hololive",
+      "白上フブキ",
+      "夜空メル",
+      "アキ・ローゼンタール",
+      "ホロアニメ",
+      "3D",
+      "ホログラ",
+      "AZKi",
+      "星街すいせい",
+      "天音かなた",
+      "桐生ココ",
+      "姫森ルーナ",
+      "角巻わため",
+      "常闇トワ"
+    ],
+    "channelId": "UC1DCedRgGHBdm81E1llLhOQ",
+    "isOwnerViewing": false,
+    "shortDescription": "⋈ －－－－－－－－－－－－－－－－－－－－－⋈\n\n🥕Twitter🥕\nhttps://twitter.com/usadapekora\n\nハッシュタグ #ぺこらいぶ でツイート🎶\n\n⋈ －－－－－－－－－－－－－－－－－－－－－⋈\n\n▷メンバーシップはじめました！！\n\n【特典】\n■専用スタンプの追加！名前の横にメンバーバッチも付くぺこ！\n■メンバー限定での生放送が随時あるぺこ！\n■定期的にコミュニティに壁紙やイラストの追加があるYO！\n\n兎田ふぁみりあへの加入待ってるぺこ💓\nhttps://www.youtube.com/channel/UC1DCedRgGHBdm81E1llLhOQ/join\n\n⋈ －－－－－－－－－－－－－－－－－－－－－⋈\n\n※ホロライブプロダクションから未成年の視聴者の方々へのお願い\n[カバー 未成年者の方々へ]で検索してお読みいただくか、下記リンクをご確認の上、\nお楽しみください。\nhttps://hololivepro.com/request-to-minors/",
+    "isCrawlable": true,
+    "thumbnail": {
+      "thumbnails": [
+        {
+          "url": "https://i.ytimg.com/vi/Pw0wchRQJac/default.jpg?v=6ae58d98",
+          "width": 120,
+          "height": 90
+        },
+        {
+          "url": "https://i.ytimg.com/vi/Pw0wchRQJac/mqdefault.jpg?v=6ae58d98",
+          "width": 320,
+          "height": 180
+        },
+        {
+          "url": "https://i.ytimg.com/vi/Pw0wchRQJac/hqdefault.jpg?v=6ae58d98",
+          "width": 480,
+          "height": 360
+        },
+        {
+          "url": "https://i.ytimg.com/vi/Pw0wchRQJac/sddefault.jpg?v=6ae58d98",
+          "width": 640,
+          "height": 480
+        }
+      ]
+    },
+    "allowRatings": true,
+    "author": "Pekora Ch. 兎田ぺこら",
+    "isLowLatencyLiveStream": true,
+    "isPrivate": false,
+    "isUnpluggedCorpus": false,
+    "latencyClass": "MDE_STREAM_OPTIMIZATIONS_RENDERER_LATENCY_LOW",
+    "isLiveContent": true,
+    "isTvfilmVideo": false
+  }
+}

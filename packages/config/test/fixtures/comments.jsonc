@@ -1,0 +1,15 @@
+/* A config written by hand: block comments, line comments and trailing commas. */
+{
+  // The version is required.
+  "version": 1,
+  "profiles": {
+    "default": {
+      "policy": "free", // trailing comment
+      "skip": [
+        "pollinations",
+        "ovh", // a trailing comma inside a list
+      ],
+      "env": { "NOTE": "a // inside a string is not a comment, nor is /* this */" },
+    },
+  },
+}

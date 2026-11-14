@@ -1,0 +1,17 @@
+{
+  "name": "@vid2context/live",
+  "version": "0.1.0",
+  "description": "Transcribe a live stream while it is still running: follows YouTube live and HLS streams, transcribes 30 second chunks through the free-first speech-to-text chain and streams timed segments. Node only (ffmpeg).",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./node": "./src/node.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "@vid2context/core": "*",
+    "hono": "^4.13.18",
+    "zod": "^4.6.7"
+  }
+}

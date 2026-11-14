@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "profiles": {
+    "work": {
+      "policy": { "stt": "cheap" },
+      "allowPaid": "yes",
+      "limits": { "maxAudioMb": 0 },
+      "polcy": "free"
+    }
+  }
+}

@@ -1,0 +1,118 @@
+{
+  "playabilityStatus": {
+    "status": "LIVE_STREAM_OFFLINE",
+    "reason": "This live event will begin in 11 hours.",
+    "playableInEmbed": true,
+    "liveStreamability": {
+      "liveStreamabilityRenderer": {
+        "videoId": "w8DxIwCbsVc",
+        "offlineSlate": {
+          "liveStreamOfflineSlateRenderer": {
+            "scheduledStartTime": "1794717000",
+            "mainText": {
+              "runs": [
+                {
+                  "text": "Live in "
+                },
+                {
+                  "text": "11 hours"
+                }
+              ]
+            },
+            "subtitleText": {
+              "runs": [
+                {
+                  "text": "November 14 at 8:30 PM GMT-8"
+                }
+              ]
+            },
+            "thumbnail": {
+              "thumbnails": [
+                {
+                  "url": "https://i.ytimg.com/vi/w8DxIwCbsVc/default.jpg?v=6af79022",
+                  "width": 120,
+                  "height": 90
+                },
+                {
+                  "url": "https://i.ytimg.com/vi/w8DxIwCbsVc/mqdefault.jpg?v=6af79022",
+                  "width": 320,
+                  "height": 180
+                },
+                {
+                  "url": "https://i.ytimg.com/vi/w8DxIwCbsVc/hqdefault.jpg?v=6af79022",
+                  "width": 480,
+                  "height": 360
+                },
+                {
+                  "url": "https://i.ytimg.com/vi/w8DxIwCbsVc/sddefault.jpg?v=6af79022",
+                  "width": 640,
+                  "height": 480
+                }
+              ]
+            },
+            "offlineSlateStyle": "OFFLINE_SLATE_STYLE_ABSTRACT"
+          }
+        },
+        "pollDelayMs": "30000"
+      }
+    },
+    "pictureInPicture": {
+      "pictureInPictureRenderer": {
+        "playableInPip": true,
+        "pictureInPictureStyleConfig": {
+          "enableScrubbing": true,
+          "enableNavigationControls": true
+        },
+        "pictureInPicturePlayability": "PICTURE_IN_PICTURE_PLAYABILITY_ALL"
+      }
+    },
+    "miniplayer": {
+      "miniplayerRenderer": {
+        "playbackMode": "PLAYBACK_MODE_ALLOW"
+      }
+    }
+  },
+  "videoDetails": {
+    "videoId": "w8DxIwCbsVc",
+    "title": "CFB Week 11 REACTION! SVP & Stanford Steve recap USC-Indiana, Texas-LSU & more | SVPod",
+    "lengthSeconds": "0",
+    "channelId": "UCiWLfSweyRNmLpgEHekhoAg",
+    "isOwnerViewing": false,
+    "shortDescription": "Scott Van Pelt and Stanford Steve give their College Football Week 11 reaction, sharing their USC-Indiana reaction, Texas-LSU reaction, Texas Tech-Oklahoma State reaction, Utah-Arizona reaction, Missouri-Georgia reaction, Ole Miss-Oklahoma reaction, Michigan-Oregon reaction, Tennessee-Texas A&M reaction and more.\n \nSVP & Steve also break down Duke-Miami, Wake Forest-SMU, Northwestern-Ohio State, Wisconsin-Maryland, Alabama-Vanderbilt, Florida-Kentucky, Boston College-Notre Dame, Baylor-BYU as well as Oregon State-Boise State while Steve recaps his time in Boise. | SVPod\n\n✔️ Subscribe to ESPN Unlimited: https://plus.espn.com/\n\n#ESPN",
+    "isCrawlable": true,
+    "thumbnail": {
+      "thumbnails": [
+        {
+          "url": "https://i.ytimg.com/vi/w8DxIwCbsVc/default.jpg?v=6af79022",
+          "width": 120,
+          "height": 90
+        },
+        {
+          "url": "https://i.ytimg.com/vi/w8DxIwCbsVc/mqdefault.jpg?v=6af79022",
+          "width": 320,
+          "height": 180
+        },
+        {
+          "url": "https://i.ytimg.com/vi/w8DxIwCbsVc/hqdefault.jpg?v=6af79022",
+          "width": 480,
+          "height": 360
+        },
+        {
+          "url": "https://i.ytimg.com/vi/w8DxIwCbsVc/sddefault.jpg?v=6af79022",
+          "width": 640,
+          "height": 480
+        }
+      ]
+    },
+    "isUpcoming": true,
+    "allowRatings": true,
+    "viewCount": "4",
+    "author": "ESPN",
+    "isLowLatencyLiveStream": false,
+    "isPrivate": false,
+    "isUnpluggedCorpus": false,
+    "latencyClass": "MDE_STREAM_OPTIMIZATIONS_RENDERER_LATENCY_NORMAL",
+    "isLiveContent": true,
+    "isTvfilmVideo": false
+  }
+}

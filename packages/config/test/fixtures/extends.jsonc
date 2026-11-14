@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "defaultProfile": "work",
+  "profiles": {
+    "base": {
+      "policy": "free",
+      "keyless": false,
+      "skip": ["pollinations"],
+      "models": { "groq": ["openai/gpt-oss-120b", "qwen/qwen3.8-27b"], "ollama": "qwen3:8b" },
+      "defaults": { "format": "markdown", "timestamps": true },
+      "limits": { "maxPlaylistItems": 50 },
+      "env": { "OLLAMA_BASE_URL": "http://localhost:11434/v1" }
+    },
+    "work": {
+      "extends": "base",
+      "policy": { "stt": "local-only", "llm": "quality" },
+      "allowPaid": false,
+      "skip": { "llm": ["ovh"] },
+      "only": { "embed": ["ollama"] },
+      "prefer": ["cerebras", "groq"],
+      "models": { "groq:stt": "whisper-large-v3", "cerebras": "env:WORK_CEREBRAS_MODEL" },
+      "storage": "sqlite",
+      "defaults": { "mode": "captions", "language": "en", "comments": 20 },
+      "limits": { "maxAudioMb": 300 },
+      "env": { "GROQ_API_KEY": "env:WORK_GROQ_KEY" }
+    },
+    "work-strict": {
+      "extends": "work",
+      "keyless": true,
+      "skip": ["ovh", "pollinations"],
+      "defaults": { "timestamps": false }
+    }
+  }
+}

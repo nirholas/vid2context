@@ -1,0 +1,19 @@
+{
+  "name": "@vid2context/provider-ytdlp",
+  "version": "0.1.0",
+  "description": "yt-dlp for vid2context: metadata, captions, playlists, comments and speech-ready audio from more than a thousand sites, with a self-installing, checksum-verified, self-updating binary. Node only.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "vid2context": {
+    "runtimes": [
+      "node"
+    ]
+  },
+  "dependencies": {
+    "@vid2context/core": "*",
+    "@vid2context/provider-youtube": "*"
+  }
+}

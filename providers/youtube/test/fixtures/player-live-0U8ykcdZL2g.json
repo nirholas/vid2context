@@ -1,0 +1,98 @@
+{
+  "playabilityStatus": {
+    "status": "OK",
+    "playableInEmbed": true,
+    "liveStreamability": {
+      "liveStreamabilityRenderer": {
+        "videoId": "0U8ykcdZL2g",
+        "broadcastId": "2",
+        "pollDelayMs": "30000"
+      }
+    },
+    "pictureInPicture": {
+      "pictureInPictureRenderer": {
+        "playableInPip": true,
+        "pictureInPictureStyleConfig": {
+          "enableScrubbing": true,
+          "enableNavigationControls": true
+        },
+        "pictureInPicturePlayability": "PICTURE_IN_PICTURE_PLAYABILITY_ALL"
+      }
+    },
+    "miniplayer": {
+      "miniplayerRenderer": {
+        "playbackMode": "PLAYBACK_MODE_ALLOW"
+      }
+    }
+  },
+  "videoDetails": {
+    "videoId": "0U8ykcdZL2g",
+    "title": "EN VIVO: Noticias N+ Univision 24/7 | Primer Impacto",
+    "lengthSeconds": "0",
+    "isLive": true,
+    "keywords": [
+      "primer impacto",
+      "primer impacto Univision",
+      "Noticias de hoy",
+      "primer impacto hoy",
+      "Noticias univision en vivo",
+      "noticias univision",
+      "noticias en vix 24 horas",
+      "noticias univision 24 horas",
+      "noticias de hoy en vivo",
+      "noticias Univision en vivo",
+      "noticias en español",
+      "noticias en vico",
+      "univision noticias",
+      "noticias live",
+      "noticias español live",
+      "noticias en vivo univision",
+      "univision live",
+      "noticias de estados unidos",
+      "noticias del mundo",
+      "vix",
+      "noticias vix",
+      "pamela silva",
+      "michelle galvan"
+    ],
+    "channelId": "UC9SUMV0oYm0XK9H-c3GmKaQ",
+    "isOwnerViewing": false,
+    "shortDescription": "Señal en VIVO de Univision Noticias en ViX con las informaciones de última hora sobre Estados Unidos, la comunidad latina y la actualidad internacional. Cobertura sin interrupción 24/7.\n\nEn  @vix  esta y más noticias 24 horas #AhoraSomosMás #nmásunivision\nNoticias 24/7 en ViX: https://bit.ly/NoticiasUnivision247ViX \n\n#ViX en redes sociales\nYouTube: https://www.youtube.com/@vix \nInstagram: https://www.instagram.com/vix \nFacebook: https://www.facebook.com/vix \nX: https://twitter.com/VIX \nTikTok: https://www.tiktok.com/@vix \nViX, el servicio de streaming en español más grande del mundo. \n\n @PrimerImpactoUnivision  \nSuscríbete: https://www.youtube.com/@PrimerImpacto \nInfórmate: http://primerimpacto.com/ \n#PrimerImpacto \n\nPrimer Impacto: Las noticias y reportajes más impactantes que ocurren en Estados Unidos y el mundo, presentadas por Michelle Galván y Pamela Silva-Conde.\n\nListas de reproducción de interés\n\nLo más impactante | Primer Impacto\nhttps://youtube.com/playlist?list=PLylIUdPAlNQpzYRx3d54mFpPzPSevp1kJ \n\nIndignante | Primer Impacto\nhttps://youtube.com/playlist?list=PLylIUdPAlNQr0xNKjjMxQpwiuwCltVcAp \n\nAyuda de Impacto | Primer Impacto\nhttps://youtube.com/playlist?list=PLylIUdPAlNQqO06EQGWRM0FXvRXnbJHzI",
+    "isCrawlable": true,
+    "isLiveDvrEnabled": true,
+    "thumbnail": {
+      "thumbnails": [
+        {
+          "url": "https://i.ytimg.com/vi/0U8ykcdZL2g/default.jpg?v=69f132ba",
+          "width": 120,
+          "height": 90
+        },
+        {
+          "url": "https://i.ytimg.com/vi/0U8ykcdZL2g/mqdefault.jpg?v=69f132ba",
+          "width": 320,
+          "height": 180
+        },
+        {
+          "url": "https://i.ytimg.com/vi/0U8ykcdZL2g/hqdefault.jpg?v=69f132ba",
+          "width": 480,
+          "height": 360
+        },
+        {
+          "url": "https://i.ytimg.com/vi/0U8ykcdZL2g/sddefault.jpg?v=69f132ba",
+          "width": 640,
+          "height": 480
+        }
+      ]
+    },
+    "liveChunkReadahead": 2,
+    "allowRatings": true,
+    "viewCount": "2768328",
+    "author": "Primer Impacto",
+    "isLowLatencyLiveStream": false,
+    "isPrivate": false,
+    "isUnpluggedCorpus": false,
+    "latencyClass": "MDE_STREAM_OPTIMIZATIONS_RENDERER_LATENCY_NORMAL",
+    "isLiveContent": true,
+    "isTvfilmVideo": false
+  }
+}

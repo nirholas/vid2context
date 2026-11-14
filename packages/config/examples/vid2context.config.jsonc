@@ -1,0 +1,43 @@
+// vid2context config: copy to ./vid2context.config.jsonc or ~/.config/vid2context/config.json.
+// Pick a profile with VID2CONTEXT_PROFILE=<name> (or --profile once the CLI supports it).
+// Keys never go here: they stay in .env. Reference: docs/configuration.md
+{
+  "$schema": "../schema/config.schema.json",
+  "version": 1,
+  "defaultProfile": "default",
+  "profiles": {
+    // Free first: local rungs, then free tiers with your keys, then keyless hosts.
+    // Paid rungs stay last and only run when their key is set.
+    "default": {
+      "description": "Free first: local, then free tiers with your keys, then keyless hosts, paid only as a keyed backstop.",
+      "policy": "free",
+      "keyless": true,
+      "allowPaid": true
+    },
+
+    // Nothing leaves this machine: only local rungs (Ollama, LM Studio, a local
+    // Whisper server). Keyless and paid hosts are switched off as well.
+    "private": {
+      "description": "Local only: nothing leaves this machine.",
+      "policy": "local-only",
+      "keyless": false,
+      "allowPaid": false
+    },
+
+    // Best model first, tier as tie-breaker. Paid rungs with a key can win.
+    "quality": {
+      "description": "Best model first; paid rungs allowed when their key is set.",
+      "policy": "quality",
+      "keyless": true,
+      "allowPaid": true
+    },
+
+    // Per-stage policy: audio stays on this machine, chat uses free hosted tiers.
+    "hybrid": {
+      "description": "Local speech-to-text, free hosted LLMs.",
+      "extends": "private",
+      "policy": { "default": "free", "stt": "local-only" },
+      "prefer": { "llm": ["groq", "cerebras"] }
+    }
+  }
+}

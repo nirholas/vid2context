@@ -1,0 +1,16 @@
+{
+  "name": "@vid2context/langchain",
+  "version": "0.1.0",
+  "description": "LangChain.js document loader for vid2context: load videos as Documents with timestamp metadata through the vid2context HTTP API.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@vid2context/core": "*"
+  },
+  "devDependencies": {
+    "@langchain/core": "^1.4.1"
+  }
+}

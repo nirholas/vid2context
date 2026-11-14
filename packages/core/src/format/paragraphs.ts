@@ -61,45 +61,38 @@ function chapterAt(chapters: Chapter[], sec: number): number {
 export function groupParagraphs(segments: Segment[], chapters: Chapter[] = []): Paragraph[] {
   const sortedChapters = [...chapters].sort((a, b) => a.startSec - b.startSec);
   const out: Paragraph[] = [];
-  let cur: { startSec: number; endSec: number; parts: string[]; words: number; speaker?: string; chapter: number } | null = null;
-  const flush = () => {
-    if (cur?.parts.length) {
-      out.push({
-        startSec: cur.startSec,
-        endSec: cur.endSec,
-        text: cur.parts.join(' '),
-        ...(cur.speaker !== undefined ? { speaker: cur.speaker } : {}),
-        chapter: cur.chapter,
-      });
-    }
-    cur = null;
-  };
   const segs = segments.filter((s) => cleanText(s.text));
+  let parts: string[] = [];
+  let words = 0;
+  let startSec = 0;
+  let endSec = 0;
+  let speaker: string | undefined;
+  let chapter = -1;
+  const flush = () => {
+    if (parts.length)
+      out.push({ startSec, endSec, text: parts.join(' '), ...(speaker !== undefined ? { speaker } : {}), chapter });
+    parts = [];
+    words = 0;
+  };
   for (let i = 0; i < segs.length; i++) {
     const seg = segs[i] as Segment;
     const text = cleanText(seg.text);
-    const chapter = chapterAt(sortedChapters, seg.startSec);
-    const c = cur as typeof cur;
-    if (c && ((seg.speaker ?? '') !== (c.speaker ?? '') || chapter !== c.chapter)) flush();
-    if (!cur) {
-      cur = {
-        startSec: seg.startSec,
-        endSec: seg.endSec,
-        parts: [],
-        words: 0,
-        ...(seg.speaker !== undefined ? { speaker: seg.speaker } : {}),
-        chapter,
-      };
+    const segChapter = chapterAt(sortedChapters, seg.startSec);
+    if (parts.length && (seg.speaker !== speaker || segChapter !== chapter)) flush();
+    if (!parts.length) {
+      startSec = seg.startSec;
+      endSec = seg.endSec;
+      speaker = seg.speaker;
+      chapter = segChapter;
     }
-    const p = cur as NonNullable<typeof cur>;
-    p.parts.push(text);
-    p.words += text.split(' ').length;
-    p.endSec = Math.max(p.endSec, seg.endSec);
+    parts.push(text);
+    words += text.split(' ').length;
+    endSec = Math.max(endSec, seg.endSec);
 
     const next = segs[i + 1];
-    const dur = p.endSec - p.startSec;
-    const soft = dur >= SOFT_SEC || p.words >= SOFT_WORDS;
-    const hard = dur >= HARD_SEC || p.words >= HARD_WORDS;
+    const dur = endSec - startSec;
+    const soft = dur >= SOFT_SEC || words >= SOFT_WORDS;
+    const hard = dur >= HARD_SEC || words >= HARD_WORDS;
     const pause = next ? next.startSec - seg.endSec >= PAUSE_SEC : false;
     if (hard || (soft && (SENTENCE_END.test(text) || pause))) flush();
   }

@@ -4,9 +4,13 @@ Starts packages/server on a random local port (20000 to 29999), calls it for
 the videos and error cases the tests replay, writes one JSON file per call into
 tests/fixtures/, then stops the server. Run from anywhere:
 
-    uv run python scripts/record_fixtures.py
+    uv run python scripts/record_fixtures.py [name ...]
 
-Needs Node 22+ and `npm install` at the repo root. Personal details (email
+With names (such as `context-cCPsdFdlshc`), only those fixtures are recorded.
+A response with a different status than expected (YouTube rate-limits busy
+machines with HTTP 429, which the server reports as `blocked`) is retried a
+few times and then left unwritten, so a good fixture is never replaced by a
+transient failure. Needs Node 22+ and `npm install` at the repo root. Personal details (email
 addresses, phone numbers) in video descriptions are replaced before writing,
 as AGENTS.md requires for committed fixtures.
 """
@@ -30,21 +34,23 @@ HERE = Path(__file__).resolve().parent
 FIXTURES = HERE.parent / "tests" / "fixtures"
 REPO = HERE.parents[2]
 
-# (fixture name, path, query)
-CALLS: list[tuple[str, str, dict[str, str]]] = [
-    ("health", "/api/v1/health", {}),
-    ("context-jNQXAC9IVRw", "/api/v1/context", {"url": "https://youtu.be/jNQXAC9IVRw"}),
-    ("context-cCPsdFdlshc", "/api/v1/context", {"url": "https://www.youtube.com/watch?v=cCPsdFdlshc"}),
-    ("context-unavailable", "/api/v1/context", {"url": "xxxxxxxxxxx"}),
-    ("transcript-jNQXAC9IVRw-text", "/api/v1/transcript", {"url": "https://youtu.be/jNQXAC9IVRw"}),
+# (fixture name, path, query, expected status)
+CALLS: list[tuple[str, str, dict[str, str], int]] = [
+    ("health", "/api/v1/health", {}, 200),
+    ("context-jNQXAC9IVRw", "/api/v1/context", {"url": "https://youtu.be/jNQXAC9IVRw"}, 200),
+    ("context-cCPsdFdlshc", "/api/v1/context", {"url": "https://www.youtube.com/watch?v=cCPsdFdlshc"}, 200),
+    ("context-unavailable", "/api/v1/context", {"url": "xxxxxxxxxxx"}, 404),
+    ("transcript-jNQXAC9IVRw-text", "/api/v1/transcript", {"url": "https://youtu.be/jNQXAC9IVRw"}, 200),
     (
         "transcript-jNQXAC9IVRw-timestamps",
         "/api/v1/transcript",
         {"url": "https://youtu.be/jNQXAC9IVRw", "format": "text", "timestamps": "1"},
+        200,
     ),
-    ("transcript-missing-url", "/api/v1/transcript", {}),
-    ("transcript-unknown-format", "/api/v1/transcript", {"url": "https://youtu.be/jNQXAC9IVRw", "format": "pdf"}),
+    ("transcript-missing-url", "/api/v1/transcript", {}, 400),
+    ("transcript-unknown-format", "/api/v1/transcript", {"url": "https://youtu.be/jNQXAC9IVRw", "format": "pdf"}, 400),
 ]
+RETRIES = 4
 
 EMAIL = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")
 PHONE = re.compile(r"(?<![\d.])(?:\+?1[ .-]?)?\(?\d{3}\)?[ .-]\d{3}[ .-]\d{4}(?![\d.])")
@@ -69,6 +75,10 @@ def wait_for(base: str, proc: subprocess.Popen[bytes], seconds: float = 60) -> N
 
 
 def main() -> None:
+    only = set(sys.argv[1:])
+    unknown = only - {c[0] for c in CALLS}
+    if unknown:
+        sys.exit(f"unknown fixture names: {', '.join(sorted(unknown))}")
     port = random.randint(20000, 29999)
     base = f"http://127.0.0.1:{port}"
     env = {**os.environ, "PORT": str(port), "HOST": "127.0.0.1"}
@@ -79,9 +89,22 @@ def main() -> None:
         wait_for(base, proc)
         today = dt.date.today().isoformat()
         FIXTURES.mkdir(parents=True, exist_ok=True)
+        failed = 0
         with httpx.Client(base_url=base, timeout=300) as http:
-            for name, path, query in CALLS:
-                res = http.get(path, params=query)
+            for name, path, query, expected in CALLS:
+                if only and name not in only:
+                    continue
+                for attempt in range(RETRIES + 1):
+                    res = http.get(path, params=query)
+                    if res.status_code == expected or attempt == RETRIES:
+                        break
+                    wait = 15 * (attempt + 1)
+                    print(f"{res.status_code} {path} {query}: expected {expected}, retrying in {wait} s", file=sys.stderr)
+                    time.sleep(wait)
+                if res.status_code != expected:
+                    print(f"{res.status_code} {path} {query}: expected {expected}, not written: {res.text[:300]}", file=sys.stderr)
+                    failed += 1
+                    continue
                 record = {
                     "recorded": today,
                     "request": {"method": "GET", "path": path, "query": query},
@@ -92,6 +115,8 @@ def main() -> None:
                 out = FIXTURES / f"{name}.json"
                 out.write_text(json.dumps(record, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
                 print(f"{res.status_code} {path} {query} -> {out.relative_to(REPO)}", file=sys.stderr)
+        if failed:
+            sys.exit(f"{failed} fixture(s) not recorded")
     finally:
         os.killpg(proc.pid, signal.SIGTERM)
         proc.wait(timeout=10)

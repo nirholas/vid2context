@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "profiles": {
+    "default": { "extends": "a" },
+    "a": { "extends": "b", "policy": "free" },
+    "b": { "extends": "a", "policy": "quality" }
+  }
+}

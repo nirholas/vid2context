@@ -1,0 +1,90 @@
+{
+  "playabilityStatus": {
+    "status": "UNPLAYABLE",
+    "reason": "The page needs to be reloaded.",
+    "errorScreen": {
+      "playerErrorMessageRenderer": {
+        "reason": {
+          "runs": [
+            {
+              "text": "The page needs to be reloaded."
+            }
+          ]
+        },
+        "proceedButton": {
+          "buttonRenderer": {
+            "style": "STYLE_PRIMARY",
+            "size": "SIZE_DEFAULT",
+            "isDisabled": false,
+            "text": {
+              "runs": [
+                {
+                  "text": "Reload"
+                }
+              ]
+            },
+            "trackingParams": "CAEQ8FsiEwjJt_qc-IeYAxX6TEwIHX4-JLQ=",
+            "command": {
+              "clickTrackingParams": "CAEQ8FsiEwjJt_qc-IeYAxX6TEwIHX4-JLTKAQQptTIQ",
+              "signalAction": {
+                "signal": "RELOAD_PAGE"
+              }
+            }
+          }
+        },
+        "thumbnail": {
+          "thumbnails": [
+            {
+              "url": "//s.ytimg.com/yts/img/meh7-vflGevej7.png",
+              "width": 140,
+              "height": 100
+            }
+          ]
+        },
+        "icon": {
+          "iconType": "ERROR_OUTLINE"
+        }
+      }
+    }
+  },
+  "videoDetails": {
+    "videoId": "jNQXAC9IVRw",
+    "title": "Me at the zoo",
+    "lengthSeconds": "19",
+    "keywords": [
+      "me at the zoo",
+      "jawed karim",
+      "first youtube video"
+    ],
+    "channelId": "UC4QobU6STFB0P71PMvOGN5A",
+    "isOwnerViewing": false,
+    "shortDescription": "Microplastics are accumulating in human brains at an alarming rate\nhttps://www.youtube.com/watch?v=0PT5c1z3LL8\n\n“Nanoplastics and Human Health” with Matthew J Campen, PhD, MSPH\nhttps://www.youtube.com/watch?v=RRBN_4L09Mg\n\n00:00 Intro\n00:05 The cool thing\n00:17 End",
+    "isCrawlable": true,
+    "thumbnail": {
+      "thumbnails": [
+        {
+          "url": "https://i.ytimg.com/vi/jNQXAC9IVRw/default.jpg?sqp=-oaymwEkCHgQWvKriqkDGvABAfgBvgKAAvABigIMCAAQARhVIFkoZTAP&rs=AOn4CLB-5-A5h4x6IVlsjqEO4ICRubt0MQ",
+          "width": 120,
+          "height": 90
+        },
+        {
+          "url": "https://i.ytimg.com/vi/jNQXAC9IVRw/mqdefault.jpg?sqp=-oaymwEmCMACELQB8quKqQMa8AEB-AG-AoAC8AGKAgwIABABGFUgWShlMA8=&rs=AOn4CLBRVpapZEM7Lkg18qfB9zqpZTRA8Q",
+          "width": 320,
+          "height": 180
+        },
+        {
+          "url": "https://i.ytimg.com/vi/jNQXAC9IVRw/hqdefault.jpg?sqp=-oaymwEmCOADEOgC8quKqQMa8AEB-AG-AoAC8AGKAgwIABABGFUgWShlMA8=&rs=AOn4CLA9eLBatYv9WbkD4BbZ2Im-biSPTw",
+          "width": 480,
+          "height": 360
+        }
+      ]
+    },
+    "allowRatings": true,
+    "viewCount": "448529390",
+    "author": "jawed",
+    "isPrivate": false,
+    "isUnpluggedCorpus": false,
+    "isLiveContent": false,
+    "isTvfilmVideo": false
+  }
+}

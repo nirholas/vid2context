@@ -1,0 +1,42 @@
+{
+  "playabilityStatus": {
+    "status": "ERROR",
+    "reason": "This video has been removed for violating YouTube's policy on hate speech. Learn more about combating hate speech in your country.",
+    "errorScreen": {
+      "playerErrorMessageRenderer": {
+        "learnMore": {
+          "runs": [
+            {
+              "text": "Learn more",
+              "navigationEndpoint": {
+                "clickTrackingParams": "CAAQu2kiEwiws4-d-IeYAxUBTEwIHcBIMkvKAQQ04g_d",
+                "urlEndpoint": {
+                  "url": "//support.google.com/youtube/answer/2801939?hl=en"
+                }
+              }
+            }
+          ]
+        },
+        "reason": {
+          "runs": [
+            {
+              "text": "This video has been removed for violating YouTube's policy on hate speech. Learn more about combating hate speech in your country."
+            }
+          ]
+        },
+        "thumbnail": {
+          "thumbnails": [
+            {
+              "url": "//s.ytimg.com/yts/img/meh7-vflGevej7.png",
+              "width": 140,
+              "height": 100
+            }
+          ]
+        },
+        "icon": {
+          "iconType": "ERROR_OUTLINE"
+        }
+      }
+    }
+  }
+}

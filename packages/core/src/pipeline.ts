@@ -11,6 +11,7 @@
  */
 import { attemptsOf, runChain } from './chain.ts';
 import { Vid2ContextError } from './errors.ts';
+import { enforceInputPolicy } from './security/input.ts';
 import type { ChainOptions, ChatRequest, ChatResult, LlmRung, SourceProvider, SttOptions, SttRung } from './provider.ts';
 import type { Registry } from './registry.ts';
 import type { Storage } from './storage.ts';
@@ -61,6 +62,7 @@ export async function expandInput(
   ctx: Ctx,
   opts: { limit?: number } = {},
 ): Promise<VideoRef[]> {
+  await enforceInputPolicy(input, ctx);
   const { source, ref } = registry.resolve(input);
   if (ref.kind === 'video') return [ref];
   if (!source.listItems) {
@@ -207,6 +209,7 @@ export async function getVideoContext(
 ): Promise<VideoContext> {
   const attempts: Attempt[] = [];
   const mode = opts.mode ?? 'auto';
+  await enforceInputPolicy(input, ctx);
   const { source, ref } = registry.resolve(input);
   attempts.push({ id: source.id, stage: 'resolve', outcome: 'ok', detail: ref.id });
   if (ref.kind !== 'video') {

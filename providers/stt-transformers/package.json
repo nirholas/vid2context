@@ -1,0 +1,24 @@
+{
+  "name": "@vid2context/provider-stt-transformers",
+  "version": "0.1.0",
+  "description": "Offline speech-to-text with Whisper on Transformers.js: onnxruntime-node in Node, WebGPU or WASM in the browser.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "browser": "./src/browser.ts",
+      "default": "./src/node.ts"
+    },
+    "./shared": "./src/index.ts"
+  },
+  "vid2context": {
+    "runtimes": [
+      "node",
+      "browser"
+    ]
+  },
+  "dependencies": {
+    "@huggingface/transformers": "^4.3.2",
+    "@vid2context/core": "*"
+  }
+}

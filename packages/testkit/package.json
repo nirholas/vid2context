@@ -1,0 +1,20 @@
+{
+  "name": "@vid2context/testkit",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Conformance suites for providers, storage backends and formatters, registry invariants, and a fixture recorder that scrubs secrets before anything reaches disk.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./recorder": "./src/recorder.ts",
+    "./invariants": "./src/invariants.ts"
+  },
+  "dependencies": {
+    "@vid2context/core": "*",
+    "@vid2context/registry": "*"
+  },
+  "peerDependencies": {
+    "vitest": "*"
+  }
+}

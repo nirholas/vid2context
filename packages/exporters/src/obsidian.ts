@@ -43,16 +43,10 @@ function utf8Length(s: string): number {
   return new TextEncoder().encode(s).length;
 }
 
-/**
- * A file or folder name Obsidian, Windows, macOS and Linux all accept, kept
- * readable: `:` becomes " - ", slashes and pipes become "-", quotes become
- * apostrophes, and the characters that break links (`# ^ [ ]`) or filesystems
- * (`* ? < >`, control characters) are dropped. Empty results use `fallback`.
- */
-export function safeFileName(name: string, fallback = 'Untitled'): string {
+function cleanName(name: string): string {
   let s = name
     .normalize('NFC')
-    .replace(/[\u0000-\u001f\u007f]/g, ' ')
+    .replace(/\p{Cc}/gu, ' ')
     .replace(/\s*:\s*/g, ' - ')
     .replace(/[/\\|]/g, '-')
     .replace(/"/g, "'")
@@ -67,12 +61,26 @@ export function safeFileName(name: string, fallback = 'Untitled'): string {
     s = chars.join('').replace(/[.\s-]+$/, '');
   }
   if (RESERVED.test(s)) s = `${s}_`;
-  return s || (fallback === name ? 'Untitled' : safeFileName(fallback, 'Untitled'));
+  return s;
+}
+
+/**
+ * A file or folder name Obsidian, Windows, macOS and Linux all accept, kept
+ * readable: `:` becomes " - ", slashes and pipes become "-", quotes become
+ * apostrophes, and the characters that break links (`# ^ [ ]`) or filesystems
+ * (`* ? < >`, control characters) are dropped. Names are capped at 180 UTF-8
+ * bytes. An empty result falls back to `fallback` (cleaned the same way), then
+ * to "Untitled".
+ */
+export function safeFileName(name: string, fallback = 'Untitled'): string {
+  return cleanName(name) || cleanName(fallback) || 'Untitled';
 }
 
 /** A YAML double-quoted scalar. JSON string syntax is valid YAML; the two Unicode line separators are escaped too. */
 export function yamlString(s: string): string {
-  return JSON.stringify(s).replace(/ /g, '\\u2028').replace(/ /g, '\\u2029');
+  return JSON.stringify(s)
+    .replace(/\u2028/g, '\\u2028')
+    .replace(/\u2029/g, '\\u2029');
 }
 
 /** An Obsidian tag: no spaces, only letters, digits, `_`, `-` and `/`, and not purely numeric. */
@@ -88,13 +96,29 @@ export function safeTag(tag: string): string | undefined {
   return t;
 }
 
-/** Escape Markdown and Obsidian syntax in transcript and comment text so it renders as typed. */
-export function escapeMarkdown(s: string): string {
+const URL_RE = /https?:\/\/[^\s<>|]+/g;
+
+function escapePlain(s: string): string {
   return s
     .replace(/[\\`*_[\]<>#$|]/g, (c) => `\\${c}`)
     .replace(/==/g, '\\=\\=')
     .replace(/~~/g, '\\~\\~')
     .replace(/%%/g, '\\%\\%');
+}
+
+/**
+ * Escape Markdown and Obsidian syntax (emphasis, links, tags, math, highlights,
+ * comments, table pipes) in transcript, description and comment text so it
+ * renders as typed. Bare URLs are left intact so Obsidian still links them.
+ */
+export function escapeMarkdown(s: string): string {
+  let out = '';
+  let last = 0;
+  for (const m of s.matchAll(URL_RE)) {
+    out += escapePlain(s.slice(last, m.index)) + m[0];
+    last = m.index + m[0].length;
+  }
+  return out + escapePlain(s.slice(last));
 }
 
 /** Text for a wikilink alias: no pipes or brackets, which would end the link. */
@@ -106,7 +130,10 @@ function tableCell(s: string): string {
   return escapeMarkdown(s.replace(/\s+/g, ' ').trim());
 }
 
-function frontmatter(entries: [string, string | number | boolean | string[] | undefined][]): string {
+/** A frontmatter value. `{ date }` is written unquoted (YYYY-MM-DD) so Obsidian shows it as a date property. */
+type Property = string | number | boolean | string[] | { date: string } | undefined;
+
+function frontmatter(entries: [string, Property][]): string {
   const lines = ['---'];
   for (const [key, value] of entries) {
     if (value === undefined) continue;
@@ -115,7 +142,9 @@ function frontmatter(entries: [string, string | number | boolean | string[] | un
       lines.push(`${key}:`);
       for (const v of value) lines.push(`  - ${yamlString(v)}`);
     } else if (typeof value === 'string') {
-      lines.push(`${key}: ${/^\d{4}-\d{2}-\d{2}$/.test(value) ? value : yamlString(value)}`);
+      lines.push(`${key}: ${yamlString(value)}`);
+    } else if (typeof value === 'object') {
+      lines.push(`${key}: ${value.date}`);
     } else {
       lines.push(`${key}: ${value}`);
     }
@@ -137,6 +166,11 @@ function callout(type: string, title: string, body: string, folded = false): str
 function datePart(iso: string | undefined): string | undefined {
   const m = iso?.match(/^\d{4}-\d{2}-\d{2}/);
   return m?.[0];
+}
+
+function dateProperty(iso: string | undefined): { date: string } | undefined {
+  const d = datePart(iso);
+  return d ? { date: d } : undefined;
 }
 
 function commentLines(c: Comment, depth: number): string[] {
@@ -187,7 +221,7 @@ function videoNote(
       ['title', m.title],
       ['channel', m.channel?.name],
       ['url', m.ref.url],
-      ['published', datePart(m.publishedAt)],
+      ['published', dateProperty(m.publishedAt)],
       ['duration', m.durationSec !== undefined ? formatTimestamp(m.durationSec) : undefined],
       ['tags', tags],
       ['transcript_origin', t.origin],
@@ -200,7 +234,11 @@ function videoNote(
   ];
   const facts = [
     m.ref.url ? `[Open the video](${m.ref.url})` : undefined,
-    m.channel ? (m.channel.url ? `[${escapeMarkdown(m.channel.name)}](${m.channel.url})` : escapeMarkdown(m.channel.name)) : undefined,
+    m.channel
+      ? m.channel.url
+        ? `[${escapeMarkdown(m.channel.name)}](${m.channel.url})`
+        : escapeMarkdown(m.channel.name)
+      : undefined,
     m.durationSec !== undefined ? formatTimestamp(m.durationSec) : undefined,
     `${t.origin.replace(/-/g, ' ')} (${t.language}${t.translated ? ', machine-translated' : ''})`,
   ].filter(Boolean);
@@ -233,8 +271,8 @@ function indexNote(
       ['title', collection.name],
       ['tags', ['vid2context', 'vid2context-collection']],
       ['videos', rows.length],
-      ['created', datePart(collection.createdAt)],
-      ['updated', datePart(collection.updatedAt)],
+      ['created', dateProperty(collection.createdAt)],
+      ['updated', dateProperty(collection.updatedAt)],
       ['sources', collection.sources],
       [ID_PROPERTY, `collection:${collection.id}`],
     ]),
@@ -242,7 +280,10 @@ function indexNote(
   ];
   if (collection.description?.trim()) parts.push(escapeMarkdown(collection.description.trim()));
   if (collection.sources.length > 0) {
-    parts.push('## Sources', collection.sources.map((s) => (/^https?:\/\//i.test(s) ? `- <${s}>` : `- ${escapeMarkdown(s)}`)).join('\n'));
+    parts.push(
+      '## Sources',
+      collection.sources.map((s) => (/^https?:\/\//i.test(s) ? `- <${s}>` : `- ${escapeMarkdown(s)}`)).join('\n'),
+    );
   }
   const table = [
     '| # | Video | Channel | Duration | Published | Transcript |',
@@ -275,8 +316,8 @@ export function renderObsidian(contexts: VideoContext[], opts: ObsidianOptions =
   const collection = opts.collection;
   const folderSegments = (opts.folder ?? (collection ? collection.name : 'vid2context'))
     .split(/[/\\]+/)
-    .map((s) => safeFileName(s, ''))
-    .filter((s) => s && s !== 'Untitled');
+    .map(cleanName)
+    .filter(Boolean);
   const folder = folderSegments.length > 0 ? folderSegments.join('/') : 'vid2context';
   const seen = new Set<string>();
   let ordered = contexts.filter((c) => {
@@ -327,7 +368,7 @@ export function exportObsidian(
 
 /** Reads the `vid2context-id` property from a note's frontmatter, or undefined when the note has none. */
 export function noteId(content: string): string | undefined {
-  const fm = content.replace(/^﻿/, '').match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/);
+  const fm = content.replace(/^\uFEFF/, '').match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/);
   if (!fm?.[1]) return undefined;
   const line = fm[1].match(new RegExp(`^${ID_PROPERTY}:[ \\t]*(.*?)[ \\t]*$`, 'm'));
   const raw = line?.[1];

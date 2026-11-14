@@ -1,3 +1,4 @@
+import { redact } from './security/redact.ts';
 import type { Ctx, Env, Logger, Runtime } from './types.ts';
 
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error' | 'silent';
@@ -6,12 +7,14 @@ const LEVELS: Record<LogLevel, number> = { debug: 10, info: 20, warn: 30, error:
 /**
  * Logger that writes to stderr. stdout is reserved for program output (and for
  * the MCP stdio transport, where a stray stdout line corrupts the protocol).
+ * Messages and data are redacted: key shapes, auth headers, secret query
+ * params and the literal values of secret env vars in `env` become [redacted].
  */
-export function stderrLogger(level: LogLevel = 'warn'): Logger {
+export function stderrLogger(level: LogLevel = 'warn', env?: Env): Logger {
   const min = LEVELS[level];
   const emit = (lvl: Exclude<LogLevel, 'silent'>, msg: string, data?: Record<string, unknown>) => {
     if (LEVELS[lvl] < min) return;
-    const line = data ? `${msg} ${JSON.stringify(data)}` : msg;
+    const line = redact(data ? `${msg} ${JSON.stringify(redact(data, env))}` : msg, env);
     console.error(`[vid2context] ${lvl}: ${line}`);
   };
   return {
@@ -35,7 +38,7 @@ export function createContext(opts: {
     runtime: opts.runtime,
     env,
     fetch: opts.fetch ?? globalThis.fetch.bind(globalThis),
-    log: opts.log ?? stderrLogger(level in LEVELS ? level : 'warn'),
+    log: opts.log ?? stderrLogger(level in LEVELS ? level : 'warn', env),
     signal: opts.signal,
   };
 }

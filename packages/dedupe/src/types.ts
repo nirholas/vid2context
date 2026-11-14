@@ -104,7 +104,7 @@ export interface DuplicateGroup {
   members: GroupMember[];
   /** The likely original: for clips the long video; for reuploads the earliest published, see README. */
   original?: string;
-  /** The weakest member link: lowest overlap, total matched shingles, and the weakest method used. */
+  /** The weakest member link (lowest overlap, with its matched shingles) and the weakest method any member needed. */
   evidence: Evidence;
 }
 

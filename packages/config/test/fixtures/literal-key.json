@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "profiles": {
+    "default": {
+      "policy": "free",
+      "env": { "OPENAI_API_KEY": "sk-this-is-not-a-real-key-0000" },
+      "models": { "gemini": "AIzaNotARealKeyJustShapedLikeOne" }
+    }
+  }
+}

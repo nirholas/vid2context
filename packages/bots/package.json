@@ -1,0 +1,26 @@
+{
+  "name": "@vid2context/bots",
+  "version": "0.1.0",
+  "description": "Telegram, Discord and Slack bots for vid2context: answer a video link with a timestamp-cited summary and the transcript as a file. Hono webhook routes for Node and Cloudflare Workers.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./http": "./src/http.ts",
+    "./setup": "./src/setup.ts"
+  },
+  "scripts": {
+    "setup:telegram": "tsx scripts/telegram-set-webhook.ts",
+    "setup:discord": "tsx scripts/discord-register-commands.ts",
+    "setup:slack": "tsx scripts/slack-manifest.ts",
+    "record": "tsx scripts/record-fixtures.ts",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@vid2context/core": "*",
+    "hono": "^4.13.18"
+  },
+  "devDependencies": {
+    "@vid2context/registry": "*"
+  }
+}

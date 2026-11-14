@@ -13,3 +13,6 @@ export * from './storage-ext.ts';
 export * from './tokens.ts';
 export * from './audio-split.ts';
 export * from './llm-stream.ts';
+export * from './longform/index.ts';
+export * from './bundle/index.ts';
+export * from './security/index.ts';

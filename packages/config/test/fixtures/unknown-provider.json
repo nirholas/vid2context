@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "profiles": {
+    "default": {
+      "models": { "groq": "openai/gpt-oss-120b", "grok": "grok-4" }
+    }
+  }
+}
