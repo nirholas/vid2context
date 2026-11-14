@@ -5,7 +5,7 @@
  * transcript the user pastes with timestamps (YouTube's "Show transcript"
  * panel, SRT, WebVTT, or `[m:ss] text` lines).
  */
-import { Vid2ContextError, type Segment, type VideoContext, type VideoRef } from '@vid2context/core';
+import { type Segment, Vid2ContextError, type VideoContext, type VideoRef } from '@vid2context/core';
 
 function isVideoContext(v: unknown): v is VideoContext {
   const c = v as Partial<VideoContext> | null;
@@ -110,10 +110,18 @@ export function refFor(url: string | undefined, text: string): VideoRef {
   const yt = url ? YT_ID.exec(url) : null;
   if (yt?.[1]) {
     const id = yt[1];
-    return { input: url ?? id, platform: 'youtube', kind: 'video', id: `youtube:${id}`, nativeId: id, url: `https://www.youtube.com/watch?v=${id}` };
+    return {
+      input: url ?? id,
+      platform: 'youtube',
+      kind: 'video',
+      id: `youtube:${id}`,
+      nativeId: id,
+      url: `https://www.youtube.com/watch?v=${id}`,
+    };
   }
   const nativeId = hashText(`${url ?? ''}\n${text}`);
-  if (url && /^https?:\/\//i.test(url)) return { input: url, platform: 'web', kind: 'video', id: `pasted:${nativeId}`, nativeId, url };
+  if (url && /^https?:\/\//i.test(url))
+    return { input: url, platform: 'web', kind: 'video', id: `pasted:${nativeId}`, nativeId, url };
   return { input: 'pasted transcript', platform: 'pasted', kind: 'video', id: `pasted:${nativeId}`, nativeId };
 }
 

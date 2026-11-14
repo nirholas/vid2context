@@ -5,8 +5,8 @@
  */
 import { KeyRound, ShieldAlert } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { loadProviderKeys, loadServerApiKey } from '../lib/store.ts';
 import type { Theme } from '../lib/settings.ts';
+import { loadProviderKeys, loadServerApiKey } from '../lib/store.ts';
 import { Button, Dialog } from './ui.tsx';
 
 export interface KeyField {
@@ -27,7 +27,8 @@ export interface SettingsDialogProps {
   onSaveKeys: (keys: Record<string, string>) => Promise<void>;
 }
 
-const inputClass = 'w-full rounded-md border border-border-strong bg-surface-2 px-3 py-2 text-sm outline-none focus:border-accent';
+const inputClass =
+  'w-full rounded-md border border-border-strong bg-surface-2 px-3 py-2 text-sm outline-none focus:border-accent';
 
 export const SHORTCUTS: { keys: string; action: string }[] = [
   { keys: 'Ctrl+Shift+O (Cmd+Shift+O)', action: 'New chat' },
@@ -74,11 +75,22 @@ export function SettingsDialog(props: SettingsDialogProps) {
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="block text-sm">
             <span className="mb-1 block text-muted">API base URL</span>
-            <input className={`${inputClass} font-mono`} value={base} onChange={(e) => setBase(e.target.value)} placeholder="/api/v1" />
+            <input
+              className={`${inputClass} font-mono`}
+              value={base}
+              onChange={(e) => setBase(e.target.value)}
+              placeholder="/api/v1"
+            />
           </label>
           <label className="block text-sm">
             <span className="mb-1 block text-muted">Server API key (when the server requires one)</span>
-            <input className={`${inputClass} font-mono`} type="password" autoComplete="off" value={serverKey} onChange={(e) => setServerKey(e.target.value)} />
+            <input
+              className={`${inputClass} font-mono`}
+              type="password"
+              autoComplete="off"
+              value={serverKey}
+              onChange={(e) => setServerKey(e.target.value)}
+            />
           </label>
         </div>
         <div className="mt-3 flex justify-end">
@@ -105,13 +117,15 @@ export function SettingsDialog(props: SettingsDialogProps) {
         <div className="mb-3 flex gap-2 rounded-md border border-warning/50 bg-warning/10 p-3 text-sm">
           <ShieldAlert size={16} className="mt-0.5 shrink-0 text-warning" aria-hidden />
           <p>
-            Keys stay in this browser's storage (IndexedDB, database v2c-settings) and are sent only to the provider each key belongs to, never
-            to a vid2context server. Anyone who can use this browser profile can read them. Use free-tier keys, and remove them on shared
-            computers.
+            Keys stay in this browser's storage (IndexedDB, database v2c-settings) and are sent only to the provider each key
+            belongs to, never to a vid2context server. Anyone who can use this browser profile can read them. Use free-tier keys,
+            and remove them on shared computers.
           </p>
         </div>
         {props.mode === 'server' ? (
-          <p className="mb-3 text-sm text-muted">The server uses its own keys in server mode; these are used only when no server answers.</p>
+          <p className="mb-3 text-sm text-muted">
+            The server uses its own keys in server mode; these are used only when no server answers.
+          </p>
         ) : null}
         <div className="grid gap-3 sm:grid-cols-2">
           {props.keyFields.map((f) => (
@@ -178,8 +192,18 @@ export function SettingsDialog(props: SettingsDialogProps) {
         </h3>
         <div role="radiogroup" aria-labelledby="set-theme" className="flex gap-2">
           {(['dark', 'light', 'system'] as Theme[]).map((t) => (
-            <label key={t} className="inline-flex cursor-pointer items-center gap-1.5 rounded-pill border border-border px-3 py-1 text-sm has-[:checked]:border-accent">
-              <input type="radio" name="v2c-theme" value={t} checked={props.theme === t} onChange={() => props.onTheme(t)} className="accent-[var(--v2c-accent)]" />
+            <label
+              key={t}
+              className="inline-flex cursor-pointer items-center gap-1.5 rounded-pill border border-border px-3 py-1 text-sm has-[:checked]:border-accent"
+            >
+              <input
+                type="radio"
+                name="v2c-theme"
+                value={t}
+                checked={props.theme === t}
+                onChange={() => props.onTheme(t)}
+                className="accent-[var(--v2c-accent)]"
+              />
               {t[0]?.toUpperCase()}
               {t.slice(1)}
             </label>

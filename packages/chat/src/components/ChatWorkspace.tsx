@@ -16,7 +16,15 @@ import { readMeter } from '../lib/meter.ts';
 import { autoPick, serviceLabel } from '../lib/models.ts';
 import { applyTheme, getTheme, type Theme } from '../lib/settings.ts';
 import { type ChatStore, DEFAULT_PREFS, type Prefs } from '../lib/store.ts';
-import type { AttachedContext, ChatApiRequest, ChatSource, Conversation, MessageRecord, ModelChoice, ModelRow } from '../lib/types.ts';
+import type {
+  AttachedContext,
+  ChatApiRequest,
+  ChatSource,
+  Conversation,
+  MessageRecord,
+  ModelChoice,
+  ModelRow,
+} from '../lib/types.ts';
 import { AttachDialog } from './AttachDialog.tsx';
 import { Composer } from './Composer.tsx';
 import { ModelPicker } from './ModelPicker.tsx';
@@ -46,7 +54,16 @@ export interface ChatWorkspaceProps {
 
 function blankConversation(prefs: Prefs): Conversation {
   const now = Date.now();
-  return { id: newId(), title: NEW_CHAT_TITLE, createdAt: now, updatedAt: now, pinned: false, model: prefs.lastModel, strict: prefs.lastStrict, contexts: [] };
+  return {
+    id: newId(),
+    title: NEW_CHAT_TITLE,
+    createdAt: now,
+    updatedAt: now,
+    pinned: false,
+    model: prefs.lastModel,
+    strict: prefs.lastStrict,
+    contexts: [],
+  };
 }
 
 function isTyping(target: EventTarget | null): boolean {
@@ -89,7 +106,9 @@ export function ChatWorkspace(props: ChatWorkspaceProps) {
       if (!live) return;
       setPrefs(p);
       setConversations(list);
-      setCurrent((c) => (c.title === NEW_CHAT_TITLE && c.contexts.length === 0 ? { ...c, model: p.lastModel, strict: p.lastStrict } : c));
+      setCurrent((c) =>
+        c.title === NEW_CHAT_TITLE && c.contexts.length === 0 ? { ...c, model: p.lastModel, strict: p.lastStrict } : c,
+      );
       setLoaded(true);
     });
     return () => {
@@ -292,12 +311,25 @@ export function ChatWorkspace(props: ChatWorkspaceProps) {
             idle
               ? { status: 'error', error: idleError }
               : controller.signal.aborted
-              ? { status: 'stopped' }
-              : { status: 'error', error: { code: 'upstream', message: 'The answer ended without a result.', hint: 'Retry, or pick another model.' } },
+                ? { status: 'stopped' }
+                : {
+                    status: 'error',
+                    error: {
+                      code: 'upstream',
+                      message: 'The answer ended without a result.',
+                      hint: 'Retry, or pick another model.',
+                    },
+                  },
           );
         }
       } catch (err) {
-        push(idle ? { status: 'error', error: idleError } : controller.signal.aborted ? { status: 'stopped' } : { status: 'error', error: toErrorData(err) });
+        push(
+          idle
+            ? { status: 'error', error: idleError }
+            : controller.signal.aborted
+              ? { status: 'stopped' }
+              : { status: 'error', error: toErrorData(err) },
+        );
       } finally {
         clearTimeout(timer);
         if (streamRef.current === controller) streamRef.current = null;
@@ -323,7 +355,14 @@ export function ChatWorkspace(props: ChatWorkspaceProps) {
       },
       true,
     );
-    const user: MessageRecord = { id: newId(), conversationId: conv.id, role: 'user', content: text, createdAt: Date.now(), status: 'done' };
+    const user: MessageRecord = {
+      id: newId(),
+      conversationId: conv.id,
+      role: 'user',
+      content: text,
+      createdAt: Date.now(),
+      status: 'done',
+    };
     setMessages((ms) => [...ms, user]);
     setDraft('');
     await store.putMessage(user);
@@ -396,12 +435,22 @@ export function ChatWorkspace(props: ChatWorkspaceProps) {
       const key = item.ref.url ?? item.id;
       if (currentRef.current.contexts.some((c) => c.key === key)) return;
       setAttachOpen(false);
-      await setContexts((list) => [...list, { key, kind: 'input', input: key, videoId: item.id, title: item.title, status: 'loading' }]);
+      await setContexts((list) => [
+        ...list,
+        { key, kind: 'input', input: key, videoId: item.id, title: item.title, status: 'loading' },
+      ]);
       try {
         const ready = await backend.attachLibraryItem(item);
         await replaceContext(key, { ...ready, key });
       } catch (err) {
-        await replaceContext(key, { key, kind: 'input', input: key, title: item.title, status: 'error', error: toErrorData(err) });
+        await replaceContext(key, {
+          key,
+          kind: 'input',
+          input: key,
+          title: item.title,
+          status: 'error',
+          error: toErrorData(err),
+        });
       }
     },
     [backend, setContexts, replaceContext],
@@ -412,12 +461,22 @@ export function ChatWorkspace(props: ChatWorkspaceProps) {
       const key = `collection:${id}`;
       setAttachOpen(false);
       // One collection per conversation (ChatApiRequest.context.collectionId).
-      await setContexts((list) => [...list.filter((c) => c.kind !== 'collection'), { key, kind: 'collection', collectionId: id, title: id, status: 'loading' }]);
+      await setContexts((list) => [
+        ...list.filter((c) => c.kind !== 'collection'),
+        { key, kind: 'collection', collectionId: id, title: id, status: 'loading' },
+      ]);
       try {
         const ready = await backend.attachCollection(id);
         await replaceContext(key, ready);
       } catch (err) {
-        await replaceContext(key, { key, kind: 'collection', collectionId: id, title: id, status: 'error', error: toErrorData(err) });
+        await replaceContext(key, {
+          key,
+          kind: 'collection',
+          collectionId: id,
+          title: id,
+          status: 'error',
+          error: toErrorData(err),
+        });
       }
     },
     [backend, setContexts, replaceContext],
@@ -504,7 +563,10 @@ export function ChatWorkspace(props: ChatWorkspaceProps) {
     return current.model.kind === 'rung' ? rows.find((r) => r.id === (current.model as { rung: string }).rung) : autoPick(rows);
   }, [rows, current.model]);
 
-  const meter = useMemo(() => readMeter(current.contexts, messages, selectedRow, rows ?? [], draft), [current.contexts, messages, selectedRow, rows, draft]);
+  const meter = useMemo(
+    () => readMeter(current.contexts, messages, selectedRow, rows ?? [], draft),
+    [current.contexts, messages, selectedRow, rows, draft],
+  );
 
   const keyFields = useMemo<KeyField[]>(() => {
     const map = new Map<string, Set<string>>();
@@ -592,7 +654,12 @@ export function ChatWorkspace(props: ChatWorkspaceProps) {
       <div className={cx('hidden w-72 shrink-0 border-r border-border bg-surface', sidebarOpen && 'md:block')}>{sidebar}</div>
       {drawerOpen ? (
         <div className="fixed inset-0 z-40 md:hidden">
-          <button type="button" aria-label="Close conversations" className="absolute inset-0 bg-black/60" onClick={() => setDrawerOpen(false)} />
+          <button
+            type="button"
+            aria-label="Close conversations"
+            className="absolute inset-0 bg-black/60"
+            onClick={() => setDrawerOpen(false)}
+          />
           <div className="relative h-full w-[85vw] max-w-80 border-r border-border bg-surface shadow-pop">
             <div className="absolute right-2 top-2 z-10">
               <IconButton label="Close conversations" onClick={() => setDrawerOpen(false)}>
@@ -612,7 +679,10 @@ export function ChatWorkspace(props: ChatWorkspaceProps) {
             </IconButton>
           </span>
           <span className="hidden md:inline-flex">
-            <IconButton label={sidebarOpen ? 'Hide conversations' : 'Show conversations'} onClick={() => updatePrefs({ sidebarOpen: !sidebarOpen })}>
+            <IconButton
+              label={sidebarOpen ? 'Hide conversations' : 'Show conversations'}
+              onClick={() => updatePrefs({ sidebarOpen: !sidebarOpen })}
+            >
               {sidebarOpen ? <PanelLeftClose size={18} aria-hidden /> : <PanelLeftOpen size={18} aria-hidden />}
             </IconButton>
           </span>
@@ -631,9 +701,16 @@ export function ChatWorkspace(props: ChatWorkspaceProps) {
             onUnavailable={onUnavailable}
           />
           <div className="min-w-0 flex-1" />
-          <TokenMeter reading={meter} modelLabel={selectedRow?.label ?? 'The model'} onSwitch={(r) => chooseModel({ kind: 'rung', rung: r.id, label: r.label })} />
+          <TokenMeter
+            reading={meter}
+            modelLabel={selectedRow?.label ?? 'The model'}
+            onSwitch={(r) => chooseModel({ kind: 'rung', rung: r.id, label: r.label })}
+          />
           {backend.mode === 'client' ? (
-            <span className="hidden rounded-pill border border-tier-keyless/60 px-2 py-0.5 text-xs text-fg lg:inline" title="No vid2context server answered; models are called from this browser.">
+            <span
+              className="hidden rounded-pill border border-tier-keyless/60 px-2 py-0.5 text-xs text-fg lg:inline"
+              title="No vid2context server answered; models are called from this browser."
+            >
               Client-only
             </span>
           ) : null}
@@ -652,7 +729,12 @@ export function ChatWorkspace(props: ChatWorkspaceProps) {
         ) : null}
 
         {messages.length === 0 ? (
-          <EmptyState mode={backend.mode} onAttach={() => setAttachOpen(true)} hasContext={current.contexts.length > 0} loading={!loaded} />
+          <EmptyState
+            mode={backend.mode}
+            onAttach={() => setAttachOpen(true)}
+            hasContext={current.contexts.length > 0}
+            loading={!loaded}
+          />
         ) : (
           <Thread
             messages={messages}
@@ -672,7 +754,9 @@ export function ChatWorkspace(props: ChatWorkspaceProps) {
                 <button
                   type="button"
                   className="ml-1.5 text-accent underline underline-offset-2"
-                  onClick={() => meter.suggestion && chooseModel({ kind: 'rung', rung: meter.suggestion.id, label: meter.suggestion.label })}
+                  onClick={() =>
+                    meter.suggestion && chooseModel({ kind: 'rung', rung: meter.suggestion.id, label: meter.suggestion.label })
+                  }
                 >
                   Use {meter.suggestion.label}
                 </button>

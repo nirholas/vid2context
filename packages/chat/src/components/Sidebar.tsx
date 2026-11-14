@@ -31,7 +31,12 @@ export function Sidebar(props: SidebarProps) {
   return (
     <nav aria-label="Conversations" className="flex h-full min-h-0 flex-col">
       <div className="flex flex-col gap-2 p-3">
-        <Button variant="outline" className="w-full justify-start rounded-md py-2" onClick={props.onNew} aria-keyshortcuts="Control+Shift+O Meta+Shift+O">
+        <Button
+          variant="outline"
+          className="w-full justify-start rounded-md py-2"
+          onClick={props.onNew}
+          aria-keyshortcuts="Control+Shift+O Meta+Shift+O"
+        >
           <MessageSquarePlus size={16} aria-hidden /> New chat
         </Button>
         <label className="flex items-center gap-2 rounded-md border border-border bg-surface-2 px-2.5 py-1.5 focus-within:border-accent">
@@ -124,7 +129,7 @@ function ConversationItem(props: {
 
   if (mode === 'confirm') {
     return (
-      <li className="flex items-center justify-between gap-2 rounded-md bg-danger/10 px-2 py-1.5 text-sm" role="group" aria-label={`Delete ${c.title}?`}>
+      <li className="flex items-center justify-between gap-2 rounded-md bg-danger/10 px-2 py-1.5 text-sm">
         <span className="min-w-0 truncate">Delete "{c.title}"?</span>
         <span className="flex shrink-0 gap-1">
           <Button variant="danger" className="px-2.5 py-0.5 text-xs" onClick={props.onDelete} autoFocus>
@@ -155,7 +160,13 @@ function ConversationItem(props: {
           c.pinned ? '' : 'opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100',
         )}
       >
-        <IconButton label={c.pinned ? 'Unpin' : 'Pin'} tip={false} className="h-7 w-7" onClick={props.onTogglePin} aria-pressed={c.pinned}>
+        <IconButton
+          label={c.pinned ? 'Unpin' : 'Pin'}
+          tip={false}
+          className="h-7 w-7"
+          onClick={props.onTogglePin}
+          aria-pressed={c.pinned}
+        >
           <Star size={13} fill={c.pinned ? 'currentColor' : 'none'} className={c.pinned ? 'text-warning' : ''} aria-hidden />
         </IconButton>
         <span className="flex opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100">

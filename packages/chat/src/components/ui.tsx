@@ -10,7 +10,8 @@ export function cx(...parts: (string | false | null | undefined)[]): string {
   return parts.filter(Boolean).join(' ');
 }
 
-const FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+const FOCUSABLE =
+  'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
 
 export function Dialog(props: {
   open: boolean;
@@ -39,7 +40,9 @@ export function Dialog(props: {
         return;
       }
       if (e.key !== 'Tab' || !node) return;
-      const items = [...node.querySelectorAll<HTMLElement>(FOCUSABLE)].filter((el) => el.offsetParent !== null || el === document.activeElement);
+      const items = [...node.querySelectorAll<HTMLElement>(FOCUSABLE)].filter(
+        (el) => el.offsetParent !== null || el === document.activeElement,
+      );
       if (items.length === 0) return;
       const firstEl = items[0] as HTMLElement;
       const lastEl = items[items.length - 1] as HTMLElement;
@@ -61,7 +64,13 @@ export function Dialog(props: {
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 p-0 sm:items-center sm:p-4">
-      <button type="button" aria-label="Close dialog" tabIndex={-1} className="absolute inset-0 cursor-default" onClick={onClose} />
+      <button
+        type="button"
+        aria-label="Close dialog"
+        tabIndex={-1}
+        className="absolute inset-0 cursor-default"
+        onClick={onClose}
+      />
       <div
         ref={ref}
         role="dialog"
@@ -136,7 +145,9 @@ export function Tip(props: { text: string; children: ReactNode; side?: 'top' | '
   );
 }
 
-export function Button(props: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'primary' | 'ghost' | 'outline' | 'danger' }) {
+export function Button(
+  props: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'primary' | 'ghost' | 'outline' | 'danger' },
+) {
   const { variant = 'outline', className, ...rest } = props;
   return (
     <button

@@ -126,7 +126,7 @@ export function ModelPicker(props: ModelPickerProps) {
     const current = itemsRef.current.findIndex((it) =>
       choice.kind === 'auto' ? it.kind === 'auto' : it.kind === 'model' && it.row.id === choice.rung,
     );
-    setActive(current >= 0 ? current : 0);
+    setActive(Math.max(current, 0));
   }, [open, query]);
 
   useEffect(() => {
@@ -198,7 +198,8 @@ export function ModelPicker(props: ModelPickerProps) {
     }
   };
 
-  const chosenRow = props.choice.kind === 'rung' ? rows?.find((r) => r.id === (props.choice as { rung: string }).rung) : undefined;
+  const chosenRow =
+    props.choice.kind === 'rung' ? rows?.find((r) => r.id === (props.choice as { rung: string }).rung) : undefined;
   const buttonLabel = props.choice.kind === 'auto' ? 'Auto' : props.choice.label;
 
   let index = -1;
@@ -209,6 +210,7 @@ export function ModelPicker(props: ModelPickerProps) {
     if (item.kind === 'auto') {
       const selected = props.choice.kind === 'auto';
       return (
+        // biome-ignore lint/a11y/useKeyWithClickEvents: keyboard selection is handled by the combobox input, which keeps focus (aria-activedescendant).
         <div
           key={item.key}
           id={optionId(i)}
@@ -218,7 +220,6 @@ export function ModelPicker(props: ModelPickerProps) {
           className={cx('flex cursor-pointer items-start gap-3 rounded-md px-3 py-2.5', isActive && 'bg-surface-3')}
           onMouseDown={(e) => e.preventDefault()}
           onMouseMove={() => setActive(i)}
-          // biome-ignore lint/a11y/useKeyWithClickEvents: keyboard selection is handled by the combobox input, which keeps focus (aria-activedescendant).
           onClick={() => activate(item)}
         >
           <span className="v2c-gradient mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-sm">
@@ -227,7 +228,9 @@ export function ModelPicker(props: ModelPickerProps) {
           <span className="min-w-0 flex-1">
             <span className="flex items-center gap-2">
               <span className="font-medium">Auto</span>
-              <span className="rounded-pill border border-accent/50 px-1.5 py-px text-[11px] font-medium text-fg">Recommended</span>
+              <span className="rounded-pill border border-accent/50 px-1.5 py-px text-[11px] font-medium text-fg">
+                Recommended
+              </span>
             </span>
             <span className="block text-xs text-muted">{AUTO_DESCRIPTION}</span>
           </span>
@@ -245,6 +248,7 @@ export function ModelPicker(props: ModelPickerProps) {
       row.disabledReason ? `, unavailable: ${row.disabledReason}` : ''
     }`;
     return (
+      // biome-ignore lint/a11y/useKeyWithClickEvents: keyboard selection is handled by the combobox input, which keeps focus (aria-activedescendant).
       <div
         key={item.key}
         id={optionId(i)}
@@ -256,11 +260,13 @@ export function ModelPicker(props: ModelPickerProps) {
         className={cx('group flex cursor-pointer items-start gap-3 rounded-md px-3 py-2', isActive && 'bg-surface-3')}
         onMouseDown={(e) => e.preventDefault()}
         onMouseMove={() => setActive(i)}
-        // biome-ignore lint/a11y/useKeyWithClickEvents: keyboard selection is handled by the combobox input, which keeps focus (aria-activedescendant).
         onClick={() => activate(item)}
         data-rung={row.id}
       >
-        <span className={cx('mt-1.5 h-2 w-2 shrink-0 rounded-full', TIER_DOT[row.tier], !row.enabled && 'opacity-40')} aria-hidden />
+        <span
+          className={cx('mt-1.5 h-2 w-2 shrink-0 rounded-full', TIER_DOT[row.tier], !row.enabled && 'opacity-40')}
+          aria-hidden
+        />
         <span className="min-w-0 flex-1">
           <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
             <span className={cx('truncate font-medium', !row.enabled && 'text-muted')}>{row.label}</span>
@@ -355,12 +361,24 @@ export function ModelPicker(props: ModelPickerProps) {
             />
           </div>
 
-          <div ref={listRef} id={listId} role="listbox" aria-label="Models" className="v2c-scroll min-h-0 flex-1 overflow-y-auto p-1.5">
+          <div
+            ref={listRef}
+            id={listId}
+            role="listbox"
+            aria-label="Models"
+            className="v2c-scroll min-h-0 flex-1 overflow-y-auto p-1.5"
+          >
             {sections.map((section) =>
               section.label ? (
+                // biome-ignore lint/a11y/useSemanticElements: the ARIA listbox pattern groups options with role="group"; a fieldset is not allowed inside a listbox.
                 <div key={section.id} role="group" aria-labelledby={`${baseId}-${section.id}`} className="mt-1.5">
-                  <div id={`${baseId}-${section.id}`} className="flex items-center gap-2 px-3 pb-1 pt-2 text-xs font-semibold text-muted">
-                    {section.tier ? <span className={cx('h-1.5 w-1.5 rounded-full', TIER_DOT[section.tier])} aria-hidden /> : null}
+                  <div
+                    id={`${baseId}-${section.id}`}
+                    className="flex items-center gap-2 px-3 pb-1 pt-2 text-xs font-semibold text-muted"
+                  >
+                    {section.tier ? (
+                      <span className={cx('h-1.5 w-1.5 rounded-full', TIER_DOT[section.tier])} aria-hidden />
+                    ) : null}
                     {section.id === 'favorites' ? <Star size={12} aria-hidden /> : null}
                     {section.label}
                   </div>
@@ -400,24 +418,15 @@ export function ModelPicker(props: ModelPickerProps) {
 
           <div className="flex items-center justify-between gap-3 border-t border-border px-3 py-2 text-xs text-muted">
             <div className="inline-flex items-center gap-2">
-              <button
-                type="button"
+              <input
+                type="checkbox"
                 role="switch"
+                checked={props.strict}
                 aria-checked={props.strict}
                 aria-label="Strict: only the chosen model answers, no fallback"
-                className={cx(
-                  'relative h-4 w-7 rounded-pill transition-colors',
-                  props.strict ? 'bg-accent' : 'bg-surface-3 ring-1 ring-border-strong',
-                )}
-                onClick={() => props.onStrictChange(!props.strict)}
-              >
-                <span
-                  className={cx(
-                    'absolute top-0.5 h-3 w-3 rounded-full bg-white transition-transform',
-                    props.strict ? 'translate-x-3.5' : 'translate-x-0.5',
-                  )}
-                />
-              </button>
+                onChange={(e) => props.onStrictChange(e.target.checked)}
+                className="relative h-4 w-7 cursor-pointer appearance-none rounded-pill bg-surface-3 ring-1 ring-border-strong transition-colors before:absolute before:left-0.5 before:top-0.5 before:h-3 before:w-3 before:rounded-full before:bg-white before:transition-transform before:content-[''] checked:bg-accent checked:ring-accent checked:before:translate-x-3"
+              />
               <span>
                 Strict <span className="text-subtle">(no fallback)</span>
               </span>

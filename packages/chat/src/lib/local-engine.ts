@@ -9,19 +9,19 @@
  * Events match the server's: meta, reasoning, delta, then done or error.
  */
 import {
-  attemptsOf,
   type Attempt,
+  attemptsOf,
   type ChatMessage,
-  chatStream,
   type Ctx,
+  chatStream,
   estimateTokens,
   type LlmRung,
-  rankRungs,
   type Registry,
+  rankRungs,
   resolveModelChoice,
   type StreamChainOptions,
-  type VideoContext,
   Vid2ContextError,
+  type VideoContext,
 } from '@vid2context/core';
 import { toErrorData } from './api.ts';
 import { citationsFromText } from './citations.ts';
@@ -138,7 +138,9 @@ export async function* localChat(opts: LocalChatOptions): AsyncGenerator<ChatEve
 
 function hintFor(code: string, hint: string | undefined): { hint?: string } {
   if (code === 'no-provider') {
-    return { hint: 'No model can answer from this browser. Add a free key (Groq, Mistral or Gemini) in Settings, or allow keyless models.' };
+    return {
+      hint: 'No model can answer from this browser. Add a free key (Groq, Mistral or Gemini) in Settings, or allow keyless models.',
+    };
   }
   if (code === 'all-rungs-failed') {
     return {

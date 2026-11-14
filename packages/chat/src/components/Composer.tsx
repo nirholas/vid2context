@@ -36,7 +36,13 @@ export function ContextChip(props: { context: AttachedContext; onRemove: () => v
       data-context={c.key}
     >
       {c.thumbnailUrl ? (
-        <img src={c.thumbnailUrl} alt="" referrerPolicy="no-referrer" loading="lazy" className="h-8 w-12 shrink-0 rounded-sm object-cover" />
+        <img
+          src={c.thumbnailUrl}
+          alt=""
+          referrerPolicy="no-referrer"
+          loading="lazy"
+          className="h-8 w-12 shrink-0 rounded-sm object-cover"
+        />
       ) : (
         <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-sm bg-surface-3 text-muted">
           {c.kind === 'collection' ? <Folder size={14} aria-hidden /> : <Film size={14} aria-hidden />}

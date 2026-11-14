@@ -4,8 +4,8 @@
  * larger-context model that is available.
  */
 import { Gauge } from 'lucide-react';
-import { formatContextTokens } from '../lib/models.ts';
 import { formatTokens, type MeterReading } from '../lib/meter.ts';
+import { formatContextTokens } from '../lib/models.ts';
 import type { ModelRow } from '../lib/types.ts';
 import { cx } from './ui.tsx';
 
@@ -25,18 +25,17 @@ export function TokenMeter(props: { reading: MeterReading; modelLabel: string; o
 
   return (
     <div className="flex min-w-0 items-center gap-2 text-xs">
-      <div
+      <button
+        type="button"
         className={cx(
           'group/meter relative inline-flex items-center gap-1.5 rounded-pill border px-2.5 py-1',
-          r.level === 'over' ? 'border-danger/70 text-danger' : r.level === 'warn' ? 'border-warning/70 text-warning' : 'border-border text-muted',
+          r.level === 'over'
+            ? 'border-danger/70 text-danger'
+            : r.level === 'warn'
+              ? 'border-warning/70 text-warning'
+              : 'border-border text-muted',
         )}
-        role="meter"
-        aria-label="Estimated tokens used of the model's context window"
-        aria-valuemin={0}
-        aria-valuemax={r.limit ?? r.used}
-        aria-valuenow={r.used}
-        aria-valuetext={`${label}. ${detail}`}
-        tabIndex={0}
+        aria-label={`Estimated tokens: ${label}. ${detail}.`}
       >
         <Gauge size={13} aria-hidden />
         <span className="font-mono">{label}</span>
@@ -54,7 +53,7 @@ export function TokenMeter(props: { reading: MeterReading; modelLabel: string; o
         >
           {detail}.
         </span>
-      </div>
+      </button>
       {r.level !== 'ok' && r.level !== 'unknown' ? (
         <span className="hidden min-w-0 items-center gap-1.5 md:inline-flex" role="status">
           <span className={cx('truncate', r.level === 'over' ? 'text-danger' : 'text-warning')}>

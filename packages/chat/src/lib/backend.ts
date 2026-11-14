@@ -7,7 +7,7 @@
  */
 import type { Collection, Env, Registry, VideoContext, VideoSummary } from '@vid2context/core';
 import { createContext, listModels } from '@vid2context/core';
-import { ApiClient, ApiError } from './api.ts';
+import { type ApiClient, ApiError } from './api.ts';
 import { localChat } from './local-engine.ts';
 import { toModelRows } from './models.ts';
 import { contextTokens, tokensFromDuration } from './sources.ts';

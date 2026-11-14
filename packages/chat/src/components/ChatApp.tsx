@@ -39,6 +39,7 @@ export function ChatApp(props: ChatAppProps) {
     }
   }, []);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: start-up only; reconnects go through onReconnect.
   useEffect(() => {
     let live = true;
     openChatStore().then((s) => {
@@ -49,8 +50,6 @@ export function ChatApp(props: ChatAppProps) {
     return () => {
       live = false;
     };
-    // Start once; reconnects go through onReconnect.
-    // biome-ignore lint/correctness/useExhaustiveDependencies: start-up only.
   }, []);
 
   if (error) {

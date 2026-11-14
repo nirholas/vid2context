@@ -4,7 +4,7 @@
  * applied as data-theme on <html>. Mode detection: client-only when the
  * build sets VITE_CLIENT_ONLY=1 or the API does not answer /health.
  */
-import { ApiClient } from './api.ts';
+import type { ApiClient } from './api.ts';
 
 export type Theme = 'dark' | 'light' | 'system';
 

@@ -166,7 +166,10 @@ function UserMessage(props: { message: MessageRecord; busy: boolean; onEditResen
   );
 }
 
-function modelTag(message: MessageRecord, rows: ModelRow[] | null): { label: string; service?: string; fallbackFrom?: string } | null {
+function modelTag(
+  message: MessageRecord,
+  rows: ModelRow[] | null,
+): { label: string; service?: string; fallbackFrom?: string } | null {
   if (!message.rung && !message.model) return null;
   const row = rows?.find((r) => r.id === message.rung);
   const service = row?.service ?? message.rung?.split('/')[1];

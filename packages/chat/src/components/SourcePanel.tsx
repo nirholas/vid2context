@@ -81,7 +81,9 @@ export default function SourcePanel(props: SourcePanelProps) {
     if (box && line) box.scrollTop = Math.max(0, line.offsetTop - box.clientHeight / 3);
   }, [state, source.n]);
 
-  const segments = video ? sliceSegments(video.transcript.segments, source.startSec - AROUND_SEC, source.endSec + AROUND_SEC) : [];
+  const segments = video
+    ? sliceSegments(video.transcript.segments, source.startSec - AROUND_SEC, source.endSec + AROUND_SEC)
+    : [];
   let firstHit = true;
   const others = props.sources.filter((s, i, arr) => arr.findIndex((x) => x.n === s.n) === i);
 
@@ -111,7 +113,11 @@ export default function SourcePanel(props: SourcePanelProps) {
       </div>
 
       {others.length > 1 ? (
-        <div className="v2c-scroll flex gap-1.5 overflow-x-auto border-b border-border px-4 py-2" role="toolbar" aria-label="Sources cited in this answer">
+        <div
+          className="v2c-scroll flex gap-1.5 overflow-x-auto border-b border-border px-4 py-2"
+          role="toolbar"
+          aria-label="Sources cited in this answer"
+        >
           {others.map((s) => (
             <button
               key={s.n}
@@ -161,7 +167,9 @@ export default function SourcePanel(props: SourcePanelProps) {
         <div ref={transcriptRef} className="v2c-scroll relative min-h-0 flex-1 overflow-y-auto border-t border-border px-4 py-3">
           <h3 className="mb-2 text-xs font-semibold text-muted">Transcript around the citation</h3>
           {state === 'loading' ? <Spinner label="Loading transcript" /> : null}
-          {state === 'missing' ? <p className="text-sm text-muted">The transcript for this video is not available here.</p> : null}
+          {state === 'missing' ? (
+            <p className="text-sm text-muted">The transcript for this video is not available here.</p>
+          ) : null}
           {state === 'error' && error ? (
             <div className="text-sm" role="alert">
               <p>{error.message}</p>

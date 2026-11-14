@@ -20,8 +20,8 @@ export { type Backend, type BackendFeatures, ClientBackend, requestContext, Serv
 export { createBackend, createClientBackend } from './lib/bootstrap.ts';
 export * from './lib/citations.ts';
 export { browserCorsFor, MEASURED_CORS } from './lib/cors.ts';
-export { localChat } from './lib/local-engine.ts';
 export { contextFromPaste, parseContextJson, parseTranscriptText } from './lib/local-context.ts';
+export { localChat } from './lib/local-engine.ts';
 export * from './lib/meter.ts';
 export * from './lib/models.ts';
 export { buildGrounding, excerptsOf } from './lib/sources.ts';

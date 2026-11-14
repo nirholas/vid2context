@@ -42,11 +42,11 @@ export function CitationGroup(props: { ns: number[]; raw: string }) {
     <>
       {props.ns.map((n, i) => {
         const s = known[i];
-        return s ? (
-          <CitationChip key={`${n}-${i}`} source={s} onOpen={scope.onOpen} />
-        ) : (
-          <span key={`${n}-${i}`}>[{n}]</span>
-        );
+        // A marker may repeat a number ([2, 2]) and never reorders, so the position is a stable key.
+        // biome-ignore lint/suspicious/noArrayIndexKey: see above.
+        if (s) return <CitationChip key={`${n}-${i}`} source={s} onOpen={scope.onOpen} />;
+        // biome-ignore lint/suspicious/noArrayIndexKey: see above.
+        return <span key={`${n}-${i}`}>[{n}]</span>;
       })}
     </>
   );

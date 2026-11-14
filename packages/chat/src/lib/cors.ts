@@ -59,7 +59,8 @@ export function browserCorsFor(service: string, provider?: string, tier?: Tier):
   if (WORKER_ONLY.has(base)) return { status: 'blocked', reason: 'Runs only inside a Cloudflare Worker.' };
   const measured = MEASURED[base];
   if (measured === 'allowed') return { status: 'allowed' };
-  if (measured === 'blocked') return { status: 'blocked', reason: 'Its API blocks requests from web pages (CORS). Use server mode.' };
+  if (measured === 'blocked')
+    return { status: 'blocked', reason: 'Its API blocks requests from web pages (CORS). Use server mode.' };
   if (tier === 'local' || LOCAL_NOTES[base]) return { status: 'needs-config', reason: LOCAL_NOTES[base] ?? LOCAL_DEFAULT_NOTE };
   return { status: 'blocked', reason: 'Not checked for browser access yet. Use server mode.' };
 }

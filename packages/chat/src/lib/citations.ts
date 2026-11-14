@@ -12,7 +12,8 @@ import type { ChatSource, Citation } from './types.ts';
  * the lenticular form some models write, like gpt-oss: 【3】 or 【3†L1-L4】.
  * Not [a], footnote-style [^1], or Markdown links [1](url).
  */
-export const CITE_RE = /\[(\d{1,3}(?:\s*(?:,|-|\u2013)\s*\d{1,3})*)\]|\u3010(\d{1,3}(?:\s*,\s*\d{1,3})*)(?:\u2020[^\u3011]*)?\u3011/g;
+export const CITE_RE =
+  /\[(\d{1,3}(?:\s*(?:,|-|\u2013)\s*\d{1,3})*)\]|\u3010(\d{1,3}(?:\s*,\s*\d{1,3})*)(?:\u2020[^\u3011]*)?\u3011/g;
 
 export type CitePart = { kind: 'text'; text: string } | { kind: 'cite'; ns: number[]; raw: string };
 

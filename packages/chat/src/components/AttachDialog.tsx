@@ -101,7 +101,8 @@ function ErrorText(props: { error?: ChatErrorData }) {
   );
 }
 
-const inputClass = 'w-full rounded-md border border-border-strong bg-surface-2 px-3 py-2 text-sm outline-none focus:border-accent';
+const inputClass =
+  'w-full rounded-md border border-border-strong bg-surface-2 px-3 py-2 text-sm outline-none focus:border-accent';
 
 function LinkTab(props: { onLink: (input: string) => void }) {
   const [value, setValue] = useState('');
@@ -118,7 +119,9 @@ function LinkTab(props: { onLink: (input: string) => void }) {
       }}
     >
       <label className="block text-sm">
-        <span className="mb-1.5 block text-muted">Video links or ids, one per line (YouTube, podcasts, anything the server accepts)</span>
+        <span className="mb-1.5 block text-muted">
+          Video links or ids, one per line (YouTube, podcasts, anything the server accepts)
+        </span>
         <textarea
           data-autofocus
           value={value}
@@ -160,12 +163,25 @@ function LibraryTab(props: { list: () => Promise<VideoSummary[]>; onPick: (v: Vi
   const shown = items.filter((v) => `${v.title} ${v.channel ?? ''}`.toLowerCase().includes(q.toLowerCase()));
   return (
     <div>
-      <input data-autofocus value={q} onChange={(e) => setQ(e.target.value)} placeholder="Filter by title or channel" aria-label="Filter library" className={inputClass} />
-      {items.length === 0 ? <p className="mt-3 text-sm text-muted">The library is empty. Attach a link first; fetched videos are saved there.</p> : null}
+      <input
+        data-autofocus
+        value={q}
+        onChange={(e) => setQ(e.target.value)}
+        placeholder="Filter by title or channel"
+        aria-label="Filter library"
+        className={inputClass}
+      />
+      {items.length === 0 ? (
+        <p className="mt-3 text-sm text-muted">The library is empty. Attach a link first; fetched videos are saved there.</p>
+      ) : null}
       <ul className="mt-3 flex flex-col gap-1">
         {shown.map((v) => (
           <li key={v.id}>
-            <button type="button" onClick={() => props.onPick(v)} className="flex w-full items-center justify-between gap-3 rounded-md px-3 py-2 text-left text-sm hover:bg-surface-3">
+            <button
+              type="button"
+              onClick={() => props.onPick(v)}
+              className="flex w-full items-center justify-between gap-3 rounded-md px-3 py-2 text-left text-sm hover:bg-surface-3"
+            >
               <span className="min-w-0">
                 <span className="block truncate font-medium">{v.title}</span>
                 <span className="block truncate text-xs text-muted">
@@ -185,14 +201,19 @@ function CollectionsTab(props: { list: () => Promise<Collection[]>; onPick: (id:
   const { items, error } = useList(props.list);
   if (error) return <ErrorText error={error} />;
   if (!items) return <Spinner label="Loading collections" />;
-  if (items.length === 0) return <p className="text-sm text-muted">No collections yet. Create one in the vid2context app or with the CLI.</p>;
+  if (items.length === 0)
+    return <p className="text-sm text-muted">No collections yet. Create one in the vid2context app or with the CLI.</p>;
   return (
     <div>
       <p className="mb-2 text-sm text-muted">A conversation can use one collection; picking another replaces it.</p>
       <ul className="flex flex-col gap-1">
         {items.map((c) => (
           <li key={c.id}>
-            <button type="button" onClick={() => props.onPick(c.id)} className="flex w-full items-center justify-between gap-3 rounded-md px-3 py-2 text-left text-sm hover:bg-surface-3">
+            <button
+              type="button"
+              onClick={() => props.onPick(c.id)}
+              className="flex w-full items-center justify-between gap-3 rounded-md px-3 py-2 text-left text-sm hover:bg-surface-3"
+            >
               <span className="min-w-0">
                 <span className="block truncate font-medium">{c.name}</span>
                 <span className="block truncate text-xs text-muted">
@@ -208,7 +229,13 @@ function CollectionsTab(props: { list: () => Promise<Collection[]>; onPick: (id:
   );
 }
 
-function FileDrop(props: { accept: string; label: string; multiple?: boolean; onFiles: (files: File[]) => void; busy?: boolean }) {
+function FileDrop(props: {
+  accept: string;
+  label: string;
+  multiple?: boolean;
+  onFiles: (files: File[]) => void;
+  busy?: boolean;
+}) {
   const [over, setOver] = useState(false);
   const id = useId();
   return (
@@ -303,7 +330,8 @@ function JsonTab(props: { onLocal: (contexts: VideoContext[]) => Promise<void> }
         }}
       />
       <p className="mt-3 text-xs text-muted">
-        Make one with <code className="font-mono">npx vid2context &lt;url&gt; --format json &gt; video.json</code>. Files stay in this browser.
+        Make one with <code className="font-mono">npx vid2context &lt;url&gt; --format json &gt; video.json</code>. Files stay in
+        this browser.
       </p>
       <ErrorText error={error} />
     </div>
@@ -330,15 +358,33 @@ function PasteTab(props: { onLocal: (contexts: VideoContext[]) => Promise<void> 
     >
       <label className="block text-sm">
         <span className="mb-1 block text-muted">Title</span>
-        <input data-autofocus value={title} onChange={(e) => setTitle(e.target.value)} className={inputClass} placeholder="What the video is called" />
+        <input
+          data-autofocus
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className={inputClass}
+          placeholder="What the video is called"
+        />
       </label>
       <label className="block text-sm">
         <span className="mb-1 block text-muted">Video link (optional; a YouTube link makes citations open the video)</span>
-        <input value={url} onChange={(e) => setUrl(e.target.value)} className={cx(inputClass, 'font-mono')} placeholder="https://www.youtube.com/watch?v=..." />
+        <input
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          className={cx(inputClass, 'font-mono')}
+          placeholder="https://www.youtube.com/watch?v=..."
+        />
       </label>
       <label className="block text-sm">
-        <span className="mb-1 block text-muted">Transcript with timestamps (YouTube "Show transcript", SRT, WebVTT, or "[1:05] text" lines)</span>
-        <textarea value={text} onChange={(e) => setText(e.target.value)} rows={8} className={cx(inputClass, 'resize-y font-mono')} />
+        <span className="mb-1 block text-muted">
+          Transcript with timestamps (YouTube "Show transcript", SRT, WebVTT, or "[1:05] text" lines)
+        </span>
+        <textarea
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          rows={8}
+          className={cx(inputClass, 'resize-y font-mono')}
+        />
       </label>
       <ErrorText error={error} />
       <div className="flex justify-end">

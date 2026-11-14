@@ -149,7 +149,9 @@ export class IdbChatStore implements ChatStore {
   }
   async listMessages(conversationId: string): Promise<MessageRecord[]> {
     const tx = this.db.transaction('messages');
-    const all = await req(tx.objectStore('messages').index('byConversation').getAll(conversationId) as IDBRequest<MessageRecord[]>);
+    const all = await req(
+      tx.objectStore('messages').index('byConversation').getAll(conversationId) as IDBRequest<MessageRecord[]>,
+    );
     return all.sort((a, b) => a.createdAt - b.createdAt);
   }
   async putMessage(m: MessageRecord): Promise<void> {
