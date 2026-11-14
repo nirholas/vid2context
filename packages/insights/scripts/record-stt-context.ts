@@ -2,7 +2,8 @@
  * Records a real VideoContext through the pipeline's speech-to-text path
  * when YouTube refuses caption requests from this IP (HTTP 429): metadata
  * from the YouTube provider, transcript from core `transcribe()` on the
- * speech-to-text chain (keyless OVH Whisper with no keys set).
+ * speech-to-text chain: local whisper.cpp when WHISPER_CPP_MODEL is set,
+ * then keyless OVH Whisper. No API keys are used.
  *
  *   npx tsx packages/insights/scripts/record-stt-context.ts <video id> <audio file (mp3)>
  *
@@ -15,6 +16,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { basename } from 'node:path';
 import { createContext, Registry, stderrLogger, transcribe, type VideoContext } from '@vid2context/core';
 import stt from '@vid2context/provider-stt-openai-compatible';
+import whisperCpp from '@vid2context/provider-stt-whisper-cpp';
 import youtube from '@vid2context/provider-youtube';
 
 const [id, file] = process.argv.slice(2);
@@ -22,8 +24,10 @@ if (!id || !file) {
   console.error('usage: record-stt-context.ts <video id> <audio file>');
   process.exit(2);
 }
-const registry = new Registry([...youtube, ...(Array.isArray(stt) ? stt : [stt])], 'node');
-const ctx = createContext({ runtime: 'node', env: {}, log: stderrLogger('info') });
+const registry = new Registry([...youtube, stt, whisperCpp], 'node');
+// Local whisper.cpp first (free-first order) when WHISPER_CPP_MODEL is set, then keyless OVH Whisper. No API keys.
+const env = { WHISPER_CPP_MODEL: process.env.WHISPER_CPP_MODEL, VID2CONTEXT_HOME: process.env.VID2CONTEXT_HOME };
+const ctx = createContext({ runtime: 'node', env, log: stderrLogger('info') });
 const { source, ref } = registry.resolve(`https://www.youtube.com/watch?v=${id}`);
 const started = Date.now();
 const metadata = await source.getMetadata(ref, ctx);

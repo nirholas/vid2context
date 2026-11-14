@@ -18,6 +18,8 @@
   },
   "devDependencies": {
     "@vid2context/provider-llm-openai-compatible": "*",
+    "@vid2context/provider-stt-openai-compatible": "*",
+    "@vid2context/provider-stt-whisper-cpp": "*",
     "@vid2context/provider-youtube": "*"
   }
 }

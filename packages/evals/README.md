@@ -6,6 +6,8 @@ Accuracy, citation, retrieval, latency and cost evaluation for vid2context, on r
 LIVE=1 npm run eval -- --suite stt --limit 3      # WER per enabled speech-to-text rung
 LIVE=1 npm run eval -- --suite captions           # YouTube auto-captions vs creator captions
 LIVE=1 npm run eval -- --suite cleanup            # the same, plus core cleanup
+LIVE=1 npm run eval -- --suite citations          # cited answers (ask) and briefs (insights)
+LIVE=1 npm run eval -- --suite search             # keyword and hybrid transcript search
 LIVE=1 npm run eval -- --suite stt --rungs stt/ovh/whisper-large-v3-turbo --check
 npx vitest run packages/evals                     # metric tests, offline
 ```
@@ -24,6 +26,6 @@ wordErrorRate(creatorText, sttText, { language: 'en' }); // { rate, substitution
 |---|---|
 | `datasets/` | `stt.json`, `captions.json`, `citations.json`, `search.json`, and recorded references in `refs/` |
 | `src/metrics/` | normalization, alignment, WER and CER, timing, punctuation F1, chapters, citations, retrieval, cost |
-| `src/suites/` | the stt, captions and cleanup suites |
+| `src/suites/` | the stt, captions, cleanup, citations and search suites |
 | `src/run.ts` | the `npm run eval` entry point |
 | `thresholds.json` | regression limits for `--check` |
