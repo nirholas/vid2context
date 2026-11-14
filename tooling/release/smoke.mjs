@@ -85,7 +85,9 @@ export function mcpInitialize(out = OUT, timeoutMs = 30_000) {
         }
       }
     });
-    child.on('exit', (code) => finish(new Error(`MCP server exited (${code}) before answering; stderr: ${stderr.slice(0, 500)}`)));
+    child.on('exit', (code) =>
+      finish(new Error(`MCP server exited (${code}) before answering; stderr: ${stderr.slice(0, 500)}`)),
+    );
     child.stdin.write(
       `${JSON.stringify({
         jsonrpc: '2.0',
@@ -103,7 +105,9 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     console.error('smoke: vid2context --help ok');
     const res = await mcpInitialize();
     const info = res.result?.serverInfo;
-    console.error(`smoke: vid2context-mcp initialize ok (${info?.name} ${info?.version}, protocol ${res.result?.protocolVersion})`);
+    console.error(
+      `smoke: vid2context-mcp initialize ok (${info?.name} ${info?.version}, protocol ${res.result?.protocolVersion})`,
+    );
   } catch (err) {
     console.error(`smoke: ${err.message}`);
     process.exitCode = 1;

@@ -55,7 +55,7 @@ steps:
         fi
 
 substitutions:
-  _CACHE_BUCKET: ''
+  _CACHE_BUCKET: ""
 
 options:
   logging: CLOUD_LOGGING_ONLY

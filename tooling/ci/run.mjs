@@ -110,7 +110,8 @@ function main() {
     else if (step.when && !step.when()) row.status = `skipped (${step.whenNote})`;
     else if (step.needs && !available[step.needs]) row.status = `absent (no "${step.needs}" script)`;
     else if (failed && !opts.keepGoing) row.status = 'not run';
-    else if (step.after && rows.find((r) => r.name === step.after)?.status.startsWith('FAIL')) row.status = `not run (${step.after} failed)`;
+    else if (step.after && rows.find((r) => r.name === step.after)?.status.startsWith('FAIL'))
+      row.status = `not run (${step.after} failed)`;
     else {
       console.error(`\n== ci: ${step.name}: ${step.cmd.map((c) => c.replace(`${ROOT}/`, '')).join(' ')}`);
       const t0 = performance.now();

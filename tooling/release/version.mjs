@@ -93,7 +93,9 @@ function main(argv) {
   const files = MANIFESTS.map((p) => ({ path: p, text: readFileSync(join(root, p), 'utf8') }));
   const versions = new Set(files.map((f) => JSON.parse(f.text).version));
   if (versions.size !== 1) {
-    throw new Error(`versions differ (${files.map((f) => `${f.path}: ${JSON.parse(f.text).version}`).join(', ')}); align them first`);
+    throw new Error(
+      `versions differ (${files.map((f) => `${f.path}: ${JSON.parse(f.text).version}`).join(', ')}); align them first`,
+    );
   }
   const [current] = versions;
   const version = nextVersion(current, bump);

@@ -74,7 +74,7 @@ availableSecrets:
       env: NPM_TOKEN
 
 substitutions:
-  _ARTIFACT_BUCKET: ''
+  _ARTIFACT_BUCKET: ""
 
 options:
   logging: CLOUD_LOGGING_ONLY

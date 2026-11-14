@@ -5,20 +5,18 @@
 import { cli, findAll, isMain } from './lib.mjs';
 
 /**
- * Third-party recorded fixtures that must stay byte-exact, so their dashes
- * are the original data, not our prose. Add a path here only for such files.
+ * Recorded third-party data must stay byte-exact, so dashes in it are the
+ * original bytes, not our prose. The repo keeps every recorded response under
+ * a `fixtures/` directory inside a `test/` or `tests/` directory (for example
+ * `providers/youtube/test/fixtures/`, `packages/core/test/chunk/fixtures/`,
+ * the shared `tests/fixtures/`), the directories Biome also skips. Their
+ * README files are our own writing and are still checked.
  */
-export const BYTE_EXACT = new Set([
-  // Wikimedia Commons subtitle track, replayed byte for byte.
-  'packages/core/test/chunk/fixtures/commons-ap11-final-approach.en.srt',
-  // Recorded YouTube innertube responses.
-  'providers/youtube/test/fixtures/player-age-restricted-HtVdAasjOgU.json',
-  'providers/youtube/test/fixtures/comments-Pqdv2ql971M-top-2.json',
-  // Recorded podcast feeds, captions and chapters from their publishers.
-  'providers/podcast/test/fixtures/cre-atom.xml',
-  'providers/podcast/test/fixtures/pc20-278-captions.srt',
-  'providers/podcast/test/fixtures/pc20-278-chapters.json',
-]);
+export const RECORDED_DATA = /(?:^|\/)tests?\/(?:[^/]+\/)*fixtures\//;
+
+export function isRecordedData(path) {
+  return RECORDED_DATA.test(path) && !/(?:^|\/)README\.md$/i.test(path);
+}
 
 const DASH = /[\u2013\u2014]/g;
 
@@ -26,7 +24,7 @@ export const name = 'no-dashes';
 export const description = 'no en-dash or em-dash characters';
 
 export function select(path) {
-  return !BYTE_EXACT.has(path);
+  return !isRecordedData(path);
 }
 
 export function check(_path, text) {

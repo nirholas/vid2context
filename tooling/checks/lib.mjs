@@ -30,9 +30,7 @@ function git(args, cwd) {
 
 /** Repo-relative paths: every tracked file, or only the staged ones (added, copied, modified, renamed). */
 export function listFiles({ staged = false, root = ROOT } = {}) {
-  const out = staged
-    ? git(['diff', '--cached', '--name-only', '--diff-filter=ACMR', '-z'], root)
-    : git(['ls-files', '-z'], root);
+  const out = staged ? git(['diff', '--cached', '--name-only', '--diff-filter=ACMR', '-z'], root) : git(['ls-files', '-z'], root);
   return out
     .split('\0')
     .filter(Boolean)
