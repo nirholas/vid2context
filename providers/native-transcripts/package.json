@@ -15,5 +15,8 @@
   },
   "dependencies": {
     "@vid2context/core": "*"
+  },
+  "devDependencies": {
+    "@vid2context/registry": "*"
   }
 }
