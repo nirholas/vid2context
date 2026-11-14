@@ -1,0 +1,16 @@
+{
+  "url": "https://upload.wikimedia.org/wikipedia/commons/6/64/NASA%27s_SpaceX_Crew-13_Live_Launch_Coverage_-_Program_%26_LOS_%28KSC-20261001-AU-LMM01-0001-SpaceX_Crew_13_Live_Launch_Coverage_Program_LOS-M26153%29.mp3",
+  "request": "HEAD",
+  "status": 200,
+  "headers": {
+    "content-type": "audio/mpeg",
+    "etag": "a8086befac8d96b98c682edf8287c65f",
+    "last-modified": "Thu, 01 Oct 2026 18:19:04 GMT",
+    "accept-ranges": "bytes",
+    "content-length": "206115140",
+    "date": "Sat, 14 Nov 2026 17:03:59 GMT",
+    "age": "1",
+    "access-control-allow-origin": "*",
+    "access-control-expose-headers": "Age, Date, Content-Length, Content-Range, X-Content-Duration, X-Cache"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "@vid2context/provider-media-url",
+  "version": "0.1.0",
+  "description": "Direct media URLs for vid2context: links to .mp3, .m4a, .mp4 and other media files become refs, metadata from a HEAD request, and size-capped audio for speech-to-text. Runs on Node, Workers and the browser.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "vid2context": {
+    "runtimes": [
+      "node",
+      "workers",
+      "browser"
+    ]
+  },
+  "dependencies": {
+    "@vid2context/core": "*"
+  }
+}

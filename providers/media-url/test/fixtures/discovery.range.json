@@ -1,0 +1,17 @@
+{
+  "url": "https://upload.wikimedia.org/wikipedia/commons/5/5a/Discovery_-_Nice_to_be_in_orbit.mp3",
+  "request": "GET bytes=0-0",
+  "status": 206,
+  "headers": {
+    "content-type": "audio/mpeg",
+    "etag": "094e1fce7e8e6e84071b635856c6a7d9",
+    "last-modified": "Mon, 20 Apr 2020 10:56:29 GMT",
+    "date": "Sat, 14 Nov 2026 17:03:58 GMT",
+    "age": "0",
+    "accept-ranges": "bytes",
+    "access-control-allow-origin": "*",
+    "access-control-expose-headers": "Age, Date, Content-Length, Content-Range, X-Content-Duration, X-Cache",
+    "content-range": "bytes 0-0/135296",
+    "content-length": "1"
+  }
+}
