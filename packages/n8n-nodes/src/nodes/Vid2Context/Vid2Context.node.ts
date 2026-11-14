@@ -189,6 +189,7 @@ export class Vid2Context implements INodeType {
               itemIndex: i,
               httpCode: String(res.statusCode),
               message: apiErrorMessage(res),
+              description: apiErrorMessage(res),
             });
           } else {
             json = res.body as IDataObject;
@@ -206,7 +207,12 @@ export class Vid2Context implements INodeType {
         out.push({ json, pairedItem: { item: i } });
       } catch (error) {
         if (this.continueOnFail()) {
-          out.push({ json: { error: (error as Error).message }, pairedItem: { item: i } });
+          // n8n replaces the message of HTTP errors with a generic one; the API's own text is in the description.
+          const description = (error as { description?: string }).description;
+          out.push({
+            json: { error: (error as Error).message, ...(description ? { description } : {}) },
+            pairedItem: { item: i },
+          });
           continue;
         }
         if (error instanceof NodeOperationError || error instanceof NodeApiError) throw error;

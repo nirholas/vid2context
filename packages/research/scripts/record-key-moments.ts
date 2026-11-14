@@ -11,7 +11,7 @@
  */
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { createContext, MemoryStorage, Registry, type VideoContext } from '@vid2context/core';
+import { clearCooldowns, createContext, MemoryStorage, Registry, type VideoContext } from '@vid2context/core';
 import llm from '@vid2context/provider-llm-openai-compatible';
 import youtube from '@vid2context/provider-youtube';
 import { keyMoments } from '../src/moments.ts';
@@ -45,7 +45,20 @@ const storage = new MemoryStorage();
 await storage.putContext(context);
 const registry = new Registry([...youtube, llm], 'node');
 const ctx = createContext({ runtime: 'node', env: {}, fetch: recording as typeof fetch });
-const result = await keyMoments(context.metadata.ref.url ?? '', { count, chunkTokens }, { registry, ctx, storage });
+
+// Keyless hosts allow a couple of requests per minute per IP. When every rung is rate-limited, wait and record a fresh run.
+let result: Awaited<ReturnType<typeof keyMoments>> | undefined;
+for (let attempt = 1; !result; attempt++) {
+  calls.length = 0;
+  clearCooldowns();
+  try {
+    result = await keyMoments(context.metadata.ref.url ?? '', { count, chunkTokens }, { registry, ctx, storage });
+  } catch (err) {
+    if (attempt >= 6) throw err;
+    console.error(`attempt ${attempt} failed (${err instanceof Error ? err.message : String(err)}); retrying in 75 s`);
+    await new Promise((r) => setTimeout(r, 75_000));
+  }
+}
 
 const name = `key-moments-${context.metadata.ref.nativeId}${chunkTokens ? '-chunked' : ''}.json`;
 const out = {

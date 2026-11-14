@@ -49,11 +49,12 @@ function markOf(trailing: string): string {
   return '';
 }
 
-/** Split text into tokens with their punctuation and capitalization labels. Bracketed tags are dropped. */
+/** Split text into tokens with their punctuation and capitalization labels. Bracketed and parenthesized tags are dropped. */
 export function punctuationTokens(text: string): Token[] {
   const clean = text
     .normalize('NFKC')
     .replace(/\[[^\]]*\]/g, ' ')
+    .replace(/\([^)]*\)/g, ' ')
     .replace(/[♪♫♬]/g, ' ')
     .replace(/(^|\n)\s*>>\s*/g, '$1');
   const out: Token[] = [];

@@ -6,7 +6,7 @@
   "license": "Apache-2.0",
   "type": "module",
   "scripts": {
-    "build": "vite-node scripts/build.ts",
+    "build": "tsx scripts/build.ts",
     "typecheck": "tsc -p tsconfig.json",
     "test": "vitest run --root ../.. packages/extension",
     "e2e": "LIVE=1 playwright test -c e2e/playwright.config.ts",
