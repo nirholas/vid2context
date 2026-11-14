@@ -152,7 +152,9 @@ export async function fetchPage(input: string, ctx: Ctx, opts: { maxBytes?: numb
   try {
     url = new URL(input);
   } catch {
-    throw new Vid2ContextError('bad-request', `Not a URL: ${input.slice(0, 200)}`, { hint: 'Pass a full page URL, such as https://example.com/article.' });
+    throw new Vid2ContextError('bad-request', `Not a URL: ${input.slice(0, 200)}`, {
+      hint: 'Pass a full page URL, such as https://example.com/article.',
+    });
   }
   for (let hop = 0; ; hop++) {
     assertPublicUrl(url);
@@ -188,7 +190,11 @@ export async function fetchPage(input: string, ctx: Ctx, opts: { maxBytes?: numb
       });
     }
     const { bytes, truncated } = await readCapped(res, opts.maxBytes ?? MAX_HTML_BYTES);
-    if (truncated) ctx.log.warn('web-page: page is larger than the cap; parsing the first part only', { url: url.href, bytes: bytes.byteLength });
+    if (truncated)
+      ctx.log.warn('web-page: page is larger than the cap; parsing the first part only', {
+        url: url.href,
+        bytes: bytes.byteLength,
+      });
     return { url, html: decode(bytes, contentType), status: res.status, truncated };
   }
 }

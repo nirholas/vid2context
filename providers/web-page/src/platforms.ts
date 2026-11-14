@@ -38,7 +38,8 @@ function dailymotion(url: URL): Classified | null {
     if (parts[0] === 'video') id = parts[1];
     else if (parts[0] === 'embed' && parts[1] === 'video') id = parts[2];
   } else if (host === 'dai.ly') id = parts[0];
-  else if (host === 'geo.dailymotion.com' && /^\/player(\/[^/]+)?\.html$/.test(url.pathname)) id = url.searchParams.get('video') ?? undefined;
+  else if (host === 'geo.dailymotion.com' && /^\/player(\/[^/]+)?\.html$/.test(url.pathname))
+    id = url.searchParams.get('video') ?? undefined;
   id = id?.split('_')[0];
   return id && /^[a-z0-9]{5,}$/i.test(id) ? { input: `https://www.dailymotion.com/video/${id}`, platform: 'dailymotion' } : null;
 }
@@ -50,7 +51,8 @@ function twitch(url: URL): Classified | null {
     const video = url.searchParams.get('video')?.replace(/^v/, '');
     if (video && /^\d+$/.test(video)) return { input: `https://www.twitch.tv/videos/${video}`, platform: 'twitch' };
     const channel = url.searchParams.get('channel');
-    if (channel && /^\w{2,25}$/.test(channel)) return { input: `https://www.twitch.tv/${channel.toLowerCase()}`, platform: 'twitch' };
+    if (channel && /^\w{2,25}$/.test(channel))
+      return { input: `https://www.twitch.tv/${channel.toLowerCase()}`, platform: 'twitch' };
     return null;
   }
   if (host === 'clips.twitch.tv') {
@@ -58,7 +60,8 @@ function twitch(url: URL): Classified | null {
     return slug && /^[\w-]+$/.test(slug) ? { input: `https://clips.twitch.tv/${slug}`, platform: 'twitch' } : null;
   }
   if (host === 'twitch.tv' || host === 'm.twitch.tv') {
-    if (parts[0] === 'videos' && parts[1] && /^\d+$/.test(parts[1])) return { input: `https://www.twitch.tv/videos/${parts[1]}`, platform: 'twitch' };
+    if (parts[0] === 'videos' && parts[1] && /^\d+$/.test(parts[1]))
+      return { input: `https://www.twitch.tv/videos/${parts[1]}`, platform: 'twitch' };
     if (parts[1] === 'clip' && parts[2]) return { input: `https://clips.twitch.tv/${parts[2]}`, platform: 'twitch' };
   }
   return null;
@@ -68,7 +71,9 @@ function rumble(url: URL): Classified | null {
   if (bare(url.hostname) !== 'rumble.com') return null;
   const embed = /^\/embed\/([a-z0-9]+)\/?$/i.exec(url.pathname);
   if (embed?.[1]) return { input: `https://rumble.com/embed/${embed[1]}/`, platform: 'rumble' };
-  return /^\/v[a-z0-9]+-[^/]+\.html$/i.test(url.pathname) ? { input: `https://rumble.com${url.pathname}`, platform: 'rumble' } : null;
+  return /^\/v[a-z0-9]+-[^/]+\.html$/i.test(url.pathname)
+    ? { input: `https://rumble.com${url.pathname}`, platform: 'rumble' }
+    : null;
 }
 
 function ted(url: URL): Classified | null {

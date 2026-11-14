@@ -111,7 +111,8 @@ export function videoObjects(value: JsonValue, out: { [k: string]: JsonValue }[]
 }
 
 /** Iframe titles that name the player, not the video. */
-const GENERIC_TITLE = /^(youtube|vimeo|loom|wistia|dailymotion|twitch|rumble)?\s*(video\s*)?(player|embed(ded)?( content)?|video)?$/i;
+const GENERIC_TITLE =
+  /^(youtube|vimeo|loom|wistia|dailymotion|twitch|rumble)?\s*(video\s*)?(player|embed(ded)?( content)?|video)?$/i;
 const cleanTitle = (t: string | undefined): string | undefined => {
   const s = t?.replace(/\s+/g, ' ').trim();
   return s && !GENERIC_TITLE.test(s) ? s : undefined;
@@ -306,7 +307,9 @@ export function discoverInHtml(html: string, pageUrl: URL): PageInfo {
           videoDepth = Math.max(0, videoDepth - 1);
           videoTitle = undefined;
         } else if (name === 'a' && anchor) {
-          const hit = classifyVideoUrl(anchor.href) ?? (isMediaFileUrl(anchor.href) ? { input: anchor.href.href, platform: 'media' } : null);
+          const hit =
+            classifyVideoUrl(anchor.href) ??
+            (isMediaFileUrl(anchor.href) ? { input: anchor.href.href, platform: 'media' } : null);
           if (hit) found.add(hit, 'link', { title: cleanTitle(decodeHTML(anchor.text)) });
           anchor = null;
         }
