@@ -1,0 +1,13 @@
+{
+  "recorded": "2026-11-14",
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/no-such-route",
+    "query": {}
+  },
+  "status": 404,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": "{\"error\":{\"code\":\"not-found\",\"message\":\"No route for GET /api/v1/no-such-route\"}}"
+}

@@ -1,0 +1,15 @@
+{
+  "recorded": "2026-11-14",
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/transcript",
+    "query": {
+      "url": "tests/fixtures/media/apollo11-small-step.mp3"
+    }
+  },
+  "status": 200,
+  "headers": {
+    "content-type": "text/plain; charset=utf-8"
+  },
+  "body": "I'm going to step off the limb now. That's one small step for man, one giant leap for mankind.\n"
+}

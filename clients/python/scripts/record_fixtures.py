@@ -4,15 +4,15 @@ Starts packages/server on a random local port (20000 to 29999), calls it for
 the videos and error cases the tests replay, writes one JSON file per call into
 tests/fixtures/, then stops the server. Run from anywhere:
 
-    uv run python scripts/record_fixtures.py [--youtube-only] [name ...]
+    uv run python scripts/record_fixtures.py [--minimal] [name ...]
 
 With names (such as `context-cCPsdFdlshc`), only those fixtures are recorded.
 A response with a different status than expected (YouTube rate-limits busy
 machines with HTTP 429, which the server reports as `blocked`) is retried a
 few times and then left unwritten, so a good fixture is never replaced by a
-transient failure. `--youtube-only` serves the same packages/server app with
-only the YouTube provider registered (scripts/record_server.ts), for when the
-full provider registry does not build. Needs Node 22+ and `npm install` at the repo root. Personal details (email
+transient failure. `--minimal` serves the same packages/server app with only
+the YouTube, media-file and speech-to-text providers (scripts/record_server.ts),
+for when the full provider registry does not build. Needs Node 22+ and `npm install` at the repo root. Personal details (email
 addresses, phone numbers) in video descriptions are replaced before writing,
 as AGENTS.md requires for committed fixtures.
 """
@@ -36,6 +36,8 @@ HERE = Path(__file__).resolve().parent
 FIXTURES = HERE.parent / "tests" / "fixtures"
 REPO = HERE.parents[2]
 
+APOLLO = "tests/fixtures/media/apollo11-small-step.mp3"
+
 # (fixture name, path, query, expected status)
 CALLS: list[tuple[str, str, dict[str, str], int]] = [
     ("health", "/api/v1/health", {}, 200),
@@ -52,6 +54,11 @@ CALLS: list[tuple[str, str, dict[str, str], int]] = [
     ("transcript-missing-url", "/api/v1/transcript", {}, 400),
     ("transcript-unknown-format", "/api/v1/transcript", {"url": "https://youtu.be/jNQXAC9IVRw", "format": "pdf"}, 400),
     ("route-not-found", "/api/v1/no-such-route", {}, 404),
+    # A public-domain local file through the media-file provider and speech-to-text, for when
+    # YouTube blocks the recording machine. The path is relative to the repo root (the server's cwd).
+    ("transcript-apollo11-text", "/api/v1/transcript", {"url": APOLLO}, 200),
+    ("transcript-apollo11-timestamps", "/api/v1/transcript", {"url": APOLLO, "timestamps": "1"}, 200),
+    ("context-apollo11", "/api/v1/context", {"url": APOLLO}, 200),
 ]
 RETRIES = 4
 
@@ -101,8 +108,8 @@ def wait_for(base: str, proc: subprocess.Popen[bytes], seconds: float = 60) -> N
 
 def main() -> None:
     args = sys.argv[1:]
-    youtube_only = "--youtube-only" in args
-    only = {a for a in args if a != "--youtube-only"}
+    minimal = "--minimal" in args
+    only = {a for a in args if a != "--minimal"}
     unknown = only - {c[0] for c in CALLS}
     if unknown:
         sys.exit(f"unknown fixture names: {', '.join(sorted(unknown))}")
@@ -110,7 +117,7 @@ def main() -> None:
     base = f"http://127.0.0.1:{port}"
     env = {**os.environ, "PORT": str(port), "HOST": "127.0.0.1"}
     proc = subprocess.Popen(
-        ["npx", "tsx", str(HERE / "record_server.ts") if youtube_only else "packages/server/src/node.ts"],
+        ["npx", "tsx", str(HERE / "record_server.ts") if minimal else "packages/server/src/node.ts"],
         cwd=REPO,
         env=env,
         start_new_session=True,
