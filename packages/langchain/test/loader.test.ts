@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { Document } from '@langchain/core/documents';
 import { replayFetch } from '@vid2context/core/testing';
 import { describe, expect, it } from 'vitest';
-import { chunkContext, errorFromBody, fetchContext, Vid2ContextApiError, VideoContextLoader } from '../src/index.ts';
+import { chunkContext, errorFromBody, fetchContext, fetchItems, Vid2ContextApiError, VideoContextLoader } from '../src/index.ts';
 
 // Real responses recorded from a running vid2context server; see clients/python/tests/fixtures/README.md.
 const dir = join(import.meta.dirname, '../../../clients/python/tests/fixtures');
@@ -164,6 +164,44 @@ describe('VideoContextLoader', () => {
     expect(() => new VideoContextLoader([])).toThrow('No video URLs');
     expect(() => new VideoContextLoader(ZOO, { chunking: 'pages' as 'window' })).toThrow('Unknown chunking');
     expect(() => new VideoContextLoader(ZOO, { windowSec: 0 })).toThrow('windowSec must be positive');
+    expect(() => new VideoContextLoader(ZOO, { expand: true, maxItems: 0 })).toThrow('maxItems must be');
+  });
+
+  it('expands each URL through /items, then loads every video in it', async () => {
+    const fetch = server();
+    const docs = await new VideoContextLoader(GWAGON, { fetch, expand: true, chunking: 'window' }).load();
+    expect(fetch.calls.map((c) => new URL(c.url).pathname)).toEqual(['/api/v1/items', '/api/v1/context']);
+    expect(new Set(docs.map((d) => d.metadata.video_id))).toEqual(new Set(['youtube:cCPsdFdlshc']));
+    expect(docs.length).toBeGreaterThanOrEqual(17);
+  });
+
+  it('skips a list the server cannot expand when continueOnFailure is set', async () => {
+    const skipped: string[] = [];
+    const docs = await new VideoContextLoader(['https://example.com/', GWAGON], {
+      fetch: server(),
+      expand: true,
+      continueOnFailure: true,
+      onSkip: (url, e) => skipped.push(`${url} ${e.code}`),
+    }).load();
+    expect(skipped).toEqual(['https://example.com/ unsupported-input']);
+    expect(new Set(docs.map((d) => d.metadata.video_id))).toEqual(new Set(['youtube:cCPsdFdlshc']));
+  });
+});
+
+describe('fetchItems', () => {
+  it('returns the refs for a video, and sends limit', async () => {
+    const fetch = server();
+    const [ref] = await fetchItems(ZOO, { fetch });
+    expect([ref?.id, ref?.url]).toEqual(['youtube:jNQXAC9IVRw', 'https://www.youtube.com/watch?v=jNQXAC9IVRw']);
+    await expect(fetchItems(ZOO, { fetch, limit: 5 })).rejects.toThrow();
+    expect(new URL(fetch.calls[1]?.url ?? '').searchParams.get('limit')).toBe('5');
+  });
+
+  it('throws the server error for an input no source understands', async () => {
+    const e = await fetchItems('https://example.com/', { fetch: server() }).catch((err: unknown) => err);
+    expect(e).toBeInstanceOf(Vid2ContextApiError);
+    expect([(e as Vid2ContextApiError).code, (e as Vid2ContextApiError).status]).toEqual(['unsupported-input', 400]);
+    expect((e as Vid2ContextApiError).hint).toContain('local media file path');
   });
 });
 

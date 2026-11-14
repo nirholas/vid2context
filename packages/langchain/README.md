@@ -27,6 +27,13 @@ const loader = new VideoContextLoader(['https://youtu.be/jNQXAC9IVRw', 'https://
   windowSec: 90,
 });
 for await (const doc of loader.lazyLoad()) console.log(doc.id, doc.metadata.url);
+
+// A playlist, channel or feed, expanded by the server first:
+const playlist = await new VideoContextLoader('https://www.youtube.com/playlist?list=PL59FEE129ADFF2B12', {
+  expand: true,
+  maxItems: 20,
+  continueOnFailure: true,
+}).load();
 ```
 
 ## Loader options
@@ -44,7 +51,11 @@ for await (const doc of loader.lazyLoad()) console.log(doc.id, doc.metadata.url)
 | `fetch` | global `fetch` | Any fetch implementation |
 | `signal` | | Abort the requests |
 | `continueOnFailure` | `false` | Skip videos that fail instead of throwing |
-| `onSkip` | one stderr line | `(url, error) => void`, called for each skipped video |
+| `onSkip` | one stderr line | `(url, error) => void`, called for each skipped video or list |
+| `expand` | `false` | Send each URL through `GET /api/v1/items` first, so a playlist, channel, feed or page loads every video in it (a single video expands to itself) |
+| `maxItems` | server cap | With `expand`, the most videos taken from each list |
+
+`fetchContext(url, opts)` and `fetchItems(url, opts)` are exported too, for the two routes the loader uses.
 
 Failures throw `Vid2ContextApiError` (a core `Vid2ContextError`) with `code`, `message`, `hint`, `status` and `attempts`, parsed from the server's error body; `serverCode` keeps the server's code verbatim (`internal` maps to `code: 'upstream'`). An unreachable server gives `upstream` with a hint to start it.
 

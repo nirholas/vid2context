@@ -6,7 +6,7 @@
 import { BaseDocumentLoader } from '@langchain/core/document_loaders/base';
 import { Document } from '@langchain/core/documents';
 import { type TranscriptMode, Vid2ContextError } from '@vid2context/core';
-import { type ApiOptions, fetchContext } from './api.ts';
+import { type ApiOptions, fetchContext, fetchItems } from './api.ts';
 import { CHUNKING_MODES, type Chunk, type Chunking, type ChunkMetadata, chunkContext } from './chunking.ts';
 
 export interface VideoContextLoaderOptions extends ApiOptions {
@@ -22,6 +22,13 @@ export interface VideoContextLoaderOptions extends ApiOptions {
   continueOnFailure?: boolean;
   /** Called for each skipped video when continueOnFailure is set. Default: one line on stderr. */
   onSkip?: (url: string, error: Vid2ContextError) => void;
+  /**
+   * Expand each URL through GET /items first, so a playlist, channel, feed or page loads every
+   * video in it (a single video expands to itself). Off by default: plain video URLs cost one request each.
+   */
+  expand?: boolean;
+  /** With expand, the most videos to take from each list. Default: the server's cap. */
+  maxItems?: number;
 }
 
 function toDocument(chunk: Chunk, index: number): Document<ChunkMetadata> {
@@ -53,20 +60,45 @@ export class VideoContextLoader extends BaseDocumentLoader {
       throw new Vid2ContextError('bad-request', `windowSec must be positive, got ${windowSec}.`, {
         hint: 'Use a value such as 60.',
       });
+    if (options.maxItems !== undefined && !(Number.isInteger(options.maxItems) && options.maxItems >= 1))
+      throw new Vid2ContextError('bad-request', `maxItems must be a whole number of at least 1, got ${options.maxItems}.`, {
+        hint: 'Use a value such as 50.',
+      });
     this.options = options;
+  }
+
+  private skip(url: string, err: unknown): void {
+    if (!this.options.continueOnFailure || !(err instanceof Vid2ContextError)) throw err;
+    const onSkip = this.options.onSkip ?? ((u, e) => console.error(`[vid2context] skipped ${u}: ${e.message} [${e.code}]`));
+    onSkip(url, err);
+  }
+
+  private async *videos(): AsyncGenerator<string> {
+    for (const url of this.urls) {
+      if (!this.options.expand) {
+        yield url;
+        continue;
+      }
+      let refs: Awaited<ReturnType<typeof fetchItems>>;
+      try {
+        refs = await fetchItems(url, { ...this.options, limit: this.options.maxItems });
+      } catch (err) {
+        this.skip(url, err);
+        continue;
+      }
+      for (const ref of refs) yield ref.url ?? ref.input;
+    }
   }
 
   /** Yield Documents one video at a time, so a long list never sits in memory at once. */
   async *lazyLoad(): AsyncGenerator<Document<ChunkMetadata>> {
-    const { chunking = 'chapters', windowSec = 60, continueOnFailure = false } = this.options;
-    for (const url of this.urls) {
+    const { chunking = 'chapters', windowSec = 60 } = this.options;
+    for await (const url of this.videos()) {
       let chunks: Chunk[];
       try {
         chunks = chunkContext(await fetchContext(url, this.options), chunking, windowSec);
       } catch (err) {
-        if (!continueOnFailure || !(err instanceof Vid2ContextError)) throw err;
-        const onSkip = this.options.onSkip ?? ((u, e) => console.error(`[vid2context] skipped ${u}: ${e.message} [${e.code}]`));
-        onSkip(url, err);
+        this.skip(url, err);
         continue;
       }
       for (const [i, chunk] of chunks.entries()) yield toDocument(chunk, i);

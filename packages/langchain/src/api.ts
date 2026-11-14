@@ -1,8 +1,15 @@
 /**
  * The slice of the vid2context HTTP API the loader needs (docs/contracts/http-api.md):
- * GET /api/v1/context, with the contract's error body parsed into a Vid2ContextError.
+ * GET /api/v1/context and GET /api/v1/items, with the contract's error body parsed into a Vid2ContextError.
  */
-import { type Attempt, type ErrorCode, type TranscriptMode, Vid2ContextError, type VideoContext } from '@vid2context/core';
+import {
+  type Attempt,
+  type ErrorCode,
+  type TranscriptMode,
+  Vid2ContextError,
+  type VideoContext,
+  type VideoRef,
+} from '@vid2context/core';
 
 export const DEFAULT_BASE_URL = 'http://127.0.0.1:8787';
 
@@ -84,15 +91,8 @@ function apiBase(baseUrl: string | undefined): string {
   return url.endsWith('/api/v1') ? url : `${url}/api/v1`;
 }
 
-/** GET /api/v1/context: the full VideoContext for one video. */
-export async function fetchContext(
-  url: string,
-  opts: ApiOptions & { mode?: TranscriptMode; lang?: string } = {},
-): Promise<VideoContext> {
-  const query = new URLSearchParams({ url });
-  if (opts.mode) query.set('mode', opts.mode);
-  if (opts.lang) query.set('lang', opts.lang);
-  const endpoint = `${apiBase(opts.baseUrl)}/context?${query}`;
+async function getJson<T>(path: string, query: URLSearchParams, opts: ApiOptions): Promise<T> {
+  const endpoint = `${apiBase(opts.baseUrl)}${path}?${query}`;
   const headers: Record<string, string> = { accept: 'application/json' };
   if (opts.apiKey) headers.authorization = `Bearer ${opts.apiKey}`;
   const doFetch = opts.fetch ?? globalThis.fetch;
@@ -109,7 +109,7 @@ export async function fetchContext(
   const body = await res.text();
   if (!res.ok) throw errorFromBody(res.status, body);
   try {
-    return JSON.parse(body) as VideoContext;
+    return JSON.parse(body) as T;
   } catch (cause) {
     throw new Vid2ContextApiError(
       'upstream',
@@ -121,4 +121,23 @@ export async function fetchContext(
       },
     );
   }
+}
+
+/** GET /api/v1/context: the full VideoContext for one video. */
+export async function fetchContext(
+  url: string,
+  opts: ApiOptions & { mode?: TranscriptMode; lang?: string } = {},
+): Promise<VideoContext> {
+  const query = new URLSearchParams({ url });
+  if (opts.mode) query.set('mode', opts.mode);
+  if (opts.lang) query.set('lang', opts.lang);
+  return getJson<VideoContext>('/context', query, opts);
+}
+
+/** GET /api/v1/items: a playlist, channel, feed or page expanded to video refs (a single video returns itself). */
+export async function fetchItems(url: string, opts: ApiOptions & { limit?: number } = {}): Promise<VideoRef[]> {
+  const query = new URLSearchParams({ url });
+  if (opts.limit !== undefined) query.set('limit', String(opts.limit));
+  const body = await getJson<{ items?: VideoRef[] }>('/items', query, opts);
+  return body.items ?? [];
 }
