@@ -1,0 +1,15 @@
+{
+  "code": 0,
+  "message": "OK",
+  "ttl": 1,
+  "data": {
+    "closed": false,
+    "subtitle": {
+      "lan": "",
+      "lan_doc": "",
+      "subtitles": null,
+      "position": null,
+      "font_size_type": 0
+    }
+  }
+}

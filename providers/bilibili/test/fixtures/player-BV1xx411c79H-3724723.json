@@ -1,0 +1,21 @@
+{
+  "code": 0,
+  "message": "OK",
+  "ttl": 1,
+  "data": {
+    "aid": 706,
+    "bvid": "BV1xx411c79H",
+    "cid": 3724723,
+    "page_no": 1,
+    "need_login_subtitle": false,
+    "subtitle": {
+      "allow_submit": false,
+      "lan": "",
+      "lan_doc": "",
+      "subtitles": [],
+      "subtitle_position": null,
+      "font_size_type": 0
+    },
+    "view_points": []
+  }
+}

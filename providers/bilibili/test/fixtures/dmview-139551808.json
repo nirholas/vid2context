@@ -1,0 +1,34 @@
+{
+  "code": 0,
+  "message": "OK",
+  "ttl": 1,
+  "data": {
+    "closed": false,
+    "subtitle": {
+      "lan": "",
+      "lan_doc": "",
+      "subtitles": [
+        {
+          "author": {
+            "mid": 15282326,
+            "name": "Deutschlernen-"
+          },
+          "id": 20807967249006596,
+          "id_str": "20807967249006596",
+          "lan": "de-DE",
+          "lan_doc": "Deutsch(DE)",
+          "subtitle_url": "http://aisubtitle.hdslb.com/bfs/subtitle/a74dab831cee9d3ef875379c6e17c54142ed7d56.json",
+          "type": 0,
+          "ai_type": 0,
+          "ai_status": 0,
+          "role": 0,
+          "video_detext": false,
+          "video_mouth_shape_change": false,
+          "subtitle_height": null
+        }
+      ],
+      "position": null,
+      "font_size_type": 0
+    }
+  }
+}

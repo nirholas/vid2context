@@ -1,0 +1,22 @@
+{
+  "name": "@vid2context/provider-bilibili",
+  "version": "0.1.0",
+  "description": "Bilibili source and captions for vid2context: metadata, multi-part videos, creator and AI subtitles, and DASH audio for speech-to-text through the public web API. No key, plain fetch.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "vid2context": {
+    "runtimes": [
+      "node",
+      "workers"
+    ]
+  },
+  "dependencies": {
+    "@vid2context/core": "*"
+  },
+  "devDependencies": {
+    "@vid2context/provider-stt-openai-compatible": "*"
+  }
+}

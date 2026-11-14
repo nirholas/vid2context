@@ -1,0 +1,81 @@
+{
+  "font_size": 0.4,
+  "font_color": "#FFFFFF",
+  "background_alpha": 0.5,
+  "background_color": "#9C27B0",
+  "Stroke": "none",
+  "body": [
+    {
+      "from": 1.49,
+      "to": 3.5,
+      "location": 2,
+      "content": "Unsere Welt fühlt sich Normal an."
+    },
+    {
+      "from": 4,
+      "to": 9,
+      "location": 2,
+      "content": "Gewöhnlich, es kommt uns vor als hätten Menschen schon immer so gelebt wie wir."
+    },
+    {
+      "from": 10.07,
+      "to": 14,
+      "location": 2,
+      "content": "Aber noch nie zuvor hatten wir Menschen es so einfach wie heute."
+    },
+    {
+      "from": 14.8,
+      "to": 17,
+      "location": 2,
+      "content": "Wir haben uns selbst eine Welt geschaffen."
+    },
+    {
+      "from": 17.4,
+      "to": 20.6,
+      "location": 2,
+      "content": "In der wir nicht mehr ums Überleben kämpfen müssen."
+    },
+    {
+      "from": 22.5,
+      "to": 27.5,
+      "location": 2,
+      "content": "Essen, Unterkunft und Sicherheit fühlen sich selbstverständlich an."
+    },
+    {
+      "from": 28,
+      "to": 29.5,
+      "location": 2,
+      "content": "Sind es aber nicht."
+    },
+    {
+      "from": 30,
+      "to": 35.8,
+      "location": 2,
+      "content": "Über 99,99% der Menschheitsgeschichte sahen noch ganz anders aus."
+    },
+    {
+      "from": 36,
+      "to": 39,
+      "location": 2,
+      "content": "Und es gibt nicht nur eine Menschheitsgeschichte."
+    },
+    {
+      "from": 48.83,
+      "to": 55.24,
+      "location": 2,
+      "content": "Alles begann vor sechs Millionen Jahren als sich die Hominini aus der Familie der Menschenaffen entwickelten."
+    },
+    {
+      "from": 55.67,
+      "to": 60,
+      "location": 2,
+      "content": "Vor 2,8 Millionen Jahren entstand daraus die Gattung Homo."
+    },
+    {
+      "from": 61.22,
+      "to": 64,
+      "location": 2,
+      "content": "Wir glauben von uns die einzigen Menschen zu sein."
+    }
+  ]
+}

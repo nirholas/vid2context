@@ -1,0 +1,81 @@
+{
+  "font_size": 0.4,
+  "font_color": "#FFFFFF",
+  "background_alpha": 0.5,
+  "background_color": "#9C27B0",
+  "Stroke": "none",
+  "body": [
+    {
+      "from": 0,
+      "to": 1,
+      "location": 2,
+      "content": "."
+    },
+    {
+      "from": 1.08,
+      "to": 4.84,
+      "location": 2,
+      "content": "Impfungen sind wahnsinnig wichtig\nfür die Bekämpfung von Krankheiten."
+    },
+    {
+      "from": 5,
+      "to": 8.16,
+      "location": 2,
+      "content": "Aber eine immer größere Gruppe\nvon Menschen scheint zu glauben,"
+    },
+    {
+      "from": 8.24,
+      "to": 10.56,
+      "location": 2,
+      "content": "dass Impfungen\nunsere Gesundheit gefährden."
+    },
+    {
+      "from": 11.04,
+      "to": 14.12,
+      "location": 2,
+      "content": "Im Internet wird viel von\nnegativen Impffolgen wie Allergien,"
+    },
+    {
+      "from": 14.2,
+      "to": 17.08,
+      "location": 2,
+      "content": "Behinderungen\nund sogar Todesfällen berichtet."
+    },
+    {
+      "from": 17.24,
+      "to": 20.64,
+      "location": 2,
+      "content": "Und es stimmt,\nImpfen kann Nebenwirkungen haben."
+    },
+    {
+      "from": 20.84,
+      "to": 24.92,
+      "location": 2,
+      "content": "Wie funktionieren Impfungen und\nwie gefährlich sind sie wirklich?"
+    },
+    {
+      "from": 25.16,
+      "to": 30.84,
+      "location": 2,
+      "content": "*Intro*"
+    },
+    {
+      "from": 34.16,
+      "to": 38.16,
+      "location": 2,
+      "content": "Dein Immunsystem ist eine komplexe\nArmee aus Milliarden von Zellen:"
+    },
+    {
+      "from": 38.24,
+      "to": 41.88,
+      "location": 2,
+      "content": "Soldaten, Informationsspeichern\nund Waffenfabriken."
+    },
+    {
+      "from": 42.36,
+      "to": 45.08,
+      "location": 2,
+      "content": "Jeden Tag wirst\ndu unzählige Male angegriffen,"
+    }
+  ]
+}

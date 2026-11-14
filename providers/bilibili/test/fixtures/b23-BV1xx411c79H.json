@@ -1,0 +1,10 @@
+{
+  "request": {
+    "method": "HEAD",
+    "url": "https://b23.tv/BV1xx411c79H"
+  },
+  "status": 302,
+  "headers": {
+    "location": "https://www.bilibili.com/video/BV1xx411c79H"
+  }
+}

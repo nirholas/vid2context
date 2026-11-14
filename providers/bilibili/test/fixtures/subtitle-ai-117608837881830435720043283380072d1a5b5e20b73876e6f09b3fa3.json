@@ -1,0 +1,108 @@
+{
+  "font_size": 0.4,
+  "font_color": "#FFFFFF",
+  "background_alpha": 0.5,
+  "background_color": "#9C27B0",
+  "Stroke": "none",
+  "type": "AIsubtitle",
+  "lang": "zh",
+  "version": "v1.7.0.4",
+  "body": [
+    {
+      "from": 0.14,
+      "to": 2.56,
+      "sid": 1,
+      "location": 2,
+      "content": "岩浆碰到水会发生什么",
+      "music": 0
+    },
+    {
+      "from": 2.56,
+      "to": 3.24,
+      "sid": 2,
+      "location": 2,
+      "content": "相信我",
+      "music": 0
+    },
+    {
+      "from": 3.24,
+      "to": 7.32,
+      "sid": 3,
+      "location": 2,
+      "content": "这事儿在现实位面复杂到远远超乎你们的想象",
+      "music": 0
+    },
+    {
+      "from": 7.32,
+      "to": 8.72,
+      "sid": 4,
+      "location": 2,
+      "content": "甚至我都可以这么说",
+      "music": 0
+    },
+    {
+      "from": 8.72,
+      "to": 10.7,
+      "sid": 5,
+      "location": 2,
+      "content": "当年火山学家一大半工作",
+      "music": 0
+    },
+    {
+      "from": 10.7,
+      "to": 13.5,
+      "sid": 6,
+      "location": 2,
+      "content": "某种意义上都是在研究这个问题",
+      "music": 0
+    },
+    {
+      "from": 13.5,
+      "to": 14.82,
+      "sid": 7,
+      "location": 2,
+      "content": "我知道肯定有人不服",
+      "music": 0
+    },
+    {
+      "from": 14.82,
+      "to": 17.02,
+      "sid": 8,
+      "location": 2,
+      "content": "毕竟你们多半也刷到过这类视频",
+      "music": 0
+    },
+    {
+      "from": 17.02,
+      "to": 18.54,
+      "sid": 9,
+      "location": 2,
+      "content": "用电炉烧化几块石头",
+      "music": 0
+    },
+    {
+      "from": 18.54,
+      "to": 20.06,
+      "sid": 10,
+      "location": 2,
+      "content": "或者去火山地区边缘",
+      "music": 0
+    },
+    {
+      "from": 20.06,
+      "to": 21.58,
+      "sid": 11,
+      "location": 2,
+      "content": "趁着熔岩还没完全凝固",
+      "music": 0
+    },
+    {
+      "from": 21.58,
+      "to": 23.38,
+      "sid": 12,
+      "location": 2,
+      "content": "捞一坨地球粑粑往水里丢",
+      "music": 0
+    }
+  ]
+}

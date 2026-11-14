@@ -1,0 +1,251 @@
+{
+  "code": 0,
+  "message": "OK",
+  "ttl": 1,
+  "data": {
+    "from": "local",
+    "result": "suee",
+    "quality": 32,
+    "format": "flv480",
+    "timelength": 219195,
+    "accept_format": "flv480,mp4",
+    "accept_description": [
+      "清晰 480P",
+      "流畅 360P"
+    ],
+    "accept_quality": [
+      32,
+      16
+    ],
+    "video_codecid": 7,
+    "dash": {
+      "duration": 220,
+      "minBufferTime": 1.5,
+      "video": [
+        {
+          "id": 32,
+          "baseUrl": "https://upos-sz-mirrorcosov.bilivideo.com/upgcxcode/23/47/3724723/3724723_da3-1-30032.m4s",
+          "base_url": "https://upos-sz-mirrorcosov.bilivideo.com/upgcxcode/23/47/3724723/3724723_da3-1-30032.m4s",
+          "backupUrl": [
+            "https://upos-hz-mirrorakam.akamaized.net/upgcxcode/23/47/3724723/3724723_da3-1-30032.m4s"
+          ],
+          "backup_url": [
+            "https://upos-hz-mirrorakam.akamaized.net/upgcxcode/23/47/3724723/3724723_da3-1-30032.m4s"
+          ],
+          "bandwidth": 377922,
+          "mimeType": "video/mp4",
+          "mime_type": "video/mp4",
+          "codecs": "avc1.64001E",
+          "width": 512,
+          "height": 384,
+          "frameRate": "29.412",
+          "frame_rate": "29.412",
+          "sar": "1:1",
+          "startWithSap": 1,
+          "start_with_sap": 1,
+          "SegmentBase": {
+            "Initialization": "0-985",
+            "indexRange": "986-1545"
+          },
+          "segment_base": {
+            "initialization": "0-985",
+            "index_range": "986-1545"
+          },
+          "codecid": 7
+        },
+        {
+          "id": 32,
+          "baseUrl": "https://upos-sz-mirrorcosov.bilivideo.com/upgcxcode/23/47/3724723/3724723_da3x2-1-30033.m4s",
+          "base_url": "https://upos-sz-mirrorcosov.bilivideo.com/upgcxcode/23/47/3724723/3724723_da3x2-1-30033.m4s",
+          "backupUrl": [
+            "https://upos-hz-mirrorakam.akamaized.net/upgcxcode/23/47/3724723/3724723_da3x2-1-30033.m4s"
+          ],
+          "backup_url": [
+            "https://upos-hz-mirrorakam.akamaized.net/upgcxcode/23/47/3724723/3724723_da3x2-1-30033.m4s"
+          ],
+          "bandwidth": 143082,
+          "mimeType": "video/mp4",
+          "mime_type": "video/mp4",
+          "codecs": "hev1.1.6.L120.90",
+          "width": 512,
+          "height": 384,
+          "frameRate": "30.303",
+          "frame_rate": "30.303",
+          "sar": "1:1",
+          "startWithSap": 1,
+          "start_with_sap": 1,
+          "SegmentBase": {
+            "Initialization": "0-1152",
+            "indexRange": "1153-1712"
+          },
+          "segment_base": {
+            "initialization": "0-1152",
+            "index_range": "1153-1712"
+          },
+          "codecid": 12
+        },
+        {
+          "id": 16,
+          "baseUrl": "https://upos-sz-mirrorcosov.bilivideo.com/upgcxcode/23/47/3724723/3724723_da3x2-1-30011.m4s",
+          "base_url": "https://upos-sz-mirrorcosov.bilivideo.com/upgcxcode/23/47/3724723/3724723_da3x2-1-30011.m4s",
+          "backupUrl": [
+            "https://upos-hz-mirrorakam.akamaized.net/upgcxcode/23/47/3724723/3724723_da3x2-1-30011.m4s"
+          ],
+          "backup_url": [
+            "https://upos-hz-mirrorakam.akamaized.net/upgcxcode/23/47/3724723/3724723_da3x2-1-30011.m4s"
+          ],
+          "bandwidth": 307905,
+          "mimeType": "video/mp4",
+          "mime_type": "video/mp4",
+          "codecs": "hev1.1.6.L120.90",
+          "width": 480,
+          "height": 360,
+          "frameRate": "30.303",
+          "frame_rate": "30.303",
+          "sar": "1:1",
+          "startWithSap": 1,
+          "start_with_sap": 1,
+          "SegmentBase": {
+            "Initialization": "0-1054",
+            "indexRange": "1055-1614"
+          },
+          "segment_base": {
+            "initialization": "0-1054",
+            "index_range": "1055-1614"
+          },
+          "codecid": 12
+        },
+        {
+          "id": 16,
+          "baseUrl": "https://upos-hz-mirrorakam.akamaized.net/upgcxcode/23/47/3724723/3724723_da3-1-30016.m4s",
+          "base_url": "https://upos-hz-mirrorakam.akamaized.net/upgcxcode/23/47/3724723/3724723_da3-1-30016.m4s",
+          "backupUrl": [
+            "https://upos-sz-mirrorcosov.bilivideo.com/upgcxcode/23/47/3724723/3724723_da3-1-30016.m4s"
+          ],
+          "backup_url": [
+            "https://upos-sz-mirrorcosov.bilivideo.com/upgcxcode/23/47/3724723/3724723_da3-1-30016.m4s"
+          ],
+          "bandwidth": 352015,
+          "mimeType": "video/mp4",
+          "mime_type": "video/mp4",
+          "codecs": "avc1.64001E",
+          "width": 480,
+          "height": 360,
+          "frameRate": "29.412",
+          "frame_rate": "29.412",
+          "sar": "1:1",
+          "startWithSap": 1,
+          "start_with_sap": 1,
+          "SegmentBase": {
+            "Initialization": "0-1012",
+            "indexRange": "1013-1572"
+          },
+          "segment_base": {
+            "initialization": "0-1012",
+            "index_range": "1013-1572"
+          },
+          "codecid": 7
+        }
+      ],
+      "audio": [
+        {
+          "id": 30216,
+          "baseUrl": "https://upos-sz-mirrorcosov.bilivideo.com/upgcxcode/23/47/3724723/3724723_da3-1-30216.m4s",
+          "base_url": "https://upos-sz-mirrorcosov.bilivideo.com/upgcxcode/23/47/3724723/3724723_da3-1-30216.m4s",
+          "backupUrl": [
+            "https://upos-hz-mirrorakam.akamaized.net/upgcxcode/23/47/3724723/3724723_da3-1-30216.m4s"
+          ],
+          "backup_url": [
+            "https://upos-hz-mirrorakam.akamaized.net/upgcxcode/23/47/3724723/3724723_da3-1-30216.m4s"
+          ],
+          "bandwidth": 66236,
+          "mimeType": "audio/mp4",
+          "mime_type": "audio/mp4",
+          "codecs": "mp4a.40.2",
+          "width": 0,
+          "height": 0,
+          "frameRate": "",
+          "frame_rate": "",
+          "sar": "",
+          "startWithSap": 0,
+          "start_with_sap": 0,
+          "SegmentBase": {
+            "Initialization": "0-932",
+            "indexRange": "933-1492"
+          },
+          "segment_base": {
+            "initialization": "0-932",
+            "index_range": "933-1492"
+          },
+          "codecid": 0
+        },
+        {
+          "id": 30232,
+          "baseUrl": "https://upos-hz-mirrorakam.akamaized.net/upgcxcode/23/47/3724723/3724723_da3-1-30232.m4s",
+          "base_url": "https://upos-hz-mirrorakam.akamaized.net/upgcxcode/23/47/3724723/3724723_da3-1-30232.m4s",
+          "backupUrl": [
+            "https://upos-sz-mirrorcosov.bilivideo.com/upgcxcode/23/47/3724723/3724723_da3-1-30232.m4s"
+          ],
+          "backup_url": [
+            "https://upos-sz-mirrorcosov.bilivideo.com/upgcxcode/23/47/3724723/3724723_da3-1-30232.m4s"
+          ],
+          "bandwidth": 66235,
+          "mimeType": "audio/mp4",
+          "mime_type": "audio/mp4",
+          "codecs": "mp4a.40.2",
+          "width": 0,
+          "height": 0,
+          "frameRate": "",
+          "frame_rate": "",
+          "sar": "",
+          "startWithSap": 0,
+          "start_with_sap": 0,
+          "SegmentBase": {
+            "Initialization": "0-907",
+            "indexRange": "908-1467"
+          },
+          "segment_base": {
+            "initialization": "0-907",
+            "index_range": "908-1467"
+          },
+          "codecid": 0
+        }
+      ],
+      "dolby": {
+        "type": 0,
+        "audio": null
+      },
+      "flac": null
+    },
+    "support_formats": [
+      {
+        "quality": 32,
+        "format": "flv480",
+        "new_description": "480P 标清",
+        "display_desc": "480P",
+        "superscript": "",
+        "codecs": [
+          "avc1.64001E",
+          "hev1.1.6.L120.90"
+        ],
+        "can_watch_qn_reason": 0,
+        "limit_watch_reason": 0,
+        "report": {}
+      },
+      {
+        "quality": 16,
+        "format": "mp4",
+        "new_description": "360P 流畅",
+        "display_desc": "360P",
+        "superscript": "",
+        "codecs": [
+          "avc1.64001E",
+          "hev1.1.6.L120.90"
+        ],
+        "can_watch_qn_reason": 0,
+        "limit_watch_reason": 0,
+        "report": {}
+      }
+    ]
+  }
+}

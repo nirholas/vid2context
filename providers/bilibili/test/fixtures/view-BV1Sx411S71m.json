@@ -1,0 +1,704 @@
+{
+  "code": 0,
+  "message": "OK",
+  "ttl": 1,
+  "data": {
+    "bvid": "BV1Sx411S71m",
+    "aid": 9775917,
+    "videos": 38,
+    "tid": 201,
+    "tid_v2": 2094,
+    "tname": "",
+    "tname_v2": "",
+    "copyright": 2,
+    "pic": "http://i2.hdslb.com/bfs/archive/60b2d62fbe0713f48858b6cf2c15778521f3b93e.jpg",
+    "title": "【德语CC字幕】Kurzgesagt德语科普【38P合集】",
+    "pubdate": 1491917667,
+    "ctime": 1497433240,
+    "desc": "https://www.youtube.com/user/KurzgesagtDE/videos\nKurzgesagt德语版",
+    "desc_v2": [
+      {
+        "raw_text": "https://www.youtube.com/user/KurzgesagtDE/videos\nKurzgesagt德语版",
+        "type": 1,
+        "biz_id": 0
+      }
+    ],
+    "state": 0,
+    "duration": 17585,
+    "rights": {
+      "bp": 0,
+      "elec": 0,
+      "download": 1,
+      "movie": 0,
+      "pay": 0,
+      "hd5": 0,
+      "no_reprint": 0,
+      "autoplay": 1,
+      "ugc_pay": 0,
+      "is_cooperation": 0,
+      "ugc_pay_preview": 0,
+      "no_background": 0,
+      "clean_mode": 0,
+      "is_stein_gate": 0,
+      "is_360": 0,
+      "no_share": 0,
+      "arc_pay": 0,
+      "free_watch": 0
+    },
+    "owner": {
+      "mid": 15282326,
+      "name": "Deutschlernen-",
+      "face": "https://i2.hdslb.com/bfs/face/a92420ca00d376420b267230c0fddf5389217f0d.jpg"
+    },
+    "stat": {
+      "aid": 9775917,
+      "view": 13580,
+      "danmaku": 1,
+      "reply": 33,
+      "favorite": 935,
+      "coin": 72,
+      "share": 105,
+      "now_rank": 0,
+      "his_rank": 0,
+      "like": 191,
+      "dislike": 0,
+      "evaluation": "",
+      "vt": 0
+    },
+    "argue_info": {
+      "argue_msg": "",
+      "argue_type": 0,
+      "argue_link": ""
+    },
+    "dynamic": "",
+    "cid": 139538988,
+    "dimension": {
+      "width": 1280,
+      "height": 720,
+      "rotate": 0
+    },
+    "premiere": null,
+    "teenage_mode": 0,
+    "is_chargeable_season": false,
+    "is_story": false,
+    "is_upower_exclusive": false,
+    "is_upower_play": false,
+    "is_upower_preview": false,
+    "enable_vt": 0,
+    "vt_display": "",
+    "is_upower_exclusive_with_qa": false,
+    "is_hua_sheng": false,
+    "no_cache": false,
+    "pages": [
+      {
+        "cid": 139538988,
+        "page": 1,
+        "from": "vupload",
+        "part": "1Impfen und Nebenwirkungen – Wie groß ist das Risiko_",
+        "duration": 645,
+        "vid": "",
+        "weblink": "",
+        "dimension": {
+          "width": 1280,
+          "height": 720,
+          "rotate": 0
+        },
+        "ctime": 1577829934
+      },
+      {
+        "cid": 139551808,
+        "page": 2,
+        "from": "vupload",
+        "part": "2Was kam vor der Geschichte_ Der Ursprung der Menschheit",
+        "duration": 577,
+        "vid": "",
+        "weblink": "",
+        "dimension": {
+          "width": 1280,
+          "height": 720,
+          "rotate": 0
+        },
+        "ctime": 1577829934
+      },
+      {
+        "cid": 139533917,
+        "page": 3,
+        "from": "vupload",
+        "part": "3Das Ende der Raumfahrt – Eine tödliche Falle für die Menschheit",
+        "duration": 483,
+        "vid": "",
+        "weblink": "",
+        "dimension": {
+          "width": 1280,
+          "height": 720,
+          "rotate": 0
+        },
+        "ctime": 1577829934
+      },
+      {
+        "cid": 139535780,
+        "page": 4,
+        "from": "vupload",
+        "part": "4Ein egoistischer Grund, die Welt zu verbessern – Egoistischer Altruismus",
+        "duration": 424,
+        "vid": "",
+        "weblink": "",
+        "dimension": {
+          "width": 1280,
+          "height": 720,
+          "rotate": 0
+        },
+        "ctime": 1577829934
+      },
+      {
+        "cid": 139535866,
+        "page": 5,
+        "from": "vupload",
+        "part": "5Wie dumme Einzelteile zusammen intelligent werden - Emergenz",
+        "duration": 441,
+        "vid": "",
+        "weblink": "",
+        "dimension": {
+          "width": 1280,
+          "height": 720,
+          "rotate": 0
+        },
+        "ctime": 1577829934
+      },
+      {
+        "cid": 139535993,
+        "page": 6,
+        "from": "vupload",
+        "part": "6 1000 km Seil ins All - Skyhook u0026 Space Tether",
+        "duration": 436,
+        "vid": "",
+        "weblink": "",
+        "dimension": {
+          "width": 1280,
+          "height": 720,
+          "rotate": 0
+        },
+        "ctime": 1577829934
+      },
+      {
+        "cid": 139536155,
+        "page": 7,
+        "from": "vupload",
+        "part": "7Was passiert, wenn man eine Atombombe im Marianengraben zündet_",
+        "duration": 338,
+        "vid": "",
+        "weblink": "",
+        "dimension": {
+          "width": 1280,
+          "height": 720,
+          "rotate": 0
+        },
+        "ctime": 1577829934
+      },
+      {
+        "cid": 139538877,
+        "page": 8,
+        "from": "vupload",
+        "part": "8Wie Bakterien unseren Körper beherrschen – Das Mikrobiom",
+        "duration": 465,
+        "vid": "",
+        "weblink": "",
+        "dimension": {
+          "width": 1280,
+          "height": 720,
+          "rotate": 0
+        },
+        "ctime": 1577829934
+      },
+      {
+        "cid": 139544761,
+        "page": 9,
+        "from": "vupload",
+        "part": "9Ewige Jugend – sollten wir das Altern stoppen_",
+        "duration": 414,
+        "vid": "",
+        "weblink": "",
+        "dimension": {
+          "width": 1280,
+          "height": 720,
+          "rotate": 0
+        },
+        "ctime": 1577829934
+      },
+      {
+        "cid": 139539406,
+        "page": 10,
+        "from": "vupload",
+        "part": "10Was verbirgt sich am tiefsten Punkt des Ozeans_",
+        "duration": 632,
+        "vid": "",
+        "weblink": "",
+        "dimension": {
+          "width": 1280,
+          "height": 720,
+          "rotate": 0
+        },
+        "ctime": 1577829934
+      },
+      {
+        "cid": 139539706,
+        "page": 11,
+        "from": "vupload",
+        "part": "11Ist die EU demokratisch_ Was ist deine Stimme wert_",
+        "duration": 506,
+        "vid": "",
+        "weblink": "",
+        "dimension": {
+          "width": 1280,
+          "height": 720,
+          "rotate": 0
+        },
+        "ctime": 1577829934
+      },
+      {
+        "cid": 139539850,
+        "page": 12,
+        "from": "vupload",
+        "part": "12Wie gefährlich ist Elektrosmog_ (feat. maiLab)",
+        "duration": 529,
+        "vid": "",
+        "weblink": "",
+        "dimension": {
+          "width": 1280,
+          "height": 720,
+          "rotate": 0
+        },
+        "ctime": 1577829934
+      },
+      {
+        "cid": 139540006,
+        "page": 13,
+        "from": "vupload",
+        "part": "13Können wir das Altern noch zu deinen Lebzeiten stoppen_",
+        "duration": 423,
+        "vid": "",
+        "weblink": "",
+        "dimension": {
+          "width": 1280,
+          "height": 720,
+          "rotate": 0
+        },
+        "ctime": 1577829934
+      },
+      {
+        "cid": 139540146,
+        "page": 14,
+        "from": "vupload",
+        "part": "14Das letzte Licht vor der ewigen Dunkelheit – Weiße Zwerge und Schwarze Zwerge",
+        "duration": 379,
+        "vid": "",
+        "weblink": "",
+        "dimension": {
+          "width": 1280,
+          "height": 720,
+          "rotate": 0
+        },
+        "ctime": 1577829934
+      },
+      {
+        "cid": 139533073,
+        "page": 15,
+        "from": "vupload",
+        "part": "15Warum Schönheit uns glücklich macht!",
+        "duration": 467,
+        "vid": "",
+        "weblink": "",
+        "dimension": {
+          "width": 1280,
+          "height": 720,
+          "rotate": 0
+        },
+        "ctime": 1577829934
+      },
+      {
+        "cid": 139544819,
+        "page": 16,
+        "from": "vupload",
+        "part": "16Geld fürs Nichtstun_ - Bedingungsloses Grundeinkommen",
+        "duration": 570,
+        "vid": "",
+        "weblink": "",
+        "dimension": {
+          "width": 1280,
+          "height": 720,
+          "rotate": 0
+        },
+        "ctime": 1577829934
+      },
+      {
+        "cid": 139544893,
+        "page": 17,
+        "from": "vupload",
+        "part": "17Fleisch – Das leckerste Übel der Welt",
+        "duration": 476,
+        "vid": "",
+        "weblink": "",
+        "dimension": {
+          "width": 1280,
+          "height": 720,
+          "rotate": 0
+        },
+        "ctime": 1577829934
+      },
+      {
+        "cid": 139544979,
+        "page": 18,
+        "from": "vupload",
+        "part": "18CRISPR - Gentechnik wird alles für immer verändern",
+        "duration": 1002,
+        "vid": "",
+        "weblink": "",
+        "dimension": {
+          "width": 1280,
+          "height": 720,
+          "rotate": 0
+        },
+        "ctime": 1577829934
+      },
+      {
+        "cid": 139551780,
+        "page": 19,
+        "from": "vupload",
+        "part": "19Was ist Leben_ Ist der Tod real_",
+        "duration": 351,
+        "vid": "",
+        "weblink": "",
+        "dimension": {
+          "width": 1280,
+          "height": 720,
+          "rotate": 0
+        },
+        "ctime": 1577876670
+      },
+      {
+        "cid": 139545115,
+        "page": 20,
+        "from": "vupload",
+        "part": "21Einsamkeit",
+        "duration": 663,
+        "vid": "",
+        "weblink": "",
+        "dimension": {
+          "width": 1280,
+          "height": 720,
+          "rotate": 0
+        },
+        "ctime": 1577829934
+      },
+      {
+        "cid": 139545206,
+        "page": 21,
+        "from": "vupload",
+        "part": "22Der tödlichste Killer der Welt – Der Bakteriophage",
+        "duration": 409,
+        "vid": "",
+        "weblink": "",
+        "dimension": {
+          "width": 1280,
+          "height": 720,
+          "rotate": 0
+        },
+        "ctime": 1577829934
+      },
+      {
+        "cid": 139545257,
+        "page": 22,
+        "from": "vupload",
+        "part": "23Brauchen wir die Öffentlich-Rechtlichen noch_",
+        "duration": 488,
+        "vid": "",
+        "weblink": "",
+        "dimension": {
+          "width": 1280,
+          "height": 720,
+          "rotate": 0
+        },
+        "ctime": 1577829934
+      },
+      {
+        "cid": 139545350,
+        "page": 23,
+        "from": "vupload",
+        "part": "24Eine neue Menschheitsgeschichte – Die Ära der Menschen",
+        "duration": 443,
+        "vid": "",
+        "weblink": "",
+        "dimension": {
+          "width": 1280,
+          "height": 720,
+          "rotate": 0
+        },
+        "ctime": 1577829934
+      },
+      {
+        "cid": 139551466,
+        "page": 24,
+        "from": "vupload",
+        "part": "25Homöopathie – Sanfte Alternative oder dreister Humbug_",
+        "duration": 507,
+        "vid": "",
+        "weblink": "",
+        "dimension": {
+          "width": 1280,
+          "height": 720,
+          "rotate": 0
+        },
+        "ctime": 1577829934
+      },
+      {
+        "cid": 139545515,
+        "page": 25,
+        "from": "vupload",
+        "part": "26Optimistischer Nihilismus",
+        "duration": 373,
+        "vid": "",
+        "weblink": "",
+        "dimension": {
+          "width": 1280,
+          "height": 720,
+          "rotate": 0
+        },
+        "ctime": 1577829934
+      },
+      {
+        "cid": 139545579,
+        "page": 26,
+        "from": "vupload",
+        "part": "27Warum Leben auf dem Mars unser Untergang wäre – Der große Filter",
+        "duration": 505,
+        "vid": "",
+        "weblink": "",
+        "dimension": {
+          "width": 1280,
+          "height": 720,
+          "rotate": 0
+        },
+        "ctime": 1577829934
+      },
+      {
+        "cid": 139550111,
+        "page": 27,
+        "from": "vupload",
+        "part": "28Zeit_ Die Vergangenheit u0026 Zukunft von allem",
+        "duration": 466,
+        "vid": "",
+        "weblink": "",
+        "dimension": {
+          "width": 1280,
+          "height": 720,
+          "rotate": 0
+        },
+        "ctime": 1577876670
+      },
+      {
+        "cid": 139550139,
+        "page": 28,
+        "from": "vupload",
+        "part": "29Der Krieg gegen Drogen ist gescheitert!",
+        "duration": 441,
+        "vid": "",
+        "weblink": "",
+        "dimension": {
+          "width": 1280,
+          "height": 720,
+          "rotate": 0
+        },
+        "ctime": 1577829934
+      },
+      {
+        "cid": 139550165,
+        "page": 29,
+        "from": "vupload",
+        "part": "30Wir sprengen einen Elefanten (für die Wissenschaft) - Leben u0026 Größe 2",
+        "duration": 428,
+        "vid": "",
+        "weblink": "",
+        "dimension": {
+          "width": 1280,
+          "height": 720,
+          "rotate": 0
+        },
+        "ctime": 1577876670
+      },
+      {
+        "cid": 139550211,
+        "page": 30,
+        "from": "vupload",
+        "part": "31Der gründlichste Weg unser Universum zu zerstören – Das Falsche Vakuum",
+        "duration": 356,
+        "vid": "",
+        "weblink": "",
+        "dimension": {
+          "width": 1280,
+          "height": 720,
+          "rotate": 0
+        },
+        "ctime": 1577876670
+      },
+      {
+        "cid": 139550246,
+        "page": 31,
+        "from": "vupload",
+        "part": "32Überbevölkerung – Die Bevölkerungsexplosion erklärt",
+        "duration": 406,
+        "vid": "",
+        "weblink": "",
+        "dimension": {
+          "width": 1280,
+          "height": 720,
+          "rotate": 0
+        },
+        "ctime": 1577876670
+      },
+      {
+        "cid": 139551091,
+        "page": 32,
+        "from": "vupload",
+        "part": "34Ist es Zeit die EU aufzulösen_",
+        "duration": 476,
+        "vid": "",
+        "weblink": "",
+        "dimension": {
+          "width": 1280,
+          "height": 720,
+          "rotate": 0
+        },
+        "ctime": 1577829934
+      },
+      {
+        "cid": 139551148,
+        "page": 33,
+        "from": "vupload",
+        "part": "35Was passiert, wenn man einen Elefanten von einem Wolkenkratzer wirft_ - Leben",
+        "duration": 394,
+        "vid": "",
+        "weblink": "",
+        "dimension": {
+          "width": 1280,
+          "height": 720,
+          "rotate": 0
+        },
+        "ctime": 1577829934
+      },
+      {
+        "cid": 139551194,
+        "page": 34,
+        "from": "vupload",
+        "part": "36Was passiert, wenn ein winziges schwarzes Loch neben dir auftaucht_",
+        "duration": 216,
+        "vid": "",
+        "weblink": "",
+        "dimension": {
+          "width": 1280,
+          "height": 720,
+          "rotate": 0
+        },
+        "ctime": 1577876670
+      },
+      {
+        "cid": 139551221,
+        "page": 35,
+        "from": "vupload",
+        "part": "37Sucht",
+        "duration": 326,
+        "vid": "",
+        "weblink": "",
+        "dimension": {
+          "width": 1280,
+          "height": 720,
+          "rotate": 0
+        },
+        "ctime": 1577876670
+      },
+      {
+        "cid": 139551248,
+        "page": 36,
+        "from": "vupload",
+        "part": "38Wo sind all die Aliens_ Das Fermi Paradoxon (1_2)",
+        "duration": 376,
+        "vid": "",
+        "weblink": "",
+        "dimension": {
+          "width": 1280,
+          "height": 720,
+          "rotate": 0
+        },
+        "ctime": 1577829934
+      },
+      {
+        "cid": 139551392,
+        "page": 37,
+        "from": "vupload",
+        "part": "39Das Fermi Paradoxon II – Ein paar Ideen – Wo sind die ganzen Aliens_ (2_2)",
+        "duration": 369,
+        "vid": "",
+        "weblink": "",
+        "dimension": {
+          "width": 1280,
+          "height": 720,
+          "rotate": 0
+        },
+        "ctime": 1577829934
+      },
+      {
+        "cid": 139551425,
+        "page": 38,
+        "from": "vupload",
+        "part": "40Tod aus dem All - Gammablitze erklärt",
+        "duration": 385,
+        "vid": "",
+        "weblink": "",
+        "dimension": {
+          "width": 1280,
+          "height": 720,
+          "rotate": 0
+        },
+        "ctime": 1577829934
+      }
+    ],
+    "subtitle": {
+      "allow_submit": false,
+      "list": [
+        {
+          "id": 20806217158885376,
+          "lan": "de-DE",
+          "lan_doc": "Deutsch(DE)",
+          "is_lock": true,
+          "author_mid": 15282326,
+          "subtitle_url": "",
+          "type": 0,
+          "id_str": "20806217158885378",
+          "ai_type": 0,
+          "ai_status": 0,
+          "subtitle_height": null,
+          "author": {
+            "mid": 15282326,
+            "name": "Deutschlernen-",
+            "sex": "保密",
+            "face": "https://i2.hdslb.com/bfs/face/a92420ca00d376420b267230c0fddf5389217f0d.jpg",
+            "sign": "超喜欢德语｜专注各种德语学习视频｜只翻译自己感兴趣的｜偶尔掉落国产配音cut",
+            "rank": 10000,
+            "birthday": 0,
+            "is_fake_account": 0,
+            "is_deleted": 0,
+            "in_reg_audit": 0,
+            "is_senior_member": 0,
+            "name_render": null,
+            "handle": ""
+          }
+        }
+      ]
+    },
+    "is_season_display": false,
+    "like_icon": "",
+    "need_jump_bv": false,
+    "disable_show_up_info": false,
+    "is_story_play": 0,
+    "is_view_self": false
+  }
+}
