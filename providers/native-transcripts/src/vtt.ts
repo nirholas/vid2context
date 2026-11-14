@@ -50,7 +50,10 @@ function cleanLine(line: string): { text: string; speaker?: string } {
  * the header run until the next empty line.
  */
 function parseCues(raw: string): Cue[] {
-  const lines = raw.replace(/^\uFEFF/, '').replace(/\r\n?/g, '\n').split('\n');
+  const lines = raw
+    .replace(/^\uFEFF/, '')
+    .replace(/\r\n?/g, '\n')
+    .split('\n');
   const cues: Cue[] = [];
   let i = 0;
   const skipBlock = () => {

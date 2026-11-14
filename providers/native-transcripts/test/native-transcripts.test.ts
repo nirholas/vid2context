@@ -55,17 +55,32 @@ const LOOM_MISSING = '0123456789abcdef0123456789abcdef';
 function loomReplay() {
   return replayFetch([
     { url: `https://www.loom.com/share/${LOOM_ID}`, response: { body: fixture(`loom-share-${LOOM_ID}.html`), headers: html } },
-    { url: /^https:\/\/cdn\.loom\.com\/mediametadata\/captions\/09b1aa507cb846138847bf8e98b56a71-1\.vtt\?/, response: { body: fixture(`loom-${LOOM_ID}.vtt`) } },
-    { url: `https://www.loom.com/share/${LOOM_MISSING}`, response: { status: 404, body: fixture(`loom-share-${LOOM_MISSING}-404.html`), headers: html } },
+    {
+      url: /^https:\/\/cdn\.loom\.com\/mediametadata\/captions\/09b1aa507cb846138847bf8e98b56a71-1\.vtt\?/,
+      response: { body: fixture(`loom-${LOOM_ID}.vtt`) },
+    },
+    {
+      url: `https://www.loom.com/share/${LOOM_MISSING}`,
+      response: { status: 404, body: fixture(`loom-share-${LOOM_MISSING}-404.html`), headers: html },
+    },
   ]);
 }
 
 function wistiaReplay() {
   const routes = ['i5voqxuarc', '26sk4lmiix'].flatMap((id) => [
-    { url: `https://fast.wistia.com/embed/medias/${id}.json`, response: { body: fixture(`wistia-media-${id}.json`), headers: json } },
-    { url: `https://fast.wistia.com/embed/captions/${id}.json`, response: { body: fixture(`wistia-captions-${id}.json`), headers: json } },
+    {
+      url: `https://fast.wistia.com/embed/medias/${id}.json`,
+      response: { body: fixture(`wistia-media-${id}.json`), headers: json },
+    },
+    {
+      url: `https://fast.wistia.com/embed/captions/${id}.json`,
+      response: { body: fixture(`wistia-captions-${id}.json`), headers: json },
+    },
   ]);
-  routes.push({ url: 'https://fast.wistia.com/embed/medias/zzzzzzzzzz.json', response: { body: fixture('wistia-media-zzzzzzzzzz.json'), headers: json } });
+  routes.push({
+    url: 'https://fast.wistia.com/embed/medias/zzzzzzzzzz.json',
+    response: { body: fixture('wistia-media-zzzzzzzzzz.json'), headers: json },
+  });
   return replayFetch(routes);
 }
 
@@ -121,7 +136,11 @@ describe('matchLoom and matchWistia', () => {
     `https://loom.com/embed/${LOOM_ID}`,
     `https://www.loom.com/share/Unstuck-your-team-with-Loom-${LOOM_ID}`,
   ])('loom %s', (input) => {
-    expect(refOf(matchLoom, input)).toMatchObject({ platform: 'loom', id: `loom:${LOOM_ID}`, url: `https://www.loom.com/share/${LOOM_ID}` });
+    expect(refOf(matchLoom, input)).toMatchObject({
+      platform: 'loom',
+      id: `loom:${LOOM_ID}`,
+      url: `https://www.loom.com/share/${LOOM_ID}`,
+    });
   });
 
   it.each([
@@ -140,7 +159,11 @@ describe('matchLoom and matchWistia', () => {
     'https://home.wistia.com/medias/26sk4lmiix',
     'https://support.wi.st/medias/26sk4lmiix',
   ])('wistia %s', (input) => {
-    expect(refOf(matchWistia, input)).toMatchObject({ platform: 'wistia', id: 'wistia:26sk4lmiix', url: 'https://fast.wistia.net/embed/iframe/26sk4lmiix' });
+    expect(refOf(matchWistia, input)).toMatchObject({
+      platform: 'wistia',
+      id: 'wistia:26sk4lmiix',
+      url: 'https://fast.wistia.net/embed/iframe/26sk4lmiix',
+    });
   });
 
   it.each(['https://wistia.com/medias/26sk4lmiix', 'https://fast.wistia.net/embed/iframe/SHORT', 'https://www.wistia.com/'])(
@@ -217,7 +240,8 @@ describe('vimeo', () => {
     expect(chooseVimeoTrack(tracks, { language: 'de' }, 'en')?.lang).toBe('de');
     expect(chooseVimeoTrack(tracks, { language: 'en', allowAuto: false }, 'en')).toBeNull();
     expect(chooseVimeoTrack(tracks, { language: 'it' }, 'en')).toBeNull();
-    const creatorOnly = (JSON.parse(fixture('vimeo-config-76979871.json')) as VimeoConfig).request?.text_tracks as VimeoTextTrack[];
+    const creatorOnly = (JSON.parse(fixture('vimeo-config-76979871.json')) as VimeoConfig).request
+      ?.text_tracks as VimeoTextTrack[];
     expect(chooseVimeoTrack(creatorOnly, {}, 'en')?.lang).toBe('en');
     expect(chooseVimeoTrack(creatorOnly, {})?.lang).toBe('de'); // no locale: the track Vimeo marks default
   });
@@ -258,7 +282,11 @@ describe('vimeo', () => {
     const de = await vimeoCaptionsProvider.getCaptions(ref, { language: 'de' }, ctx);
     expect(de).toMatchObject({ language: 'de', origin: 'creator-captions' });
     expect(de?.segments[0]?.text).toBe('Willkommen zu REFRAME 2025.');
-    expect(await vimeoCaptionsProvider.listTracks?.(ref, ctx)).toContainEqual({ language: 'en', name: 'English (auto-generated)', origin: 'auto-captions' });
+    expect(await vimeoCaptionsProvider.listTracks?.(ref, ctx)).toContainEqual({
+      language: 'en',
+      name: 'English (auto-generated)',
+      origin: 'auto-captions',
+    });
   });
 
   it('reports a private video as unavailable from both metadata and captions', async () => {
@@ -272,7 +300,11 @@ describe('vimeo', () => {
     const ctx = testContext({ fetch: vimeoReplay() });
     const ref = refOf(matchVimeo, 'https://vimeo.com/1084537');
     const meta = await vimeoSource.getMetadata(ref, ctx);
-    expect(meta).toMatchObject({ title: 'Big Buck Bunny', channel: { name: 'Blender' }, extra: { configBlocked: true, accountType: 'basic' } });
+    expect(meta).toMatchObject({
+      title: 'Big Buck Bunny',
+      channel: { name: 'Blender' },
+      extra: { configBlocked: true, accountType: 'basic' },
+    });
     expect(await codeOf(vimeoCaptionsProvider.getCaptions(ref, {}, ctx))).toBe('blocked');
   });
 
@@ -353,13 +385,25 @@ describe('wistia', () => {
     const nl = await wistiaCaptionsProvider.getCaptions(ref, { language: 'nl' }, ctx);
     expect(nl?.segments[0]?.text).toBe('Je ziet er gestrest uit.');
     expect(await wistiaCaptionsProvider.getCaptions(ref, { language: 'it' }, ctx)).toBeNull();
-    expect((await wistiaCaptionsProvider.listTracks?.(ref, ctx))?.map((t) => t.language)).toEqual(['nl', 'en', 'es-MX', 'fr', 'de', 'pt', 'es']);
+    expect((await wistiaCaptionsProvider.listTracks?.(ref, ctx))?.map((t) => t.language)).toEqual([
+      'nl',
+      'en',
+      'es-MX',
+      'fr',
+      'de',
+      'pt',
+      'es',
+    ]);
   });
 
   it('returns null for media without captions and not-found for an unknown id', async () => {
     const ctx = testContext({ fetch: wistiaReplay() });
-    expect(await wistiaCaptionsProvider.getCaptions(refOf(matchWistia, 'https://fast.wistia.net/embed/iframe/26sk4lmiix'), {}, ctx)).toBeNull();
-    expect(await codeOf(wistiaSource.getMetadata(refOf(matchWistia, 'https://fast.wistia.net/embed/iframe/zzzzzzzzzz'), ctx))).toBe('not-found');
+    expect(
+      await wistiaCaptionsProvider.getCaptions(refOf(matchWistia, 'https://fast.wistia.net/embed/iframe/26sk4lmiix'), {}, ctx),
+    ).toBeNull();
+    expect(
+      await codeOf(wistiaSource.getMetadata(refOf(matchWistia, 'https://fast.wistia.net/embed/iframe/zzzzzzzzzz'), ctx)),
+    ).toBe('not-found');
   });
 });
 
