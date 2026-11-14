@@ -1,0 +1,42 @@
+{
+ "redirects": {
+  "http://www.openculture.com/2012/07/ts_eliot_reads_his_modernist_masterpieces.html": {
+   "status": 301,
+   "location": "https://www.openculture.com/2012/07/ts_eliot_reads_his_modernist_masterpieces.html",
+   "body": ""
+  },
+  "https://www.ted.com/talks/ken_robinson_do_schools_kill_creativity": {
+   "status": 301,
+   "location": "/talks/sir_ken_robinson_do_schools_kill_creativity",
+   "body": ""
+  }
+ },
+ "pages": {
+  "https://www.openculture.com/2012/07/ts_eliot_reads_his_modernist_masterpieces.html": {
+   "status": 200,
+   "content-type": "text/html; charset=UTF-8"
+  },
+  "https://www.ted.com/talks/sir_ken_robinson_do_schools_kill_creativity": {
+   "status": 200,
+   "content-type": "text/html; charset=utf-8"
+  },
+  "https://www.w3schools.com/html/html5_video.asp": {
+   "status": 200,
+   "content-type": "text/html"
+  },
+  "https://wistia.com/": {
+   "status": 200,
+   "content-type": "text/html; charset=utf-8"
+  },
+  "https://www.youtube.com/watch?v=jNQXAC9IVRw": {
+   "status": 200,
+   "content-type": "text/html; charset=utf-8"
+  }
+ },
+ "nonHtml": {
+  "url": "https://vimeo.com/api/oembed.json?url=https%3A%2F%2Fvimeo.com%2F7602340",
+  "status": 200,
+  "content-type": "application/json",
+  "body": "{\"type\":\"video\",\"version\":\"1.0\",\"provider_name\":\"Vimeo\",\"provider_url\":\"https:\\/\\/vimeo.com\\/\",\"title\":\"The Love Song of J. Alfred Prufrock\",\"author_name\":\"Michael Ogawa\",\"author_url\":\"https:\\/\\/vimeo.com\\/michaelogawa\",\"is_plus\":\"0\",\"account_type\":\"free\",\"html\":\"<iframe src=\\\"https:\\/\\/player.vimeo.com\\/video\\/7602340?app_id=122963\\\" width=\\\"640\\\" height=\\\"480\\\" frameborder=\\\"0\\\" allow=\\\"autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share\\\" referrerpolicy=\\\"strict-origin-when-cross-origin\\\" title=\\\"The Love Song of J. Alfred Prufrock\\\"><\\/iframe>\",\"width\":640,\"height\":480,\"duration\":534,\"description\":\"T.S. Eliot reads \\\"The Love Song of J. Alfred Prufrock\\\" while Wordookie visualizes the words.\\n\\nhttp:\\/\\/code.google.com\\/p\\/wordookie\",\"thumbnail_url\":\"https:\\/\\/i.vimeocdn.com\\/video\\/33132420-47b4b64f94ac2616dce448465de585e9eefd651c6bca8e6b191093a2588d8029-d_640?region=us\",\"thumbnail_width\":640,\"thumbnail_height\":480,\"thumbnail_url_with_play_button\":\"https:\\/\\/i.vimeocdn.com\\/filter\\/overlay?src0=https%3A%2F%2Fi.vimeocdn.com%2Fvideo%2F33132420-47b4b64f94ac2616dce448465de585e9eefd651c6bca8e6b191093a2588d8029-d_640%3Fregion%3Dus&src1=http%3A%2F%2Ff.vimeocdn.com%2Fp%2Fimages%2Fcrawler_play.png\",\"upload_date\":\"2009-11-13 18:08:00\",\"video_id\":7602340,\"uri\":\"\\/videos\\/7602340\"}"
+ }
+}

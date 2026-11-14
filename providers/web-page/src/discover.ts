@@ -73,6 +73,7 @@ const text = (v: unknown): string | undefined => {
   return t || undefined;
 };
 
+/** First URL in a JSON-LD url, array or object. Entities are decoded: some sites (TED) HTML-escape inside the JSON. */
 function firstUrlOf(v: JsonValue | undefined): string | undefined {
   if (typeof v === 'string') return decodeHTML(v).trim() || undefined;
   if (Array.isArray(v)) {
@@ -210,7 +211,8 @@ export function discoverInHtml(html: string, pageUrl: URL): PageInfo {
     {
       onopentag(name, attrs) {
         const cls = attrs.class;
-        if (cls) {
+        // Channel embeds reuse the class with a project id (class "wistia_channel wistia_async_<project>"): not a media.
+        if (cls && !/\bwistia_channel\b/.test(cls)) {
           for (const m of cls.matchAll(/\bwistia_async_([a-z0-9]{10})\b/g)) {
             const w = m[1] ? wistiaInput(m[1]) : null;
             if (w) found.add(w, 'iframe');
