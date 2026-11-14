@@ -1,7 +1,7 @@
 {
   "name": "@vid2context/provider-stt-openai-compatible",
   "version": "0.1.0",
-  "description": "Speech-to-text rungs for any OpenAI-compatible /audio/transcriptions API: local servers, Groq, OVH keyless and OpenAI.",
+  "description": "Speech-to-text rungs for any OpenAI-compatible /audio/transcriptions API: local servers, Groq, Mistral, OVH keyless, DeepInfra, Together and OpenAI.",
   "license": "Apache-2.0",
   "type": "module",
   "exports": {
