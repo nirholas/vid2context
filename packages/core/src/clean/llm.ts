@@ -121,7 +121,8 @@ export async function punctuateWithLlm(
             { role: 'user', content: input.join(' ') },
           ],
           temperature: 0,
-          maxTokens: Math.ceil(input.length * 3) + 256,
+          // Room for the text plus the hidden reasoning some keyless models spend tokens on.
+          maxTokens: input.length * 4 + 1024,
         },
         opts.chain ?? {},
         ctx,

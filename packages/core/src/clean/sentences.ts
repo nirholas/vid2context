@@ -4,14 +4,16 @@
  * or reordered.
  *
  *   A sentence ends where a segment ends and either the next segment starts
- *   after a pause of 0.8 s or more, or it opens with a discourse marker
- *   ("so", "okay", "well", "anyway", ...) and the segment does not end on a
- *   word that cannot close a sentence ("the", "and", "of", ...).
+ *   after a pause of 0.8 s or more or opens with a discourse marker ("so",
+ *   "okay", "well", "anyway", ...), unless the segment ends on a word that
+ *   cannot close a sentence ("the", "and", "of", ...). The last segment
+ *   always ends a sentence.
  *   The first word of each sentence and the pronoun "I" are capitalized.
  *
  * Text that already has punctuation (two or more marks per hundred words) is
  * returned unchanged: creator captions and speech-to-text output are left as
- * their producer wrote them.
+ * their producer wrote them. So is text with no lowercase letters at all
+ * (scripts without letter case, such as Japanese or Chinese).
  */
 import type { Segment } from '../types.ts';
 import { addCleanExample, type CleanReport, cleanSplitWords, cleanWordKey, emptyCleanReport } from './report.ts';
@@ -91,6 +93,11 @@ export function restoreSentences(
     report.steps = ['restore-sentences (skipped: already punctuated)'];
     return { segments: segments.map((s) => ({ ...s })), report };
   }
+  if (!segments.some((s) => /\p{Ll}/u.test(s.text))) {
+    // Scripts without letter case (Japanese, Chinese, ...) have their own sentence marks: leave them alone.
+    report.steps = ['restore-sentences (skipped: no lowercase letters)'];
+    return { segments: segments.map((s) => ({ ...s })), report };
+  }
   const pause = opts.pauseSec ?? 0.8;
   const out: Segment[] = [];
   let atStart = true;
@@ -103,8 +110,8 @@ export function restoreSentences(
     const next = segments[i + 1];
     const nextFirst = next ? cleanWordKey(cleanSplitWords(next.text)[0] ?? '') : '';
     const lastKey = cleanWordKey(words[words.length - 1] ?? '');
-    const longPause = !next || next.startSec - seg.endSec >= pause;
-    const ends = longPause || (MARKERS.has(nextFirst) && !NO_END.has(lastKey));
+    const longPause = next !== undefined && next.startSec - seg.endSec >= pause;
+    const ends = !next || ((longPause || MARKERS.has(nextFirst)) && !NO_END.has(lastKey));
     const fixed = words.map((w, j) => {
       let word = w;
       if (PRONOUN_I.test(cleanWordKey(w))) word = capitalize(word);

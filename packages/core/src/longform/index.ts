@@ -11,11 +11,14 @@ export { type PlanInput, type PlannedCut, planCuts } from './plan.ts';
 export { type ChunkTranscript, normalizeWord, type SeamReport, stitchChunks } from './stitch.ts';
 export {
   builtinSplitters,
+  durationLimitFrom,
+  everyRungTooLarge,
   exceedsEveryRung,
   fetchAudioBytes,
   type LongformOptions,
   type LongformProgress,
   type LongformResult,
+  type SttDurationLimit,
   transcribeLong,
 } from './transcribe-long.ts';
 export { blockRms, parseWav, type WavInfo, wavHeader, wavPcmSplitter } from './wav.ts';

@@ -55,6 +55,8 @@ export interface LongformOptions {
   kv?: KvStore;
   storage?: Storage | null;
   onProgress?(p: LongformProgress): void;
+  /** Longest audio in seconds every rung accepts, when already known (for example from a 413 message). */
+  maxPieceSec?: number;
   /** How long one chunk may wait in total for rate-limited rungs to cool down. Default 10 minutes. */
   rateLimitWaitMs?: number;
 }
@@ -92,13 +94,13 @@ function maxDurationOf(r: SttRung): number | undefined {
 }
 
 /** Every rung tried refused the audio as too large (413 or a declared limit); nothing else went wrong. */
-function everyRungTooLarge(attempts: Attempt[]): boolean {
+export function everyRungTooLarge(attempts: Attempt[]): boolean {
   const errors = attempts.filter((a) => a.outcome === 'error');
   return errors.length > 0 && errors.every((a) => a.reason?.startsWith('too-large'));
 }
 
 /** A duration limit stated in an upstream message, e.g. "max duration allowed ... is 60 seconds". */
-function durationLimitFrom(attempts: Attempt[]): number | undefined {
+export function durationLimitFrom(attempts: Attempt[]): number | undefined {
   for (const a of attempts) {
     const m = /duration[^0-9]{0,120}?(\d+(?:\.\d+)?)\s*(?:s|secs?|seconds)\b/i.exec(a.detail ?? '');
     if (m) return Number(m[1]);
@@ -209,6 +211,19 @@ function onlyRateLimited(attempts: Attempt[]): boolean {
   );
 }
 
+/** A seam as an attempt; `tag` names the chunk for seams between the pieces of a re-split chunk (times are chunk-local there). */
+function seamAttempt(s: SeamReport, parts: number, tag?: string): Attempt {
+  const where = `seam ${s.index}/${parts - 1} at ${s.cutSec.toFixed(2)}s`;
+  const matched = s.method === 'aligned' ? `, ${s.matchedWords} words matched` : '';
+  return {
+    id: 'longform/stitch',
+    stage: 'stt',
+    outcome: 'ok',
+    reason: s.method,
+    detail: `${tag ? `${tag} ` : ''}${where}${matched}`,
+  };
+}
+
 function majority(values: string[]): string {
   const counts = new Map<string, number>();
   for (const v of values) counts.set(v, (counts.get(v) ?? 0) + 1);
@@ -244,6 +259,7 @@ export async function transcribeLong(
   let maxBytes = limits.length > 0 ? Math.floor(Math.min(...limits) * 0.95) : Number.MAX_SAFE_INTEGER;
   if (opts.maxChunkBytes) maxBytes = Math.min(maxBytes, opts.maxChunkBytes);
   const durations = starters.map(maxDurationOf).filter((d): d is number => d !== undefined);
+  if (opts.maxPieceSec && opts.maxPieceSec > 0) durations.push(opts.maxPieceSec);
   let learnedMaxSec: number | undefined = durations.length > 0 ? Math.min(...durations) * 0.95 : undefined;
   const targetSec = Math.min(opts.targetSec ?? 600, learnedMaxSec ?? Number.POSITIVE_INFINITY);
   const overlapSec = opts.overlapSec ?? 2;
@@ -420,7 +436,8 @@ export async function transcribeLong(
         ),
       );
     }
-    const { segments } = stitchChunks(parts.map((p, k) => ({ ...p, segments: (pieces[k] as Piece).segments })));
+    const { segments, seams } = stitchChunks(parts.map((p, k) => ({ ...p, segments: (pieces[k] as Piece).segments })));
+    for (const s of seams) log.push(seamAttempt(s, parts.length, tag));
     const producer = majority(pieces.map((p) => p.producer));
     return {
       producer,
@@ -483,15 +500,10 @@ export async function transcribeLong(
       segments: (finished[i] as Checkpoint).segments,
     })),
   );
-  for (const s of seams) {
-    attempts.push({
-      id: 'longform/stitch',
-      stage: 'stt',
-      outcome: 'ok',
-      reason: s.method,
-      detail: `seam ${s.index}/${total - 1} at ${s.cutSec.toFixed(2)}s${s.method === 'aligned' ? `, ${s.matchedWords} words matched` : ''}`,
-    });
-    if (s.method === 'time-cut') ctx.log.warn('long audio seam not aligned, cut by time', { seam: s.index, atSec: s.cutSec });
+  for (const s of seams) attempts.push(seamAttempt(s, total));
+  for (const a of attempts) {
+    if (a.id === 'longform/stitch' && a.reason === 'time-cut')
+      ctx.log.warn('long audio seam not aligned, cut by time', { seam: a.detail });
   }
   const producer = majority(finished.map((r) => r.producer));
   const transcript: Transcript = {

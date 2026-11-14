@@ -3,14 +3,20 @@
  * the last `overlapSec` of the previous chunk, so the words spoken in that
  * window appear twice. For each seam we:
  *
- *   1. give every word an estimated time (spread across its segment by
- *      character count, since most hosted Whisper lanes return no word times),
+ *   1. give every word a time (see below),
  *   2. find the longest run of identical normalized words between the end of
  *      chunk N and the start of chunk N+1,
  *   3. keep chunk N up to the middle of that run and chunk N+1 from there on.
  *
- * When no run of at least two words matches, we cut both chunks at the middle
- * of the overlap window by time and report the seam as `time-cut`.
+ * When either side has no words inside the overlap (the cut fell in a pause,
+ * or the model heard nothing there), there is nothing to deduplicate: both
+ * sides keep every word and the seam is reported as `silence`. When both
+ * sides have words but no run of at least two matches, both are cut at the
+ * middle of the overlap by time and the seam is reported as `time-cut`.
+ *
+ * Word times come from the rung when it reports them per segment
+ * (`words: [{ startSec, endSec }]`, shifted to the global timeline here);
+ * otherwise they are spread across the segment by character count.
  *
  * Segments that keep all their words keep their original text and times, so
  * the raw transcript survives everywhere except the trimmed seam segments.
@@ -29,8 +35,8 @@ export interface ChunkTranscript {
 export interface SeamReport {
   /** Seam between chunk `index - 1` and chunk `index` (0-based). */
   index: number;
-  method: 'aligned' | 'time-cut' | 'no-overlap';
-  /** Words matched in the overlap (0 for time-cut). */
+  method: 'aligned' | 'silence' | 'time-cut' | 'no-overlap';
+  /** Words matched in the overlap (0 unless aligned). */
   matchedWords: number;
   /** Where the seam was cut on the global timeline, seconds. */
   cutSec: number;
@@ -42,6 +48,21 @@ interface Word {
   start: number;
   end: number;
   seg: number;
+  /** The rung's own word entry (shifted to the global timeline) when it reported word times. */
+  timed?: TimedWord;
+}
+
+/** Word timings some rungs attach to a segment (`words: [{ word, startSec, endSec }]`). */
+interface TimedWord {
+  startSec: number;
+  endSec: number;
+  [k: string]: unknown;
+}
+
+function timedWords(s: Segment): TimedWord[] | undefined {
+  const w = (s as Segment & { words?: unknown }).words;
+  if (!Array.isArray(w)) return undefined;
+  return w.every((x) => typeof x?.startSec === 'number' && typeof x?.endSec === 'number') ? (w as TimedWord[]) : undefined;
 }
 
 export function normalizeWord(w: string): string {
@@ -56,14 +77,28 @@ function wordsOf(chunk: ChunkTranscript): { words: Word[]; segs: Segment[] } {
   const lo = chunk.startSec;
   const hi = chunk.startSec + chunk.durationSec;
   const clamp = (t: number) => Math.min(hi, Math.max(lo, t));
-  const segs: Segment[] = chunk.segments.map((s) => ({
-    ...s,
-    startSec: clamp(s.startSec + lo),
-    endSec: clamp(Math.max(s.endSec, s.startSec) + lo),
-  }));
+  const segs: Segment[] = chunk.segments.map((s) => {
+    const out: Segment & { words?: TimedWord[] } = {
+      ...s,
+      startSec: clamp(s.startSec + lo),
+      endSec: clamp(Math.max(s.endSec, s.startSec) + lo),
+    };
+    const tw = timedWords(s);
+    if (tw) out.words = tw.map((w) => ({ ...w, startSec: clamp(w.startSec + lo), endSec: clamp(w.endSec + lo) }));
+    return out;
+  });
   const words: Word[] = [];
   segs.forEach((s, seg) => {
     const tokens = s.text.split(/\s+/).filter(Boolean);
+    const tw = timedWords(s);
+    // Real word times when the rung gave one per token; otherwise spread the segment by character count.
+    if (tw && tw.length === tokens.length) {
+      tokens.forEach((token, k) => {
+        const t = tw[k] as TimedWord;
+        words.push({ token, norm: normalizeWord(token), start: t.startSec, end: t.endSec, seg, timed: t });
+      });
+      return;
+    }
     const chars = tokens.reduce((n, t) => n + t.length, 0) || 1;
     let acc = 0;
     for (const token of tokens) {
@@ -112,15 +147,18 @@ function keptSegments(words: Word[], segs: Segment[], from: number, to: number):
     } else {
       const first = words[i] as Word;
       const last = words[j - 1] as Word;
-      out.push({
+      const kept = words.slice(i, j);
+      const trimmed: Segment & { words?: TimedWord[] } = {
         ...original,
         startSec: first.start,
         endSec: last.end,
-        text: words
-          .slice(i, j)
-          .map((w) => w.token)
-          .join(' '),
-      });
+        text: kept.map((w) => w.token).join(' '),
+      };
+      if (timedWords(original)) {
+        if (kept.every((w) => w.timed)) trimmed.words = kept.map((w) => w.timed as TimedWord);
+        else delete trimmed.words;
+      }
+      out.push(trimmed);
     }
     i = j;
   }
@@ -168,6 +206,12 @@ export function stitchChunks(chunks: ChunkTranscript[]): { segments: Segment[]; 
       seams.push({ index: n, method: 'aligned', matchedWords: len, cutSec: cutWord ? cutWord.start : winEnd });
     } else {
       const cut = (winStart + winEnd) / 2;
+      const inside = (w: Word) => (w.start + w.end) / 2 >= winStart && (w.start + w.end) / 2 <= winEnd;
+      if (!aWin.some(inside) || !bWin.some(inside)) {
+        // One side heard nothing in the overlap, so nothing is duplicated: keep every word on both sides.
+        seams.push({ index: n, method: 'silence', matchedWords: 0, cutSec: cut });
+        continue;
+      }
       const ia = A.findIndex((w, i) => i >= (from[n - 1] as number) && (w.start + w.end) / 2 >= cut);
       to[n - 1] = Math.min(to[n - 1] as number, ia < 0 ? A.length : ia);
       const ib = B.findIndex((w) => (w.start + w.end) / 2 >= cut);

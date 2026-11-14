@@ -9,8 +9,11 @@
  *   stt       skip captions, always transcribe the audio
  *   video     a multimodal video rung reads the whole video (transcript + on-screen notes)
  */
+import type { AudioSplitter } from './audio-split.ts';
 import { attemptsOf, runChain } from './chain.ts';
+import { guardRepetition } from './clean/repetition.ts';
 import { Vid2ContextError } from './errors.ts';
+import { durationLimitFrom, everyRungTooLarge, exceedsEveryRung, transcribeLong } from './longform/transcribe-long.ts';
 import type { ChainOptions, ChatRequest, ChatResult, LlmRung, SourceProvider, SttOptions, SttRung } from './provider.ts';
 import type { Registry } from './registry.ts';
 import { enforceInputPolicy } from './security/input.ts';
@@ -35,6 +38,10 @@ export interface GetContextOptions {
   storage?: Storage | null;
   /** Ignore a cached result and rebuild. */
   refresh?: boolean;
+  /** Extra audio splitters for long audio (an ffmpeg splitter for m4a, opus, webm). The built-in MP3 and WAV splitters are always available. */
+  splitters?: AudioSplitter[];
+  /** Called at stage boundaries (resolve, metadata, captions, audio, stt, video, saving, done), for job progress. */
+  onProgress?: (event: { stage: Attempt['stage'] | 'saving' | 'done'; detail?: string }) => void;
 }
 
 function now(): string {
@@ -138,14 +145,21 @@ async function fetchAudio(
   return null;
 }
 
-/** Run the speech-to-text rung chain on audio. Rungs whose upload limit is below the audio size are skipped. */
+/**
+ * Run the speech-to-text rung chain on audio. Rungs whose upload limit is below the audio size are skipped.
+ * Audio larger than every rung accepts, or refused as too large by every rung, goes to the long-audio orchestrator.
+ */
 export async function transcribe(
   registry: Registry,
   ref: VideoRef,
   audio: AudioInput,
-  opts: { stt?: SttOptions; chain?: ChainOptions },
+  opts: { stt?: SttOptions; chain?: ChainOptions; splitters?: AudioSplitter[]; storage?: Storage | null },
   ctx: Ctx,
 ): Promise<{ transcript: Transcript; attempts: Attempt[] }> {
+  if (exceedsEveryRung(registry, audio, opts.chain, ctx)) {
+    const long = await transcribeLong(registry, ref, audio, opts, ctx);
+    return { transcript: long.transcript, attempts: long.attempts };
+  }
   const pre: Attempt[] = [];
   const size = audio.kind === 'bytes' ? audio.data.byteLength : undefined;
   const rungs = registry.sttRungs(ctx.env).filter((r) => {
@@ -172,9 +186,24 @@ export async function transcribe(
       segments: res.value.segments,
       createdAt: now(),
     };
-    return { transcript, attempts: [...pre, ...res.attempts] };
+    const attempts = [...pre, ...res.attempts];
+    const guard = guardRepetition(transcript.segments);
+    const collapsed = guard.report.rewritten + guard.report.removed;
+    if (collapsed + guard.report.flagged > 0) {
+      transcript.segments = guard.segments;
+      const flagged = guard.report.flagged ? `, flagged ${guard.report.flagged}` : '';
+      attempts.push({ id: 'clean/repetition-guard', stage: 'stt', outcome: 'ok', detail: `collapsed ${collapsed} segments${flagged}` });
+    }
+    return { transcript, attempts };
   } catch (err) {
-    throw Object.assign(err as object, { attempts: [...pre, ...attemptsOf(err)] });
+    const tried = [...pre, ...attemptsOf(err)];
+    if (audio.kind !== 'bytes' || !everyRungTooLarge(tried)) throw Object.assign(err as object, { attempts: tried });
+    try {
+      const long = await transcribeLong(registry, ref, audio, { ...opts, maxPieceSec: durationLimitFrom(tried) }, ctx);
+      return { transcript: long.transcript, attempts: [...tried, ...long.attempts] };
+    } catch (longErr) {
+      throw Object.assign(longErr as object, { attempts: [...tried, ...attemptsOf(longErr)] });
+    }
   }
 }
 
@@ -228,6 +257,7 @@ async function buildVideoContext(registry: Registry, input: string, opts: GetCon
       })
     : registry.resolve(input);
   attempts.push({ id: source.id, stage: 'resolve', outcome: 'ok', detail: ref.id });
+  opts.onProgress?.({ stage: 'resolve', detail: ref.id });
   if (ref.kind !== 'video') {
     throw new Vid2ContextError('unsupported-input', `"${input}" is a ${ref.kind}, not a single video.`, {
       hint: 'Expand it first (CLI: `vid2context list`, MCP: list_items) or add it to a collection.',
@@ -239,6 +269,7 @@ async function buildVideoContext(registry: Registry, input: string, opts: GetCon
     if (cached && cacheUsable(cached, opts)) return cached;
   }
 
+  opts.onProgress?.({ stage: 'metadata' });
   let metadata: VideoMetadata;
   const mStart = Date.now();
   try {
@@ -258,6 +289,7 @@ async function buildVideoContext(registry: Registry, input: string, opts: GetCon
   let visual: VideoContext['visual'];
 
   if (mode === 'video') {
+    opts.onProgress?.({ stage: 'video' });
     const rungs = registry.videoRungs(ctx.env).filter((r) => r.supports(ref));
     try {
       const run = () =>
@@ -272,16 +304,19 @@ async function buildVideoContext(registry: Registry, input: string, opts: GetCon
   }
 
   if (!transcript && (mode === 'auto' || mode === 'captions')) {
+    opts.onProgress?.({ stage: 'captions' });
     transcript = await (tel
       ? tracedStage(tel, 'captions', ref, () => fetchCaptions(registry, ref, opts, ctx, attempts))
       : fetchCaptions(registry, ref, opts, ctx, attempts));
   }
 
   if (!transcript && (mode === 'auto' || mode === 'stt')) {
+    opts.onProgress?.({ stage: 'audio' });
     const audio = await (tel
       ? tracedStage(tel, 'audio', ref, () => fetchAudio(registry, source, ref, ctx, attempts))
       : fetchAudio(registry, source, ref, ctx, attempts));
     if (audio) {
+      opts.onProgress?.({ stage: 'stt' });
       try {
         const res = await (tel
           ? tracedStage(tel, 'stt', ref, () => transcribe(registry, ref, audio, opts, ctx))
@@ -322,6 +357,8 @@ async function buildVideoContext(registry: Registry, input: string, opts: GetCon
   }
 
   const storage = opts.storage;
+  if (storage) opts.onProgress?.({ stage: 'saving' });
   if (storage) await (tel ? tracedStage(tel, 'save', ref, () => storage.putContext(context)) : storage.putContext(context));
+  opts.onProgress?.({ stage: 'done' });
   return context;
 }

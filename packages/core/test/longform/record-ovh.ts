@@ -36,7 +36,13 @@ const chain = { only: ['ovh'] };
 // 1. Stitching: 58 s split into 3 chunks of about 21 s.
 const short = { kind: 'bytes' as const, data: doubleday58(), mimeType: 'audio/mpeg', filename: 'doubleday-ch00-58s.mp3' };
 let t = Date.now();
-const a = await transcribeLong(registry, fileRef('doubleday-ch00-58s'), short, { targetSec: 22, concurrency: 1, kv: new MemoryKv(), chain }, ctx);
+const a = await transcribeLong(
+  registry,
+  fileRef('doubleday-ch00-58s'),
+  short,
+  { targetSec: 22, concurrency: 1, kv: new MemoryKv(), chain },
+  ctx,
+);
 console.error(`58s: ${a.chunks} chunks in ${Date.now() - t} ms`, JSON.stringify(a.seams));
 
 // 2. Single-pass baseline of the same 58 s.
@@ -46,7 +52,12 @@ await new Promise((r) => setTimeout(r, 61_000));
 await ovh.transcribe(short, {}, ctx);
 
 // 3. Duration cap: 90 s in one chunk, refused with 413, re-split into pieces under 60 s.
-const long = { kind: 'bytes' as const, data: fixtureBytes('doubleday-ch00-90s.mp3'), mimeType: 'audio/mpeg', filename: 'doubleday-ch00-90s.mp3' };
+const long = {
+  kind: 'bytes' as const,
+  data: fixtureBytes('doubleday-ch00-90s.mp3'),
+  mimeType: 'audio/mpeg',
+  filename: 'doubleday-ch00-90s.mp3',
+};
 await new Promise((r) => setTimeout(r, 61_000));
 t = Date.now();
 const b = await transcribeLong(registry, fileRef('doubleday-ch00-90s'), long, { concurrency: 1, kv: new MemoryKv(), chain }, ctx);
