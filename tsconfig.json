@@ -5,7 +5,8 @@
     "providers/*/src/**/*.ts",
     "packages/*/test/**/*.ts",
     "providers/*/test/**/*.ts",
-    "scripts/**/*.ts"
+    "scripts/**/*.ts",
+    "examples/**/*.ts"
   ],
   "exclude": ["**/node_modules", "**/dist", "packages/web/**", "packages/extension/**", "packages/chat/**"]
 }

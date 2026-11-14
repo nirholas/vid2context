@@ -12,6 +12,7 @@ All notable changes to this project are documented here. The format follows [Kee
 - `youtube` provider: URL matching, metadata, description chapters, creator and auto captions. No API key.
 - `media-file` provider: local audio and video files as speech-to-text sources.
 - `stt-openai-compatible` provider: local servers, Groq, OVH (keyless) and OpenAI speech-to-text.
+- Runnable examples in `examples/` (library, CLI, HTTP API, MCP, LangChain.js, Python, LangChain and LlamaIndex) with a docs section in `docs/examples/`. Code blocks and the output of offline examples are synced by `npm run examples:docs` and checked by `npm test`; `LIVE=1` runs the live examples too.
 - `llm-openai-compatible` provider: Ollama, LM Studio, local servers, Groq, Cerebras, Mistral, GitHub Models, Gemini, OVH and Pollinations (keyless), and OpenAI.
 
 [Unreleased]: https://github.com/nirholas/vid2context/commits/main

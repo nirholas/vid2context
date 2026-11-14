@@ -87,6 +87,8 @@ A local audio or video file works too. With no keys set, it is transcribed by th
 npm run cli -- ./interview.mp3 --format json > interview.json
 ```
 
+More in [docs/examples](docs/examples/README.md): runnable examples for the library, CLI, HTTP API, MCP, LangChain and Python, each a file in [examples/](examples/) whose output on the page is checked by the tests.
+
 ## CLI
 
 ```
@@ -257,6 +259,7 @@ npm run test:live    # LIVE=1: hits the real services
 npm run check        # typecheck + lint + test
 npm run cli -- <url> # run the CLI from source
 npm run mcp          # run the MCP server on stdio
+npm run examples:docs # rewrite docs/examples from the scripts in examples/
 ```
 
 Tests use real responses recorded from the live services, never invented data. Live tests run only with `LIVE=1`.

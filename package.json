@@ -10,7 +10,8 @@
   },
   "workspaces": [
     "packages/*",
-    "providers/*"
+    "providers/*",
+    "examples"
   ],
   "scripts": {
     "postinstall": "node scripts/gen-registry.mjs",
@@ -23,6 +24,7 @@
     "check": "npm run typecheck && npm run lint && npm test",
     "check:llm": "tsx scripts/check-llm.ts",
     "cli": "tsx packages/cli/src/bin.ts",
+    "examples:docs": "tsx examples/docs-sync.ts",
     "mcp": "tsx packages/mcp/src/bin.ts",
     "dev:server": "tsx watch packages/server/src/node.ts",
     "start:server": "tsx packages/server/src/node.ts",
