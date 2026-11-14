@@ -5,10 +5,10 @@
  */
 import type { Attempt, Tier } from '@vid2context/core';
 import type { EditCounts } from './metrics/align.ts';
-import { percentile } from './metrics/stats.ts';
-import { pooledRate } from './metrics/wer.ts';
 import type { PunctuationScore } from './metrics/punctuation.ts';
+import { percentile } from './metrics/stats.ts';
 import type { TimingError } from './metrics/timing.ts';
+import { pooledRate } from './metrics/wer.ts';
 
 export type SuiteName = 'stt' | 'captions' | 'cleanup' | 'citations' | 'search';
 
@@ -116,7 +116,11 @@ export function summarize(items: readonly ItemResult[]): RungSummary[] {
     const punct = ok.map((i) => i.punctuation).filter((p): p is PunctuationScore => Boolean(p));
     if (punct.length > 0) {
       const sum = (f: (p: PunctuationScore) => { tp: number; fp: number; fn: number }) => {
-        const t = punct.reduce((a, p) => ({ tp: a.tp + f(p).tp, fp: a.fp + f(p).fp, fn: a.fn + f(p).fn }), { tp: 0, fp: 0, fn: 0 });
+        const t = punct.reduce((a, p) => ({ tp: a.tp + f(p).tp, fp: a.fp + f(p).fp, fn: a.fn + f(p).fn }), {
+          tp: 0,
+          fp: 0,
+          fn: 0,
+        });
         const pr = t.tp + t.fp === 0 ? 0 : t.tp / (t.tp + t.fp);
         const rc = t.tp + t.fn === 0 ? 0 : t.tp / (t.tp + t.fn);
         return pr + rc === 0 ? 0 : (2 * pr * rc) / (pr + rc);
@@ -132,7 +136,8 @@ export function summarize(items: readonly ItemResult[]): RungSummary[] {
       if (audio > 0) row.realTimeFactor = lat.reduce((s, l) => s + l, 0) / 1000 / audio;
     }
     const costs = ok.map((i) => i.costUsd);
-    if (costs.some((c) => c !== undefined)) row.costUsd = costs.some((c) => c === null) ? null : costs.reduce<number>((s, c) => s + (c ?? 0), 0);
+    if (costs.some((c) => c !== undefined))
+      row.costUsd = costs.some((c) => c === null) ? null : costs.reduce<number>((s, c) => s + (c ?? 0), 0);
     return row;
   });
 }

@@ -1,0 +1,109 @@
+{
+  "suite": "citations",
+  "description": "Questions over a real collection, each with the places that answer it and a verbatim quote from the recorded transcript. Used to score cited briefs and answers: every citation must quote the transcript within the tolerance of its time, and at least one must land on an expected place.",
+  "collection": [
+    {
+      "videoId": "youtube:cCPsdFdlshc",
+      "url": "https://www.youtube.com/watch?v=cCPsdFdlshc",
+      "transcript": "tests/fixtures/contexts/youtube-cCPsdFdlshc.json"
+    }
+  ],
+  "questions": [
+    {
+      "id": "reliable-engine",
+      "question": "Which engine do the hosts call the most reliable, and what nickname does it have?",
+      "expected": [
+        {
+          "videoId": "youtube:cCPsdFdlshc",
+          "startSec": 67,
+          "endSec": 100,
+          "quote": "known as a Land Cruiser killer"
+        }
+      ]
+    },
+    {
+      "id": "g55-horsepower",
+      "question": "How much power does the supercharged G55 AMG make?",
+      "expected": [
+        {
+          "videoId": "youtube:cCPsdFdlshc",
+          "startSec": 275,
+          "endSec": 292,
+          "quote": "490 horsepower compressor motor"
+        }
+      ]
+    },
+    {
+      "id": "g55-oil",
+      "question": "How much oil does the G55 in the video use between oil changes?",
+      "expected": [
+        {
+          "videoId": "youtube:cCPsdFdlshc",
+          "startSec": 298,
+          "endSec": 315,
+          "quote": "drinks a quart and a half between oil changes"
+        }
+      ]
+    },
+    {
+      "id": "m278-years",
+      "question": "Which model years use the M278 engine with the updated interior?",
+      "expected": [
+        {
+          "videoId": "youtube:cCPsdFdlshc",
+          "startSec": 583,
+          "endSec": 610,
+          "quote": "13 to 15 is the year range for this generation"
+        }
+      ]
+    },
+    {
+      "id": "daily-driver",
+      "question": "Who is the 2013 to 2015 G550 for?",
+      "expected": [
+        {
+          "videoId": "youtube:cCPsdFdlshc",
+          "startSec": 840,
+          "endSec": 860,
+          "quote": "ultimate daily driver"
+        }
+      ]
+    },
+    {
+      "id": "why-na-offroad",
+      "question": "Why did Adam choose a naturally aspirated G550 for off-roading?",
+      "expected": [
+        {
+          "videoId": "youtube:cCPsdFdlshc",
+          "startSec": 905,
+          "endSec": 965,
+          "quote": "there's coolers here"
+        }
+      ]
+    },
+    {
+      "id": "appreciate",
+      "question": "Which G-Wagon do they expect to gain value?",
+      "expected": [
+        {
+          "videoId": "youtube:cCPsdFdlshc",
+          "startSec": 1026,
+          "endSec": 1068,
+          "quote": "grab yourself a preb USA Truck"
+        }
+      ]
+    },
+    {
+      "id": "add-tech",
+      "question": "What modern tech can be added to an older G-Wagon?",
+      "expected": [
+        {
+          "videoId": "youtube:cCPsdFdlshc",
+          "startSec": 455,
+          "endSec": 470,
+          "quote": "there's Apple carplay and Android audio capable"
+        }
+      ]
+    }
+  ]
+}

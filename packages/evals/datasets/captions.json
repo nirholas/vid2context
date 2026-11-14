@@ -1,0 +1,78 @@
+{
+  "suite": "captions",
+  "description": "Videos with both creator captions and YouTube auto-captions. Auto-captions, raw and after core cleanup, are scored against the creator text. Both tracks are recorded in datasets/refs/, so only public-domain and CC-licensed videos are listed.",
+  "items": [
+    {
+      "id": "nasa-flat-earth",
+      "url": "https://www.youtube.com/watch?v=GB06dUoGGRI",
+      "title": "How Do We Know the Earth Isn't Flat? We Asked a NASA Expert",
+      "channel": "NASA",
+      "language": "en",
+      "durationSec": 114,
+      "why": "Unscripted expert answer to camera, light background music; short, so it is first and makes --limit runs cheap.",
+      "tags": ["en", "interview", "unscripted", "music"],
+      "license": "NASA video: NASA media is generally not subject to US copyright (NASA media usage guidelines). Reference captions are committed in datasets/refs/.",
+      "reference": "creator-captions"
+    },
+    {
+      "id": "nasa-sea-level",
+      "url": "https://www.youtube.com/watch?v=WadD54Ywvz4",
+      "title": "Why is Sea Level Rising? We Asked a NASA Scientist",
+      "channel": "NASA",
+      "language": "en",
+      "durationSec": 98,
+      "why": "Scientist speaking unscripted; tests auto-captions on jargon.",
+      "tags": ["en", "interview", "jargon"],
+      "license": "NASA video: NASA media is generally not subject to US copyright (NASA media usage guidelines). Reference captions are committed in datasets/refs/.",
+      "reference": "creator-captions"
+    },
+    {
+      "id": "nasa-spacecraft-comms",
+      "url": "https://www.youtube.com/watch?v=MDMM9MZNcco",
+      "title": "How Do We Communicate With Spacecraft? We Asked a NASA Expert",
+      "channel": "NASA",
+      "language": "en",
+      "durationSec": 119,
+      "why": "Proper nouns and engineering terms.",
+      "tags": ["en", "interview", "proper-nouns"],
+      "license": "NASA video: NASA media is generally not subject to US copyright (NASA media usage guidelines). Reference captions are committed in datasets/refs/.",
+      "reference": "creator-captions"
+    },
+    {
+      "id": "ted-ed-spiciness",
+      "url": "https://www.youtube.com/watch?v=qD0_yWgifDM",
+      "title": "The science of spiciness - Rose Eveleth",
+      "channel": "TED-Ed",
+      "language": "en",
+      "durationSec": 234,
+      "why": "Narration over music; creator captions are fully punctuated, auto-captions are not.",
+      "tags": ["en", "narration", "music"],
+      "license": "TED content, shared under CC BY-NC-ND 4.0 per TED's usage policy (attribution: TED). Reference captions are committed in datasets/refs/.",
+      "reference": "creator-captions"
+    },
+    {
+      "id": "ted-ed-bridge-riddle",
+      "url": "https://www.youtube.com/watch?v=7yDmGnA8Hw0",
+      "title": "Can you solve the bridge riddle? - Alex Gendler",
+      "channel": "TED-Ed",
+      "language": "en",
+      "durationSec": 230,
+      "why": "Numbers written as digits by one track and words by the other.",
+      "tags": ["en", "narration", "numbers"],
+      "license": "TED content, shared under CC BY-NC-ND 4.0 per TED's usage policy (attribution: TED). Reference captions are committed in datasets/refs/.",
+      "reference": "creator-captions"
+    },
+    {
+      "id": "tedx-one-minute",
+      "url": "https://www.youtube.com/watch?v=1aA1WGON49E",
+      "title": "A one minute TEDx Talk for the digital age | Woody Roseland | TEDxMileHigh",
+      "channel": "TEDx Talks",
+      "language": "en",
+      "durationSec": 81,
+      "why": "Fast stage speech with audience reactions and a live-room acoustic.",
+      "tags": ["en", "stage", "fast", "audience"],
+      "license": "TED content, shared under CC BY-NC-ND 4.0 per TED's usage policy (attribution: TED). Reference captions are committed in datasets/refs/.",
+      "reference": "creator-captions"
+    }
+  ]
+}

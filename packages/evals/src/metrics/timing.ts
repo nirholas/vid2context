@@ -42,7 +42,11 @@ export function timedWords(segments: readonly Segment[], opts: NormalizeOptions 
 }
 
 /** Median and p90 absolute start-time difference over exactly matched words. */
-export function timingError(reference: readonly Segment[], hypothesis: readonly Segment[], opts: NormalizeOptions = {}): TimingError {
+export function timingError(
+  reference: readonly Segment[],
+  hypothesis: readonly Segment[],
+  opts: NormalizeOptions = {},
+): TimingError {
   const r = timedWords(reference, opts);
   const h = timedWords(hypothesis, opts);
   const a = align(

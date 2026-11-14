@@ -25,7 +25,7 @@ export const RESULTS_DIR = fileURLToPath(new URL('../results/', import.meta.url)
 export interface RunDeps {
   env: Env;
   /** Created only after the live check passes, so a refused run touches nothing. */
-  setup(): { registry: Registry; ctx: Ctx; envFiles: number };
+  setup(): Promise<{ registry: Registry; ctx: Ctx; envFiles: number }>;
   stdout(s: string): void;
   stderr(s: string): void;
   cwd?: string;
@@ -83,7 +83,7 @@ export async function main(argv: readonly string[], deps: RunDeps): Promise<numb
   });
   if (suites.length === 0) return explicit ? 2 : 0;
 
-  const { registry, ctx, envFiles } = deps.setup();
+  const { registry, ctx, envFiles } = await deps.setup();
   const cwd = deps.cwd ?? process.cwd();
   const sc: SuiteContext = {
     registry,
@@ -153,13 +153,13 @@ export async function main(argv: readonly string[], deps: RunDeps): Promise<numb
 
 const isEntry = process.argv[1] !== undefined && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 if (isEntry) {
-  const { createNodeContext, createRegistry, loadEnvFiles } = await import('@vid2context/registry/node');
   const env = process.env as Env;
   const abort = new AbortController();
   process.once('SIGINT', () => abort.abort());
   process.exitCode = await main(process.argv.slice(2), {
     env,
-    setup() {
+    async setup() {
+      const { createNodeContext, createRegistry, loadEnvFiles } = await import('@vid2context/registry/node');
       const envFiles = loadEnvFiles().length;
       return { registry: createRegistry(), ctx: createNodeContext({ env: process.env as Env, signal: abort.signal }), envFiles };
     },

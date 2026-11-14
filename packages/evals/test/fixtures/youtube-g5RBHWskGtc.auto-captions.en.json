@@ -1,0 +1,51 @@
+{
+  "videoId": "youtube:g5RBHWskGtc",
+  "url": "https://www.youtube.com/watch?v=g5RBHWskGtc",
+  "title": "Me at the zoo (reupload)",
+  "language": "en",
+  "origin": "auto-captions",
+  "producer": "youtube-captions",
+  "recordedAt": "2026-11-14",
+  "segments": [
+    {
+      "startSec": 1.32,
+      "endSec": 2.88,
+      "text": "All right, so here we are on one of the"
+    },
+    {
+      "startSec": 2.88,
+      "endSec": 5.24,
+      "text": "uh elephants."
+    },
+    {
+      "startSec": 5.24,
+      "endSec": 7.12,
+      "text": "Cool thing about these guys is that is"
+    },
+    {
+      "startSec": 7.12,
+      "endSec": 9.12,
+      "text": "that they have really"
+    },
+    {
+      "startSec": 9.12,
+      "endSec": 12.04,
+      "text": "really really long um"
+    },
+    {
+      "startSec": 12.04,
+      "endSec": 15.8,
+      "text": "trunks. And that's that's cool."
+    },
+    {
+      "startSec": 16.96,
+      "endSec": 18.2,
+      "text": "And that's pretty much all there is to"
+    },
+    {
+      "startSec": 18.2,
+      "endSec": 20.56,
+      "text": "say."
+    }
+  ]
+}

@@ -1,0 +1,203 @@
+{
+  "suite": "search",
+  "description": "Labeled transcript-search queries over a real collection. Each expected range was found by reading the recorded transcript; a hit is relevant when it overlaps one. Starts with part 1 of the G-Wagon buyer series (the shared fixture).",
+  "collection": [
+    {
+      "videoId": "youtube:cCPsdFdlshc",
+      "url": "https://www.youtube.com/watch?v=cCPsdFdlshc",
+      "transcript": "tests/fixtures/contexts/youtube-cCPsdFdlshc.json"
+    }
+  ],
+  "queries": [
+    {
+      "id": "land-cruiser-killer",
+      "query": "Which engine is called the Land Cruiser killer?",
+      "note": "The M113 V8 discussion on the 2000 G500.",
+      "expected": [
+        {
+          "videoId": "youtube:cCPsdFdlshc",
+          "startSec": 67,
+          "endSec": 100
+        }
+      ]
+    },
+    {
+      "id": "m113-power",
+      "query": "How much horsepower and torque does the M113 make?",
+      "note": "Spoken as \"300 horsepower and 300 ftlb of torque\".",
+      "expected": [
+        {
+          "videoId": "youtube:cCPsdFdlshc",
+          "startSec": 90,
+          "endSec": 101
+        }
+      ]
+    },
+    {
+      "id": "first-gen-interior-years",
+      "query": "What years did the first generation 463 interior run?",
+      "note": "\"this started 91 and kept all the way through 2001\".",
+      "expected": [
+        {
+          "videoId": "youtube:cCPsdFdlshc",
+          "startSec": 165,
+          "endSec": 178
+        }
+      ]
+    },
+    {
+      "id": "g55-us-arrival",
+      "query": "When did the G55 AMG arrive in the US and how long was it sold?",
+      "note": "MB USA import from 2002, G55 from 2003, sold until 2012.",
+      "expected": [
+        {
+          "videoId": "youtube:cCPsdFdlshc",
+          "startSec": 255,
+          "endSec": 285
+        }
+      ]
+    },
+    {
+      "id": "supercharged-horsepower",
+      "query": "supercharged compressor engine horsepower",
+      "note": "\"490 horsepower compressor motor ... Supercharged\".",
+      "expected": [
+        {
+          "videoId": "youtube:cCPsdFdlshc",
+          "startSec": 275,
+          "endSec": 292
+        }
+      ]
+    },
+    {
+      "id": "g55-oil-consumption",
+      "query": "does the G55 burn oil",
+      "note": "\"drinks a quart and a half between oil changes\".",
+      "expected": [
+        {
+          "videoId": "youtube:cCPsdFdlshc",
+          "startSec": 298,
+          "endSec": 315
+        }
+      ]
+    },
+    {
+      "id": "carplay-head-unit",
+      "query": "Apple CarPlay aftermarket head unit",
+      "note": "Head unit upgrade on the 2012 G55.",
+      "expected": [
+        {
+          "videoId": "youtube:cCPsdFdlshc",
+          "startSec": 440,
+          "endSec": 470
+        }
+      ]
+    },
+    {
+      "id": "early-g500-buyer",
+      "query": "who should buy an early G500",
+      "note": "First-time and budget buyers, off-road builds.",
+      "expected": [
+        {
+          "videoId": "youtube:cCPsdFdlshc",
+          "startSec": 497,
+          "endSec": 535
+        }
+      ]
+    },
+    {
+      "id": "m278-engine",
+      "query": "M278 naturally aspirated V8 reliability",
+      "note": "The 2015 G550 engine.",
+      "expected": [
+        {
+          "videoId": "youtube:cCPsdFdlshc",
+          "startSec": 575,
+          "endSec": 628
+        }
+      ]
+    },
+    {
+      "id": "seven-speed",
+      "query": "seven speed automatic transmission",
+      "note": "Move from the 5-speed to the 7-speed.",
+      "expected": [
+        {
+          "videoId": "youtube:cCPsdFdlshc",
+          "startSec": 629,
+          "endSec": 642
+        }
+      ]
+    },
+    {
+      "id": "biturbo-hot-v",
+      "query": "4 liter biturbo hot V engine",
+      "note": "The 2016 to 2018 engine.",
+      "expected": [
+        {
+          "videoId": "youtube:cCPsdFdlshc",
+          "startSec": 797,
+          "endSec": 830
+        }
+      ]
+    },
+    {
+      "id": "g63-power",
+      "query": "G63 horsepower",
+      "note": "\"Powerhouse 560 horsepower 7-speed automatic\".",
+      "expected": [
+        {
+          "videoId": "youtube:cCPsdFdlshc",
+          "startSec": 830,
+          "endSec": 840
+        }
+      ]
+    },
+    {
+      "id": "off-road-build",
+      "query": "best G wagon for an off-road build",
+      "note": "Three places: early G500 builds, the 2013 to 2015 platform, and the cooler layout.",
+      "expected": [
+        {
+          "videoId": "youtube:cCPsdFdlshc",
+          "startSec": 497,
+          "endSec": 535
+        },
+        {
+          "videoId": "youtube:cCPsdFdlshc",
+          "startSec": 863,
+          "endSec": 880
+        },
+        {
+          "videoId": "youtube:cCPsdFdlshc",
+          "startSec": 916,
+          "endSec": 965
+        }
+      ]
+    },
+    {
+      "id": "auxiliary-coolers",
+      "query": "auxiliary coolers and off-road bumpers",
+      "note": "Why the naturally aspirated G550 leaves room for bumpers.",
+      "expected": [
+        {
+          "videoId": "youtube:cCPsdFdlshc",
+          "startSec": 912,
+          "endSec": 965
+        }
+      ]
+    },
+    {
+      "id": "collector-value",
+      "query": "which G wagon will appreciate in value",
+      "note": "Pre-MB USA trucks and future collectors.",
+      "expected": [
+        {
+          "videoId": "youtube:cCPsdFdlshc",
+          "startSec": 1026,
+          "endSec": 1068
+        }
+      ]
+    }
+  ]
+}

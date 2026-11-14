@@ -90,7 +90,9 @@ export async function runCaptionsSuite(sc: SuiteContext, withCleanup: boolean, f
     }
   }
   if (results.some((r) => r.reason === 'no-recorded-auto-captions')) {
-    notes.push('Items without a recorded auto-caption reference were skipped; see docs/evals.md for how references are recorded.');
+    notes.push(
+      'Items without a recorded auto-caption reference were skipped; see docs/evals.md for how references are recorded.',
+    );
   }
   const evaluated = new Set(results.filter((r) => r.outcome === 'ok').map((r) => r.item)).size;
   return {

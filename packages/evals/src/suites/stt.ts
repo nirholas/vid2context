@@ -39,7 +39,8 @@ export async function runSttSuite(sc: SuiteContext, file = 'stt.json'): Promise<
       }
       const got = await audioFor(sc, ref);
       if ('error' in got) {
-        for (const r of rungs) results.push({ ...base, videoId, rung: r.id, tier: r.tier, outcome: 'skipped', reason: 'no-audio', detail: got.error });
+        for (const r of rungs)
+          results.push({ ...base, videoId, rung: r.id, tier: r.tier, outcome: 'skipped', reason: 'no-audio', detail: got.error });
         continue;
       }
       const audioSec = got.audio.durationSec ?? item.durationSec;

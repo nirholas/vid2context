@@ -48,7 +48,8 @@ export function checkThresholds(suite: SuiteName, rows: readonly RungSummary[], 
     const l = limits[row.rung];
     if (!l || row.ok === 0) continue;
     const over = (metric: keyof Limits, limit: number | undefined, actual: number | undefined) => {
-      if (limit !== undefined && actual !== undefined && actual > limit) out.push({ suite, rung: row.rung, metric, limit, actual });
+      if (limit !== undefined && actual !== undefined && actual > limit)
+        out.push({ suite, rung: row.rung, metric, limit, actual });
     };
     over('maxWer', l.maxWer, row.wer);
     over('maxCer', l.maxCer, row.cer);

@@ -12,7 +12,9 @@
  *      "%" becomes "percent" and integers 0 to 9999 are spelled out
  *      ("21" to "twenty one"), so "21" and "twenty-one" agree. Other
  *      languages keep their digits.
- *   5. Every character that is not a letter, digit or combining mark (in any
+ *   5. Apostrophes inside a word are dropped ("it's" to "its", "l'eau" to
+ *      "leau") so possessives and elisions stay one word. Every other
+ *      character that is not a letter, digit or combining mark (in any
  *      script) becomes a space; whitespace collapses.
  *   6. English fillers (um, uh, er, erm, ah, hmm, mm, mhm) are removed unless
  *      `fillers: true`: creator captions usually omit them, speech-to-text
@@ -100,7 +102,10 @@ export function normalizeText(text: string, opts: NormalizeOptions = {}): string
   const english = isEnglish(opts.language);
   let s = text.normalize('NFKC').toLowerCase();
   s = s.replace(/[‘’ʼ`]/g, "'");
-  s = s.replace(/\[[^\]]*\]/g, ' ').replace(/\([^)]*\)/g, ' ').replace(/[♪♫♬]/g, ' ');
+  s = s
+    .replace(/\[[^\]]*\]/g, ' ')
+    .replace(/\([^)]*\)/g, ' ')
+    .replace(/[♪♫♬]/g, ' ');
   s = s.replace(/(^|\n)\s*(>>|-)\s*/g, '$1');
   s = s.replace(/(\d),(?=\d{3}\b)/g, '$1');
   if (english) {
@@ -111,6 +116,7 @@ export function normalizeText(text: string, opts: NormalizeOptions = {}): string
   } else {
     s = s.replace(/(\d)[.  ](?=\d{3}\b)/g, '$1');
   }
+  s = s.replace(/(\p{L})'(?=\p{L})/gu, '$1');
   s = s.replace(/[^\p{L}\p{N}\p{M}]+/gu, ' ').trim();
   if (!s) return '';
   const words = s.split(' ');

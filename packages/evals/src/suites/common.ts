@@ -66,7 +66,10 @@ export async function creatorReference(sc: SuiteContext, item: VideoItem, ref: V
  * first, then others that say they can). Returns null with the reason when
  * no installed source can.
  */
-export async function audioFor(sc: SuiteContext, ref: VideoRef): Promise<{ audio: AudioBytes; source: string } | { error: string }> {
+export async function audioFor(
+  sc: SuiteContext,
+  ref: VideoRef,
+): Promise<{ audio: AudioBytes; source: string } | { error: string }> {
   const cached = readCachedAudio(sc.cacheDir, ref.id);
   if (cached) return { audio: cached, source: cached.source };
   const { source } = sc.registry.resolve(ref.url ?? ref.input);

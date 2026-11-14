@@ -84,7 +84,8 @@ const isStr = (v: unknown): v is string => typeof v === 'string' && v.length > 0
 export function videoItemProblems(v: unknown): string[] {
   const o = (v ?? {}) as Record<string, unknown>;
   const problems: string[] = [];
-  for (const k of ['id', 'url', 'title', 'channel', 'language', 'why', 'license']) if (!isStr(o[k])) problems.push(`${k} missing`);
+  for (const k of ['id', 'url', 'title', 'channel', 'language', 'why', 'license'])
+    if (!isStr(o[k])) problems.push(`${k} missing`);
   if (typeof o.durationSec !== 'number' || o.durationSec <= 0) problems.push('durationSec must be a positive number');
   if (!Array.isArray(o.tags)) problems.push('tags must be an array');
   if (o.reference !== 'creator-captions') problems.push('reference must be "creator-captions"');

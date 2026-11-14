@@ -32,7 +32,12 @@ export function refFileName(videoId: string, origin: TranscriptOrigin, language:
 }
 
 /** First match among the directories, in order. Language matches on the primary subtag when no exact file exists. */
-export function findRef(dirs: readonly string[], videoId: string, origin: TranscriptOrigin, language: string): RecordedRef | null {
+export function findRef(
+  dirs: readonly string[],
+  videoId: string,
+  origin: TranscriptOrigin,
+  language: string,
+): RecordedRef | null {
   const names = [refFileName(videoId, origin, language), refFileName(videoId, origin, language.split('-')[0] ?? language)];
   for (const dir of dirs) {
     for (const name of names) {
