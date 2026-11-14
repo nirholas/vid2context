@@ -94,13 +94,13 @@ export function checkInput(input: string, env: Env): Vid2ContextError | undefine
     return check.ok ? undefined : refuse(`Refused URL: ${check.reason}.`, URL_HINT);
   }
   if (scheme && DANGEROUS_SCHEMES.has(scheme)) return refuse(`${scheme}: inputs are not accepted here.`, URL_HINT);
+  if (MEDIA_EXT.test(s) && !/[/?#]/.test(s)) {
+    return refuse(`"${s.slice(0, 80)}" looks like a local file name; local files are not accepted here.`, PATH_HINT);
+  }
   const hostUrl = schemelessHostUrl(s);
   if (hostUrl) {
     const check = checkUrlSync(hostUrl);
     return check.ok ? undefined : refuse(`Refused URL: ${check.reason}.`, URL_HINT);
-  }
-  if (MEDIA_EXT.test(s) && !s.includes('/')) {
-    return refuse(`"${s.slice(0, 80)}" looks like a local file name; local files are not accepted here.`, PATH_HINT);
   }
   if (/[/\\]/.test(s)) return refuse(`"${s.slice(0, 80)}" looks like a local file path.`, PATH_HINT);
   return undefined;

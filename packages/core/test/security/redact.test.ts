@@ -7,12 +7,12 @@
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
+import llm from '../../../../providers/llm-openai-compatible/src/index.ts';
 import { runChain } from '../../src/chain.ts';
 import { chat } from '../../src/pipeline.ts';
 import { Registry } from '../../src/registry.ts';
 import { REDACTED, redact } from '../../src/security/index.ts';
 import { testContext } from '../../src/testing.ts';
-import llm from '../../../../providers/llm-openai-compatible/src/index.ts';
 
 const fill = (n: number, c = 'x') => c.repeat(n);
 const SAMPLES: Record<string, string> = {

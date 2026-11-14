@@ -1,5 +1,5 @@
-import { readFileSync } from 'node:fs';
 import { lookup } from 'node:dns/promises';
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { blockedAddress, checkUrl, checkUrlSync, parseIPv4, parseIPv6 } from '../../src/security/index.ts';
 
