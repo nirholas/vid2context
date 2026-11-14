@@ -37,11 +37,12 @@ export function poTokenFromUrl(raw: string, videoId: string): PoToken | null {
   return { pot, ...(c ? { c } : {}), ...(cver ? { cver } : {}) };
 }
 
-/** The track URL with a format and, when given, the player's token. */
-export function trackUrl(baseUrl: string, opts: { fmt?: 'srv3'; po?: PoToken | null }): string {
+/** The track URL with a format and, when given, the player's token and a machine translation target (`tlang`). */
+export function trackUrl(baseUrl: string, opts: { fmt?: 'srv3'; po?: PoToken | null; tlang?: string }): string {
   const u = new URL(baseUrl, 'https://www.youtube.com');
   if (opts.fmt) u.searchParams.set('fmt', opts.fmt);
   else u.searchParams.delete('fmt');
+  if (opts.tlang) u.searchParams.set('tlang', opts.tlang);
   if (opts.po) {
     u.searchParams.set('pot', opts.po.pot);
     u.searchParams.set('potc', '1');
@@ -56,6 +57,8 @@ export interface CaptionDeps {
   /** Ask the page for the player's token. Called only when the plain URL comes back empty. */
   getPoToken: () => Promise<PoToken | null>;
   signal?: AbortSignal;
+  /** YouTube's machine translation target, from the track choice's `translateTo`. */
+  translateTo?: string;
 }
 
 export interface CaptionResult {
@@ -80,16 +83,17 @@ async function download(url: string, label: string, deps: CaptionDeps): Promise<
 }
 
 export async function fetchCaptionSegments(track: CaptionTrack, deps: CaptionDeps): Promise<CaptionResult> {
-  const label = `YouTube captions (${track.languageCode})`;
-  const plain = await download(trackUrl(track.baseUrl, { fmt: 'srv3' }), label, deps);
+  const tlang = deps.translateTo;
+  const label = `YouTube captions (${track.languageCode}${tlang ? ` to ${tlang}` : ''})`;
+  const plain = await download(trackUrl(track.baseUrl, { fmt: 'srv3', tlang }), label, deps);
   if (plain.length) return { segments: plain, usedPoToken: false };
 
   const po = await deps.getPoToken();
   if (po) {
-    const srv3 = await download(trackUrl(track.baseUrl, { fmt: 'srv3', po }), label, deps);
+    const srv3 = await download(trackUrl(track.baseUrl, { fmt: 'srv3', po, tlang }), label, deps);
     if (srv3.length) return { segments: srv3, usedPoToken: true };
   }
-  const srv1 = await download(trackUrl(track.baseUrl, { po }), label, deps);
+  const srv1 = await download(trackUrl(track.baseUrl, { po, tlang }), label, deps);
   if (srv1.length) return { segments: srv1, usedPoToken: !!po };
 
   throw new Vid2ContextError('no-transcript', `${label}: YouTube returned an empty caption track.`, {

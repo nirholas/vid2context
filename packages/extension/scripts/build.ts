@@ -2,9 +2,10 @@
  * Build the extension for Chrome/Edge and Firefox.
  *
  * 1. Popup and options pages: one Vite build (React, Tailwind) with two HTML entries.
- * 2. Background, content script and main-world page script: one self-contained
- *    IIFE each (content scripts cannot be ES modules, and one format for the
- *    background keeps Chrome's service worker and Firefox's event page alike).
+ * 2. Background, content script, main-world page script and web app bridge
+ *    script: one self-contained IIFE each (content scripts cannot be ES
+ *    modules, and one format for the background keeps Chrome's service worker
+ *    and Firefox's event page alike).
  * 3. Icons rasterized from the project logo.
  * 4. The shared output is copied to dist/chrome and dist/firefox, each with
  *    its own manifest from src/manifest.ts.
@@ -79,6 +80,7 @@ await buildPages();
 await buildScript('background', 'background/index.ts');
 await buildScript('content', 'content/index.ts');
 await buildScript('page', 'page/index.ts');
+await buildScript('bridge', 'bridge/index.ts');
 writeIcons();
 emit('chrome');
 emit('firefox');

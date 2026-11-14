@@ -132,6 +132,8 @@ export function describeOrigin(t: Transcript): string {
       return `speech-to-text by ${by}`;
     case 'video-model':
       return `transcribed by video model ${by}`;
+    case 'imported':
+      return `imported transcript (${by})`;
   }
 }
 

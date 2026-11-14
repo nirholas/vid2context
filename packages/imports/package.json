@@ -1,0 +1,16 @@
+{
+  "name": "@vid2context/imports",
+  "version": "0.1.0",
+  "description": "Transcript import for vid2context: turn pasted text, a subtitle file (WebVTT, SRT, YouTube timedtext, the YouTube \"Show transcript\" copy) or segments from the browser extension into a VideoContext. Runtime-neutral, so the web app runs it too.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./http": "./src/http.ts"
+  },
+  "dependencies": {
+    "@vid2context/core": "*",
+    "@vid2context/provider-youtube": "*",
+    "hono": "^4.13.18"
+  }
+}

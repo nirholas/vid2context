@@ -4,6 +4,7 @@
  * extension reads. The same object is what `movie_player.getPlayerResponse()`
  * returns after single-page navigation.
  */
+import { Vid2ContextError } from '@vid2context/core';
 import type { chooseTrack } from '@vid2context/provider-youtube';
 
 /** A caption track as the player response lists it; the shape the provider's `chooseTrack` takes. */
@@ -82,4 +83,29 @@ export function captionTracks(player: WatchPlayerResponse): CaptionTrack[] {
 
 export function defaultTrackIndex(player: WatchPlayerResponse): number | undefined {
   return player.captions?.playerCaptionsTracklistRenderer?.audioTracks?.[0]?.defaultCaptionTrackIndex;
+}
+
+/**
+ * A player response that refuses to play and carries no videoDetails, such as
+ * YouTube's "Sign in to confirm you're not a bot" wall, or null. Such a
+ * response has no video id, so extractPlayerResponse(html, videoId) skips it.
+ */
+export function playabilityWall(source: string): WatchPlayerResponse | null {
+  const p = extractPlayerResponse(source);
+  const status = p?.playabilityStatus?.status;
+  return p && !p.videoDetails && status && status !== 'OK' ? p : null;
+}
+
+/** The error to show for a playability wall. */
+export function wallError(wall: WatchPlayerResponse, videoId: string): Vid2ContextError {
+  const status = wall.playabilityStatus?.status ?? 'UNPLAYABLE';
+  const reason = (wall.playabilityStatus?.reason ?? '').replace(/\u2019/g, "'");
+  if (/not a bot/i.test(reason)) {
+    return new Vid2ContextError('blocked', `YouTube asks this browser to sign in to confirm it is not a bot (${videoId}).`, {
+      hint: 'Sign in to YouTube in this browser, or wait a while and try again.',
+    });
+  }
+  return new Vid2ContextError('unavailable', `YouTube will not play ${videoId} here (${status}${reason ? `: ${reason}` : ''}).`, {
+    hint: 'Open the video on YouTube to see why, sign in if it asks, then try again.',
+  });
 }

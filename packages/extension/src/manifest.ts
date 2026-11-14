@@ -6,7 +6,24 @@
 export type TargetBrowser = 'chrome' | 'firefox';
 
 export const YOUTUBE_MATCHES = ['https://www.youtube.com/*', 'https://m.youtube.com/*'];
-export const PERMISSIONS = ['activeTab', 'contextMenus', 'storage', 'scripting'];
+/**
+ * Where the web app bridge (bridge.js) runs: the hosted web app and local
+ * development servers (match patterns ignore ports). Self-hosted origins are
+ * added from the options page. See docs/contracts/transcript-import.md.
+ */
+export const WEB_APP_MATCHES = [
+  'https://vid2context.com/*',
+  'https://*.vid2context.com/*',
+  'http://localhost/*',
+  'http://127.0.0.1/*',
+];
+/**
+ * declarativeNetRequestWithHostAccess: restores `Origin: https://www.youtube.com`
+ * on the background's own YouTube requests, which innertube refuses with an
+ * extension origin (src/background/youtube-origin.ts). No install warning;
+ * it acts only on hosts the extension already has.
+ */
+export const PERMISSIONS = ['activeTab', 'contextMenus', 'storage', 'scripting', 'declarativeNetRequestWithHostAccess'];
 /** Requested only when "Copy transcript (via API)" first needs the API's host. */
 export const OPTIONAL_HOSTS = ['https://*/*', 'http://*/*'];
 export const GECKO_ID = 'extension@vid2context.com';
@@ -39,6 +56,8 @@ export function manifestFor({ browser, version }: ManifestInput): Record<string,
       // Main world first, at document_start, so it sees the player's earliest caption request.
       { matches: [...YOUTUBE_MATCHES], js: ['page.js'], run_at: 'document_start', world: 'MAIN' },
       { matches: [...YOUTUBE_MATCHES], js: ['content.js'], run_at: 'document_idle' },
+      // The web app bridge: ping/pong and transcript requests over window.postMessage.
+      { matches: [...WEB_APP_MATCHES], js: ['bridge.js'], run_at: 'document_idle' },
     ],
     content_security_policy: { extension_pages: "script-src 'self'; object-src 'self'" },
   };

@@ -1,8 +1,17 @@
-import { Check, RotateCcw, ShieldCheck } from 'lucide-react';
-import { type ReactNode, useEffect, useMemo, useState } from 'react';
+import { Check, Plus, RotateCcw, ShieldCheck, Trash2 } from 'lucide-react';
+import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  addOrigin,
+  BRIDGE_ORIGINS_KEY,
+  loadBridgeOrigins,
+  parseOriginInput,
+  removeOrigin,
+  saveBridgeOrigins,
+} from '../lib/bridge-origins.ts';
 import { ext } from '../lib/browser.ts';
 import { originPattern } from '../lib/links.ts';
 import { cleanBase, DEFAULT_SETTINGS, loadSettings, type Settings, saveSettings } from '../lib/settings.ts';
+import { WEB_APP_MATCHES } from '../manifest.ts';
 import { Button } from '../ui/Button.tsx';
 import { Logo } from '../ui/Logo.tsx';
 import { copyFormats } from '../youtube/copy.ts';
@@ -115,6 +124,8 @@ export function Options() {
         </Field>
       </Section>
 
+      <WebAppOrigins apiBase={cleanBase(saved.apiBase)} />
+
       <Section title="Copy for AI">
         <Field
           id="copy-format"
@@ -173,6 +184,121 @@ export function Options() {
         )}
       </div>
     </main>
+  );
+}
+
+/** Web app origins for the bridge ("Get it from my browser"): the built-in ones, plus self-hosted ones the user adds. */
+function WebAppOrigins({ apiBase }: { apiBase: string | null }) {
+  const [origins, setOrigins] = useState<string[]>([]);
+  const [allowed, setAllowed] = useState<Record<string, boolean>>({});
+  const [input, setInput] = useState('');
+  const [error, setError] = useState<string | null>(null);
+
+  const refresh = useCallback(async () => {
+    const list = await loadBridgeOrigins(ext.storage.local);
+    const status: Record<string, boolean> = {};
+    for (const o of list) status[o] = await ext.permissions.contains({ origins: [originPattern(o)] });
+    setOrigins(list);
+    setAllowed(status);
+  }, []);
+
+  useEffect(() => {
+    void refresh();
+    const onChange = (changes: Record<string, unknown>, area: string) => {
+      if (area === 'local' && BRIDGE_ORIGINS_KEY in changes) void refresh();
+    };
+    ext.storage.onChanged.addListener(onChange);
+    return () => ext.storage.onChanged.removeListener(onChange);
+  }, [refresh]);
+
+  const store = async (origin: string) => {
+    const { list, added } = addOrigin(origins, origin);
+    if (added) await saveBridgeOrigins(ext.storage.local, list);
+    setInput('');
+    await refresh();
+  };
+
+  const add = () => {
+    setError(null);
+    const parsed = parseOriginInput(input);
+    if (!parsed.ok) return setError(parsed.message);
+    const taken = origins.find((o) => originPattern(o) === parsed.pattern);
+    if (taken && allowed[taken]) return setError(`${taken} is already connected (ports are ignored).`);
+    // Called straight from the click so the browser shows its permission prompt.
+    void ext.permissions.request({ origins: [parsed.pattern] }).then(
+      (granted) => (granted ? store(parsed.origin) : setError(`Permission for ${parsed.origin} was not granted.`)),
+      (err: unknown) => setError(String(err)),
+    );
+  };
+
+  const allow = (origin: string) => {
+    void ext.permissions.request({ origins: [originPattern(origin)] }).then(() => refresh());
+  };
+
+  const remove = async (origin: string) => {
+    await saveBridgeOrigins(ext.storage.local, removeOrigin(origins, origin));
+    const pattern = originPattern(origin);
+    // Keep the permission when "Copy transcript (via API)" still needs the same host.
+    if (!apiBase || originPattern(apiBase) !== pattern) await ext.permissions.remove({ origins: [pattern] }).catch(() => false);
+    await refresh();
+  };
+
+  return (
+    <Section title="Web app connection">
+      <p className="text-sm text-muted">
+        When the vid2context server cannot read a YouTube video's captions (YouTube blocks many cloud servers), the web app can
+        ask this extension to fetch them from your browser, on your own internet connection. The extension answers on these sites:
+      </p>
+      <ul className="flex flex-col gap-1 font-mono text-[13px]">
+        {WEB_APP_MATCHES.map((m) => (
+          <li key={m} className="text-muted">
+            {m}
+          </li>
+        ))}
+        {origins.map((o) => (
+          <li key={o} className="flex items-center gap-3">
+            <span>{originPattern(o)}</span>
+            {allowed[o] ? (
+              <span className="flex items-center gap-1.5 font-sans text-sm text-success">
+                <ShieldCheck size={16} /> Connected
+              </span>
+            ) : (
+              <Button onClick={() => allow(o)}>Allow</Button>
+            )}
+            <Button variant="ghost" onClick={() => void remove(o)} icon={<Trash2 size={16} />}>
+              Remove
+            </Button>
+          </li>
+        ))}
+      </ul>
+      <Field
+        id="bridge-origin"
+        label="Add your own web app"
+        hint="For a self-hosted vid2context, for example https://v2c.example.org. Reload its tabs after adding it."
+        error={error ?? undefined}
+      >
+        <div className="flex gap-2">
+          <input
+            type="url"
+            className={INPUT}
+            id="bridge-origin"
+            value={input}
+            placeholder="https://v2c.example.org"
+            onChange={(e) => {
+              setError(null);
+              setInput(e.target.value);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') add();
+            }}
+            spellCheck={false}
+          />
+          <Button onClick={add} icon={<Plus size={16} />}>
+            Add
+          </Button>
+        </div>
+      </Field>
+    </Section>
   );
 }
 

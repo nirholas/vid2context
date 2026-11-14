@@ -19,12 +19,12 @@ describe.each([
   });
 
   it('asks for exactly the listed permissions', () => {
-    expect(m.permissions).toEqual(['activeTab', 'contextMenus', 'storage', 'scripting']);
+    expect(m.permissions).toEqual(['activeTab', 'contextMenus', 'storage', 'scripting', 'declarativeNetRequestWithHostAccess']);
     expect(m.host_permissions).toEqual(['https://www.youtube.com/*', 'https://m.youtube.com/*']);
     expect(m.optional_host_permissions).toEqual(['https://*/*', 'http://*/*']);
   });
 
-  it('runs the page script in the main world before the content script', () => {
+  it('runs the page script in the main world before the content script, and the bridge on the web app', () => {
     expect(m.content_scripts).toEqual([
       {
         matches: ['https://www.youtube.com/*', 'https://m.youtube.com/*'],
@@ -33,6 +33,11 @@ describe.each([
         world: 'MAIN',
       },
       { matches: ['https://www.youtube.com/*', 'https://m.youtube.com/*'], js: ['content.js'], run_at: 'document_idle' },
+      {
+        matches: ['https://vid2context.com/*', 'https://*.vid2context.com/*', 'http://localhost/*', 'http://127.0.0.1/*'],
+        js: ['bridge.js'],
+        run_at: 'document_idle',
+      },
     ]);
   });
 

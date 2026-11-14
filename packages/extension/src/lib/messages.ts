@@ -1,4 +1,5 @@
 /** Messages between the popup, the service worker and the YouTube content script. */
+import type { BridgeMetadata, BridgeTranscript } from './bridge-protocol.ts';
 import type { HistoryAction } from './history.ts';
 
 /** Popup or service worker to the YouTube content script. */
@@ -8,7 +9,14 @@ export type ContentRequest =
   /** Build the bundle and start the download in the page. */
   | { type: 'v2c:download-zip' }
   /** What the page offers right now. */
-  | { type: 'v2c:status' };
+  | { type: 'v2c:status' }
+  /** From the web app bridge (background, YouTube tab fallback): read this video's captions in the page. */
+  | { type: 'v2c:bridge-transcript'; videoId: string; language?: string };
+
+/** The YouTube content script's answer to `v2c:bridge-transcript`. `code` is a vid2context ErrorCode. */
+export type BridgeTabResponse =
+  | { ok: true; transcript: BridgeTranscript; metadata?: BridgeMetadata }
+  | { ok: false; code: string; message: string; hint?: string };
 
 export type ContentResponse =
   | { ok: true; text?: string; via?: string; title?: string; hasCaptions?: boolean; videoId?: string }

@@ -1,0 +1,579 @@
+Chapter 1: Course introduction
+0:000 seconds[SQUEAKING] [RUSTLING] [CLICKING]
+0:044 seconds
+0:1616 secondsANA BELL: All right, so welcome to the first lecture of 6.100L. That's our new number. My name is Ana Bell.
+0:2424 secondsThat's two separate names, first name Ana, last name Bell-- super confusing.
+0:2828 secondsBut I've been a lecturer here in the EECS Department for probably almost 10 years now. And I've been doing the intro course for a while.
+0:3636 secondsI'm really happy to be teaching this full semester version of 6.100A.
+0:4141 secondsSo today what we're going to do is go over a little bit of course administrative information, and then we'll dive right into some thoughts about computers, high level how they work.
+0:5353 secondsAnd then we'll start going into some Python basics. So we're going to get coding right away.
+0:5959 secondsSo I highly encourage you, since you're in this class, to download the lecture slides beforehand, to take notes, and run code when I do.
+Chapter 2: Succeeding in the course
+1:081 minute, 8 secondsSome of the lectures are interactive.
+1:101 minute, 10 secondsAnd we'll have breaks, so there'll be a place where you can take a break to actually do some coding.
+1:161 minute, 16 secondsAnd that's important-- I call them "you try it" breaks.
+1:191 minute, 19 secondsThat's important to make sure that you're actually practicing what we are learning right at this time.
+1:241 minute, 24 secondsThe main idea for lectures is, yes, I will do some teaching, but there will also be opportunities for questions and for you guys to try some programming right on the spot.
+1:351 minute, 35 secondsEven if you don't finish writing a program that we start talking about, I will finish it, and we can all talk about it together.
+1:411 minute, 41 secondsAnd I'll show you some pitfalls and things like that.
+1:461 minute, 46 secondsThere will be lots of opportunities to practice in this class at various degrees of granularity.
+1:521 minute, 52 secondsAnd then there's also lots of opportunities that I have in the handouts to do extra practice at home and through a bunch of different resources as well.
+Chapter 3: Key learning objectives
+2:022 minutes, 2 secondsThe reason why I stress participation and practice is because part of the reason you're here is you want to learn how to program.
+2:102 minutes, 10 secondsYou don't know how to program yet. And programming is actually a skill. it's like math or reading. It's something that you have to practice.
+2:182 minutes, 18 secondsYou can't just watch me type in a bunch of lines of code And then when it comes time to do the quiz, you automatically know how to do it.
+2:252 minutes, 25 secondsYou need to do it often, more and more so that it becomes sort of second nature.
+Chapter 4: Course topics overview
+2:322 minutes, 32 secondsSo the three big things you'll get out of this class are knowledge of concepts, obviously-- we're going to learn some computer science ideas--
+2:392 minutes, 39 secondsprogramming skill, and problem solving-- problem solving skills.
+2:452 minutes, 45 secondsLectures and exams basically help you with your knowledge of-- test your knowledge of concepts and help you get knowledge of concepts.
+2:522 minutes, 52 secondsFinger exercises give you the programming skills. And the problem sets help you with problem solving.
+2:592 minutes, 59 secondsBasically, if you're given an English version of-- a problem in English, how do you go from that to thinking about what computer science concepts can I apply?
+3:103 minutes, 10 secondsAnd then after that, how do I take those computer science concepts and actually do the programming?
+3:173 minutes, 17 secondsSo what are some topics we'll be covering?
+3:203 minutes, 20 secondsWe will be, at the core of it, learning computational thinking.
+3:243 minutes, 24 secondsSo in the future, when you encounter a problem, your first thought shouldn't be, How do I mathematically
+3:313 minutes, 31 secondssolve this? or, How do I brute force or manually solve this problem? How can I apply computation to help me solve this problem?
+3:393 minutes, 39 secondsAnd throughout these lectures, you're going to see some examples of us applying computation to a problem you might have already seen and maybe solved mathematically, which is pretty cool.
+3:513 minutes, 51 secondsObviously, to get that, we're going to learn the Python programming language.
+3:543 minutes, 54 secondsOnce we get the basics, we're going to see how we can start to structure our code to look a little bit better so we don't just have a bunch of code dumped in a file.
+4:044 minutes, 4 secondsWe're going to start to organize our code and see how we can make it neat, readable, and modular.
+4:114 minutes, 11 secondsAnd then towards the-- not in this lecture but in a couple of lectures and as a theme throughout this class, we're going to look at some algorithms.
+4:204 minutes, 20 secondsThey're not super complicated, but they're kind of the base algorithms for a bunch of algorithms you might see in the future if you decide to take more CS classes.
+4:304 minutes, 30 secondsLastly, towards the end of the class, we're going to see algorithmic complexity, which basically means we're going to start asking or trying to answer
+4:374 minutes, 37 secondsthe question, how do we know the programs we write are efficient?
+4:424 minutes, 42 secondsWe can write programs, but how do we know that they're fast, and how do we know that they don't take up all the memory in the computer?
+4:484 minutes, 48 secondsSo things like that, comparing different algorithms that do the same thing against each other.
+4:554 minutes, 55 secondsSo if there's no questions-- again, as I said, a bunch of this information is already in the handout plus more-- we can begin.
+Chapter 5: Declarative vs imperative
+5:055 minutes, 5 secondsOK, so let's start by talking about knowledge.
+5:115 minutes, 11 secondsDeclarative knowledge is a statement of fact, and a lot of us probably in math and in the past have worked with declarative knowledge.
+5:195 minutes, 19 secondsBut this is not how computer science, this is not how this class works.
+5:235 minutes, 23 secondsIn computer science what we do is we work with imperative knowledge, which is basically a recipe, how to do something.
+5:305 minutes, 30 secondsAnd when we're programming, all we're doing is writing a recipe for the computer to do something. That's it.
+5:375 minutes, 37 secondsSo here's a numerical example. The first statement is a declarative statement.
+5:445 minutes, 44 secondsThe square root of a number x is y such that y times y is equal to x.
+5:475 minutes, 47 secondsThere are many possible values for x and y that this statement can be true, right?
+5:535 minutes, 53 secondsBut if we gave that statement to a computer, it wouldn't know what to do with it.
+5:575 minutes, 57 secondsWhat we need to do is tell the computer how to find the square root of a number and then tell us what the square root of that number is.
+6:066 minutes, 6 secondsAnd so the computer then needs a recipe.
+6:096 minutes, 9 secondsSo the recipe, a really simple one for finding the square root of a number, is steps one, two, three.
+6:156 minutes, 15 secondsSo what we do is-- let's say we want to find the square root of 16. We obviously know it's four, but the computer doesn't.
+6:236 minutes, 23 secondsAnd so we give it an initial guess. Let's say the guess is three. How do we go from there?
+6:296 minutes, 29 secondsSo the steps we follow-- step one, if 3 times 3, 9, is close enough to 16, we can stop.
+6:376 minutes, 37 secondsIt's not really close enough for me. So let's keep going.
+6:416 minutes, 41 secondsStep two-- otherwise, we're going to make a new guess by averaging g, which is our original guess, 3, and x over g, which is 16 over 3.
+6:526 minutes, 52 seconds16 was the square root we wanted to find. So our next guess is 4.17.
+6:586 minutes, 58 secondsOK, using the new guess, repeat the process until we are close enough. So we go back to step one. That's the first part of the process.
+7:057 minutes, 5 secondsWe find guess squared. 4.17 squared is 17.36. So now we say, is that close enough?
+7:137 minutes, 13 secondsNot really. It's not. It's 17. It's not really even close to 16. So let's do it again.
+7:197 minutes, 19 secondsWe make a new guess by averaging 4.17 and 16 divided by 4.17.
+7:267 minutes, 26 secondsThat gives us our new guess, 4.0035. OK, next step, using the new guess, we repeat the process.
+7:347 minutes, 34 secondsSo 4.0035 squared is 16.277-- .0277. Is that close enough to x?
+7:427 minutes, 42 secondsYeah, I could be happy with this. I could stop there because we're within sort of plus/minus 1. So I'm OK with that.
+7:497 minutes, 49 secondsBut if we want it to be within plus or minus 1 times 10 to the negative 6 or 7 or something like that, then we would continue the process.
+7:587 minutes, 58 secondsSo really what we had there is an algorithm.
+8:018 minutes, 1 secondIt's a sequence of steps-- step one, step two, step three. There's some sort of flow of control.
+8:078 minutes, 7 secondsWe had a place where we said if the guess is close enough, then we can stop. Otherwise, we do something else.
+8:158 minutes, 15 secondsWe had another flow of control where we said repeat this thing.
+8:198 minutes, 19 secondsSo we're kind of not going linearly, but we're changing the flow. And then lastly is a way to stop. We don't want the algorithm to go on forever.
+8:278 minutes, 27 secondsWe would like to stop at some point. And this stopping point, I was kind of vague about it.
+8:328 minutes, 32 secondsBut it could be when we were within plus or minus 1 of the actual answer.
+8:398 minutes, 39 secondsAnd so recipes are basically algorithms, right?
+Chapter 6: Recipes and algorithms
+8:448 minutes, 44 secondsMy grandmother was basically teaching algorithms when she would teach me to bake a cake.
+8:528 minutes, 52 secondsShe didn't call it that, but she was really. And so even recipes have that same structure. There's a sequence of steps.
+8:598 minutes, 59 secondsThere's a flow of control. Like, if you don't have egg, use egg substitute.
+9:039 minutes, 3 secondsOr repeat sticking a toothpick to see if it comes out clean every minute or something like that. And then there's a way to stop.
+9:129 minutes, 12 secondsWhen the toothpick comes out clean, you take it out of the oven, and you eat it. And so computers are machines that execute these algorithms.
+9:199 minutes, 19 secondsThey're actually dumb. Computers are not very smart. They don't make decisions on their own.
+9:269 minutes, 26 secondsThey just follow these sequences of steps that we told them to do. Computers are good at storing lots and lots of data.
+Chapter 7: How computers work
+9:359 minutes, 35 secondsWe can't really do that, but computers can store gigabytes of storage, terabytes even.
+9:409 minutes, 40 secondsAnd computers can do operations really, really quickly, which is something we can't do.
+9:449 minutes, 44 secondsThey're good at those two things, but they're not very smart.
+9:479 minutes, 47 secondsThey can't make decisions unless they're told to make the decisions.
+9:549 minutes, 54 secondsSo really, the computer only does what you tell it to do.
+9:599 minutes, 59 secondsAnd that's one of the big ideas that I want you to come away from this lecture with. Computer only does what you tell it to do.
+10:0710 minutes, 7 secondsThe sequences of steps that you tell it to do, that's the only thing it follows.
+10:1210 minutes, 12 secondsSo a little brief history just to make you appreciate programming, Python programming language before we actually get
+10:1910 minutes, 19 secondsstarted with it is-- so before the 1940s, we had these things called fixed program computers.
+Chapter 8: History of computers
+10:2710 minutes, 27 secondsA pocket calculator as an example of that. Every button was an operation.
+10:3310 minutes, 33 secondsIn the little screen, you could use parentheses to put a bunch of different operations together, but there was no way to store all these operations together
+10:4110 minutes, 41 secondsto later put in different inputs for that same sequence of operations.
+10:4610 minutes, 46 secondsYou had to input it every single-- input those sequences of operations every single time.
+10:5210 minutes, 52 secondsAfter the 1940s, stored programs computers came into play.
+10:5710 minutes, 57 secondsAnd they were able to store instructions to do things as data.
+11:0611 minutes, 6 secondsAnd there was a special program called an interpreter that executed these instructions. It knew how to follow simple sequences of steps.
+11:1411 minutes, 14 secondsWhen the program told it to go to a different location, it did. So it was basically executing these instructions.
+11:2311 minutes, 23 secondsAnd the instructions that it did were arithmetic and logical, so addition, subtraction, things like that;
+11:3011 minutes, 30 secondssimple tests like checking for equality between two values; and moving data, so taking this value and putting it at a different memory location.
+11:3911 minutes, 39 secondsSo I just wanted to give you a really brief overview, and this is not super accurate, but it gives you a sense of how exactly things happen low level in the computer.
+Chapter 9: Computer architecture
+11:5011 minutes, 50 secondsSo the computer basically has memory, where things are stored. It has an arithmetic logic unit that does operations.
+11:5711 minutes, 57 secondsIt knows how to add things, subtract things, multiply things, compare things.
+12:0112 minutes, 1 secondAnd then it has the control unit, where this program counter is set. And this is where you put a program in. So let's see if this works.
+12:1012 minutes, 10 secondsThis is a program. And up here is our memory. So we have a bunch of memory locations, 3456, 3457.
+12:1812 minutes, 18 secondsAnd at each of these memory locations, we have some values stored, prefilled.
+12:2412 minutes, 24 secondsSo when we first run this program, what ends up happening is that the interpreter sees the first instruction, Add, the values at 3456 and 3457 together.
+12:3512 minutes, 35 secondsSo it goes to these memory locations here, grabs the 3 and the 4, and sends them to the Arithmetic Logic Unit. The ALU knows how to do the addition.
+12:4412 minutes, 44 secondsSo it adds 3 plus 4, 7, and sends the result back here. Now, we never told it to store that result anywhere.
+12:5212 minutes, 52 secondsBut the next instruction says Store the value you just got back from the ALU at this memory location, 3458.
+12:5912 minutes, 59 secondsSo the next step basically takes that 7 and stores it at memory location 3458.
+13:0813 minutes, 8 secondsSuper tedious-- all we did was add 3 plus 4. We do that again. We add the values at 7889 and 7890.
+13:1813 minutes, 18 secondsSo it goes in the memory. It grabs the 5 and the 2, sends it to the ALU.
+13:2313 minutes, 23 secondsThe ALU calculates it as 7, brings it back, and then we store that in location 7891.
+13:3213 minutes, 32 secondsAnd then after that, all we've done is two additions.
+13:3413 minutes, 34 secondsAnd then the next instruction says Compare the values at memory locations 3458 and 7891.
+13:4113 minutes, 41 secondsSo we're going to compare the 7 with the 7.
+13:4513 minutes, 45 secondsThe ALU again does this comparison and says, all right, well, 7 and 7 are equivalent.
+13:5113 minutes, 51 secondsSo this is true or whatever it wants to give back to the interpreter.
+13:5613 minutes, 56 secondsAnd then the last instruction here we have is Print the result of that comparison. So we print True because they were equal.
+14:0414 minutes, 4 secondsAgain, super high level, but it kind of gives you an appreciation for programming languages these days.
+14:1014 minutes, 10 secondsThis is very tedious to write if we had to write programs in this manner.
+14:1614 minutes, 16 secondsAlan Turing a long time ago showed that you can compute anything with actually an even more basic set of primitives, not addition, subtraction.
+Chapter 10: Programming languages
+14:2314 minutes, 23 secondsBut instead, with a tape, you would actually have six primitives-- move the tape left, move the tape right,
+14:2914 minutes, 29 secondsread the value at the tape, put a value on the tape, erase the value from the tape, and no operation.
+14:3814 minutes, 38 secondsAnd so since he showed this what the result of it actually was is down here.
+14:4614 minutes, 46 secondsAnything computable in one language is computable in any other programming language.
+14:5014 minutes, 50 secondsSo if we had some program written in Java, that basically boils down to something super long but something that is made up of these six primitives.
+15:0215 minutes, 2 secondsThat means that if we boil down this program to these six primitives, we can build back up the same program in a completely different language.
+15:1015 minutes, 10 secondsAnd that's really powerful. That's a really cool statement. Now, we're not going to be working with those primitives.
+15:1715 minutes, 17 secondsWe're going to be using the Python primitives, which are more convenient, and they allow us to do a lot more things in much less time.
+15:2615 minutes, 26 secondsI'm going to do a little comparison as we talk about the primitives of Python with English.
+15:3215 minutes, 32 secondsSo in English, some of the primitives might be words or even we can do letters or characters. But we can say it's words.
+15:4115 minutes, 41 secondsWith characters, we can build up words. With words, we can build up sentences. With sentences, we can build up stories. With stories, we can build up books and things like that.
+Chapter 11: Language syntax and semantics
+15:5015 minutes, 50 secondsIn programming languages, the primitives are numbers, sequences of characters, operators
+15:5815 minutes, 58 secondslike addition, multiplication, division, checking for equality, checking that something is greater than, things like that.
+16:0916 minutes, 9 secondsSo once we have these primitives in a language, we can start to build up the syntax of the language.
+16:1516 minutes, 15 secondsSo in English, having something like noun and noun and noun doesn't make any sense. Cat dog boy doesn't make much sense.
+16:2316 minutes, 23 secondsIt's not syntactically valid. But noun verb noun is syntactically valid.
+16:3116 minutes, 31 secondsSimilarly, in programming languages, we can have two objects kind of side by side.
+16:3716 minutes, 37 secondsSo here, this is a sequence of characters h and i.
+16:4116 minutes, 41 secondsAnd this is the number 5 right beside that sequence of characters. But that doesn't make any sense, right?
+16:4716 minutes, 47 secondsWhat does it mean to have this sequence of characters and that number right beside it? It has no meaning in Python.
+16:5216 minutes, 52 secondsInstead, what we have to do is we have to add an operator in between these two objects.
+16:5716 minutes, 57 secondsSo here we add a little star operator in between the sequence of characters "hi" and the number 5.
+17:0217 minutes, 2 secondsAnd in Python, the meaning to this is I want to repeat the sequence of characters "hi," h-i, five times.
+17:0917 minutes, 9 secondsSo this would basically give me hi, hi, hi, hi, hi.
+17:1317 minutes, 13 secondsSo once we have sentences in English and expressions that are syntactically valid, we can now talk about the static semantics of the language.
+17:2417 minutes, 24 secondsSo in English, saying something like "I are hungry" is syntactically correct, but it's not static--
+17:3217 minutes, 32 secondsit's not-- sorry, it doesn't have good static semantics.
+17:3717 minutes, 37 secondsThere's no meaning-- there is no meaning to that because the "are" is for you or plural.
+17:4417 minutes, 44 secondsSimilarly, in programming languages, and this will differ depending on what programming language you use-- here, in the previous slide, we saw
+17:5317 minutes, 53 secondsthat you can use the star operator between the sequence of characters and the number. And that meant repeat that sequence many times.
+18:0118 minutes, 1 secondBut if we use a plus operator in between the sequence of characters and a number, that doesn't have any meaning in Python.
+18:1018 minutes, 10 secondsSo it has a static semantic error, even though it's syntactically valid, right? We have operator-- sorry, object operator object.
+18:2118 minutes, 21 secondsSo, so far, we've been able to find really nice parallels with English, the English language and the programming languages.
+18:2818 minutes, 28 secondsBut this is kind of where things break down, when we talk about the semantics of a language. So in English, you can have many different meanings.
+Chapter 12: Debugging common errors
+18:3718 minutes, 37 secondsThe chicken is ready to eat means let's eat this chicken.
+18:4118 minutes, 41 secondsOr the chicken is ready to eat means the chicken wants to eat something.
+18:4618 minutes, 46 secondsProgramming languages, there is no multiple meanings to a program that you write.
+18:5018 minutes, 50 secondsBecause the computer, the machine, the language follows the set of instructions to a T, there is no ambiguity about what it needs to do.
+19:0119 minutes, 1 secondIt just follows the instructions and does what it needs to do to the end, till it reaches the-- it terminates the program.
+19:1019 minutes, 10 secondsAnd so programs only have one meaning, but the problem is it might not be the meaning that you intended it to have.
+19:1719 minutes, 17 secondsAnd that's when things start to go wrong.
+19:1919 minutes, 19 secondsWe can have syntactic errors in our program, spelling errors and indentation errors, things like that. And those are easy to catch.
+19:2719 minutes, 27 secondsStatic semantic errors are 90% probably easy to catch. But the problem comes in with the semantics.
+19:3519 minutes, 35 secondsThe meaning that you intended this program to have might not be what it's actually doing. And that's where most of my errors happen.
+19:4419 minutes, 44 secondsAnd that's where I get super frustrated when I program.
+19:4719 minutes, 47 secondsAnd that's probably where you guys will get super frustrated too because you write a program that you think is doing one thing, but instead, either it crashes right away,
+19:5619 minutes, 56 secondsor it runs forever and doesn't really stop, or it terminates, but it gives you an incorrect answer. It's not what you were expecting.
+20:0220 minutes, 2 secondsAnd we'll talk about this in a few lectures.
+Chapter 13: Python environment and shell
+20:0820 minutes, 8 secondsSo when we write programs, we're basically writing sequences of definitions and commands.
+20:1420 minutes, 14 secondsAnd we're going to write these either in a file editor or in a shell. The first, today at least, we're writing in the shell directly.
+20:2220 minutes, 22 secondsAnd half of tomorrow, we'll write in the shell because we're not really writing any-- we're not really writing many lines of code.
+20:3320 minutes, 33 secondsWe're just going to be-- I'm just going to be showing you some really quick things that we can do with the Python programming language.
+20:4220 minutes, 42 secondsSo hopefully you all have installed the programming environment. This is the Code Editor. So tomorrow, we'll start working in here.
+20:5120 minutes, 51 secondsBut for today, we're really just going to work in the shell.
+20:5420 minutes, 54 secondsAnd even in the future, you can still type commands in the shell.
+20:5820 minutes, 58 secondsI find the shell very useful if there's just something really quick that I want to check, that I don't want to write a program for and then run.
+21:0621 minutes, 6 secondsIt's just like a simple command that I want to check to make sure it's doing what I think it's doing before I insert it in my code editor.
+21:1421 minutes, 14 secondsSo here we have this.
+21:1921 minutes, 19 secondsSo mine is-- I guess I'm using the white theme just because I find it easier for you guys to see. This is the file editor.
+21:2621 minutes, 26 secondsAnd this is just a bunch of expressions or-- yeah, a bunch of code that we're going to type in today.
+21:3221 minutes, 32 secondsAnd we're going to type it in the shell today, so the thing on the right-hand side.
+21:3721 minutes, 37 secondsOK, so what exactly do we do when we write a program?
+Chapter 14: Manipulating objects
+21:4521 minutes, 45 secondsAt the base of it, we are going to create objects inside our programs, and we're going to manipulate them.
+21:5321 minutes, 53 secondsThat's it. That's what programming is mostly about at its core.
+22:0022 minutesNow, when we create objects, it's important-- this is kind of something we're going to come back to again and again in a more high-level setting.
+22:0822 minutes, 8 secondsBut right now what I want you to understand is that when we create an object, an object has a type.
+22:1622 minutes, 16 secondsAnd the type that an object has tells Python the things you're allowed to do with that object. So here are two examples.
+22:2522 minutes, 25 secondsThe number 30, it's a number. The type we'll talk about it in a bit. The type is an integer. It's a whole number.
+22:3322 minutes, 33 secondsBut basically, what are the things we can do with this integer, with this number? We can add it to another number. We can subtract it to another number.
+22:4022 minutes, 40 secondsWe can take it to another power. We can take some other number to this power of 30.
+22:4722 minutes, 47 secondsA bunch of mathematical operations, as you would expect. So that's pretty straightforward.
+22:5322 minutes, 53 secondsWhat about this one here, this quotation capital A, lowercase a-- lowercase n, lowercase a quotation?
+23:0123 minutes, 1 secondSo this is something we'll talk about next lecture. It's called a string. And it's a sequence of characters. The quotations tell Python it's a sequence of characters.
+23:1023 minutes, 10 secondsAnd the characters part of it are capital A, lowercase n, and lowercase a.
+23:1523 minutes, 15 secondsThe kinds of things I can do with this string are not the same kinds of things I'm allowed to do with the number, right?
+23:2223 minutes, 22 secondsIf I tried to take Ana and divide it by the sequence of characters Bob, Python would complain very much because you
+23:3123 minutes, 31 secondscan't divide a string by another string, a sequence of characters.
+23:3423 minutes, 34 secondsIt doesn't make sense to divide it by another sequence of characters. Similarly, I can't take Ana to some power.
+23:4023 minutes, 40 secondsI can't multiply-- I can't multiply by itself, things like that.
+23:4523 minutes, 45 secondsBut the kinds of things that I am allowed to do on a sequence of characters is different than the kinds of things I'm allowed to do on a number.
+Chapter 15: Types of objects
+23:5123 minutes, 51 secondsSo the things I can do with a sequence of characters is I can say, well, what's the character at the first position? What's the middle character?
+23:5923 minutes, 59 secondsHow long is the sequence of characters? How many characters do I have?
+24:0424 minutes, 4 secondsAnd so now you can see that the type of the object is actually really important.
+24:0824 minutes, 8 secondsPython uses it to know the kinds of operations you're allowed to do with it.
+24:1324 minutes, 13 secondsAnd so there's actually scalar objects, and these are Python's primitives, numbers and truth values.
+24:2124 minutes, 21 secondsAnd there are nonscalar objects. We're not talking about these yet. We'll talk about these in a few lectures. But these have some sort of structure.
+24:2824 minutes, 28 secondsSo for example, a list of numbers has a structure because there's a number at the beginning of the list, there's a number at the end of the list, things like that.
+24:3624 minutes, 36 secondsBut a number itself doesn't have a structure. It's just the number. So what are the types of the scalar objects?
+24:4424 minutes, 44 secondsWhat are the types of the primitives in Python? Integers, so number 5, 0, negative 100, 1 million.
+24:5224 minutes, 52 secondsFloat is another type. It represents all the real numbers, so 3.27.
+24:5824 minutes, 58 seconds2.0 is a float because it has a decimal number even though to us that just means 2.
+25:0425 minutes, 4 secondsBut to Python, if you put in 2.0, it says that's a type float. Negative 3.14159, things like that.
+25:1225 minutes, 12 secondsBool is a Boolean. It represents truth values.
+25:1525 minutes, 15 secondsAnd there's only two possible values that a Boolean type has, True and False.
+25:2125 minutes, 21 secondsAnd it has to be capital T True and capital F False. And the last one is this NoneType type.
+25:3125 minutes, 31 secondsIt's literally called NoneType. And it has only one special value, None.
+25:3625 minutes, 36 secondsWe're not going to talk about it for a bit, but we will sometime in the future.
+25:4125 minutes, 41 secondsSo to figure out the type of an object when you create that object, you use the type command. So we can say something like type parentheses.
+25:5025 minutes, 50 secondsAnd this is a command.
+25:5125 minutes, 51 secondsAnd inside the parentheses, you say, what do you want to find the type of? So if we do type of 7, it tells me it's an int.
+25:5925 minutes, 59 secondsAnd if you want to do the same command again, I hit the up arrow, and it automatically puts in what I wrote previously.
+26:0426 minutes, 4 secondsAnd then if I want to do type of 0.0, it's a float because there's a decimal point.
+26:0926 minutes, 9 secondsSo this is basically what I said. So we type this in the shell.
+Chapter 16: Type checking
+26:1626 minutes, 16 secondsAnd the shell tells us what the output is.
+26:2326 minutes, 23 secondsSo just to reiterate, int, float, bool, and NoneType are types of objects.
+26:3126 minutes, 31 secondsAnd there can be many different objects you can create of that type.
+26:3626 minutes, 36 secondsSo if you think about it, ints and floats, we basically have an infinite number of objects we can create of those types
+26:4426 minutes, 44 secondsbecause we can have 0, 1, 2, 3, 100, 200, 300, 1 million, and all the negatives.
+26:4926 minutes, 49 secondsThere's almost an infinite number of values or objects that we can create of type int and float.
+26:5626 minutes, 56 secondsBut bool, there's only two, the truth values True or False. And the NoneType, there's only one, this None.
+27:0427 minutes, 4 secondsSo that's the type, and these are the possible values, possible objects we can create. You try it.
+27:1227 minutes, 12 secondsSo you can just yell out the answers.
+27:1427 minutes, 14 secondsThere's nothing to type unless you want to check yourself so what is the type of 1234? AUDIENCE: Int. ANA BELL: Int.
+27:2227 minutes, 22 secondsType of 8.99? Float. Type of 9.0? Float. Type of True? Bool.
+27:3027 minutes, 30 secondsAnd type of False? Bool. Perfect.
+27:3327 minutes, 33 secondsIf you ever wonder what the type of something is, you type it in here. You guys are doing well. Type is bool.
+27:3927 minutes, 39 secondsType of lowercase t true is an error, just wanted to point that out just to reiterate the fact that capitalization matters in Python.
+27:4927 minutes, 49 secondsThis is our first error, by the way, guys. Very exciting.
+27:5227 minutes, 52 secondsThe error is a NameError, and this is the message associated with it.
+28:0028 minutesYou also know that it's something special in Python when you have color-coded stuff.
+28:0628 minutes, 6 secondsSo you see capital T True, capital F False are this dark blue here, whereas anything that's not special in Python is just black.
+28:1728 minutes, 17 secondsSo type is a special command. This is a float, so you see they're color coded. OK.
+Chapter 17: Type casting
+28:2528 minutes, 25 secondsSo once we create objects, one thing we can do with these objects is to cast them to a different type.
+28:3128 minutes, 31 secondsNow, this is a little bit maybe confusing because we're not actually changing the object once we've created it.
+28:4028 minutes, 40 secondsSo once we create the integer 3, it's there in memory.
+28:4628 minutes, 46 secondsIf we cast that integer to a float version of it, we're creating a new object in memory. We're not changing the 3.
+28:5328 minutes, 53 secondsThe 3 already exists.
+28:5528 minutes, 55 secondsWe're just getting the float version of it and storing it as a new object in memory.
+29:0029 minutesSo when we do float 3, this is a command that gets for me the float version of the integer 3.
+29:0829 minutes, 8 secondsSo that will give me 3.0. So for example, this is what I had, float 3.
+29:1629 minutes, 16 secondsThe output is 3.0.
+29:1829 minutes, 18 secondsIf I do int of 5.2, it truncates it, and it gives me the integer portion of this float.
+29:2929 minutes, 29 secondsIf I do int of 5.9, it still truncates it and gives me the integer version of this float. It doesn't round.
+29:3729 minutes, 37 secondsI'm just asking for the integer version of this float.
+29:4229 minutes, 42 secondsSome operations like round is an operation we can do has an implicit cast in it.
+29:4829 minutes, 48 secondsSo if I round 5.9, it's actually going to round it to 6.0 and then cast it to an integer.
+29:5529 minutes, 55 secondsSo notice it doesn't give me as an output 6.0. It then rounds it to just six.
+30:0030 minutesSo that's basically what I said in the example.
+Chapter 18: Expressions and operators
+30:0830 minutes, 8 secondsSo let's have you try this. What are the types of the following? I don't need the values but the types.
+30:1430 minutes, 14 secondsSo if I get type of float of 123, what is the type of that?
+30:2330 minutes, 23 secondsFloat, yeah, exactly. Yep. What if I round 7.9? What's the type of the result? Int, yep.
+30:3130 minutes, 31 secondsWhat if I create a float of the round of 7.2? AUDIENCE: Float. ANA BELL: Yes, good. Float would be 7.0.
+30:3930 minutes, 39 secondsAnd the int of 7.2? AUDIENCE: 7. Int. ANA BELL: Int, yes, exactly. I want the type not the value.
+30:4630 minutes, 46 secondsAnd the int of 7.9 is an int, exactly. Awesome, good.
+30:5430 minutes, 54 secondsOK, so we've created a bunch of objects.
+30:5730 minutes, 57 secondsWe know that we can create a bunch of objects in our programs. What do we do with them? Well, we can combine them into expressions.
+Chapter 19: Evaluating expressions
+31:0531 minutes, 5 secondsSo let's say we have 3 plus 2. I've got object, operator, object.
+31:1131 minutes, 11 secondsCool, syntactically valid in Python and has no static semantic error. So if I do that in Python, it's going to be OK.
+31:2131 minutes, 21 seconds3 plus 2, 5. And the type of 3 plus 2 is an integer.
+31:3131 minutes, 31 secondsSo basically what I've done here, I've put an expression within this type command. And that's OK.
+31:3931 minutes, 39 secondsThat's, in fact, encouraged in Python. You don't just want to calculate and then stick in. That would be very, very tedious.
+31:4631 minutes, 46 secondsSo you can insert expressions in many, many different places. So here we have 3 plus 2, 5 divided by 3.
+31:5331 minutes, 53 secondsAgain, we've got 5 divided by 3 has this decimal value.
+31:5631 minutes, 56 secondsAnd the result has a float-- is of type float.
+32:0132 minutes, 1 secondSo the important thing to remember when we're doing expressions is Python reads the expression, but it does not store the expression in memory.
+32:1232 minutes, 12 secondsWhat it does is it reads the expression, evaluates it to one single value, and then it stores the result value in memory.
+32:2232 minutes, 22 secondsSo it never stores the expression. It evaluates the expression and then stores the value.
+32:2732 minutes, 27 secondsAnd so this is the syntax for an expression-- object, operator, object, as we just saw.
+32:3332 minutes, 33 secondsAnd that's really-- and the idea I said before, where Python stores values of expressions, not the expressions themselves, is really, really important.
+32:4532 minutes, 45 secondsSo this is my first big idea slide.
+32:4832 minutes, 48 secondsI decided to insert these because I think they stress the importance of several concepts. So I hope this is one.
+32:5532 minutes, 55 secondsSo we're taking expressions. They can be as complex as you'd like.
+32:5932 minutes, 59 secondsWe can use parentheses, a bunch of-- it doesn't just have to be object, operator, object. It can be more complex than that.
+33:0733 minutes, 7 secondsBut basically, however complex that expression is, we evaluate it, and we replace it with one value.
+33:1433 minutes, 14 secondsAnd the expression can be something like this. It doesn't just have to be something that's mathematical.
+33:2033 minutes, 20 secondsThis was a mathematical expression, but this is also an expression. And it evaluates.
+33:2533 minutes, 25 secondsSo this entire thing evaluates to this word, this word which represents the type integer.
+Chapter 20: Operator precedence
+33:3433 minutes, 34 secondsSo here are some more examples. 3 plus 2, again.
+33:3933 minutes, 39 secondsWe've got these examples with the parentheses, 4 plus 2 times 6 minus 1 obviously gives us the number, 35.
+33:4633 minutes, 46 secondsAnd then we can insert expressions wherever we'd like.
+33:4933 minutes, 49 secondsSo here I'm inserting that specific expression in the type command. And this is also an expression, like I just said.
+33:5633 minutes, 56 secondsAnd its result is int. And similarly, we can also insert that expression here.
+34:0434 minutes, 4 secondsAnd then we can wrap that around cast. And it gives us a float. Yes?
+34:0934 minutes, 9 secondsAUDIENCE: So when you're inserting expressions [INAUDIBLE] include the operators-- [INAUDIBLE] operators in?
+34:1634 minutes, 16 secondsANA BELL: When you're inserting-- sorry, when you're inserting what?
+34:1934 minutes, 19 secondsAUDIENCE: Well, since you said they're expressions, and you said that you need like object, operator, object, expression, type. What would be the operators in this case?
+34:2834 minutes, 28 secondsANA BELL: Oh, I see. AUDIENCE: How are they defined? ANA BELL: Yeah, that's a good-- that's a good question.
+34:3434 minutes, 34 secondsSo in this particular case, the type and the float are not-- there is no operator I guess in this particular case.
+34:4434 minutes, 44 secondsIt's more like a command that gives us an output.
+34:4834 minutes, 48 secondsBut there is still some-- there is still an output that it gives us.
+34:5434 minutes, 54 secondsSo we can then take the result of this and save it somewhere else.
+35:0035 minutesSorry, yeah, I guess the example I gave on the previous slide was just an example of an expression where we could do object, operator, object.
+35:0835 minutes, 8 secondsYeah.
+Chapter 21: Mathematical operators
+35:1435 minutes, 14 secondsYeah, so when we have these-- I guess it works for mathematical expressions.
+35:1935 minutes, 19 secondsMathematical expressions work left to right, just like in math. Parentheses can override certain precedents.
+35:2935 minutes, 29 secondsIf we have commands that have computations, then we have this command with the parentheses.
+35:3635 minutes, 36 secondsAnd we evaluate what's inside the parentheses first. So we work our way in to out in that particular case.
+35:4235 minutes, 42 secondsSo here are some examples. Let's have you try these. So we can type these in our console.
+35:5035 minutes, 50 secondsWhat are the values of the following expressions? So 13 minus 4 divided by 12 times 12. So we can try that.
+35:5835 minutes, 58 secondsI don't know off the top of my head, so we'll have to type it in.
+36:0536 minutes, 5 seconds0.0625, OK. So the value of that expression is a float, right? 0.0625.
+36:1236 minutes, 12 secondsWhat's the value of the expression type 4 times 3? AUDIENCE: Int. ANA BELL: Int, yeah.
+36:1936 minutes, 19 secondsWhat about the type of the expression 4.0 times 3? AUDIENCE: Float. ANA BELL: Yes, exactly. That's very good.
+36:2736 minutes, 27 secondsSo type of 4 times 3 is int. But 4.0 times 3 is a float. Good.
+36:3336 minutes, 33 secondsAnd then what about int of a half or of 1 over 2?
+36:3736 minutes, 37 secondsAUDIENCE: So it's 0. ANA BELL: Yeah, exactly, it's 0.
+36:4536 minutes, 45 secondsYep, because it's 0.5, and we truncate to 0.
+36:5036 minutes, 50 secondsThe reason I had this here is because it leads nicely into this slide. You don't have to memorize these rules. You can always check it out in the console.
+Chapter 22: Variable assignments
+36:5936 minutes, 59 secondsBut there are some rules for the resulting types when we do operations.
+37:0337 minutes, 3 secondsSo when we do operations with numbers, addition, subtraction, and multiplication always yield an integer if both of the operators are integers.
+37:1537 minutes, 15 secondsIf one is a float or both are floats, then it gives me a float. Division is different. No matter what types you divide, you will always get a float.
+37:2437 minutes, 24 secondsNow what about this // and this percent? These are actually useful operations.
+37:3237 minutes, 32 secondsThey kind of go hand in hand with division. So when I do 5 divided by 3, it's this 1.667.
+37:4137 minutes, 41 seconds// is basically a floor or getting the integer portion of the division.
+37:4937 minutes, 49 secondsSo 5//3 gives me one. It truncates the fraction.
+37:5737 minutes, 57 secondsThe percent gives me the remainder. So 5%3 gives me the remainder when I divide 5 by 3.
+38:0538 minutes, 5 secondsSo it's going to give me-- give it to me in a whole number.
+38:0938 minutes, 9 secondsSo that's going to be 2 because there's 2 left over when I divide 5 by 3.
+Chapter 23: Variable binding
+38:1538 minutes, 15 secondsSo these are pretty useful operations, the // and the percent, when we do mathematical programs.
+38:2338 minutes, 23 secondsThe last thing is the ** is how we denote power, exponentiation, kind of different than you might be used to in math.
+38:3238 minutes, 32 secondsSo 2 to the power of 3, 8. 2 to the power of 3.0, 8.0.
+38:3938 minutes, 39 secondsAnd the rules for integer division, percent, and exponentiation are just like addition, subtraction, multiplication.
+38:4938 minutes, 49 secondsIf one is a float, then the result will be a float as well.
+38:5238 minutes, 52 secondsYeah.
+38:5738 minutes, 57 secondsOK, and we talked about the type of output. So I think I briefly mentioned this.
+39:0639 minutes, 6 secondsThe operator precedence is exponentiation and then multiplication, division, percent or remainder at the next level, and then addition, subtraction at the bottom.
+39:1539 minutes, 15 secondsBut you can always override these using parentheses. OK, questions so far before we move on?
+39:2439 minutes, 24 secondsYes.
+39:2539 minutes, 25 secondsAUDIENCE: So why does division-- why does it always result in float if you have 9 by 3 and that's [INAUDIBLE] why does it [INAUDIBLE]??
+39:3239 minutes, 32 secondsANA BELL: Yeah, so the question is, why does it always result in a float?
+39:3639 minutes, 36 secondsIf it didn't, I think it would the operation itself would have to do extra work to figure out whether it's a whole number or not.
+39:4439 minutes, 44 secondsSo I think it's just easier that it gives us always a float, I guess.
+39:5039 minutes, 50 secondsPrevious versions of Python, the / was actually, I think, integer division, which is super counterintuitive because you would use that in your program.
+40:0040 minutesAnd then you would basically integer divide, and things would go wrong. But again, just a design choice on behalf of the programmers.
+Chapter 24: Code style and comments
+40:0840 minutes, 8 secondsOther questions so far? OK, so we have a lot of objects.
+40:1540 minutes, 15 secondsObjects have different types, again, floats, integers, Booleans. What can we do with them?
+40:2240 minutes, 22 secondsSo far, they're kind of just sitting in there, and we can get properties about them.
+40:2640 minutes, 26 secondsBut what we'd like to do is write programs, basically trying to automate some things about these objects, manipulate them
+40:3240 minutes, 32 secondsto help us achieve a more complicated and interesting program.
+40:3840 minutes, 38 secondsSo what we can do to get to that end is to start assigning names to some of these objects.
+40:4840 minutes, 48 secondsIf I create an object for pi in my program to 20 decimal places
+40:5440 minutes, 54 secondssomehow, and I have that number in my program, that float in my program-- if I want to use that number in many different places
+41:0241 minutes, 2 secondsin my program, I'd have to copy and paste it a whole bunch of times so far, which is very tedious, lots of errors will happen.
+41:1241 minutes, 12 secondsI don't want to do that.
+41:1341 minutes, 13 secondsSo instead what I can do is I can give a name to this ridiculously long value of pi called pi.
+41:2141 minutes, 21 secondsAnd then I can just use this name anywhere I want to grab that ridiculously long value for pi in my program. It's a lot easier to read.
+41:2941 minutes, 29 secondsIt's a lot easier for me to write this program. And it leads to a really nice and neat program.
+41:3841 minutes, 38 secondsSo what we can do is we can start saying that the float 0.001 will be referenced by the name
+41:4541 minutes, 45 seconds"small" or the 100.4 will be referenced by the name "temp." So what we want to do is create these things called variables.
+Chapter 25: CS variables vs math variables
+41:5641 minutes, 56 secondsAnd a variable is different in computer science from a mathematical variable or variables that you've known so far in math.
+42:0442 minutes, 4 secondsSo math variables come back to the idea of declarative knowledge, a declarative statement.
+42:0942 minutes, 9 secondsYou can have something like a plus b is equal to b minus 1 in math, or x is equal to-- or x times x is equal to y, and that's perfectly OK.
+42:1942 minutes, 19 secondsIn math, we basically say that variable x represents all the square roots of y. That's not going to fly in computer science.
+42:2742 minutes, 27 secondsIn computer science, we don't have-- we don't do declarative knowledge. We do imperative knowledge.
+42:3342 minutes, 33 secondsAnd so what we're working with in computer science is a bunch of assignment statements.
+42:3942 minutes, 39 secondsSo what we can do in computer science is we're going to basically bind a value to a variable.
+42:4742 minutes, 47 secondsSo we're going to say this variable name is bound to this value.
+42:5042 minutes, 50 secondsEvery time I want to grab this value, I'm going to invoke this variable name. So here are some examples. I've got a is equal to b plus 1.
+42:5942 minutes, 59 secondsThe thing on the right-hand side will evaluate to some value as long as I have something that b has a value for.
+43:0943 minutes, 9 secondsI've got here m is equal to 10. So m is a variable. Its value is 10. I've got F is equal to m times 9.98.
+43:1943 minutes, 19 secondsSo again, I have an expression on the right-hand side, and that's OK. I'm going to use the value of 10, so F's value will be 99.8.
+43:2743 minutes, 27 secondsYeah.
+43:2843 minutes, 28 secondsAUDIENCE: Can you put it so that for F-- is it like this one value of m?
+43:3443 minutes, 34 secondsOr can you have it so it's going to be whatever m assigned recently? ANA BELL: Yeah. The question is, can you have m whatever it recently is?
+43:4243 minutes, 42 secondsSo in this particular case, I just have these two lines. And m will be whatever 10 is.
+43:4743 minutes, 47 secondsBut we'll see in a couple lectures that we can write a loop where you change m.
+43:5343 minutes, 53 secondsAnd then every time you change m, you immediately calculate F. And then it'll calculate F based on the new value of m.
+44:0144 minutes, 1 secondBut if we just have these two lines, that's all there is. It just uses 10. Was there another question?
+44:0844 minutes, 8 secondsSo in computer science, you have only one variable to the left of this equal sign, called the assignment operator.
+44:1844 minutes, 18 secondsAnd you have a value to the right-hand side of the equal sign, the assignment operator.
+44:2444 minutes, 24 secondsSo one variable basically maps to or binds to one value. So the equal sign is an assignment statement.
+Chapter 26: Assignment operator
+44:3444 minutes, 34 secondsIt's not equality. It's not a solve for x type of situation. It's just an assignment. It binds this name to this value.
+44:4244 minutes, 42 secondsSo the way that we figure out the name with the value is, well, if we have this assignment statement here, we first look at the right-hand side.
+44:5144 minutes, 51 secondsSo we always start with the right-hand side. And we evaluate it. Remember, we have an expression on the right. We have to evaluate it to one value.
+45:0045 minutesSo this will be 3.14, whatever it is, 1.159. And then we take that value and bind it to the name pi.
+45:0945 minutes, 9 secondsSo anytime I type in p-i, "pi," in my program from now on, Python will automatically grab 3.14159 from memory.
+45:1845 minutes, 18 secondsSo it's bound to that value now. OK, there are some rules. Did I have them on the previous one?
+Chapter 27: Variable binding rules
+45:2445 minutes, 24 secondsYes, there are some rules to variable names, but we'll talk about that in a bit.
+45:3345 minutes, 33 secondsFor now, I want you to tell me if any of the following are allowed. If I do x is equal to 6, is that allowed in Python? AUDIENCE: Yes.
+45:4145 minutes, 41 secondsANA BELL: Yes, it is. Good. Because I have one variable name bound to one value, 6. What about 6 equals x? It's just backward. AUDIENCE: No. ANA BELL: OK, good.
+45:4945 minutes, 49 seconds6 equals x is bad, syntax error. How about x times y equals 3 plus 4? AUDIENCE: No.
+45:5745 minutes, 57 secondsANA BELL: No, exactly, because the thing on the left has an operator in it. And operators are special.
+46:0246 minutes, 2 secondsSo it can't have-- you can't have a variable with that * as a name. How about xy equals 3 plus 4? AUDIENCE: Yes.
+46:1046 minutes, 10 secondsANA BELL: Allowed, yes, exactly. I was hoping to get you guys with that, but I didn't. Xy equals 3 plus 4 is OK. There was no error.
+46:1846 minutes, 18 secondsAnd then I can invoke the name of the variable I just created simply by typing it in. So if I type in xy, it gives me 7.
+46:2746 minutes, 27 secondsAnd then I can do operations with it, xy plus 1 is 8. Yeah.
+46:3246 minutes, 32 secondsAUDIENCE: Before you were putting the strings with apostrophes. So wouldn't you need that? ANA BELL: So those are strings, right, sequences of characters.
+46:4046 minutes, 40 secondsHere, these are variables. So these are names that I am giving as a variable. Yeah, that's a great question.
+46:4846 minutes, 48 secondsSo this is going to be a string. And you notice it changed color. It has some meaning in Python.
+46:5546 minutes, 55 secondsBut xy is a variable that I create.
+46:5846 minutes, 58 secondsOK, so why do we want to give names to variables?
+47:0847 minutes, 8 secondsBecause as I showed you with the pi example, it's a lot easier to write readable code if you have variable names within your programs.
+Chapter 28: Rebinding variables
+47:1847 minutes, 18 secondsSo when you grab-- when you write programs, it's important to choose variable names wisely. You don't want to use just single letters.
+47:2747 minutes, 27 secondsYou don't want to name it something that doesn't have something to do with the program you're writing, because you're going to want to reread these programs sometime in the future.
+47:3647 minutes, 36 secondsOr others might want to read your programs sometime in the future. So here's an example of a nice program.
+47:4347 minutes, 43 secondsIt's just basically four assignment statements that do some calculations. The first line of the program is not really a line.
+47:5147 minutes, 51 secondsIt's called a comment. You can have as many of these as you like. They start with a hash. It's a line that starts with a hash.
+47:5747 minutes, 57 secondsAnd it's basically a text that you write that helps you or others figure out what the code is supposed to do.
+48:0748 minutes, 7 secondsAnd usually we comment large chunks of code at a time, not line by line.
+48:1348 minutes, 13 secondsThen we have these four assignment statements.
+48:1748 minutes, 17 secondsSo here I'm defining variable named pi bound to the value here, so not the division but 3.14159.
+48:2548 minutes, 25 secondsVariable named radius bound to this float 2.2.
+48:2848 minutes, 28 secondsAnd then I have a variable named area which is bound to the result of this expression.
+48:3448 minutes, 34 secondsSo when Python sees my pi and my radius, it grabs them from memory, replaces them with the values,
+48:4248 minutes, 42 secondsevaluates the expression, grabs that one value that we evaluated to 15-point-something, whatever
+48:4948 minutes, 49 secondsthis is, and binds the 15-point-something to the name area. Same with circumference.
+48:5548 minutes, 55 secondsCode style is something that we're actually going to look at in your problem sets.
+49:0349 minutes, 3 secondsSo I just wanted to quickly talk about that. Here is a program that has really bad style. Actually, that shouldn't be meh.
+49:1049 minutes, 10 secondsIt should be terrible or something like that.
+49:1349 minutes, 13 secondsBut in case you haven't noticed, it's the same program as on the previous slide.
+49:1749 minutes, 17 secondsBut if I gave you this program straight off the bat, you probably wouldn't know what it's doing. It's reusing 355 over 113 twice here.
+49:2749 minutes, 27 secondsIt's using just a and c as variable names.
+49:3049 minutes, 30 secondsIts description is "do calculations." So pretty bad. This is a little bit better.
+49:3649 minutes, 36 secondsI've recognized that 355 over 113 is being used twice. So I'm saving it as a variable.
+49:4349 minutes, 43 secondsBut my variables are still single characters. And my comments are pretty bad.
+49:5149 minutes, 51 secondsI'm basically saying what the code is doing. Please don't do that. We can see that a equals p times r times r.
+50:0150 minutes, 1 secondI see that I'm multiplying p with r squared. I don't need to read that in English. What I would like to see is a comment like this.
+50:1050 minutes, 10 secondsHere I'm commenting a chunk of code.
+50:1350 minutes, 13 secondsAnd someone who doesn't want to read this chunk of code just reads the comment, and I already know that I'm calculating the area and circumference using an approximation for pi.
+50:2350 minutes, 23 secondsThat's a pretty nice comment there and good descriptive names and all that.
+50:3150 minutes, 31 secondsSo we can actually-- once we create an object, a variable-- sorry, once we create an object and bind it to a variable, we can change the bindings.
+50:4150 minutes, 41 secondsSo we can take that variable name and bind it to a completely different value.
+Chapter 29: Sequential evaluation
+50:4650 minutes, 46 secondsThis might not be useful right now, but it will be useful when we introduce control flow in our programs.
+50:5550 minutes, 55 secondsSo to rebind a variable what that means is we're going to take the name, we're going to lose the binding to the previous value, and we're going to rebind it to a new value.
+51:0551 minutes, 5 secondsSo I'm going to show you how this looks like in memory.
+51:0851 minutes, 8 secondsI'm going to use this sort of cloud picture to represent what happens behind the scenes whenever we write programs.
+51:1651 minutes, 16 secondsAnd it's like a little animation to help you understand line by line what's going on. So here we have pi equals 3.14.
+51:2451 minutes, 24 secondsSo the green 3.14 is my value in memory. Cloud is memory. That's my value in memory. And it's bound to this name pi.
+51:3251 minutes, 32 secondsSo this is my variable name. The next line, radius equals 2.2, same thing. I've got 2.2 as my value in memory, my object.
+51:4151 minutes, 41 secondsAnd radius is the name for that object. Area equals pi times radius squared.
+51:4751 minutes, 47 secondsSo what happens behind the scenes is it calculates this value. It doesn't store the expression.
+51:5251 minutes, 52 secondsIt stores the value resulting from the calculation, and then it saves it-- or binds it to the name area.
+52:0152 minutes, 1 secondOK, everything OK so far? We've seen this code before. Cool.
+52:0452 minutes, 4 secondsSo now what happens when we do this, radius equals radius plus 1? In math, that would say 0 equals 1.
+52:1552 minutes, 15 secondsBut we're not in math here. We're in computer science, and this is perfectly valid.
+52:2052 minutes, 20 secondsWe're following the rule when we have an assignment that says look at the right-hand side first and evaluate it and then bind it to the left-hand side.
+52:3252 minutes, 32 secondsSo if we look at the right-hand side first, we see radius. Well, what's the value? 2.2.
+52:4052 minutes, 40 secondsWe see add 1 to it, 3.2. Save that in memory. And then we see the assignment.
+52:4752 minutes, 47 secondsNow save it with the name radius.
+52:5252 minutes, 52 secondsOK, so we can only have one variable assigned to one value at a time. This is not math.
+52:5952 minutes, 59 secondsThis is computer science. So you can only have radius point to one thing at a time. With this line of code, radius equals radius plus 1.
+53:0853 minutes, 8 secondsWe've lost the binding to 2.2, this object in memory, and we've rebound it to the value 3.2.
+53:1753 minutes, 17 secondsAnd that's perfectly fine. 2.2 is now just sitting in memory. We can't get back to it unless we say maybe radius equals 2.2.
+53:2553 minutes, 25 secondsIt just sits in memory and then might be collected later on by-- or reclaimed by garbage collection or something like that. But for now, we can't get back to it.
+53:3453 minutes, 34 secondsNow, what's the value for area at the end of these lines? Well, according to this, it's 15.1976.
+Chapter 30: Python tutor debugging
+53:4353 minutes, 43 secondsSo it's using the old 2.2 value for radius.
+53:4753 minutes, 47 secondsAnd that's OK because the program never told-- never had a line that said recalculate area after we changed the radius.
+53:5953 minutes, 59 secondsIt's just following, dumb, line by line.
+54:0254 minutes, 2 secondsIt doesn't know that, hey, if I change the radius, the user might want the area changed. It doesn't make those connections.
+54:0954 minutes, 9 secondsIt's just following instructions. And that's OK.
+54:1354 minutes, 13 secondsIf we want it to change the area, we would have to copy this line and paste it after we've changed the radius.
+54:2054 minutes, 20 secondsAnd then the area would change as well. Does that make sense? That's kind of an important part of this lecture.
+54:2854 minutes, 28 secondsOK, cool.
+54:3054 minutes, 30 secondsSo big idea here is our lines are evaluated one after the other. We're not skipping. We're not repeating things. That's something we're going to learn about later.
+Chapter 31: Memory management
+54:3854 minutes, 38 secondsBut for now, line by line. So here's a little you try it. These three lines are executed in order.
+54:4654 minutes, 46 secondsWhat are the values for meters and feet variables at each line?
+54:5154 minutes, 51 secondsSo how about at the first line, what's the value for meters after we execute the first line? 100. What about feet?
+54:5854 minutes, 58 secondsSo at the end of the first line, there is no value for feet yet.
+55:0555 minutes, 5 secondsHow about after the second line? 328.08. Right? How about the value for meters? AUDIENCE: 100. ANA BELL: 100 still.
+55:1355 minutes, 13 secondsAnd what about after the third line? I'm changing meters to 200. Exactly, yeah.
+55:2155 minutes, 21 secondsMeters is 200, but feet is still 328.08. And this is something I want to show you guys today.
+55:2955 minutes, 29 secondsAnd we're going to use this Python Tutor a lot more in the future.
+55:3455 minutes, 34 secondsPython Tutor is a nice website that allows you to step in your code-- step through your code step by step.
+55:4155 minutes, 41 secondsSo at each line that you execute, you get to see the values of all the variables in the code. It's a very useful debugging tool.
+55:4955 minutes, 49 secondsI hope you'll try it out today and on Monday, maybe, for the finger exercises if you're having trouble. And you can use it for quizzes to help you debug.
+55:5955 minutes, 59 secondsBut I can just show you. It's pretty simple here because it's just a step by step. So we step through. So the red says the line I'm going to execute.
+56:0856 minutes, 8 secondsGreen is the line I just executed. So I just executed meters 100. So here I have my meters variable with the value 100.
+56:1656 minutes, 16 secondsStep through next. So I just executed feet equals this. So I now have a variable named feet with a value 328.08.
+56:2456 minutes, 24 secondsMeters still 100. And then meters 200, feet remained 328.08.
+56:3356 minutes, 33 secondsSo obviously, this is a pretty simple program to run the Python Tutor on, but you can imagine using it in more complex settings.
+Chapter 32: Swap variables exercise
+56:4456 minutes, 44 secondsHow about one more? And this is my last example.
+56:4756 minutes, 47 secondsI want you to try to write a program that swaps the values of x and y.
+56:5156 minutes, 51 secondsSo originally-- and I'll draw this, the memory diagram real quick. So we have-- this is our memory. We have x is bound to 1.
+57:0057 minutesY is bound to 2.
+57:0357 minutes, 3 secondsAnd what I want to do without saying x equals 2, y equals 1, what I want to do is swap the values.
+57:1057 minutes, 10 secondsI want x to be associated with 2 and y to be associated with 1 but only using commands like this.
+57:1957 minutes, 19 secondsAnd so the code here is buggy. That means it's wrong. It has an error in it.
+57:2657 minutes, 26 secondsWell, let's step through-- let's step through a little bit at a time. Y equals x. What do I do when y equals x here?
+57:3457 minutes, 34 secondsYeah, exactly, y is going to move from 2 to 1.
+57:4357 minutes, 43 secondsNow, what happens when I do x equals y?
+57:4557 minutes, 45 secondsYes, x stays the same. My first line, y equals x, lost the binding to 2.
+57:5457 minutes, 54 secondsAnd now it's all messed up because I can't get it back.
+57:5857 minutes, 58 secondsSo instead-- so if you didn't understand this, you can click Python Tutor and just step through step by step on your own.
+58:0558 minutes, 5 secondsBut how can we fix this? AUDIENCE: Create a third variable. ANA BELL: Create a third variable? Yeah, that's a great idea.
+58:1258 minutes, 12 secondsYeah, we can create a third variable.
+58:1458 minutes, 14 secondsSo x is 1, y is 1-- y is 2. So we can create a third variable. What do you want to make the variable equal to?
+58:2358 minutes, 23 secondsX or y? Yeah, either one. I made it y, so let's do y.
+58:3058 minutes, 30 secondsSo here I've got a temporary variable called "temp," and I made it equal to 2. And now what can I do?
+58:3858 minutes, 38 secondsWhich one can I reassign now? X equals y, or y equals x?
+Chapter 33: Fixing buggy code
+58:4758 minutes, 47 secondsExactly, y equals-- if I do x equals y, I lose my binding to 1, and it messed up again. So y equals x is OK to do.
+58:5558 minutes, 55 secondsSo I'm going to lose the binding from y from 2 and bind it up to 1. And now what do I do?
+59:0459 minutes, 4 secondsYeah, now I can safely reassign x to temp.
+59:1059 minutes, 10 secondsSo I can say x is equal to temp because temp points to 2. And I want to make x point to 2 as well.
+59:1959 minutes, 19 secondsSo in terms of code, that's sort of the diagram. But we can write the code. So you don't-- let's see.
+Chapter 34: Lecture summary
+59:2759 minutes, 27 secondsWe don't write it in here, but on your own, you can write it in here if you'd like. Or we can do it together.
+59:3359 minutes, 33 secondsSo x is equal-- oops. X equals 1, y equals 2. And then we had temp.
+59:4159 minutes, 41 secondsWe wanted to assign it to whatever y was. So we say temp is equal to y.
+59:4859 minutes, 48 secondsAnd if you want to check the values of the variables, you can just invoke the names. So x is 1, y is 2, and temp should be whatever y is, 2.
+59:5959 minutes, 59 secondsOK, good so far. So now I'm at the step here, I think, right?
+1:00:071 hour, 7 secondsI've just created this.
+1:00:081 hour, 8 secondsAnd then the last thing I need to do is lose the binding from x to whatever temp is.
+1:00:151 hour, 15 secondsSo I want to do this operation here, which means I want to assign x to be equal to temp.
+1:00:231 hour, 23 secondsSo now x is 2, y is 1.
+1:00:261 hour, 26 secondsWhat did I do? Yeah, so this happens sometimes.
+1:00:361 hour, 36 secondsWe can just start all over. So y equals temp. Sorry. Temp equals y.
+1:00:441 hour, 44 secondsY equals x.
+1:00:521 hour, 52 secondsY is one. X is 1. And then x equals temp. Y is one, x is 2.
+1:01:001 hour, 1 minuteSo it's OK if things go wrong. They will go wrong.
+1:01:051 hour, 1 minute, 5 secondsWe can just start all over in this particular case by redefining our variables and just trying it out all over again. So that's kind of what the shell is for.
+1:01:131 hour, 1 minute, 13 secondsThat's what I use it for.
+1:01:141 hour, 1 minute, 14 secondsThat's what we're going to use it for in the future, just to do quick things like this and also things like checking the types and other commands we've done earlier.
+1:01:271 hour, 1 minute, 27 secondsOK, so any questions before we do the summary? Was this all right pace or was it too fast? Or it was OK?
+1:01:351 hour, 1 minute, 35 secondsOK, good. Thumbs up is good. So let's do a quick summary.
+1:01:401 hour, 1 minute, 40 secondsWe saw that we can create programs by manipulating objects. We created objects in Python.
+1:01:471 hour, 1 minute, 47 secondsAnd we saw that objects have a particular type.
+1:01:501 hour, 1 minute, 50 secondsThe type that the object has tells Python the things that you can do with that object.
+1:01:571 hour, 1 minute, 57 secondsWe can combine objects in expressions.
+1:02:001 hour, 2 minutesAnd these expressions evaluate or boil down to one particular value. Objects or values can be stored in variables.
+1:02:091 hour, 2 minutes, 9 secondsAnd these variables allow us to access these values with nicer names later on in our program.
+1:02:151 hour, 2 minutes, 15 secondsAnd then we're able to write neater, more legible programs as well.
+1:02:211 hour, 2 minutes, 21 secondsSo the equal sign-- I showed you a couple of differences between math and computer science. The equal sign was one notable difference.
+1:02:291 hour, 2 minutes, 29 secondsThe equal sign in math is declarative, and the equal sign in computer science is an assignment. You're basically saying this is associated with this.
+1:02:381 hour, 2 minutes, 38 secondsAnd we're not doing any sort of equality in computer science. And yes, computers do what you tell them to do.
+1:02:481 hour, 2 minutes, 48 secondsThat's kind of the big thing here.
+1:02:511 hour, 2 minutes, 51 secondsLine by line, it executes starting from the top, goes line by line.
+1:02:551 hour, 2 minutes, 55 secondsSo far, we haven't seen any places where the computer makes a decision.
+1:03:001 hour, 3 minutesBut next lecture, we will see how we can insert decision points in our programs for the computer to either execute one set of code or another set of code.
+1:03:121 hour, 3 minutes, 12 secondsAll right, so that's the end of today's lecture. Thank you all for joining. I will see you on Monday.
+1:03:181 hour, 3 minutes, 18 seconds

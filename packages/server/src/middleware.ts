@@ -164,6 +164,8 @@ const MULTIPART_SLACK = 64 * 1024;
 export function bodyLimit(services: Services): MiddlewareHandler<AppEnv> {
   return async (c, next) => {
     const cfg = services.config(c.req.raw);
+    // POST /imports caps its own body at 5 MB (@vid2context/imports), above the default JSON limit.
+    if (c.req.method === 'POST' && c.req.path.replace(/\/+$/, '') === '/api/v1/imports') return next();
     const isUpload = c.req.method === 'POST' && c.req.path.replace(/\/+$/, '') === '/api/v1/uploads';
     const maxSize = isUpload ? cfg.maxUploadBytes + MULTIPART_SLACK : cfg.maxBodyBytes;
     const before = c.req.raw;

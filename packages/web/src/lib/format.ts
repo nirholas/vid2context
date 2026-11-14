@@ -59,6 +59,18 @@ export interface OriginBadge {
   tone: 'good' | 'ok' | 'warn';
 }
 
+/** Where an imported transcript came from: producer is `import/<via>`. */
+function importedTitle(producer: string): string {
+  const via = producer.replace(/^import\//, '');
+  const from =
+    via === 'browser'
+      ? 'read by the vid2context extension in your browser'
+      : via === 'file'
+        ? 'from an uploaded subtitle file'
+        : 'pasted in';
+  return `A transcript ${from}, not fetched by vid2context, so it was not verified.`;
+}
+
 /** How the transcript was made, in plain words, plus a machine-translation badge when it applies. */
 export function originBadges(t: Transcript): OriginBadge[] {
   const out: OriginBadge[] = [];
@@ -93,6 +105,9 @@ export function originBadges(t: Transcript): OriginBadge[] {
         title: `A multimodal model (${t.producer}) watched the video and wrote the transcript and on-screen notes.`,
         tone: 'ok',
       });
+      break;
+    case 'imported':
+      out.push({ label: 'Imported transcript', title: importedTitle(t.producer), tone: 'ok' });
       break;
   }
   if (t.translated) {

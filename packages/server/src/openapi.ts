@@ -145,7 +145,10 @@ export const SCHEMAS: Record<string, Schema> = {
     {
       ref: ref('VideoRef'),
       language: str(),
-      origin: { type: 'string', enum: ['creator-captions', 'auto-captions', 'native-transcript', 'stt', 'video-model'] },
+      origin: {
+        type: 'string',
+        enum: ['creator-captions', 'auto-captions', 'native-transcript', 'stt', 'video-model', 'imported'],
+      },
       producer: str(),
       model: str(),
       translated: { type: 'boolean' },

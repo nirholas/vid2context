@@ -1,6 +1,7 @@
 /**
  * Service worker (Chrome, Edge) or event page (Firefox). Owns the context
- * menus, opens the web app, and runs "Copy transcript (via API)".
+ * menus, opens the web app, runs "Copy transcript (via API)" and answers the
+ * web app bridge (bridge.ts).
  */
 import { describeError, transcriptViaApi } from '../lib/api.ts';
 import { ext } from '../lib/browser.ts';
@@ -8,6 +9,7 @@ import { addHistory, type HistoryAction } from '../lib/history.ts';
 import { appLink, originPattern } from '../lib/links.ts';
 import { settingsNow, settingsReady } from '../lib/live-settings.ts';
 import { type BackgroundRequest, LAST_RESULT_KEY } from '../lib/messages.ts';
+import { installBridge } from './bridge.ts';
 import { type PageNotice, showPageNotice } from './inject.ts';
 import { MENU_CONTEXTS, MENU_COPY_API, MENU_OPEN, menuTarget } from './menus.ts';
 
@@ -60,6 +62,9 @@ async function copyViaApi(url: string, title: string, tabId: number | undefined,
     await notify(tabId, { kind: 'error', ...describeError(err) });
   }
 }
+
+// Listeners are added synchronously at the top level, so events that wake the worker reach them.
+installBridge();
 
 ext.runtime.onInstalled.addListener(() => {
   ext.contextMenus.removeAll(() => {

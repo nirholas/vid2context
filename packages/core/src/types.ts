@@ -68,9 +68,10 @@ export interface Segment {
  * How a transcript was produced, from most to least trustworthy:
  * creator-captions (uploaded by the creator), auto-captions (platform ASR),
  * stt (our speech-to-text), video-model (a multimodal model watched the video),
- * native-transcript (a transcript the platform publishes, e.g. podcast:transcript).
+ * native-transcript (a transcript the platform publishes, e.g. podcast:transcript),
+ * imported (pasted, uploaded or read by the browser extension; not verified).
  */
-export type TranscriptOrigin = 'creator-captions' | 'auto-captions' | 'native-transcript' | 'stt' | 'video-model';
+export type TranscriptOrigin = 'creator-captions' | 'auto-captions' | 'native-transcript' | 'stt' | 'video-model' | 'imported';
 
 export interface Transcript {
   ref: VideoRef;

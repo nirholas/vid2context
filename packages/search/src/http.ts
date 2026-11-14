@@ -23,7 +23,7 @@ export interface RouteDeps {
   search?: EngineSettings;
 }
 
-const ORIGINS: TranscriptOrigin[] = ['creator-captions', 'auto-captions', 'native-transcript', 'stt', 'video-model'];
+const ORIGINS: TranscriptOrigin[] = ['creator-captions', 'auto-captions', 'native-transcript', 'stt', 'video-model', 'imported'];
 const TRUE = new Set(['1', 'true', 'yes']);
 
 function bad(message: string, hint: string): Vid2ContextError {

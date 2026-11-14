@@ -4,15 +4,15 @@
  * single-page navigation, and answers the popup. Captions are fetched and
  * formatted right here in the page: nothing goes to a server.
  */
-import { buildBundle, collectBytes, estimateTokens, type VideoContext } from '@vid2context/core';
+import { buildBundle, collectBytes, estimateTokens, Vid2ContextError, type VideoContext } from '@vid2context/core';
 import { describeError } from '../lib/api.ts';
 import { ext } from '../lib/browser.ts';
 import { addHistory, type HistoryAction } from '../lib/history.ts';
 import { youtubeWatchId } from '../lib/links.ts';
 import { settingsNow, settingsReady } from '../lib/live-settings.ts';
-import type { BackgroundRequest, ContentRequest, ContentResponse } from '../lib/messages.ts';
+import type { BackgroundRequest, BridgeTabResponse, ContentRequest, ContentResponse } from '../lib/messages.ts';
 import { renderForCopy } from '../youtube/copy.ts';
-import { contextFor, hasCaptions, NO_CAPTIONS_HINT, playerFor } from './extract.ts';
+import { bridgeTranscriptFor, contextFor, hasCaptions, NO_CAPTIONS_HINT, playerFor } from './extract.ts';
 import { createActionsUi, HOST_ID } from './ui.ts';
 
 /** Where the buttons go: desktop title, then the mobile site's title block. */
@@ -171,8 +171,25 @@ ui.copy.addEventListener('click', () => void onCopy());
 ui.zip.addEventListener('click', () => void onZip());
 ui.open.addEventListener('click', onOpen);
 
-ext.runtime.onMessage.addListener((raw: unknown, _sender, sendResponse: (r: ContentResponse) => void) => {
+function answerBridge(msg: Extract<ContentRequest, { type: 'v2c:bridge-transcript' }>, send: (r: BridgeTabResponse) => void) {
+  const request = { videoId: msg.videoId, ...(msg.language ? { language: msg.language } : {}) };
+  bridgeTranscriptFor(request).then(
+    (body) => send(body),
+    (err: unknown) => {
+      const code = err instanceof Vid2ContextError ? err.code : 'upstream';
+      send({ ok: false, code, ...describeError(err) });
+    },
+  );
+}
+
+ext.runtime.onMessage.addListener((raw: unknown, sender, sendResponse: (r: ContentResponse | BridgeTabResponse) => void) => {
   const msg = raw as ContentRequest;
+  if (msg?.type === 'v2c:bridge-transcript') {
+    // Only the background asks this (it has no tab); a request from another page is ignored.
+    if (sender.id !== ext.runtime.id || sender.tab) return false;
+    answerBridge(msg, sendResponse);
+    return true;
+  }
   const fail = (err: unknown) => sendResponse({ ok: false, ...describeError(err) });
   if (msg?.type === 'v2c:status') {
     const id = youtubeWatchId(location.href);

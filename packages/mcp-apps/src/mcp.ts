@@ -46,7 +46,7 @@ const outputSchema = {
     channel: z.string().optional(),
     durationSec: z.number().optional(),
     publishedAt: z.string().optional(),
-    origin: z.enum(['creator-captions', 'auto-captions', 'native-transcript', 'stt', 'video-model']),
+    origin: z.enum(['creator-captions', 'auto-captions', 'native-transcript', 'stt', 'video-model', 'imported']),
     language: z.string(),
     translated: z.boolean().optional(),
   }),

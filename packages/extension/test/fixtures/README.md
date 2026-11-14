@@ -10,6 +10,8 @@ Real responses replayed by the unit tests. Recorded on 2026-11-14 from this repo
 | `timedtext-jNQXAC9IVRw-en.srv3.xml` | Copied from `providers/youtube/test/fixtures/` (recorded there on 2026-11-14): the same video's en track as srv3 |
 | `timedtext-jNQXAC9IVRw-en.srv1.xml` | Copied from the same folder: the en track without `fmt` (srv1) |
 | `api-transcript-pack-jNQXAC9IVRw.json` | `GET /api/v1/transcript?url=<Me at the zoo>&format=pack` from the real server (`packages/server`, run locally on 127.0.0.1), as `{ status, contentType, body }` |
+| `player-403-extension-origin.html` | `POST https://www.youtube.com/youtubei/v1/player?prettyPrint=false` (ANDROID client 20.10.38, the body `src/resilience/transport.ts` in the YouTube provider sends) with `Origin: chrome-extension://abcdefghijklmnopabcdefghijklmnop`, recorded with curl from the VM on 2026-11-14: HTTP 403 with Google's "Sorry..." page. The same request with `Origin: https://www.youtube.com` or no Origin got 200 with caption tracks, which is why `src/background/youtube-origin.ts` exists. Stored unchanged (it holds no IP address) |
+| `watch-bot-check-jNQXAC9IVRw.html` | The watch page a fresh Chromium profile with the extension received on its second visit to "Me at the zoo" from the VM, saved by a Playwright run on 2026-11-14: `playabilityStatus` `LOGIN_REQUIRED` "Sign in to confirm you're not a bot" and no `videoDetails`. Trimmed like the other watch pages, and the player response keeps only `playabilityStatus.status` and `.reason` (its error screen carries tracking parameters) |
 | `api-transcript-not-found.json` | `GET /api/v1/transcript?url=https://www.youtube.com/watch?v=xxxxxxxxxxx` from the same server: its `not-found` error body |
 
 Trimming, so nothing personal lands in this public repo:
@@ -17,5 +19,7 @@ Trimming, so nothing personal lands in this public repo:
 - Watch pages: every inline script except the player response is emptied (they carry visitor ids and session config). The player response keeps only `playabilityStatus`, `videoDetails`, `captions` and `microformat`; `streamingData` and tracking URLs were dropped because they embed the requesting IP address. Markup and external script tags are unchanged.
 - The recorder fails if any recorded file contains an IP address other than the `0.0.0.0` placeholder YouTube puts in caption URLs.
 - The caption body itself could not be recorded from the VM (HTTP 429), so the srv3 and srv1 tracks are the YouTube provider's recordings of the same video.
+
+The bridge tests (`test/bridge-transcript.test.ts`) also replay the YouTube provider's own player and timedtext recordings straight from `providers/youtube/test/fixtures/` (documented in its README), so the direct path is tested on exactly what that provider is tested on.
 
 To re-record: `npm run record -w packages/extension`, optionally with `V2C_API=http://127.0.0.1:<port>/api/v1` pointing at a running `npm run start:server` to refresh the API files.
