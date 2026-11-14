@@ -1,0 +1,12 @@
+{
+  "name": "@vid2context/registry",
+  "version": "0.1.0",
+  "description": "Generated provider registries per runtime (node, workers, browser). Regenerate with `npm run gen`.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    "./node": "./src/node.ts",
+    "./workers": "./src/workers.ts",
+    "./browser": "./src/browser.ts"
+  }
+}

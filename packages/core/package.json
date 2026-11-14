@@ -1,0 +1,10 @@
+{
+  "name": "@vid2context/core",
+  "version": "0.1.0",
+  "description": "Contracts, rung chain and pipeline for vid2context. Runtime-neutral: no Node-only imports.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

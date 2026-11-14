@@ -1,0 +1,30 @@
+{
+  "name": "vid2context",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Turn any video into context for AI agents: transcripts, metadata, chapters and cited research briefs. Free-first, works with local or hosted AI, ships as a CLI, MCP server, HTTP API and web app.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "workspaces": [
+    "packages/*",
+    "providers/*"
+  ],
+  "scripts": {
+    "postinstall": "node scripts/gen-registry.mjs",
+    "gen": "node scripts/gen-registry.mjs",
+    "typecheck": "npm run gen && tsc -p tsconfig.json",
+    "test": "npm run gen && vitest run",
+    "test:live": "npm run gen && LIVE=1 vitest run",
+    "lint": "biome check .",
+    "format": "biome check --write .",
+    "check": "npm run typecheck && npm run lint && npm test",
+    "cli": "tsx packages/cli/src/bin.ts",
+    "mcp": "tsx packages/mcp/src/bin.ts",
+    "dev:server": "tsx watch packages/server/src/node.ts",
+    "start:server": "tsx packages/server/src/node.ts"
+  },
+  "devDependencies": {}
+}
