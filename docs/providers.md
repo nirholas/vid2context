@@ -115,6 +115,27 @@ Guide, dimensions and the one-model-per-index rule: [guides/embeddings.md](guide
 
 Model overrides: `OLLAMA_EMBED_MODEL`, `LMSTUDIO_EMBED_MODEL`, `LOCAL_EMBED_MODEL`, `TRANSFORMERS_EMBED_MODEL`, `GEMINI_EMBED_MODEL`, `JINA_EMBED_MODEL`, `CLOUDFLARE_EMBED_MODEL`, `MISTRAL_EMBED_MODEL`, `OVH_EMBED_MODEL`, `OPENAI_EMBED_MODEL`. `VID2CONTEXT_EMBED_MODEL` (a rung id such as `embed/ovh/bge-m3`) fixes the model new indexes use.
 
+## Cloudflare Workers AI (`cloudflare-ai`)
+
+Workers AI gives every Cloudflare account 10,000 neurons per day free, on the Free and Paid Workers plans, reset at 00:00 UTC (pricing page checked 2026-11-14). Whisper large-v3-turbo costs about 47 neurons per audio minute, so the free allocation covers roughly 3.5 hours of audio a day. Inside a Worker the rungs run through the `AI` binding (no token, no extra round trip); anywhere else speech-to-text runs over REST. Guide: [guides/cloudflare.md](guides/cloudflare.md). "Live" means verified on 2026-11-14 against the real service: REST from Node, the binding in `wrangler dev`.
+
+| Rung id | Tier | Enabled by | Free limits and notes |
+|---|---|---|---|
+| `stt/cloudflare-binding/@cf/openai/whisper-large-v3-turbo` | free | `CLOUDFLARE_AI_BINDING` (the binding name, usually `AI`; Worker only) | segments, words, language detection, prompt. Live |
+| `stt/cloudflare-binding/@cf/openai/whisper` | free | `CLOUDFLARE_AI_BINDING` | older and much less accurate; no language detection. Live |
+| `stt/cloudflare/@cf/openai/whisper-large-v3-turbo` | free | `CLOUDFLARE_ACCOUNT_ID` + `CLOUDFLARE_API_TOKEN` | REST, Node, Workers and browser. Live |
+| `stt/cloudflare/@cf/openai/whisper` | free | `CLOUDFLARE_ACCOUNT_ID` + `CLOUDFLARE_API_TOKEN` | REST, raw audio bytes. Live |
+| `llm/cloudflare-binding/@cf/meta/llama-3.3-70b-instruct-fp8-fast` | free | `CLOUDFLARE_AI_BINDING` | 24k-token context; JSON mode; streaming. Live |
+| `llm/cloudflare-binding/@cf/openai/gpt-oss-120b` | free | `CLOUDFLARE_AI_BINDING` | 128k context, reasoning model (reasoning is dropped from the answer); JSON mode; streaming. Live |
+| `llm/cloudflare-binding/@cf/meta/llama-4-scout-17b-16e-instruct` | free | `CLOUDFLARE_AI_BINDING` | 131k context; JSON mode; streaming. Recorded |
+| `llm/cloudflare-binding/@cf/mistralai/mistral-small-3.1-24b-instruct` | free | `CLOUDFLARE_AI_BINDING` | 128k context; streaming; JSON mode not claimed (not in its schema). Recorded |
+| `embed/cloudflare-binding/@cf/baai/bge-m3` | free | `CLOUDFLARE_AI_BINDING` | 1024 dimensions, 100 texts per call. Live |
+
+- Models: `CLOUDFLARE_STT_MODEL` (speech-to-text list, binding and REST), `CLOUDFLARE_BINDING_MODEL` (binding LLM list), comma-separated, in order. `CLOUDFLARE_EMBED_MODEL` is shared with `embed/cloudflare/...` above; for a model whose size is not built in (bge-m3, bge-large, bge-base, bge-small are), also set `CLOUDFLARE_EMBED_DIMENSIONS`.
+- The REST LLM and REST embedding rungs are `llm/cloudflare/...` (free catalog) and `embed/cloudflare/...` (embeddings), not duplicated here.
+- Errors: the daily allocation running out (code 3036) is `rate-limited` until 00:00 UTC; unknown or retired models are `not-found`; a rejected token is `auth`.
+- Upload size: no published limit for the speech-to-text models, so no `maxBytes` is set; a request that is too large fails with `too-large` (code 3006) and the next rung is tried.
+
 ## Chain controls
 
 | Env var | Effect |
@@ -139,6 +160,7 @@ The library (saved contexts, collections, search, key-value state, vectors) uses
 |---|---|---|---|
 | lower than 50 | Postgres (`storage-postgres`) | node | a database URL is set (see that provider's rows) |
 | 50 | SQLite (`storage-sqlite`), FTS5 search, one local file | node (22.13+) | by default, unless `VID2CONTEXT_STORAGE` names another backend |
+| 20 | Cloudflare D1 (`storage-cloudflare`), FTS5 search, R2 for large contexts, KV for state | workers | `VID2CONTEXT_D1` names a D1 binding, unless `VID2CONTEXT_STORAGE` names another backend. See [guides/cloudflare.md](guides/cloudflare.md) |
 | none | in-process `MemoryStorage`, lost on exit | any | no backend is enabled, or `VID2CONTEXT_STORAGE=memory` |
 
 | Env var | Used by | Notes |
@@ -147,6 +169,9 @@ The library (saved contexts, collections, search, key-value state, vectors) uses
 | `VID2CONTEXT_DB` | `storage-sqlite` | path of the SQLite file, or `:memory:`; default `<VID2CONTEXT_HOME>/library.db` |
 | `VID2CONTEXT_HOME` | `storage-sqlite` and other local data | data directory; default `.vid2context` in the working directory |
 | `VID2CONTEXT_DB_BUSY_TIMEOUT_MS` | `storage-sqlite` | how long a write waits for another process holding the file; default 5000 |
+| `VID2CONTEXT_D1` | `storage-cloudflare` | name of the Worker's D1 binding (for example `DB`); enables the backend |
+| `VID2CONTEXT_R2` | `storage-cloudflare` | optional R2 binding name: contexts over 1,000,000 bytes of JSON go there (a D1 row holds at most 2 MB), and uploaded media blobs |
+| `VID2CONTEXT_KV` | `storage-cloudflare` | optional KV binding name for key-value state (TTLs under 60 s are raised to 60, the KV minimum); without it the state lives in a D1 table |
 
 ## Security and limits
 
@@ -246,5 +271,5 @@ Telegram, Discord and Slack bots from `@vid2context/bots` (`POST /bots/telegram`
 | Kind | Provider | Tier | Enabled by | Known limits |
 |---|---|---|---|---|
 | llm | Anthropic `claude-haiku-4-5-20251001`, native | paid | `ANTHROPIC_API_KEY` | |
-| stt | whisper.cpp, Transformers.js, Workers AI Whisper, Gemini, Deepgram, AssemblyAI | local / free | per prompt | |
+| stt | whisper.cpp, Transformers.js, Gemini, Deepgram, AssemblyAI | local / free | per prompt | |
 | video | Gemini video understanding | free | `GEMINI_API_KEY` | |

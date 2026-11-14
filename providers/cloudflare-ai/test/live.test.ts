@@ -11,7 +11,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { createContext } from '@vid2context/core';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { embedRungs, sttRungs } from '../src/index.ts';
+import { embedTexts, REST_BASE_URL, sttRungs } from '../src/index.ts';
 
 const apollo = new Uint8Array(readFileSync(new URL('../../../tests/fixtures/media/apollo11-small-step.mp3', import.meta.url)));
 const live = Boolean(process.env.LIVE && process.env.CLOUDFLARE_ACCOUNT_ID && process.env.CLOUDFLARE_API_TOKEN);
@@ -31,9 +31,14 @@ describe.skipIf(!live)('Workers AI over REST (live)', () => {
   });
 
   it('embeds with bge-m3', async () => {
-    const rung = embedRungs(process.env).find((r) => r.id === 'embed/cloudflare/@cf/baai/bge-m3');
-    const vectors = await rung?.embed(['one small step for man'], ctx());
-    expect(vectors?.[0]).toHaveLength(1024);
+    const t = {
+      kind: 'rest' as const,
+      accountId: process.env.CLOUDFLARE_ACCOUNT_ID ?? '',
+      token: process.env.CLOUDFLARE_API_TOKEN ?? '',
+      baseUrl: REST_BASE_URL,
+    };
+    const vectors = await embedTexts(t, '@cf/baai/bge-m3', ['one small step for man'], ctx(), 'cloudflare');
+    expect(vectors[0]).toHaveLength(1024);
   });
 });
 

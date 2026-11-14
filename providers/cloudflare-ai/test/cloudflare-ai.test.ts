@@ -5,10 +5,12 @@ import { describe, expect, it } from 'vitest';
 import providers, {
   type AiBinding,
   embedRungs,
+  embedTexts,
   errorFromBinding,
   llmRungs,
   mapCloudflareCode,
   parseSse,
+  REST_BASE_URL,
   sttRungs,
 } from '../src/index.ts';
 
@@ -71,7 +73,6 @@ describe('rung lists', () => {
       'llm/cloudflare-binding/@cf/meta/llama-4-scout-17b-16e-instruct',
       'llm/cloudflare-binding/@cf/mistralai/mistral-small-3.1-24b-instruct',
       'embed/cloudflare-binding/@cf/baai/bge-m3',
-      'embed/cloudflare/@cf/baai/bge-m3',
     ]);
     for (const r of all) {
       expect(r.tier).toBe('free');
@@ -83,6 +84,7 @@ describe('rung lists', () => {
     const binding = [...sttRungs(BINDING_ENV), ...llmRungs(BINDING_ENV), ...embedRungs(BINDING_ENV)];
     for (const r of binding) expect(r.isEnabled?.(BINDING_ENV)).toBe(r.service === 'cloudflare-binding');
     const rest = [...sttRungs(REST_ENV), ...embedRungs(REST_ENV)];
+    expect(embedRungs(REST_ENV).every((r) => r.isEnabled?.(REST_ENV) === false)).toBe(true);
     for (const r of rest) expect(r.isEnabled?.(REST_ENV)).toBe(r.service === 'cloudflare');
     expect(rungById(sttRungs(REST_ENV), 'stt/cloudflare/@cf/openai/whisper').requires).toEqual([
       'CLOUDFLARE_ACCOUNT_ID',
@@ -234,19 +236,22 @@ describe('REST errors', () => {
 });
 
 describe('REST embeddings', () => {
-  it('embeds with bge-m3 and returns 1024-dimension vectors', async () => {
+  it('embeds with bge-m3 over REST and returns 1024-dimension vectors', async () => {
     const model = '@cf/baai/bge-m3';
     const fetch = replayFetch([{ method: 'POST', url: runUrl(model), response: { body: fixture('bge-m3.embed.json') } }]);
-    const rung = rungById(embedRungs(REST_ENV), `embed/cloudflare/${model}`);
+    const t = { kind: 'rest' as const, accountId: ACCOUNT, token: 'cf-test-token', baseUrl: REST_BASE_URL };
     const texts = [
       'That is one small step for man, one giant leap for mankind.',
       'All right, so here we are in front of the elephants.',
     ];
-    const vectors = await rung.embed(texts, testContext({ fetch, env: REST_ENV }));
-    expect(rung.dimensions).toBe(1024);
+    const vectors = await embedTexts(t, model, texts, testContext({ fetch }), 'cloudflare');
     expect(vectors).toHaveLength(2);
     for (const v of vectors) expect(v).toHaveLength(1024);
     expect((JSON.parse(String(fetch.calls[0]?.body)) as { text: string[] }).text).toEqual(texts);
+  });
+
+  it('leaves the REST embedding rung to providers/embed so rung ids never collide', () => {
+    expect(embedRungs({ ...REST_ENV, ...BINDING_ENV }).map((r) => r.id)).toEqual(['embed/cloudflare-binding/@cf/baai/bge-m3']);
   });
 });
 
