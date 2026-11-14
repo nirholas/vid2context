@@ -383,3 +383,34 @@ describe('provider', () => {
     second.close();
   });
 });
+
+describe.skipIf(!process.env.LIVE)('live: fresh bge-m3 embeddings from OVH (keyless)', () => {
+  it('stores and ranks them like the recorded fixture', async () => {
+    const body = readFileSync(new URL('./fixtures/ovh-bge-m3-embeddings.request.json', import.meta.url), 'utf8');
+    const res = await fetch('https://oai.endpoints.kepler.ai.cloud.ovh.net/v1/embeddings', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body,
+    });
+    expect(res.status).toBe(200);
+    const json = (await res.json()) as { data: { index: number; embedding: number[] }[] };
+    const vec = (i: number) => json.data.find((d) => d.index === i)?.embedding ?? [];
+    expect(vec(0)).toHaveLength(1024);
+    const s = new SqliteStorage({ path: ':memory:' });
+    await s.upsertVectors(
+      [0, 1, 2, 3].map((i) => ({
+        id: String(i),
+        videoId: i < 2 ? 'youtube:cCPsdFdlshc' : 'youtube:jNQXAC9IVRw',
+        startSec: i,
+        endSec: i + 1,
+        text: String(i),
+        model: 'bge-m3',
+        vector: vec(i),
+      })),
+    );
+    const hits = await s.queryVectors({ vector: vec(4), model: 'bge-m3' });
+    expect(hits[0]?.id).toBe('0');
+    expect(new Set(hits.slice(0, 2).map((h) => h.videoId))).toEqual(new Set(['youtube:cCPsdFdlshc']));
+    s.close();
+  });
+});
