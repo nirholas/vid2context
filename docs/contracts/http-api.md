@@ -87,7 +87,7 @@ Returns the full `VideoContext`: `metadata`, `transcript` (timed `segments`), op
 Returns the transcript rendered by the chosen formatter (default `text`) with that formatter's `mimeType` as `Content-Type`.
 
 - `skip=sponsor,selfpromo` (or `skip=1` for the default categories) removes SponsorBlock segments from a copy of the transcript through `@vid2context/skips`; the stored transcript stays whole, and the response carries `X-Data-Attribution`.
-- `translate=1` needs item 35's translation layer, which is not installed: the server answers `bad-request` with a hint (pass `lang=xx` for a track the platform already has).
+- `translate=1` (needs `lang`, else `bad-request`) loads the source transcript as usual (saved to the library unchanged), then calls `translateContext` from `@vid2context/translate`: the transcript as is when it is already in `lang`, else the platform's own track or machine translation, else LLM translation on the rung chain that keeps every segment and timestamp. The translation is returned, never stored over the source. `X-Translated-Via` says which step answered: `source`, `platform` or `llm`.
 
 ### Routes implemented by item 46
 
@@ -140,6 +140,8 @@ Mounted by `createApp` (`packages/server/src/app.ts`, `MOUNTED_SUB_APPS`). They 
 | `@vid2context/search` (40) | `searchRoutes` | `/api/v1` | |
 | `@vid2context/library` (41) | `libraryRoutes` | `/api/v1` | gets the server's KvStore, and the jobs queue when one is passed |
 | `@vid2context/ask` (34) | `askRoutes` | `/api/v1` | `/ask` and `/chat` |
+| `@vid2context/insights` (32) | `insightsRoutes` | `/api/v1` | `/briefs` and `/extract`: `202 Job` with the jobs queue, else `200` with the result |
+| `@vid2context/chapters` (35) | `chaptersRoutes` | `/api/v1` | `POST /chapters` |
 | `@vid2context/jobs` (42) | `jobsRoutes` | `/api/v1` | only when `createApp({ jobs: { queue } })` is given a queue: the Node entry passes an in-process queue with the built-in kinds |
 | `@vid2context/skips` (53) | `skipsRoutes` | `/api/v1` | |
 | `@vid2context/research` (54) | `researchRoutes` | `/api/v1` | |
@@ -147,7 +149,7 @@ Mounted by `createApp` (`packages/server/src/app.ts`, `MOUNTED_SUB_APPS`). They 
 | `@vid2context/webhooks` (59) | `webhookRoutes` | `/api/v1` | |
 | `@vid2context/mcp-http` (45) | `mcpHttpRoutes` | `/` | `/mcp`, `/oauth/*`, `/.well-known/*`; answers its own errors and keeps its own auth and CORS rules |
 
-Not mounted yet, because the package does not export a factory: insights (32, `/briefs`, `/extract`), translation (35), chapters (36), the hosted-mode accounts middleware and routes (58), bots (56), live (61) and duplicates (62).
+Not mounted: the hosted-mode accounts middleware and routes (58, `hostedMiddleware` and `accountsRoutes` from `@vid2context/accounts/http`, which replace the server's own key handling when `VID2CONTEXT_HOSTED=1` and need the integration pass to decide the order), and bots (56), live (61) and duplicates (62), whose packages export no route factory yet.
 
 ## Planned routes
 

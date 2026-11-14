@@ -185,6 +185,20 @@ Workers AI gives every Cloudflare account 10,000 neurons per day free, on the Fr
 - Errors: the daily allocation running out (code 3036) is `rate-limited` until 00:00 UTC; unknown or retired models are `not-found`; a rejected token is `auth`.
 - Upload size: no published limit for the speech-to-text models, so no `maxBytes` is set; a request that is too large fails with `too-large` (code 3006) and the next rung is tried.
 
+## On-screen text and slides (`visual-frames`)
+
+Reads what a transcript misses: slide text, code, charts. `extractVisualNotes` in `@vid2context/provider-visual-frames/node` samples frames with ffmpeg, drops near-duplicates and sends each distinct frame through these rungs, free first, at most `maxFrames` (default 40) per video. See [guides/visual-notes.md](guides/visual-notes.md).
+
+| Rung id | Tier | Enabled by | Free limits and notes |
+|---|---|---|---|
+| `visual/ollama/<model>` | local | `OLLAMA_VISION_MODEL` (`qwen2.5vl`, `llava`, ...; comma-separated for several rungs; `OLLAMA_BASE_URL`) | runs before tesseract when set. Image as a data URL through Ollama's OpenAI-compatible endpoint, JSON mode. Nothing leaves the machine. **Unverified live** (no Ollama on the build machine) |
+| `visual/tesseract/<langs>` | local | on by default in Node and the browser (`TESSERACT_ENABLED=0` turns it off; never on Workers) | tesseract.js (WebAssembly), nothing leaves the machine. `TESSERACT_LANGS` (default `eng`, `+`-joined such as `ces+eng`); English data ships with the package, other languages download once to `.vid2context/models/tesseract`. `TESSERACT_LANG_PATH` (your own traineddata directory or URL), `TESSERACT_MIN_CONFIDENCE` (per line, default 60). Returns `ocr` notes. Verified live 2026-11-14, about 0.4 to 2 s per frame on a CPU VM |
+| `visual/gemini/<model>` | free | `GEMINI_API_KEY` (+ `GEMINI_FALLBACK_KEYS`) | `GEMINI_VISION_MODEL` (default `gemini-2.5-flash-lite`). Requests spaced `GEMINI_VISION_INTERVAL_SEC` apart (default 4). Frames go to Google. **Unverified live** (no key) |
+| `visual/ovh/Qwen2.5-VL-72B-Instruct` | keyless | none | `OVH_VISION_MODEL` to override. 2 requests per minute per model per IP (`x-ratelimit-limit-minute: 2`, `Retry-After` on 429, 2026-11-14), so requests are spaced `OVH_VISION_INTERVAL_SEC` apart (default 30) and the chain moves on meanwhile. Accepts JPEG data URLs and `json_object`; verified live 2026-11-14, 2 to 33 s per frame |
+
+- Frame sampling (Node only) needs ffmpeg (`FFMPEG_PATH`) and, for URLs, yt-dlp (`YTDLP_PATH` or the managed copy from `providers/ytdlp`).
+- The Workers build resolves the package to its edge entry, which has the vision rungs only.
+
 ## Chain controls
 
 | Env var | Effect |
