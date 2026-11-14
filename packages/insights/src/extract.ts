@@ -252,11 +252,19 @@ export async function extract(contexts: VideoContext[], opts: ExtractOptions, de
 
   const { value, repaired } = await validated(answer, messages, schema, c);
   const verified = verifyExtraction(value, set);
+  const data = custom ? (verified.data as Record<string, unknown>).data : verified.data;
+  // Custom results unwrap `data`, so citation paths are made relative to it ("/data/a/0" and "/a/0" both become "/a/0").
+  const citations = custom
+    ? verified.citations.map((c) => ({ ...c, path: c.path.replace(/^\/data(?=\/|$)/, '') || '/' }))
+    : verified.citations;
   return {
     ...(template ? { template: template.id } : {}),
-    data: custom ? (verified.data as Record<string, unknown>).data : verified.data,
-    citations: verified.citations,
-    unverified: verified.unverified,
+    data,
+    citations,
+    ...(custom ? { uncited: uncitedPaths(data, citations) } : {}),
+    unverified: custom
+      ? verified.unverified.map((u) => (u.path ? { ...u, path: u.path.replace(/^\/data(?=\/|$)/, '') || '/' } : u))
+      : verified.unverified,
     repaired,
     sources: set.sources.map((s) => s.summary),
     rungs: ledger.rungs,
@@ -317,4 +325,27 @@ async function extractInParts(
     c.deps.ctx,
   );
   return { answer, messages };
+}
+
+/**
+ * JSON pointers of the leaf values in `data` that no verified citation
+ * covers. A citation covers its own path and everything below it. Custom
+ * schemas cannot be pruned like templates, so this tells the caller which
+ * values rest on no checked quote.
+ */
+export function uncitedPaths(data: unknown, citations: { path: string }[]): string[] {
+  const covered = citations.map((c) => c.path);
+  const out: string[] = [];
+  const isCovered = (p: string) => covered.some((c) => c === '/' || p === c || p.startsWith(`${c}/`));
+  const walk = (v: unknown, path: string) => {
+    if (Array.isArray(v)) {
+      for (const [i, x] of v.entries()) walk(x, `${path}${pointer(i)}`);
+    } else if (isObject(v)) {
+      for (const [k, x] of Object.entries(v)) walk(x, `${path}${pointer(k)}`);
+    } else if (v !== null && v !== undefined && !isCovered(path || '/')) {
+      out.push(path || '/');
+    }
+  };
+  walk(data, '');
+  return out;
 }

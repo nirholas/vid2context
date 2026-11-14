@@ -124,8 +124,10 @@ export interface ExtractionResult {
   template?: string;
   /** The JSON matching the template or schema. Every citation object left inside it was verified and carries `url`. */
   data: unknown;
-  /** Verified citations found in `data`, with their JSON pointer. */
+  /** Verified citations found in `data`, with their JSON pointer into `data`. */
   citations: (Citation & { path: string })[];
+  /** Custom schemas only: JSON pointers of values in `data` that no verified citation covers. Treat them as unsupported by the videos. */
+  uncited?: string[];
   unverified: UnverifiedClaim[];
   /** True when the first answer failed validation and the repair call fixed it. */
   repaired: boolean;

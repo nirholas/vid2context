@@ -1,0 +1,1880 @@
+{
+  "metadata": {
+    "ref": {
+      "input": "https://www.youtube.com/watch?v=ovIkN7UgbgE",
+      "platform": "youtube",
+      "kind": "video",
+      "id": "youtube:ovIkN7UgbgE",
+      "nativeId": "ovIkN7UgbgE",
+      "url": "https://www.youtube.com/watch?v=ovIkN7UgbgE"
+    },
+    "title": "G-Wagon Mechanic Reveals The Truth: Are They Ridiculously Expensive To Maintain?",
+    "description": "Are G Wagon's ridiculously expensive to maintain? This G-Wagon Mechanic reveals the common problems, maintenance costs, and more. \n\nThanks to Joe, the G Wagon Expert at Alliance Auto Care in Loveland, CO, for helping prepare our FREE G-Wagon's Buyer's Guide: https://docs.google.com/document/d/12AuluAdmYzX5J3fkvwb2Vcos9EYJr1mSu7M1WzFkAhE/edit?usp=sharing\n\nHave a dream G Wagon build? \nCONTACT JOE: \nhttps://allianceautocare.com/ \n[email redacted] \n[phone redacted] \n\nWatch all the videos in this Buyer's & Build series in this playlist: https://www.youtube.com/playlist?list=PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b\n\nFREE G-Wagon's Buyer's Guide: https://docs.google.com/document/d/12AuluAdmYzX5J3fkvwb2Vcos9EYJr1mSu7M1WzFkAhE/edit?usp=sharing\n\n#gwagen  #gwagon  #gclass  #gwheeln",
+    "durationSec": 821,
+    "publishedAt": "2025-03-17",
+    "thumbnailUrl": "https://i.ytimg.com/vi/ovIkN7UgbgE/maxresdefault.jpg",
+    "language": "bn",
+    "chapters": [
+      {
+        "title": "G Wagon maintenance overview",
+        "startSec": 0,
+        "endSec": 46.079
+      },
+      {
+        "title": "Case study of a used G63",
+        "startSec": 46.079,
+        "endSec": 162.84
+      },
+      {
+        "title": "Routine maintenance costs",
+        "startSec": 162.84,
+        "endSec": 230.04
+      },
+      {
+        "title": "Brake system and consumables",
+        "startSec": 230.04,
+        "endSec": 346.12
+      },
+      {
+        "title": "Major services and gearbox",
+        "startSec": 346.12,
+        "endSec": 444.16
+      },
+      {
+        "title": "100k mile service and leaks",
+        "startSec": 444.16,
+        "endSec": 495.12
+      },
+      {
+        "title": "Is the G Wagon worth it?",
+        "startSec": 495.12,
+        "endSec": 641.68
+      },
+      {
+        "title": "Buying advice and conclusion",
+        "startSec": 641.68,
+        "endSec": 821
+      }
+    ],
+    "isLive": false,
+    "extra": {
+      "viewCount": 85465,
+      "likeCount": 1417,
+      "dateText": "Mar 17, 2025",
+      "channelHandle": "@alliancemotorworks",
+      "channelHandleUrl": "https://www.youtube.com/@alliancemotorworks",
+      "subscriberCountText": "15.1K subscribers",
+      "isShort": false,
+      "isLive": false,
+      "isUpcoming": false,
+      "isLiveContent": false,
+      "ageRestricted": false,
+      "membersOnly": false,
+      "playability": "OK",
+      "chapterSource": "key-moments",
+      "links": [
+        "https://docs.google.com/document/d/12AuluAdmYzX5J3fkvwb2Vcos9EYJr1mSu7M1WzFkAhE/edit?usp=sharing",
+        "https://allianceautocare.com/",
+        "https://www.youtube.com/playlist?list=PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b"
+      ]
+    },
+    "channel": {
+      "name": "Alliance Motorworks",
+      "id": "UCdEjP_BjQ5audhxLKKzZl2A",
+      "url": "https://www.youtube.com/channel/UCdEjP_BjQ5audhxLKKzZl2A"
+    }
+  },
+  "transcript": {
+    "ref": {
+      "input": "https://www.youtube.com/watch?v=ovIkN7UgbgE",
+      "platform": "youtube",
+      "kind": "video",
+      "id": "youtube:ovIkN7UgbgE",
+      "nativeId": "ovIkN7UgbgE",
+      "url": "https://www.youtube.com/watch?v=ovIkN7UgbgE"
+    },
+    "language": "en",
+    "origin": "stt",
+    "producer": "stt/whisper-cpp/small",
+    "model": "small",
+    "segments": [
+      {
+        "startSec": 0,
+        "endSec": 6,
+        "text": "Are G-wagons as ridiculously expensive to maintain as most people tell you?"
+      },
+      {
+        "startSec": 6,
+        "endSec": 9.52,
+        "text": "In this video, I'm joined with Joe, the G-wagon expert here at Alliance Auto Care."
+      },
+      {
+        "startSec": 9.52,
+        "endSec": 14.64,
+        "text": "We're in a shop and we're talking about what it will actually cost to maintain a G-wagon."
+      },
+      {
+        "startSec": 14.64,
+        "endSec": 17.92,
+        "text": "Watch this video all the way through if you're someone who's interested in purchasing a G-wagon"
+      },
+      {
+        "startSec": 17.92,
+        "endSec": 19.64,
+        "text": "or if you already have one."
+      },
+      {
+        "startSec": 19.64,
+        "endSec": 26.28,
+        "text": "If you end up buying the wrong G-wagon and get a molested specimen from an auction site"
+      },
+      {
+        "startSec": 26.28,
+        "endSec": 29.4,
+        "text": "or something else, you could be into a massive money pit."
+      },
+      {
+        "startSec": 29.4,
+        "endSec": 30.8,
+        "text": "Well, let's rock and roll."
+      },
+      {
+        "startSec": 30.8,
+        "endSec": 35.44,
+        "text": "My name's Adam, host of the G-wagon G-wagon channel and the G-wagon enthusiast that do"
+      },
+      {
+        "startSec": 35.44,
+        "endSec": 38.24,
+        "text": "this for the love of G. Joe, thanks for being here."
+      },
+      {
+        "startSec": 38.24,
+        "endSec": 39.24,
+        "text": "Thank you."
+      },
+      {
+        "startSec": 39.24,
+        "endSec": 40.24,
+        "text": "Joe, go to Alliance Auto Care."
+      },
+      {
+        "startSec": 40.24,
+        "endSec": 41.24,
+        "text": "Let's get into this."
+      },
+      {
+        "startSec": 41.24,
+        "endSec": 46.28,
+        "text": "So, the big question is, what does it actually cost to maintain and repair these trucks?"
+      },
+      {
+        "startSec": 46.28,
+        "endSec": 47.64,
+        "text": "So we're going to use this as an example."
+      },
+      {
+        "startSec": 47.64,
+        "endSec": 50.68,
+        "text": "This is a 2015 G63."
+      },
+      {
+        "startSec": 50.68,
+        "endSec": 51.68,
+        "text": "Patens."
+      },
+      {
+        "startSec": 51.68,
+        "endSec": 52.68,
+        "text": "We've been wheeling in this one."
+      },
+      {
+        "startSec": 52.68,
+        "endSec": 53.68,
+        "text": "Yep."
+      },
+      {
+        "startSec": 53.68,
+        "endSec": 54.68,
+        "text": "Patens."
+      },
+      {
+        "startSec": 54.68,
+        "endSec": 57,
+        "text": "We've seen this G in here a couple of times and he takes really good care of it."
+      },
+      {
+        "startSec": 57,
+        "endSec": 61.48,
+        "text": "So this is actually a really good example of someone who uses the truck as a daily driver."
+      },
+      {
+        "startSec": 61.48,
+        "endSec": 62.48,
+        "text": "He wheels it."
+      },
+      {
+        "startSec": 62.48,
+        "endSec": 63.48,
+        "text": "He has fun with it."
+      },
+      {
+        "startSec": 63.48,
+        "endSec": 65.08,
+        "text": "If something goes wrong, picks up the phone, calls us."
+      },
+      {
+        "startSec": 65.08,
+        "endSec": 67.16,
+        "text": "So, the truck has roughly 100,000 miles on it."
+      },
+      {
+        "startSec": 67.16,
+        "endSec": 69.64,
+        "text": "It's not a low miles queen and it does get used."
+      },
+      {
+        "startSec": 69.64,
+        "endSec": 72.68,
+        "text": "Currently it's in here today for some power steering leaks."
+      },
+      {
+        "startSec": 72.68,
+        "endSec": 76.56,
+        "text": "And we've got a hood latch that doesn't work and we've got some doors that aren't opening."
+      },
+      {
+        "startSec": 76.56,
+        "endSec": 79.92,
+        "text": "So, I mean, pretty minor stuff, but the big one is a power steering leak."
+      },
+      {
+        "startSec": 79.92,
+        "endSec": 82.52,
+        "text": "So this is a good example of what it takes to actually get to some of these items."
+      },
+      {
+        "startSec": 82.52,
+        "endSec": 85.82,
+        "text": "We had to pull the grille, had to pull the lights to access all the hoses."
+      },
+      {
+        "startSec": 85.82,
+        "endSec": 89.84,
+        "text": "It turns out it was just a couple of hoses that started to kind of get dry over time"
+      },
+      {
+        "startSec": 89.84,
+        "endSec": 91.1,
+        "text": "and just get a little fatigued."
+      },
+      {
+        "startSec": 91.1,
+        "endSec": 95.08,
+        "text": "So it's more common, like for old vehicles, those are the things that fail."
+      },
+      {
+        "startSec": 95.08,
+        "endSec": 96.08,
+        "text": "Totally."
+      },
+      {
+        "startSec": 96.08,
+        "endSec": 100.64,
+        "text": "It's just, I've heard from other Mercedes techs that have blown up the comments section"
+      },
+      {
+        "startSec": 100.64,
+        "endSec": 105.28,
+        "text": "saying these things are a pain to work on because everything's so tight."
+      },
+      {
+        "startSec": 105.28,
+        "endSec": 108.6,
+        "text": "So is that why a headlight assembly is out and the grills pulled apart?"
+      },
+      {
+        "startSec": 108.6,
+        "endSec": 109.84,
+        "text": "That's a super good question actually."
+      },
+      {
+        "startSec": 109.84,
+        "endSec": 114.24,
+        "text": "Yes, things are tight, but as long as you have the mentality that everything has a logic"
+      },
+      {
+        "startSec": 114.24,
+        "endSec": 117.92,
+        "text": "and reading, reason and methodology of how it goes together and comes apart, it's not"
+      },
+      {
+        "startSec": 117.92,
+        "endSec": 118.92,
+        "text": "that bad."
+      },
+      {
+        "startSec": 118.92,
+        "endSec": 119.92,
+        "text": "Everything is a process."
+      },
+      {
+        "startSec": 119.92,
+        "endSec": 123.28,
+        "text": "So as long as you understand that A has to go before B and B has to go before C, not"
+      },
+      {
+        "startSec": 123.28,
+        "endSec": 124.28,
+        "text": "a big deal."
+      },
+      {
+        "startSec": 124.28,
+        "endSec": 126.56,
+        "text": "So this is one of the things, it's more labor than anything."
+      },
+      {
+        "startSec": 126.56,
+        "endSec": 130.2,
+        "text": "It's a couple of small parts here and there, but I mean, at the end of the day, he's going"
+      },
+      {
+        "startSec": 130.2,
+        "endSec": 131.2,
+        "text": "to be back on the road."
+      },
+      {
+        "startSec": 131.2,
+        "endSec": 132.2,
+        "text": "We'll see him again for his next service."
+      },
+      {
+        "startSec": 132.2,
+        "endSec": 133.2,
+        "text": "It's not the end of the world."
+      },
+      {
+        "startSec": 133.2,
+        "endSec": 138.24,
+        "text": "I mean, something like this between the power steering repair, the hood latch situation is"
+      },
+      {
+        "startSec": 138.24,
+        "endSec": 139.92,
+        "text": "just a cable that's stretched out."
+      },
+      {
+        "startSec": 139.92,
+        "endSec": 146.6,
+        "text": "We've got some rear doors where the plastic lock rod retainers inside the doors fell off."
+      },
+      {
+        "startSec": 146.6,
+        "endSec": 149.84,
+        "text": "I mean, it's a couple thousand bucks to get all that squared away with the labor."
+      },
+      {
+        "startSec": 149.84,
+        "endSec": 152.6,
+        "text": "We're also doing a rear bumper light upgrade at the same time."
+      },
+      {
+        "startSec": 152.6,
+        "endSec": 154,
+        "text": "That's 1200 bucks."
+      },
+      {
+        "startSec": 154,
+        "endSec": 157.44,
+        "text": "So it adds up over time, but this is one of the things we haven't seen the truck in for"
+      },
+      {
+        "startSec": 157.44,
+        "endSec": 158.72,
+        "text": "a major repair in quite a while."
+      },
+      {
+        "startSec": 158.72,
+        "endSec": 163,
+        "text": "So just a lot of this maintenance, this is actually its first big repair."
+      },
+      {
+        "startSec": 163,
+        "endSec": 165,
+        "text": "So let's break it down."
+      },
+      {
+        "startSec": 165,
+        "endSec": 169.76,
+        "text": "We have another video coming soon, by the way, on a year by year breakdown to purchase a"
+      },
+      {
+        "startSec": 169.76,
+        "endSec": 172.56,
+        "text": "G-Wagon, what to look for when you inspect one."
+      },
+      {
+        "startSec": 172.56,
+        "endSec": 176.78,
+        "text": "There's a link in the description for the ultimate buyers and build guide for the G-Wagon."
+      },
+      {
+        "startSec": 176.78,
+        "endSec": 178.28,
+        "text": "So check that out right now."
+      },
+      {
+        "startSec": 178.28,
+        "endSec": 179.64,
+        "text": "Click the link in the description."
+      },
+      {
+        "startSec": 179.64,
+        "endSec": 181.16,
+        "text": "Let's get back to this video."
+      },
+      {
+        "startSec": 181.16,
+        "endSec": 183.56,
+        "text": "There's different engine variations naturally aspirated."
+      },
+      {
+        "startSec": 183.56,
+        "endSec": 186.04,
+        "text": "This one has two turbos, a bi-turbo engine."
+      },
+      {
+        "startSec": 186.04,
+        "endSec": 187.04,
+        "text": "Correct."
+      },
+      {
+        "startSec": 187.04,
+        "endSec": 188.04,
+        "text": "This is the G63 AMG."
+      },
+      {
+        "startSec": 188.04,
+        "endSec": 189.04,
+        "text": "Yeah."
+      },
+      {
+        "startSec": 189.04,
+        "endSec": 193.2,
+        "text": "So it's a five and a half liter bi-turbo motor, 560 horsepower, tons of torque, tons of good"
+      },
+      {
+        "startSec": 193.2,
+        "endSec": 194.2,
+        "text": "stuff."
+      },
+      {
+        "startSec": 194.2,
+        "endSec": 197.72,
+        "text": "Do you find big maintenance things between the model years of what it, because I want to"
+      },
+      {
+        "startSec": 197.72,
+        "endSec": 200.12,
+        "text": "break this into two separate topics of discussion."
+      },
+      {
+        "startSec": 200.12,
+        "endSec": 203.08,
+        "text": "There's maintenance costs and then there's repair costs."
+      },
+      {
+        "startSec": 203.08,
+        "endSec": 206.92,
+        "text": "So maintenance is keeping your vehicle on the road that you can expect to do with any"
+      },
+      {
+        "startSec": 206.92,
+        "endSec": 207.92,
+        "text": "vehicle."
+      },
+      {
+        "startSec": 207.92,
+        "endSec": 210.48,
+        "text": "I had, I mean you run a diesel too to haul stuff around."
+      },
+      {
+        "startSec": 210.48,
+        "endSec": 217.04,
+        "text": "You do an oil change at a Ford dealer when I had an F-350, it was like $350, $400, compared"
+      },
+      {
+        "startSec": 217.04,
+        "endSec": 218.88,
+        "text": "to a $20 oil change at a quick loop."
+      },
+      {
+        "startSec": 218.88,
+        "endSec": 223.24,
+        "text": "So I'd love to just first talk our routine maintenance and then let's discuss like when"
+      },
+      {
+        "startSec": 223.24,
+        "endSec": 228.08,
+        "text": "things go wrong what are the common things and what should people budget for as a rough"
+      },
+      {
+        "startSec": 228.08,
+        "endSec": 230.72,
+        "text": "estimate to keep their G healthy and on the road."
+      },
+      {
+        "startSec": 230.72,
+        "endSec": 231.72,
+        "text": "Good point."
+      },
+      {
+        "startSec": 231.72,
+        "endSec": 232.72,
+        "text": "Okay."
+      },
+      {
+        "startSec": 232.72,
+        "endSec": 233.72,
+        "text": "Payment where you go."
+      },
+      {
+        "startSec": 233.72,
+        "endSec": 234.72,
+        "text": "Plan on budgeting."
+      },
+      {
+        "startSec": 234.72,
+        "endSec": 235.72,
+        "text": "We're going to use routine maintenance."
+      },
+      {
+        "startSec": 235.72,
+        "endSec": 236.72,
+        "text": "So you're 5,000 miles of service."
+      },
+      {
+        "startSec": 236.72,
+        "endSec": 239.68,
+        "text": "You go in for oil change and filters and possibly tire rotation."
+      },
+      {
+        "startSec": 239.68,
+        "endSec": 240.68,
+        "text": "Expect $300."
+      },
+      {
+        "startSec": 240.68,
+        "endSec": 241.68,
+        "text": "Period end story."
+      },
+      {
+        "startSec": 241.68,
+        "endSec": 243.96,
+        "text": "There's going to be places that get you in and out for $250, there's going to be places"
+      },
+      {
+        "startSec": 243.96,
+        "endSec": 248.04,
+        "text": "that get you out for $350, the timing factor in all your filters, the time to swap everything,"
+      },
+      {
+        "startSec": 248.04,
+        "endSec": 253.16,
+        "text": "the full inspection, all the fluids, running high quality, correct oil, it adds up."
+      },
+      {
+        "startSec": 253.16,
+        "endSec": 254.16,
+        "text": "So expect around that."
+      },
+      {
+        "startSec": 254.16,
+        "endSec": 258.52,
+        "text": "With that tire rotation, full inspection as well."
+      },
+      {
+        "startSec": 258.52,
+        "endSec": 260.32,
+        "text": "Other things to keep in mind are brakes."
+      },
+      {
+        "startSec": 260.32,
+        "endSec": 265.52,
+        "text": "They are expensive and it does change if you've got an AMG versus a naturally aspirated model."
+      },
+      {
+        "startSec": 265.52,
+        "endSec": 270.2,
+        "text": "So we're going to use this, for example, AMG, they do have giant rotors and giant pads and"
+      },
+      {
+        "startSec": 270.2,
+        "endSec": 275.04,
+        "text": "they are soft rotors and they are hard pads, meaning they wear out at the same time."
+      },
+      {
+        "startSec": 275.04,
+        "endSec": 276.04,
+        "text": "These trucks are not light."
+      },
+      {
+        "startSec": 276.04,
+        "endSec": 277.04,
+        "text": "I mean, they're what?"
+      },
+      {
+        "startSec": 277.04,
+        "endSec": 278.2,
+        "text": "About 6, what is it?"
+      },
+      {
+        "startSec": 278.2,
+        "endSec": 282.28,
+        "text": "This 5,500 pounds somewhere there, they're not light."
+      },
+      {
+        "startSec": 282.28,
+        "endSec": 286.56,
+        "text": "For AMG figure, I think you're right about 1200 bucks for the front and a little bit"
+      },
+      {
+        "startSec": 286.56,
+        "endSec": 287.56,
+        "text": "less for there."
+      },
+      {
+        "startSec": 287.56,
+        "endSec": 288.56,
+        "text": "I think you're 800 bucks for the rear."
+      },
+      {
+        "startSec": 288.56,
+        "endSec": 289.56,
+        "text": "Pads rotors?"
+      },
+      {
+        "startSec": 289.56,
+        "endSec": 291.44,
+        "text": "Pads rotors, sensors, hardware."
+      },
+      {
+        "startSec": 291.44,
+        "endSec": 293.72,
+        "text": "So it's not cheap."
+      },
+      {
+        "startSec": 293.72,
+        "endSec": 296.84,
+        "text": "There are certainly more expensive options out there, but you're getting full on Brembo"
+      },
+      {
+        "startSec": 296.84,
+        "endSec": 298.52,
+        "text": "stuff all the way through."
+      },
+      {
+        "startSec": 298.52,
+        "endSec": 302.84,
+        "text": "The other thing to consider if you have a 550 with smaller brakes or 500 smaller brakes,"
+      },
+      {
+        "startSec": 302.84,
+        "endSec": 303.84,
+        "text": "you're much less."
+      },
+      {
+        "startSec": 303.84,
+        "endSec": 305.16,
+        "text": "You're going to take 600 bucks in axle."
+      },
+      {
+        "startSec": 305.16,
+        "endSec": 308.92,
+        "text": "So it does go considerably less for the non-AMG model."
+      },
+      {
+        "startSec": 308.92,
+        "endSec": 311.56,
+        "text": "So it's just one of those things you pay to play and get the higher performance."
+      },
+      {
+        "startSec": 311.56,
+        "endSec": 315.96,
+        "text": "Which in any German vehicle, when you want performance, you're going to pay for it."
+      },
+      {
+        "startSec": 315.96,
+        "endSec": 318.48,
+        "text": "And people that are going to compare this, \"Oh, well, I could get a Jeep.\""
+      },
+      {
+        "startSec": 318.48,
+        "endSec": 321.8,
+        "text": "You could, but you're comparing a peach to a French fry."
+      },
+      {
+        "startSec": 321.8,
+        "endSec": 323.44,
+        "text": "Like they're not apples to apples here."
+      },
+      {
+        "startSec": 323.44,
+        "endSec": 324.8,
+        "text": "Jeeps are always going to be cheaper."
+      },
+      {
+        "startSec": 324.8,
+        "endSec": 325.8,
+        "text": "Always."
+      },
+      {
+        "startSec": 325.8,
+        "endSec": 328.28,
+        "text": "Aftermarket's bigger and you're not stopping as much weight."
+      },
+      {
+        "startSec": 328.28,
+        "endSec": 330.92,
+        "text": "You don't have a V8 unless you're in a 392."
+      },
+      {
+        "startSec": 330.92,
+        "endSec": 331.92,
+        "text": "Brakes are a tricky one."
+      },
+      {
+        "startSec": 331.92,
+        "endSec": 334.8,
+        "text": "Yeah, because people always say my Toyota costs X, my Jeep costs Y."
+      },
+      {
+        "startSec": 334.8,
+        "endSec": 339.28,
+        "text": "You're not dealing with giant Brembo stuff, you're not dealing with better technology."
+      },
+      {
+        "startSec": 339.28,
+        "endSec": 340.28,
+        "text": "That's the root cause of it there."
+      },
+      {
+        "startSec": 340.28,
+        "endSec": 342.2,
+        "text": "So we got oil change, we got brakes."
+      },
+      {
+        "startSec": 342.2,
+        "endSec": 343.2,
+        "text": "Your consumables."
+      },
+      {
+        "startSec": 343.2,
+        "endSec": 344.84,
+        "text": "Obviously, tires are tires."
+      },
+      {
+        "startSec": 344.84,
+        "endSec": 345.84,
+        "text": "They're not that magic at the side."
+      },
+      {
+        "startSec": 345.84,
+        "endSec": 346.84,
+        "text": "You're right."
+      },
+      {
+        "startSec": 346.84,
+        "endSec": 347.84,
+        "text": "There's a couple more things to keep in mind."
+      },
+      {
+        "startSec": 347.84,
+        "endSec": 348.84,
+        "text": "Yeah."
+      },
+      {
+        "startSec": 348.84,
+        "endSec": 351.36,
+        "text": "So when we talk about maintenance, so let's go through your 50,000 mile maintenance and"
+      },
+      {
+        "startSec": 351.36,
+        "endSec": 352.36,
+        "text": "your 100,000 mile maintenance."
+      },
+      {
+        "startSec": 352.36,
+        "endSec": 355.92,
+        "text": "So your 50,000 mile maintenance is what we call all your gearbox services."
+      },
+      {
+        "startSec": 355.92,
+        "endSec": 359.88,
+        "text": "So you've got your transmission, you've got your transfer case, your front differential"
+      },
+      {
+        "startSec": 359.88,
+        "endSec": 360.88,
+        "text": "and your rear differential."
+      },
+      {
+        "startSec": 360.88,
+        "endSec": 362.4,
+        "text": "So four total."
+      },
+      {
+        "startSec": 362.4,
+        "endSec": 366.48,
+        "text": "With that, it's nothing more than glorified fluid changes."
+      },
+      {
+        "startSec": 366.48,
+        "endSec": 367.96,
+        "text": "Everything drain and fills."
+      },
+      {
+        "startSec": 367.96,
+        "endSec": 371.32,
+        "text": "The transmission, you do want to kind of cycle the old stuff through."
+      },
+      {
+        "startSec": 371.32,
+        "endSec": 375.72,
+        "text": "But again, every 50,000 miles, do it and it should last the life of the vehicle."
+      },
+      {
+        "startSec": 375.72,
+        "endSec": 382.12,
+        "text": "I have yet to see a transmission fail on a G-wagon under 278,000 miles."
+      },
+      {
+        "startSec": 382.12,
+        "endSec": 383.12,
+        "text": "278,000."
+      },
+      {
+        "startSec": 383.12,
+        "endSec": 384.12,
+        "text": "That is the running total."
+      },
+      {
+        "startSec": 384.12,
+        "endSec": 385.12,
+        "text": "You know what?"
+      },
+      {
+        "startSec": 385.12,
+        "endSec": 386.12,
+        "text": "Doesn't that crack yet?"
+      },
+      {
+        "startSec": 386.12,
+        "endSec": 390.8,
+        "text": "People are like, ah, it's a Mercedes, 278,000 miles."
+      },
+      {
+        "startSec": 390.8,
+        "endSec": 392.48,
+        "text": "Not to throw shade at any particular vehicle."
+      },
+      {
+        "startSec": 392.48,
+        "endSec": 395.16,
+        "text": "My dad had a Ford F-150 inter-transmission at 60,000 miles."
+      },
+      {
+        "startSec": 395.16,
+        "endSec": 396.16,
+        "text": "I know."
+      },
+      {
+        "startSec": 396.16,
+        "endSec": 397.96,
+        "text": "He had a 2,000 G-500."
+      },
+      {
+        "startSec": 397.96,
+        "endSec": 399.36,
+        "text": "And it actually still drove."
+      },
+      {
+        "startSec": 399.36,
+        "endSec": 400.92,
+        "text": "It just, fourth gear was a little soft."
+      },
+      {
+        "startSec": 400.92,
+        "endSec": 401.92,
+        "text": "Who needs fourth?"
+      },
+      {
+        "startSec": 401.92,
+        "endSec": 403.32,
+        "text": "Yeah, go to fifth, right?"
+      },
+      {
+        "startSec": 403.32,
+        "endSec": 406.8,
+        "text": "So change it every 50,000 miles."
+      },
+      {
+        "startSec": 406.8,
+        "endSec": 407.8,
+        "text": "Just get it done."
+      },
+      {
+        "startSec": 407.8,
+        "endSec": 408.8,
+        "text": "Don't look back."
+      },
+      {
+        "startSec": 408.8,
+        "endSec": 410.24,
+        "text": "Just factor in as far as your cost."
+      },
+      {
+        "startSec": 410.24,
+        "endSec": 411.24,
+        "text": "Usually ballpark."
+      },
+      {
+        "startSec": 411.24,
+        "endSec": 414.98,
+        "text": "Per gearbox, I think we're right about 150, 200 bucks somewhere there."
+      },
+      {
+        "startSec": 414.98,
+        "endSec": 418.64,
+        "text": "So 150, 200 or call it 200 just for round number and inflation six."
+      },
+      {
+        "startSec": 418.64,
+        "endSec": 419.64,
+        "text": "So two, two, two."
+      },
+      {
+        "startSec": 419.64,
+        "endSec": 424.52,
+        "text": "And then the transmission comes out about on the early ones, you're about 600 bucks."
+      },
+      {
+        "startSec": 424.52,
+        "endSec": 429.48,
+        "text": "On the later ones, you can be $900 to $1,000 because there is something they call an adaptation."
+      },
+      {
+        "startSec": 429.48,
+        "endSec": 434.08,
+        "text": "So if your transmission starts shifting kind of weird as your truck's ages, ID, it shifts"
+      },
+      {
+        "startSec": 434.08,
+        "endSec": 437.12,
+        "text": "too soft or it's getting harsh, we can actually plug into it."
+      },
+      {
+        "startSec": 437.12,
+        "endSec": 438.12,
+        "text": "It takes about two hours."
+      },
+      {
+        "startSec": 438.12,
+        "endSec": 440.88,
+        "text": "We can go through and reset all the adaptations on it and kind of bring it back in the line"
+      },
+      {
+        "startSec": 440.88,
+        "endSec": 441.88,
+        "text": "there."
+      },
+      {
+        "startSec": 441.88,
+        "endSec": 442.88,
+        "text": "Basically a TCU tune."
+      },
+      {
+        "startSec": 442.88,
+        "endSec": 443.88,
+        "text": "Totally."
+      },
+      {
+        "startSec": 443.88,
+        "endSec": 444.88,
+        "text": "Yeah."
+      },
+      {
+        "startSec": 444.88,
+        "endSec": 445.88,
+        "text": "Sweet."
+      },
+      {
+        "startSec": 445.88,
+        "endSec": 446.88,
+        "text": "So cooling systems."
+      },
+      {
+        "startSec": 446.88,
+        "endSec": 447.88,
+        "text": "I know that's a thing."
+      },
+      {
+        "startSec": 447.88,
+        "endSec": 448.88,
+        "text": "Hang on."
+      },
+      {
+        "startSec": 448.88,
+        "endSec": 449.88,
+        "text": "We didn't get to the 100,000 miles."
+      },
+      {
+        "startSec": 449.88,
+        "endSec": 450.88,
+        "text": "We didn't get there yet, did we?"
+      },
+      {
+        "startSec": 450.88,
+        "endSec": 451.88,
+        "text": "No."
+      },
+      {
+        "startSec": 451.88,
+        "endSec": 452.88,
+        "text": "Then we'll hit cooling systems."
+      },
+      {
+        "startSec": 452.88,
+        "endSec": 453.88,
+        "text": "That's part of the 100,000."
+      },
+      {
+        "startSec": 453.88,
+        "endSec": 454.88,
+        "text": "So let's do flush to coolant."
+      },
+      {
+        "startSec": 454.88,
+        "endSec": 457.28,
+        "text": "I know they always say check the pH and go for it."
+      },
+      {
+        "startSec": 457.28,
+        "endSec": 460.32,
+        "text": "If the pH is off prior to 100, we'll go ahead and dump it just because you don't want to"
+      },
+      {
+        "startSec": 460.32,
+        "endSec": 461.32,
+        "text": "corrode it."
+      },
+      {
+        "startSec": 461.32,
+        "endSec": 462.32,
+        "text": "But at 100K, dump it."
+      },
+      {
+        "startSec": 462.32,
+        "endSec": 463.32,
+        "text": "So we flush everything out of there."
+      },
+      {
+        "startSec": 463.32,
+        "endSec": 465.24,
+        "text": "The other thing is spark plugs."
+      },
+      {
+        "startSec": 465.24,
+        "endSec": 466.6,
+        "text": "It's still a gas motor, right?"
+      },
+      {
+        "startSec": 466.6,
+        "endSec": 470.24,
+        "text": "So you just pull the old spark plugs out, put new ones in and away you go."
+      },
+      {
+        "startSec": 470.24,
+        "endSec": 473.24,
+        "text": "Usually right around 100,000, we start seeing other little things go wrong."
+      },
+      {
+        "startSec": 473.24,
+        "endSec": 477.76,
+        "text": "Like we start seeing coolant leaks or we start seeing little oil leaks here and there."
+      },
+      {
+        "startSec": 477.76,
+        "endSec": 479.56,
+        "text": "On the later models, it's usually not a big deal."
+      },
+      {
+        "startSec": 479.56,
+        "endSec": 482.64,
+        "text": "It's directly serviceable in and out in the day is what I like to say."
+      },
+      {
+        "startSec": 482.64,
+        "endSec": 485.76,
+        "text": "Usually eight hours or less of actual labor time on the motor."
+      },
+      {
+        "startSec": 485.76,
+        "endSec": 488.04,
+        "text": "It's usually some gaskets, some seals."
+      },
+      {
+        "startSec": 488.04,
+        "endSec": 490.36,
+        "text": "Very rarely do we see major hard parts go wrong with these."
+      },
+      {
+        "startSec": 490.36,
+        "endSec": 492.56,
+        "text": "It's just rubber parts at that point."
+      },
+      {
+        "startSec": 492.56,
+        "endSec": 493.56,
+        "text": "So easy done."
+      },
+      {
+        "startSec": 493.56,
+        "endSec": 494.56,
+        "text": "Yeah."
+      },
+      {
+        "startSec": 494.56,
+        "endSec": 495.56,
+        "text": "Piece of cake."
+      },
+      {
+        "startSec": 495.56,
+        "endSec": 497.24,
+        "text": "Well, we just covered the coolant piece."
+      },
+      {
+        "startSec": 497.24,
+        "endSec": 500.76,
+        "text": "So to answer the question, your opinion, are G-Wagons ridiculously expensive to keep"
+      },
+      {
+        "startSec": 500.76,
+        "endSec": 501.76,
+        "text": "on the road?"
+      },
+      {
+        "startSec": 501.76,
+        "endSec": 502.76,
+        "text": "Yes or no?"
+      },
+      {
+        "startSec": 502.76,
+        "endSec": 503.76,
+        "text": "Nope."
+      },
+      {
+        "startSec": 503.76,
+        "endSec": 504.76,
+        "text": "And why do you say that?"
+      },
+      {
+        "startSec": 504.76,
+        "endSec": 506.28,
+        "text": "Bang for the buck."
+      },
+      {
+        "startSec": 506.28,
+        "endSec": 507.28,
+        "text": "Yeah."
+      },
+      {
+        "startSec": 507.28,
+        "endSec": 508.28,
+        "text": "Yes."
+      },
+      {
+        "startSec": 508.28,
+        "endSec": 511.92,
+        "text": "It costs money to maintain these and fix these things, but you fix them less frequently."
+      },
+      {
+        "startSec": 511.92,
+        "endSec": 515.88,
+        "text": "At the end of the day, you're still maintaining a hundred thousand dollar vehicle that feels"
+      },
+      {
+        "startSec": 515.88,
+        "endSec": 516.88,
+        "text": "every bit--"
+      },
+      {
+        "startSec": 516.88,
+        "endSec": 517.88,
+        "text": "A hundred plus."
+      },
+      {
+        "startSec": 517.88,
+        "endSec": 518.88,
+        "text": "A hundred plus, a thousand dollar vehicle."
+      },
+      {
+        "startSec": 518.88,
+        "endSec": 524.76,
+        "text": "But it still feels every bit as tight and fresh as it is from the day it was new, versus"
+      },
+      {
+        "startSec": 524.76,
+        "endSec": 529.12,
+        "text": "I have a lot of this heartening when you're paying big money to put your Toyota or your"
+      },
+      {
+        "startSec": 529.12,
+        "endSec": 530.12,
+        "text": "Jeep back together."
+      },
+      {
+        "startSec": 530.12,
+        "endSec": 533.56,
+        "text": "And at the end of the day, it still drives like a clapped out trash can."
+      },
+      {
+        "startSec": 533.56,
+        "endSec": 534.56,
+        "text": "Yeah."
+      },
+      {
+        "startSec": 534.56,
+        "endSec": 535.56,
+        "text": "That's true."
+      },
+      {
+        "startSec": 535.56,
+        "endSec": 536.56,
+        "text": "And I'm sure we upset somebody."
+      },
+      {
+        "startSec": 536.56,
+        "endSec": 538.96,
+        "text": "I just talked to someone who's actually a fan of G-Wheeling Channel."
+      },
+      {
+        "startSec": 538.96,
+        "endSec": 539.96,
+        "text": "And he reached out."
+      },
+      {
+        "startSec": 539.96,
+        "endSec": 543.36,
+        "text": "And he emailed me, and he says, hey, I'm looking to buy a G. I actually put him in touch with"
+      },
+      {
+        "startSec": 543.36,
+        "endSec": 546.12,
+        "text": "you to bring his build to life."
+      },
+      {
+        "startSec": 546.12,
+        "endSec": 549.04,
+        "text": "But his question was like, is this so expensive?"
+      },
+      {
+        "startSec": 549.04,
+        "endSec": 550.64,
+        "text": "Which model year do I get?"
+      },
+      {
+        "startSec": 550.64,
+        "endSec": 551.64,
+        "text": "What's best for me?"
+      },
+      {
+        "startSec": 551.64,
+        "endSec": 554.52,
+        "text": "Which we will get to in a video very soon."
+      },
+      {
+        "startSec": 554.52,
+        "endSec": 562.28,
+        "text": "But his biggest issue is he currently has a Toyota Tacoma that is done up to the beyond"
+      },
+      {
+        "startSec": 562.28,
+        "endSec": 563.28,
+        "text": "belief."
+      },
+      {
+        "startSec": 563.28,
+        "endSec": 564.68,
+        "text": "And he says, it drives terribly."
+      },
+      {
+        "startSec": 564.68,
+        "endSec": 565.68,
+        "text": "I don't like it."
+      },
+      {
+        "startSec": 565.68,
+        "endSec": 567.28,
+        "text": "My wife doesn't like being in it."
+      },
+      {
+        "startSec": 567.28,
+        "endSec": 568.28,
+        "text": "And how's the D drive?"
+      },
+      {
+        "startSec": 568.28,
+        "endSec": 571.32,
+        "text": "And we drive mine, which is right behind you."
+      },
+      {
+        "startSec": 571.32,
+        "endSec": 575.28,
+        "text": "And I'll do six hours out to Moab and then go wheeling the same day for four or five"
+      },
+      {
+        "startSec": 575.28,
+        "endSec": 576.28,
+        "text": "hours."
+      },
+      {
+        "startSec": 576.28,
+        "endSec": 577.28,
+        "text": "We've got three days in a row."
+      },
+      {
+        "startSec": 577.28,
+        "endSec": 580.72,
+        "text": "And I will say, on day three, I was starting to get a little sore."
+      },
+      {
+        "startSec": 580.72,
+        "endSec": 583.64,
+        "text": "But we did some pretty rowdy stuff."
+      },
+      {
+        "startSec": 583.64,
+        "endSec": 585.28,
+        "text": "And it took a long time to get to that point."
+      },
+      {
+        "startSec": 585.28,
+        "endSec": 586.28,
+        "text": "That was really good."
+      },
+      {
+        "startSec": 586.28,
+        "endSec": 587.28,
+        "text": "Yeah."
+      },
+      {
+        "startSec": 587.28,
+        "endSec": 588.36,
+        "text": "It boils down to right quality comfort."
+      },
+      {
+        "startSec": 588.36,
+        "endSec": 591.32,
+        "text": "These are non-fatiguing vehicles to drive, meaning you can drive them to the trailhead."
+      },
+      {
+        "startSec": 591.32,
+        "endSec": 592.32,
+        "text": "You can enjoy them."
+      },
+      {
+        "startSec": 592.32,
+        "endSec": 593.32,
+        "text": "You can take them out to dinner."
+      },
+      {
+        "startSec": 593.32,
+        "endSec": 595.52,
+        "text": "And you don't have to think about it."
+      },
+      {
+        "startSec": 595.52,
+        "endSec": 596.52,
+        "text": "You can't do that with a Jeep."
+      },
+      {
+        "startSec": 596.52,
+        "endSec": 597.68,
+        "text": "You can't do that with a big lift of Toyota."
+      },
+      {
+        "startSec": 597.68,
+        "endSec": 601.16,
+        "text": "You always got to trailer it just because it's exhausting or dangerous to drive on the freeway."
+      },
+      {
+        "startSec": 601.16,
+        "endSec": 603.08,
+        "text": "So that's really where these come to life."
+      },
+      {
+        "startSec": 603.08,
+        "endSec": 607.48,
+        "text": "So in a nutshell, the G-Wagen is not crazy expensive to maintain."
+      },
+      {
+        "startSec": 607.48,
+        "endSec": 610.4,
+        "text": "What you're going to pay more for is labor."
+      },
+      {
+        "startSec": 610.4,
+        "endSec": 611.4,
+        "text": "Finding a great shop."
+      },
+      {
+        "startSec": 611.4,
+        "endSec": 615.6,
+        "text": "I mean, if you're local or even if you want to send your vehicle to Alliance, they'll"
+      },
+      {
+        "startSec": 615.6,
+        "endSec": 619.6,
+        "text": "do frame off restoration, the routine maintenance, oil changes, everything in between."
+      },
+      {
+        "startSec": 619.6,
+        "endSec": 621.92,
+        "text": "And then obviously getting to the things."
+      },
+      {
+        "startSec": 621.92,
+        "endSec": 624.2,
+        "text": "So you're going to be a little bit more in labor."
+      },
+      {
+        "startSec": 624.2,
+        "endSec": 627.64,
+        "text": "Most inherently for any German vehicle is not cheap."
+      },
+      {
+        "startSec": 627.64,
+        "endSec": 630.76,
+        "text": "I remember when I was driving an Audi Q7, it's like I needed brakes."
+      },
+      {
+        "startSec": 630.76,
+        "endSec": 631.76,
+        "text": "It was front brakes."
+      },
+      {
+        "startSec": 631.76,
+        "endSec": 635.28,
+        "text": "And I was like, I got a quote for $2,200 and I was used to driving American trucks."
+      },
+      {
+        "startSec": 635.28,
+        "endSec": 637.2,
+        "text": "And I was like, $2,200 for brakes."
+      },
+      {
+        "startSec": 637.2,
+        "endSec": 640.08,
+        "text": "And then I was like, oh, you know, it's just got to play the game."
+      },
+      {
+        "startSec": 640.08,
+        "endSec": 641.08,
+        "text": "The way it goes."
+      },
+      {
+        "startSec": 641.08,
+        "endSec": 642.08,
+        "text": "So you got to pay to play."
+      },
+      {
+        "startSec": 642.08,
+        "endSec": 643.08,
+        "text": "Yeah."
+      },
+      {
+        "startSec": 643.08,
+        "endSec": 644.08,
+        "text": "There's a certain value in there."
+      },
+      {
+        "startSec": 644.08,
+        "endSec": 645.08,
+        "text": "Having it done right."
+      },
+      {
+        "startSec": 645.08,
+        "endSec": 646.08,
+        "text": "Having it done once."
+      },
+      {
+        "startSec": 646.08,
+        "endSec": 647.08,
+        "text": "Yeah."
+      },
+      {
+        "startSec": 647.08,
+        "endSec": 648.08,
+        "text": "What's most expensive is paying to have it done twice."
+      },
+      {
+        "startSec": 648.08,
+        "endSec": 649.08,
+        "text": "Yeah."
+      },
+      {
+        "startSec": 649.08,
+        "endSec": 650.08,
+        "text": "So that's really important."
+      },
+      {
+        "startSec": 650.08,
+        "endSec": 652.88,
+        "text": "Whether you can see us or you have a local facility that takes care of your trucks, make"
+      },
+      {
+        "startSec": 652.88,
+        "endSec": 655.88,
+        "text": "sure they are intimately familiar with your trucks."
+      },
+      {
+        "startSec": 655.88,
+        "endSec": 659.46,
+        "text": "So that you're in and out quickly, efficiently, you're only paying once."
+      },
+      {
+        "startSec": 659.46,
+        "endSec": 664.68,
+        "text": "And when you are searching for use one, which we're doing another video on this very shortly,"
+      },
+      {
+        "startSec": 664.68,
+        "endSec": 666.96,
+        "text": "it is really important."
+      },
+      {
+        "startSec": 666.96,
+        "endSec": 667.96,
+        "text": "Tell me if you agree."
+      },
+      {
+        "startSec": 667.96,
+        "endSec": 669.76,
+        "text": "Because Joe, you helped me bring two trucks to life."
+      },
+      {
+        "startSec": 669.76,
+        "endSec": 672.88,
+        "text": "Actually, the first one I got before I met you is how I met you."
+      },
+      {
+        "startSec": 672.88,
+        "endSec": 673.88,
+        "text": "Second one I got."
+      },
+      {
+        "startSec": 673.88,
+        "endSec": 676.68,
+        "text": "Joe helped me find, because you're actually watching and bringing a trailer auction with"
+      },
+      {
+        "startSec": 676.68,
+        "endSec": 677.68,
+        "text": "me to help."
+      },
+      {
+        "startSec": 677.68,
+        "endSec": 678.68,
+        "text": "This guy goes above and beyond."
+      },
+      {
+        "startSec": 678.68,
+        "endSec": 679.68,
+        "text": "It was awesome."
+      },
+      {
+        "startSec": 679.68,
+        "endSec": 680.68,
+        "text": "He's like, I don't know."
+      },
+      {
+        "startSec": 680.68,
+        "endSec": 681.68,
+        "text": "And then I sent him other ones."
+      },
+      {
+        "startSec": 681.68,
+        "endSec": 683.8,
+        "text": "And you're looking through the car facts."
+      },
+      {
+        "startSec": 683.8,
+        "endSec": 688.08,
+        "text": "Owner history doesn't matter as much as service records."
+      },
+      {
+        "startSec": 688.08,
+        "endSec": 692.88,
+        "text": "And if you find someone who's taken care of their vehicle at a reputable shop, you'll"
+      },
+      {
+        "startSec": 692.88,
+        "endSec": 693.88,
+        "text": "know."
+      },
+      {
+        "startSec": 693.88,
+        "endSec": 695.68,
+        "text": "I remember I was looking at LR4s."
+      },
+      {
+        "startSec": 695.68,
+        "endSec": 699.76,
+        "text": "And LR4s, what's the main thing is that the timing chain, the engines blow up."
+      },
+      {
+        "startSec": 699.76,
+        "endSec": 700.76,
+        "text": "There's a few other things."
+      },
+      {
+        "startSec": 700.76,
+        "endSec": 701.76,
+        "text": "Yeah."
+      },
+      {
+        "startSec": 701.76,
+        "endSec": 702.76,
+        "text": "You name it."
+      },
+      {
+        "startSec": 702.76,
+        "endSec": 703.76,
+        "text": "You name it."
+      },
+      {
+        "startSec": 703.76,
+        "endSec": 704.76,
+        "text": "Anyway, so I'm looking at LR4s."
+      },
+      {
+        "startSec": 704.76,
+        "endSec": 707.92,
+        "text": "And every used one, I look at the car facts and it's like, in the shop, 1,000 miles later,"
+      },
+      {
+        "startSec": 707.92,
+        "endSec": 713.48,
+        "text": "in the shop, timing chain issue."
+      },
+      {
+        "startSec": 713.48,
+        "endSec": 714.48,
+        "text": "I can't even remember."
+      },
+      {
+        "startSec": 714.48,
+        "endSec": 716.12,
+        "text": "Air suspension, chassis stuff."
+      },
+      {
+        "startSec": 716.12,
+        "endSec": 718.08,
+        "text": "All of the same faults over and over."
+      },
+      {
+        "startSec": 718.08,
+        "endSec": 722.2,
+        "text": "And then you go look at G-Wagons in general, their history."
+      },
+      {
+        "startSec": 722.2,
+        "endSec": 725.36,
+        "text": "And most of those things are going to show evidence of themselves in their first three"
+      },
+      {
+        "startSec": 725.36,
+        "endSec": 727.96,
+        "text": "years of ownership for service work."
+      },
+      {
+        "startSec": 727.96,
+        "endSec": 732.4,
+        "text": "So when you find one that was taken care of, it's a good indicator that you're in a good"
+      },
+      {
+        "startSec": 732.4,
+        "endSec": 738.68,
+        "text": "spot versus finding one that is like 70 or 17 owners and it's got big street wheels and"
+      },
+      {
+        "startSec": 738.68,
+        "endSec": 743.16,
+        "text": "they did some stupid cosmetic stuff to make it look new and you just know that's a different"
+      },
+      {
+        "startSec": 743.16,
+        "endSec": 744.16,
+        "text": "kind of buyer."
+      },
+      {
+        "startSec": 744.16,
+        "endSec": 745.16,
+        "text": "Yeah."
+      },
+      {
+        "startSec": 745.16,
+        "endSec": 746.16,
+        "text": "And actually, that's a good point."
+      },
+      {
+        "startSec": 746.16,
+        "endSec": 747.24,
+        "text": "I'm glad you touched on that."
+      },
+      {
+        "startSec": 747.24,
+        "endSec": 751.76,
+        "text": "The background of us is we're also a full service facility for all major European brands."
+      },
+      {
+        "startSec": 751.76,
+        "endSec": 755.56,
+        "text": "We service Range Rover, Jag, Porsche, Audi, et cetera."
+      },
+      {
+        "startSec": 755.56,
+        "endSec": 759.88,
+        "text": "And one of the key things that my team and I really love about Mercedes and G-Wagon in"
+      },
+      {
+        "startSec": 759.88,
+        "endSec": 763.44,
+        "text": "particular is when it comes in with a problem, let's say it comes in with a check engine"
+      },
+      {
+        "startSec": 763.44,
+        "endSec": 767.48,
+        "text": "light or we've got an oil leak, we know that when we go through and we actually perform"
+      },
+      {
+        "startSec": 767.48,
+        "endSec": 772.8,
+        "text": "the needed repair correctly with all the right parts, all the right manpower that's put together"
+      },
+      {
+        "startSec": 772.8,
+        "endSec": 775.68,
+        "text": "as a solid repair, we know it's not going to come back for that repair."
+      },
+      {
+        "startSec": 775.68,
+        "endSec": 780.12,
+        "text": "That's one of the reasons we tend to gravitate toward these trucks and we have zero hesitation"
+      },
+      {
+        "startSec": 780.12,
+        "endSec": 784.6,
+        "text": "of taking them out, especially after we repair them, is we know they're going to work."
+      },
+      {
+        "startSec": 784.6,
+        "endSec": 788.16,
+        "text": "Whereas like I had said, we do work on a lot of British, we work on a lot of other German"
+      },
+      {
+        "startSec": 788.16,
+        "endSec": 791.28,
+        "text": "brands and we know that yes, we did this repair."
+      },
+      {
+        "startSec": 791.28,
+        "endSec": 796.24,
+        "text": "It's probably going to come back in in the next 18 months with a similar type of problem."
+      },
+      {
+        "startSec": 796.24,
+        "endSec": 799.2,
+        "text": "Not any fault of our own or another shop or whatever."
+      },
+      {
+        "startSec": 799.2,
+        "endSec": 802.72,
+        "text": "It's just that it is a badly designed part or product."
+      },
+      {
+        "startSec": 802.72,
+        "endSec": 804.92,
+        "text": "So that plays into it majorly."
+      },
+      {
+        "startSec": 804.92,
+        "endSec": 805.92,
+        "text": "Yeah."
+      },
+      {
+        "startSec": 805.92,
+        "endSec": 806.92,
+        "text": "So thank you for tuning in."
+      },
+      {
+        "startSec": 806.92,
+        "endSec": 810.8,
+        "text": "If you're interested in purchasing a G, upgrading a G, building a G, or doing some aftermarket"
+      },
+      {
+        "startSec": 810.8,
+        "endSec": 814.72,
+        "text": "work, then you need to check out the ultimate buyers and build guide that Joe helped me put"
+      },
+      {
+        "startSec": 814.72,
+        "endSec": 815.72,
+        "text": "together."
+      },
+      {
+        "startSec": 815.72,
+        "endSec": 816.72,
+        "text": "And there's a link in the description."
+      },
+      {
+        "startSec": 816.72,
+        "endSec": 817.72,
+        "text": "Check it out now."
+      },
+      {
+        "startSec": 817.72,
+        "endSec": 820.84,
+        "text": "channel and jump into this next one YouTube thinks you're really gonna love it. We'll see you soon."
+      }
+    ],
+    "createdAt": "2026-11-14T17:46:00.714Z"
+  },
+  "attempts": [
+    {
+      "id": "youtube",
+      "stage": "resolve",
+      "outcome": "ok",
+      "detail": "youtube:ovIkN7UgbgE"
+    },
+    {
+      "id": "youtube",
+      "stage": "metadata",
+      "outcome": "ok",
+      "ms": 231632
+    },
+    {
+      "id": "yt-dlp",
+      "stage": "audio",
+      "outcome": "ok",
+      "detail": "bestaudio, re-encoded to 16 kHz mono MP3 with ffmpeg"
+    },
+    {
+      "id": "stt/whisper-cpp/small",
+      "stage": "stt",
+      "outcome": "ok",
+      "ms": 230472
+    }
+  ]
+}
