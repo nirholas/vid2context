@@ -247,9 +247,10 @@ export async function buildBrief(contexts: VideoContext[], opts: BriefOptions, d
     strategy = 'single';
     progress({ done: 0, total: 1, message: `Reading ${set.sources.length} video(s) in one pass` });
     const messages = singleMessages(rendered, { template, question: opts.question, maxClaims: CLAIMS_SINGLE });
+    // One pass does the reduce step's work too, so it runs on the reduce chain (policy quality by default).
     const res = await chatJson(
       deps.registry,
-      { step: 'single', messages, chain, maxTokens: opts.maxOutputTokens },
+      { step: 'single', messages, chain: withJson(reduceChainFor(opts, deps.ctx)), maxTokens: opts.maxOutputTokens },
       ledger,
       deps.ctx,
     );

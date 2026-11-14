@@ -19,6 +19,9 @@ describe('normalize', () => {
     expect(parseSeconds('1:11')).toBe(71);
     expect(parseSeconds('71s')).toBe(71);
     expect(parseSeconds('1:02:03')).toBe(3723);
+    expect(parseSeconds([55])).toBe(55);
+    expect(parseSeconds('[1:11]')).toBe(71);
+    expect(Number.isNaN(parseSeconds([1, 2]))).toBe(true);
     expect(Number.isNaN(parseSeconds('soon'))).toBe(true);
   });
 });

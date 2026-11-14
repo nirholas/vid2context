@@ -26,11 +26,17 @@ export function tokens(s: string): string[] {
   return n ? n.split(' ') : [];
 }
 
-/** Seconds from a number, "83", "83s", "1:23" or "1:02:03". NaN when it is none of those. */
+/** Seconds from a number, "83", "83s", "1:23" or "1:02:03", also wrapped as [83] or "[1:23]". NaN when it is none of those. */
 export function parseSeconds(v: unknown): number {
+  // Models copy the transcript's line tags, writing [55] (a one-item array) or "[55]" instead of 55.
+  if (Array.isArray(v)) return v.length === 1 ? parseSeconds(v[0]) : Number.NaN;
   if (typeof v === 'number') return Number.isFinite(v) && v >= 0 ? v : Number.NaN;
   if (typeof v !== 'string') return Number.NaN;
-  const s = v.trim().replace(/s$/i, '');
+  const s = v
+    .trim()
+    .replace(/^\[(.*)\]$/, '$1')
+    .trim()
+    .replace(/s$/i, '');
   if (/^\d+(\.\d+)?$/.test(s)) return Number(s);
   const m = /^(?:(\d+):)?(\d{1,2}):(\d{2})(?:\.\d+)?$/.exec(s);
   if (!m) return Number.NaN;
