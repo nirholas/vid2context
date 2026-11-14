@@ -1,0 +1,18 @@
+{
+  "name": "@vid2context/translate",
+  "version": "0.1.0",
+  "description": "Translate a video transcript: the platform's own track or machine translation first, then chunked LLM translation that keeps every segment and timestamp.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@vid2context/core": "*"
+  },
+  "devDependencies": {
+    "@vid2context/provider-llm-openai-compatible": "*",
+    "@vid2context/provider-youtube": "*",
+    "@vid2context/testkit": "*"
+  }
+}
