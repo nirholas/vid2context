@@ -347,6 +347,14 @@ The MCP tools over Streamable HTTP at `/mcp`, for ChatGPT and Claude.ai connecto
 
 OAuth clients, codes and tokens are kept in the storage backend when it implements `KvStore`, under `auth:oauth:` keys. Otherwise they live in process memory, and a restart signs every connector out.
 
+## Live streams (`@vid2context/live`, Node only)
+
+`watch_live` (MCP) and `GET /live` (HTTP) follow a live YouTube video or HLS (`.m3u8`) stream and transcribe it in 30 s chunks through the speech-to-text chain above, so the same rungs, order and cooldowns apply. Needs ffmpeg (`FFMPEG_PATH`, see `ytdlp` above). A stream needs about 2 requests and 64 audio seconds per minute: local rungs, Groq's free tier and Workers AI keep up; the keyless OVH rung (2 requests per minute per IP) only for a few minutes. Verified live 2026-11-14 on a YouTube live stream with the Workers AI REST rung: 31 lines in 2 minutes, 12 to 46 s behind the live picture. See [packages/live/README.md](../packages/live/README.md).
+
+| Env var | Used by | Notes |
+|---|---|---|
+| `VID2CONTEXT_LIVE_TEST_URL` | `packages/live` LIVE test | the live stream the `LIVE=1` test follows for two minutes; default NASA's ISS stream on YouTube |
+
 ## Planned (see ROADMAP.md)
 
 | Kind | Provider | Tier | Enabled by | Known limits |

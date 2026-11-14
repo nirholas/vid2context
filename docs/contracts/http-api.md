@@ -17,7 +17,7 @@ Every error response has this body:
 }
 ```
 
-`code` is a core `ErrorCode`, or `internal` for unexpected errors (status 500, no detail leaked). `hint` is present when there is a recovery step. `attempts` lists every provider and rung tried (empty when none ran).
+`code` is a core `ErrorCode`, `internal` for unexpected errors (status 500, no detail leaked), or one of the server's own codes about the caller's credentials: `unauthorized` (401, missing or wrong API key, with `WWW-Authenticate: Bearer`) and `forbidden` (403, the key lacks the scope). `hint` is present when there is a recovery step. `attempts` lists every provider and rung tried (empty when none ran). `rate-limited` responses carry `Retry-After` in seconds.
 
 | Code | Status | | Code | Status |
 |---|---|---|---|---|
@@ -28,18 +28,28 @@ Every error response has this body:
 | `no-transcript` | 422 | | `all-rungs-failed` | 502 |
 | `too-large` | 413 | | `auth` | 502 (an upstream key failed, not the caller) |
 | | | | `upstream` | 502 |
+| `unauthorized` (server) | 401 | | `forbidden` (server) | 403 |
 
-The map lives in `STATUS_BY_CODE` in `app.ts`. Add new codes there and here together.
+The map lives in `STATUS_BY_CODE` in `packages/server/src/errors.ts` (re-exported from `app.ts`). Add new codes there and here together.
 
 ### Common query parameters
 
 | Name | Meaning |
 |---|---|
-| `url` | Any input a source understands: a video URL, a YouTube id, a local path (Node only), later a feed or page URL. URL-encode it. |
+| `url` | Any input a source understands: a video URL, a YouTube id, a playlist, channel or feed URL where a route expands lists, `upload:<sha256>` from `POST /uploads`, or a local path (Node only, refused when `VID2CONTEXT_PUBLIC=1`). URL-encode it. |
 | `mode` | `auto` (default), `captions`, `stt`, `video`. |
 | `lang` | Preferred transcript language, BCP-47 (`en`, `de`, `pt-BR`). |
 | `format` | A formatter id from the core `formatters` map. Never hard-code the list; `GET /api/v1/health` returns it. |
 | `timestamps` | `1`, `true` or `yes` to prefix lines with timestamps where the format allows. |
+| `refresh` | `1` to ignore the library copy and rebuild (routes that load a context). |
+
+### Headers
+
+- `X-Request-Id`: sent back on every response. A client value of up to 128 characters from `A-Za-z0-9._:-` is kept; anything else is replaced by a UUID. Access logs carry it.
+- `ETag` on `GET /context` and `GET /library/:id` (SHA-256 of the body). `If-None-Match` with a matching tag answers `304` with no body.
+- `X-Robots-Tag: noindex` on every `/api/*` response, so JSON never competes with the docs in search results.
+- `X-RateLimit-Limit` and `X-RateLimit-Remaining` on rate-limited routes; `Retry-After` on `429`.
+- `X-Data-Attribution` when a response used SponsorBlock data (`skip=`).
 
 ### Secrets
 
@@ -72,9 +82,72 @@ Responses never contain env var values. Health output names the variables a rung
 
 Returns the full `VideoContext`: `metadata`, `transcript` (timed `segments`), optional `visual` and `comments`, and `attempts`.
 
-### `GET /api/v1/transcript?url=&format=&timestamps=&mode=&lang=`
+### `GET /api/v1/transcript?url=&format=&timestamps=&mode=&lang=&skip=&translate=`
 
 Returns the transcript rendered by the chosen formatter (default `text`) with that formatter's `mimeType` as `Content-Type`.
+
+- `skip=sponsor,selfpromo` (or `skip=1` for the default categories) removes SponsorBlock segments from a copy of the transcript through `@vid2context/skips`; the stored transcript stays whole, and the response carries `X-Data-Attribution`.
+- `translate=1` needs item 35's translation layer, which is not installed: the server answers `bad-request` with a hint (pass `lang=xx` for a track the platform already has).
+
+### Routes implemented by item 46
+
+Shapes are those in the planned tables below; these notes add what the tables leave open. Every route that takes `url` also takes `upload:<sha256>`.
+
+| Route | Notes |
+|---|---|
+| `GET /metadata?url=` | the source's metadata only; no captions or audio are fetched |
+| `GET /formats` | every formatter in the core map |
+| `GET /items?url=&limit=` | `limit` 1 to `VID2CONTEXT_MAX_PLAYLIST_ITEMS` (default 500, also the default); a single video returns itself |
+| `GET /section?url=&from=&to=&chapter=&format=&timestamps=` | at least one of `from`, `to`, `chapter`. `chapter` is an outline index (0-based, digits) or a title (exact, prefix, then substring). Built on core `getSection` |
+| `GET /outline?url=` | core `outlineForApi`: videos without chapters get five-minute sections |
+| `GET /comments?url=&limit=` | `limit` 1 to 1000; `no-provider` (503) when the source cannot fetch comments; uploads have none |
+| `GET /pack?url=&maxTokens=`, `POST /pack` | the `pack` formatter (`renderMany` for several videos). POST also takes `mode` and `lang`; lists in `inputs` are expanded; at most 100 videos per request (`too-large` beyond) |
+| `GET /library?limit=&cursor=` | `limit` 1 to 200, default 50 |
+| `GET /library/:id`, `DELETE /library/:id` | ids URL-encoded once (`youtube%3AjNQXAC9IVRw`); a double-encoded id is decoded again. `DELETE` of an id that is not saved is `404` |
+
+The library is the registry's enabled storage backend, opened once per process (or per Worker isolate), else a process-wide `MemoryStorage`. Every route that loads a context reads and writes it, except uploads, which are never saved there.
+
+Identical concurrent requests that load a context (same input, mode, language, comments and refresh) share one pipeline run. The shared run has its own timeout, so one client disconnecting does not fail the others.
+
+### `GET /api/v1/models?kind=`
+
+`{ models: ModelInfo[], defaultPolicy: Policy }` (`ModelInfo` as in `docs/prompts/SHARED-CONTRACTS.md` section 3). Every rung the registry knows, enabled or not; `kind` is one of `llm`, `stt`, `embed`, `video`, `visual`. `label` is the model id after its last `/`. `capabilities` gains `stream` for LLM rungs that stream natively. `enabled` follows the same rule as health (credentials present, keyless allowed). `requires` lists env var names, never values. `defaultPolicy` is `VID2CONTEXT_POLICY` or `free`.
+
+### `POST /api/v1/uploads`
+
+Multipart form with a field `file`. Answers `201 { input: "upload:<sha256>", filename, bytes, mimeType, expiresAt }`.
+
+- Size cap `VID2CONTEXT_MAX_UPLOAD_MB` (the server's default is 100, the Workers free-plan request limit): larger files get `too-large` (413). Empty files and bodies that are not `multipart/form-data` get `bad-request`.
+- The id is the SHA-256 of the bytes, so the same file uploaded twice is one upload (its expiry is extended).
+- Kept for `VID2CONTEXT_UPLOAD_TTL_MIN` minutes (default 60). When the storage backend can hold blobs (the Cloudflare backend with an R2 bucket bound), the bytes go to R2 under `blobs/uploads/<sha256>` and the details and transcripts to the KvStore (`uploads:` keys) with the same TTL, so every isolate sees them. Otherwise they stay in the process's memory (at most four uploads at the size cap at once, oldest dropped first) and are lost on restart.
+- `upload:<sha256>` is resolved by the server, not the registry: transcribed with core `transcribe()` from an `AudioInput` of kind `bytes`, with minimal metadata from the filename (title without extension, `extra: { filename, bytes, mimeType }`). Modes `captions` and `video` give `unsupported-input`. The transcript is kept next to the upload, never in the library. An expired or unknown id is `not-found`; a malformed one `bad-request`.
+- Large video files should be reduced to audio before uploading (the web app does this in the browser): speech-to-text services cap uploads at about 25 MB, so compressed mono audio (about 30 MB per hour at 64 kbit/s) goes much further.
+
+### `GET /api/v1/bundle?url=&formats=&comments=&maxTokens=` and `POST /api/v1/bundle`
+
+`application/zip` built by core `buildBundle` (layout in `docs/prompts/SHARED-CONTRACTS.md` section 2), streamed, with `Content-Disposition: attachment; filename="<root>.zip"`. `formats` is a comma-separated list (GET) or array (POST) of formatter ids; `context.md` is always written. POST takes `{ inputs?, collectionId?, formats?, comments?, maxTokens?, mode?, lang? }` with the same 100-video cap as `POST /pack`.
+
+### `GET /api/v1/openapi.json`
+
+OpenAPI 3.1 for every route the app serves, generated from the routes Hono actually has: each route module registers a description next to its handler (`packages/server/src/openapi.ts`), and mounted sub-app routes without a description appear with a generic entry tagged by package. A package may publish descriptions for its routes by exporting an OpenAPI `paths` object (relative to its mount prefix); the server passes it in when mounting. `/health` is marked open (`security: []`).
+
+### Mounted sub-apps
+
+Mounted by `createApp` (`packages/server/src/app.ts`, `MOUNTED_SUB_APPS`). They share the server's Ctx per request, its storage and its KvStore, and pass through the same middleware under `/api/*`.
+
+| Package | Factory | Prefix | Notes |
+|---|---|---|---|
+| `@vid2context/search` (40) | `searchRoutes` | `/api/v1` | |
+| `@vid2context/library` (41) | `libraryRoutes` | `/api/v1` | gets the server's KvStore, and the jobs queue when one is passed |
+| `@vid2context/ask` (34) | `askRoutes` | `/api/v1` | `/ask` and `/chat` |
+| `@vid2context/jobs` (42) | `jobsRoutes` | `/api/v1` | only when `createApp({ jobs: { queue } })` is given a queue: the Node entry passes an in-process queue with the built-in kinds |
+| `@vid2context/skips` (53) | `skipsRoutes` | `/api/v1` | |
+| `@vid2context/research` (54) | `researchRoutes` | `/api/v1` | |
+| `@vid2context/exporters` (57) | `exporterRoutes` | `/api/v1` | |
+| `@vid2context/webhooks` (59) | `webhookRoutes` | `/api/v1` | |
+| `@vid2context/mcp-http` (45) | `mcpHttpRoutes` | `/` | `/mcp`, `/oauth/*`, `/.well-known/*`; answers its own errors and keeps its own auth and CORS rules |
+
+Not mounted yet, because the package does not export a factory: insights (32, `/briefs`, `/extract`), translation (35), chapters (36), the hosted-mode accounts middleware and routes (58), bots (56), live (61) and duplicates (62).
 
 ## Planned routes
 
@@ -133,8 +206,8 @@ Collection types (`@vid2context/library`): `Schedule` is `{ every: 'hourly' | 'd
 | `POST /extract` | 33 | `{ inputs?: string[], collectionId?, template?: string, schema?: object }` | `202 Job`; result JSON matching the template or schema, with citations |
 | `POST /ask` | 34 | `{ question, collectionId?, inputs?: string[], stream?: boolean, history?: { role, content }[], model?: ModelChoice, maxTokens?, temperature? }` | `{ answer, citations: Citation[], unverified: number[], sources, rung, model, usage?, attempts }`, or `text/event-stream` with the `/chat` events when `stream` is true |
 | `POST /chat` | 34 | `ChatApiRequest` (below) | `text/event-stream`: `meta`, `reasoning`*, `delta`+, then `done` or `error` (below) |
-| `GET /transcript?...&lang=xx&translate=1` | 35 | `translate=1` allows LLM translation when the platform has no track in `lang` | as `/transcript`; the transcript has `translated: true` |
-| `POST /chapters` | 36 | `{ url }` | `{ chapters: Chapter[], producer, rung }` for videos without chapters |
+| `GET /transcript?...&lang=xx&translate=1` | 35 (logic), 46 (route) | `translate=1` allows LLM translation when the platform has no track in `lang` | as `/transcript`, rendered from `translateContext(registry, context, { language: lang }, ctx).transcript` (`@vid2context/translate`): the platform track first, else the LLM chain with every segment and timestamp kept and `translated: true`. Without `translate=1`, pass `{ llm: false }` so only platform tracks are used |
+| `POST /chapters` | 36 | `{ url, force?, llm?, summaries?, lang? }` | `{ videoId, chapters: (Chapter & { endSec, summary? })[], producer, rung, model, source: 'auto', method, durationSec, notes, attempts }`. `rung` and `model` are `null` when the chapters are fully offline (`producer: 'chapters/texttiling'`). A video that already has chapters answers `bad-request` unless `force` is true. Sub-app: `chaptersRoutes` from `@vid2context/chapters/http` |
 
 `Citation` is `{ videoId, title, startSec, endSec?, url?, quote? }`, where `url` is a timestamp link from `timestampUrl`. `/ask` and `/chat` add `n`, the `[n]` in the answer the citation backs; `startSec` is narrowed to the segment that best supports the citing sentence.
 
@@ -206,7 +279,10 @@ interface Job {
 | Method and path | Owner | Notes |
 |---|---|---|
 | `POST /mcp`, `GET /mcp` | 45 | Remote MCP over Streamable HTTP, the same tools as stdio (see `mcp-tools.md`) |
-| `GET /openapi.json` | 46 | OpenAPI 3.1 for every route on this page |
+| `GET /openapi.json` | 46, implemented | OpenAPI 3.1 for every route the server serves |
+| `GET /models?kind=` | 46, implemented | see [above](#get-apiv1modelskind) |
+| `POST /uploads` | 46, implemented | see [above](#post-apiv1uploads) |
+| `GET /bundle`, `POST /bundle` | 46, implemented | see [above](#get-apiv1bundleurlformatscommentsmaxtokens-and-post-apiv1bundle) |
 
 ### Auth and limits (owner: 45 and 46)
 
