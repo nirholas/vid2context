@@ -75,11 +75,13 @@ describe('mounted sub-apps', () => {
 
   it('serves the remote MCP endpoints at the root, outside the /api middleware', async () => {
     const { app } = makeApp();
-    const meta = await app.request('/.well-known/oauth-protected-resource/mcp');
-    expect(meta.status).not.toBe(404);
-    expect(meta.headers.get('x-request-id')).toBeTruthy();
-    expect(meta.headers.get('x-robots-tag')).toBeNull();
+    const card = await app.request('/mcp/server-card');
+    expect(card.status).toBe(200);
+    expect(card.headers.get('x-request-id')).toBeTruthy();
+    expect(card.headers.get('x-robots-tag')).toBeNull();
+    // mcp-http answers its own auth errors: with no credentials configured it refuses every request.
     const mcp = await app.request('/mcp', { method: 'POST', body: '{}' });
-    expect(mcp.status).not.toBe(404);
+    expect(mcp.status).toBe(401);
+    expect((await mcp.json()).error.hint).toContain('VID2CONTEXT_MCP_TOKENS');
   });
 });
