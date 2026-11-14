@@ -73,7 +73,8 @@ describe('listCaptionLanguages', () => {
     expect(r.videoId.startsWith('file:')).toBe(true);
     expect(r.tracks).toEqual([]);
     expect(r.translationTargets).toEqual([]);
-    expect(r.notes[0]).toMatch(/^No installed captions provider lists tracks for file/);
+    // Depending on the installed providers: no captions provider for files, or one (sidecar subtitles) that finds none.
+    expect(r.notes[0]).toMatch(/the transcript would come from speech-to-text\.$/);
     expect(ctx.fetch.calls).toEqual([]);
   });
 
