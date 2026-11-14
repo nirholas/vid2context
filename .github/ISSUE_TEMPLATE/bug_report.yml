@@ -1,0 +1,50 @@
+name: Bug report
+description: Something produced a wrong result, an error, or no transcript.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. For security problems, please follow [SECURITY.md](https://github.com/nirholas/vid2context/blob/main/SECURITY.md) instead.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What you did, what you expected, and what you got instead.
+    validations:
+      required: true
+  - type: input
+    id: input
+    attributes:
+      label: Input
+      description: The video URL, id or file type you passed (a public example is ideal).
+      placeholder: https://www.youtube.com/watch?v=...
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Transcript mode
+      options:
+        - auto (default)
+        - captions
+        - stt
+        - video
+        - not sure
+  - type: textarea
+    id: attempts
+    attributes:
+      label: Attempts and error output
+      description: The `attempts` list from the result or error, plus the error `code` and `hint`. Remove any API keys.
+      render: json
+  - type: textarea
+    id: env
+    attributes:
+      label: Environment
+      description: Commit or version, Node.js version, OS, runtime (node, workers, browser), and which provider keys are set (names only, never values).
+      placeholder: |
+        commit: abc1234
+        node: 22.x
+        os: macOS 15
+        runtime: node
+        keys set: GROQ_API_KEY
+    validations:
+      required: true

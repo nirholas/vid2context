@@ -1,0 +1,54 @@
+name: Provider request
+description: Ask for a new video platform, speech-to-text service, LLM or other provider.
+labels: [provider]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Providers are self-contained packages, so they're a great first contribution. See [Adding a provider](https://github.com/nirholas/vid2context/blob/main/CONTRIBUTING.md#adding-a-provider).
+  - type: input
+    id: service
+    attributes:
+      label: Platform or service
+      placeholder: Vimeo, Deepgram, a podcast RSS feed, ...
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Provider kind
+      options:
+        - source (resolves URLs, metadata, audio)
+        - captions (existing transcripts)
+        - stt (speech-to-text)
+        - llm (chat completions)
+        - embed (embeddings)
+        - video (multimodal model reads the video)
+        - visual (OCR or vision on frames)
+        - storage
+        - not sure
+    validations:
+      required: true
+  - type: dropdown
+    id: tier
+    attributes:
+      label: Cost tier
+      options:
+        - local (runs on the user's machine)
+        - free (free tier with an API key)
+        - keyless (free, no account)
+        - paid
+        - not sure
+  - type: textarea
+    id: details
+    attributes:
+      label: Details
+      description: API docs link, free-tier limits, whether it's OpenAI-compatible, and why it would help.
+    validations:
+      required: true
+  - type: checkboxes
+    id: help
+    attributes:
+      label: Contributing
+      options:
+        - label: I'd like to build this provider myself.

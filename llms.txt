@@ -1,0 +1,35 @@
+# vid2context
+
+> Turn any video into context for AI agents and LLMs: transcripts, metadata, chapters and cited research briefs. Free-first (local models, then free tiers, then keyless hosts, paid APIs last), TypeScript, Apache-2.0.
+
+vid2context resolves a video input (a YouTube URL or id, or a local media file), fetches its metadata and chapters, and produces a timed transcript. It prefers existing captions (creator, then platform auto-captions) and falls back to speech-to-text through a chain of OpenAI-compatible providers. Every result records which providers were tried and why each one succeeded or failed.
+
+Status: early and pre-release (0.1.0). The TypeScript library core, four providers and a minimal CLI work today. The MCP server and HTTP API (Hono) are in development, and a web app is planned; all of them share the same core. Install from source: clone, `npm install`, then `npm run cli -- <url-or-file>`. Requires Node.js 22 or newer.
+
+## Docs
+
+- [llms-full.txt](https://raw.githubusercontent.com/nirholas/vid2context/main/llms-full.txt): the complete guide in one file: data model, provider contracts, the rung chain, every environment variable, library usage and how to add a provider
+- [Contributing](https://github.com/nirholas/vid2context/blob/main/CONTRIBUTING.md): development setup, project layout, provider authoring rules
+- [Changelog](https://github.com/nirholas/vid2context/blob/main/CHANGELOG.md)
+
+## Source
+
+- [Core types](https://github.com/nirholas/vid2context/blob/main/packages/core/src/types.ts): VideoRef, VideoMetadata, Transcript, Segment, VideoContext, Tier, Policy, Attempt
+- [Provider contracts](https://github.com/nirholas/vid2context/blob/main/packages/core/src/provider.ts): source, captions, stt, llm, embed, video, visual and storage providers; rungs
+- [Rung chain](https://github.com/nirholas/vid2context/blob/main/packages/core/src/chain.ts): free-first ordering, cooldowns and fallback
+- [Pipeline](https://github.com/nirholas/vid2context/blob/main/packages/core/src/pipeline.ts): getVideoContext, transcribe, chat, expandInput
+- [Output formats](https://github.com/nirholas/vid2context/blob/main/packages/core/src/format/index.ts): text and json renderers
+
+## Providers
+
+- [YouTube](https://github.com/nirholas/vid2context/blob/main/providers/youtube/src/index.ts): URL matching, metadata, description chapters, creator and auto captions through the innertube player API; no key, no SDK
+- [Local media files](https://github.com/nirholas/vid2context/blob/main/providers/media-file/src/index.ts): file paths and file:// URLs as sources of audio for speech-to-text (Node only)
+- [Speech-to-text](https://github.com/nirholas/vid2context/blob/main/providers/stt-openai-compatible/src/index.ts): any OpenAI-compatible /audio/transcriptions API: local servers, Groq, OVH (keyless), OpenAI
+- [LLM](https://github.com/nirholas/vid2context/blob/main/providers/llm-openai-compatible/src/index.ts): any OpenAI-compatible chat API: Ollama, LM Studio, Groq, Cerebras, Mistral, GitHub Models, Gemini, OVH and Pollinations (keyless), OpenAI
+
+## Optional
+
+- [Repository](https://github.com/nirholas/vid2context)
+- [Discussions](https://github.com/nirholas/vid2context/discussions): questions, ideas, show and tell
+- [Citation](https://github.com/nirholas/vid2context/blob/main/CITATION.cff)
+- [License: Apache-2.0](https://github.com/nirholas/vid2context/blob/main/LICENSE)

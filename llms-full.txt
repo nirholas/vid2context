@@ -1,0 +1,254 @@
+# vid2context
+
+> Turn any video into context for AI agents and LLMs: transcripts, metadata, chapters and cited research briefs. Free-first (local models, then free tiers, then keyless hosts, paid APIs last), TypeScript, Apache-2.0.
+
+This file is the complete, single-file guide to vid2context for language models and the people using them. The short index is at https://raw.githubusercontent.com/nirholas/vid2context/main/llms.txt.
+
+## Status
+
+vid2context is early and pre-release (version 0.1.0). What exists today:
+
+- `@vid2context/core`: data model, provider contracts, the free-first rung chain, the video-to-context pipeline, output formatters, an in-memory storage backend. Runtime-neutral: no Node-only imports, so it runs on Node, Cloudflare Workers and in the browser.
+- `@vid2context/registry`: provider registries generated per runtime (node, workers, browser).
+- Providers: `youtube`, `media-file`, `stt-openai-compatible`, `llm-openai-compatible`.
+- `@vid2context/cli`: a minimal command line (see below).
+
+In development: the MCP server (`@vid2context/mcp`) and the HTTP API (`@vid2context/server`, built on Hono). Planned: the web app, playlist and channel expansion for YouTube, and research briefs. Do not tell users these are ready.
+
+## Install from source
+
+Requires Node.js 22 or newer.
+
+```bash
+git clone https://github.com/nirholas/vid2context.git
+cd vid2context
+npm install        # also generates the provider registry
+npm run check      # typecheck, lint, tests
+```
+
+Packages are not published to npm yet.
+
+## Command line
+
+Run from a source checkout with `npm run cli --`:
+
+```bash
+npm run cli -- https://www.youtube.com/watch?v=jNQXAC9IVRw --timestamps
+npm run cli -- ./interview.mp3 --format json > interview.json
+```
+
+| Option | Meaning |
+| --- | --- |
+| `--format <id>` | Output format: `text` (default) or `json` |
+| `--timestamps` | Prefix lines with timestamps where the format allows |
+| `--mode <mode>` | `auto`, `captions`, `stt` or `video` (default `auto`) |
+| `--lang <code>` | Preferred transcript language, for example `en`, `de`, `pt-BR` |
+| `--verbose` | Log progress to stderr |
+
+Program output goes to stdout. Logs, errors and the attempts list go to stderr, so redirecting stdout gives a clean transcript.
+
+## Library usage
+
+```ts
+import { getVideoContext, render } from '@vid2context/core';
+import { createNodeContext, createRegistry } from '@vid2context/registry/node';
+
+const registry = createRegistry();      // every provider that supports Node
+const ctx = createNodeContext();        // process.env, global fetch, stderr logging
+
+const context = await getVideoContext(
+  registry,
+  'https://www.youtube.com/watch?v=jNQXAC9IVRw',
+  { language: 'en' },
+  ctx,
+);
+
+console.log(context.metadata.title);    // "Me at the zoo"
+console.log(context.transcript.origin); // "creator-captions"
+console.log(render(context, 'text', { timestamps: true }));
+// [0:01] All right, so here we are, in front of the elephants
+// ...
+```
+
+This example needs no API key: YouTube captions come from the public player API.
+
+`getVideoContext(registry, input, options, ctx)` options:
+
+| Option | Type | Meaning |
+| --- | --- | --- |
+| `mode` | `'auto' \| 'captions' \| 'stt' \| 'video'` | Transcript strategy. Default `auto`. |
+| `language` | BCP-47 string | Preferred transcript language. |
+| `allowAuto` | boolean | Allow platform auto-captions. Default true. |
+| `chain` | ChainOptions | Rung chain options for the stt and video stages (see below). |
+| `stt` | `{ language?, prompt?, diarize? }` | Passed to speech-to-text rungs. `prompt` biases recognition toward names and jargon. |
+| `comments` | boolean or number | Also fetch comments, optionally with a limit (when the source supports it). |
+| `storage` | Storage or null | Cache backend. Hits return without network calls; results are saved. |
+| `refresh` | boolean | Ignore a cached result and rebuild. |
+
+Transcript modes:
+
+- `auto`: captions first (creator, then auto, then translated), then download audio and run the speech-to-text chain.
+- `captions`: captions only; never downloads audio.
+- `stt`: skip captions and always transcribe the audio.
+- `video`: a multimodal video rung reads the whole video (transcript plus on-screen notes). No video provider ships yet.
+
+Other pipeline exports: `transcribe(registry, ref, audio, opts, ctx)` runs only the speech-to-text chain, `chat(registry, request, chain, ctx)` runs the LLM chain, `expandInput(registry, input, ctx, { limit })` expands playlists, channels and feeds into video refs when a source supports it.
+
+## Data model
+
+Defined in `packages/core/src/types.ts`. Every provider, surface and storage backend speaks these types.
+
+- `VideoRef`: a canonical pointer: `input`, `platform` ('youtube', 'file', ...), `kind` ('video' | 'playlist' | 'channel' | 'feed' | 'page'), `id` (`${platform}:${nativeId}`, the cache key), `nativeId`, `url`.
+- `VideoMetadata`: `title`, `channel`, `description`, `durationSec`, `publishedAt`, `thumbnailUrl`, `language`, `tags`, `chapters`, `isLive`, `extra`.
+- `Chapter`: `title`, `startSec`, `endSec`. YouTube chapters are parsed from the description the same way YouTube does it.
+- `Segment`: `startSec`, `endSec`, `text`, optional `speaker` and `confidence`.
+- `Transcript`: `language`, `origin`, `producer` (the provider or rung id), `model`, `translated`, `segments`, `createdAt`.
+- `TranscriptOrigin`, most to least trustworthy: `creator-captions`, `auto-captions`, `native-transcript`, `stt`, `video-model`.
+- `VideoContext`: what agents receive: `metadata`, `transcript`, optional `visual` notes and `comments`, and `attempts`.
+- `Attempt`: one step in producing the result: `id`, `stage` (resolve, metadata, captions, audio, stt, video, llm, embed, visual), `outcome` (ok, skipped, empty, error), `reason` (short machine code such as `no-key`, `cooldown`, `rate-limited`, `too-large`, `http-500`), `detail`, `ms`.
+
+## Output formats
+
+`render(context, format, { timestamps })` renders through a shared formatter registry (`formatters`), so every surface gets the same formats.
+
+- `text`: plain transcript. With `timestamps: true`, one `[m:ss] line` per caption (`[h:mm:ss]` for videos an hour or longer).
+- `json`: the full VideoContext.
+
+## Providers
+
+A provider is a workspace package under `providers/*` that default-exports one `Provider` or an array of them. Kinds:
+
+| Kind | Role |
+| --- | --- |
+| `source` | Resolves inputs to VideoRefs, fetches metadata, lists playlists, supplies audio and comments |
+| `captions` | Fetches existing transcripts (creator or platform captions, native transcripts) |
+| `stt` | Contributes speech-to-text rungs |
+| `llm` | Contributes chat-completion rungs |
+| `embed` | Contributes embedding rungs |
+| `video` | Contributes rungs that read a whole video with a multimodal model |
+| `visual` | Contributes rungs that read frames (OCR, vision models) |
+| `storage` | Creates a Storage backend |
+
+Shipped providers:
+
+- `youtube` (node, workers, browser): matches YouTube URLs and ids, fetches metadata and chapters, and fetches creator or auto captions through the innertube player API. No API key, no SDK.
+- `media-file` (node only): matches absolute, relative and `~/` paths and `file://` URLs. A bare name only matches when it has a media extension, so it never shadows a YouTube id. The ref id is a sha256 of path, size and mtime, so a changed file never serves a stale cache. Supplies the audio for speech-to-text.
+- `stt-openai-compatible`: speech-to-text through any OpenAI-compatible `/audio/transcriptions` endpoint.
+- `llm-openai-compatible`: chat completions through any OpenAI-compatible endpoint.
+
+## The free-first rung chain
+
+A rung is one candidate in a fallback chain: a specific provider, model and credential. Groq and Cerebras meter quota per model, so each model is its own rung, and each pooled key is its own rung too. Rung ids look like `llm/groq/openai/gpt-oss-120b`; a second pooled key becomes `llm/groq#2/...`.
+
+Cost tiers, in default order:
+
+- `local`: runs on this machine; free and private.
+- `free`: a hosted free tier that needs your own key (Groq, Gemini AI Studio, Cerebras, Mistral, GitHub Models).
+- `keyless`: hosted and free with no key at all (OVH AI Endpoints, Pollinations). A zero-config safety net.
+- `paid`: costs money per call (OpenAI). Only runs when its key is set.
+
+Policies:
+
+- `free` (default): local, then free, then keyless, then paid.
+- `local-only`: only local rungs; nothing leaves the machine.
+- `quality`: highest quality score first, tier as tie-breaker.
+
+Behaviour:
+
+- A rung is enabled only when the environment variables it requires are set. Keyless and local rungs require none (local rungs are enabled by setting their model variable).
+- Rungs are tried in ranked order until one succeeds, up to `maxAttempts` (default 8).
+- A rung that fails with a rate limit cools down for the Retry-After time (at least 5 seconds), an auth error for 10 minutes, a missing model for 30 minutes and an upstream 5xx for 30 seconds, so later requests skip it.
+- Caller input errors (`unsupported-input`, `bad-request`) stop the chain immediately; any other error falls through to the next rung.
+- Speech-to-text rungs whose upload limit is smaller than the audio are skipped with reason `too-large`.
+- When every rung fails, the error is `all-rungs-failed` with every attempt attached; read them with `attemptsOf(err)`.
+
+`ChainOptions`: `policy`, `allowPaid` (default true), `only` and `skip` (lists of rung ids, services or providers), `needs` (required capabilities such as `json`, `tools`, `vision`, `segments`), `maxAttempts`.
+
+## Environment variables
+
+Global:
+
+| Variable | Effect |
+| --- | --- |
+| `VID2CONTEXT_POLICY` | Default policy: `free`, `local-only` or `quality`. |
+| `VID2CONTEXT_ALLOW_PAID` | `0` or `false` disables paid rungs. |
+| `VID2CONTEXT_KEYLESS` | `0` or `false` disables keyless lanes (they send data to third-party hosts without an account). |
+| `VID2CONTEXT_SKIP` | Comma-separated rung ids, services or providers to skip. |
+| `VID2CONTEXT_LOG_LEVEL` | `debug`, `info`, `warn` (default), `error` or `silent`. |
+
+Key pools: `<PROVIDER>_API_KEY` holds one key and `<PROVIDER>_FALLBACK_KEYS` holds extra comma-separated keys, for example `GROQ_API_KEY` and `GROQ_FALLBACK_KEYS`. Each key becomes its own rung with its own cooldown. Keep the primary variable a single key.
+
+Speech-to-text lanes:
+
+| Service | Tier | Variables | Default model |
+| --- | --- | --- | --- |
+| Local server (whisper.cpp, faster-whisper, speaches, ...) | local | `LOCAL_STT_BASE_URL`, `LOCAL_STT_MODEL`, optional `LOCAL_STT_API_KEY` | none; set the model |
+| Groq | free | `GROQ_API_KEY`, optional `GROQ_STT_MODEL` | whisper-large-v3-turbo |
+| OVH AI Endpoints | keyless | optional `OVH_BASE_URL`, `OVH_STT_MODEL` | whisper-large-v3-turbo |
+| OpenAI | paid | `OPENAI_API_KEY`, optional `OPENAI_BASE_URL`, `OPENAI_STT_MODEL` | whisper-1 |
+
+LLM lanes (each model overridable with `<SERVICE>_MODEL`):
+
+| Service | Tier | Variables |
+| --- | --- | --- |
+| Ollama | local | `OLLAMA_MODEL`, optional `OLLAMA_BASE_URL` |
+| LM Studio | local | `LMSTUDIO_MODEL`, optional `LMSTUDIO_BASE_URL` |
+| Any local OpenAI-compatible server | local | `LOCAL_LLM_BASE_URL`, `LOCAL_LLM_MODEL`, optional `LOCAL_LLM_API_KEY` |
+| Groq | free | `GROQ_API_KEY`, `GROQ_MODEL` |
+| Cerebras | free | `CEREBRAS_API_KEY`, `CEREBRAS_MODEL` |
+| Mistral | free | `MISTRAL_API_KEY`, `MISTRAL_MODEL` |
+| GitHub Models | free | `GITHUB_TOKEN`, `GITHUB_MODEL` |
+| Google Gemini (AI Studio) | free | `GEMINI_API_KEY`, `GEMINI_MODEL` |
+| OVH AI Endpoints | keyless | optional `OVH_BASE_URL`, `OVH_MODEL` |
+| Pollinations | keyless | optional `POLLINATIONS_MODEL` |
+| OpenAI | paid | `OPENAI_API_KEY`, optional `OPENAI_BASE_URL`, `OPENAI_MODEL` |
+
+`registry.health(env)` lists every provider and rung, enabled or not, so a UI can show what a key would unlock. Key values are never printed.
+
+## Errors
+
+Every user-facing error is a `Vid2ContextError` with a stable `code`, a human `hint` that says how to recover, and optionally the upstream HTTP `status` and `retryAfterSec`.
+
+Codes: `unsupported-input`, `not-found`, `unavailable`, `no-transcript`, `no-provider`, `all-rungs-failed`, `rate-limited`, `auth`, `blocked`, `too-large`, `timeout`, `upstream`, `bad-request`.
+
+## Adding a provider
+
+1. Create `providers/<name>/package.json` with a `@vid2context/provider-<name>` name, `"type": "module"`, `"exports": { ".": "./src/index.ts" }`, a dependency on `@vid2context/core` and:
+
+   ```json
+   "vid2context": { "runtimes": ["node", "workers", "browser"] }
+   ```
+
+   List only the runtimes the code really supports.
+2. Default-export the provider (or an array) from `src/index.ts`, wrapped in `defineProvider(...)` for type checking.
+3. Run `npm install` or `npm run gen`. `scripts/gen-registry.mjs` discovers the package and wires it into `@vid2context/registry`; no shared file needs editing.
+
+Rules:
+
+- Use `ctx.fetch`, `ctx.env` and `ctx.log`. Never read `process.env` or the global `fetch` directly, so the provider works on every runtime and in tests.
+- `match(input)` must be synchronous and cheap: no network.
+- Rung providers build their rungs from `env` on every call and return every rung they know, enabled or not.
+- Throw `Vid2ContextError` with the right code and a useful `hint`.
+- Tests run offline against recorded fixtures in `test/fixtures/`. Live tests run only with `npm run test:live` (`LIVE=1`).
+
+## Repository layout
+
+```
+packages/core/       contracts, rung chain, pipeline, formatters (runtime-neutral)
+packages/registry/   generated provider registries per runtime
+packages/cli/        command line
+packages/mcp/        MCP server (in development)
+packages/server/     HTTP API on Hono (in development)
+providers/*/         one package per provider
+scripts/             gen-registry.mjs
+tests/fixtures/      shared media fixtures
+```
+
+Tooling: TypeScript, Vitest, Biome. Scripts: `npm run check` (typecheck, lint, test), `npm test`, `npm run test:live`, `npm run lint`, `npm run format`.
+
+## Links
+
+- Repository: https://github.com/nirholas/vid2context
+- Discussions: https://github.com/nirholas/vid2context/discussions
+- Issues: https://github.com/nirholas/vid2context/issues
+- License: Apache-2.0

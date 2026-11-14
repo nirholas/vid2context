@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "If you use vid2context in your research or project, please cite it using these metadata."
+type: software
+title: "vid2context: turn any video into context for AI agents"
+abstract: >-
+  vid2context turns videos into context for AI agents and large language
+  models: transcripts, metadata, chapters and cited research briefs. It
+  prefers existing captions and falls back to speech-to-text through a
+  free-first chain of local, free-tier, keyless and paid providers, recording
+  every attempt so results are traceable.
+authors:
+  - alias: nirholas
+repository-code: "https://github.com/nirholas/vid2context"
+url: "https://github.com/nirholas/vid2context"
+license: Apache-2.0
+version: 0.1.0
+keywords:
+  - video transcription
+  - youtube transcript
+  - speech-to-text
+  - model context protocol
+  - ai agents
+  - large language models
+  - retrieval-augmented generation
+  - context engineering
