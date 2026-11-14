@@ -43,14 +43,20 @@ export function uploadRoutes({ services, docs }: RouteDeps): Hono<AppEnv> {
     const cfg = services.config(c.req.raw);
     const type = c.req.header('content-type') ?? '';
     if (!type.toLowerCase().startsWith('multipart/form-data')) {
-      throw badRequest('Uploads must be multipart/form-data.', 'Send the file in a form field named "file" (curl -F file=@talk.mp3).');
+      throw badRequest(
+        'Uploads must be multipart/form-data.',
+        'Send the file in a form field named "file" (curl -F file=@talk.mp3).',
+      );
     }
     let form: FormData;
     try {
       form = await c.req.raw.formData();
     } catch (err) {
       if (err instanceof Vid2ContextError) throw err;
-      throw badRequest('Could not read the multipart body.', 'Send the file in a form field named "file" (curl -F file=@talk.mp3).');
+      throw badRequest(
+        'Could not read the multipart body.',
+        'Send the file in a form field named "file" (curl -F file=@talk.mp3).',
+      );
     }
     const file = form.get('file');
     if (!file || typeof file === 'string') {

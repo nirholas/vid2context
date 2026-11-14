@@ -9,10 +9,15 @@
   },
   "dependencies": {
     "@hono/node-server": "^2.1.8",
+    "@vid2context/ask": "*",
     "@vid2context/core": "*",
     "@vid2context/exporters": "*",
+    "@vid2context/jobs": "*",
+    "@vid2context/library": "*",
+    "@vid2context/mcp-http": "*",
     "@vid2context/registry": "*",
     "@vid2context/research": "*",
+    "@vid2context/search": "*",
     "@vid2context/skips": "*",
     "@vid2context/webhooks": "*",
     "hono": "^4.13.18"

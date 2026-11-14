@@ -34,7 +34,12 @@ export class HttpError extends Error {
   readonly hint?: string;
   readonly headers: Record<string, string>;
 
-  constructor(code: ServerErrorCode, status: ContentfulStatusCode, message: string, opts: { hint?: string; headers?: Record<string, string> } = {}) {
+  constructor(
+    code: ServerErrorCode,
+    status: ContentfulStatusCode,
+    message: string,
+    opts: { hint?: string; headers?: Record<string, string> } = {},
+  ) {
     super(message);
     this.name = 'HttpError';
     this.code = code;
@@ -74,7 +79,10 @@ export function renderError(err: unknown): RenderedError {
     }
     return {
       status: STATUS_BY_CODE[err.code] ?? 500,
-      body: { error: { code: err.code, message: err.message, ...(err.hint ? { hint: err.hint } : {}) }, attempts: attemptsOf(err) },
+      body: {
+        error: { code: err.code, message: err.message, ...(err.hint ? { hint: err.hint } : {}) },
+        attempts: attemptsOf(err),
+      },
       headers,
       unexpected: false,
     };

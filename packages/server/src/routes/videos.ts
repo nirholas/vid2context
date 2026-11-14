@@ -31,22 +31,21 @@ import {
   readUrl,
 } from '../http-util.ts';
 import { json, P, ref, textResponse } from '../openapi.ts';
-import { isUploadInput } from '../uploads.ts';
 import type { AppEnv, RouteDeps } from '../types.ts';
+import { isUploadInput } from '../uploads.ts';
 
 const V = '/api/v1';
 const MAX_TOKENS = 2_000_000;
 
 export function videoRoutes({ services, docs }: RouteDeps): Hono<AppEnv> {
   const app = new Hono<AppEnv>();
-  const load = (c: Context<AppEnv>, extra: { comments?: boolean | number } = {}) =>
+  const load = (c: Context<AppEnv>) =>
     services.loadContext(
       readUrl(c.req.query('url')),
       {
         mode: readMode(c.req.query('mode')),
         language: c.req.query('lang') || undefined,
         refresh: readFlag(c.req.query('refresh')),
-        ...extra,
       },
       services.ctxFor(c.req.raw),
     );
@@ -58,7 +57,11 @@ export function videoRoutes({ services, docs }: RouteDeps): Hono<AppEnv> {
     tags: ['videos'],
     params: [P.url, P.mode, P.lang, { name: 'refresh', description: '1 to ignore the library copy and rebuild.' }],
     responses: {
-      '200': { description: 'The VideoContext.', content: json(ref('VideoContext')), headers: { ETag: 'Version of the body; send it back as If-None-Match.' } },
+      '200': {
+        description: 'The VideoContext.',
+        content: json(ref('VideoContext')),
+        headers: { ETag: 'Version of the body; send it back as If-None-Match.' },
+      },
       '304': { description: 'Not modified (If-None-Match matched).' },
     },
   });
@@ -86,7 +89,10 @@ export function videoRoutes({ services, docs }: RouteDeps): Hono<AppEnv> {
     const ctx = services.ctxFor(c.req.raw);
     const formatter = readFormat(c.req.query('format'));
     if (readFlag(c.req.query('translate'))) {
-      throw badRequest('This server has no translation layer, so translate=1 is not available.', 'Leave out translate=1 to get the transcript in its spoken language, or pass lang=xx to pick a caption track the platform already has.');
+      throw badRequest(
+        'This server has no translation layer, so translate=1 is not available.',
+        'Leave out translate=1 to get the transcript in its spoken language, or pass lang=xx to pick a caption track the platform already has.',
+      );
     }
     const context = await load(c);
     const skip = c.req.query('skip');
@@ -112,10 +118,26 @@ export function videoRoutes({ services, docs }: RouteDeps): Hono<AppEnv> {
     path: `${V}/formats`,
     summary: 'Output formats this server can render.',
     tags: ['videos'],
-    responses: { '200': { description: 'Formats.', content: json({ type: 'object', properties: { formats: { type: 'array', items: ref('Format') } }, required: ['formats'] }) } },
+    responses: {
+      '200': {
+        description: 'Formats.',
+        content: json({
+          type: 'object',
+          properties: { formats: { type: 'array', items: ref('Format') } },
+          required: ['formats'],
+        }),
+      },
+    },
   });
   app.get('/formats', (c) =>
-    c.json({ formats: Object.values(formatters).map((f) => ({ id: f.id, description: f.description, mimeType: f.mimeType, extension: f.extension })) }),
+    c.json({
+      formats: Object.values(formatters).map((f) => ({
+        id: f.id,
+        description: f.description,
+        mimeType: f.mimeType,
+        extension: f.extension,
+      })),
+    }),
   );
 
   docs.add({
@@ -124,7 +146,12 @@ export function videoRoutes({ services, docs }: RouteDeps): Hono<AppEnv> {
     summary: 'Expand a playlist, channel, feed or page into video refs. A single video returns itself.',
     tags: ['videos'],
     params: [P.url, P.limit('Most items to return. Default and maximum: VID2CONTEXT_MAX_PLAYLIST_ITEMS (500).')],
-    responses: { '200': { description: 'Video refs.', content: json({ type: 'object', properties: { items: { type: 'array', items: ref('VideoRef') } }, required: ['items'] }) } },
+    responses: {
+      '200': {
+        description: 'Video refs.',
+        content: json({ type: 'object', properties: { items: { type: 'array', items: ref('VideoRef') } }, required: ['items'] }),
+      },
+    },
   });
   app.get('/items', async (c) => {
     const ctx = services.ctxFor(c.req.raw);
@@ -158,14 +185,17 @@ export function videoRoutes({ services, docs }: RouteDeps): Hono<AppEnv> {
     const from = c.req.query('from');
     const to = c.req.query('to');
     const chapter = c.req.query('chapter');
-    if (!from && !to && !chapter) throw badRequest('Pass from, to or chapter.', 'For example ?from=1:00&to=2:30, or ?chapter=2 (see GET /api/v1/outline).');
+    if (!from && !to && !chapter)
+      throw badRequest('Pass from, to or chapter.', 'For example ?from=1:00&to=2:30, or ?chapter=2 (see GET /api/v1/outline).');
     const sel: SectionSelector = {
       ...(from ? { fromSec: parseTimeArg(from) } : {}),
       ...(to ? { toSec: parseTimeArg(to) } : {}),
       ...(chapter ? { chapter: /^\d+$/.test(chapter.trim()) ? Number(chapter) : chapter } : {}),
     };
     const section = getSection(await load(c), sel);
-    return c.body(render(section, formatter.id, { timestamps: readFlag(c.req.query('timestamps')) }), 200, { 'content-type': formatter.mimeType });
+    return c.body(render(section, formatter.id, { timestamps: readFlag(c.req.query('timestamps')) }), 200, {
+      'content-type': formatter.mimeType,
+    });
   });
 
   docs.add({
@@ -181,7 +211,12 @@ export function videoRoutes({ services, docs }: RouteDeps): Hono<AppEnv> {
           type: 'object',
           properties: {
             metadata: ref('VideoMetadata'),
-            chapters: { type: 'array', items: { allOf: [ref('Chapter'), { type: 'object', properties: { tokens: { type: 'integer' } }, required: ['tokens'] }] } },
+            chapters: {
+              type: 'array',
+              items: {
+                allOf: [ref('Chapter'), { type: 'object', properties: { tokens: { type: 'integer' } }, required: ['tokens'] }],
+              },
+            },
             totalTokens: { type: 'integer' },
           },
           required: ['metadata', 'chapters', 'totalTokens'],
@@ -197,7 +232,16 @@ export function videoRoutes({ services, docs }: RouteDeps): Hono<AppEnv> {
     summary: 'Top comments of a video, from the source provider.',
     tags: ['videos'],
     params: [P.url, P.limit('Most comments to return (1 to 1000).')],
-    responses: { '200': { description: 'Comments.', content: json({ type: 'object', properties: { comments: { type: 'array', items: ref('Comment') } }, required: ['comments'] }) } },
+    responses: {
+      '200': {
+        description: 'Comments.',
+        content: json({
+          type: 'object',
+          properties: { comments: { type: 'array', items: ref('Comment') } },
+          required: ['comments'],
+        }),
+      },
+    },
   });
   app.get('/comments', async (c) => {
     const ctx = services.ctxFor(c.req.raw);
@@ -219,13 +263,20 @@ export function videoRoutes({ services, docs }: RouteDeps): Hono<AppEnv> {
     path: `${V}/pack`,
     summary: 'The context pack for one video: one Markdown file sized for a token budget, with citation instructions.',
     tags: ['videos'],
-    params: [P.url, { name: 'maxTokens', description: 'Token budget for the pack.', schema: { type: 'integer', minimum: 1 } }, P.mode, P.lang],
+    params: [
+      P.url,
+      { name: 'maxTokens', description: 'Token budget for the pack.', schema: { type: 'integer', minimum: 1 } },
+      P.mode,
+      P.lang,
+    ],
     responses: { '200': { description: 'The pack.', content: { 'text/markdown': { type: 'string' } } } },
   });
   app.get('/pack', async (c) => {
     const maxTokens = readInt('maxTokens', c.req.query('maxTokens'), { max: MAX_TOKENS });
     const context = await load(c);
-    return c.body(render(context, 'pack', maxTokens ? { maxTokens } : {}), 200, { 'content-type': formatters.pack?.mimeType ?? 'text/markdown; charset=utf-8' });
+    return c.body(render(context, 'pack', maxTokens ? { maxTokens } : {}), 200, {
+      'content-type': formatters.pack?.mimeType ?? 'text/markdown; charset=utf-8',
+    });
   });
 
   docs.add({
@@ -256,7 +307,8 @@ export function videoRoutes({ services, docs }: RouteDeps): Hono<AppEnv> {
       services.ctxFor(c.req.raw),
     );
     const [only] = contexts;
-    const text = only && contexts.length === 1 ? render(only, 'pack', { maxTokens }) : renderMany(contexts, 'pack', { maxTokens });
+    const text =
+      only && contexts.length === 1 ? render(only, 'pack', { maxTokens }) : renderMany(contexts, 'pack', { maxTokens });
     return c.body(text, 200, { 'content-type': formatters.pack?.mimeType ?? 'text/markdown; charset=utf-8' });
   });
 

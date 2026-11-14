@@ -6,7 +6,7 @@
  * speech-to-text chain. Transcripts of uploads are kept next to the upload,
  * never in the library, and expire with it.
  */
-import { type AudioInput, type VideoContext, type VideoMetadata, type VideoRef, Vid2ContextError } from '@vid2context/core';
+import { type AudioInput, Vid2ContextError, type VideoContext, type VideoMetadata, type VideoRef } from '@vid2context/core';
 
 export const UPLOAD_PREFIX = 'upload:';
 const UPLOAD_ID = /^upload:([0-9a-f]{64})$/;

@@ -56,7 +56,11 @@ export function bundleRoutes({ services, docs }: RouteDeps): Hono<AppEnv> {
     const formats = readList(c.req.query('formats'));
     const context = await services.loadContext(
       readUrl(c.req.query('url')),
-      { mode: readMode(c.req.query('mode')), language: c.req.query('lang') || undefined, ...(comments ? { comments: true } : {}) },
+      {
+        mode: readMode(c.req.query('mode')),
+        language: c.req.query('lang') || undefined,
+        ...(comments ? { comments: true } : {}),
+      },
       services.ctxFor(c.req.raw),
     );
     return zipResponse(c, await buildBundle([context], { formats, comments, maxTokens }));
@@ -90,7 +94,11 @@ export function bundleRoutes({ services, docs }: RouteDeps): Hono<AppEnv> {
     const maxTokens = optionalPositiveInt(body, 'maxTokens', MAX_TOKENS);
     const contexts = await services.loadBatch(
       { inputs: optionalStrings(body, 'inputs'), collectionId: optionalString(body, 'collectionId') },
-      { mode: readMode(optionalString(body, 'mode')), language: optionalString(body, 'lang'), ...(comments ? { comments: true } : {}) },
+      {
+        mode: readMode(optionalString(body, 'mode')),
+        language: optionalString(body, 'lang'),
+        ...(comments ? { comments: true } : {}),
+      },
       services.ctxFor(c.req.raw),
     );
     return zipResponse(c, await buildBundle(contexts, { formats, comments, maxTokens }));

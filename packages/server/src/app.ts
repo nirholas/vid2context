@@ -10,9 +10,14 @@
  * openapi.json. Sub-apps exported by other packages are mounted below
  * (see SUB_APPS); docs/contracts/http-api.md lists every route and its owner.
  */
-import { type Ctx, formatters, type Registry } from '@vid2context/core';
+import { askRoutes } from '@vid2context/ask/http';
+import { type Ctx, formatters, type Registry, type Storage } from '@vid2context/core';
 import { exporterRoutes } from '@vid2context/exporters/http';
+import { type JobsRouteDeps, jobsRoutes } from '@vid2context/jobs/http';
+import { libraryRoutes as collectionRoutes } from '@vid2context/library/http';
+import { type McpHttpApp, mcpHttpRoutes } from '@vid2context/mcp-http';
 import { researchRoutes } from '@vid2context/research/http';
+import { searchRoutes } from '@vid2context/search/http';
 import { skipsRoutes } from '@vid2context/skips/http';
 import { webhookRoutes } from '@vid2context/webhooks/http';
 import { type Context, Hono } from 'hono';
@@ -44,7 +49,23 @@ export interface AppOptions {
   clientIp?: (c: Context) => string | undefined;
   /** Receives one entry per request. Default: one JSON line on stderr (off with VID2CONTEXT_ACCESS_LOG=0). */
   onAccessLog?: (entry: AccessLogEntry) => void;
+  /**
+   * Open the library storage once (with the first request's env). Default:
+   * the registry's enabled storage provider, else a process-wide
+   * MemoryStorage. The Node entry passes the Storage it shares with the jobs queue.
+   */
+  storage?: (ctx: Ctx) => Promise<Storage>;
+  /**
+   * The jobs queue. When given, /jobs is mounted. Node creates an in-process
+   * queue (src/node.ts); Workers pass a Cloudflare Queues dispatch (prompt 50).
+   */
+  jobs?: Pick<JobsRouteDeps, 'queue' | 'run' | 'heartbeatMs'>;
+  /** Check the Host header on /mcp against loopback names (turn on when listening on a loopback address). */
+  mcpDnsRebindingProtection?: boolean;
 }
+
+/** The app plus `close()`, which ends open MCP sessions (call it on shutdown). */
+export type ServerApp = Hono<AppEnv> & { close(): Promise<void> };
 
 /** A sub-app another package exports, mounted under `prefix`. */
 interface SubApp {
@@ -56,17 +77,46 @@ interface SubApp {
   paths?: PathsObject;
 }
 
-/** Package names of the sub-apps this build mounts; src/workers.ts reads it to route /mcp when mcp-http is here. */
-export const MOUNTED_SUB_APPS = ['@vid2context/skips', '@vid2context/research', '@vid2context/exporters', '@vid2context/webhooks'] as const;
+/**
+ * Package names of the sub-apps this build mounts (jobs only when a queue is
+ * passed). src/workers.ts reads it to route /mcp and the OAuth paths to the app.
+ */
+export const MOUNTED_SUB_APPS = [
+  '@vid2context/search',
+  '@vid2context/library',
+  '@vid2context/ask',
+  '@vid2context/jobs',
+  '@vid2context/mcp-http',
+  '@vid2context/skips',
+  '@vid2context/research',
+  '@vid2context/exporters',
+  '@vid2context/webhooks',
+] as const;
 
-function subApps(services: Services): SubApp[] {
+function subApps(services: Services, opts: AppOptions, version: string): { list: SubApp[]; mcp: McpHttpApp } {
   const deps = { registry: services.registry, makeCtx: services.ctxFor, storage: services.storage };
-  return [
+  const mcp = mcpHttpRoutes({
+    ...deps,
+    version,
+    ...(opts.clientIp ? { clientIp: opts.clientIp } : {}),
+    ...(opts.mcpDnsRebindingProtection ? { dnsRebindingProtection: true } : {}),
+  });
+  const list: SubApp[] = [
+    { name: '@vid2context/search', prefix: '/api/v1', routes: searchRoutes(deps) },
+    { name: '@vid2context/library', prefix: '/api/v1', routes: collectionRoutes({ ...deps, kv: services.kv }) },
+    { name: '@vid2context/ask', prefix: '/api/v1', routes: askRoutes(deps) },
+    ...(opts.jobs ? [{ name: '@vid2context/jobs', prefix: '/api/v1', routes: jobsRoutes({ ...deps, ...opts.jobs }) }] : []),
     { name: '@vid2context/skips', prefix: '/api/v1', routes: skipsRoutes(deps) },
     { name: '@vid2context/research', prefix: '/api/v1', routes: researchRoutes(deps) },
     { name: '@vid2context/exporters', prefix: '/api/v1', routes: exporterRoutes(deps) },
-    { name: '@vid2context/webhooks', prefix: '/api/v1', routes: webhookRoutes({ makeCtx: services.ctxFor, storage: services.storage }) },
+    {
+      name: '@vid2context/webhooks',
+      prefix: '/api/v1',
+      routes: webhookRoutes({ makeCtx: services.ctxFor, storage: services.storage }),
+    },
+    { name: '@vid2context/mcp-http', prefix: '', routes: mcp },
   ];
+  return { list, mcp };
 }
 
 function forwardedIp(c: Context): string | undefined {
@@ -74,9 +124,9 @@ function forwardedIp(c: Context): string | undefined {
   return xff || c.req.header('x-real-ip')?.trim() || undefined;
 }
 
-export function createApp(opts: AppOptions): Hono<AppEnv> {
+export function createApp(opts: AppOptions): ServerApp {
   const version = opts.version ?? '0.1.0';
-  const services = createServices(opts.registry, opts.makeCtx);
+  const services = createServices(opts.registry, opts.makeCtx, opts.storage);
   const docs = new RouteDocs();
   const app = new Hono<AppEnv>();
 
@@ -93,7 +143,10 @@ export function createApp(opts: AppOptions): Hono<AppEnv> {
   app.onError((err, c) => {
     const r = renderError(err);
     if (r.unexpected) {
-      services.ctxFor(c.req.raw).log.error('unhandled error', { message: err instanceof Error ? err.message : String(err), requestId: c.get('requestId') });
+      services.ctxFor(c.req.raw).log.error('unhandled error', {
+        message: err instanceof Error ? err.message : String(err),
+        requestId: c.get('requestId'),
+      });
     }
     return c.json(r.body, r.status, r.headers);
   });
@@ -112,7 +165,12 @@ export function createApp(opts: AppOptions): Hono<AppEnv> {
     description: 'Open without an API key. requires lists env var names a rung needs; values are never returned.',
     tags: ['meta'],
     auth: false,
-    responses: { '200': { description: 'Health.', content: json({ type: 'object', properties: { ok: { type: 'boolean' } }, required: ['ok'] }) } },
+    responses: {
+      '200': {
+        description: 'Health.',
+        content: json({ type: 'object', properties: { ok: { type: 'boolean' } }, required: ['ok'] }),
+      },
+    },
   });
   app.get('/api/v1/health', (c) => {
     const ctx = services.ctxFor(c.req.raw);
@@ -134,8 +192,8 @@ export function createApp(opts: AppOptions): Hono<AppEnv> {
   app.route('/api/v1', uploadRoutes(deps));
   app.route('/api/v1', bundleRoutes(deps));
 
-  const mounted = subApps(services);
-  for (const sub of mounted) app.route(sub.prefix, sub.routes);
+  const { list: mounted, mcp } = subApps(services, opts, version);
+  for (const sub of mounted) app.route(sub.prefix || '/', sub.routes);
 
   docs.add({
     method: 'get',
@@ -150,9 +208,13 @@ export function createApp(opts: AppOptions): Hono<AppEnv> {
       version,
       routes: app.routes,
       docs,
-      subAppPaths: mounted.filter((s) => s.paths).map((s) => ({ prefix: s.prefix, paths: s.paths as PathsObject, tag: s.name.replace('@vid2context/', '') })),
+      subAppPaths: mounted
+        .filter((s) => s.paths)
+        .map((s) => ({ prefix: s.prefix, paths: s.paths as PathsObject, tag: s.name.replace('@vid2context/', '') })),
       tagFor: (path) => {
-        const owner = mounted.find((s) => s.routes.routes.some((r) => `${s.prefix}${r.path}` === path));
+        const owner = mounted.find((s) =>
+          s.routes.routes.some((r) => `${s.prefix}${r.path}`.replace(/\/+$/, '') === path.replace(/\/+$/, '')),
+        );
         return owner ? owner.name.replace('@vid2context/', '') : 'other';
       },
     });
@@ -162,12 +224,16 @@ export function createApp(opts: AppOptions): Hono<AppEnv> {
   app.notFound((c) =>
     c.json(
       {
-        error: { code: 'not-found', message: `No route for ${c.req.method} ${c.req.path}`, hint: 'GET /api/v1/openapi.json lists every route.' },
+        error: {
+          code: 'not-found',
+          message: `No route for ${c.req.method} ${c.req.path}`,
+          hint: 'GET /api/v1/openapi.json lists every route.',
+        },
         attempts: [],
       },
       404,
     ),
   );
 
-  return app;
+  return Object.assign(app, { close: () => mcp.closeSessions() });
 }

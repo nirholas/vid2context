@@ -40,7 +40,11 @@ export function libraryRoutes({ services, docs }: RouteDeps): Hono<AppEnv> {
     responses: {
       '200': {
         description: 'Page<VideoSummary>.',
-        content: json({ type: 'object', properties: { items: { type: 'array', items: ref('VideoSummary') }, cursor: { type: 'string' } }, required: ['items'] }),
+        content: json({
+          type: 'object',
+          properties: { items: { type: 'array', items: ref('VideoSummary') }, cursor: { type: 'string' } },
+          required: ['items'],
+        }),
       },
     },
   });
@@ -58,7 +62,11 @@ export function libraryRoutes({ services, docs }: RouteDeps): Hono<AppEnv> {
     tags: ['library'],
     params: [idParam],
     responses: {
-      '200': { description: 'The VideoContext.', content: json(ref('VideoContext')), headers: { ETag: 'Version of the body; send it back as If-None-Match.' } },
+      '200': {
+        description: 'The VideoContext.',
+        content: json(ref('VideoContext')),
+        headers: { ETag: 'Version of the body; send it back as If-None-Match.' },
+      },
       '304': { description: 'Not modified (If-None-Match matched).' },
     },
   });

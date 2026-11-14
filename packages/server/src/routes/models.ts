@@ -89,7 +89,8 @@ export function modelRoutes({ services, docs }: RouteDeps): Hono<AppEnv> {
     method: 'get',
     path: '/api/v1/models',
     summary: 'Every model rung this server knows, enabled or not, and the default policy.',
-    description: 'requires lists env var names a rung needs; values are never returned. Pass an id back as the rung of a chat request.',
+    description:
+      'requires lists env var names a rung needs; values are never returned. Pass an id back as the rung of a chat request.',
     tags: ['models'],
     params: [{ name: 'kind', description: 'Only this kind.', schema: { type: 'string', enum: KINDS } }],
     responses: {
@@ -97,7 +98,10 @@ export function modelRoutes({ services, docs }: RouteDeps): Hono<AppEnv> {
         description: 'Models.',
         content: json({
           type: 'object',
-          properties: { models: { type: 'array', items: ref('ModelInfo') }, defaultPolicy: { type: 'string', enum: ['free', 'local-only', 'quality'] } },
+          properties: {
+            models: { type: 'array', items: ref('ModelInfo') },
+            defaultPolicy: { type: 'string', enum: ['free', 'local-only', 'quality'] },
+          },
           required: ['models', 'defaultPolicy'],
         }),
       },
@@ -106,7 +110,8 @@ export function modelRoutes({ services, docs }: RouteDeps): Hono<AppEnv> {
   app.get('/models', (c) => {
     const env = services.ctxFor(c.req.raw).env;
     const kind = c.req.query('kind');
-    if (kind && !KINDS.includes(kind as ModelKind)) throw badRequest(`Unknown kind "${kind}".`, `Use one of: ${KINDS.join(', ')}.`);
+    if (kind && !KINDS.includes(kind as ModelKind))
+      throw badRequest(`Unknown kind "${kind}".`, `Use one of: ${KINDS.join(', ')}.`);
     return c.json({
       models: listModels(services.registry, env, kind ? [kind as ModelKind] : KINDS),
       defaultPolicy: resolveChainOptions({}, env).policy,

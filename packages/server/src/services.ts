@@ -5,10 +5,10 @@
  * requests share one pipeline run).
  */
 import {
-  attemptsOf,
   type Attempt,
-  checkInput,
+  attemptsOf,
   type Ctx,
+  checkInput,
   enforceInputPolicy,
   expandInput,
   getVideoContext,
@@ -20,9 +20,9 @@ import {
   type Storage,
   type TranscriptMode,
   transcribe,
+  Vid2ContextError,
   type VideoContext,
   type VideoMetadata,
-  Vid2ContextError,
 } from '@vid2context/core';
 import { type ServerConfig, serverConfig } from './config.ts';
 import { isUploadInput, UploadStore, uploadAudio, uploadMetadata, uploadRef } from './uploads.ts';
@@ -140,9 +140,13 @@ export function createServices(
     const entry = uploads.get(input, cfg.uploadTtlMin);
     const mode = opts.mode ?? 'auto';
     if (mode === 'captions' || mode === 'video') {
-      throw new Vid2ContextError('unsupported-input', `Uploads are transcribed from their audio; mode "${mode}" does not apply.`, {
-        hint: 'Use mode "auto" or "stt" (or leave mode out) for uploaded files.',
-      });
+      throw new Vid2ContextError(
+        'unsupported-input',
+        `Uploads are transcribed from their audio; mode "${mode}" does not apply.`,
+        {
+          hint: 'Use mode "auto" or "stt" (or leave mode out) for uploaded files.',
+        },
+      );
     }
     const langKey = opts.language ?? '';
     const cached = entry.contexts.get(langKey);
@@ -152,7 +156,11 @@ export function createServices(
       const attempts: Attempt[] = [{ id: 'uploads', stage: 'resolve', outcome: 'ok', detail: ref.id }];
       try {
         const res = await transcribe(registry, ref, uploadAudio(entry), { stt: { language: opts.language } }, runCtx);
-        const context: VideoContext = { metadata: uploadMetadata(entry), transcript: res.transcript, attempts: [...attempts, ...res.attempts] };
+        const context: VideoContext = {
+          metadata: uploadMetadata(entry),
+          transcript: res.transcript,
+          attempts: [...attempts, ...res.attempts],
+        };
         entry.contexts.set(langKey, context);
         return context;
       } catch (err) {
@@ -174,7 +182,13 @@ export function createServices(
     check(input, ctx);
     if (isUploadInput(input)) return loadUpload(input, opts, ctx);
     const store = await storage(ctx);
-    const key = JSON.stringify([input.trim(), opts.mode ?? 'auto', opts.language ?? '', opts.comments ?? false, opts.refresh ?? false]);
+    const key = JSON.stringify([
+      input.trim(),
+      opts.mode ?? 'auto',
+      opts.language ?? '',
+      opts.comments ?? false,
+      opts.refresh ?? false,
+    ]);
     return shared(key, ctx, (runCtx) =>
       getVideoContext(
         registry,

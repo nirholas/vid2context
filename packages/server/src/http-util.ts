@@ -26,7 +26,10 @@ export function readInt(name: string, v: string | undefined, opts: { min?: numbe
   const n = Number(v);
   const min = opts.min ?? 1;
   if (!Number.isInteger(n) || n < min || n > opts.max) {
-    throw badRequest(`${name} must be a whole number from ${min} to ${opts.max}.`, `Pass ?${name}=<${min}..${opts.max}> or leave it out.`);
+    throw badRequest(
+      `${name} must be a whole number from ${min} to ${opts.max}.`,
+      `Pass ?${name}=<${min}..${opts.max}> or leave it out.`,
+    );
   }
   return n;
 }
@@ -59,7 +62,10 @@ export async function readJsonObject(c: Context, opts: { allowEmpty?: boolean } 
     throw badRequest('The request body is not valid JSON.', 'Send a JSON object with Content-Type: application/json.');
   }
   if (!body || typeof body !== 'object' || Array.isArray(body)) {
-    throw badRequest('The request body must be a JSON object.', 'Send a JSON object, for example {"inputs": ["https://youtu.be/jNQXAC9IVRw"]}.');
+    throw badRequest(
+      'The request body must be a JSON object.',
+      'Send a JSON object, for example {"inputs": ["https://youtu.be/jNQXAC9IVRw"]}.',
+    );
   }
   return body as Record<string, unknown>;
 }
@@ -67,7 +73,8 @@ export async function readJsonObject(c: Context, opts: { allowEmpty?: boolean } 
 export function optionalString(body: Record<string, unknown>, key: string): string | undefined {
   const v = body[key];
   if (v === undefined || v === null) return undefined;
-  if (typeof v !== 'string' || !v.trim()) throw badRequest(`"${key}" must be a non-empty string.`, `Pass "${key}" as a string or leave it out.`);
+  if (typeof v !== 'string' || !v.trim())
+    throw badRequest(`"${key}" must be a non-empty string.`, `Pass "${key}" as a string or leave it out.`);
   return v;
 }
 
@@ -92,7 +99,8 @@ export function optionalPositiveInt(body: Record<string, unknown>, key: string, 
 export function optionalBoolean(body: Record<string, unknown>, key: string): boolean | undefined {
   const v = body[key];
   if (v === undefined || v === null) return undefined;
-  if (typeof v !== 'boolean') throw badRequest(`"${key}" must be true or false.`, `Pass "${key}" as a JSON boolean or leave it out.`);
+  if (typeof v !== 'boolean')
+    throw badRequest(`"${key}" must be true or false.`, `Pass "${key}" as a JSON boolean or leave it out.`);
   return v;
 }
 

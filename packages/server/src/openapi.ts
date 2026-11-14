@@ -55,16 +55,31 @@ const obj = (properties: Record<string, Schema>, required: string[] = []): Schem
 
 /** Query parameters shared by many routes. */
 export const P = {
-  url: { name: 'url', description: 'Any input a source understands: a video URL, a YouTube id, upload:<sha256>, or a local path (Node, not in public mode). URL-encode it.', required: true },
-  mode: { name: 'mode', description: 'Transcript strategy.', schema: { type: 'string', enum: ['auto', 'captions', 'stt', 'video'], default: 'auto' } },
+  url: {
+    name: 'url',
+    description:
+      'Any input a source understands: a video URL, a YouTube id, upload:<sha256>, or a local path (Node, not in public mode). URL-encode it.',
+    required: true,
+  },
+  mode: {
+    name: 'mode',
+    description: 'Transcript strategy.',
+    schema: { type: 'string', enum: ['auto', 'captions', 'stt', 'video'], default: 'auto' },
+  },
   lang: { name: 'lang', description: 'Preferred transcript language, BCP-47 (en, de, pt-BR).' },
-  format: { name: 'format', description: 'A formatter id from GET /api/v1/formats.', schema: { type: 'string', default: 'text' } },
+  format: {
+    name: 'format',
+    description: 'A formatter id from GET /api/v1/formats.',
+    schema: { type: 'string', default: 'text' },
+  },
   timestamps: { name: 'timestamps', description: '1, true or yes to prefix lines with timestamps where the format allows.' },
   limit: (description: string) => ({ name: 'limit', description, schema: { type: 'integer', minimum: 1 } }),
 } satisfies Record<string, ParamDoc | ((d: string) => ParamDoc)>;
 
 /** A response rendered by a formatter: its Content-Type is the formatter's MIME type (text/plain, text/markdown, application/json, ...). */
-export const textResponse = (description = "The rendered output. Content-Type is the chosen formatter's MIME type."): ResponseDoc => ({
+export const textResponse = (
+  description = "The rendered output. Content-Type is the chosen formatter's MIME type.",
+): ResponseDoc => ({
   description,
   content: { 'text/plain': { type: 'string' }, 'text/markdown': { type: 'string' } },
 });
@@ -73,7 +88,10 @@ export const textResponse = (description = "The rendered output. Content-Type is
 export const SCHEMAS: Record<string, Schema> = {
   Error: obj(
     {
-      error: obj({ code: str('A core ErrorCode, or internal, unauthorized, forbidden.'), message: str(), hint: str('How to recover.') }, ['code', 'message']),
+      error: obj(
+        { code: str('A core ErrorCode, or internal, unauthorized, forbidden.'), message: str(), hint: str('How to recover.') },
+        ['code', 'message'],
+      ),
       attempts: arr(ref('Attempt')),
     },
     ['error', 'attempts'],
@@ -118,7 +136,11 @@ export const SCHEMAS: Record<string, Schema> = {
     },
     ['ref', 'title', 'chapters'],
   ),
-  Segment: obj({ startSec: num(), endSec: num(), text: str(), speaker: str(), confidence: num() }, ['startSec', 'endSec', 'text']),
+  Segment: obj({ startSec: num(), endSec: num(), text: str(), speaker: str(), confidence: num() }, [
+    'startSec',
+    'endSec',
+    'text',
+  ]),
   Transcript: obj(
     {
       ref: ref('VideoRef'),
@@ -133,7 +155,12 @@ export const SCHEMAS: Record<string, Schema> = {
     ['ref', 'language', 'origin', 'producer', 'segments', 'createdAt'],
   ),
   VisualNote: obj(
-    { atSec: num(), kind: { type: 'string', enum: ['ocr', 'description', 'slide', 'code', 'chart'] }, text: str(), producer: str() },
+    {
+      atSec: num(),
+      kind: { type: 'string', enum: ['ocr', 'description', 'slide', 'code', 'chart'] },
+      text: str(),
+      producer: str(),
+    },
     ['atSec', 'kind', 'text', 'producer'],
   ),
   Comment: obj(
@@ -189,11 +216,19 @@ export const SCHEMAS: Record<string, Schema> = {
     },
     ['id', 'kind', 'label', 'service', 'provider', 'model', 'tier', 'quality', 'capabilities', 'enabled', 'requires'],
   ),
-  Upload: obj(
-    { input: str('upload:<sha256>'), filename: str(), bytes: int(), mimeType: str(), expiresAt: str('ISO 8601.') },
-    ['input', 'filename', 'bytes', 'mimeType', 'expiresAt'],
-  ),
-  Format: obj({ id: str(), description: str(), mimeType: str(), extension: str() }, ['id', 'description', 'mimeType', 'extension']),
+  Upload: obj({ input: str('upload:<sha256>'), filename: str(), bytes: int(), mimeType: str(), expiresAt: str('ISO 8601.') }, [
+    'input',
+    'filename',
+    'bytes',
+    'mimeType',
+    'expiresAt',
+  ]),
+  Format: obj({ id: str(), description: str(), mimeType: str(), extension: str() }, [
+    'id',
+    'description',
+    'mimeType',
+    'extension',
+  ]),
 };
 
 const ERROR_RESPONSES: Record<string, ResponseDoc> = {
@@ -234,7 +269,11 @@ function responsesFor(doc: RouteDoc): Record<string, unknown> {
     out[status] = {
       description: r.description,
       ...(r.headers
-        ? { headers: Object.fromEntries(Object.entries(r.headers).map(([h, d]) => [h, { description: d, schema: { type: 'string' } }])) }
+        ? {
+            headers: Object.fromEntries(
+              Object.entries(r.headers).map(([h, d]) => [h, { description: d, schema: { type: 'string' } }]),
+            ),
+          }
         : {}),
       ...(r.content ? { content: Object.fromEntries(Object.entries(r.content).map(([t, schema]) => [t, { schema }])) } : {}),
     };
@@ -246,7 +285,13 @@ function operationFor(doc: RouteDoc, pathParams: string[]): Record<string, unkno
   const params = [
     ...pathParams.map((name) => {
       const given = doc.params?.find((p) => p.name === name && p.in === 'path');
-      return { name, in: 'path', required: true, description: given?.description ?? name, schema: given?.schema ?? { type: 'string' } };
+      return {
+        name,
+        in: 'path',
+        required: true,
+        description: given?.description ?? name,
+        schema: given?.schema ?? { type: 'string' },
+      };
     }),
     ...(doc.params ?? [])
       .filter((p) => (p.in ?? 'query') !== 'path')
@@ -306,7 +351,8 @@ export function buildOpenApi(opts: OpenApiOptions): Record<string, unknown> {
     if (seen.has(key)) continue;
     seen.add(key);
     const { path, params } = toOpenApiPath(route.path);
-    const item = (paths[path] ??= {});
+    const item = paths[path] ?? {};
+    paths[path] = item;
     const doc = opts.docs.find(method, route.path);
     if (doc) {
       item[method] = operationFor(doc, params);

@@ -70,7 +70,15 @@ export function requestContext(
 }
 
 const ALLOW_HEADERS = ['Authorization', 'Content-Type', 'X-Request-Id', 'If-None-Match'];
-const EXPOSE_HEADERS = ['X-Request-Id', 'Retry-After', 'ETag', 'Content-Disposition', 'X-Data-Attribution', 'X-RateLimit-Limit', 'X-RateLimit-Remaining'];
+const EXPOSE_HEADERS = [
+  'X-Request-Id',
+  'Retry-After',
+  'ETag',
+  'Content-Disposition',
+  'X-Data-Attribution',
+  'X-RateLimit-Limit',
+  'X-RateLimit-Remaining',
+];
 
 export function cors(services: Services): MiddlewareHandler<AppEnv> {
   return async (c, next) => {
@@ -127,12 +135,19 @@ export function rateLimit(services: Services, clientIp: (c: Context<AppEnv>) => 
     if (cfg.ratePerMinute <= 0 || OPEN_PATHS.has(c.req.path) || c.req.method === 'OPTIONS') return next();
     const principal = c.get('principal');
     const who = principal ? `key:${principal.name}` : `ip:${clientIp(c) ?? 'unknown'}`;
-    const result = await takeToken(await services.kv(services.ctxFor(c.req.raw)), who, { perMinute: cfg.ratePerMinute, burst: cfg.rateBurst });
+    const result = await takeToken(await services.kv(services.ctxFor(c.req.raw)), who, {
+      perMinute: cfg.ratePerMinute,
+      burst: cfg.rateBurst,
+    });
     if (!result.ok) {
-      throw new Vid2ContextError('rate-limited', `Too many requests: the limit is ${cfg.ratePerMinute} per minute (bursts of ${cfg.rateBurst}).`, {
-        hint: `Wait ${result.retryAfterSec} s before retrying (see Retry-After).`,
-        retryAfterSec: result.retryAfterSec,
-      });
+      throw new Vid2ContextError(
+        'rate-limited',
+        `Too many requests: the limit is ${cfg.ratePerMinute} per minute (bursts of ${cfg.rateBurst}).`,
+        {
+          hint: `Wait ${result.retryAfterSec} s before retrying (see Retry-After).`,
+          retryAfterSec: result.retryAfterSec,
+        },
+      );
     }
     await next();
     c.header('x-ratelimit-limit', String(result.limit));

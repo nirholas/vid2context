@@ -131,7 +131,12 @@ export function requiredScope(method: string, path: string): Scope {
 
 export function assertScope(principal: Principal, needed: Scope, method: string, path: string): void {
   if (RANK[principal.scope] >= RANK[needed]) return;
-  throw new HttpError('forbidden', 403, `The key "${principal.name}" has scope "${principal.scope}"; ${method} ${path} needs "${needed}".`, {
-    hint: `Use a key with the "${needed}" scope (or "admin").`,
-  });
+  throw new HttpError(
+    'forbidden',
+    403,
+    `The key "${principal.name}" has scope "${principal.scope}"; ${method} ${path} needs "${needed}".`,
+    {
+      hint: `Use a key with the "${needed}" scope (or "admin").`,
+    },
+  );
 }
