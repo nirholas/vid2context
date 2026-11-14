@@ -1,0 +1,135 @@
+{
+  "playabilityStatus": {
+    "status": "LIVE_STREAM_OFFLINE",
+    "reason": "This live event will begin in 22 hours.",
+    "liveStreamability": {
+      "liveStreamabilityRenderer": {
+        "videoId": "zWHMFJII-sA",
+        "broadcastId": "1",
+        "offlineSlate": {
+          "liveStreamOfflineSlateRenderer": {
+            "scheduledStartTime": "1794759060",
+            "mainText": {
+              "runs": [
+                {
+                  "text": "Live in "
+                },
+                {
+                  "text": "22 hours"
+                }
+              ]
+            },
+            "subtitleText": {
+              "runs": [
+                {
+                  "text": "November 15 at 4:11 PM UTC"
+                }
+              ]
+            },
+            "thumbnail": {
+              "thumbnails": [
+                {
+                  "url": "https://i.ytimg.com/vi/zWHMFJII-sA/default.jpg?v=6af88748",
+                  "width": 120,
+                  "height": 90
+                },
+                {
+                  "url": "https://i.ytimg.com/vi/zWHMFJII-sA/mqdefault.jpg?v=6af88748",
+                  "width": 320,
+                  "height": 180
+                },
+                {
+                  "url": "https://i.ytimg.com/vi/zWHMFJII-sA/hqdefault.jpg?v=6af88748",
+                  "width": 480,
+                  "height": 360
+                },
+                {
+                  "url": "https://i.ytimg.com/vi/zWHMFJII-sA/sddefault.jpg?v=6af88748",
+                  "width": 640,
+                  "height": 480
+                }
+              ]
+            },
+            "offlineSlateStyle": "OFFLINE_SLATE_STYLE_ABSTRACT"
+          }
+        },
+        "pollDelayMs": "30000",
+        "creatorRedirect": {
+          "hideAutoplayToggle": true
+        }
+      }
+    }
+  },
+  "videoDetails": {
+    "videoId": "zWHMFJII-sA",
+    "title": "ULA launches Vulcan launches Amazon Leo (LV-01)",
+    "lengthSeconds": "0",
+    "keywords": [
+      "Cape Canaveral Space Force Station",
+      "Rocket Launch",
+      "Launch Rockets",
+      "Shuttle",
+      "Starlink",
+      "Starlink launch",
+      "Starlink satellite",
+      "Starlink cost",
+      "SLC-40 launch",
+      "Cape launch",
+      "USSF",
+      "SLD45 launch",
+      "next launch",
+      "spx",
+      "spacex launch",
+      "launch",
+      "Starship",
+      "NASA",
+      "NASA launch",
+      "NASA Falcon",
+      "KSC",
+      "CCSFS",
+      "KSC launch",
+      "KSC schedule",
+      "ULA",
+      "Vulcan",
+      "Amazon"
+    ],
+    "channelId": "UCSUu1lih2RifWkKtDOJdsBA",
+    "isOwnerViewing": false,
+    "shortDescription": "Launch Window: 12:11pm Eastern to 12:40pm Eastern.\n\n⚡ Become a member of NASASpaceflight's channel for exclusive discord access, fast turnaround clips, and other exclusive benefits. Your support helps us continue our 24/7 coverage. ⚡\n\n🔍 If you are interested in using footage captured by this stream, please review our content use policy: https://www.nasaspaceflight.com/content-use-policy/\n\n\n LDAPAABJRG2UMCU3 🎵 Intro song: New Way Out by Denis. Licensed via PremiumBeat. LDAPAABJRG2UMCU3\n🎵 Music used on streams and in videos is licensed via EpidemicSound: https://share.epidemicsound.com/qvh38e\n\nAll content copyright NASASpaceflight LLC. All Rights Reserved. For licensing information please visit:  https://www.nasaspaceflight.com/content-use-policy/\n\nNASASpaceflight (NSF) delivers live rocket launch coverage, breaking spaceflight news, and in-depth reporting from around the world.\n\nNASASpaceflight is not affiliated with or does not represent the National Aeronautics and Space Administration (NASA). NASA initials used with NASA’s permission.\n\nNow in its 20th year, NSF covers all major players in space: SpaceX, NASA, Blue Origin, ULA, Rocket Lab, Relativity, Arianespace, Firefly, Stoke, Northrop Grumman, and more. From Starship test campaigns at Starbase to crew missions, infrastructure rollouts, and international launches, NSF delivers multi-angle livestreams, on-site reporting, and expert analysis from locations like Kennedy Space Center, Cape Canaveral, Vandenberg, Wallops, and Starbase.",
+    "isCrawlable": true,
+    "thumbnail": {
+      "thumbnails": [
+        {
+          "url": "https://i.ytimg.com/vi/zWHMFJII-sA/default.jpg?v=6af88748",
+          "width": 120,
+          "height": 90
+        },
+        {
+          "url": "https://i.ytimg.com/vi/zWHMFJII-sA/mqdefault.jpg?v=6af88748",
+          "width": 320,
+          "height": 180
+        },
+        {
+          "url": "https://i.ytimg.com/vi/zWHMFJII-sA/hqdefault.jpg?v=6af88748",
+          "width": 480,
+          "height": 360
+        },
+        {
+          "url": "https://i.ytimg.com/vi/zWHMFJII-sA/sddefault.jpg?v=6af88748",
+          "width": 640,
+          "height": 480
+        }
+      ]
+    },
+    "isUpcoming": true,
+    "allowRatings": true,
+    "viewCount": "0",
+    "author": "NASASpaceflight",
+    "isLowLatencyLiveStream": true,
+    "isPrivate": false,
+    "isUnpluggedCorpus": false,
+    "latencyClass": "MDE_STREAM_OPTIMIZATIONS_RENDERER_LATENCY_ULTRA_LOW",
+    "isLiveContent": true,
+    "isTvfilmVideo": false
+  }
+}

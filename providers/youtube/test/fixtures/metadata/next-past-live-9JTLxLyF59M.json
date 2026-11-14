@@ -1,0 +1,469 @@
+{
+  "contents": {
+    "twoColumnWatchNextResults": {
+      "results": {
+        "results": {
+          "contents": [
+            {
+              "videoPrimaryInfoRenderer": {
+                "title": {
+                  "runs": [
+                    {
+                      "text": "NASA Holds News Conference After Artemis II Launch"
+                    }
+                  ]
+                },
+                "viewCount": {
+                  "videoViewCountRenderer": {
+                    "viewCount": {
+                      "simpleText": "126,859 views"
+                    },
+                    "shortViewCount": {
+                      "simpleText": "126K views"
+                    },
+                    "originalViewCount": "0"
+                  }
+                },
+                "videoActions": {
+                  "menuRenderer": {
+                    "items": [
+                      {
+                        "listItemViewModel": {
+                          "title": {
+                            "content": "Watch ad-free"
+                          },
+                          "leadingImage": {
+                            "sources": [
+                              {
+                                "clientResource": {
+                                  "imageName": "TV_OFF"
+                                }
+                              }
+                            ]
+                          },
+                          "elcShouldLogExplicitGestures": true,
+                          "entityKey": "Eh8veW91dHViZS9hcHAvd2F0Y2gvcGxheWVyX3N0YXRlIMMCKAE%3D",
+                          "entitySelectorType": "LIST_ITEM_VIEW_MODEL_ENTITY_SELECTOR_TYPE_REMOVE_ADS_AD_STATE",
+                          "rendererContext": {
+                            "commandContext": {}
+                          }
+                        }
+                      },
+                      {
+                        "menuServiceItemRenderer": {
+                          "text": {
+                            "runs": [
+                              {
+                                "text": "Report"
+                              }
+                            ]
+                          },
+                          "icon": {
+                            "iconType": "FLAG"
+                          }
+                        }
+                      }
+                    ],
+                    "topLevelButtons": [
+                      {
+                        "segmentedLikeDislikeButtonViewModel": {
+                          "likeButtonViewModel": {
+                            "likeButtonViewModel": {
+                              "toggleButtonViewModel": {
+                                "toggleButtonViewModel": {
+                                  "defaultButtonViewModel": {
+                                    "buttonViewModel": {
+                                      "iconName": "LIKE",
+                                      "title": "1.1K",
+                                      "accessibilityText": "like this video along with 1,125 other people",
+                                      "style": "BUTTON_VIEW_MODEL_STYLE_MONO",
+                                      "isFullWidth": false,
+                                      "type": "BUTTON_VIEW_MODEL_TYPE_TONAL",
+                                      "buttonSize": "BUTTON_VIEW_MODEL_SIZE_DEFAULT",
+                                      "accessibilityId": "id.video.like.button",
+                                      "tooltip": "I like this"
+                                    }
+                                  },
+                                  "toggledButtonViewModel": {
+                                    "buttonViewModel": {
+                                      "iconName": "LIKE",
+                                      "title": "1.1K",
+                                      "accessibilityText": "like this video along with 1,125 other people",
+                                      "style": "BUTTON_VIEW_MODEL_STYLE_MONO",
+                                      "isFullWidth": false,
+                                      "type": "BUTTON_VIEW_MODEL_TYPE_TONAL",
+                                      "buttonSize": "BUTTON_VIEW_MODEL_SIZE_DEFAULT",
+                                      "accessibilityId": "id.video.like.button",
+                                      "tooltip": "Unlike"
+                                    }
+                                  },
+                                  "identifier": "watch-like",
+                                  "isTogglingDisabled": true
+                                }
+                              },
+                              "likeStatusEntityKey": "Egs5SlRMeEx5RjU5TSA-KAE%3D",
+                              "likeStatusEntity": {
+                                "key": "Egs5SlRMeEx5RjU5TSA-KAE%3D",
+                                "likeStatus": "INDIFFERENT"
+                              }
+                            }
+                          },
+                          "dislikeButtonViewModel": {
+                            "dislikeButtonViewModel": {
+                              "toggleButtonViewModel": {
+                                "toggleButtonViewModel": {
+                                  "defaultButtonViewModel": {
+                                    "buttonViewModel": {
+                                      "iconName": "DISLIKE",
+                                      "title": "Dislike",
+                                      "accessibilityText": "Dislike this video",
+                                      "style": "BUTTON_VIEW_MODEL_STYLE_MONO",
+                                      "isFullWidth": false,
+                                      "type": "BUTTON_VIEW_MODEL_TYPE_TONAL",
+                                      "buttonSize": "BUTTON_VIEW_MODEL_SIZE_DEFAULT",
+                                      "accessibilityId": "id.video.dislike.button",
+                                      "tooltip": "I dislike this"
+                                    }
+                                  },
+                                  "toggledButtonViewModel": {
+                                    "buttonViewModel": {
+                                      "iconName": "DISLIKE",
+                                      "title": "Dislike",
+                                      "accessibilityText": "Dislike this video",
+                                      "style": "BUTTON_VIEW_MODEL_STYLE_MONO",
+                                      "isFullWidth": false,
+                                      "type": "BUTTON_VIEW_MODEL_TYPE_TONAL",
+                                      "buttonSize": "BUTTON_VIEW_MODEL_SIZE_DEFAULT",
+                                      "accessibilityId": "id.video.dislike.button",
+                                      "tooltip": "I dislike this"
+                                    }
+                                  },
+                                  "isTogglingDisabled": true
+                                }
+                              },
+                              "dislikeEntityKey": "Egs5SlRMeEx5RjU5TSA-KAE%3D"
+                            }
+                          },
+                          "iconType": "LIKE_ICON_TYPE_UNKNOWN",
+                          "likeCountEntity": {
+                            "key": "unset_like_count_entity_key"
+                          },
+                          "dynamicLikeCountUpdateData": {
+                            "updateStatusKey": "like_count_update_status_key",
+                            "placeholderLikeCountValuesKey": "like_count_placeholder_values_key",
+                            "updateDelayLoopId": "like_count_update_delay_loop_id",
+                            "updateDelaySec": 5
+                          },
+                          "teasersOrderEntityKey": "Egs5SlRMeEx5RjU5TSD8AygB"
+                        }
+                      },
+                      {
+                        "buttonViewModel": {
+                          "iconName": "SHARE",
+                          "title": "Share",
+                          "accessibilityText": "Share",
+                          "style": "BUTTON_VIEW_MODEL_STYLE_MONO",
+                          "isFullWidth": false,
+                          "type": "BUTTON_VIEW_MODEL_TYPE_TONAL",
+                          "buttonSize": "BUTTON_VIEW_MODEL_SIZE_DEFAULT",
+                          "state": "BUTTON_VIEW_MODEL_STATE_ACTIVE",
+                          "accessibilityId": "id.video.share.button",
+                          "tooltip": "Share"
+                        }
+                      }
+                    ],
+                    "flexibleItems": [
+                      {
+                        "menuFlexibleItemRenderer": {
+                          "menuItem": {
+                            "menuServiceItemDownloadRenderer": {
+                              "playerStateEntityKey": "Eh8veW91dHViZS9hcHAvd2F0Y2gvcGxheWVyX3N0YXRlIMMCKAE%3D"
+                            }
+                          },
+                          "topLevelButton": {
+                            "downloadButtonRenderer": {
+                              "style": "STYLE_DEFAULT",
+                              "size": "SIZE_DEFAULT",
+                              "targetId": "watch-download-button",
+                              "playerStateEntityKey": "Eh8veW91dHViZS9hcHAvd2F0Y2gvcGxheWVyX3N0YXRlIMMCKAE%3D",
+                              "hasLabel": true
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "menuFlexibleItemRenderer": {
+                          "menuItem": {
+                            "menuServiceItemRenderer": {
+                              "text": {
+                                "runs": [
+                                  {
+                                    "text": "Save"
+                                  }
+                                ]
+                              },
+                              "icon": {
+                                "iconType": "PLAYLIST_ADD"
+                              }
+                            }
+                          },
+                          "topLevelButton": {
+                            "buttonViewModel": {
+                              "iconName": "PLAYLIST_ADD",
+                              "title": "Save",
+                              "accessibilityText": "Save to playlist",
+                              "style": "BUTTON_VIEW_MODEL_STYLE_MONO",
+                              "isFullWidth": false,
+                              "type": "BUTTON_VIEW_MODEL_TYPE_TONAL",
+                              "buttonSize": "BUTTON_VIEW_MODEL_SIZE_DEFAULT",
+                              "tooltip": "Save"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                "superTitleLink": {
+                  "runs": [
+                    {
+                      "text": "#cspan",
+                      "navigationEndpoint": {
+                        "browseEndpoint": {
+                          "browseId": "FEhashtag",
+                          "params": "6gUJCgVjc3BhbhgB"
+                        }
+                      }
+                    }
+                  ]
+                },
+                "dateText": {
+                  "simpleText": "Streamed live on Apr 1, 2026"
+                },
+                "relativeDateText": {
+                  "simpleText": "Streamed 7 months ago"
+                }
+              }
+            },
+            {
+              "videoSecondaryInfoRenderer": {
+                "owner": {
+                  "videoOwnerRenderer": {
+                    "title": {
+                      "runs": [
+                        {
+                          "text": "C-SPAN",
+                          "navigationEndpoint": {
+                            "browseEndpoint": {
+                              "browseId": "UCb--64Gl51jIEVE-GLDAVTg",
+                              "canonicalBaseUrl": "/@CSPAN"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "subscriptionButton": {
+                      "type": "FREE"
+                    },
+                    "navigationEndpoint": {
+                      "browseEndpoint": {
+                        "browseId": "UCb--64Gl51jIEVE-GLDAVTg",
+                        "canonicalBaseUrl": "/@CSPAN"
+                      }
+                    },
+                    "subscriberCountText": {
+                      "simpleText": "1.99M subscribers"
+                    },
+                    "badges": [
+                      {
+                        "metadataBadgeRenderer": {
+                          "icon": {
+                            "iconType": "CHECK_CIRCLE_THICK"
+                          },
+                          "style": "BADGE_STYLE_TYPE_VERIFIED",
+                          "tooltip": "Verified"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "metadataRowContainer": {
+                  "metadataRowContainerRenderer": {
+                    "collapsedItemCount": 0
+                  }
+                },
+                "showMoreText": {
+                  "simpleText": "...more"
+                },
+                "showLessText": {
+                  "simpleText": "Show less"
+                },
+                "defaultExpanded": false,
+                "descriptionCollapsedLines": 3,
+                "showMoreCommand": {
+                  "commandExecutorCommand": {
+                    "commands": [
+                      {
+                        "changeEngagementPanelVisibilityAction": {
+                          "targetId": "engagement-panel-structured-description",
+                          "visibility": "ENGAGEMENT_PANEL_VISIBILITY_EXPANDED"
+                        }
+                      },
+                      {
+                        "scrollToEngagementPanelCommand": {
+                          "targetId": "engagement-panel-structured-description"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "showLessCommand": {
+                  "changeEngagementPanelVisibilityAction": {
+                    "targetId": "engagement-panel-structured-description",
+                    "visibility": "ENGAGEMENT_PANEL_VISIBILITY_HIDDEN"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "playerOverlays": {
+    "playerOverlayRenderer": {
+      "decoratedPlayerBarRenderer": {
+        "decoratedPlayerBarRenderer": {
+          "playerBar": {
+            "multiMarkersPlayerBarRenderer": {
+              "visibleOnLoad": {
+                "key": "AUTO_CHAPTERS"
+              },
+              "markersMap": [
+                {
+                  "key": "AUTO_CHAPTERS",
+                  "value": {
+                    "chapters": [
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Artemis 2 mission update"
+                          },
+                          "timeRangeStartMillis": 0
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Technical and mission review"
+                          },
+                          "timeRangeStartMillis": 155680
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Infrastructure and operations"
+                          },
+                          "timeRangeStartMillis": 447680
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Defining mission success"
+                          },
+                          "timeRangeStartMillis": 663920
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Countdown and safety protocol"
+                          },
+                          "timeRangeStartMillis": 919199
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Future lunar exploration"
+                          },
+                          "timeRangeStartMillis": 1186240
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Scientific mission objectives"
+                          },
+                          "timeRangeStartMillis": 1573760
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Public impact and conclusion"
+                          },
+                          "timeRangeStartMillis": 2042480
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "C-SPAN programming"
+                          },
+                          "timeRangeStartMillis": 2534560
+                        }
+                      }
+                    ],
+                    "onChapterRepeat": {
+                      "openPopupAction": {
+                        "popup": {
+                          "notificationActionRenderer": {
+                            "responseText": {
+                              "runs": [
+                                {
+                                  "text": "Chapter repeat is on"
+                                }
+                              ]
+                            },
+                            "actionButton": {
+                              "buttonRenderer": {
+                                "style": "STYLE_BLUE_TEXT",
+                                "text": {
+                                  "runs": [
+                                    {
+                                      "text": "Turn off"
+                                    }
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "popupType": "TOAST"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "playerBarActionButton": {
+            "buttonRenderer": {
+              "text": {
+                "runs": [
+                  {
+                    "text": "View Chapters"
+                  }
+                ]
+              }
+            }
+          },
+          "buttonType": "DECORATED_PLAYER_BAR_BUTTON_TYPE_CHAPTERS"
+        }
+      }
+    }
+  }
+}

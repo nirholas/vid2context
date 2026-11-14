@@ -1,0 +1,1185 @@
+{
+  "contents": {
+    "twoColumnWatchNextResults": {
+      "results": {
+        "results": {
+          "contents": [
+            {
+              "videoPrimaryInfoRenderer": {
+                "title": {
+                  "runs": [
+                    {
+                      "text": "Python Full Course for Beginners (13 Hours) – From Zero to Hero"
+                    }
+                  ]
+                },
+                "viewCount": {
+                  "videoViewCountRenderer": {
+                    "viewCount": {
+                      "simpleText": "1,687,237 views"
+                    },
+                    "shortViewCount": {
+                      "simpleText": "1.6M views"
+                    },
+                    "originalViewCount": "0"
+                  }
+                },
+                "videoActions": {
+                  "menuRenderer": {
+                    "items": [
+                      {
+                        "listItemViewModel": {
+                          "title": {
+                            "content": "Watch ad-free"
+                          },
+                          "leadingImage": {
+                            "sources": [
+                              {
+                                "clientResource": {
+                                  "imageName": "TV_OFF"
+                                }
+                              }
+                            ]
+                          },
+                          "elcShouldLogExplicitGestures": true,
+                          "entityKey": "Eh8veW91dHViZS9hcHAvd2F0Y2gvcGxheWVyX3N0YXRlIMMCKAE%3D",
+                          "entitySelectorType": "LIST_ITEM_VIEW_MODEL_ENTITY_SELECTOR_TYPE_REMOVE_ADS_AD_STATE",
+                          "rendererContext": {
+                            "commandContext": {}
+                          }
+                        }
+                      },
+                      {
+                        "menuServiceItemRenderer": {
+                          "text": {
+                            "runs": [
+                              {
+                                "text": "Report"
+                              }
+                            ]
+                          },
+                          "icon": {
+                            "iconType": "FLAG"
+                          }
+                        }
+                      }
+                    ],
+                    "topLevelButtons": [
+                      {
+                        "segmentedLikeDislikeButtonViewModel": {
+                          "likeButtonViewModel": {
+                            "likeButtonViewModel": {
+                              "toggleButtonViewModel": {
+                                "toggleButtonViewModel": {
+                                  "defaultButtonViewModel": {
+                                    "buttonViewModel": {
+                                      "iconName": "LIKE",
+                                      "title": "26K",
+                                      "accessibilityText": "like this video along with 26,943 other people",
+                                      "style": "BUTTON_VIEW_MODEL_STYLE_MONO",
+                                      "isFullWidth": false,
+                                      "type": "BUTTON_VIEW_MODEL_TYPE_TONAL",
+                                      "buttonSize": "BUTTON_VIEW_MODEL_SIZE_DEFAULT",
+                                      "accessibilityId": "id.video.like.button",
+                                      "tooltip": "I like this"
+                                    }
+                                  },
+                                  "toggledButtonViewModel": {
+                                    "buttonViewModel": {
+                                      "iconName": "LIKE",
+                                      "title": "26K",
+                                      "accessibilityText": "like this video along with 26,943 other people",
+                                      "style": "BUTTON_VIEW_MODEL_STYLE_MONO",
+                                      "isFullWidth": false,
+                                      "type": "BUTTON_VIEW_MODEL_TYPE_TONAL",
+                                      "buttonSize": "BUTTON_VIEW_MODEL_SIZE_DEFAULT",
+                                      "accessibilityId": "id.video.like.button",
+                                      "tooltip": "Unlike"
+                                    }
+                                  },
+                                  "identifier": "watch-like",
+                                  "isTogglingDisabled": true
+                                }
+                              },
+                              "likeStatusEntityKey": "EgtScTVnSlZ4ejU1USA-KAE%3D",
+                              "likeStatusEntity": {
+                                "key": "EgtScTVnSlZ4ejU1USA-KAE%3D",
+                                "likeStatus": "INDIFFERENT"
+                              }
+                            }
+                          },
+                          "dislikeButtonViewModel": {
+                            "dislikeButtonViewModel": {
+                              "toggleButtonViewModel": {
+                                "toggleButtonViewModel": {
+                                  "defaultButtonViewModel": {
+                                    "buttonViewModel": {
+                                      "iconName": "DISLIKE",
+                                      "title": "Dislike",
+                                      "accessibilityText": "Dislike this video",
+                                      "style": "BUTTON_VIEW_MODEL_STYLE_MONO",
+                                      "isFullWidth": false,
+                                      "type": "BUTTON_VIEW_MODEL_TYPE_TONAL",
+                                      "buttonSize": "BUTTON_VIEW_MODEL_SIZE_DEFAULT",
+                                      "accessibilityId": "id.video.dislike.button",
+                                      "tooltip": "I dislike this"
+                                    }
+                                  },
+                                  "toggledButtonViewModel": {
+                                    "buttonViewModel": {
+                                      "iconName": "DISLIKE",
+                                      "title": "Dislike",
+                                      "accessibilityText": "Dislike this video",
+                                      "style": "BUTTON_VIEW_MODEL_STYLE_MONO",
+                                      "isFullWidth": false,
+                                      "type": "BUTTON_VIEW_MODEL_TYPE_TONAL",
+                                      "buttonSize": "BUTTON_VIEW_MODEL_SIZE_DEFAULT",
+                                      "accessibilityId": "id.video.dislike.button",
+                                      "tooltip": "I dislike this"
+                                    }
+                                  },
+                                  "isTogglingDisabled": true
+                                }
+                              },
+                              "dislikeEntityKey": "EgtScTVnSlZ4ejU1USA-KAE%3D"
+                            }
+                          },
+                          "iconType": "LIKE_ICON_TYPE_UNKNOWN",
+                          "likeCountEntity": {
+                            "key": "unset_like_count_entity_key"
+                          },
+                          "dynamicLikeCountUpdateData": {
+                            "updateStatusKey": "like_count_update_status_key",
+                            "placeholderLikeCountValuesKey": "like_count_placeholder_values_key",
+                            "updateDelayLoopId": "like_count_update_delay_loop_id",
+                            "updateDelaySec": 5
+                          },
+                          "teasersOrderEntityKey": "EgtScTVnSlZ4ejU1USD8AygB"
+                        }
+                      },
+                      {
+                        "buttonViewModel": {
+                          "iconName": "SHARE",
+                          "title": "Share",
+                          "accessibilityText": "Share",
+                          "style": "BUTTON_VIEW_MODEL_STYLE_MONO",
+                          "isFullWidth": false,
+                          "type": "BUTTON_VIEW_MODEL_TYPE_TONAL",
+                          "buttonSize": "BUTTON_VIEW_MODEL_SIZE_DEFAULT",
+                          "state": "BUTTON_VIEW_MODEL_STATE_ACTIVE",
+                          "accessibilityId": "id.video.share.button",
+                          "tooltip": "Share"
+                        }
+                      }
+                    ],
+                    "flexibleItems": [
+                      {
+                        "menuFlexibleItemRenderer": {
+                          "menuItem": {
+                            "menuServiceItemDownloadRenderer": {
+                              "playerStateEntityKey": "Eh8veW91dHViZS9hcHAvd2F0Y2gvcGxheWVyX3N0YXRlIMMCKAE%3D"
+                            }
+                          },
+                          "topLevelButton": {
+                            "downloadButtonRenderer": {
+                              "style": "STYLE_DEFAULT",
+                              "size": "SIZE_DEFAULT",
+                              "targetId": "watch-download-button",
+                              "playerStateEntityKey": "Eh8veW91dHViZS9hcHAvd2F0Y2gvcGxheWVyX3N0YXRlIMMCKAE%3D",
+                              "hasLabel": true
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "menuFlexibleItemRenderer": {
+                          "menuItem": {
+                            "menuServiceItemRenderer": {
+                              "text": {
+                                "runs": [
+                                  {
+                                    "text": "Save"
+                                  }
+                                ]
+                              },
+                              "icon": {
+                                "iconType": "PLAYLIST_ADD"
+                              }
+                            }
+                          },
+                          "topLevelButton": {
+                            "buttonViewModel": {
+                              "iconName": "PLAYLIST_ADD",
+                              "title": "Save",
+                              "accessibilityText": "Save to playlist",
+                              "style": "BUTTON_VIEW_MODEL_STYLE_MONO",
+                              "isFullWidth": false,
+                              "type": "BUTTON_VIEW_MODEL_TYPE_TONAL",
+                              "buttonSize": "BUTTON_VIEW_MODEL_SIZE_DEFAULT",
+                              "tooltip": "Save"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                "superTitleLink": {
+                  "runs": [
+                    {
+                      "text": "560 hype points",
+                      "navigationEndpoint": {
+                        "showEngagementPanelEndpoint": {
+                          "identifier": {
+                            "tag": "PAhype_info_panel"
+                          },
+                          "globalConfiguration": {
+                            "params": "0g4pCgtScTVnSlZ4ejU1URIYVUM4X1JTS3diVTFPbVpXTkVvTFYxdFFnGAE%3D"
+                          },
+                          "engagementPanelPresentationConfigs": {
+                            "engagementPanelPopupPresentationConfig": {
+                              "popupType": "PANEL_POPUP_TYPE_DIALOG"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "dateText": {
+                  "simpleText": "Premiered Feb 24, 2026"
+                },
+                "relativeDateText": {
+                  "simpleText": "8 months ago"
+                }
+              }
+            },
+            {
+              "videoSecondaryInfoRenderer": {
+                "owner": {
+                  "videoOwnerRenderer": {
+                    "title": {
+                      "runs": [
+                        {
+                          "text": "Data with Baraa",
+                          "navigationEndpoint": {
+                            "browseEndpoint": {
+                              "browseId": "UC8_RSKwbU1OmZWNEoLV1tQg",
+                              "canonicalBaseUrl": "/@DataWithBaraa"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "subscriptionButton": {
+                      "type": "FREE"
+                    },
+                    "navigationEndpoint": {
+                      "browseEndpoint": {
+                        "browseId": "UC8_RSKwbU1OmZWNEoLV1tQg",
+                        "canonicalBaseUrl": "/@DataWithBaraa"
+                      }
+                    },
+                    "subscriberCountText": {
+                      "simpleText": "527K subscribers"
+                    },
+                    "badges": [
+                      {
+                        "metadataBadgeRenderer": {
+                          "style": "BADGE_STYLE_TYPE_VERIFIED",
+                          "tooltip": "Verified",
+                          "ytIcon": "YTICON_FILL_VERIFIED_BADGE_S12"
+                        }
+                      }
+                    ],
+                    "membershipButton": {
+                      "timedAnimationButtonRenderer": {
+                        "buttonRenderer": {
+                          "buttonRenderer": {
+                            "style": "STYLE_SUGGESTIVE",
+                            "size": "SIZE_DEFAULT",
+                            "isDisabled": false,
+                            "text": {
+                              "runs": [
+                                {
+                                  "text": "Join"
+                                }
+                              ]
+                            },
+                            "navigationEndpoint": {
+                              "modalEndpoint": {
+                                "modal": {
+                                  "modalWithTitleAndButtonRenderer": {
+                                    "title": {
+                                      "runs": [
+                                        {
+                                          "text": "Want to join this channel?"
+                                        }
+                                      ]
+                                    },
+                                    "content": {
+                                      "runs": [
+                                        {
+                                          "text": "Sign in to become a member."
+                                        }
+                                      ]
+                                    },
+                                    "button": {
+                                      "buttonRenderer": {
+                                        "style": "STYLE_BRAND",
+                                        "size": "SIZE_DEFAULT",
+                                        "isDisabled": false,
+                                        "text": {
+                                          "simpleText": "Sign in"
+                                        },
+                                        "navigationEndpoint": {
+                                          "signInEndpoint": {
+                                            "hack": true
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "targetId": "sponsorships-button"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "metadataRowContainer": {
+                  "metadataRowContainerRenderer": {
+                    "collapsedItemCount": 0
+                  }
+                },
+                "showMoreText": {
+                  "simpleText": "...more"
+                },
+                "showLessText": {
+                  "simpleText": "Show less"
+                },
+                "defaultExpanded": false,
+                "descriptionCollapsedLines": 3,
+                "showMoreCommand": {
+                  "commandExecutorCommand": {
+                    "commands": [
+                      {
+                        "changeEngagementPanelVisibilityAction": {
+                          "targetId": "engagement-panel-structured-description",
+                          "visibility": "ENGAGEMENT_PANEL_VISIBILITY_EXPANDED"
+                        }
+                      },
+                      {
+                        "scrollToEngagementPanelCommand": {
+                          "targetId": "engagement-panel-structured-description"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "showLessCommand": {
+                  "changeEngagementPanelVisibilityAction": {
+                    "targetId": "engagement-panel-structured-description",
+                    "visibility": "ENGAGEMENT_PANEL_VISIBILITY_HIDDEN"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "playerOverlays": {
+    "playerOverlayRenderer": {
+      "decoratedPlayerBarRenderer": {
+        "decoratedPlayerBarRenderer": {
+          "playerBar": {
+            "multiMarkersPlayerBarRenderer": {
+              "visibleOnLoad": {
+                "key": "AUTO_CHAPTERS"
+              },
+              "markersMap": [
+                {
+                  "key": "ANIMATION_ANNOTATION_MARKERS",
+                  "value": {
+                    "markers": [
+                      {
+                        "markerRenderer": {
+                          "title": {},
+                          "timeRangeStartMillis": 46951916
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "key": "AUTO_CHAPTERS",
+                  "value": {
+                    "chapters": [
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Course introduction"
+                          },
+                          "timeRangeStartMillis": 0
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Course roadmap"
+                          },
+                          "timeRangeStartMillis": 149100
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "What is Python?"
+                          },
+                          "timeRangeStartMillis": 349947
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "How Python works"
+                          },
+                          "timeRangeStartMillis": 492405
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Why learn Python?"
+                          },
+                          "timeRangeStartMillis": 631340
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Setup environment"
+                          },
+                          "timeRangeStartMillis": 771301
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Code editor vs IDE"
+                          },
+                          "timeRangeStartMillis": 852765
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "VS Code setup"
+                          },
+                          "timeRangeStartMillis": 926737
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "First Python script"
+                          },
+                          "timeRangeStartMillis": 1045333
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Keyboard shortcuts"
+                          },
+                          "timeRangeStartMillis": 1165600
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Bonus upgrades"
+                          },
+                          "timeRangeStartMillis": 1245533
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Python roadmap template"
+                          },
+                          "timeRangeStartMillis": 1365120
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Comments"
+                          },
+                          "timeRangeStartMillis": 1490500
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Comments practice"
+                          },
+                          "timeRangeStartMillis": 1747120
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Print function"
+                          },
+                          "timeRangeStartMillis": 1877233
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Function sources"
+                          },
+                          "timeRangeStartMillis": 1940100
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Print function details"
+                          },
+                          "timeRangeStartMillis": 2041366
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Special characters"
+                          },
+                          "timeRangeStartMillis": 2163566
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Escape characters practice"
+                          },
+                          "timeRangeStartMillis": 2225466
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Triple quotes"
+                          },
+                          "timeRangeStartMillis": 2369033
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Print function use cases"
+                          },
+                          "timeRangeStartMillis": 2536033
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Challenge 1"
+                          },
+                          "timeRangeStartMillis": 2737433
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Variables"
+                          },
+                          "timeRangeStartMillis": 2737766
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Input function"
+                          },
+                          "timeRangeStartMillis": 2765400
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Variables practice"
+                          },
+                          "timeRangeStartMillis": 2962133
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Data Types Intro"
+                          },
+                          "timeRangeStartMillis": 3086566
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Numeric data types"
+                          },
+                          "timeRangeStartMillis": 3090000
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Boolean data type"
+                          },
+                          "timeRangeStartMillis": 3108633
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "None data type"
+                          },
+                          "timeRangeStartMillis": 3121866
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Data types practice"
+                          },
+                          "timeRangeStartMillis": 3125300
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "String data type"
+                          },
+                          "timeRangeStartMillis": 3132633
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "String indexing"
+                          },
+                          "timeRangeStartMillis": 3140000
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "String slicing"
+                          },
+                          "timeRangeStartMillis": 3160000
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "String methods"
+                          },
+                          "timeRangeStartMillis": 3176533
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "String validation"
+                          },
+                          "timeRangeStartMillis": 3393933
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "String formatting"
+                          },
+                          "timeRangeStartMillis": 3395366
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "String practice"
+                          },
+                          "timeRangeStartMillis": 3398566
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Numeric types"
+                          },
+                          "timeRangeStartMillis": 3412333
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Number conversion"
+                          },
+                          "timeRangeStartMillis": 3414300
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Math operators"
+                          },
+                          "timeRangeStartMillis": 3416233
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Rounding functions"
+                          },
+                          "timeRangeStartMillis": 3417800
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Random module"
+                          },
+                          "timeRangeStartMillis": 3434900
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Math module"
+                          },
+                          "timeRangeStartMillis": 3436433
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Number validation"
+                          },
+                          "timeRangeStartMillis": 3440333
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Number practice"
+                          },
+                          "timeRangeStartMillis": 3445966
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Logic and Operators"
+                          },
+                          "timeRangeStartMillis": 3453700
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Logical operators"
+                          },
+                          "timeRangeStartMillis": 3459266
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Comparison operators"
+                          },
+                          "timeRangeStartMillis": 3613600
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Operator practice"
+                          },
+                          "timeRangeStartMillis": 3647600
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Membership operators"
+                          },
+                          "timeRangeStartMillis": 3811920
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Identity operators"
+                          },
+                          "timeRangeStartMillis": 3828000
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Logical operators practice"
+                          },
+                          "timeRangeStartMillis": 3943400
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Conditional statements"
+                          },
+                          "timeRangeStartMillis": 4041600
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Nested if statements"
+                          },
+                          "timeRangeStartMillis": 4202399
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Inline if statement"
+                          },
+                          "timeRangeStartMillis": 4310560
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Match case"
+                          },
+                          "timeRangeStartMillis": 4445440
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Conditional practice"
+                          },
+                          "timeRangeStartMillis": 4543119
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "For loops"
+                          },
+                          "timeRangeStartMillis": 4704159
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Nested loops"
+                          },
+                          "timeRangeStartMillis": 4833279
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Loop statements"
+                          },
+                          "timeRangeStartMillis": 4914159
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "While loops"
+                          },
+                          "timeRangeStartMillis": 5040159
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Loop practice"
+                          },
+                          "timeRangeStartMillis": 5152320
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "List basics"
+                          },
+                          "timeRangeStartMillis": 5262718
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "List manipulation"
+                          },
+                          "timeRangeStartMillis": 5354958
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "List sorting"
+                          },
+                          "timeRangeStartMillis": 5462558
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "List copying"
+                          },
+                          "timeRangeStartMillis": 5555120
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "List combination"
+                          },
+                          "timeRangeStartMillis": 5664000
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "List comprehensions"
+                          },
+                          "timeRangeStartMillis": 5757120
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Advanced list techniques"
+                          },
+                          "timeRangeStartMillis": 5831920
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "List practice"
+                          },
+                          "timeRangeStartMillis": 5912320
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Tuples"
+                          },
+                          "timeRangeStartMillis": 6010000
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Sets"
+                          },
+                          "timeRangeStartMillis": 6079116
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Set operations"
+                          },
+                          "timeRangeStartMillis": 6138800
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Data structure practice"
+                          },
+                          "timeRangeStartMillis": 6202400
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Dictionaries basics"
+                          },
+                          "timeRangeStartMillis": 6306000
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Dictionary methods"
+                          },
+                          "timeRangeStartMillis": 6400000
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Dictionary iteration"
+                          },
+                          "timeRangeStartMillis": 6502720
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Dictionary practice"
+                          },
+                          "timeRangeStartMillis": 6563600
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Functions"
+                          },
+                          "timeRangeStartMillis": 6773200
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Functions parameters"
+                          },
+                          "timeRangeStartMillis": 6863600
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Return statement"
+                          },
+                          "timeRangeStartMillis": 6965600
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Function practice"
+                          },
+                          "timeRangeStartMillis": 7076638
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Function types"
+                          },
+                          "timeRangeStartMillis": 7184000
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Function best practices"
+                          },
+                          "timeRangeStartMillis": 7255840
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Advanced functions"
+                          },
+                          "timeRangeStartMillis": 7352320
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Variable scope"
+                          },
+                          "timeRangeStartMillis": 7433596
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Arguments in functions"
+                          },
+                          "timeRangeStartMillis": 7578080
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Functions advanced practice"
+                          },
+                          "timeRangeStartMillis": 7662400
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Course conclusion"
+                          },
+                          "timeRangeStartMillis": 7713000
+                        }
+                      }
+                    ],
+                    "onChapterRepeat": {
+                      "openPopupAction": {
+                        "popup": {
+                          "notificationActionRenderer": {
+                            "responseText": {
+                              "runs": [
+                                {
+                                  "text": "Chapter repeat is on"
+                                }
+                              ]
+                            },
+                            "actionButton": {
+                              "buttonRenderer": {
+                                "style": "STYLE_BLUE_TEXT",
+                                "text": {
+                                  "runs": [
+                                    {
+                                      "text": "Turn off"
+                                    }
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "popupType": "TOAST"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "playerBarActionButton": {
+            "buttonRenderer": {
+              "text": {
+                "runs": [
+                  {
+                    "text": "View Chapters"
+                  }
+                ]
+              }
+            }
+          },
+          "buttonType": "DECORATED_PLAYER_BAR_BUTTON_TYPE_CHAPTERS"
+        }
+      }
+    }
+  }
+}

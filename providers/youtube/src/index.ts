@@ -6,6 +6,7 @@
  * configured API base instead.
  */
 import { defineProvider, type SourceProvider } from '@vid2context/core';
+import { listMetadata, listYouTube } from './browse/index.ts';
 import { youtubeCaptions } from './captions/provider.ts';
 import { getYouTubeComments } from './comments/index.ts';
 import { toMetadata } from './metadata.ts';
@@ -13,6 +14,7 @@ import { playabilityError } from './resilience/errors.ts';
 import { getPlayer } from './resilience/player.ts';
 import { matchYouTube } from './url.ts';
 
+export { listMetadata, listYouTube } from './browse/index.ts';
 export { fetchTrack } from './captions/fetch.ts';
 export {
   detectFormat,
@@ -43,12 +45,14 @@ export const youtubeSource: SourceProvider = defineProvider({
   runtimes: RUNTIMES,
   match: matchYouTube,
   async getMetadata(ref, ctx) {
+    if (ref.kind !== 'video') return listMetadata(ref, ctx);
     const player = await getPlayer(ref.nativeId, ctx);
     if (!player.videoDetails) {
       throw playabilityError(player, ref.nativeId) ?? playabilityError({ playabilityStatus: { status: 'ERROR' } }, ref.nativeId);
     }
     return toMetadata(ref, player);
   },
+  listItems: (ref, ctx, opts) => listYouTube(ref, ctx, opts),
   getComments: (ref, ctx, opts) => getYouTubeComments(ref, ctx, opts),
   // Audio for YouTube comes from a source that downloads media (the yt-dlp provider).
   canProvideAudio: () => false,

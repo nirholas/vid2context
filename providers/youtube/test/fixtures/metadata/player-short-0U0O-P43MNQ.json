@@ -1,0 +1,382 @@
+{
+  "playabilityStatus": {
+    "status": "OK"
+  },
+  "videoDetails": {
+    "videoId": "0U0O-P43MNQ",
+    "title": "How NASA's Parker Solar Probe Survives the Sun's Atmosphere #shorts",
+    "lengthSeconds": "33",
+    "keywords": [
+      "NASA",
+      "NASA discoveries",
+      "Parker Solar Probe",
+      "Sun magnetic field",
+      "astronomy",
+      "corona",
+      "science news",
+      "solar probe heat shield",
+      "solar wind",
+      "space exploration",
+      "space mission",
+      "space news",
+      "space weather",
+      "stellar physics",
+      "sun atmosphere"
+    ],
+    "channelId": "UCk36hqP7Za87855aOBACZKg",
+    "isOwnerViewing": false,
+    "shortDescription": "NASA's Parker Solar Probe plunges directly into the Sun's corona, coming closer to our star than any human-made object in history. Discover how advanced carbon-composite heat shields and secret magnetic patterns protect this historic space mission from millions of degrees of extreme thermal environments.\n\nLearn how solar wind acceleration data helps scientists understand space weather and protect Earth's power grids and satellite networks from solar disruptions.\n\nCould we ever harness energy directly from a star's corona?\n\nOur latest deep dive: How Internet Crosses the Ocean Floor on Fragile Glass\nhttps://youtu.be/P0BubbItsl0\n\n#NASA #SpaceExploration #SpaceNews #Astronomy #Science\n\nFootage: NASA, Pixabay\n\nBased on reporting from: NASA Science (.gov), Science Daily",
+    "isCrawlable": true,
+    "thumbnail": {
+      "thumbnails": [
+        {
+          "url": "https://i.ytimg.com/vi/0U0O-P43MNQ/2.jpg?sqp=-oaymwEmCHgQWvKriqkDHBgA8AEB-AG2CIACgA-KAgwIABABGHIgNyhiMA8=&rs=AOn4CLA4g5Yb0E09VFmsdyiPINk7PplhZw",
+          "width": 120,
+          "height": 90
+        },
+        {
+          "url": "https://i.ytimg.com/vi/0U0O-P43MNQ/mq2.jpg?sqp=-oaymwEoCMACELQB8quKqQMcGADwAQH4AbYIgAKAD4oCDAgAEAEYciA3KGIwDw==&rs=AOn4CLAr93W--HcJR106kbAihiQQFd4-iA",
+          "width": 320,
+          "height": 180
+        },
+        {
+          "url": "https://i.ytimg.com/vi/0U0O-P43MNQ/hq2.jpg?sqp=-oaymwEoCOADEOgC8quKqQMcGADwAQH4AbYIgAKAD4oCDAgAEAEYciA3KGIwDw==&rs=AOn4CLCsdbCZwNaPOo3B9rmH_cU-MLqd3Q",
+          "width": 480,
+          "height": 360
+        },
+        {
+          "url": "https://i.ytimg.com/vi/0U0O-P43MNQ/sd2.jpg?sqp=-oaymwEoCIAFEOAD8quKqQMcGADwAQH4AbYIgAKAD4oCDAgAEAEYciA3KGIwDw==&rs=AOn4CLCx0bo-3xB22MnBO7lnMEZNJL0FPg",
+          "width": 640,
+          "height": 480
+        }
+      ]
+    },
+    "allowRatings": true,
+    "viewCount": "759",
+    "author": "Tomorrowly",
+    "isPrivate": false,
+    "isUnpluggedCorpus": false,
+    "isLiveContent": false,
+    "isTvfilmVideo": false
+  },
+  "captions": {
+    "playerCaptionsTracklistRenderer": {
+      "captionTracks": [
+        {
+          "baseUrl": "https://www.youtube.com/api/timedtext?v=0U0O-P43MNQ&ei=mpj4apyRGeLTsfIPqdX34AY&caps=asr&opi=112496729&xoaf=5&xowf=1&xospf=1&hl=en&ip=0.0.0.0&ipbits=0&expire=1794702090&sparams=ip,ipbits,expire,v,ei,caps,opi,xoaf&signature=B4DBA037E2550BA9E41AC2F3252ED4129CC62A8E.597E530282978EAC462A67466A5C2ABFD1CFD340&key=yt8&kind=asr&lang=en&fmt=srv3",
+          "name": {
+            "runs": [
+              {
+                "text": "English (auto-generated)"
+              }
+            ]
+          },
+          "vssId": "a.en",
+          "languageCode": "en",
+          "kind": "asr",
+          "isTranslatable": true,
+          "trackName": ""
+        }
+      ],
+      "audioTracks": [
+        {
+          "captionTrackIndices": [
+            0
+          ]
+        }
+      ],
+      "translationLanguages": [
+        {
+          "languageCode": "ar",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Arabic"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "zh-Hant",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Chinese (Traditional)"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "nl",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Dutch"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "fr",
+          "languageName": {
+            "runs": [
+              {
+                "text": "French"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "de",
+          "languageName": {
+            "runs": [
+              {
+                "text": "German"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "hi",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Hindi"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "id",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Indonesian"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "it",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Italian"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "ja",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Japanese"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "ko",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Korean"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "pt",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Portuguese"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "ru",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Russian"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "es",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Spanish"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "th",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Thai"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "uk",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Ukrainian"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "vi",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Vietnamese"
+              }
+            ]
+          }
+        }
+      ],
+      "defaultAudioTrackIndex": 0,
+      "defaultTranslationSourceTrackIndices": [
+        0
+      ]
+    }
+  },
+  "streamingData": {
+    "formats": [
+      {
+        "itag": 18,
+        "mimeType": "video/mp4; codecs=\"avc1.42001E, mp4a.40.2\"",
+        "width": 360,
+        "height": 640
+      }
+    ],
+    "adaptiveFormats": [
+      {
+        "itag": 137,
+        "mimeType": "video/mp4; codecs=\"avc1.640028\"",
+        "width": 1080,
+        "height": 1920
+      },
+      {
+        "itag": 248,
+        "mimeType": "video/webm; codecs=\"vp9\"",
+        "width": 1080,
+        "height": 1920
+      },
+      {
+        "itag": 399,
+        "mimeType": "video/mp4; codecs=\"av01.0.08M.08\"",
+        "width": 1080,
+        "height": 1920
+      },
+      {
+        "itag": 136,
+        "mimeType": "video/mp4; codecs=\"avc1.4D401F\"",
+        "width": 720,
+        "height": 1280
+      },
+      {
+        "itag": 247,
+        "mimeType": "video/webm; codecs=\"vp9\"",
+        "width": 720,
+        "height": 1280
+      },
+      {
+        "itag": 398,
+        "mimeType": "video/mp4; codecs=\"av01.0.05M.08\"",
+        "width": 720,
+        "height": 1280
+      },
+      {
+        "itag": 779,
+        "mimeType": "video/webm; codecs=\"vp9\"",
+        "width": 608,
+        "height": 1080
+      },
+      {
+        "itag": 780,
+        "mimeType": "video/webm; codecs=\"vp9\"",
+        "width": 608,
+        "height": 1080
+      },
+      {
+        "itag": 787,
+        "mimeType": "video/mp4; codecs=\"av01.0.04M.08\"",
+        "width": 608,
+        "height": 1080
+      },
+      {
+        "itag": 788,
+        "mimeType": "video/mp4; codecs=\"av01.0.04M.08\"",
+        "width": 608,
+        "height": 1080
+      },
+      {
+        "itag": 135,
+        "mimeType": "video/mp4; codecs=\"avc1.4D401F\"",
+        "width": 480,
+        "height": 854
+      },
+      {
+        "itag": 134,
+        "mimeType": "video/mp4; codecs=\"avc1.4D401E\"",
+        "width": 360,
+        "height": 640
+      },
+      {
+        "itag": 243,
+        "mimeType": "video/webm; codecs=\"vp9\"",
+        "width": 360,
+        "height": 640
+      },
+      {
+        "itag": 396,
+        "mimeType": "video/mp4; codecs=\"av01.0.01M.08\"",
+        "width": 360,
+        "height": 640
+      },
+      {
+        "itag": 133,
+        "mimeType": "video/mp4; codecs=\"avc1.4D4015\"",
+        "width": 240,
+        "height": 426
+      },
+      {
+        "itag": 242,
+        "mimeType": "video/webm; codecs=\"vp9\"",
+        "width": 240,
+        "height": 426
+      },
+      {
+        "itag": 395,
+        "mimeType": "video/mp4; codecs=\"av01.0.00M.08\"",
+        "width": 240,
+        "height": 426
+      },
+      {
+        "itag": 160,
+        "mimeType": "video/mp4; codecs=\"avc1.4D400C\"",
+        "width": 144,
+        "height": 256
+      },
+      {
+        "itag": 598,
+        "mimeType": "video/webm; codecs=\"vp9\"",
+        "width": 144,
+        "height": 256
+      }
+    ]
+  }
+}

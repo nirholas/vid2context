@@ -15,6 +15,11 @@ export interface ListPage {
   next?: string;
   /** Text of every alert on the page, with its type (ERROR, INFO, WARNING). */
   alerts: { type: string; text: string }[];
+  /**
+   * Last path segment of the selected channel tab ('videos', 'featured', ...).
+   * A channel without the requested tab answers with its Home tab selected.
+   */
+  selectedTab?: string;
 }
 
 export interface ParseOptions {
@@ -50,11 +55,7 @@ const VIDEO_RENDERERS = new Set([
   'videoWithContextRenderer',
   'reelItemRenderer',
 ]);
-const PLAYLIST_LOCKUPS = new Set([
-  'LOCKUP_CONTENT_TYPE_PLAYLIST',
-  'LOCKUP_CONTENT_TYPE_ALBUM',
-  'LOCKUP_CONTENT_TYPE_PODCAST',
-]);
+const PLAYLIST_LOCKUPS = new Set(['LOCKUP_CONTENT_TYPE_PLAYLIST', 'LOCKUP_CONTENT_TYPE_ALBUM', 'LOCKUP_CONTENT_TYPE_PODCAST']);
 const CONTINUATIONS = new Set(['continuationItemRenderer', 'continuationItemViewModel']);
 
 function obj(v: unknown): Json | undefined {
@@ -193,6 +194,17 @@ function alertsOf(json: Json): ListPage['alerts'] {
   return out;
 }
 
+function selectedTabOf(json: Json): string | undefined {
+  const tabs = obj(obj(json.contents)?.twoColumnBrowseResultsRenderer)?.tabs;
+  for (const t of Array.isArray(tabs) ? tabs : []) {
+    const r = obj(obj(t)?.tabRenderer) ?? obj(obj(t)?.expandableTabRenderer);
+    if (r?.selected !== true) continue;
+    const url = findString(obj(r.endpoint), 'url');
+    return url?.split('/').filter(Boolean).pop();
+  }
+  return undefined;
+}
+
 export function parsePage(json: Json, opts: ParseOptions): ListPage {
   const w: Walk = { items: [], skipShelves: opts.skipShelves ?? false };
   if (opts.continuation) {
@@ -203,7 +215,8 @@ export function parsePage(json: Json, opts: ParseOptions): ListPage {
     walk(json.contents, w);
   }
   const next = w.itemNext ?? (opts.sectionLevelNext ? w.sectionNext : undefined);
-  return { items: w.items, ...(next ? { next } : {}), alerts: alertsOf(json) };
+  const tab = opts.continuation ? undefined : selectedTabOf(json);
+  return { items: w.items, ...(next ? { next } : {}), alerts: alertsOf(json), ...(tab ? { selectedTab: tab } : {}) };
 }
 
 /** Count from an alert such as "3 unavailable videos are hidden". */

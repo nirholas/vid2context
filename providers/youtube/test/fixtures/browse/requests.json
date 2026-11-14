@@ -1,0 +1,236 @@
+[
+ {
+  "endpoint": "browse",
+  "body": {
+   "browseId": "VLPLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b",
+   "params": "wgYCCAA%3D"
+  },
+  "status": 200,
+  "file": "browse-gwagon.json"
+ },
+ {
+  "endpoint": "browse",
+  "body": {
+   "browseId": "VLUULA_DiR1FfKNvjuUpBHmylQ",
+   "params": "wgYCCAA%3D"
+  },
+  "status": 200,
+  "file": "browse-nasa-uploads.json"
+ },
+ {
+  "endpoint": "browse",
+  "body": {
+   "continuation": "4qmFsgJtEhpWTFVVTEFfRGlSMUZmS052anVVcEJIbXlsURo0Q0FGNkhsQlVPa05IVVdsRlJHZDNUbXBHUms1RWEzaFBSRUV6VGtSb1JrMTZWY0lHQWdnQZoCGFVVTEFfRGlSMUZmS052anVVcEJIbXlsUQ%3D%3D"
+  },
+  "status": 200,
+  "file": "browse-nasa-uploads-p2.json"
+ },
+ {
+  "endpoint": "browse",
+  "body": {
+   "browseId": "VLPLwP_SiAcdui0KVebT0mU9Apz359a4ubsC",
+   "params": "wgYCCAA%3D"
+  },
+  "status": 200,
+  "file": "browse-29c3.json"
+ },
+ {
+  "endpoint": "browse",
+  "body": {
+   "browseId": "VLPL59FEE129ADFF2B12",
+   "params": "wgYCCAA%3D"
+  },
+  "status": 200,
+  "file": "browse-unavailable.json"
+ },
+ {
+  "endpoint": "browse",
+  "body": {
+   "browseId": "VLPLtPgu7CB4gbY9oDN3drwC3cMbJggS7dKl",
+   "params": "wgYCCAA%3D"
+  },
+  "status": 200,
+  "file": "browse-missing-playlist.json"
+ },
+ {
+  "endpoint": "navigation/resolve_url",
+  "body": {
+   "url": "https://www.youtube.com/@alliancemotorworks/videos"
+  },
+  "status": 200,
+  "file": "resolve_url-alliance.json"
+ },
+ {
+  "endpoint": "browse",
+  "body": {
+   "browseId": "VLUUdEjP_BjQ5audhxLKKzZl2A",
+   "params": "wgYCCAA%3D"
+  },
+  "status": 200,
+  "file": "browse-alliance.json"
+ },
+ {
+  "endpoint": "navigation/resolve_url",
+  "body": {
+   "url": "https://www.youtube.com/@alliancemotorworks/streams"
+  },
+  "status": 200,
+  "file": "resolve_url-alliance-streams.json"
+ },
+ {
+  "endpoint": "browse",
+  "body": {
+   "browseId": "VLUULVdEjP_BjQ5audhxLKKzZl2A",
+   "params": "wgYCCAA%3D"
+  },
+  "status": 200,
+  "file": "browse-alliance-streams.json"
+ },
+ {
+  "endpoint": "browse",
+  "body": {
+   "browseId": "UCdEjP_BjQ5audhxLKKzZl2A",
+   "params": "EgdzdHJlYW1zuAEAkgMA8gYECgJ6AA%3D%3D"
+  },
+  "status": 200,
+  "file": "browse-alliance-streams-p2.json"
+ },
+ {
+  "endpoint": "navigation/resolve_url",
+  "body": {
+   "url": "https://www.youtube.com/@alliancemotorworks/playlists"
+  },
+  "status": 200,
+  "file": "resolve_url-alliance-playlists.json"
+ },
+ {
+  "endpoint": "browse",
+  "body": {
+   "browseId": "UCdEjP_BjQ5audhxLKKzZl2A",
+   "params": "EglwbGF5bGlzdHO4AQCSAwDyBgQKAkIA"
+  },
+  "status": 200,
+  "file": "browse-alliance-playlists.json"
+ },
+ {
+  "endpoint": "browse",
+  "body": {
+   "browseId": "VLPLHeawKfarQSNz1CsbdaTWCd1eVKp9Tqr6",
+   "params": "wgYCCAA%3D"
+  },
+  "status": 200,
+  "file": "browse-alliance-playlists-p2.json"
+ },
+ {
+  "endpoint": "browse",
+  "body": {
+   "browseId": "VLPLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b",
+   "params": "wgYCCAA%3D"
+  },
+  "status": 200,
+  "file": "browse-alliance-playlists-p3.json"
+ },
+ {
+  "endpoint": "browse",
+  "body": {
+   "browseId": "VLPLHeawKfarQSOUmgesompSijozIxatrn_Q",
+   "params": "wgYCCAA%3D"
+  },
+  "status": 200,
+  "file": "browse-alliance-playlists-p4.json"
+ },
+ {
+  "endpoint": "browse",
+  "body": {
+   "browseId": "VLPLHeawKfarQSOdxgEEK1utvg2rnintekHi",
+   "params": "wgYCCAA%3D"
+  },
+  "status": 200,
+  "file": "browse-alliance-playlists-p5.json"
+ },
+ {
+  "endpoint": "search",
+  "body": {
+   "query": "g wagon buyers guide",
+   "params": "EgIQAQ%3D%3D"
+  },
+  "status": 200,
+  "file": "search-search.json"
+ },
+ {
+  "endpoint": "search",
+  "body": {
+   "continuation": "EqkDEhRnIHdhZ29uIGJ1eWVycyBndWlkZRqQA0VnSVFBVWdVZ2dFTE1UTlBXVWxaUTE5eWJFV0NBUXRqUTFCelpFWmtiSE5vWTRJQkN6SmpVM1pGTm13NVFuUXdnZ0VMVWpWR1NFVmlhbFZqVERTQ0FRdHhObVI2YlMxUE1Xa3liNElCQzFCeFpIWXljV3c1TnpGTmdnRUxlRzlCT0VaWE5GSmxWR3VDQVF0TFVGRkhkSEJ2ZDJOVE5JSUJDMGhoVjBoaE1tUmhaRVV3Z2dFTFZUZEViV2R3Y0RWWExWR0NBUXN5YTNaSk5GUmFTMmg0ZDRJQkMzVkNjM0J3WHpaNVEwZzBnZ0VMUldKU1gzSnRhVlZIWDItQ0FRdEphelJzYzBsbWFEUnJOSUlCQzFSRGMyMXRRV296Vm1OamdnRUxiRGhDY0V0aFNFVXRSWE9DQVF0dmRrbHJUamRWWjJKblJZSUJDM0ZHTkRGb2FqQkRkek5uZ2dFTFltdEhUV3RvU2w5Q2QxbUNBUXQ2VUdWSFJsZDRVVmREVGJJQkJnb0VDQlFRQWclM0QlM0QYgeDoGCILc2VhcmNoLWZlZWQ%3D"
+  },
+  "status": 200,
+  "file": "search-search-p2.json"
+ },
+ {
+  "endpoint": "navigation/resolve_url",
+  "body": {
+   "url": "https://www.youtube.com/@thishandledoesnotexist-zq9x7k2/videos"
+  },
+  "status": 404,
+  "file": "resolve_url-missing-handle.json"
+ },
+ {
+  "endpoint": "browse",
+  "body": {
+   "browseId": "VLUULFxxxxxxxxxxxxxxxxxxxxxx",
+   "params": "wgYCCAA%3D"
+  },
+  "status": 200,
+  "file": "browse-missing-channel.json"
+ },
+ {
+  "endpoint": "navigation/resolve_url",
+  "body": {
+   "url": "https://www.youtube.com/channel/UCxxxxxxxxxxxxxxxxxxxxxx/videos"
+  },
+  "status": 200,
+  "file": "resolve_url-missing-channel.json"
+ },
+ {
+  "endpoint": "browse",
+  "body": {
+   "browseId": "UCxxxxxxxxxxxxxxxxxxxxxx",
+   "params": "EgZ2aWRlb3O4AQCSAwDyBgQKAjoA"
+  },
+  "status": 200,
+  "file": "browse-missing-channel-p2.json"
+ },
+ {
+  "endpoint": "navigation/resolve_url",
+  "body": {
+   "url": "https://www.youtube.com/@alliancemotorworks"
+  },
+  "status": 200,
+  "file": "resolve_url-alliance-meta.json"
+ },
+ {
+  "endpoint": "browse",
+  "body": {
+   "browseId": "UCdEjP_BjQ5audhxLKKzZl2A",
+   "params": "EgC4AQCSAwDyBgQKAjIA"
+  },
+  "status": 200,
+  "file": "browse-alliance-meta.json"
+ },
+ {
+  "endpoint": "browse",
+  "body": {
+   "browseId": "UCLA_DiR1FfKNvjuUpBHmylQ",
+   "params": "EgZ2aWRlb3O4AQCSAwDyBgQKAjoA"
+  },
+  "status": 200,
+  "file": "browse-nasa-videos-tab.json"
+ },
+ {
+  "endpoint": "browse",
+  "body": {
+   "continuation": "4qmFsgLZCRIYVUNMQV9EaVIxRmZLTnZqdVVwQkhteWxRGrwJOGdhRUJ4cUJCM3ItQmpyN0Jnb2tObU13TWpZd1pXRXRNREF3TUMweVlUZ3hMV0kwWkRJdFpEUm1OVFEzWldZM1pEWTRFdEFHUVdOV09GWmtWbWR2Y0d4eU5UTjFYMUUzTlhoMVRtaEZaVE5VYXpsUlRVeDRTMGhQUms1c1gyODNiRXBEU20xUVRERkhUbmxzV21wek1rWlJXbVZvYkZkRlZEYzFXSHBXYmpSS05FVkNZMU5mTmtSbFEzRldaa1IyVkV4dVNVOWtObGhrT1dNNVNuZFRkRTVYWnpodlpteFRjM0Z3ZG5FMVduUjNZVGxGUVRocWNYRXdSR1F3U3pKU05rZFlWRlpsUlY5U2EwMVdXRjlKZG1KeWEwZE1ZMmhHV2kxdk9UbHhZMWR5U1ZWS1kyd3hhVUZaVUVneVZXWjJPV2hNWmpCcFltc3pURzVqVGxkSlVWVlpaamhEWVhBNFkwcFhVMmMwVUVsT1kzYzJaazlMT0cxNFNsOHhiR3A2VmpGeWJ6RmxjMHQxZDJWMFJXOVNXalI0UkRjMU5YTlFlVTlKZG14WVQxQmhSVTFFZERSWFgwcEdhWFJZV0V4MWJWRkZjMUF5WldSUlVWUkNTVEZYWVhkcmMxWjNSM3BqVTFCV1FUQk5hbGhSZGtNMGJGSjVjSGsxVTBsSldWOXBTVGR2VldFMWJGTndhM2xRTjA1aWJGVnVWSFpaYTJVMmQySTJhMjFOUVZGS1JqUlhTa1V6YURSdFZEUkNXV0ZPTlVwblJUQnNlbFZXVmw4NFJIWlRjM0ZvUTFnelNFVmphek5XWTJ0b1lrWmZWMHBUY21Vd2NsRXlSVTlMWDFGWlYxYzBTblIxUTJ4MVZrdHVVVW96ZDB4NlNuWjJjVXhGWjJsVmRHNVhOMFY0U2twSVZVUnVVazlrVjFsNUxUWktiSFpoWXpSVGNIUkRkM2h5UW1KSU5GbFVXbTFQTjAxYVVXMVFZazVxWnpOeFdYZ3Rka2hCU2pCNk1UVkljbE5NVTFOek1Xc3hWMVoxZDI4MFVXdHFkVlZST1ZSMk5WVkZaM2xLUTA0d2EzTmxkR1ZtZFZGSE0xQllhMHhFYTNsT1lqUkpTVVZhYVc0dFJFWkJaazlCV1Y5UE0xSTVkMkZYZEhGd2MxOVRhVVYzZUhsMFNUQlFPSHBZY21zM2NYcFpaemx5UjJsbFVXNUNXWE53TFVKVVdtaE9Za2QwUmsxWFUxRkhXbmRvY1dOSWVISnlUWGxhV0hGRlVsUkdUelpVT0c5RFNVOW1UbkZrUWxadmNsbFZOMjUwUzJ0MFgwd3hTamh6WTNCMVNtRm5UMlp6ZVdOa1pEVjZWVFJyV1hCUWIyTkhkREpUUTNnNGRXMTJNbUpIV0V4TU5uVnBValpoWmxCV1pVNUhUMWRWUWxoV2NHdGFORXhJUnpreU9ETndTWEZIVTNOMFdYQk1kVW94TjJZM1UwVkhhR3hZVlRSQlZtMHhNRUZ3VkVOSFZrMVNlV3hLVWtORVVsTnFkblZVV2xoNWRERlhURVF3V0RWQ1JqWlRWV3hLUlhCT1pHWkNjVUpJVURoRmVsTnFORUpTZVRFWUJBJTNEJTNE"
+  },
+  "status": 200,
+  "file": "browse-nasa-videos-tab-p2.json"
+ }
+]

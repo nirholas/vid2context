@@ -25,6 +25,13 @@ const VID = 'Pqdv2ql971M';
 /** When the fixtures were recorded; relative dates are resolved against it. */
 const RECORDED = Date.parse('2026-11-14T17:03:00Z');
 
+/** Element i, failing the test when it is missing. */
+function at<T>(xs: readonly T[], i: number): T {
+  const x = xs[i];
+  if (x === undefined) throw new Error(`missing element ${i}`);
+  return x;
+}
+
 const ref = (input: string): VideoRef => {
   const r = matchYouTube(input);
   if (!r) throw new Error(`no match for ${input}`);
@@ -54,6 +61,14 @@ const VIDEOS: Record<string, string> = {
   [VID]: `next-${VID}.json`,
   XqZsoesa55w: 'next-XqZsoesa55w.json',
   xxxxxxxxxxx: 'next-xxxxxxxxxxx.json',
+  Pw0wchRQJac: 'next-Pw0wchRQJac.json',
+  HtVdAasjOgU: 'next-HtVdAasjOgU.json',
+};
+
+/** Player responses recorded by the captions resilience work, reused for the no-comments-section cases. */
+const PLAYERS: Record<string, string> = {
+  Pw0wchRQJac: 'player-members-only-Pw0wchRQJac.json',
+  HtVdAasjOgU: 'player-age-restricted-HtVdAasjOgU.json',
 };
 
 function commentsReplay(hook?: (file: string) => void) {
@@ -73,7 +88,11 @@ function commentsReplay(hook?: (file: string) => void) {
     {
       method: 'POST',
       url: /youtubei\/v1\/player\?/,
-      response: { body: fixture('player-unavailable.json'), headers: { 'content-type': 'application/json' } },
+      response: (call: RecordedCall) => {
+        const { videoId } = JSON.parse(String(call.body)) as { videoId: string };
+        const file = PLAYERS[videoId] ?? 'player-unavailable.json';
+        return { body: fixture(file), headers: { 'content-type': 'application/json' } };
+      },
     },
   ]);
 }
@@ -151,7 +170,7 @@ describe('comment parsers on recorded responses', () => {
     const page = parseCommentsPage(fx(`comments-${VID}-top-1.json`), RECORDED);
     expect(page.threads).toHaveLength(20);
     expect(page.next).toBeTruthy();
-    const [pinned] = page.threads;
+    const pinned = at(page.threads, 0);
     expect(pinned.comment).toMatchObject({
       id: 'UgyrP_RTBJnbXD9X4el4AaABAg',
       author: '@Jimports',
@@ -179,14 +198,14 @@ describe('comment parsers on recorded responses', () => {
   it('keeps emoji as characters', () => {
     const page = parseCommentsPage(fx(`comments-${VID}-top-3.json`), RECORDED);
     const texts = page.threads.map((t) => t.comment.text);
-    expect(texts).toContain('I wanna invest in this channel \u{1F923}');
+    expect(texts).toContain('Finally!  A vehicle more rust-prone than my Toyota Tacoma \u{1F602}');
   });
 
   it('maps the renderer shape (MWEB) to the same values as the entity shape', () => {
     const web = parseCommentsPage(fx(`comments-${VID}-top-1.json`), RECORDED).threads;
     const mweb = parseCommentsPage(fx(`comments-${VID}-mweb-1.json`), RECORDED).threads;
     expect(mweb).toHaveLength(20);
-    expect(mweb[0].comment).toMatchObject({ id: 'UgyrP_RTBJnbXD9X4el4AaABAg', isPinned: true, isCreator: true, likes: 28 });
+    expect(at(mweb, 0).comment).toMatchObject({ id: 'UgyrP_RTBJnbXD9X4el4AaABAg', isPinned: true, isCreator: true, likes: 28 });
     const webById = new Map(web.map((t) => [t.comment.id, t]));
     let compared = 0;
     for (const t of mweb) {
@@ -201,7 +220,7 @@ describe('comment parsers on recorded responses', () => {
 
   it('keeps links as full URLs in both shapes', () => {
     for (const file of ['comments-gqYNyRIGYOQ-top-1.json', 'comments-gqYNyRIGYOQ-mweb-1.json']) {
-      const [thread] = parseCommentsPage(fx(file), RECORDED).threads;
+      const thread = at(parseCommentsPage(fx(file), RECORDED).threads, 0);
       expect(thread.comment.text).toBe("Here's the link! \n\nhttps://tinyurl.com/532k6byv");
       expect(thread.comment.isCreator).toBe(true);
     }
@@ -215,8 +234,8 @@ describe('comment parsers on recorded responses', () => {
       ['@NVSTRZ34', false, 5],
       ['@Jimports', true, 9],
     ]);
-    expect(replies[1].text.startsWith('@Jimports')).toBe(true);
-    expect(replies[0].id).toBe('Ugyl6uaO_N4qYI2EQyF4AaABAg.AJ6a8wcLOthAJ6w1ZFWFGT');
+    expect(at(replies, 1).text.startsWith('@Jimports')).toBe(true);
+    expect(at(replies, 0).id).toBe('Ugyl6uaO_N4qYI2EQyF4AaABAg.AJ6a8wcLOthAJ6w1ZFWFGT');
   });
 });
 
@@ -269,7 +288,7 @@ describe('getYouTubeComments (replayed)', () => {
     expect(comments[0]).toMatchObject({ author: '@Jimports', isPinned: true, isCreator: true });
     // next + one page + one reply page for each of the 6 picked threads.
     expect(fetch.calls).toHaveLength(8);
-    expect(comments[0].replies).toHaveLength(5);
+    expect(at(comments, 0).replies).toHaveLength(5);
     const withCreatorReply = comments.find((c) => c.id === 'UgzGZBoXBL089a7jFep4AaABAg');
     expect(withCreatorReply?.replies?.[0]).toMatchObject({ author: '@Jimports', isCreator: true, text: 'ty bby' });
     expect(comments.filter((c) => c.replies).length).toBe(6);
@@ -305,7 +324,7 @@ describe('getYouTubeComments (replayed)', () => {
       const fetch = commentsReplay();
       const comments = await getYouTubeComments(video, testContext({ fetch, env }), opts);
       expect(comments.slice(0, 3).map((c) => c.author)).toEqual(['@Jimports', '@romanmuradyan220', '@HelloAutoCarz']);
-      expect(nextBodies(fetch.calls)[1].continuation).toBe(findSortTokens(fx(`next-${VID}.json`)).newest);
+      expect(at(nextBodies(fetch.calls), 1).continuation).toBe(findSortTokens(fx(`next-${VID}.json`)).newest);
     }
   });
 
@@ -316,6 +335,19 @@ describe('getYouTubeComments (replayed)', () => {
     expect(await getYouTubeComments(ref('https://youtu.be/XqZsoesa55w'), ctx)).toEqual([]);
     expect(fetch.calls).toHaveLength(1);
     expect(lines).toEqual([{ level: 'info', msg: 'YouTube XqZsoesa55w: no comments (Comments are turned off.)' }]);
+  });
+
+  it('returns [] for members-only and age-restricted videos', async () => {
+    for (const [id, reason] of [
+      ['Pw0wchRQJac', 'Join this channel'],
+      ['HtVdAasjOgU', 'may be inappropriate'],
+    ] as const) {
+      const fetch = commentsReplay();
+      const { log, lines } = capturingLog();
+      const ctx = createContext({ runtime: 'node', env: {}, fetch, log });
+      expect(await getYouTubeComments(ref(id), ctx)).toEqual([]);
+      expect(lines.filter((l) => l.level === 'info').map((l) => l.msg)).toEqual([expect.stringContaining(reason)]);
+    }
   });
 
   it('throws for an unavailable video', async () => {
@@ -352,6 +384,15 @@ describe('getYouTubeComments (replayed)', () => {
 });
 
 describe.skipIf(!process.env.LIVE)('youtube comments (live)', () => {
+  it('returns 20 top comments with the pinned creator comment first, through the YouTube source', async () => {
+    const ctx = createContext({ runtime: 'node', env: process.env });
+    const comments = (await youtubeSource.getComments?.(ref(`https://www.youtube.com/watch?v=${VID}`), ctx, { limit: 20 })) ?? [];
+    expect(comments).toHaveLength(20);
+    expect(comments[0]).toMatchObject({ author: '@Jimports', isPinned: true, isCreator: true });
+    expect(comments.some((c) => c.replies?.some((r) => r.isCreator))).toBe(true);
+  }, 60_000);
+
+  // Needs a transcript first, so it also fails when YouTube rate-limits caption downloads from this IP.
   it('returns 20 top comments with the pinned creator comment first, through the pipeline', async () => {
     const ctx = createContext({ runtime: 'node', env: process.env });
     const registry = new Registry([youtubeSource, youtubeCaptions], 'node');

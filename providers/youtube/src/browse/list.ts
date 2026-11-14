@@ -4,16 +4,8 @@
  * lazy: a page is only requested when the consumer asks for more items, so a
  * limit stops the requests as soon as it is reached.
  */
-import { type Ctx, type VideoRef, Vid2ContextError } from '@vid2context/core';
-import {
-  type ChannelTab,
-  channelTabOf,
-  parseSearchRef,
-  playlistRef,
-  SEARCH_DEFAULT,
-  SEARCH_MAX,
-  videoRef,
-} from '../url.ts';
+import { type Ctx, Vid2ContextError, type VideoRef } from '@vid2context/core';
+import { type ChannelTab, channelTabOf, parseSearchRef, playlistRef, SEARCH_DEFAULT, SEARCH_MAX, videoRef } from '../url.ts';
 import { hiddenCount, type ListItem, type ListPage, type ParseOptions, parsePage } from './parse.ts';
 import { type Endpoint, innertubeWeb, type Json } from './request.ts';
 
@@ -40,7 +32,6 @@ const REGION_ALERT = /country|region|not available in your/i;
 interface PageSpec {
   endpoint: Endpoint;
   body: Json;
-  label: string;
   parse: Omit<ParseOptions, 'continuation'>;
   /** What to call the thing in not-found errors: "playlist PL...". */
   what: string;
@@ -51,19 +42,23 @@ function alertError(page: ListPage, spec: PageSpec): Vid2ContextError | null {
   if (!err) return null;
   const msg = `YouTube ${spec.what}: ${err.text}`;
   if (REGION_ALERT.test(err.text)) {
-    return new Vid2ContextError('unavailable', msg, { hint: 'This list is blocked in the region YouTube sees for this machine.' });
+    return new Vid2ContextError('unavailable', msg, {
+      hint: 'This list is blocked in the region YouTube sees for this machine.',
+    });
   }
   if (NOT_FOUND_ALERT.test(err.text)) {
     return new Vid2ContextError('not-found', msg, {
       hint: 'Check the URL. Private, deleted and mistyped playlists or channels cannot be listed.',
     });
   }
-  return new Vid2ContextError('unavailable', msg, { hint: 'YouTube refused to show this list; open it in a browser to see why.' });
+  return new Vid2ContextError('unavailable', msg, {
+    hint: 'YouTube refused to show this list; open it in a browser to see why.',
+  });
 }
 
 /** Fetch the first page and fail on error alerts. Kept separate so callers can fall back before yielding. */
 async function firstPage(spec: PageSpec, ctx: Ctx): Promise<ListPage> {
-  const json = await innertubeWeb(spec.endpoint, spec.body, ctx, spec.label);
+  const json = await innertubeWeb(spec.endpoint, spec.body, ctx);
   const page = parsePage(json, { ...spec.parse, continuation: false });
   const err = alertError(page, spec);
   if (err) throw err;
@@ -76,12 +71,10 @@ async function* pagesFrom(first: ListPage, spec: PageSpec, ctx: Ctx, counts: Cou
   yield* first.items;
   const seenTokens = new Set<string>();
   let next = first.next;
-  let n = 1;
   while (next && !seenTokens.has(next)) {
     ctx.signal?.throwIfAborted();
     seenTokens.add(next);
-    n += 1;
-    const json = await innertubeWeb(spec.endpoint, { continuation: next }, ctx, `${spec.label} (page ${n})`);
+    const json = await innertubeWeb(spec.endpoint, { continuation: next }, ctx);
     const page = parsePage(json, { ...spec.parse, continuation: true });
     yield* page.items;
     next = page.next;
@@ -103,7 +96,6 @@ function playlistSpec(list: string): PageSpec {
   return {
     endpoint: 'browse',
     body: { browseId: `VL${list}`, params: SHOW_UNAVAILABLE },
-    label: `YouTube playlist ${list}`,
     parse: {},
     what: `playlist ${list}`,
   };
@@ -113,7 +105,7 @@ function playlistSpec(list: string): PageSpec {
 async function resolveChannel(url: string, ctx: Ctx): Promise<{ browseId: string; params?: string }> {
   let json: Json;
   try {
-    json = await innertubeWeb('navigation/resolve_url', { url }, ctx, `YouTube channel ${url}`);
+    json = await innertubeWeb('navigation/resolve_url', { url }, ctx);
   } catch (err) {
     if (err instanceof Vid2ContextError && err.code === 'not-found') {
       throw new Vid2ContextError('not-found', `YouTube channel ${url} does not exist.`, {
@@ -169,11 +161,15 @@ async function* channelItems(ref: VideoRef, ctx: Ctx, counts: Counts): AsyncGene
   const tabSpec: PageSpec = {
     endpoint: 'browse',
     body: { browseId: channelId, ...(resolved.params ? { params: resolved.params } : {}) },
-    label: `YouTube channel ${channelId} ${browseTab}`,
     parse: {},
     what: `channel ${ref.nativeId}`,
   };
-  for await (const item of pages(tabSpec, ctx, counts)) {
+  const first = await firstPage(tabSpec, ctx);
+  if (first.selectedTab && first.selectedTab !== browseTab) {
+    ctx.log.info('youtube: this channel has no such tab, nothing to list', { channel: ref.nativeId, tab: browseTab });
+    return;
+  }
+  for await (const item of pagesFrom(first, tabSpec, ctx, counts)) {
     if (browseTab === 'playlists') {
       if (item.type !== 'playlist') continue;
       try {
@@ -193,7 +189,6 @@ function searchItems(query: string, ctx: Ctx, counts: Counts): AsyncGenerator<Li
     {
       endpoint: 'search',
       body: { query, params: SEARCH_VIDEOS },
-      label: `YouTube search "${query}"`,
       parse: { sectionLevelNext: true, skipShelves: true },
       what: `search "${query}"`,
     },

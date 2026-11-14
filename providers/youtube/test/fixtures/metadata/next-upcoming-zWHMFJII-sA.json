@@ -1,0 +1,364 @@
+{
+  "contents": {
+    "twoColumnWatchNextResults": {
+      "results": {
+        "results": {
+          "contents": [
+            {
+              "videoPrimaryInfoRenderer": {
+                "title": {
+                  "runs": [
+                    {
+                      "text": "ULA launches Vulcan launches Amazon Leo (LV-01)"
+                    }
+                  ]
+                },
+                "viewCount": {
+                  "videoViewCountRenderer": {
+                    "viewCount": {
+                      "runs": [
+                        {
+                          "text": "11"
+                        },
+                        {
+                          "text": " waiting"
+                        }
+                      ]
+                    },
+                    "isLive": true,
+                    "originalViewCount": "11"
+                  }
+                },
+                "videoActions": {
+                  "menuRenderer": {
+                    "items": [
+                      {
+                        "menuServiceItemRenderer": {
+                          "text": {
+                            "runs": [
+                              {
+                                "text": "Save"
+                              }
+                            ]
+                          },
+                          "icon": {
+                            "iconType": "PLAYLIST_ADD"
+                          }
+                        }
+                      },
+                      {
+                        "menuServiceItemRenderer": {
+                          "text": {
+                            "runs": [
+                              {
+                                "text": "Report"
+                              }
+                            ]
+                          },
+                          "icon": {
+                            "iconType": "FLAG"
+                          }
+                        }
+                      }
+                    ],
+                    "topLevelButtons": [
+                      {
+                        "segmentedLikeDislikeButtonViewModel": {
+                          "likeButtonViewModel": {
+                            "likeButtonViewModel": {
+                              "toggleButtonViewModel": {
+                                "toggleButtonViewModel": {
+                                  "defaultButtonViewModel": {
+                                    "buttonViewModel": {
+                                      "iconName": "LIKE",
+                                      "title": "21",
+                                      "accessibilityText": "like this video along with 21 other people",
+                                      "style": "BUTTON_VIEW_MODEL_STYLE_MONO",
+                                      "isFullWidth": false,
+                                      "type": "BUTTON_VIEW_MODEL_TYPE_TONAL",
+                                      "buttonSize": "BUTTON_VIEW_MODEL_SIZE_DEFAULT",
+                                      "accessibilityId": "id.video.like.button",
+                                      "tooltip": "I like this"
+                                    }
+                                  },
+                                  "toggledButtonViewModel": {
+                                    "buttonViewModel": {
+                                      "iconName": "LIKE",
+                                      "title": "22",
+                                      "accessibilityText": "like this video along with 21 other people",
+                                      "style": "BUTTON_VIEW_MODEL_STYLE_MONO",
+                                      "isFullWidth": false,
+                                      "type": "BUTTON_VIEW_MODEL_TYPE_TONAL",
+                                      "buttonSize": "BUTTON_VIEW_MODEL_SIZE_DEFAULT",
+                                      "accessibilityId": "id.video.like.button",
+                                      "tooltip": "Unlike"
+                                    }
+                                  },
+                                  "identifier": "watch-like",
+                                  "isTogglingDisabled": true
+                                }
+                              },
+                              "likeStatusEntityKey": "Egt6V0hNRkpJSS1zQSA-KAE%3D",
+                              "likeStatusEntity": {
+                                "key": "Egt6V0hNRkpJSS1zQSA-KAE%3D",
+                                "likeStatus": "INDIFFERENT"
+                              }
+                            }
+                          },
+                          "dislikeButtonViewModel": {
+                            "dislikeButtonViewModel": {
+                              "toggleButtonViewModel": {
+                                "toggleButtonViewModel": {
+                                  "defaultButtonViewModel": {
+                                    "buttonViewModel": {
+                                      "iconName": "DISLIKE",
+                                      "title": "Dislike",
+                                      "accessibilityText": "Dislike this video",
+                                      "style": "BUTTON_VIEW_MODEL_STYLE_MONO",
+                                      "isFullWidth": false,
+                                      "type": "BUTTON_VIEW_MODEL_TYPE_TONAL",
+                                      "buttonSize": "BUTTON_VIEW_MODEL_SIZE_DEFAULT",
+                                      "accessibilityId": "id.video.dislike.button",
+                                      "tooltip": "I dislike this"
+                                    }
+                                  },
+                                  "toggledButtonViewModel": {
+                                    "buttonViewModel": {
+                                      "iconName": "DISLIKE",
+                                      "title": "Dislike",
+                                      "accessibilityText": "Dislike this video",
+                                      "style": "BUTTON_VIEW_MODEL_STYLE_MONO",
+                                      "isFullWidth": false,
+                                      "type": "BUTTON_VIEW_MODEL_TYPE_TONAL",
+                                      "buttonSize": "BUTTON_VIEW_MODEL_SIZE_DEFAULT",
+                                      "accessibilityId": "id.video.dislike.button",
+                                      "tooltip": "I dislike this"
+                                    }
+                                  },
+                                  "isTogglingDisabled": true
+                                }
+                              },
+                              "dislikeEntityKey": "Egt6V0hNRkpJSS1zQSA-KAE%3D"
+                            }
+                          },
+                          "iconType": "LIKE_ICON_TYPE_UNKNOWN",
+                          "likeCountEntity": {
+                            "key": "unset_like_count_entity_key"
+                          },
+                          "dynamicLikeCountUpdateData": {
+                            "updateStatusKey": "like_count_update_status_key",
+                            "placeholderLikeCountValuesKey": "like_count_placeholder_values_key",
+                            "updateDelayLoopId": "like_count_update_delay_loop_id",
+                            "updateDelaySec": 5
+                          },
+                          "teasersOrderEntityKey": "Egt6V0hNRkpJSS1zQSD8AygB"
+                        }
+                      },
+                      {
+                        "buttonViewModel": {
+                          "iconName": "SHARE",
+                          "title": "Share",
+                          "accessibilityText": "Share",
+                          "style": "BUTTON_VIEW_MODEL_STYLE_MONO",
+                          "isFullWidth": false,
+                          "type": "BUTTON_VIEW_MODEL_TYPE_TONAL",
+                          "buttonSize": "BUTTON_VIEW_MODEL_SIZE_DEFAULT",
+                          "state": "BUTTON_VIEW_MODEL_STATE_ACTIVE",
+                          "accessibilityId": "id.video.share.button",
+                          "tooltip": "Share"
+                        }
+                      },
+                      {
+                        "buttonViewModel": {
+                          "iconName": "OUTLINE_BAG",
+                          "title": "Shop",
+                          "accessibilityText": "Shop",
+                          "style": "BUTTON_VIEW_MODEL_STYLE_MONO",
+                          "isFullWidth": false,
+                          "type": "BUTTON_VIEW_MODEL_TYPE_TONAL",
+                          "buttonSize": "BUTTON_VIEW_MODEL_SIZE_DEFAULT",
+                          "targetId": "shop-button-slim-metadata",
+                          "tooltip": "Shop"
+                        }
+                      }
+                    ],
+                    "flexibleItems": [
+                      {
+                        "menuFlexibleItemRenderer": {
+                          "menuItem": {
+                            "menuServiceItemDownloadRenderer": {}
+                          },
+                          "topLevelButton": {
+                            "downloadButtonRenderer": {
+                              "style": "STYLE_DEFAULT",
+                              "size": "SIZE_DEFAULT",
+                              "targetId": "watch-download-button",
+                              "hasLabel": true
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                "updatedMetadataEndpoint": {
+                  "updatedMetadataEndpoint": {
+                    "videoId": "zWHMFJII-sA",
+                    "initialDelayMs": 5000,
+                    "params": "IAA="
+                  }
+                },
+                "dateText": {
+                  "simpleText": "Scheduled for Nov 15, 2026"
+                }
+              }
+            },
+            {
+              "videoSecondaryInfoRenderer": {
+                "owner": {
+                  "videoOwnerRenderer": {
+                    "title": {
+                      "runs": [
+                        {
+                          "text": "NASASpaceflight",
+                          "navigationEndpoint": {
+                            "browseEndpoint": {
+                              "browseId": "UCSUu1lih2RifWkKtDOJdsBA",
+                              "canonicalBaseUrl": "/@NASASpaceflight"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "subscriptionButton": {
+                      "type": "FREE"
+                    },
+                    "navigationEndpoint": {
+                      "browseEndpoint": {
+                        "browseId": "UCSUu1lih2RifWkKtDOJdsBA",
+                        "canonicalBaseUrl": "/@NASASpaceflight"
+                      }
+                    },
+                    "subscriberCountText": {
+                      "simpleText": "1.54M subscribers"
+                    },
+                    "badges": [
+                      {
+                        "metadataBadgeRenderer": {
+                          "icon": {
+                            "iconType": "CHECK_CIRCLE_THICK"
+                          },
+                          "style": "BADGE_STYLE_TYPE_VERIFIED",
+                          "tooltip": "Verified"
+                        }
+                      }
+                    ],
+                    "membershipButton": {
+                      "timedAnimationButtonRenderer": {
+                        "buttonRenderer": {
+                          "buttonRenderer": {
+                            "style": "STYLE_SUGGESTIVE",
+                            "size": "SIZE_DEFAULT",
+                            "isDisabled": false,
+                            "text": {
+                              "runs": [
+                                {
+                                  "text": "Join"
+                                }
+                              ]
+                            },
+                            "navigationEndpoint": {
+                              "modalEndpoint": {
+                                "modal": {
+                                  "modalWithTitleAndButtonRenderer": {
+                                    "title": {
+                                      "runs": [
+                                        {
+                                          "text": "Want to join this channel?"
+                                        }
+                                      ]
+                                    },
+                                    "content": {
+                                      "runs": [
+                                        {
+                                          "text": "Sign in to become a member."
+                                        }
+                                      ]
+                                    },
+                                    "button": {
+                                      "buttonRenderer": {
+                                        "style": "STYLE_BRAND",
+                                        "size": "SIZE_DEFAULT",
+                                        "isDisabled": false,
+                                        "text": {
+                                          "simpleText": "Sign in"
+                                        },
+                                        "navigationEndpoint": {
+                                          "signInEndpoint": {
+                                            "hack": true
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "targetId": "sponsorships-button"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "metadataRowContainer": {
+                  "metadataRowContainerRenderer": {
+                    "collapsedItemCount": 0
+                  }
+                },
+                "showMoreText": {
+                  "simpleText": "...more"
+                },
+                "showLessText": {
+                  "simpleText": "Show less"
+                },
+                "defaultExpanded": false,
+                "descriptionCollapsedLines": 3,
+                "showMoreCommand": {
+                  "commandExecutorCommand": {
+                    "commands": [
+                      {
+                        "changeEngagementPanelVisibilityAction": {
+                          "targetId": "engagement-panel-structured-description",
+                          "visibility": "ENGAGEMENT_PANEL_VISIBILITY_EXPANDED"
+                        }
+                      },
+                      {
+                        "scrollToEngagementPanelCommand": {
+                          "targetId": "engagement-panel-structured-description"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "showLessCommand": {
+                  "changeEngagementPanelVisibilityAction": {
+                    "targetId": "engagement-panel-structured-description",
+                    "visibility": "ENGAGEMENT_PANEL_VISIBILITY_HIDDEN"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "playerOverlays": {
+    "playerOverlayRenderer": {
+      "decoratedPlayerBarRenderer": {
+        "decoratedPlayerBarRenderer": {}
+      }
+    }
+  }
+}

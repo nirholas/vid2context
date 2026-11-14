@@ -3,7 +3,7 @@
  * responses the listing uses. `extra.kind` says which kind of list it is and
  * `extra.itemCount` carries the count YouTube shows in the header.
  */
-import { type Ctx, type VideoMetadata, type VideoRef, Vid2ContextError } from '@vid2context/core';
+import { type Ctx, Vid2ContextError, type VideoMetadata, type VideoRef } from '@vid2context/core';
 import { parseSearchRef } from '../url.ts';
 import { SHOW_UNAVAILABLE } from './list.ts';
 import { findString, parsePage, textOf } from './parse.ts';
@@ -20,7 +20,16 @@ function at(v: unknown, ...path: string[]): unknown {
 
 /** Every text part in the page header's metadata rows: "by Christiaan008", "96 videos", "15.1K subscribers". */
 function headerParts(json: Json): { text: string; browseId?: string; url?: string }[] {
-  const rows = at(json, 'header', 'pageHeaderRenderer', 'content', 'pageHeaderViewModel', 'metadata', 'contentMetadataViewModel', 'metadataRows');
+  const rows = at(
+    json,
+    'header',
+    'pageHeaderRenderer',
+    'content',
+    'pageHeaderViewModel',
+    'metadata',
+    'contentMetadataViewModel',
+    'metadataRows',
+  );
   const out: { text: string; browseId?: string; url?: string }[] = [];
   for (const row of Array.isArray(rows) ? rows : []) {
     const parts = at(row, 'metadataParts');
@@ -62,7 +71,7 @@ function failOnAlert(json: Json, what: string): void {
 
 async function playlistMetadata(ref: VideoRef, ctx: Ctx): Promise<VideoMetadata> {
   const list = ref.nativeId;
-  const json = await innertubeWeb('browse', { browseId: `VL${list}`, params: SHOW_UNAVAILABLE }, ctx, `YouTube playlist ${list}`);
+  const json = await innertubeWeb('browse', { browseId: `VL${list}`, params: SHOW_UNAVAILABLE }, ctx);
   failOnAlert(json, `playlist ${list}`);
   const meta = at(json, 'metadata', 'playlistMetadataRenderer');
   const parts = headerParts(json);
@@ -93,12 +102,15 @@ async function playlistMetadata(ref: VideoRef, ctx: Ctx): Promise<VideoMetadata>
 async function channelMetadata(ref: VideoRef, ctx: Ctx): Promise<VideoMetadata> {
   let body: Json = { browseId: ref.nativeId };
   if (!ref.nativeId.startsWith('UC')) {
-    const resolved = await innertubeWeb('navigation/resolve_url', { url: ref.url }, ctx, `YouTube channel ${ref.nativeId}`);
+    const resolved = await innertubeWeb('navigation/resolve_url', { url: ref.url }, ctx);
     const be = at(resolved, 'endpoint', 'browseEndpoint') as { browseId?: string; params?: string } | undefined;
-    if (!be?.browseId) throw new Vid2ContextError('not-found', `YouTube did not resolve ${ref.url} to a channel.`, { hint: 'Check the handle or channel name.' });
+    if (!be?.browseId)
+      throw new Vid2ContextError('not-found', `YouTube did not resolve ${ref.url} to a channel.`, {
+        hint: 'Check the handle or channel name.',
+      });
     body = { browseId: be.browseId, ...(be.params ? { params: be.params } : {}) };
   }
-  const json = await innertubeWeb('browse', body, ctx, `YouTube channel ${ref.nativeId}`);
+  const json = await innertubeWeb('browse', body, ctx);
   failOnAlert(json, `channel ${ref.nativeId}`);
   const meta = at(json, 'metadata', 'channelMetadataRenderer');
   const title = textOf(at(meta, 'title')) ?? ref.nativeId;

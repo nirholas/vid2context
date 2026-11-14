@@ -1,0 +1,620 @@
+{
+  "playabilityStatus": {
+    "status": "OK"
+  },
+  "videoDetails": {
+    "videoId": "9JTLxLyF59M",
+    "title": "NASA Holds News Conference After Artemis II Launch",
+    "lengthSeconds": "2770",
+    "channelId": "UCb--64Gl51jIEVE-GLDAVTg",
+    "isOwnerViewing": false,
+    "shortDescription": "NASA holds a news conference after the launch of Artemis II, the first human-crewed test mission of the program for future voyages to the Moon. https://www.c-span.org/event/news-conference/nasa-holds-news-conference-after-artemis-ii-launch/441609\n\n\nDownload the FREE C-SPAN Now App. https://www.c-span.org/c-spanNow/\n\nDiscover the C-SPAN Video Library at https://www.c-span.org/quickguide/\n\nExplore C-SPAN's Free Educational Resources at https://www.c-span.org/classroom/\n\nC-SPAN: Created by Cable in 1979. Offered as a public service.\n\nSupport C-SPAN by Donating Today: https://donorbox.org/support-c-span?utm_source=YouTube&utm_medium=Video_Description&utm_campaign=Donations&utm_content=Donate\n\nSubscribe to our YouTube channel: https://www.youtube.com/user/CSPAN \n\nFollow us:\nFacebook: https://www.facebook.com/CSPAN\nTwitter: https://twitter.com/cspan\nInstagram: https://www.instagram.com/cspan/\n\nSubscribe:\nC-SPAN Podcasts: https://www.c-span.org/podcasts/\nNewsletters: https://www.c-span.org/connect/\nVisit the C-SPAN Shop: https://c-spanshop.org/\n#cspan",
+    "isCrawlable": true,
+    "thumbnail": {
+      "thumbnails": [
+        {
+          "url": "https://i.ytimg.com/vi/9JTLxLyF59M/default.jpg?v=69cdb56e",
+          "width": 120,
+          "height": 90
+        },
+        {
+          "url": "https://i.ytimg.com/vi/9JTLxLyF59M/mqdefault.jpg?v=69cdb56e",
+          "width": 320,
+          "height": 180
+        },
+        {
+          "url": "https://i.ytimg.com/vi/9JTLxLyF59M/hqdefault.jpg?v=69cdb56e",
+          "width": 480,
+          "height": 360
+        },
+        {
+          "url": "https://i.ytimg.com/vi/9JTLxLyF59M/sddefault.jpg?v=69cdb56e",
+          "width": 640,
+          "height": 480
+        }
+      ]
+    },
+    "allowRatings": true,
+    "viewCount": "126859",
+    "author": "C-SPAN",
+    "isLowLatencyLiveStream": false,
+    "isPrivate": false,
+    "isUnpluggedCorpus": false,
+    "latencyClass": "MDE_STREAM_OPTIMIZATIONS_RENDERER_LATENCY_NORMAL",
+    "isLiveContent": true,
+    "isTvfilmVideo": false
+  },
+  "captions": {
+    "playerCaptionsTracklistRenderer": {
+      "captionTracks": [
+        {
+          "baseUrl": "https://www.youtube.com/api/timedtext?v=9JTLxLyF59M&ei=mZj4aqmbH6e8sfIP1_Gq8Ao&caps=asr&opi=112496729&xoaf=5&xowf=1&xospf=1&hl=en&ip=0.0.0.0&ipbits=0&expire=1794702089&sparams=ip,ipbits,expire,v,ei,caps,opi,xoaf&signature=BCF49F29364C2FA146C7DCE37DE5C5C6B9B70C31.7E3565713A1F1C2691EED07FABA90793E9CB4E1E&key=yt8&kind=asr&lang=en&variant=gemini&fmt=srv3",
+          "name": {
+            "runs": [
+              {
+                "text": "English (auto-generated)"
+              }
+            ]
+          },
+          "vssId": "a.en",
+          "languageCode": "en",
+          "kind": "asr",
+          "isTranslatable": true,
+          "trackName": ""
+        },
+        {
+          "baseUrl": "https://www.youtube.com/api/timedtext?v=9JTLxLyF59M&ei=mZj4aqmbH6e8sfIP1_Gq8Ao&caps=asr&opi=112496729&xoaf=5&xowf=1&xospf=1&hl=en&ip=0.0.0.0&ipbits=0&expire=1794702089&sparams=ip,ipbits,expire,v,ei,caps,opi,xoaf&signature=BCF49F29364C2FA146C7DCE37DE5C5C6B9B70C31.7E3565713A1F1C2691EED07FABA90793E9CB4E1E&key=yt8&lang=en&name=CC1&fmt=srv3",
+          "name": {
+            "runs": [
+              {
+                "text": "English - CC1"
+              }
+            ]
+          },
+          "vssId": ".en.uYU-mmqFLq8",
+          "languageCode": "en",
+          "isTranslatable": true,
+          "trackName": "CC1"
+        },
+        {
+          "baseUrl": "https://www.youtube.com/api/timedtext?v=9JTLxLyF59M&ei=mZj4aqmbH6e8sfIP1_Gq8Ao&caps=asr&opi=112496729&xoaf=5&xowf=1&xospf=1&hl=en&ip=0.0.0.0&ipbits=0&expire=1794702089&sparams=ip,ipbits,expire,v,ei,caps,opi,xoaf&signature=BCF49F29364C2FA146C7DCE37DE5C5C6B9B70C31.7E3565713A1F1C2691EED07FABA90793E9CB4E1E&key=yt8&lang=en&name=DTVCC1&fmt=srv3",
+          "name": {
+            "runs": [
+              {
+                "text": "English - DTVCC1"
+              }
+            ]
+          },
+          "vssId": ".en.JkeT_87f4cc",
+          "languageCode": "en",
+          "isTranslatable": true,
+          "trackName": "DTVCC1"
+        }
+      ],
+      "audioTracks": [
+        {
+          "captionTrackIndices": [
+            1,
+            2,
+            0
+          ],
+          "defaultCaptionTrackIndex": 1,
+          "hasDefaultTrack": true,
+          "audioTrackId": "es-US.10",
+          "captionsInitialState": "CAPTIONS_INITIAL_STATE_ON_RECOMMENDED"
+        },
+        {
+          "captionTrackIndices": [
+            1,
+            2,
+            0
+          ],
+          "defaultCaptionTrackIndex": 1,
+          "hasDefaultTrack": true,
+          "audioTrackId": "pt-BR.10",
+          "captionsInitialState": "CAPTIONS_INITIAL_STATE_ON_RECOMMENDED"
+        },
+        {
+          "captionTrackIndices": [
+            1,
+            2,
+            0
+          ],
+          "defaultCaptionTrackIndex": 1,
+          "hasDefaultTrack": true,
+          "audioTrackId": "fr-FR.10",
+          "captionsInitialState": "CAPTIONS_INITIAL_STATE_ON_RECOMMENDED"
+        },
+        {
+          "captionTrackIndices": [
+            1,
+            2,
+            0
+          ],
+          "defaultCaptionTrackIndex": 1,
+          "hasDefaultTrack": true,
+          "audioTrackId": "hi.10",
+          "captionsInitialState": "CAPTIONS_INITIAL_STATE_ON_RECOMMENDED"
+        },
+        {
+          "captionTrackIndices": [
+            1,
+            2,
+            0
+          ],
+          "defaultCaptionTrackIndex": 1,
+          "hasDefaultTrack": true,
+          "audioTrackId": "id.10",
+          "captionsInitialState": "CAPTIONS_INITIAL_STATE_ON_RECOMMENDED"
+        },
+        {
+          "captionTrackIndices": [
+            1,
+            2,
+            0
+          ],
+          "defaultCaptionTrackIndex": 1,
+          "hasDefaultTrack": true,
+          "audioTrackId": "ja.10",
+          "captionsInitialState": "CAPTIONS_INITIAL_STATE_ON_RECOMMENDED"
+        },
+        {
+          "captionTrackIndices": [
+            1,
+            2,
+            0
+          ],
+          "defaultCaptionTrackIndex": 1,
+          "hasDefaultTrack": true,
+          "audioTrackId": "nl-NL.10",
+          "captionsInitialState": "CAPTIONS_INITIAL_STATE_ON_RECOMMENDED"
+        },
+        {
+          "captionTrackIndices": [
+            1,
+            2,
+            0
+          ],
+          "defaultCaptionTrackIndex": 1,
+          "hasDefaultTrack": true,
+          "audioTrackId": "ko.10",
+          "captionsInitialState": "CAPTIONS_INITIAL_STATE_ON_RECOMMENDED"
+        },
+        {
+          "captionTrackIndices": [
+            1,
+            2,
+            0
+          ],
+          "defaultCaptionTrackIndex": 1,
+          "hasDefaultTrack": true,
+          "audioTrackId": "te.10",
+          "captionsInitialState": "CAPTIONS_INITIAL_STATE_ON_RECOMMENDED"
+        },
+        {
+          "captionTrackIndices": [
+            1,
+            2,
+            0
+          ],
+          "defaultCaptionTrackIndex": 1,
+          "hasDefaultTrack": true,
+          "audioTrackId": "ta.10",
+          "captionsInitialState": "CAPTIONS_INITIAL_STATE_ON_RECOMMENDED"
+        },
+        {
+          "captionTrackIndices": [
+            1,
+            2,
+            0
+          ],
+          "defaultCaptionTrackIndex": 1,
+          "hasDefaultTrack": true,
+          "audioTrackId": "iw.10",
+          "captionsInitialState": "CAPTIONS_INITIAL_STATE_ON_RECOMMENDED"
+        },
+        {
+          "captionTrackIndices": [
+            1,
+            2,
+            0
+          ],
+          "defaultCaptionTrackIndex": 1,
+          "hasDefaultTrack": true,
+          "audioTrackId": "ml.10",
+          "captionsInitialState": "CAPTIONS_INITIAL_STATE_ON_RECOMMENDED"
+        },
+        {
+          "captionTrackIndices": [
+            1,
+            2,
+            0
+          ],
+          "defaultCaptionTrackIndex": 1,
+          "hasDefaultTrack": true,
+          "audioTrackId": "bn.10",
+          "captionsInitialState": "CAPTIONS_INITIAL_STATE_ON_RECOMMENDED"
+        },
+        {
+          "captionTrackIndices": [
+            1,
+            2,
+            0
+          ],
+          "defaultCaptionTrackIndex": 1,
+          "hasDefaultTrack": true,
+          "audioTrackId": "ar.10",
+          "captionsInitialState": "CAPTIONS_INITIAL_STATE_ON_RECOMMENDED"
+        },
+        {
+          "captionTrackIndices": [
+            1,
+            2,
+            0
+          ],
+          "defaultCaptionTrackIndex": 1,
+          "hasDefaultTrack": true,
+          "audioTrackId": "de-DE.10",
+          "captionsInitialState": "CAPTIONS_INITIAL_STATE_ON_RECOMMENDED"
+        },
+        {
+          "captionTrackIndices": [
+            1,
+            2,
+            0
+          ],
+          "defaultCaptionTrackIndex": 1,
+          "hasDefaultTrack": true,
+          "audioTrackId": "en-US.4",
+          "captionsInitialState": "CAPTIONS_INITIAL_STATE_OFF_RECOMMENDED"
+        },
+        {
+          "captionTrackIndices": [
+            1,
+            2,
+            0
+          ],
+          "defaultCaptionTrackIndex": 1,
+          "hasDefaultTrack": true,
+          "audioTrackId": "pa.10",
+          "captionsInitialState": "CAPTIONS_INITIAL_STATE_ON_RECOMMENDED"
+        },
+        {
+          "captionTrackIndices": [
+            1,
+            2,
+            0
+          ],
+          "defaultCaptionTrackIndex": 1,
+          "hasDefaultTrack": true,
+          "audioTrackId": "uk.10",
+          "captionsInitialState": "CAPTIONS_INITIAL_STATE_ON_RECOMMENDED"
+        },
+        {
+          "captionTrackIndices": [
+            1,
+            2,
+            0
+          ],
+          "defaultCaptionTrackIndex": 1,
+          "hasDefaultTrack": true,
+          "audioTrackId": "pl.10",
+          "captionsInitialState": "CAPTIONS_INITIAL_STATE_ON_RECOMMENDED"
+        },
+        {
+          "captionTrackIndices": [
+            1,
+            2,
+            0
+          ],
+          "defaultCaptionTrackIndex": 1,
+          "hasDefaultTrack": true,
+          "audioTrackId": "ru.10",
+          "captionsInitialState": "CAPTIONS_INITIAL_STATE_ON_RECOMMENDED"
+        }
+      ],
+      "translationLanguages": [
+        {
+          "languageCode": "ar",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Arabic"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "zh-Hant",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Chinese (Traditional)"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "nl",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Dutch"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "fr",
+          "languageName": {
+            "runs": [
+              {
+                "text": "French"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "de",
+          "languageName": {
+            "runs": [
+              {
+                "text": "German"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "hi",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Hindi"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "id",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Indonesian"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "it",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Italian"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "ja",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Japanese"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "ko",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Korean"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "pt",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Portuguese"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "ru",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Russian"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "es",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Spanish"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "th",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Thai"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "tr",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Turkish"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "uk",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Ukrainian"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "vi",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Vietnamese"
+              }
+            ]
+          }
+        }
+      ],
+      "defaultAudioTrackIndex": 15,
+      "defaultTranslationSourceTrackIndices": [
+        1
+      ]
+    }
+  },
+  "streamingData": {
+    "formats": [
+      {
+        "itag": 18,
+        "mimeType": "video/mp4; codecs=\"avc1.42001E, mp4a.40.2\"",
+        "width": 640,
+        "height": 360
+      }
+    ],
+    "adaptiveFormats": [
+      {
+        "itag": 137,
+        "mimeType": "video/mp4; codecs=\"avc1.640028\"",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "itag": 248,
+        "mimeType": "video/webm; codecs=\"vp9\"",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "itag": 399,
+        "mimeType": "video/mp4; codecs=\"av01.0.08M.08\"",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "itag": 136,
+        "mimeType": "video/mp4; codecs=\"avc1.4D401F\"",
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "itag": 247,
+        "mimeType": "video/webm; codecs=\"vp9\"",
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "itag": 398,
+        "mimeType": "video/mp4; codecs=\"av01.0.05M.08\"",
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "itag": 135,
+        "mimeType": "video/mp4; codecs=\"avc1.4D401F\"",
+        "width": 854,
+        "height": 480
+      },
+      {
+        "itag": 244,
+        "mimeType": "video/webm; codecs=\"vp9\"",
+        "width": 854,
+        "height": 480
+      },
+      {
+        "itag": 397,
+        "mimeType": "video/mp4; codecs=\"av01.0.04M.08\"",
+        "width": 854,
+        "height": 480
+      },
+      {
+        "itag": 134,
+        "mimeType": "video/mp4; codecs=\"avc1.4D401E\"",
+        "width": 640,
+        "height": 360
+      },
+      {
+        "itag": 243,
+        "mimeType": "video/webm; codecs=\"vp9\"",
+        "width": 640,
+        "height": 360
+      },
+      {
+        "itag": 396,
+        "mimeType": "video/mp4; codecs=\"av01.0.01M.08\"",
+        "width": 640,
+        "height": 360
+      },
+      {
+        "itag": 133,
+        "mimeType": "video/mp4; codecs=\"avc1.4D4015\"",
+        "width": 426,
+        "height": 240
+      },
+      {
+        "itag": 242,
+        "mimeType": "video/webm; codecs=\"vp9\"",
+        "width": 426,
+        "height": 240
+      },
+      {
+        "itag": 395,
+        "mimeType": "video/mp4; codecs=\"av01.0.00M.08\"",
+        "width": 426,
+        "height": 240
+      },
+      {
+        "itag": 160,
+        "mimeType": "video/mp4; codecs=\"avc1.4D400C\"",
+        "width": 256,
+        "height": 144
+      },
+      {
+        "itag": 278,
+        "mimeType": "video/webm; codecs=\"vp9\"",
+        "width": 256,
+        "height": 144
+      },
+      {
+        "itag": 394,
+        "mimeType": "video/mp4; codecs=\"av01.0.00M.08\"",
+        "width": 256,
+        "height": 144
+      },
+      {
+        "itag": 598,
+        "mimeType": "video/webm; codecs=\"vp9\"",
+        "width": 256,
+        "height": 144
+      }
+    ]
+  }
+}

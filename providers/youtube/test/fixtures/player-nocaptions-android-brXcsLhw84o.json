@@ -1,0 +1,93 @@
+{
+  "playabilityStatus": {
+    "status": "OK",
+    "playableInEmbed": true,
+    "offlineability": {
+      "buttonRenderer": {
+        "serviceEndpoint": {
+          "clickTrackingParams": "CAsQ6ewBIhMIjZ_Zp_yHmAMVVEtMCB3VgB4AygEE4EV1xw==",
+          "ypcGetOfflineUpsellEndpoint": {
+            "params": "ChPqqN25AQ0KC2JyWGNzTGh3ODRvIgticlhjc0xodzg0byoVCAkYAVIPCgticlhjc0xodzg0byAB"
+          }
+        },
+        "trackingParams": "CAsQ6ewBIhMIjZ_Zp_yHmAMVVEtMCB3VgB4A"
+      }
+    },
+    "pictureInPicture": {
+      "pictureInPictureRenderer": {
+        "playableInPip": true,
+        "pictureInPictureStyleConfig": {
+          "enableScrubbing": true,
+          "enableNavigationControls": true
+        },
+        "pictureInPicturePlayability": "PICTURE_IN_PICTURE_PLAYABILITY_ALL"
+      }
+    },
+    "miniplayer": {
+      "miniplayerRenderer": {
+        "playbackMode": "PLAYBACK_MODE_ALLOW"
+      }
+    }
+  },
+  "videoDetails": {
+    "videoId": "brXcsLhw84o",
+    "title": "1 Minute Piano Music - Instrumental Background Music | Relaxing Piano Music",
+    "lengthSeconds": "60",
+    "keywords": [
+      "1 minute piano music",
+      "1 min piano music",
+      "piano music 1 minute",
+      "one minute piano music",
+      "piano music 1 min",
+      "1 minute relaxing piano for positive energy",
+      "piano 1 minute music",
+      "1 minute piano music for relaxation",
+      "1 minute music",
+      "relaxing instrumental music 1 minute",
+      "piano music",
+      "instrumental music 1 minute",
+      "instrumental piano 1 minute",
+      "1 min relaxing piano",
+      "1 min relaxing piano music",
+      "Instrumental Background Music",
+      "Relaxing Piano Music",
+      "background music 1 minute",
+      "1 minute piano"
+    ],
+    "channelId": "UCs3SKXjUD3grFOGzCmu4xog",
+    "isOwnerViewing": false,
+    "shortDescription": "1 Minute Piano Music - Instrumental Background Music | Relaxing Piano Music\n\n1 minute piano music, 1 min relaxing music for positive energy, Relaxing Piano Music, 1 min piano music, piano music 1 minute,  Instrumental Background Music, one minute piano music, piano music 1 min, 1 minute relaxing piano for positive energy, piano 1 minute music, 1 minute piano music for relaxation, 1 minute music, relaxing music, relaxing instrumental music 1 minutes, piano music, instrumental music 1 minute, instrumental piano 1 minute, instrumental piano music 1 minutes,1 min relaxing piano, 1 min relaxing piano music... 1 minute piano music specially made to end insomnia and release melatonin in a natural way, because it is a natural sound it can cause deep relaxation, also helping to eliminate accelerated and negative thoughts.\n\n1 minute piano music to relax and meditate, sleep and relax. Enjoy and enjoy the best sounds of nature.\n\nWho doesn't love calm and piano music?\n\nBut what happens to our brain when we listen to relaxing music?\nMany people have different tastes to “relax and calm” like:\n1 minute piano music, 1 min relaxing music for positive energy, Relaxing Piano Music, 1 min piano music, piano music 1 minute,  Instrumental Background Music, one minute piano music, piano music 1 min, 1 minute relaxing piano for positive energy, piano 1 minute music.\n\nThis 1 minute piano music video is for people who love:\n1 minute timer, \n1 minute relaxing music,\n1 minute piano music for relaxation, \n1 minute music, \nrelaxing music, \nrelaxing instrumental music 1 minutes, \npiano music, instrumental music 1 minute, \ninstrumental piano 1 minute, \ninstrumental piano music 1 minutes,\n1 min relaxing piano, \n1 min relaxing piano music\n1:00,\n\n✅Link do Vídeo: https://youtu.be/brXcsLhw84o\n✅Playlist \"Minuto Relaxante\": https://www.youtube.com/playlist?list=PLfZ0ZnYDLzMa9rwUjct30reIHdvx1gNS4\n✅Link do canal:  https://www.youtube.com/channel/UCs3SKXjUD3grFOGzCmu4xog",
+    "isCrawlable": true,
+    "thumbnail": {
+      "thumbnails": [
+        {
+          "url": "https://i.ytimg.com/vi_webp/brXcsLhw84o/default.webp",
+          "width": 120,
+          "height": 90
+        },
+        {
+          "url": "https://i.ytimg.com/vi_webp/brXcsLhw84o/mqdefault.webp",
+          "width": 320,
+          "height": 180
+        },
+        {
+          "url": "https://i.ytimg.com/vi_webp/brXcsLhw84o/hqdefault.webp",
+          "width": 480,
+          "height": 360
+        },
+        {
+          "url": "https://i.ytimg.com/vi_webp/brXcsLhw84o/sddefault.webp",
+          "width": 640,
+          "height": 480
+        }
+      ]
+    },
+    "allowRatings": true,
+    "viewCount": "141482",
+    "author": "Moment of Reflection",
+    "isPrivate": false,
+    "isUnpluggedCorpus": false,
+    "isLiveContent": false,
+    "isTvfilmVideo": false
+  }
+}

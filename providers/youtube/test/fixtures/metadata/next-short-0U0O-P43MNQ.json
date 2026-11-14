@@ -1,0 +1,342 @@
+{
+  "contents": {
+    "twoColumnWatchNextResults": {
+      "results": {
+        "results": {
+          "contents": [
+            {
+              "videoPrimaryInfoRenderer": {
+                "title": {
+                  "runs": [
+                    {
+                      "text": "How NASA's Parker Solar Probe Survives the Sun's Atmosphere "
+                    },
+                    {
+                      "text": "#shorts",
+                      "navigationEndpoint": {
+                        "browseEndpoint": {
+                          "browseId": "FEhashtag",
+                          "params": "6gUKCgZzaG9ydHMYAQ%3D%3D"
+                        }
+                      }
+                    }
+                  ]
+                },
+                "viewCount": {
+                  "videoViewCountRenderer": {
+                    "viewCount": {
+                      "simpleText": "759 views"
+                    },
+                    "extraShortViewCount": {
+                      "simpleText": "759"
+                    },
+                    "entityKey": "EgswVTBPLVA0M01OUSDCASgB",
+                    "originalViewCount": "759"
+                  }
+                },
+                "videoActions": {
+                  "menuRenderer": {
+                    "items": [
+                      {
+                        "menuServiceItemRenderer": {
+                          "text": {
+                            "runs": [
+                              {
+                                "text": "Report"
+                              }
+                            ]
+                          },
+                          "icon": {
+                            "iconType": "FLAG"
+                          }
+                        }
+                      }
+                    ],
+                    "topLevelButtons": [
+                      {
+                        "segmentedLikeDislikeButtonViewModel": {
+                          "likeButtonViewModel": {
+                            "likeButtonViewModel": {
+                              "toggleButtonViewModel": {
+                                "toggleButtonViewModel": {
+                                  "defaultButtonViewModel": {
+                                    "buttonViewModel": {
+                                      "iconName": "LIKE",
+                                      "title": "28",
+                                      "accessibilityText": "like this video along with 28 other people",
+                                      "style": "BUTTON_VIEW_MODEL_STYLE_MONO",
+                                      "isFullWidth": false,
+                                      "type": "BUTTON_VIEW_MODEL_TYPE_TONAL",
+                                      "buttonSize": "BUTTON_VIEW_MODEL_SIZE_DEFAULT",
+                                      "accessibilityId": "id.video.like.button",
+                                      "tooltip": "I like this"
+                                    }
+                                  },
+                                  "toggledButtonViewModel": {
+                                    "buttonViewModel": {
+                                      "iconName": "LIKE",
+                                      "title": "29",
+                                      "accessibilityText": "like this video along with 28 other people",
+                                      "style": "BUTTON_VIEW_MODEL_STYLE_MONO",
+                                      "isFullWidth": false,
+                                      "type": "BUTTON_VIEW_MODEL_TYPE_TONAL",
+                                      "buttonSize": "BUTTON_VIEW_MODEL_SIZE_DEFAULT",
+                                      "accessibilityId": "id.video.like.button",
+                                      "tooltip": "Unlike"
+                                    }
+                                  },
+                                  "identifier": "watch-like",
+                                  "isTogglingDisabled": true
+                                }
+                              },
+                              "likeStatusEntityKey": "EgswVTBPLVA0M01OUSA-KAE%3D",
+                              "likeStatusEntity": {
+                                "key": "EgswVTBPLVA0M01OUSA-KAE%3D",
+                                "likeStatus": "INDIFFERENT"
+                              }
+                            }
+                          },
+                          "dislikeButtonViewModel": {
+                            "dislikeButtonViewModel": {
+                              "toggleButtonViewModel": {
+                                "toggleButtonViewModel": {
+                                  "defaultButtonViewModel": {
+                                    "buttonViewModel": {
+                                      "iconName": "DISLIKE",
+                                      "title": "Dislike",
+                                      "accessibilityText": "Dislike this video",
+                                      "style": "BUTTON_VIEW_MODEL_STYLE_MONO",
+                                      "isFullWidth": false,
+                                      "type": "BUTTON_VIEW_MODEL_TYPE_TONAL",
+                                      "buttonSize": "BUTTON_VIEW_MODEL_SIZE_DEFAULT",
+                                      "accessibilityId": "id.video.dislike.button",
+                                      "tooltip": "I dislike this"
+                                    }
+                                  },
+                                  "toggledButtonViewModel": {
+                                    "buttonViewModel": {
+                                      "iconName": "DISLIKE",
+                                      "title": "Dislike",
+                                      "accessibilityText": "Dislike this video",
+                                      "style": "BUTTON_VIEW_MODEL_STYLE_MONO",
+                                      "isFullWidth": false,
+                                      "type": "BUTTON_VIEW_MODEL_TYPE_TONAL",
+                                      "buttonSize": "BUTTON_VIEW_MODEL_SIZE_DEFAULT",
+                                      "accessibilityId": "id.video.dislike.button",
+                                      "tooltip": "I dislike this"
+                                    }
+                                  },
+                                  "isTogglingDisabled": true
+                                }
+                              },
+                              "dislikeEntityKey": "EgswVTBPLVA0M01OUSA-KAE%3D"
+                            }
+                          },
+                          "iconType": "LIKE_ICON_TYPE_UNKNOWN",
+                          "likeCountEntity": {
+                            "key": "EgswVTBPLVA0M01OUSC9AygB",
+                            "likeCountIfLiked": {
+                              "content": "28"
+                            },
+                            "likeCountIfDisliked": {
+                              "content": "27"
+                            },
+                            "likeCountIfIndifferent": {
+                              "content": "27"
+                            },
+                            "expandedLikeCountIfLiked": {
+                              "content": "28"
+                            },
+                            "expandedLikeCountIfDisliked": {
+                              "content": "27"
+                            },
+                            "expandedLikeCountIfIndifferent": {
+                              "content": "27"
+                            },
+                            "likeCountLabel": {
+                              "content": "Likes"
+                            },
+                            "likeButtonA11yText": {
+                              "content": "like this video along with 28 other people"
+                            },
+                            "likeCountIfLikedNumber": "28",
+                            "likeCountIfDislikedNumber": "27",
+                            "likeCountIfIndifferentNumber": "27",
+                            "shouldExpandLikeCount": true,
+                            "sentimentFactoidA11yTextIfLiked": {
+                              "content": "28 likes"
+                            },
+                            "sentimentFactoidA11yTextIfDisliked": {
+                              "content": "27 likes"
+                            }
+                          },
+                          "dynamicLikeCountUpdateData": {
+                            "updateStatusKey": "like_count_update_status_key",
+                            "placeholderLikeCountValuesKey": "like_count_placeholder_values_key",
+                            "updateDelayLoopId": "like_count_update_delay_loop_id",
+                            "updateDelaySec": 5
+                          },
+                          "teasersOrderEntityKey": "EgswVTBPLVA0M01OUSD8AygB"
+                        }
+                      },
+                      {
+                        "buttonViewModel": {
+                          "iconName": "SHARE",
+                          "title": "Share",
+                          "accessibilityText": "Share",
+                          "style": "BUTTON_VIEW_MODEL_STYLE_MONO",
+                          "isFullWidth": false,
+                          "type": "BUTTON_VIEW_MODEL_TYPE_TONAL",
+                          "buttonSize": "BUTTON_VIEW_MODEL_SIZE_DEFAULT",
+                          "state": "BUTTON_VIEW_MODEL_STATE_ACTIVE",
+                          "accessibilityId": "id.video.share.button",
+                          "tooltip": "Share"
+                        }
+                      }
+                    ],
+                    "flexibleItems": [
+                      {
+                        "menuFlexibleItemRenderer": {
+                          "menuItem": {
+                            "menuServiceItemDownloadRenderer": {}
+                          },
+                          "topLevelButton": {
+                            "downloadButtonRenderer": {
+                              "style": "STYLE_DEFAULT",
+                              "size": "SIZE_DEFAULT",
+                              "targetId": "watch-download-button",
+                              "hasLabel": true
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "menuFlexibleItemRenderer": {
+                          "menuItem": {
+                            "menuServiceItemRenderer": {
+                              "text": {
+                                "runs": [
+                                  {
+                                    "text": "Save"
+                                  }
+                                ]
+                              },
+                              "icon": {
+                                "iconType": "PLAYLIST_ADD"
+                              }
+                            }
+                          },
+                          "topLevelButton": {
+                            "buttonViewModel": {
+                              "iconName": "PLAYLIST_ADD",
+                              "title": "Save",
+                              "accessibilityText": "Save to playlist",
+                              "style": "BUTTON_VIEW_MODEL_STYLE_MONO",
+                              "isFullWidth": false,
+                              "type": "BUTTON_VIEW_MODEL_TYPE_TONAL",
+                              "buttonSize": "BUTTON_VIEW_MODEL_SIZE_DEFAULT",
+                              "tooltip": "Save"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                "updatedMetadataEndpoint": {
+                  "updatedMetadataEndpoint": {
+                    "videoId": "0U0O-P43MNQ",
+                    "initialDelayMs": 20000,
+                    "params": "IAA="
+                  }
+                },
+                "dateText": {
+                  "simpleText": "Nov 14, 2026"
+                },
+                "relativeDateText": {
+                  "simpleText": "2 hours ago"
+                }
+              }
+            },
+            {
+              "videoSecondaryInfoRenderer": {
+                "owner": {
+                  "videoOwnerRenderer": {
+                    "title": {
+                      "runs": [
+                        {
+                          "text": "Tomorrowly",
+                          "navigationEndpoint": {
+                            "browseEndpoint": {
+                              "browseId": "UCk36hqP7Za87855aOBACZKg",
+                              "canonicalBaseUrl": "/@Tomorrowly.009"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "subscriptionButton": {
+                      "type": "FREE"
+                    },
+                    "navigationEndpoint": {
+                      "browseEndpoint": {
+                        "browseId": "UCk36hqP7Za87855aOBACZKg",
+                        "canonicalBaseUrl": "/@Tomorrowly.009"
+                      }
+                    },
+                    "subscriberCountText": {
+                      "simpleText": "32 subscribers"
+                    }
+                  }
+                },
+                "metadataRowContainer": {
+                  "metadataRowContainerRenderer": {
+                    "collapsedItemCount": 0
+                  }
+                },
+                "showMoreText": {
+                  "simpleText": "...more"
+                },
+                "showLessText": {
+                  "simpleText": "Show less"
+                },
+                "defaultExpanded": false,
+                "descriptionCollapsedLines": 3,
+                "showMoreCommand": {
+                  "commandExecutorCommand": {
+                    "commands": [
+                      {
+                        "changeEngagementPanelVisibilityAction": {
+                          "targetId": "engagement-panel-structured-description",
+                          "visibility": "ENGAGEMENT_PANEL_VISIBILITY_EXPANDED"
+                        }
+                      },
+                      {
+                        "scrollToEngagementPanelCommand": {
+                          "targetId": "engagement-panel-structured-description"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "showLessCommand": {
+                  "changeEngagementPanelVisibilityAction": {
+                    "targetId": "engagement-panel-structured-description",
+                    "visibility": "ENGAGEMENT_PANEL_VISIBILITY_HIDDEN"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "playerOverlays": {
+    "playerOverlayRenderer": {
+      "decoratedPlayerBarRenderer": {
+        "decoratedPlayerBarRenderer": {}
+      }
+    }
+  }
+}

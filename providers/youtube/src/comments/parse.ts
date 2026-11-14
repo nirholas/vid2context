@@ -83,10 +83,10 @@ const UNIT_SEC: Record<string, number> = {
  */
 export function relativeToIso(text: string | undefined, now: number = Date.now()): string | undefined {
   const m = /(\d+)\s*(second|minute|hour|day|week|month|year)s?\s+ago/i.exec(text ?? '');
-  if (!m) return undefined;
-  const unit = m[2].toLowerCase();
-  const iso = new Date(now - Number(m[1]) * UNIT_SEC[unit] * 1000).toISOString();
-  return UNIT_SEC[unit] >= UNIT_SEC.day ? iso.slice(0, 10) : iso;
+  const sec = UNIT_SEC[(m?.[2] ?? '').toLowerCase()];
+  if (!m || !sec) return undefined;
+  const iso = new Date(now - Number(m[1]) * sec * 1000).toISOString();
+  return sec >= 86400 ? iso.slice(0, 10) : iso;
 }
 
 /** The real destination of a comment link (YouTube wraps external links in /redirect?q=). */
@@ -313,8 +313,16 @@ export function findCommentSection(next: Json): CommentSection {
   if (!section) return { found: false };
   const token = tokenIn(section.contents);
   if (token) return { found: true, token };
+  // The message ends with a "Learn more" link run; keep only the plain runs.
   const message = findAll(section, 'messageRenderer')
-    .map((m) => textOf(obj(m).text).trim())
+    .map((m) =>
+      arr(obj(obj(m).text).runs)
+        .map(obj)
+        .filter((r) => !r.navigationEndpoint)
+        .map((r) => str(r.text) ?? '')
+        .join('')
+        .trim(),
+    )
     .find(Boolean);
   return { found: true, message: message || 'the comments section has no comments to load' };
 }
@@ -336,8 +344,8 @@ export function findSortTokens(o: Json): { top?: string; newest?: string } {
       if (items.length < 2) continue;
       const titled = (re: RegExp) => items.find((i) => re.test(str(i.title) ?? ''));
       return {
-        top: tokenIn((titled(/^top/i) ?? items[0]).serviceEndpoint),
-        newest: tokenIn((titled(/^newest/i) ?? items[1]).serviceEndpoint),
+        top: tokenIn((titled(/^top/i) ?? items[0])?.serviceEndpoint),
+        newest: tokenIn((titled(/^newest/i) ?? items[1])?.serviceEndpoint),
       };
     }
   }

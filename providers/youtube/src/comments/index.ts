@@ -12,7 +12,8 @@
  * comments give `[]` and an info log. Only an unavailable video is an error.
  */
 import { type Comment, type Ctx, type Env, Vid2ContextError, type VideoRef } from '@vid2context/core';
-import { getPlayer, playabilityError } from '../innertube.ts';
+import { classifyPlayability } from '../resilience/errors.ts';
+import { getPlayer } from '../resilience/player.ts';
 import {
   findCommentSection,
   findSortTokens,
@@ -78,11 +79,12 @@ export function commentSettings(opts: CommentOptions, env: Env): CommentSettings
 /** Why a video's `next` response had no comments section. Throws when the video itself is unavailable. */
 async function noSectionReason(videoId: string, ctx: Ctx): Promise<string> {
   const player = await getPlayer(videoId, ctx);
-  const err = playabilityError(player, videoId);
-  if (!err) return 'YouTube returned no comments section';
+  const p = classifyPlayability(player.playabilityStatus, videoId);
+  if (p.kind === 'ok') return 'YouTube returned no comments section';
   const reason = player.playabilityStatus?.reason ?? '';
-  if (err.code !== 'blocked' && /age|inappropriate|member/i.test(reason)) return reason;
-  throw err;
+  // Members-only and age-gated videos exist; their comments are just not public.
+  if (p.kind === 'final' && /members|join this channel|inappropriate|age.?restrict|confirm your age/i.test(reason)) return reason;
+  throw p.error;
 }
 
 async function fetchThreads(token: string, limit: number, videoId: string, ctx: Ctx): Promise<ParsedThread[]> {

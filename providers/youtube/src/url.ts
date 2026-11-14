@@ -1,4 +1,4 @@
-import { type VideoRef, Vid2ContextError } from '@vid2context/core';
+import { Vid2ContextError, type VideoRef } from '@vid2context/core';
 
 const VIDEO_ID = /^[A-Za-z0-9_-]{11}$/;
 const LIST_ID = /^[A-Za-z0-9_-]{10,}$/;
@@ -162,7 +162,14 @@ export function matchYouTube(raw: string): VideoRef | null {
   if (v && VIDEO_ID.test(v)) return videoRef(input, v);
 
   const [first, second, third] = parts;
-  if (first && second && ['shorts', 'live', 'embed', 'v', 'e'].includes(first) && VIDEO_ID.test(second)) {
+  // /embed/videoseries?list=... embeds a playlist; "videoseries" happens to be 11 characters long.
+  if (
+    first &&
+    second &&
+    ['shorts', 'live', 'embed', 'v', 'e'].includes(first) &&
+    VIDEO_ID.test(second) &&
+    second !== 'videoseries'
+  ) {
     return videoRef(input, second);
   }
 

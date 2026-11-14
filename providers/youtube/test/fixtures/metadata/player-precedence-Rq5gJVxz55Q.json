@@ -1,0 +1,417 @@
+{
+  "playabilityStatus": {
+    "status": "OK"
+  },
+  "videoDetails": {
+    "videoId": "Rq5gJVxz55Q",
+    "title": "Python Full Course for Beginners (13 Hours) – From Zero to Hero",
+    "lengthSeconds": "46973",
+    "keywords": [
+      "python full course",
+      "python course",
+      "python tutorial",
+      "python for beginners",
+      "python from zero to hero",
+      "python full course for free",
+      "learn python",
+      "python bootcamp",
+      "complete python bootcamp",
+      "free python course",
+      "python programming",
+      "coding for beginners",
+      "python basics",
+      "python training",
+      "python project",
+      "python interview",
+      "learn python free",
+      "complete python tutorial",
+      "python data analyst",
+      "python for data science",
+      "python for data analysis",
+      "python for data engineers",
+      "python 2026",
+      "python"
+    ],
+    "channelId": "UC8_RSKwbU1OmZWNEoLV1tQg",
+    "isOwnerViewing": false,
+    "shortDescription": "Learn Python from scratch in this complete 13-hour course designed for beginners who want to build real programming confidence.\n- *Python Full Package* https://www.datawithbaraa.com/course/the-ultimate-python-mastery\n- *Python Handbook* https://academy.datawithbaraa.com/l/digital_download/998313/the-python-handbook\n- *Free Python materials* https://www.datawithbaraa.com/wiki/python\n- *Python course playlist* https://www.youtube.com/playlist?list=PLNcg_FV9n7qZGfFl2ANI_zISzNp257Lwn\n\n━━━━━━━━━━━━━━━━━━━━\n\n*🏆 My Academy (recommended)*\n- *SQL* https://www.datawithbaraa.com/course/sql-full-course-for-beginners\n- *SQL Handbook* https://academy.datawithbaraa.com/l/digital_download/1087406/the-sql-handbook\n- *Tableau* https://www.datawithbaraa.com/course/tableau-ultimate-full-course-for-beginners\n\n*🎓 Udemy*\n- *SQL* https://www.udemy.com/course/the-complete-sql-bootcamp-30-hours-go-from-zero-to-hero/?referralCode=D20781228C2EB8B98339\n- *Python* https://www.udemy.com/course/the-complete-python-bootcamp-13hours-go-from-zero-to-hero/?referralCode=776491A4119FF8AF41CA\n- *Tableau* https://www.udemy.com/course/the-tableau-ultimate-course-from-zero-to-hero/?referralCode=6544726FDC491A6B25EC\n\n*💼 LinkedIn Learning*\n- *Databricks for Data Analysts* https://www.linkedin.com/learning/databricks-for-data-analysts\n- *Claude Code for Data Analysis* https://www.linkedin.com/learning/claude-code-for-data-analysis-build-repeatable-reliable-workflows\n\n📬 *Newsletter for data friends*\nhttps://www.blog.datawithbaraa.com\n\n*Get 25% OFF DataCamp's Here*\nhttps://datacamp.pxf.io/bOEe66\n\n━━━━━━━━━━━━━━━━━━━━\n\n📖 *Table of Content*\n0:00 Python Course Introduction\n2:07 Python Learning Roadmap\n5:55 What Is Python & How It Works\n12:48 Installing Python\n26:11 Comments & print()\n52:01 Variables\n1:05:39 User input()\n1:14:25 Python Data Types\n1:46:54 String Basics & Transformations\n2:16:56 Indexing & Slicing\n2:39:04 Search, Validation & Case Conversion\n2:59:31 Integer & Float, Types, Math\n3:11:33 Rounding, Random, Validation\n3:28:04 Boolean Values\n3:42:33 Comparison & Logical Operators\n4:06:13 Membership & Identity Operators\n4:19:19 If, Else, Elif\n4:40:34 Nested & Advanced Conditions\n4:57:33 Inline If & Match Case\n5:24:56 For Loops\n5:47:57 Break, Continue, Pass\n6:18:39 For-Else & Nested Loops\n6:40:52 While Loops\n7:10:04 Lists Overview\n7:19:40 Creating & Accessing Lists\n7:48:08 Unpacking & Analyzing\n8:19:18 Add, Remove & Update\n8:41:46 Sorting & Combining\n9:18:29 Iterables & Filtering\n9:41:38 Lambda & List Comprehension\n10:12:01 Tuples\n10:19:59 Sets\n10:38:12 Dictionaries\n11:09:45 Functions Introduction\n11:28:12 Function Parameters & Return\n12:20:31 Types of Python Functions\n12:46:09 Writing Clean Functions\n\n━━━━━━━━━━━━━━━━━━━━\n\n*CONNECT WITH ME*\n💬 Discord https://discord.gg/gsVJbMxKcA\n👨‍💻 LinkedIn https://www.linkedin.com/in/baraa-khatib-salkini/\n📸 Instagram https://www.instagram.com/datawithbaraa/\n🎥 TikTok https://www.tiktok.com/@datawithbaraa\n🧭 Notion Roadmaps https://www.notion.com/@datawithbaraa\n\nNote: some links above are affiliates. I may earn a small commission\nif you enroll. Thank you for supporting the channel.\n\n#python #learnpython #ai #dataanalytics #datascience #coding",
+    "isCrawlable": true,
+    "thumbnail": {
+      "thumbnails": [
+        {
+          "url": "https://i.ytimg.com/vi/Rq5gJVxz55Q/default.jpg?v=699c1441",
+          "width": 120,
+          "height": 90
+        },
+        {
+          "url": "https://i.ytimg.com/vi/Rq5gJVxz55Q/mqdefault.jpg?v=699c1441",
+          "width": 320,
+          "height": 180
+        },
+        {
+          "url": "https://i.ytimg.com/vi/Rq5gJVxz55Q/hqdefault.jpg?v=699c1441",
+          "width": 480,
+          "height": 360
+        },
+        {
+          "url": "https://i.ytimg.com/vi/Rq5gJVxz55Q/sddefault.jpg?v=699c1441",
+          "width": 640,
+          "height": 480
+        }
+      ]
+    },
+    "allowRatings": true,
+    "viewCount": "1687237",
+    "author": "Data with Baraa",
+    "isLowLatencyLiveStream": false,
+    "isPrivate": false,
+    "isUnpluggedCorpus": false,
+    "latencyClass": "MDE_STREAM_OPTIMIZATIONS_RENDERER_LATENCY_NORMAL",
+    "isLiveContent": false,
+    "isTvfilmVideo": false
+  },
+  "captions": {
+    "playerCaptionsTracklistRenderer": {
+      "captionTracks": [
+        {
+          "baseUrl": "https://www.youtube.com/api/timedtext?v=Rq5gJVxz55Q&ei=mJj4apCPJu-FsfIPwdyz2AQ&caps=asr&opi=112496729&xoaf=5&xowf=1&xospf=1&hl=en&ip=0.0.0.0&ipbits=0&expire=1794702088&sparams=ip,ipbits,expire,v,ei,caps,opi,xoaf&signature=4B255D8BA874F5A0C1E96AFB12E23D0BAD7679A2.31D446223CB366CC909A70499F7FBE91C56ACD4C&key=yt8&kind=asr&lang=en&variant=gemini&fmt=srv3",
+          "name": {
+            "runs": [
+              {
+                "text": "English (auto-generated)"
+              }
+            ]
+          },
+          "vssId": "a.en",
+          "languageCode": "en",
+          "kind": "asr",
+          "isTranslatable": true,
+          "trackName": ""
+        }
+      ],
+      "audioTracks": [
+        {
+          "captionTrackIndices": [
+            0
+          ]
+        }
+      ],
+      "translationLanguages": [
+        {
+          "languageCode": "ar",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Arabic"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "zh-Hant",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Chinese (Traditional)"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "nl",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Dutch"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "fr",
+          "languageName": {
+            "runs": [
+              {
+                "text": "French"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "de",
+          "languageName": {
+            "runs": [
+              {
+                "text": "German"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "hi",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Hindi"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "id",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Indonesian"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "it",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Italian"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "ja",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Japanese"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "ko",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Korean"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "pt",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Portuguese"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "ru",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Russian"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "es",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Spanish"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "th",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Thai"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "uk",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Ukrainian"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "vi",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Vietnamese"
+              }
+            ]
+          }
+        }
+      ],
+      "defaultAudioTrackIndex": 0,
+      "defaultTranslationSourceTrackIndices": [
+        0
+      ]
+    }
+  },
+  "streamingData": {
+    "formats": [
+      {
+        "itag": 18,
+        "mimeType": "video/mp4; codecs=\"avc1.42001E, mp4a.40.2\"",
+        "width": 640,
+        "height": 360
+      }
+    ],
+    "adaptiveFormats": [
+      {
+        "itag": 313,
+        "mimeType": "video/webm; codecs=\"vp9\"",
+        "width": 3840,
+        "height": 2160
+      },
+      {
+        "itag": 401,
+        "mimeType": "video/mp4; codecs=\"av01.0.12M.08\"",
+        "width": 3840,
+        "height": 2160
+      },
+      {
+        "itag": 271,
+        "mimeType": "video/webm; codecs=\"vp9\"",
+        "width": 2560,
+        "height": 1440
+      },
+      {
+        "itag": 400,
+        "mimeType": "video/mp4; codecs=\"av01.0.12M.08\"",
+        "width": 2560,
+        "height": 1440
+      },
+      {
+        "itag": 137,
+        "mimeType": "video/mp4; codecs=\"avc1.640028\"",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "itag": 248,
+        "mimeType": "video/webm; codecs=\"vp9\"",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "itag": 399,
+        "mimeType": "video/mp4; codecs=\"av01.0.08M.08\"",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "itag": 136,
+        "mimeType": "video/mp4; codecs=\"avc1.4D401F\"",
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "itag": 247,
+        "mimeType": "video/webm; codecs=\"vp9\"",
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "itag": 398,
+        "mimeType": "video/mp4; codecs=\"av01.0.05M.08\"",
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "itag": 135,
+        "mimeType": "video/mp4; codecs=\"avc1.4D401F\"",
+        "width": 854,
+        "height": 480
+      },
+      {
+        "itag": 244,
+        "mimeType": "video/webm; codecs=\"vp9\"",
+        "width": 854,
+        "height": 480
+      },
+      {
+        "itag": 397,
+        "mimeType": "video/mp4; codecs=\"av01.0.04M.08\"",
+        "width": 854,
+        "height": 480
+      },
+      {
+        "itag": 134,
+        "mimeType": "video/mp4; codecs=\"avc1.4D401E\"",
+        "width": 640,
+        "height": 360
+      },
+      {
+        "itag": 243,
+        "mimeType": "video/webm; codecs=\"vp9\"",
+        "width": 640,
+        "height": 360
+      },
+      {
+        "itag": 396,
+        "mimeType": "video/mp4; codecs=\"av01.0.01M.08\"",
+        "width": 640,
+        "height": 360
+      },
+      {
+        "itag": 133,
+        "mimeType": "video/mp4; codecs=\"avc1.4D4015\"",
+        "width": 426,
+        "height": 240
+      },
+      {
+        "itag": 242,
+        "mimeType": "video/webm; codecs=\"vp9\"",
+        "width": 426,
+        "height": 240
+      },
+      {
+        "itag": 395,
+        "mimeType": "video/mp4; codecs=\"av01.0.00M.08\"",
+        "width": 426,
+        "height": 240
+      },
+      {
+        "itag": 160,
+        "mimeType": "video/mp4; codecs=\"avc1.4D400C\"",
+        "width": 256,
+        "height": 144
+      },
+      {
+        "itag": 278,
+        "mimeType": "video/webm; codecs=\"vp9\"",
+        "width": 256,
+        "height": 144
+      },
+      {
+        "itag": 394,
+        "mimeType": "video/mp4; codecs=\"av01.0.00M.08\"",
+        "width": 256,
+        "height": 144
+      },
+      {
+        "itag": 598,
+        "mimeType": "video/webm; codecs=\"vp9\"",
+        "width": 256,
+        "height": 144
+      }
+    ]
+  }
+}

@@ -1,0 +1,175 @@
+{
+  "playabilityStatus": {
+    "status": "OK",
+    "liveStreamability": {
+      "liveStreamabilityRenderer": {
+        "videoId": "rFZHOHl-L8A",
+        "broadcastId": "1",
+        "pollDelayMs": "30000",
+        "creatorRedirect": {
+          "hideAutoplayToggle": true
+        }
+      }
+    }
+  },
+  "videoDetails": {
+    "videoId": "rFZHOHl-L8A",
+    "title": "lofi hip hop radio 📚 beats to relax/study to",
+    "lengthSeconds": "0",
+    "isLive": true,
+    "keywords": [
+      "lo-fi",
+      "lo fi",
+      "lofi",
+      "lofi hiphop",
+      "lo-fi hiphop",
+      "lo fi hiphop",
+      "hiphop",
+      "hip hop",
+      "lofi hip hop",
+      "lo-fi hip hop",
+      "lo fi hip hop",
+      "lofi radio",
+      "lo-fi radio",
+      "lo fi radio",
+      "lofi hip hop radio",
+      "lo-fi hip hop radio",
+      "lo fi hip hop radio",
+      "chilledcow",
+      "chilled cow",
+      "chilled cow radio",
+      "chillhop",
+      "study music",
+      "beats to relax",
+      "music to study",
+      "radio",
+      "relaxing music",
+      "playlist",
+      "music",
+      "lofi girl",
+      "sleep music",
+      "lofi chill",
+      "relax music",
+      "study lofi",
+      "lofi girl radio",
+      "music to relax",
+      "focus music",
+      "lofi study"
+    ],
+    "channelId": "UCSJ4gkVC6NrvII8umztf0Ow",
+    "isOwnerViewing": false,
+    "shortDescription": "Holiday season is approaching 🎄 2026 Christmas playlist available now: https://lnk.to/Christmas_lofi02\n\n🎼 | Listen on Spotify, Apple music and more\n→  https://lnk.to/lofi-hiphop-beats-to-r...\n\n🌎 | Lofi Girl on all social media\n→  https://link.lofigirl.com/m/Community\n\n🌐| Our Websites\n→  https://link.lofigirl.com/m/website\n\n👕 | Lofi Girl merch\n→  https://link.lofigirlshop.com/shop\n\n🎮 | Our video games\n→ https://link.lofigirl.com/m/games\n\n🎭 | Create your lofi avatar now\n→  https://lofigirl.com/generator/\n\n🎨 | Art by Lofi Studio (full list of artists here)\n→   https://www.instagram.com/p/CuChqFXs08M/?img_index=6\n\n🤗 Thank you for listening, I hope you will have a good time here\n\n🧡All visuals and music in this video are 100% crafted by talented human artists, without the use of AI. We’re committed to delivering genuine, hand-made creations for our audience to enjoy.",
+    "isCrawlable": true,
+    "isLiveDvrEnabled": true,
+    "thumbnail": {
+      "thumbnails": [
+        {
+          "url": "https://i.ytimg.com/vi/rFZHOHl-L8A/default.jpg?v=6ad62bed",
+          "width": 120,
+          "height": 90
+        },
+        {
+          "url": "https://i.ytimg.com/vi/rFZHOHl-L8A/mqdefault.jpg?v=6ad62bed",
+          "width": 320,
+          "height": 180
+        },
+        {
+          "url": "https://i.ytimg.com/vi/rFZHOHl-L8A/hqdefault.jpg?v=6ad62bed",
+          "width": 480,
+          "height": 360
+        },
+        {
+          "url": "https://i.ytimg.com/vi/rFZHOHl-L8A/sddefault.jpg?v=6ad62bed",
+          "width": 640,
+          "height": 480
+        }
+      ]
+    },
+    "liveChunkReadahead": 2,
+    "allowRatings": true,
+    "viewCount": "23807659",
+    "author": "Lofi Girl",
+    "isLowLatencyLiveStream": false,
+    "isPrivate": false,
+    "isUnpluggedCorpus": false,
+    "latencyClass": "MDE_STREAM_OPTIMIZATIONS_RENDERER_LATENCY_NORMAL",
+    "isLiveContent": true,
+    "isTvfilmVideo": false
+  },
+  "streamingData": {
+    "adaptiveFormats": [
+      {
+        "itag": 137,
+        "mimeType": "video/mp4; codecs=\"avc1.640028\"",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "itag": 248,
+        "mimeType": "video/webm; codecs=\"vp9\"",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "itag": 136,
+        "mimeType": "video/mp4; codecs=\"avc1.4D401F\"",
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "itag": 247,
+        "mimeType": "video/webm; codecs=\"vp9\"",
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "itag": 135,
+        "mimeType": "video/mp4; codecs=\"avc1.4D401F\"",
+        "width": 854,
+        "height": 480
+      },
+      {
+        "itag": 244,
+        "mimeType": "video/webm; codecs=\"vp9\"",
+        "width": 854,
+        "height": 480
+      },
+      {
+        "itag": 134,
+        "mimeType": "video/mp4; codecs=\"avc1.4D401E\"",
+        "width": 640,
+        "height": 360
+      },
+      {
+        "itag": 243,
+        "mimeType": "video/webm; codecs=\"vp9\"",
+        "width": 640,
+        "height": 360
+      },
+      {
+        "itag": 133,
+        "mimeType": "video/mp4; codecs=\"avc1.4D4015\"",
+        "width": 426,
+        "height": 240
+      },
+      {
+        "itag": 242,
+        "mimeType": "video/webm; codecs=\"vp9\"",
+        "width": 426,
+        "height": 240
+      },
+      {
+        "itag": 160,
+        "mimeType": "video/mp4; codecs=\"avc1.42C00B\"",
+        "width": 256,
+        "height": 144
+      },
+      {
+        "itag": 278,
+        "mimeType": "video/webm; codecs=\"vp9\"",
+        "width": 256,
+        "height": 144
+      }
+    ]
+  }
+}

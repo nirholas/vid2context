@@ -1,0 +1,393 @@
+{
+  "playabilityStatus": {
+    "status": "OK"
+  },
+  "videoDetails": {
+    "videoId": "2VDV87iHfKw",
+    "title": "David Spade Talks SNL, Chris Farley & Norm Macdonald (FULL EPISODE) | Conan O'Brien Needs A Friend",
+    "lengthSeconds": "3758",
+    "keywords": [
+      "team coco podcasts",
+      "team coco podcast",
+      "podcast",
+      "conan obrien needs a friend",
+      "conan needs a friend",
+      "conan o’brien needs a friend",
+      "needs a friend",
+      "conan o’brien podcast",
+      "conan o’brien needs a friend podcast",
+      "celebrity interview",
+      "comedy podcast",
+      "conan podcast",
+      "matt gourley",
+      "sona movsesian",
+      "summer s’mores",
+      "chill chums",
+      "david spade",
+      "saturday night live",
+      "tommy boy",
+      "chris farley",
+      "norm macdonald",
+      "SNL",
+      "david spade interview",
+      "podcast full episode",
+      "conan full episode",
+      "SNL 50"
+    ],
+    "channelId": "UCi7GJNg51C3jgmYTUwqoUXA",
+    "isOwnerViewing": false,
+    "shortDescription": "Comedian and actor David Spade feels somewhat sick about being Conan O’Brien’s friend.\n \nDavid sits down with Conan once more to discuss his rocky start in the business, developing a comedic and personal closeness with Chris Farley, how to crush at a corporate gig, and his newest special David Spade: Dandelion.\n\nSubscribe to watch more Team Coco videos https://www.youtube.com/channel/UCi7GJNg51C3jgmYTUwqoUXA?sub_confirmation=1 \nListen to the Full Podcast  https://link.chtbl.com/conan \n \nFOLLOW TEAM COCO PODCASTS ON SOCIAL\nConan O’Brien on Twitter https://twitter.com/conanobrien/ \nTeam Coco Podcasts on Instagram  https://www.instagram.com/teamcocopodcasts/ \n \nFOLLOW TEAM COCO ON SOCIAL\nTeam Coco on Facebook https://www.facebook.com/teamcoco \nTeam Coco on Twitter https://twitter.com/teamcoco \nTeam Coco on Instagram  https://www.instagram.com/teamcoco/\nTeam Coco on TikTok https://www.tiktok.com/@UCi7GJNg51C3jgmYTUwqoUXA \n \nABOUT CONAN O’BRIEN NEEDS A FRIEND\nDeeper, unboundedly playful, and free from FCC regulations, Conan O’Brien Needs a Friend is a weekly opportunity for Conan to hang out with the people he enjoys most and perhaps find some real friendship along the way. Watch highlights of Conan, Sona Movsesian and Matt Gourley chatting with celebrities and meeting fans, along with special segments like “Review the Reviewers” and “Summer S’mores with Conan and the Chill Chums.” \n \nABOUT TEAM COCO\nTeam Coco features over a decade of comedy sketches, celebrity interviews and stand-up comedy sets from CONAN on TBS, as well as exclusive videos from Team Coco podcasts like Conan O’Brien Needs A Friend, Why Won’t You Date Me? with Nicole Byer, The Three Questions with Andy Richter, Literally! With Rob Lowe, Where Everybody Knows Your Name with Ted Danson and Woody Harrelson (sometimes), and Scam Goddess with Laci Mosley. \n\nChapters: \n0:00 – David Spade Feels... \n0:27 – Conan’s Pomegranate Tree \n10:30 – Interview Start \n13:09 – Stolen Car \n19:32 – SNL \n31:40 – Chris Farley \n38:31 – Norm Macdonald \n56:40 – SNL 50th \n1:01:50 – Mark Twain Prize \n\nTeam Coco\nhttps://www.youtube.com/c/TeamCoco",
+    "isCrawlable": true,
+    "thumbnail": {
+      "thumbnails": [
+        {
+          "url": "https://i.ytimg.com/vi_webp/2VDV87iHfKw/default.webp",
+          "width": 120,
+          "height": 90
+        },
+        {
+          "url": "https://i.ytimg.com/vi_webp/2VDV87iHfKw/mqdefault.webp",
+          "width": 320,
+          "height": 180
+        },
+        {
+          "url": "https://i.ytimg.com/vi_webp/2VDV87iHfKw/hqdefault.webp",
+          "width": 480,
+          "height": 360
+        },
+        {
+          "url": "https://i.ytimg.com/vi_webp/2VDV87iHfKw/sddefault.webp",
+          "width": 640,
+          "height": 480
+        }
+      ]
+    },
+    "allowRatings": true,
+    "viewCount": "1186507",
+    "author": "Team Coco",
+    "isPrivate": false,
+    "isUnpluggedCorpus": false,
+    "isLiveContent": false,
+    "isTvfilmVideo": false
+  },
+  "captions": {
+    "playerCaptionsTracklistRenderer": {
+      "captionTracks": [
+        {
+          "baseUrl": "https://www.youtube.com/api/timedtext?v=2VDV87iHfKw&ei=l5j4auaMKpeKsfIPsdnYgQU&caps=asr&opi=112496729&xoaf=5&xowf=1&hl=en&ip=0.0.0.0&ipbits=0&expire=1794702087&sparams=ip,ipbits,expire,v,ei,caps,opi,xoaf&signature=C6D5FA1AAE4E2FD6DE9892FEB7560CE73E69D721.C4E567140BA611B1C7F8AC4879D031787F97A84D&key=yt8&kind=asr&lang=en&fmt=srv3",
+          "name": {
+            "runs": [
+              {
+                "text": "English (auto-generated)"
+              }
+            ]
+          },
+          "vssId": "a.en",
+          "languageCode": "en",
+          "kind": "asr",
+          "isTranslatable": true,
+          "trackName": ""
+        }
+      ],
+      "audioTracks": [
+        {
+          "captionTrackIndices": [
+            0
+          ]
+        }
+      ],
+      "translationLanguages": [
+        {
+          "languageCode": "ar",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Arabic"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "zh-Hant",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Chinese (Traditional)"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "nl",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Dutch"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "fr",
+          "languageName": {
+            "runs": [
+              {
+                "text": "French"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "de",
+          "languageName": {
+            "runs": [
+              {
+                "text": "German"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "hi",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Hindi"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "id",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Indonesian"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "it",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Italian"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "ja",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Japanese"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "ko",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Korean"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "pt",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Portuguese"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "ru",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Russian"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "es",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Spanish"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "th",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Thai"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "uk",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Ukrainian"
+              }
+            ]
+          }
+        },
+        {
+          "languageCode": "vi",
+          "languageName": {
+            "runs": [
+              {
+                "text": "Vietnamese"
+              }
+            ]
+          }
+        }
+      ],
+      "defaultAudioTrackIndex": 0,
+      "defaultTranslationSourceTrackIndices": [
+        0
+      ]
+    }
+  },
+  "streamingData": {
+    "formats": [
+      {
+        "itag": 18,
+        "mimeType": "video/mp4; codecs=\"avc1.42001E, mp4a.40.2\"",
+        "width": 640,
+        "height": 360
+      }
+    ],
+    "adaptiveFormats": [
+      {
+        "itag": 137,
+        "mimeType": "video/mp4; codecs=\"avc1.640028\"",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "itag": 248,
+        "mimeType": "video/webm; codecs=\"vp9\"",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "itag": 399,
+        "mimeType": "video/mp4; codecs=\"av01.0.08M.08\"",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "itag": 136,
+        "mimeType": "video/mp4; codecs=\"avc1.4D401F\"",
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "itag": 247,
+        "mimeType": "video/webm; codecs=\"vp9\"",
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "itag": 398,
+        "mimeType": "video/mp4; codecs=\"av01.0.05M.08\"",
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "itag": 135,
+        "mimeType": "video/mp4; codecs=\"avc1.4D401F\"",
+        "width": 854,
+        "height": 480
+      },
+      {
+        "itag": 244,
+        "mimeType": "video/webm; codecs=\"vp9\"",
+        "width": 854,
+        "height": 480
+      },
+      {
+        "itag": 397,
+        "mimeType": "video/mp4; codecs=\"av01.0.04M.08\"",
+        "width": 854,
+        "height": 480
+      },
+      {
+        "itag": 134,
+        "mimeType": "video/mp4; codecs=\"avc1.4D401E\"",
+        "width": 640,
+        "height": 360
+      },
+      {
+        "itag": 243,
+        "mimeType": "video/webm; codecs=\"vp9\"",
+        "width": 640,
+        "height": 360
+      },
+      {
+        "itag": 396,
+        "mimeType": "video/mp4; codecs=\"av01.0.01M.08\"",
+        "width": 640,
+        "height": 360
+      },
+      {
+        "itag": 133,
+        "mimeType": "video/mp4; codecs=\"avc1.4D4015\"",
+        "width": 426,
+        "height": 240
+      },
+      {
+        "itag": 242,
+        "mimeType": "video/webm; codecs=\"vp9\"",
+        "width": 426,
+        "height": 240
+      },
+      {
+        "itag": 395,
+        "mimeType": "video/mp4; codecs=\"av01.0.00M.08\"",
+        "width": 426,
+        "height": 240
+      },
+      {
+        "itag": 160,
+        "mimeType": "video/mp4; codecs=\"avc1.4D400C\"",
+        "width": 256,
+        "height": 144
+      },
+      {
+        "itag": 278,
+        "mimeType": "video/webm; codecs=\"vp9\"",
+        "width": 256,
+        "height": 144
+      },
+      {
+        "itag": 394,
+        "mimeType": "video/mp4; codecs=\"av01.0.00M.08\"",
+        "width": 256,
+        "height": 144
+      },
+      {
+        "itag": 598,
+        "mimeType": "video/webm; codecs=\"vp9\"",
+        "width": 256,
+        "height": 144
+      }
+    ]
+  }
+}
