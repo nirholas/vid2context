@@ -45,6 +45,8 @@ const SEGMENT_RETRIES = 2;
 const MIN_TAIL_SEC = 1;
 /** Words of already emitted text kept for overlap matching. */
 const TAIL_WORDS = 24;
+/** Speech-to-text retries for the audio still buffered once watching has stopped. */
+const MAX_TAIL_RETRIES = 2;
 /** Tolerance for comparing sums of segment durations. */
 const EPSILON = 0.01;
 
@@ -572,8 +574,18 @@ export async function* watchLive(input: string, opts: WatchLiveOptions, deps: Li
         if (isInputError(err)) throw err;
         if (err instanceof Vid2ContextError && err.code === 'no-provider') throw err;
         retries++;
-        const waitSec = Math.min(5 * 2 ** (retries - 1), 30);
         const detail = describeAttempts(attemptsOf(err)) || (err instanceof Error ? err.message : String(err));
+        if (finished !== null && retries > MAX_TAIL_RETRIES) {
+          // Watching is over; do not hold the final transcript hostage to a rung that keeps failing.
+          yield {
+            type: 'status',
+            code: 'skipped',
+            message: `Gave up on the remaining audio (${span(windowStart, end as number)}) after ${retries} failed attempts (${detail}).`,
+          };
+          reason = finished;
+          break;
+        }
+        const waitSec = Math.min(5 * 2 ** (retries - 1), 30);
         yield {
           type: 'status',
           code: 'stt-retry',

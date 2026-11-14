@@ -16,6 +16,7 @@
     "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@vid2context/provider-cloudflare-ai": "*",
     "@vid2context/provider-stt-openai-compatible": "*"
   }
 }
