@@ -1,5 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import {
+  addToCollectionRequest,
   apiBase,
   apiErrorMessage,
   contextRequest,
@@ -7,7 +8,9 @@ import {
   healthRequest,
   isMissingRoute,
   itemsRequest,
+  listCollectionsRequest,
   metadataRequest,
+  parseInputs,
   transcriptItem,
   transcriptRequest,
 } from '../src/shared/requests.ts';
@@ -73,6 +76,29 @@ describe('metadata and items requests', () => {
       json: true,
     });
     expect(itemsRequest('http://h', { url: 'x', limit: 0 }).qs).toEqual({ url: 'x' });
+  });
+});
+
+describe('collection requests', () => {
+  it('splits the videos field on lines and commas, dropping blanks and repeats', () => {
+    expect(parseInputs(' https://youtu.be/a \n\nhttps://youtu.be/b, https://youtu.be/a ,')).toEqual([
+      'https://youtu.be/a',
+      'https://youtu.be/b',
+    ]);
+    expect(parseInputs('  \n ')).toEqual([]);
+  });
+
+  it('builds the add request with an encoded id and an optional limit', () => {
+    expect(addToCollectionRequest('http://h', { collectionId: ' g wagon/1 ', inputs: ['jNQXAC9IVRw'], limit: 5.9 })).toEqual({
+      method: 'POST',
+      baseURL: 'http://h',
+      url: '/api/v1/collections/g%20wagon%2F1/items',
+      body: { inputs: ['jNQXAC9IVRw'], limit: 5 },
+      json: true,
+    });
+    expect(addToCollectionRequest('http://h', { collectionId: 'c', inputs: ['x'], limit: 0 }).body).toEqual({ inputs: ['x'] });
+    expect(() => addToCollectionRequest('http://h', { collectionId: ' ', inputs: ['x'] })).toThrow(/Collection is empty/);
+    expect(() => addToCollectionRequest('http://h', { collectionId: 'c', inputs: [] })).toThrow(/Nothing to add/);
   });
 });
 
@@ -149,5 +175,38 @@ describe('requests against a real vid2context server (recorded YouTube responses
       httpCode: '404',
       body: { error: { code: 'not-found' } },
     });
+  });
+
+  it('Add to Collection ingests the video into a collection the picker lists', async () => {
+    const created = (await request({
+      method: 'POST',
+      baseURL: api.base,
+      url: '/api/v1/collections',
+      body: { name: 'Zoo' },
+      json: true,
+    })) as { id: string };
+    const picker = (await request(listCollectionsRequest(api.base))) as { collections: { id: string; name: string }[] };
+    expect(picker.collections).toContainEqual(expect.objectContaining({ id: created.id, name: 'Zoo' }));
+
+    const added = (await request(
+      addToCollectionRequest(api.base, { collectionId: created.id, inputs: parseInputs('https://youtu.be/jNQXAC9IVRw') }),
+    )) as { collection: { videoIds: string[] }; summary: { added: { id: string; title: string }[]; failed: unknown[] } };
+    expect(added.collection.videoIds).toEqual(['youtube:jNQXAC9IVRw']);
+    expect(added.summary.added.map((v) => v.title)).toEqual(['Me at the zoo']);
+    expect(added.summary.failed).toEqual([]);
+
+    // Adding the same video again is a no-op, so a re-run workflow does not duplicate it.
+    const again = (await request(addToCollectionRequest(api.base, { collectionId: created.id, inputs: ['jNQXAC9IVRw'] }))) as {
+      collection: { videoIds: string[] };
+      summary: { added: unknown[] };
+    };
+    expect(again.collection.videoIds).toEqual(['youtube:jNQXAC9IVRw']);
+    expect(again.summary.added).toEqual([]);
+  });
+
+  it('Add to Collection reports an unknown collection as not-found', async () => {
+    await expect(
+      request(addToCollectionRequest(api.base, { collectionId: 'no-such-collection', inputs: ['jNQXAC9IVRw'] })),
+    ).rejects.toMatchObject({ httpCode: '404', body: { error: { code: 'not-found' } } });
   });
 });
