@@ -28,7 +28,7 @@ export function TokenMeter(props: { reading: MeterReading; modelLabel: string; o
       <button
         type="button"
         className={cx(
-          'group/meter relative inline-flex items-center gap-1.5 rounded-pill border px-2.5 py-1',
+          'group/meter relative inline-flex shrink-0 items-center gap-1.5 rounded-pill border px-2.5 py-1',
           r.level === 'over'
             ? 'border-danger/70 text-danger'
             : r.level === 'warn'
@@ -38,7 +38,7 @@ export function TokenMeter(props: { reading: MeterReading; modelLabel: string; o
         aria-label={`Estimated tokens: ${label}. ${detail}.`}
       >
         <Gauge size={13} aria-hidden />
-        <span className="font-mono">{label}</span>
+        <span className="whitespace-nowrap font-mono">{label}</span>
         {pct !== undefined ? (
           <span className="hidden h-1 w-12 overflow-hidden rounded-pill bg-surface-3 sm:inline-block" aria-hidden>
             <span

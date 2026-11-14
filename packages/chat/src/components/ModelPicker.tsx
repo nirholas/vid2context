@@ -9,8 +9,23 @@
  * Keyboard: arrows, Home and End move; Enter picks; Escape closes; Alt+S
  * stars the highlighted model. Focus stays in the search box throughout.
  */
-import { ArrowRight, Box, Braces, Brain, Check, Eye, FileJson, Film, Search, Settings, Sparkles, Star, Wrench, Zap } from 'lucide-react';
-import { type KeyboardEvent, type ReactNode, useEffect, useId, useMemo, useRef, useState } from 'react';
+import {
+  ArrowRight,
+  Box,
+  Braces,
+  Brain,
+  Check,
+  Eye,
+  FileJson,
+  Film,
+  Search,
+  Settings,
+  Sparkles,
+  Star,
+  Wrench,
+  Zap,
+} from 'lucide-react';
+import { type KeyboardEvent, type ReactNode, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { CAPABILITY_LABEL, filterModels, formatContextTokens, groupModels, serviceLabel, TIER_LABEL } from '../lib/models.ts';
 import type { ChatErrorData, ModelChoice, ModelRow } from '../lib/types.ts';
 import { cx, Spinner, Tip } from './ui.tsx';
@@ -76,6 +91,23 @@ export function ModelPicker(props: ModelPickerProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const popRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
+  const [place, setPlace] = useState<{ side: 'above' | 'below'; maxHeight: number }>({ side: 'above', maxHeight: 540 });
+
+  // Open above the button when there is room (the composer sits low), otherwise below; never taller than the space.
+  useLayoutEffect(() => {
+    if (!open || typeof window === 'undefined') return;
+    const measure = () => {
+      const rect = buttonRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      const above = rect.top - 72;
+      const below = window.innerHeight - rect.bottom - 24;
+      const side = above >= 320 || above >= below ? 'above' : 'below';
+      setPlace({ side, maxHeight: Math.max(200, Math.min(540, side === 'above' ? above : below)) });
+    };
+    measure();
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
+  }, [open]);
 
   const { sections, items } = useMemo(() => {
     const filtered = filterModels(rows ?? [], query);
@@ -233,9 +265,7 @@ export function ModelPicker(props: ModelPickerProps) {
           <span className="min-w-0 flex-1">
             <span className="flex items-center gap-2">
               <span className="font-medium">Auto</span>
-              <span className="rounded-md bg-surface-3 px-1.5 py-px text-[11px] font-medium text-fg">
-                Recommended
-              </span>
+              <span className="rounded-md bg-surface-3 px-1.5 py-px text-[11px] font-medium text-fg">Recommended</span>
             </span>
             <span className="block text-xs text-muted">{AUTO_DESCRIPTION}</span>
           </span>
@@ -347,7 +377,10 @@ export function ModelPicker(props: ModelPickerProps) {
         </button>
         <span
           aria-hidden
-          className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-1.5 -translate-x-1/2 whitespace-nowrap rounded-sm border border-border bg-surface-3 px-2 py-1 text-xs text-fg opacity-0 shadow-pop transition-opacity group-hover/tip:opacity-100 group-focus-within/tip:opacity-100"
+          className={cx(
+            'pointer-events-none absolute bottom-full left-1/2 z-50 mb-1.5 -translate-x-1/2 whitespace-nowrap rounded-sm border border-border bg-surface-3 px-2 py-1 text-xs text-fg opacity-0 shadow-pop transition-opacity',
+            !open && 'group-hover/tip:opacity-100 group-focus-within/tip:opacity-100',
+          )}
         >
           {buttonLabel}
           {props.strict && props.choice.kind === 'rung' ? ' (strict)' : ''}
@@ -359,7 +392,11 @@ export function ModelPicker(props: ModelPickerProps) {
           ref={popRef}
           role="dialog"
           aria-label="Choose a model"
-          className="fixed inset-x-2 bottom-28 z-40 flex max-h-[min(62vh,540px)] flex-col overflow-hidden rounded-v2c-lg border border-border bg-surface-2 shadow-v2c sm:absolute sm:inset-x-auto sm:bottom-full sm:-left-1 sm:mb-3 sm:w-[min(34rem,calc(100vw-2rem))]"
+          style={{ maxHeight: place.maxHeight }}
+          className={cx(
+            'absolute -left-1 z-40 flex w-[min(34rem,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-v2c-lg border border-border bg-surface-2 shadow-v2c',
+            place.side === 'above' ? 'bottom-full mb-3' : 'top-full mt-3',
+          )}
         >
           <div className="flex items-center gap-2 border-b border-border px-3.5 py-2.5">
             <Search size={16} className="shrink-0 text-muted" aria-hidden />

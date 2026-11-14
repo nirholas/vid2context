@@ -6,8 +6,8 @@
  * keyboard shortcuts and the ?input= / ?collection= hand-off.
  */
 import type { VideoContext, VideoSummary } from '@vid2context/core';
-import { Download, Menu, PanelLeftClose, PanelLeftOpen, Paperclip, Settings, X } from 'lucide-react';
-import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Download, FolderOpen, Link2, Menu, PanelLeftOpen, Paperclip, Settings, Sparkles } from 'lucide-react';
+import { lazy, type ReactNode, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { toErrorData } from '../lib/api.ts';
 import { type Backend, requestContext } from '../lib/backend.ts';
 import { conversationToMarkdown, exportFileName, NEW_CHAT_TITLE, newId, preview, titleFrom } from '../lib/conversations.ts';
@@ -32,7 +32,7 @@ import { type KeyField, SettingsDialog } from './SettingsDialog.tsx';
 import { Sidebar } from './Sidebar.tsx';
 import { Thread } from './Thread.tsx';
 import { TokenMeter } from './TokenMeter.tsx';
-import { BrandMark, Button, cx, IconButton, Spinner } from './ui.tsx';
+import { cx, IconButton, Spinner } from './ui.tsx';
 
 const SourcePanel = lazy(() => import('./SourcePanel.tsx'));
 
@@ -83,6 +83,7 @@ export function ChatWorkspace(props: ChatWorkspaceProps) {
   const [pickerOpen, setPickerOpen] = useState(false);
   const [attachOpen, setAttachOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [settingsSection, setSettingsSection] = useState<'keys' | undefined>();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [panel, setPanel] = useState<{ source: ChatSource; sources: ChatSource[] } | null>(null);
   const [streamingId, setStreamingId] = useState<string | null>(null);
@@ -584,7 +585,11 @@ export function ChatWorkspace(props: ChatWorkspaceProps) {
   const loadingContext = current.contexts.some((c) => c.status === 'loading');
   // Answers are grounded in attached videos (the server refuses a chat with nothing attached).
   const hasContext = current.contexts.some((c) => c.status === 'ready');
-  const blockedReason = loadingContext ? 'Waiting for the transcript…' : !hasContext ? 'Attach a video to ask about it' : undefined;
+  const blockedReason = loadingContext
+    ? 'Waiting for the transcript…'
+    : !hasContext
+      ? 'Attach a video to ask about it'
+      : undefined;
 
   const exportMarkdown = useCallback(() => {
     const md = conversationToMarkdown(currentRef.current, messagesRef.current);
@@ -633,174 +638,235 @@ export function ChatWorkspace(props: ChatWorkspaceProps) {
   const openSource = useCallback((source: ChatSource, sources: ChatSource[]) => setPanel({ source, sources }), []);
   const sidebarOpen = prefs.sidebarOpen;
 
-  const sidebar = (
-    <Sidebar
-      conversations={conversations}
-      activeId={isSaved(current.id) ? current.id : null}
-      onSelect={selectConversation}
-      onNew={newChat}
-      onRename={(id, title) => {
-        const c = conversations.find((x) => x.id === id);
-        if (c) saveConversation({ ...c, title });
-      }}
-      onDelete={deleteConversation}
-      onTogglePin={(id) => {
-        const c = conversations.find((x) => x.id === id);
-        if (c) saveConversation({ ...c, pinned: !c.pinned });
-      }}
+  const openSettings = useCallback((section?: 'keys') => {
+    setDrawerOpen(false);
+    setSettingsSection(section);
+    setSettingsOpen(true);
+  }, []);
+  const changeTheme = useCallback((t: Theme) => {
+    setTheme(t);
+    applyTheme(t);
+  }, []);
+
+  // The drawer takes focus when it opens and hands it back to the menu button when it closes.
+  const drawerRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLButtonElement>(null);
+  const drawerWasOpen = useRef(false);
+  useEffect(() => {
+    if (drawerOpen) drawerRef.current?.querySelector<HTMLElement>('a[href],button:not([disabled])')?.focus();
+    else if (drawerWasOpen.current) menuRef.current?.focus();
+    drawerWasOpen.current = drawerOpen;
+  }, [drawerOpen]);
+
+  const sidebarProps = {
+    conversations,
+    activeId: isSaved(current.id) ? current.id : null,
+    onSelect: selectConversation,
+    onNew: newChat,
+    onRename: (id: string, title: string) => {
+      const c = conversations.find((x) => x.id === id);
+      if (c) saveConversation({ ...c, title });
+    },
+    onDelete: deleteConversation,
+    onTogglePin: (id: string) => {
+      const c = conversations.find((x) => x.id === id);
+      if (c) saveConversation({ ...c, pinned: !c.pinned });
+    },
+    onSettings: () => openSettings(),
+    theme,
+    onTheme: changeTheme,
+  };
+
+  const modelName = current.model.kind === 'auto' ? (selectedRow ? `Auto: ${selectedRow.label}` : 'Auto') : current.model.label;
+
+  const composer = (
+    <Composer
+      value={draft}
+      onChange={setDraft}
+      onSend={send}
+      onStop={stop}
+      streaming={streamingId !== null}
+      contexts={current.contexts}
+      onRemoveContext={removeContext}
+      onAttach={() => setAttachOpen(true)}
+      textareaRef={textareaRef}
+      hideNote={messages.length === 0}
+      {...(blockedReason ? { blockedReason } : {})}
+      tools={
+        <ModelPicker
+          rows={rows}
+          error={rowsError}
+          choice={current.model}
+          strict={current.strict}
+          favorites={prefs.favorites}
+          mode={backend.mode}
+          open={pickerOpen}
+          onOpenChange={setPickerOpen}
+          onChoose={chooseModel}
+          onToggleFavorite={toggleFavorite}
+          onStrictChange={setStrict}
+          onUnavailable={onUnavailable}
+          onManageProviders={() => openSettings('keys')}
+        />
+      }
     />
   );
 
+  const meterNotice =
+    meter.level === 'over' || meter.level === 'warn' ? (
+      <div className="mx-auto w-full max-w-3xl px-3 pb-2 sm:px-6 md:hidden" role="status">
+        <p className={cx('rounded-v2c-sm px-3 py-1.5 text-xs', meter.level === 'over' ? 'bg-danger/15' : 'bg-warning/15')}>
+          {meter.level === 'over' ? 'Too long for this model.' : 'Close to this model’s limit.'}
+          {meter.suggestion ? (
+            <button
+              type="button"
+              className="ml-1.5 text-accent underline underline-offset-2"
+              onClick={() =>
+                meter.suggestion && chooseModel({ kind: 'rung', rung: meter.suggestion.id, label: meter.suggestion.label })
+              }
+            >
+              Use {meter.suggestion.label}
+            </button>
+          ) : null}
+        </p>
+      </div>
+    ) : null;
+
   return (
     <div className="flex h-full min-h-0 w-full overflow-hidden bg-sidebar text-fg">
-      {/* Sidebar: drawer below md, collapsible column from md up. */}
-      <div className={cx('hidden w-72 shrink-0 border-r border-border bg-sidebar', sidebarOpen && 'md:block')}>{sidebar}</div>
+      {/* Sidebar: a collapsible column from md up, a drawer below md. */}
+      <div className={cx('hidden w-[260px] shrink-0 bg-sidebar', sidebarOpen && 'md:block')}>
+        <Sidebar {...sidebarProps} onCollapse={() => updatePrefs({ sidebarOpen: false })} />
+      </div>
       {drawerOpen ? (
         <div className="fixed inset-0 z-40 md:hidden">
           <button
             type="button"
             aria-label="Close conversations"
+            tabIndex={-1}
             className="absolute inset-0 bg-black/60"
             onClick={() => setDrawerOpen(false)}
           />
-          <div className="relative h-full w-[85vw] max-w-80 border-r border-border bg-sidebar shadow-pop">
-            <div className="absolute right-2 top-2 z-10">
-              <IconButton label="Close conversations" onClick={() => setDrawerOpen(false)}>
-                <X size={18} aria-hidden />
-              </IconButton>
-            </div>
-            <div className="h-full pt-10">{sidebar}</div>
-          </div>
-        </div>
-      ) : null}
-
-      <main className="flex min-w-0 flex-1 flex-col bg-panel" aria-label="Chat">
-        <header className="flex items-center gap-2 border-b border-border px-2 py-2 sm:px-3">
-          <span className="md:hidden">
-            <IconButton label="Conversations" onClick={() => setDrawerOpen(true)}>
-              <Menu size={18} aria-hidden />
-            </IconButton>
-          </span>
-          <span className="hidden md:inline-flex">
-            <IconButton
-              label={sidebarOpen ? 'Hide conversations' : 'Show conversations'}
-              onClick={() => updatePrefs({ sidebarOpen: !sidebarOpen })}
-            >
-              {sidebarOpen ? <PanelLeftClose size={18} aria-hidden /> : <PanelLeftOpen size={18} aria-hidden />}
-            </IconButton>
-          </span>
-          <ModelPicker
-            rows={rows}
-            error={rowsError}
-            choice={current.model}
-            strict={current.strict}
-            favorites={prefs.favorites}
-            mode={backend.mode}
-            open={pickerOpen}
-            onOpenChange={setPickerOpen}
-            onChoose={chooseModel}
-            onToggleFavorite={toggleFavorite}
-            onStrictChange={setStrict}
-            onUnavailable={onUnavailable}
-          />
-          <div className="min-w-0 flex-1" />
-          <TokenMeter
-            reading={meter}
-            modelLabel={selectedRow?.label ?? 'The model'}
-            onSwitch={(r) => chooseModel({ kind: 'rung', rung: r.id, label: r.label })}
-          />
-          {backend.mode === 'client' ? (
-            <span
-              className="hidden rounded-pill border border-tier-keyless/60 px-2 py-0.5 text-xs text-fg lg:inline"
-              title="No vid2context server answered; models are called from this browser."
-            >
-              Client-only
-            </span>
-          ) : null}
-          <IconButton label="Export as Markdown" onClick={exportMarkdown} disabled={messages.length === 0}>
-            <Download size={17} aria-hidden />
-          </IconButton>
-          <IconButton label="Settings" onClick={() => setSettingsOpen(true)}>
-            <Settings size={17} aria-hidden />
-          </IconButton>
-        </header>
-
-        {!store.persistent ? (
-          <p className="border-b border-border bg-warning/10 px-4 py-1.5 text-center text-xs" role="status">
-            This browser blocks IndexedDB here, so conversations last only until you close the tab.
-          </p>
-        ) : null}
-
-        {messages.length === 0 ? (
-          <EmptyState
-            mode={backend.mode}
-            onAttach={() => setAttachOpen(true)}
-            hasContext={current.contexts.length > 0}
-            loading={!loaded}
-          />
-        ) : (
-          <Thread
-            messages={messages}
-            rows={rows}
-            busy={streamingId !== null}
-            onOpenSource={openSource}
-            onRegenerate={regenerate}
-            onEditResend={editResend}
-          />
-        )}
-
-        {meter.level === 'over' || meter.level === 'warn' ? (
-          <div className="mx-auto w-full max-w-3xl px-3 sm:px-6 md:hidden" role="status">
-            <p className={cx('rounded-md px-3 py-1.5 text-xs', meter.level === 'over' ? 'bg-danger/15' : 'bg-warning/15')}>
-              {meter.level === 'over' ? 'Too long for this model.' : 'Close to this model’s limit.'}
-              {meter.suggestion ? (
-                <button
-                  type="button"
-                  className="ml-1.5 text-accent underline underline-offset-2"
-                  onClick={() =>
-                    meter.suggestion && chooseModel({ kind: 'rung', rung: meter.suggestion.id, label: meter.suggestion.label })
-                  }
-                >
-                  Use {meter.suggestion.label}
-                </button>
-              ) : null}
-            </p>
-          </div>
-        ) : null}
-
-        <Composer
-          value={draft}
-          onChange={setDraft}
-          onSend={send}
-          onStop={stop}
-          streaming={streamingId !== null}
-          contexts={current.contexts}
-          onRemoveContext={removeContext}
-          onAttach={() => setAttachOpen(true)}
-          textareaRef={textareaRef}
-          {...(blockedReason ? { blockedReason } : {})}
-        />
-      </main>
-
-      {panel ? (
-        <div className="fixed inset-0 z-30 bg-panel lg:static lg:z-auto lg:w-[420px] lg:shrink-0">
-          <Suspense
-            fallback={
-              <div className="p-4">
-                <Spinner label="Opening source" />
-              </div>
-            }
+          <div
+            ref={drawerRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Conversations"
+            className="relative h-full w-[85vw] max-w-[300px] bg-sidebar shadow-pop"
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') {
+                e.stopPropagation();
+                setDrawerOpen(false);
+              }
+            }}
           >
-            <SourcePanel
-              source={panel.source}
-              sources={panel.sources}
-              loadVideo={backend.loadVideo.bind(backend)}
-              onSelect={(s) => setPanel({ source: s, sources: panel.sources })}
-              onClose={() => setPanel(null)}
-            />
-          </Suspense>
+            <Sidebar {...sidebarProps} onClose={() => setDrawerOpen(false)} />
+          </div>
         </div>
       ) : null}
+
+      <div className="flex min-w-0 flex-1 p-2 md:pl-0">
+        <main
+          className="flex min-w-0 flex-1 flex-col overflow-hidden rounded-v2c-lg border border-border bg-panel"
+          aria-label="Chat"
+        >
+          <header className="flex h-12 shrink-0 items-center gap-1.5 px-3">
+            <span className="md:hidden">
+              <IconButton ref={menuRef} label="Conversations" onClick={() => setDrawerOpen(true)}>
+                <Menu size={18} strokeWidth={1.75} aria-hidden />
+              </IconButton>
+            </span>
+            {sidebarOpen ? null : (
+              <span className="hidden md:inline-flex">
+                <IconButton label="Show sidebar" onClick={() => updatePrefs({ sidebarOpen: true })}>
+                  <PanelLeftOpen size={18} strokeWidth={1.75} aria-hidden />
+                </IconButton>
+              </span>
+            )}
+            <span
+              className="inline-flex min-w-0 max-w-[50vw] items-center gap-1.5 rounded-v2c-sm bg-surface-2 px-2.5 py-1 text-[13px] text-muted sm:max-w-xs"
+              data-testid="model-chip"
+              title={modelName}
+            >
+              <Sparkles size={13} className="shrink-0" aria-hidden />
+              <span className="v2c-sr-only">Model: </span>
+              <span className="truncate">{modelName}</span>
+            </span>
+            <div className="min-w-0 flex-1" />
+            <TokenMeter
+              reading={meter}
+              modelLabel={selectedRow?.label ?? 'The model'}
+              onSwitch={(r) => chooseModel({ kind: 'rung', rung: r.id, label: r.label })}
+            />
+            {backend.mode === 'client' ? (
+              <span
+                className="hidden rounded-pill border border-tier-keyless/60 px-2 py-0.5 text-xs text-fg lg:inline"
+                title="No vid2context server answered; models are called from this browser."
+              >
+                Client-only
+              </span>
+            ) : null}
+            <IconButton label="Export as Markdown" onClick={exportMarkdown} disabled={messages.length === 0}>
+              <Download size={17} strokeWidth={1.75} aria-hidden />
+            </IconButton>
+            <IconButton label="Settings" onClick={() => openSettings()}>
+              <Settings size={17} strokeWidth={1.75} aria-hidden />
+            </IconButton>
+          </header>
+
+          {!store.persistent ? (
+            <p className="border-y border-border bg-warning/10 px-4 py-1.5 text-center text-xs" role="status">
+              This browser blocks IndexedDB here, so conversations last only until you close the tab.
+            </p>
+          ) : null}
+
+          {messages.length === 0 ? (
+            <EmptyState
+              mode={backend.mode}
+              features={backend.features}
+              onAttach={() => setAttachOpen(true)}
+              hasContext={current.contexts.length > 0}
+              loading={!loaded}
+            >
+              {meterNotice}
+              {composer}
+            </EmptyState>
+          ) : (
+            <>
+              <Thread
+                messages={messages}
+                rows={rows}
+                busy={streamingId !== null}
+                onOpenSource={openSource}
+                onRegenerate={regenerate}
+                onEditResend={editResend}
+              />
+              {meterNotice}
+              {composer}
+            </>
+          )}
+        </main>
+
+        {panel ? (
+          <div className="fixed inset-0 z-30 bg-panel lg:static lg:z-auto lg:ml-2 lg:w-[420px] lg:shrink-0 lg:overflow-hidden lg:rounded-v2c-lg lg:border lg:border-border">
+            <Suspense
+              fallback={
+                <div className="p-4">
+                  <Spinner label="Opening source" />
+                </div>
+              }
+            >
+              <SourcePanel
+                source={panel.source}
+                sources={panel.sources}
+                loadVideo={backend.loadVideo.bind(backend)}
+                onSelect={(s) => setPanel({ source: s, sources: panel.sources })}
+                onClose={() => setPanel(null)}
+              />
+            </Suspense>
+          </div>
+        ) : null}
+      </div>
 
       <AttachDialog
         open={attachOpen}
@@ -821,18 +887,26 @@ export function ChatWorkspace(props: ChatWorkspaceProps) {
         apiBase={props.apiBase}
         keyFields={keyFields}
         theme={theme}
-        onTheme={(t) => {
-          setTheme(t);
-          applyTheme(t);
-        }}
+        onTheme={changeTheme}
         onSaveConnection={props.onReconnect}
         onSaveKeys={props.onKeysSaved}
+        {...(settingsSection ? { section: settingsSection } : {})}
       />
     </div>
   );
 }
 
-function EmptyState(props: { mode: 'server' | 'client'; onAttach: () => void; hasContext: boolean; loading: boolean }) {
+const PILL =
+  'inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm text-fg transition-colors hover:bg-surface-2';
+
+function EmptyState(props: {
+  mode: 'server' | 'client';
+  features: Backend['features'];
+  onAttach: () => void;
+  hasContext: boolean;
+  loading: boolean;
+  children: ReactNode;
+}) {
   if (props.loading) {
     return (
       <div className="flex flex-1 items-center justify-center">
@@ -841,21 +915,39 @@ function EmptyState(props: { mode: 'server' | 'client'; onAttach: () => void; ha
     );
   }
   return (
-    <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-4 overflow-y-auto px-6 py-10 text-center">
-      <BrandMark />
-      <h1 className="text-2xl font-semibold tracking-tight">Talk to your videos</h1>
-      <p className="max-w-md text-sm text-muted">
-        {props.hasContext
-          ? 'Your videos are attached. Ask anything; answers cite the moment they come from, and a click opens the video there.'
-          : props.mode === 'server'
-            ? 'Attach a YouTube link, a podcast, a library video or a collection, then ask. Answers cite timestamps you can click.'
-            : 'No vid2context server answered, so this runs in your browser. Attach a vid2context JSON file or paste a timed transcript, then ask.'}
-      </p>
-      {!props.hasContext ? (
-        <Button variant="primary" onClick={props.onAttach}>
-          <Paperclip size={15} aria-hidden /> Attach context
-        </Button>
-      ) : null}
+    <div className="v2c-scroll flex min-h-0 flex-1 flex-col overflow-y-auto">
+      <div className="m-auto flex w-full flex-col items-center py-10">
+        <div className="mb-8 max-w-2xl px-6 text-center">
+          <h1 className="text-balance text-3xl font-semibold tracking-tight text-fg sm:text-4xl">
+            What do you want to know about a video?
+          </h1>
+          <p className="mx-auto mt-3 max-w-lg text-sm text-muted">
+            {props.hasContext
+              ? 'Your videos are attached. Ask anything; answers cite the moment they come from, and a click opens the video there.'
+              : props.mode === 'server'
+                ? 'Attach a YouTube link, a podcast, a library video or a collection, then ask. Answers cite timestamps you can click.'
+                : 'No vid2context server answered, so this runs in your browser. Attach a vid2context JSON file or paste a timed transcript, then ask.'}
+          </p>
+        </div>
+        {props.children}
+        {!props.hasContext ? (
+          <div className="mt-4 flex flex-wrap justify-center gap-2 px-4">
+            <button type="button" className={PILL} onClick={props.onAttach}>
+              <Paperclip size={16} strokeWidth={1.75} aria-hidden /> Attach context
+            </button>
+            {props.features.collections ? (
+              <button type="button" className={PILL} onClick={props.onAttach}>
+                <FolderOpen size={16} strokeWidth={1.75} aria-hidden /> Use a collection
+              </button>
+            ) : null}
+            {props.features.link ? (
+              <button type="button" className={PILL} onClick={props.onAttach}>
+                <Link2 size={16} strokeWidth={1.75} aria-hidden /> Paste a video link
+              </button>
+            ) : null}
+          </div>
+        ) : null}
+      </div>
     </div>
   );
 }

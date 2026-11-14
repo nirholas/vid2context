@@ -11,7 +11,6 @@ import {
   ChevronDown,
   ChevronLeft,
   CircleHelp,
-  CodeXml,
   Monitor,
   Moon,
   PanelLeftClose,
@@ -28,6 +27,7 @@ import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { groupConversations, searchConversations } from '../lib/conversations.ts';
 import type { Theme } from '../lib/settings.ts';
 import type { Conversation } from '../lib/types.ts';
+import { GithubMark } from './GithubMark.tsx';
 import { BrandMark, Button, cx, IconButton } from './ui.tsx';
 
 export const WEB_APP_PATH = '/app/';
@@ -191,7 +191,7 @@ export function Sidebar(props: SidebarProps) {
           <CircleHelp size={18} strokeWidth={1.75} aria-hidden />
         </FootLink>
         <FootLink href={SOURCE_URL} label="Source on GitHub" external>
-          <CodeXml size={18} strokeWidth={1.75} aria-hidden />
+          <GithubMark />
         </FootLink>
         {props.onSettings ? (
           <button type="button" className={FOOT_BTN} aria-label="Settings" title="Settings" onClick={props.onSettings}>
@@ -314,7 +314,10 @@ function ConversationItem(props: {
         type="button"
         onClick={props.onSelect}
         aria-current={props.active ? 'page' : undefined}
-        className={cx('min-w-0 flex-1 truncate py-2 pl-1.5 pr-2 text-left text-sm', props.active ? 'font-medium text-fg' : 'text-fg/90')}
+        className={cx(
+          'min-w-0 flex-1 truncate py-2 pl-1.5 pr-2 text-left text-sm',
+          props.active ? 'font-medium text-fg' : 'text-fg/90',
+        )}
         title={c.title}
       >
         {c.title}
