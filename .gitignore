@@ -14,3 +14,7 @@ packages/registry/src/generated/
 
 # Local runtime data (library database, downloaded models and binaries, media cache).
 .vid2context/
+
+# Copied into the site at build time (npm run build:site).
+site/llms.txt
+site/llms-full.txt
