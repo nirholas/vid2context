@@ -2,18 +2,22 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { createContext, type VideoRef } from '@vid2context/core';
 import { type RecordedCall, replayFetch, testContext } from '@vid2context/core/testing';
-import { describe, expect, it } from 'vitest';
-import { chooseTrack } from '../src/captions.ts';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { parseSrv1, parseSrv3 } from '../src/captions/formats.ts';
+import { chooseTrack } from '../src/captions/tracks.ts';
 import { youtubeCaptions, youtubeSource } from '../src/index.ts';
-import type { PlayerResponse } from '../src/innertube.ts';
 import { parseDescriptionChapters } from '../src/metadata.ts';
-import { parseSrv1, parseSrv3 } from '../src/timedtext.ts';
+import { resetBreaker } from '../src/resilience/breaker.ts';
+import type { PlayerResponse } from '../src/resilience/player.ts';
 import { matchYouTube } from '../src/url.ts';
 
 // Fixtures are real recordings (see test/fixtures/README.md).
 const fixture = (name: string) => readFileSync(join(import.meta.dirname, 'fixtures', name), 'utf8');
 const player = (id: string) => JSON.parse(fixture(`player-${id}.json`)) as PlayerResponse;
 const PLAYER_URL = 'https://www.youtube.com/youtubei/v1/player?prettyPrint=false';
+
+// The 429 block page test opens the per-process circuit breaker; close it between tests.
+beforeEach(() => resetBreaker());
 
 function youtubeReplay() {
   return replayFetch([

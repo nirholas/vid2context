@@ -12,9 +12,9 @@
  * ends the search: no client does better.
  */
 import { type Attempt, type Ctx, type Env, Vid2ContextError } from '@vid2context/core';
+import { tripBreaker } from './breaker.ts';
 import { type ClientSpec, resolveClients } from './clients.ts';
 import { classifyPlayability, type PlayabilityStatus } from './errors.ts';
-import { tripBreaker } from './breaker.ts';
 import { innertubeRequest } from './transport.ts';
 
 export interface RawCaptionTrack {
@@ -66,8 +66,14 @@ const errInfo = (err: unknown): string => (err instanceof Error ? err.message : 
 function asYouTubeError(err: unknown): Vid2ContextError {
   if (err instanceof Vid2ContextError) return err;
   const name = (err as { name?: string } | null)?.name;
-  if (name === 'TimeoutError') return new Vid2ContextError('timeout', `YouTube player: ${errInfo(err)}`, { hint: 'YouTube did not answer in time. Check the network and retry.' });
-  return new Vid2ContextError('upstream', `YouTube player: ${errInfo(err)}`, { cause: err, hint: 'Check the network and retry.' });
+  if (name === 'TimeoutError')
+    return new Vid2ContextError('timeout', `YouTube player: ${errInfo(err)}`, {
+      hint: 'YouTube did not answer in time. Check the network and retry.',
+    });
+  return new Vid2ContextError('upstream', `YouTube player: ${errInfo(err)}`, {
+    cause: err,
+    hint: 'Check the network and retry.',
+  });
 }
 
 function playerBody(videoId: string, ctx: Ctx): Record<string, unknown> {

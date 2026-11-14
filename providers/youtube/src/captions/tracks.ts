@@ -1,13 +1,20 @@
-import {
-  type CaptionOptions,
-  type CaptionTrackInfo,
-  type Ctx,
-  fetchWithTimeout,
-  type Segment,
-  Vid2ContextError,
-} from '@vid2context/core';
-import { type PlayerResponse, type RawCaptionTrack, youtubeHttpError } from './innertube.ts';
-import { parseSrv1, parseTimedText } from './timedtext.ts';
+/**
+ * Caption track choice.
+ *
+ * With a requested language:
+ *   1. a creator track in that language
+ *   2. an auto (asr) track in that language (unless allowAuto is false)
+ *   3. YouTube's machine translation (tlang) of the best translatable track
+ *      (unless allowTranslated is false)
+ * Without:
+ *   1. a creator track in the spoken language (the asr track's language reveals it)
+ *   2. any creator track, the video's default track first
+ *   3. the asr track (unless allowAuto is false)
+ *
+ * Languages match exactly first, then by primary subtag (en matches en-GB).
+ */
+import type { CaptionOptions, CaptionTrackInfo } from '@vid2context/core';
+import type { PlayerResponse, RawCaptionTrack } from '../resilience/player.ts';
 
 export const isAsr = (t: RawCaptionTrack): boolean => t.kind === 'asr';
 
@@ -15,8 +22,13 @@ export function tracksOf(player: PlayerResponse): RawCaptionTrack[] {
   return player.captions?.playerCaptionsTracklistRenderer?.captionTracks ?? [];
 }
 
-function defaultTrackIndex(player: PlayerResponse): number | undefined {
+export function defaultTrackIndex(player: PlayerResponse): number | undefined {
   return player.captions?.playerCaptionsTracklistRenderer?.audioTracks?.[0]?.defaultCaptionTrackIndex;
+}
+
+/** Language codes YouTube offers as translation targets for this video. */
+export function translationTargets(player: PlayerResponse): string[] {
+  return (player.captions?.playerCaptionsTracklistRenderer?.translationLanguages ?? []).map((l) => l.languageCode);
 }
 
 export function trackName(t: RawCaptionTrack): string {
@@ -39,18 +51,18 @@ export function spokenLanguage(tracks: RawCaptionTrack[]): string | undefined {
 
 const primary = (code: string): string => code.toLowerCase().split(/[-_]/)[0] ?? '';
 
-/** Exact language match first, then same primary subtag (en matches en-GB and the reverse). */
-function byLanguage(tracks: RawCaptionTrack[], language: string): RawCaptionTrack | undefined {
+/** Exact match first, then same primary subtag. */
+function matchCode<T>(items: T[], language: string, code: (item: T) => string): T | undefined {
   const want = language.toLowerCase();
-  return (
-    tracks.find((t) => t.languageCode.toLowerCase() === want) ?? tracks.find((t) => primary(t.languageCode) === primary(want))
-  );
+  return items.find((i) => code(i).toLowerCase() === want) ?? items.find((i) => primary(code(i)) === primary(want));
 }
+
+const byLanguage = (tracks: RawCaptionTrack[], language: string) => matchCode(tracks, language, (t) => t.languageCode);
 
 export interface TrackChoice {
   track: RawCaptionTrack;
   origin: 'creator-captions' | 'auto-captions';
-  /** Set when the track must be machine-translated by YouTube (tlang) into this language. */
+  /** Set when YouTube must machine-translate the track (tlang) into this language. */
   translateTo?: string;
 }
 
@@ -61,60 +73,43 @@ const choice = (track: RawCaptionTrack, translateTo?: string): TrackChoice => ({
 });
 
 /**
- * Pick the best track.
- * With a language: a creator track in it, then an auto track in it, then
- * (when allowed) YouTube's translation of the best untranslated track.
- * Without: a creator track in the spoken language, then the video's default
- * creator track, then any creator track, then the auto track.
+ * Pick the best track (rules at the top of this file). `translationLanguages`
+ * is the player's list of translation targets: when given, a translation is
+ * offered only into a listed language, using YouTube's own code for it.
  */
-export function chooseTrack(tracks: RawCaptionTrack[], opts: CaptionOptions, defaultIndex?: number): TrackChoice | null {
+export function chooseTrack(
+  tracks: RawCaptionTrack[],
+  opts: CaptionOptions,
+  defaultIndex?: number,
+  translationLanguages?: string[],
+): TrackChoice | null {
   const allowAuto = opts.allowAuto ?? true;
   const creator = tracks.filter((t) => !isAsr(t));
   const auto = allowAuto ? tracks.filter(isAsr) : [];
+  const def = defaultIndex === undefined ? undefined : tracks[defaultIndex];
+  const defCreator = def && !isAsr(def) ? def : undefined;
+  const spoken = spokenLanguage(tracks);
 
-  const best = (): RawCaptionTrack | undefined => {
-    const spoken = spokenLanguage(tracks);
-    const def = defaultIndex === undefined ? undefined : tracks[defaultIndex];
-    return (spoken ? byLanguage(creator, spoken) : undefined) ?? (def && !isAsr(def) ? def : undefined) ?? creator[0] ?? auto[0];
-  };
+  // Best tracks without a language preference, in order.
+  const ranked = [spoken ? byLanguage(creator, spoken) : undefined, defCreator, ...creator, ...auto].filter(
+    (t, i, all): t is RawCaptionTrack => t !== undefined && all.indexOf(t) === i,
+  );
 
-  if (opts.language) {
-    const direct = byLanguage(creator, opts.language) ?? byLanguage(auto, opts.language);
-    if (direct) return choice(direct);
-    if (opts.allowTranslated ?? true) {
-      const source = best();
-      if (source && source.isTranslatable !== false) return choice(source, opts.language);
-    }
-    return null;
+  if (!opts.language) return ranked[0] ? choice(ranked[0]) : null;
+
+  const direct = byLanguage(creator, opts.language) ?? byLanguage(auto, opts.language);
+  if (direct) return choice(direct);
+  if (opts.allowTranslated === false) return null;
+  let target = opts.language;
+  if (translationLanguages && translationLanguages.length > 0) {
+    const listed = matchCode(translationLanguages, opts.language, (c) => c);
+    if (!listed) return null;
+    target = listed;
   }
-  const picked = best();
-  return picked ? choice(picked) : null;
+  const source = ranked.find((t) => t.isTranslatable !== false);
+  return source ? choice(source, target) : null;
 }
 
 export function choose(player: PlayerResponse, opts: CaptionOptions): TrackChoice | null {
-  return chooseTrack(tracksOf(player), opts, defaultTrackIndex(player));
-}
-
-/** Download a track as srv3 (srv1 as a fallback) and parse it into segments. */
-export async function fetchTrack(track: RawCaptionTrack, ctx: Ctx, translateTo?: string): Promise<Segment[]> {
-  const url = new URL(track.baseUrl);
-  url.searchParams.set('fmt', 'srv3');
-  if (translateTo) url.searchParams.set('tlang', translateTo);
-  const label = `YouTube captions ${track.languageCode}${translateTo ? `->${translateTo}` : ''}`;
-
-  const res = await fetchWithTimeout(ctx, url.href);
-  if (!res.ok) throw await youtubeHttpError(res, label);
-  const body = await res.text();
-  const segments = parseTimedText(body);
-  if (segments.length > 0) return segments;
-
-  url.searchParams.delete('fmt');
-  const res1 = await fetchWithTimeout(ctx, url.href);
-  if (!res1.ok) throw await youtubeHttpError(res1, label);
-  const srv1 = parseSrv1(await res1.text());
-  if (srv1.length > 0) return srv1;
-
-  throw new Vid2ContextError('upstream', `${label}: the caption payload was empty.`, {
-    hint: 'YouTube returned an empty track. This happens when it requires a proof-of-origin token for this client; retry later or use mode "stt".',
-  });
+  return chooseTrack(tracksOf(player), opts, defaultTrackIndex(player), translationTargets(player));
 }

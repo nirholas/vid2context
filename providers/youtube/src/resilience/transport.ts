@@ -74,7 +74,8 @@ export async function innertubeRequest<T = unknown>(
   opts: { stage?: Stage } = {},
 ): Promise<T> {
   const spec = typeof client === 'string' ? clientByName(client, ctx.env) : client;
-  if (!spec) throw new Vid2ContextError('bad-request', `Unknown YouTube client "${String(client)}".`, { hint: 'Use android or ios.' });
+  if (!spec)
+    throw new Vid2ContextError('bad-request', `Unknown YouTube client "${String(client)}".`, { hint: 'Use android or ios.' });
   const visitorData = ctx.env.YOUTUBE_VISITOR_DATA?.trim();
   const given = (body.context ?? {}) as Record<string, unknown>;
   const payload = {

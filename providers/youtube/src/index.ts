@@ -1,20 +1,37 @@
 /**
- * YouTube source + captions. Keyless: talks to the innertube player API with
- * the ANDROID client and downloads caption tracks as srv3 XML. Works on Node
- * and Workers; in a browser, YouTube's CORS policy blocks these calls, so the
- * browser build routes through a configured API base instead.
+ * YouTube source + captions. Keyless: talks to the innertube player API
+ * (ANDROID, then IOS; see resilience/clients.ts) and downloads caption tracks
+ * as srv3 XML. Works on Node and Workers; in a browser, YouTube's CORS
+ * policy blocks these calls, so the browser build routes through a
+ * configured API base instead.
  */
-import { type CaptionsProvider, defineProvider, type SourceProvider, type Transcript } from '@vid2context/core';
-import { choose, fetchTrack, trackInfo, tracksOf } from './captions.ts';
+import { defineProvider, type SourceProvider } from '@vid2context/core';
+import { youtubeCaptions } from './captions/provider.ts';
 import { getYouTubeComments } from './comments/index.ts';
-import { getPlayer, playabilityError } from './innertube.ts';
 import { toMetadata } from './metadata.ts';
+import { playabilityError } from './resilience/errors.ts';
+import { getPlayer } from './resilience/player.ts';
 import { matchYouTube } from './url.ts';
 
-export { chooseTrack, spokenLanguage } from './captions.ts';
+export { fetchTrack } from './captions/fetch.ts';
+export {
+  detectFormat,
+  parseJson3,
+  parseSrv1,
+  parseSrv3,
+  parseTimedText,
+  parseVtt,
+  type TimedTextFormat,
+} from './captions/formats.ts';
+export { youtubeCaptions } from './captions/provider.ts';
+export { chooseTrack, spokenLanguage, type TrackChoice } from './captions/tracks.ts';
 export { type CommentOptions, type CommentSort, getYouTubeComments } from './comments/index.ts';
 export { parseDescriptionChapters } from './metadata.ts';
-export { parseSrv1, parseSrv3, parseTimedText } from './timedtext.ts';
+export { resetBreaker } from './resilience/breaker.ts';
+export { CLIENTS, type ClientSpec, resolveClients } from './resilience/clients.ts';
+export { BLOCKED_HINT, classifyPlayability, playabilityError, youtubeHttpError } from './resilience/errors.ts';
+export { clearPlayerCache, fetchPlayer, getPlayer, type PlayerResponse, type RawCaptionTrack } from './resilience/player.ts';
+export { innertubeRequest } from './resilience/transport.ts';
 export { matchYouTube } from './url.ts';
 
 const RUNTIMES: SourceProvider['runtimes'] = ['node', 'workers', 'browser'];
@@ -35,37 +52,6 @@ export const youtubeSource: SourceProvider = defineProvider({
   getComments: (ref, ctx, opts) => getYouTubeComments(ref, ctx, opts),
   // Audio for YouTube comes from a source that downloads media (the yt-dlp provider).
   canProvideAudio: () => false,
-});
-
-export const youtubeCaptions: CaptionsProvider = defineProvider({
-  id: 'youtube-captions',
-  kind: 'captions',
-  name: 'YouTube captions',
-  runtimes: RUNTIMES,
-  supports: (ref) => ref.platform === 'youtube' && ref.kind === 'video',
-  async listTracks(ref, ctx) {
-    const player = await getPlayer(ref.nativeId, ctx);
-    const err = playabilityError(player, ref.nativeId);
-    if (err && !player.captions) throw err;
-    return tracksOf(player).map(trackInfo);
-  },
-  async getCaptions(ref, opts, ctx): Promise<Transcript | null> {
-    const player = await getPlayer(ref.nativeId, ctx);
-    const err = playabilityError(player, ref.nativeId);
-    if (err && !player.captions) throw err;
-    const picked = choose(player, opts);
-    if (!picked) return null;
-    const segments = await fetchTrack(picked.track, ctx, picked.translateTo);
-    return {
-      ref,
-      language: picked.translateTo ?? picked.track.languageCode,
-      origin: picked.origin,
-      producer: 'youtube-captions',
-      ...(picked.translateTo ? { translated: true } : {}),
-      segments,
-      createdAt: new Date().toISOString(),
-    };
-  },
 });
 
 export default [youtubeSource, youtubeCaptions];

@@ -46,7 +46,9 @@ export type Playability =
   | { kind: 'final'; error: Vid2ContextError };
 
 function scheduledStart(ps: PlayabilityStatus): string | undefined {
-  const sec = Number(ps.liveStreamability?.liveStreamabilityRenderer?.offlineSlate?.liveStreamOfflineSlateRenderer?.scheduledStartTime);
+  const sec = Number(
+    ps.liveStreamability?.liveStreamabilityRenderer?.offlineSlate?.liveStreamOfflineSlateRenderer?.scheduledStartTime,
+  );
   return Number.isFinite(sec) && sec > 0 ? new Date(sec * 1000).toISOString() : undefined;
 }
 
@@ -64,7 +66,11 @@ export function classifyPlayability(ps: PlayabilityStatus | undefined, videoId: 
   if (/\bprivate\b/i.test(reason)) {
     return final('not-found', 'This video is private. Only the owner or invited accounts can see it.');
   }
-  if (status === 'AGE_CHECK_REQUIRED' || status === 'AGE_VERIFICATION_REQUIRED' || /inappropriate|age.?restrict|confirm your age/i.test(reason)) {
+  if (
+    status === 'AGE_CHECK_REQUIRED' ||
+    status === 'AGE_VERIFICATION_REQUIRED' ||
+    /inappropriate|age.?restrict|confirm your age/i.test(reason)
+  ) {
     return final(
       'unavailable',
       'This video is age-restricted and needs a signed-in, age-verified session: set YOUTUBE_COOKIE, or use the yt-dlp provider with your cookies.',
@@ -74,7 +80,10 @@ export function classifyPlayability(ps: PlayabilityStatus | undefined, videoId: 
     return final('unavailable', "This video is for the channel's paying members only. A member's YOUTUBE_COOKIE can unlock it.");
   }
   if (/country|region|your location/i.test(reason)) {
-    return final('unavailable', 'This video is blocked in the region of this IP address. Run vid2context from a region where it plays.');
+    return final(
+      'unavailable',
+      'This video is blocked in the region of this IP address. Run vid2context from a region where it plays.',
+    );
   }
   if (status === 'LIVE_STREAM_OFFLINE') {
     const at = scheduledStart(ps ?? {});
@@ -86,7 +95,10 @@ export function classifyPlayability(ps: PlayabilityStatus | undefined, videoId: 
     );
   }
   if (status === 'CONTENT_CHECK_REQUIRED') {
-    return final('unavailable', 'YouTube shows a content warning for this video and needs a signed-in session: set YOUTUBE_COOKIE.');
+    return final(
+      'unavailable',
+      'YouTube shows a content warning for this video and needs a signed-in session: set YOUTUBE_COOKIE.',
+    );
   }
   if (status === 'ERROR' && /no longer supported|application or device/i.test(reason)) {
     return { kind: 'client', error: new Vid2ContextError('upstream', msg, { hint: CLIENT_HINT }) };
@@ -131,11 +143,18 @@ export async function youtubeHttpError(res: Response, label: string): Promise<Vi
     });
   }
   const err = await errorFromResponse(res, label);
-  return err.hint ? err : new Vid2ContextError(err.code, err.message, { status: err.status, retryAfterSec: err.retryAfterSec, hint: hintFor(err.code) });
+  return err.hint
+    ? err
+    : new Vid2ContextError(err.code, err.message, {
+        status: err.status,
+        retryAfterSec: err.retryAfterSec,
+        hint: hintFor(err.code),
+      });
 }
 
 function hintFor(code: string): string {
-  if (code === 'auth') return 'YouTube refused the request (HTTP 401/403). If it repeats, this IP may be blocked: see docs/guides/youtube.md.';
+  if (code === 'auth')
+    return 'YouTube refused the request (HTTP 401/403). If it repeats, this IP may be blocked: see docs/guides/youtube.md.';
   if (code === 'not-found') return 'YouTube returned 404. Check the video id or URL.';
   return 'YouTube returned an unexpected error. Retry later; if it persists, see docs/guides/youtube.md.';
 }
