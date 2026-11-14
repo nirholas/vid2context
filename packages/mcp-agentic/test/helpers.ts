@@ -22,7 +22,6 @@ import {
 import { type Ctx, chat, MemoryStorage, Registry, type Storage, Vid2ContextError, type VideoContext } from '@vid2context/core';
 import type { RecordedCall, Route } from '@vid2context/core/testing';
 import llm from '@vid2context/provider-llm-openai-compatible';
-import youtube from '@vid2context/provider-youtube';
 import { registerAgenticFeatures } from '../src/index.ts';
 
 export const FIXTURES = join(import.meta.dirname, 'fixtures');
@@ -49,10 +48,23 @@ export async function filledStorage(): Promise<MemoryStorage> {
   return s;
 }
 
-/** YouTube source and captions plus the OpenAI-compatible LLM lanes: exactly what these tests exercise. */
-export function testRegistry(): Registry {
+/**
+ * Only the OpenAI-compatible LLM lanes. Digest tests pass saved video ids
+ * (youtube:abc), which resolve from storage, so they need no source provider.
+ */
+export function llmRegistry(): Registry {
+  return new Registry([llm], 'node');
+}
+
+/** The YouTube source and captions (for choose_caption_track) plus the LLM lanes. Imported lazily. */
+export async function youtubeRegistry(): Promise<Registry> {
+  const youtube = (await import('@vid2context/provider-youtube')).default;
   return new Registry([...youtube, llm], 'node');
 }
+
+/** Saved ids of the two shared contexts, as digest inputs. */
+export const ZOO_ID = 'youtube:jNQXAC9IVRw';
+export const GWAGON_ID = 'youtube:cCPsdFdlshc';
 
 // ---------------------------------------------------------------- sampling through the real chain
 
@@ -160,7 +172,7 @@ export function youtubeRoutes(): Route[] {
   return [
     {
       method: 'POST',
-      url: 'https://www.youtube.com/youtubei/v1/player?prettyPrint=false',
+      url: (u) => u.hostname === 'www.youtube.com' && u.pathname === '/youtubei/v1/player',
       response: (call: RecordedCall) => {
         const { videoId } = JSON.parse(String(call.body)) as { videoId: string };
         const name = ['jNQXAC9IVRw', 'cCPsdFdlshc'].includes(videoId) ? videoId : 'unavailable';

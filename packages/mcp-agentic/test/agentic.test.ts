@@ -21,7 +21,9 @@ import {
   connect,
   filledStorage,
   GWAGON,
+  GWAGON_ID,
   type Harness,
+  llmRegistry,
   QUESTION,
   RECORDED_MAX_TOKENS,
   recordedAnswer,
@@ -29,9 +31,10 @@ import {
   samplingFixture,
   samplingRoutes,
   sharedContext,
-  testRegistry,
+  youtubeRegistry,
   youtubeRoutes,
   ZOO,
+  ZOO_ID,
 } from './helpers.ts';
 
 // Real data only: the shared VideoContexts in tests/fixtures/contexts, chat completions recorded from the
@@ -76,7 +79,9 @@ describe('chunkTranscript', () => {
   it('keeps chapter boundaries and headings, packing small chapters into one chunk', () => {
     const [only, ...rest] = chunkTranscript(zoo, 0);
     expect(rest).toEqual([]);
-    expect(only?.chapters).toEqual(['Intro', 'The cool thing', 'End']);
+    // "End" (0:17 to 0:19) has no speech starting in it, so no chunk covers it.
+    expect(only?.chapters).toEqual(['Intro', 'The cool thing']);
+    expect(zoo.metadata.chapters.map((c) => c.title)).toEqual(['Intro', 'The cool thing', 'End']);
     expect(only?.text).toContain('## Chapter: Intro (0:00)');
     expect(only?.text).toContain('## Chapter: The cool thing (0:05)');
     expect(only?.text).toContain('[0:01] All right, so here we are, in front of the elephants');
@@ -84,12 +89,11 @@ describe('chunkTranscript', () => {
 });
 
 describe('digest_videos with sampling (client model = the real LLM chain, replayed)', () => {
-  const fixture = samplingFixture();
-  const registry = testRegistry();
+  const registry = llmRegistry();
 
   async function run() {
     const calls: CreateMessageRequest['params'][] = [];
-    const chainFetch = replayFetch(samplingRoutes(fixture));
+    const chainFetch = replayFetch(samplingRoutes(samplingFixture()));
     const h = await harness({
       registry,
       ctx: testContext(),
@@ -99,7 +103,10 @@ describe('digest_videos with sampling (client model = the real LLM chain, replay
     });
     const progress: Progress[] = [];
     const res = await h.client.callTool(
-      { name: 'digest_videos', arguments: { urls: [ZOO, GWAGON], question: QUESTION, maxTokensPerVideo: RECORDED_MAX_TOKENS } },
+      {
+        name: 'digest_videos',
+        arguments: { urls: [ZOO_ID, GWAGON_ID], question: QUESTION, maxTokensPerVideo: RECORDED_MAX_TOKENS },
+      },
       undefined,
       { onprogress: (p) => progress.push(p) },
     );
@@ -143,9 +150,10 @@ describe('digest_videos with sampling (client model = the real LLM chain, replay
 });
 
 describe('citation validation on recorded model output', () => {
-  const fixture = samplingFixture();
   const notesFor = (title: string) =>
-    fixture.exchanges.filter((e) => e.messages[0]?.content === MAP_SYSTEM && e.messages[1]?.content.includes(`Video: ${title}`));
+    samplingFixture().exchanges.filter(
+      (e) => e.messages[0]?.content === MAP_SYSTEM && e.messages[1]?.content.includes(`Video: ${title}`),
+    );
 
   it('keeps the real notes that cite real moments', () => {
     const chunks = chunkTranscript(gwagon, 1, { maxTokens: RECORDED_MAX_TOKENS });
@@ -171,7 +179,7 @@ describe('citation validation on recorded model output', () => {
 
   it('rewrites titled citations to deep links and drops lines that cite a moment that does not exist', () => {
     const sources = [sourceOf(zoo), sourceOf(gwagon)];
-    const reduce = fixture.exchanges.find((e) => e.messages[0]?.content === REDUCE_SYSTEM);
+    const reduce = samplingFixture().exchanges.find((e) => e.messages[0]?.content === REDUCE_SYSTEM);
     expect(reduce).toBeDefined();
     const checked = checkDigest(reduce ? recordedAnswer(reduce) : '', sources);
     expect(checked.citations).toBeGreaterThan(0);
@@ -185,10 +193,10 @@ describe('citation validation on recorded model output', () => {
 
 describe('digest_videos without client sampling', () => {
   it('returns the chunk plan and the exact instructions instead of an error', async () => {
-    const h = await harness({ registry: testRegistry(), ctx: testContext(), storage: await filledStorage() });
+    const h = await harness({ registry: llmRegistry(), ctx: testContext(), storage: await filledStorage() });
     const res = await h.client.callTool({
       name: 'digest_videos',
-      arguments: { urls: [ZOO, GWAGON], question: QUESTION, maxTokensPerVideo: RECORDED_MAX_TOKENS },
+      arguments: { urls: [ZOO_ID, GWAGON_ID], question: QUESTION, maxTokensPerVideo: RECORDED_MAX_TOKENS },
     });
     expect(res.isError).toBeFalsy();
     const plan = JSON.parse(resultText(res));
@@ -205,7 +213,7 @@ describe('digest_videos without client sampling', () => {
     const storage = await filledStorage();
     const col = await storage.createCollection({ name: 'G-Wagon research' });
     await storage.addToCollection(col.id, ['youtube:cCPsdFdlshc']);
-    const h = await harness({ registry: testRegistry(), ctx: testContext(), storage });
+    const h = await harness({ registry: llmRegistry(), ctx: testContext(), storage });
     const plan = JSON.parse(
       resultText(await h.client.callTool({ name: 'digest_videos', arguments: { collection: 'g-wagon research' } })),
     );
@@ -220,7 +228,7 @@ describe('choose_caption_track (elicitation)', () => {
   it('asks the user to pick a track and returns that transcript', async () => {
     const asked: ElicitRequest['params'][] = [];
     const h = await harness({
-      registry: testRegistry(),
+      registry: await youtubeRegistry(),
       ctx: ctx(),
       storage: null,
       capabilities: { elicitation: {} },
@@ -243,7 +251,7 @@ describe('choose_caption_track (elicitation)', () => {
 
   it('returns the track list when the user declines', async () => {
     const h = await harness({
-      registry: testRegistry(),
+      registry: await youtubeRegistry(),
       ctx: ctx(),
       storage: null,
       capabilities: { elicitation: {} },
@@ -256,7 +264,7 @@ describe('choose_caption_track (elicitation)', () => {
   });
 
   it('returns the track list and the get_transcript call when the client cannot elicit', async () => {
-    const h = await harness({ registry: testRegistry(), ctx: ctx(), storage: null });
+    const h = await harness({ registry: await youtubeRegistry(), ctx: ctx(), storage: null });
     const out = resultText(await h.client.callTool({ name: 'choose_caption_track', arguments: { url: ZOO } }));
     expect(out).toContain('no MCP elicitation support');
     expect(out).toContain(
@@ -267,7 +275,7 @@ describe('choose_caption_track (elicitation)', () => {
   it('fetches the only track without asking', async () => {
     let asked = 0;
     const h = await harness({
-      registry: testRegistry(),
+      registry: await youtubeRegistry(),
       ctx: ctx(),
       storage: null,
       capabilities: { elicitation: {} },
@@ -289,7 +297,7 @@ describe('confirmExpensive', () => {
     const answers: ('accept' | 'decline')[] = ['accept', 'decline'];
     const messages: string[] = [];
     const h = await harness({
-      registry: testRegistry(),
+      registry: llmRegistry(),
       ctx: testContext({ env }),
       storage: null,
       capabilities: { elicitation: {} },
@@ -308,7 +316,7 @@ describe('confirmExpensive', () => {
   });
 
   it('reports unsupported when the client cannot elicit', async () => {
-    const h = await harness({ registry: testRegistry(), ctx: testContext({ env }), storage: null });
+    const h = await harness({ registry: llmRegistry(), ctx: testContext({ env }), storage: null });
     expect(await confirmExpensive(h.server, { message: 'Transcribe?', estimateMinutes: 60 })).toBe('unsupported');
     expect(
       await confirmExpensive(h.server, {
@@ -324,7 +332,7 @@ describe('completions', () => {
   it('completes collection ids and names, and saved video ids and titles, by prefix', async () => {
     const storage = await filledStorage();
     const col = await storage.createCollection({ name: 'G-Wagon research' });
-    const h = await harness({ registry: testRegistry(), ctx: testContext(), storage });
+    const h = await harness({ registry: llmRegistry(), ctx: testContext(), storage });
     const complete = async (name: string, value: string) =>
       (await h.client.complete({ ref: { type: 'ref/prompt', name: 'digest' }, argument: { name, value } })).completion.values;
 
@@ -343,7 +351,7 @@ describe('completions', () => {
   });
 
   it('builds prompt messages that drive digest_videos with saved ids and titles', async () => {
-    const h = await harness({ registry: testRegistry(), ctx: testContext(), storage: await filledStorage() });
+    const h = await harness({ registry: llmRegistry(), ctx: testContext(), storage: await filledStorage() });
     const prompt = await h.client.getPrompt({
       name: 'digest',
       arguments: { urls: 'youtube:jNQXAC9IVRw, Me at the zoo', question: 'Why?' },
@@ -361,8 +369,8 @@ describe('collection subscriptions', () => {
     await storage.putContext(zoo);
     const col = await storage.createCollection({ name: 'Watched channel' });
     await storage.addToCollection(col.id, [zoo.metadata.ref.id]);
-    const a = await harness({ registry: testRegistry(), ctx: testContext(), storage });
-    const b = await harness({ registry: testRegistry(), ctx: testContext(), storage });
+    const a = await harness({ registry: llmRegistry(), ctx: testContext(), storage });
+    const b = await harness({ registry: llmRegistry(), ctx: testContext(), storage });
     const gotA: string[] = [];
     const gotB: string[] = [];
     a.client.setNotificationHandler(ResourceUpdatedNotificationSchema, (n) => {
@@ -395,7 +403,7 @@ describe('collection subscriptions', () => {
   it('lists a latest resource per collection and rejects foreign URIs', async () => {
     const storage = await filledStorage();
     const col = await storage.createCollection({ name: 'Zoo' });
-    const h = await harness({ registry: testRegistry(), ctx: testContext(), storage });
+    const h = await harness({ registry: llmRegistry(), ctx: testContext(), storage });
     const list = await h.client.listResources();
     expect(list.resources.map((r) => r.uri)).toContain(collectionLatestUri(col.id));
     await expect(h.client.subscribeResource({ uri: 'file:///etc/passwd' })).rejects.toThrow(/only serves vid2context/);

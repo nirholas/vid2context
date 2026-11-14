@@ -48,6 +48,8 @@ interface Line {
 
 interface Piece {
   chapter?: string;
+  /** Where the chapter starts; a continued piece shows its own first line instead. */
+  chapterStart: number;
   continued: boolean;
   lines: Line[];
   tokens: number;
@@ -92,8 +94,14 @@ function heading(chapter: string, startSec: number, long: boolean, continued: bo
   return `## Chapter: ${chapter} (${formatTimestamp(startSec, long)})${continued ? ' (continued)' : ''}`;
 }
 
+function pieceHeading(p: Omit<Piece, 'tokens'>, long: boolean): string | undefined {
+  if (!p.chapter) return undefined;
+  return heading(p.chapter, p.continued ? (p.lines[0]?.startSec ?? 0) : p.chapterStart, long, p.continued);
+}
+
 function pieceTokens(p: Omit<Piece, 'tokens'>, long: boolean): number {
-  const head = p.chapter ? estimateTokens(heading(p.chapter, p.lines[0]?.startSec ?? 0, long, p.continued)) + 1 : 0;
+  const h = pieceHeading(p, long);
+  const head = h ? estimateTokens(h) + 1 : 0;
   return head + p.lines.reduce((n, l) => n + estimateTokens(l.text) + 1, 0);
 }
 
@@ -120,11 +128,11 @@ function evenWindows(lines: Line[], budget: number): Line[][] {
 }
 
 /** Chapter units: segments belong to the chapter in which they start; anything before the first chapter joins it. */
-function units(context: VideoContext): { chapter?: string; segments: Segment[] }[] {
+function units(context: VideoContext): { chapter?: string; chapterStart: number; segments: Segment[] }[] {
   const segs = context.transcript.segments;
   const chapters = [...context.metadata.chapters].sort((a, b) => a.startSec - b.startSec);
-  if (chapters.length === 0) return [{ segments: segs }];
-  const out = chapters.map((c) => ({ chapter: c.title, segments: [] as Segment[] }));
+  if (chapters.length === 0) return [{ chapterStart: 0, segments: segs }];
+  const out = chapters.map((c) => ({ chapter: c.title, chapterStart: c.startSec, segments: [] as Segment[] }));
   for (const s of segs) {
     let i = 0;
     for (let k = 0; k < chapters.length; k++) {
@@ -144,7 +152,7 @@ export function chunkTranscript(context: VideoContext, videoIndex: number, opts:
   for (const u of units(context)) {
     const lines = toLines(u.segments, long);
     if (lines.length === 0) continue;
-    const whole = { chapter: u.chapter, continued: false, lines };
+    const whole = { chapter: u.chapter, chapterStart: u.chapterStart, continued: false, lines };
     const tokens = pieceTokens(whole, long);
     if (tokens <= budget) {
       pieces.push({ ...whole, tokens });
@@ -153,7 +161,7 @@ export function chunkTranscript(context: VideoContext, videoIndex: number, opts:
     // Leave room for the repeated chapter heading in every window.
     const room = u.chapter ? budget - estimateTokens(heading(u.chapter, 0, long, true)) - 1 : budget;
     evenWindows(lines, Math.max(1, room)).forEach((w, i) => {
-      const p = { chapter: u.chapter, continued: i > 0, lines: w };
+      const p = { chapter: u.chapter, chapterStart: u.chapterStart, continued: i > 0, lines: w };
       pieces.push({ ...p, tokens: pieceTokens(p, long) });
     });
   }
@@ -176,7 +184,8 @@ export function chunkTranscript(context: VideoContext, videoIndex: number, opts:
     const text = g
       .map((p) => {
         const body = p.lines.map((l) => l.text).join('\n');
-        return p.chapter ? `${heading(p.chapter, p.lines[0]?.startSec ?? 0, long, p.continued)}\n${body}` : body;
+        const h = pieceHeading(p, long);
+        return h ? `${h}\n${body}` : body;
       })
       .join('\n\n');
     const first = g[0]?.lines[0];

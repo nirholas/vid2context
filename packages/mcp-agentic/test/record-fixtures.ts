@@ -4,7 +4,7 @@
  *   npx tsx packages/mcp-agentic/test/record-fixtures.ts
  *
  * Runs digest_videos exactly as the unit test does (the two shared fixture
- * contexts, RECORDED_MAX_TOKENS, QUESTION) with the client's sampling handler
+ * contexts by their saved ids, RECORDED_MAX_TOKENS, QUESTION) with the client's sampling handler
  * on the real keyless LLM chain, and saves every successful chat completion
  * with the messages that produced it to test/fixtures/. No key is sent.
  */
@@ -16,15 +16,15 @@ import {
   connect,
   FIXTURES,
   filledStorage,
-  GWAGON,
+  GWAGON_ID,
+  llmRegistry,
   QUESTION,
   RECORDED_MAX_TOKENS,
   type RecordedExchange,
   recordedAnswer,
   resultText,
   SAMPLING_FIXTURE,
-  testRegistry,
-  ZOO,
+  ZOO_ID,
 } from './helpers.ts';
 
 const exchanges: RecordedExchange[] = [];
@@ -58,7 +58,7 @@ const recordingFetch: typeof fetch = async (input, init) => {
   return res;
 };
 
-const registry = testRegistry();
+const registry = llmRegistry();
 // Keyless lanes only: an empty env, never process.env, so no key can leak into the fixture.
 const chainCtx = createContext({ runtime: 'node', env: {}, fetch: recordingFetch });
 const serverCtx = createContext({
@@ -75,7 +75,7 @@ const h = await connect({
   sampling: chainSampler(registry, chainCtx, { retries: 6 }),
 });
 const res = await h.client.callTool(
-  { name: 'digest_videos', arguments: { urls: [ZOO, GWAGON], question: QUESTION, maxTokensPerVideo: RECORDED_MAX_TOKENS } },
+  { name: 'digest_videos', arguments: { urls: [ZOO_ID, GWAGON_ID], question: QUESTION, maxTokensPerVideo: RECORDED_MAX_TOKENS } },
   undefined,
   { timeout: 30 * 60 * 1000 },
 );
