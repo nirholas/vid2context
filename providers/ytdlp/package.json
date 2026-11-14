@@ -16,5 +16,8 @@
     "@vid2context/core": "*",
     "@vid2context/provider-youtube": "*",
     "@vid2context/registry": "*"
+  },
+  "devDependencies": {
+    "@vid2context/provider-stt-openai-compatible": "*"
   }
 }

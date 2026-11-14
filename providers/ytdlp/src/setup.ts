@@ -3,14 +3,22 @@
  *
  *   npx tsx providers/ytdlp/src/setup.ts
  *
- * An entry point, so it reads process.env (after loading .env files) and
+ * An entry point, so it reads process.env (after loading .env files when the
+ * registry loads) and
  * prints the result as JSON on stdout. Logs go to stderr.
  */
 import { createContext } from '@vid2context/core';
-import { loadEnvFiles } from '@vid2context/registry/node';
 import { ensureYtDlp } from './binary.ts';
 
-loadEnvFiles();
+// The registry module imports every provider; a broken one elsewhere must not stop yt-dlp setup.
+try {
+  const { loadEnvFiles } = await import('@vid2context/registry/node');
+  loadEnvFiles();
+} catch (err) {
+  console.error(
+    `Could not load .env files through the registry (${(err as Error).message.split('\n')[0]}); using the shell environment.`,
+  );
+}
 const ctx = createContext({ runtime: 'node', env: { VID2CONTEXT_LOG_LEVEL: 'info', ...process.env } });
 try {
   const info = await ensureYtDlp(ctx);

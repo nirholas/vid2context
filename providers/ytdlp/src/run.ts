@@ -118,20 +118,16 @@ export async function workingUrl(ref: VideoRef, ctx: Ctx): Promise<string> {
 
 export function parseJson(stdout: string, label: string): YtDlpInfo {
   const text = stdout.trim();
-  // -J prints one JSON document; take the last line that parses, in case an extractor printed something first.
-  const lines = text.split('\n');
-  for (let i = lines.length - 1; i >= 0; i--) {
-    const line = lines[i]?.trim();
-    if (!line?.startsWith('{')) continue;
-    try {
-      return JSON.parse(line) as YtDlpInfo;
-    } catch {
-      break;
-    }
-  }
   try {
     return JSON.parse(text) as YtDlpInfo;
   } catch {
+    // -J prints one JSON line; an extractor may have printed something before it.
+    const last = text.split('\n').at(-1)?.trim() ?? '';
+    try {
+      if (last.startsWith('{')) return JSON.parse(last) as YtDlpInfo;
+    } catch {
+      // fall through
+    }
     throw new Vid2ContextError('upstream', `${label}: yt-dlp did not print JSON.`, {
       hint: 'Update yt-dlp (delete .vid2context/bin/yt-dlp.json to force an update check) and retry.',
     });

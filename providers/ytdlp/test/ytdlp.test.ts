@@ -504,8 +504,8 @@ describe.skipIf(!process.env.LIVE)('live', () => {
 
   it('fetches metadata, captions and audio for a short public video, and transcribes it through the keyless chain', async () => {
     const { ytdlpCaptions, ytdlpSource } = await import('../src/index.ts');
-    const { getVideoContext } = await import('@vid2context/core');
-    const { createRegistry } = await import('@vid2context/registry/node');
+    const { getVideoContext, Registry } = await import('@vid2context/core');
+    const stt = (await import('@vid2context/provider-stt-openai-compatible')).default;
     const ctx = createContext({ runtime: 'node', env: process.env });
 
     const vimeo = ref('https://vimeo.com/76979871');
@@ -524,7 +524,12 @@ describe.skipIf(!process.env.LIVE)('live', () => {
       expect(audio.durationSec).toBeCloseTo(19, 0);
     }
 
-    const context = await getVideoContext(createRegistry(), 'https://www.youtube.com/watch?v=jNQXAC9IVRw', { mode: 'stt' }, ctx);
+    const context = await getVideoContext(
+      new Registry([ytdlpSource, ytdlpCaptions, ...[stt].flat()], 'node'),
+      'https://www.youtube.com/watch?v=jNQXAC9IVRw',
+      { mode: 'stt' },
+      ctx,
+    );
     expect(context.transcript.origin).toBe('stt');
     expect(context.attempts.find((a) => a.stage === 'audio' && a.outcome === 'ok')?.id).toBe('ytdlp');
     expect(context.transcript.segments.map((s) => s.text).join(' ')).toMatch(/elephant/i);

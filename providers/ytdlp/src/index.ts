@@ -94,9 +94,17 @@ export const ytdlpSource: SourceProvider = defineProvider({
     const url = await workingUrl(ref, ctx);
     const dir = await mkdtemp(join(tmpdir(), 'vid2context-ytdlp-audio-'));
     try {
-      const stdout = await withFallbackUrl(ctx, url, (u) =>
-        ytdlp(ctx, bin.path, audioArgs(u, cfg, join(dir, 'audio.%(ext)s')), 'audio', dir),
-      );
+      const download = (u: string) => ytdlp(ctx, bin.path, audioArgs(u, cfg, join(dir, 'audio.%(ext)s')), 'audio', dir);
+      const stdout = await withFallbackUrl(ctx, url, async (u) => {
+        try {
+          return await download(u);
+        } catch (err) {
+          // YouTube now and then rejects a media URL with 403; a fresh run gets new URLs and usually works.
+          if (!(err instanceof Vid2ContextError && /unable to download video data: HTTP Error 403/i.test(err.message))) throw err;
+          ctx.log.info('yt-dlp: media download got HTTP 403; retrying once', { url: u });
+          return await download(u);
+        }
+      });
       const file = (await readdir(dir)).find((f) => f.endsWith('.mp3'));
       if (!file) {
         throw new Vid2ContextError('upstream', 'yt-dlp finished but wrote no mp3 file.', {
