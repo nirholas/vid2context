@@ -2,9 +2,9 @@
 
 [![npm](https://img.shields.io/npm/v/vid2context-mcp?label=vid2context-mcp)](https://www.npmjs.com/package/vid2context-mcp) [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE) [![Node 22+](https://img.shields.io/badge/node-%3E%3D22-339933?logo=nodedotjs&logoColor=white)](https://nodejs.org) [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/nirholas/vid2context)
 
-**Turn any video into context for AI agents.** An MCP server, CLI and library that gives Claude, ChatGPT, Cursor, VS Code Copilot and any other agent the transcript, metadata and chapters of a YouTube video or media file, with timestamps it can cite.
+**Turn any video into context for AI agents.** An MCP server, CLI, HTTP API and library that gives Claude, ChatGPT, Cursor, VS Code Copilot and any other agent the transcript, metadata and chapters of a video, playlist, podcast or media file, with timestamps it can cite.
 
-Paste a video link or drop in a media file. vid2context returns the transcript, metadata and chapters in a form your agent can read and cite: plain text with `[m:ss]` timestamps, JSON, or (soon) a single Markdown context pack you can upload to ChatGPT Projects, Claude Projects or a custom GPT.
+Paste a video link or drop in a media file. vid2context returns the transcript, metadata and chapters in a form your agent can read and cite: plain text with `[m:ss]` timestamps, JSON, Markdown, SRT, VTT, or one Markdown context pack for many videos that you can upload to ChatGPT Projects, Claude Projects or a custom GPT.
 
 It is free first. Local models run first, then hosted free tiers with your own key, then keyless hosts that need no account. Paid APIs are used last, and only when you set their key. With zero configuration it already works.
 
@@ -49,19 +49,20 @@ Attempts:
 
 ## Status
 
-Early and pre-release (0.1.0). What works today:
+First release (0.1.0), on npm as [`vid2context-mcp`](https://www.npmjs.com/package/vid2context-mcp) and [`vid2context`](https://www.npmjs.com/package/vid2context). Everything below is built and covered by tests that replay real recorded responses.
 
-| Area                                                                                                   | State                                               |
-| ------------------------------------------------------------------------------------------------------ | --------------------------------------------------- |
-| Core library: types, provider contracts, rung chain, pipeline                                          | Working, tested                                     |
-| YouTube: URL matching, metadata, chapters from description, creator and auto captions (no key, no SDK) | Working, tested                                     |
-| Local media files as speech-to-text input (Node)                                                       | Working, tested                                     |
-| Speech-to-text: any OpenAI-compatible `/audio/transcriptions` API                                      | Working, tested                                     |
-| LLM: any OpenAI-compatible chat API                                                                    | Working, tested                                     |
-| CLI                                                                                                    | Working (minimal)                                   |
-| MCP server over stdio                                                                                  | Working (minimal: `get_transcript`, `get_metadata`) |
-| HTTP API (Hono)                                                                                        | Scaffolded, not implemented                         |
-| Web app, browser extension, remote MCP, context pack, other platforms                                  | Planned, see [Roadmap](#roadmap)                    |
+| Area | What you get |
+| --- | --- |
+| Sources | YouTube (videos, Shorts, playlists, channels, comments, no key), any of the 1,000+ sites yt-dlp supports, Bilibili, Vimeo, Loom and Wistia transcripts, direct media URLs, Google Drive, Dropbox and OneDrive share links, local files, and every video embedded in a web page |
+| Speech-to-text | Local whisper.cpp and Transformers.js (offline), any OpenAI-compatible server, Groq, Mistral, DeepInfra, Together, Cloudflare Workers AI, OVH (keyless), OpenAI |
+| LLMs | Ollama, LM Studio, llama.cpp, vLLM and other local servers, in-browser WebLLM, free tiers (Groq, Cerebras, Gemini, Mistral, GitHub Models, NVIDIA, SambaNova, OpenRouter `:free`), keyless hosts, native Anthropic, Gemini and Vertex |
+| Output | text, JSON, Markdown with timestamp links, SRT, VTT, the context pack, and a .zip bundle with all of them |
+| Intelligence | Cited briefs across videos, Q&A with timestamp citations, schema extraction templates, translation, auto-chapters, key moments, on-screen text and slides from video frames, duplicate and reupload detection, SponsorBlock segments |
+| Library | Collections fed from playlists, channels and feeds, keyword and vector search, on SQLite, Postgres with pgvector, or Cloudflare D1 and R2 |
+| Surfaces | CLI, stdio MCP server (28 tools), remote MCP over Streamable HTTP with OAuth for ChatGPT and Claude.ai, HTTP API with OpenAPI, web app, chat app, browser extension, Telegram, Discord and Slack bots, LangChain.js loader, n8n nodes, Obsidian and Notion export |
+| Deploy | Docker, Cloud Run, Railway, Alibaba Cloud, Cloudflare Workers, Vercel, GitHub Pages (client only) |
+
+Planned: video mode, where a multimodal model watches the whole video. The `--mode video` flag exists, but no provider implements it yet.
 
 ## Quick start (zero keys)
 
@@ -89,16 +90,27 @@ npm run cli -- ./interview.mp3 --format json > interview.json
 ## CLI
 
 ```
-vid2context <url-or-file> [options]
+vid2context <input> [flags]            same as `vid2context get <input>`
+vid2context <command> [args] [flags]
 
-  --format <id>     Output format: text | json (default: text)
-  --timestamps      Prefix lines with timestamps where the format allows
-  --mode <mode>     auto | captions | stt | video (default: auto)
-  --lang <code>     Preferred transcript language, e.g. en, de, pt-BR
-  --verbose         Log progress and the attempts list to stderr
+  get         Transcript and metadata for one video (the default command)
+  list        Expand a playlist, channel, feed or page into video refs
+  pack        One context pack (Markdown for an AI model) from one or many videos
+  bundle      A .zip with every format, the context pack and a README for agents
+  search      Keyword search over transcripts saved in the library
+  library     Saved video contexts
+  collection  Named groups of videos in the library
+  models      Every rung by tier, whether it is enabled, and the env vars it needs
+  doctor      Check Node, ffmpeg, yt-dlp, GPU, local servers, data directory, keys and network
+  config      Resolved settings and where each came from, secrets masked
+  serve       Start the HTTP API
+  mcp         Start the stdio MCP server
+  formats, completion, help
 ```
 
-Program output goes to stdout and everything else to stderr, so `vid2context URL > transcript.txt` stays clean. On failure the CLI prints the error code, a hint on how to fix it, and every attempt that was made.
+Common flags: `-f, --format text|json|markdown|srt|vtt|pack`, `-t, --timestamps`, `--mode auto|captions|stt|video`, `--lang <code>`, `--policy free|local-only|quality`, `--only` and `--skip` (rung ids or services), `--json`, `-o, --out <file>`, `--verbose`. Run `vid2context help <command>` for the rest. Full reference: [docs/cli.md](docs/cli.md).
+
+Program output goes to stdout and everything else to stderr, so `vid2context URL > transcript.txt` stays clean. On failure the CLI prints the error code, a hint on how to fix it, and every attempt that was made, and exits with a code per failure kind (3 unsupported input, 4 not found, 6 no transcript, 9 rate limited, 10 auth, and so on).
 
 ## Use it from your agent
 
@@ -141,21 +153,25 @@ claude mcp add vid2context -- "$PWD/node_modules/.bin/tsx" "$PWD/packages/mcp/sr
 
 ### Tools
 
-Ask your agent something like "get the transcript of https://youtu.be/jNQXAC9IVRw and summarize it with timestamps". The server exposes:
+Ask your agent something like "get the transcript of https://youtu.be/jNQXAC9IVRw and summarize it with timestamps". The server exposes 28 tools:
 
-| Tool             | Input                                                                     | Returns                                                                                   |
-| ---------------- | ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| `get_transcript` | `url`, optional `format`, `timestamps` (default true), `mode`, `language` | A header (title, channel, URL, duration, chapters, transcript origin) plus the transcript |
-| `get_metadata`   | `url`                                                                     | Title, channel, description, duration, chapters, tags and language as JSON                |
+| Group | Tools |
+| --- | --- |
+| One video | `get_transcript`, `get_metadata`, `get_outline` (chapters with token counts, start here for long videos), `get_section`, `get_comments`, `get_key_moments`, `get_skip_segments`, `list_caption_languages`, `choose_caption_track`, `list_formats` |
+| Many videos | `list_items` (expand a playlist, channel, feed or page), `research_videos`, `export_context_pack`, `find_duplicates`, `digest_videos` |
+| Library | `create_collection`, `add_to_collection`, `get_collection`, `list_collections`, `search_transcript` |
+| Answers | `ask` (Q&A with timestamp citations), `build_brief` (cited brief across videos), `extract` (buyer guide, tutorial steps, comparison or your own JSON Schema) |
+| Live and export | `watch_live` (transcribe a live stream as it runs), `open_transcript_viewer` (interactive viewer in MCP Apps clients), `export_obsidian`, `export_notion` |
+| Setup | `list_models` |
 
-Failures come back as tool errors carrying the error code, hint and attempts, so the agent can explain the problem or retry with another mode.
+It also ships the prompts `brief`, `buyer_guide` and `digest`, and resources for saved videos, transcripts and collections (collections are subscribable). Failures come back as tool errors carrying the error code, hint and attempts, so the agent can explain the problem or retry with another mode. Details: [docs/guides/mcp.md](docs/guides/mcp.md).
 
-### ChatGPT
+### ChatGPT and Claude.ai
 
-ChatGPT connects only to remote MCP servers over HTTPS. Two paths are planned:
+These connect only to remote MCP servers over HTTPS. Two options:
 
-- **Context pack export:** one Markdown file per video or collection, sized for upload to a ChatGPT Project or custom GPT. Zero setup.
-- **Remote MCP:** Streamable HTTP with auth, plus a Cloudflare Tunnel guide so requests to YouTube still come from your own connection.
+- **Context pack:** `vid2context pack <url>...` writes one Markdown file for one or many videos, sized for upload to a ChatGPT Project, Claude Project or custom GPT. Zero setup.
+- **Remote MCP:** run the Streamable HTTP server with a bearer token or the built-in single-owner OAuth 2.1 server, behind a Cloudflare Tunnel so requests to YouTube still come from your own connection. See [docs/guides/remote-mcp.md](docs/guides/remote-mcp.md) and [docs/guides/cloudflare-tunnel.md](docs/guides/cloudflare-tunnel.md).
 
 ## Add free keys (optional)
 
@@ -204,17 +220,18 @@ TypeScript, ESM and npm workspaces, so the same code runs on Node, Cloudflare Wo
 
 ```
 packages/
-  core/        Contracts, rung chain, pipeline, formatters. Runtime-neutral, no Node-only imports.
+  core/        Contracts, rung chain, pipeline, formatters, chunking, caption cleanup, long audio.
+               Runtime-neutral, no Node-only imports.
   registry/    Per-runtime provider registries (node, workers, browser), generated on install.
   cli/         The vid2context command.
-  mcp/         The MCP server.
-  server/      HTTP API on Hono (scaffold).
-  discovery/   npm packages, MCP Registry and directory manifests (server.json, glama.json, ...).
-providers/
-  youtube/                 Source and captions through the innertube player API.
-  media-file/              Local files and file:// URLs (Node only).
-  stt-openai-compatible/   Speech-to-text rungs.
-  llm-openai-compatible/   Chat completion rungs.
+  mcp/         The stdio MCP server; mcp-http/ serves it remotely, mcp-apps/ and mcp-agentic/ add
+               the viewer, sampling and elicitation.
+  server/      HTTP API on Hono with OpenAPI, for Node, Workers, Vercel and containers.
+  web/ chat/ extension/   Web app, chat app and browser extension.
+  ask/ insights/ translate/ chapters/ search/ library/ ...   Intelligence and library features.
+  discovery/   npm bundles, MCP Registry and directory manifests (server.json, glama.json, ...).
+providers/     One package per source, speech-to-text, LLM, embedding or storage backend
+               (youtube, ytdlp, bilibili, media-file, stt-whisper-cpp, llm-local, storage-sqlite, ...).
 scripts/
   gen-registry.mjs         Scans providers/*/package.json and writes the generated registries.
 ```
@@ -253,18 +270,11 @@ Tests use real responses recorded from the live services, never invented data. L
 
 ## Roadmap
 
-- **Output:** Markdown with timestamp links and chapters, SRT, VTT and the context pack; caption cleanup; chunking and chapter-aware sections; long-audio splitting.
-- **Sources:** any site yt-dlp supports (Vimeo, TikTok, X, Instagram, Reddit, Twitch VODs, Loom, Rumble), podcasts via RSS, direct media URLs including HLS and DASH, YouTube playlists, channels and comments. DRM services are out of scope.
-- **Speech-to-text:** whisper.cpp, Transformers.js (Node and in-browser WebGPU), Cloudflare Workers AI, Gemini, Deepgram and AssemblyAI, speaker diarization.
-- **LLM:** a wider free catalog, a live OpenRouter `:free` picker, native Anthropic and Gemini providers, local auto-detection, in-browser models, embeddings.
-- **Intelligence:** Gemini video mode, on-screen text via OCR or a vision model, cited cross-video briefs that flag consensus and disagreement, extraction templates, Q&A over a collection, translation, auto-chapters.
-- **Library:** collections fed from playlists, watch lists that ingest new uploads, hybrid keyword and vector search, on SQLite, Cloudflare D1 or Postgres with pgvector.
-- **Surfaces:** a full CLI, more MCP tools, remote MCP for ChatGPT and Claude.ai, a full HTTP API with OpenAPI, a web app where you paste a link or upload a video, pick your LLM, and get everything as copyable text or a .zip, and a browser extension.
-- **Deploy:** Docker, Railway, Cloud Run, Alibaba Cloud, Cloudflare Workers and Pages, Vercel, and a client-only GitHub Pages build.
+Next up: video mode (a multimodal model watches the video, so on-screen action is captured as well as speech), Gemini and Deepgram or AssemblyAI speech-to-text, and podcast feeds with `podcast:transcript`. DRM services are out of scope. The full plan and what each work item covers is in [docs/ROADMAP.md](docs/ROADMAP.md).
 
 ## FAQ
 
-**How do I give Claude, ChatGPT or Cursor a YouTube video?** Add the MCP server (above) and paste the link into your chat. The agent calls `get_transcript` and gets the transcript with `[m:ss]` timestamps. ChatGPT needs a remote MCP server, which is on the roadmap.
+**How do I give Claude, ChatGPT or Cursor a YouTube video?** Add the MCP server (above) and paste the link into your chat. The agent calls `get_transcript` and gets the transcript with `[m:ss]` timestamps. ChatGPT and Claude.ai need the remote MCP server or a context pack upload (see [ChatGPT and Claude.ai](#chatgpt-and-claudeai)).
 
 **Does it need an API key?** No. Creator captions and auto-captions need no key, and speech-to-text falls back to keyless hosts. Keys only add faster or local options.
 
@@ -272,7 +282,9 @@ Tests use real responses recorded from the live services, never invented data. L
 
 **Can I keep AI processing on my machine?** Point it at a local speech-to-text server and a local LLM and set `VID2CONTEXT_POLICY=local-only`. No hosted AI service is used; fetching a YouTube video still needs the network, a local file does not.
 
-**Is it a YouTube transcript API?** Yes, as a library and CLI today, and as an HTTP API with OpenAPI soon. It returns text, JSON and timestamps, keeps the raw transcript, and records every provider it tried.
+**Is it a YouTube transcript API?** Yes: a library, a CLI and an HTTP API with OpenAPI (`vid2context serve`, see [docs/guides/http-api.md](docs/guides/http-api.md)). It returns text, JSON and timestamps, keeps the raw transcript, and records every provider it tried.
+
+**Does it work on long videos and whole playlists?** Yes. Agents read the outline first and fetch only the chapters they need (about 12k tokens per hour of speech), long audio is split and transcribed in parallel, and `list_items` or `vid2context list` expands a playlist, channel or feed into its videos.
 
 ## License
 

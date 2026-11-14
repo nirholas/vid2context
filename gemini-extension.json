@@ -1,6 +1,6 @@
 {
   "name": "vid2context",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Turn any video into context for AI agents: transcripts, metadata, chapters, timestamps.",
   "mcpServers": {
     "vid2context": {

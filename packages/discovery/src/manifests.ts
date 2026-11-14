@@ -149,8 +149,16 @@ If a call fails, the error carries a \`hint\` that says how to recover. Source a
 `;
 }
 
-const MCP_README_TOOLS = `- \`get_transcript\`: the transcript for a video URL or local file, as text with \`[m:ss]\` timestamps or JSON, with a header of title, channel and chapters
-- \`get_metadata\`: title, channel, description, duration, chapters, tags and language, without the transcript`;
+const MCP_README_TOOLS = `28 tools, grouped by job:
+
+- One video: \`get_transcript\` (text with \`[m:ss]\` timestamps, JSON, Markdown, SRT, VTT or a context pack), \`get_metadata\`, \`get_outline\` (chapters with token counts; start here for long videos), \`get_section\`, \`get_comments\`, \`get_key_moments\`, \`get_skip_segments\`, \`list_caption_languages\`, \`choose_caption_track\`, \`list_formats\`
+- Many videos: \`list_items\` (expand a playlist, channel, feed or page), \`research_videos\`, \`export_context_pack\`, \`find_duplicates\`, \`digest_videos\`
+- Library: \`create_collection\`, \`add_to_collection\`, \`get_collection\`, \`list_collections\`, \`search_transcript\`
+- Answers: \`ask\` (Q&A with timestamp citations), \`build_brief\` (cited brief across videos), \`extract\` (buyer guide, tutorial steps, comparison or your own JSON Schema)
+- Live and export: \`watch_live\`, \`open_transcript_viewer\`, \`export_obsidian\`, \`export_notion\`
+- Setup: \`list_models\`
+
+Prompts: \`brief\`, \`buyer_guide\`, \`digest\`. Resources: saved videos, transcripts and collections.`;
 
 export function npmReadme(pkg: PublishedPackage): string {
   if (pkg.name === MCP_PACKAGE.name) {
@@ -216,6 +224,8 @@ ${DESCRIPTION}
 npx vid2context https://www.youtube.com/watch?v=jNQXAC9IVRw --timestamps
 npx vid2context ./interview.mp3 --format json > interview.json
 \`\`\`
+
+Commands: \`get\` (the default), \`list\` (expand a playlist, channel, feed or page), \`pack\` (one context pack for many videos), \`bundle\` (a .zip with every format), \`search\`, \`library\`, \`collection\`, \`models\`, \`doctor\`, \`config\`, \`serve\` (HTTP API), \`mcp\` (stdio MCP server). Formats: text, json, markdown, srt, vtt, pack.
 
 Run \`npx vid2context --help\` for every option.
 
