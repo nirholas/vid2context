@@ -1,0 +1,25 @@
+{
+  "id": "caption-languages",
+  "recordedAt": "2026-11-14",
+  "server": {
+    "name": "vid2context",
+    "version": "0.1.0",
+    "runtime": "node"
+  },
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/caption-languages",
+    "query": [
+      [
+        "url",
+        "https://www.youtube.com/watch?v=jNQXAC9IVRw"
+      ]
+    ]
+  },
+  "status": 200,
+  "ms": 3177,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": "{\"videoId\":\"youtube:jNQXAC9IVRw\",\"url\":\"https://www.youtube.com/watch?v=jNQXAC9IVRw\",\"tracks\":[{\"language\":\"en\",\"name\":\"English\",\"origin\":\"creator-captions\",\"translatable\":true,\"provider\":\"youtube-captions\"},{\"language\":\"de\",\"name\":\"German\",\"origin\":\"creator-captions\",\"translatable\":true,\"provider\":\"youtube-captions\"},{\"language\":\"en\",\"name\":\"English\",\"origin\":\"creator-captions\",\"provider\":\"ytdlp-captions\"},{\"language\":\"de\",\"name\":\"German\",\"origin\":\"creator-captions\",\"provider\":\"ytdlp-captions\"},{\"language\":\"en\",\"name\":\"en\",\"origin\":\"auto-captions\",\"provider\":\"ytdlp-captions\"},{\"language\":\"de\",\"name\":\"de\",\"origin\":\"auto-captions\",\"provider\":\"ytdlp-captions\"}],\"translationTargets\":[],\"notes\":[\"YouTube offers no machine translation for these tracks.\"]}"
+}

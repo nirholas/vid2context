@@ -1,0 +1,29 @@
+{
+  "id": "upload-transcript",
+  "recordedAt": "2026-11-14",
+  "server": {
+    "name": "vid2context",
+    "version": "0.1.0",
+    "runtime": "node"
+  },
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/transcript",
+    "query": [
+      [
+        "url",
+        "upload:9dd76462aaf0e20bd4984c7cb49f092d667ea7bbcb065d46814d570460ec89d7"
+      ],
+      [
+        "format",
+        "srt"
+      ]
+    ]
+  },
+  "status": 200,
+  "ms": 1853,
+  "headers": {
+    "content-type": "application/x-subrip; charset=utf-8"
+  },
+  "body": "1\n00:00:03,500 --> 00:00:05,160\nI'm going to step off the limb now.\n\n2\n00:00:14,980 --> 00:00:23,040\nThat's one small step for man,\none giant leap for mankind.\n"
+}

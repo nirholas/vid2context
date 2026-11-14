@@ -1,0 +1,41 @@
+{
+  "id": "section-time",
+  "recordedAt": "2026-11-14",
+  "server": {
+    "name": "vid2context",
+    "version": "0.1.0",
+    "runtime": "node"
+  },
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/section",
+    "query": [
+      [
+        "url",
+        "https://www.youtube.com/watch?v=cCPsdFdlshc"
+      ],
+      [
+        "from",
+        "5:00"
+      ],
+      [
+        "to",
+        "6:00"
+      ],
+      [
+        "format",
+        "text"
+      ],
+      [
+        "timestamps",
+        "1"
+      ]
+    ]
+  },
+  "status": 200,
+  "ms": 2,
+  "headers": {
+    "content-type": "text/plain; charset=utf-8"
+  },
+  "body": "[4:58] They're robust, reliable.\n[5:00] They work really well.\n[5:01] They just drink a little oil.\n[5:02] They drink a little oil.\n[5:03] As they age, one thing you will note on these trucks is they will drink some oil.\n[5:06] Well, this one's got 131,000 miles on it, and it drinks a quart and a half between oil changes.\n[5:11] You know what, though?\n[5:12] Not that bad.\n[5:13] My 2018 Audi Q7 drank about a quart between oil changes, which is normal.\n[5:18] Blake, you have an Audi.\n[5:19] You know this drill.\n[5:20] Blake, who's filming this.\n[5:22] And it happens.\n[5:23] Yeah.\n[5:24] You know, I'm not making excuses for anyone.\n[5:25] You just got to just say, hey, I want a G55.\n[5:28] I'll preface, that's on a 5,000-mile service interval, too.\n[5:31] Yeah.\n[5:31] So, they're pretty easy to maintain.\n[5:32] So, still uses the 113 motor, super reliable.\n[5:36] So, this generation was available with the M113 up until through 2012.\n[5:41] Yes.\n[5:42] So, you have two options, G500 or the G55 AMG.\n[5:45] Let's take a look inside.\n[5:46] Yep.\n[5:47] So, come around here, Blake.\n[5:48] Hop in.\n[5:48] I want to touch on a couple things here.\n[5:50] So, the big thing on these trucks, and this is an MBUSA truck, is the first thing you're\n[5:55] going to notice is the door panel.\n[5:57] It is physically wider.\n[5:58] We've now got our door switches and our seat switches on the door.\n"
+}

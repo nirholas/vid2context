@@ -1,0 +1,29 @@
+{
+  "id": "transcript-error",
+  "recordedAt": "2026-11-14",
+  "server": {
+    "name": "vid2context",
+    "version": "0.1.0",
+    "runtime": "node"
+  },
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/transcript",
+    "query": [
+      [
+        "url",
+        "https://www.youtube.com/watch?v=xxxxxxxxxxx"
+      ],
+      [
+        "format",
+        "text"
+      ]
+    ]
+  },
+  "status": 404,
+  "ms": 68,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": "{\"error\":{\"code\":\"not-found\",\"message\":\"YouTube xxxxxxxxxxx: ERROR (This video is unavailable)\",\"hint\":\"The video does not exist or was removed. Check the video id or URL.\"},\"attempts\":[{\"id\":\"youtube\",\"stage\":\"resolve\",\"outcome\":\"ok\",\"detail\":\"youtube:xxxxxxxxxxx\"},{\"id\":\"youtube\",\"stage\":\"metadata\",\"outcome\":\"error\",\"reason\":\"not-found\",\"detail\":\"YouTube xxxxxxxxxxx: ERROR (This video is unavailable)\"}]}"
+}

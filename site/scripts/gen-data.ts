@@ -488,6 +488,7 @@ async function main(): Promise<void> {
     ...listFiles('docs/contracts', '.md'),
     ...listFiles('docs/guides', '.md'),
     ...listFiles('docs/deploy', '.md'),
+    ...listFiles('docs/examples', '.md'),
   ];
   const datedPaths = [
     ...docSources,

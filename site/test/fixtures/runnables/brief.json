@@ -1,0 +1,630 @@
+{
+  "id": "brief",
+  "recordedAt": "2026-11-14",
+  "server": {
+    "name": "vid2context",
+    "version": "0.1.0",
+    "runtime": "node"
+  },
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/briefs",
+    "query": [],
+    "json": {
+      "inputs": [
+        "https://www.youtube.com/watch?v=cCPsdFdlshc"
+      ],
+      "question": "Which G-Wagon years are the most reliable, and which should be avoided?",
+      "template": "brief"
+    }
+  },
+  "status": 202,
+  "ms": 79650,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": "{\"id\":\"job_lYMaq0xawP63Qy0oxwdG_w\",\"kind\":\"brief\",\"status\":\"queued\",\"createdAt\":\"2026-11-14T18:44:47.551Z\",\"updatedAt\":\"2026-11-14T18:44:47.551Z\"}",
+  "job": {
+    "polls": 53,
+    "final": {
+      "id": "job_lYMaq0xawP63Qy0oxwdG_w",
+      "kind": "brief",
+      "status": "succeeded",
+      "createdAt": "2026-11-14T18:44:47.551Z",
+      "updatedAt": "2026-11-14T18:46:06.261Z",
+      "progress": {
+        "done": 0,
+        "total": 1,
+        "message": "Reading 1 video(s) in one pass"
+      },
+      "result": {
+        "question": "Which G-Wagon years are the most reliable, and which should be avoided?",
+        "template": "brief",
+        "strategy": "single",
+        "markdown": "# Brief: Which G-Wagon years are the most reliable, and which should be avoided?\n\n**Question:** Which G-Wagon years are the most reliable, and which should be avoided?\n\nBuilt from 1 video on 2026-11-14. 13 claims passed citation checks (quote found in the transcript within 30 s of its timestamp); 4 did not and are listed at the end, uncited. 0 points have consensus, 0 are disputed, 11 rest on one video.\n\n## Model Years\n\n- G55 AMG was sold in the US from 2003-2012: naturally aspirated in 2003-2004, supercharged 491 hp from 2005 onward.\n  - [Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked! @ 4:15](https://www.youtube.com/watch?v=cCPsdFdlshc&t=255s): \"The G55 didn't start until 2003, and it came in as a naturally aspirated model. And they ran it until 12, right? Yep, they ran it through 12. Now, the NA ver...\"\n- 2016-2018 models added auto start-stop, manual shift mode, and flat-bottom Alcantara steering wheel (2017-2018).\n  - [Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked! @ 12:54](https://www.youtube.com/watch?v=cCPsdFdlshc&t=774s): \"And in the introduction, I don't remember which year. Joe, do you remember what year it was where they introduced the auto start-stop? Was that? 16. 16. Yep....\"\n- 2016-2018 G550/G63 use a 4.0L biturbo V8 with hot-V layout, ~60-70 more hp and ~1.5 mpg better fuel economy than the naturally aspirated V8.\n  - [Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked! @ 13:16](https://www.youtube.com/watch?v=cCPsdFdlshc&t=796s): \"The 4-liter bi-turbo is a unique one in that it is what they call a hot V. In other words, the turbochargers are in the middle of the motor, and it's a 419-h...\"\n\n## Engine Reliability\n\n- The M113 V8 (2000-2012 G500/G55) is considered one of Mercedes' most reliable V8s.\n  - [Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked! @ 0:47](https://www.youtube.com/watch?v=cCPsdFdlshc&t=47s): \"This one has what we know the legendary M113 V8. This was Mercedes' big hurrah into the V8s, and this is arguably one of their most reliable V8s out there.\"\n  - [Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked! @ 4:53](https://www.youtube.com/watch?v=cCPsdFdlshc&t=293s): \"They're robust, reliable. They work really well. They just drink a little oil. They drink a little oil. As they age, one thing you will note on these trucks...\"\n\n## Leather Quality\n\n- Mercedes leather quality is exceptional, showing no rips, tears, cracks, or fading even at high mileage (128k-171k miles).\n  - [Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked! @ 3:39](https://www.youtube.com/watch?v=cCPsdFdlshc&t=219s): \"171,000 miles on a 25-year-old truck. And when you look at the leather, there's no rips, tears, or cracks.\"\n  - [Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked! @ 6:46](https://www.youtube.com/watch?v=cCPsdFdlshc&t=406s): \"These design-o seats were carried through into 2018 that look identical because they are identical. Same seat controls, same pneumatic pumps, same stitching....\"\n\n## Interior Design\n\n- First-gen interior (1991-2001) features wood trim, mechanical switches, and center shifter.\n  - [Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked! @ 2:04](https://www.youtube.com/watch?v=cCPsdFdlshc&t=124s): \"This is the first-gen 463 interior. You're going to notice right off the bat, we've got a lot of wood. We've got a lot of mechanical switches. We've got a sh...\"\n- Second-gen interior (2002-2012) has wider door panels with integrated switches, making the cabin feel snugger.\n  - [Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked! @ 5:50](https://www.youtube.com/watch?v=cCPsdFdlshc&t=350s): \"The big thing on these trucks, and this is an MBUSA truck, is the first thing you're going to notice is the door panel. It is physically wider. We've now got...\"\n\n## Parts Availability\n\n- The M113 V8 is a global motor with cheap and widely available parts worldwide.\n  - [Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked! @ 1:53](https://www.youtube.com/watch?v=cCPsdFdlshc&t=113s): \"It means if you're in Dubai, if you're in India, if you're in Japan, wherever, you can always get parts for it. Or if you're in Arkansas.\"\n\n## Transmission\n\n- The 7-speed automatic (2013-2018) is a major improvement over the 5-speed, keeping the engine in the right gear.\n  - [Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked! @ 10:27](https://www.youtube.com/watch?v=cCPsdFdlshc&t=627s): \"You got away from the 5-speed automatic and you go to a 7-speed automatic. I think that's just as much of a game changer in the way the truck handles and dri...\"\n\n## Buying Advice\n\n- Early MBUSA G500s (2002-2010) represent the best value for first-time buyers on a budget.\n  - [Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked! @ 8:17](https://www.youtube.com/watch?v=cCPsdFdlshc&t=497s): \"This model, the G500 2002 through 2010, it's going to be your first-time G-Buyer. Those of you that are on a little bit of a budget and need an entry-level v...\"\n\n## Off-Road Capability\n\n- The naturally aspirated V8 (2013-2015) is preferred off-road due to no turbo lag, less twitchy throttle in 4Low, and fewer coolers allowing more bumper modification options.\n  - [Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked! @ 15:27](https://www.youtube.com/watch?v=cCPsdFdlshc&t=927s): \"I really prefer the naturally aspirated engine off-road. There's no turbo lag. Right. It's less twitchy. It's beautiful. And the reason this is important is...\"\n\n## Sources\n\n| # | Video | Channel | Length | Transcript |\n|---|---|---|---|---|\n| V1 | [Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!](https://www.youtube.com/watch?v=cCPsdFdlshc) | Alliance Motorworks | 18:04 | stt, en |\n\n## Appendix: unverified claims\n\nThe model proposed these, but their quotes could not be matched to the transcript near the timestamp given. They are not cited above.\n\n| Claim | Video | Reason |\n|---|---|---|\n| The 2013-2015 G550 uses the M278 naturally aspirated 5.5L V8, which is very reliable with no catastrophic failures observed. | youtube:cCPsdFdlshc @ 9:37 | quote-not-found: Best match near 9:37 covers 79% of the quote's words (needs 80%). |\n| The third-generation interior (2013-2018) features a floating screen, dual gauge cluster, and Designo seats carried over from 2010. | youtube:cCPsdFdlshc @ 11:31 | quote-not-found: Best match near 11:31 covers 75% of the quote's words (needs 80%). |\n| The 2013-2015 G550 is recommended as the ultimate daily driver and favorite off-road build platform due to reliability, tech, and lack of auxiliary coolers. | youtube:cCPsdFdlshc @ 14:06 | quote-not-found: Best match near 14:06 covers 73% of the quote's words (needs 80%). |\n| Pre-MBUSA trucks (2001 and older) are predicted to appreciate and become future collectors. | youtube:cCPsdFdlshc @ 17:10 | quote-not-found: Best match near 17:10 covers 67% of the quote's words (needs 80%). |\n\n_Models: single: llm/kilo/nvidia/nemotron-3-ultra-550b-a55b:free._\n",
+        "claims": [
+          {
+            "id": "c1",
+            "claim": "The 2000 G500 with the M113 V8 engine is considered one of Mercedes' most reliable V8s.",
+            "topic": "Engine Reliability",
+            "stance": "reliable",
+            "videoId": "youtube:cCPsdFdlshc",
+            "citation": {
+              "videoId": "youtube:cCPsdFdlshc",
+              "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+              "startSec": 47.02,
+              "endSec": 80.4,
+              "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=47s",
+              "quote": "This one has what we know the legendary M113 V8. This was Mercedes' big hurrah into the V8s, and this is arguably one of their most reliable V8s out there."
+            },
+            "score": 1
+          },
+          {
+            "id": "c2",
+            "claim": "The M113 V8 engine is a global motor with cheap and widely available parts.",
+            "topic": "Parts Availability",
+            "stance": "recommend",
+            "videoId": "youtube:cCPsdFdlshc",
+            "citation": {
+              "videoId": "youtube:cCPsdFdlshc",
+              "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+              "startSec": 113.04,
+              "endSec": 119.98,
+              "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=113s",
+              "quote": "It means if you're in Dubai, if you're in India, if you're in Japan, wherever, you can always get parts for it. Or if you're in Arkansas."
+            },
+            "score": 1
+          },
+          {
+            "id": "c3",
+            "claim": "The first-generation W463 interior (1991-2001) features wood trim, mechanical switches, and a center shifter.",
+            "topic": "Interior Design",
+            "stance": "neutral",
+            "videoId": "youtube:cCPsdFdlshc",
+            "citation": {
+              "videoId": "youtube:cCPsdFdlshc",
+              "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+              "startSec": 124.54000000000002,
+              "endSec": 137.24,
+              "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=124s",
+              "quote": "This is the first-gen 463 interior. You're going to notice right off the bat, we've got a lot of wood. We've got a lot of mechanical switches. We've got a shifter down in the middle."
+            },
+            "score": 1
+          },
+          {
+            "id": "c4",
+            "claim": "A 2000 G500 with 171,000 miles shows no rips, tears, or cracks in the leather.",
+            "topic": "Leather Quality",
+            "stance": "reliable",
+            "videoId": "youtube:cCPsdFdlshc",
+            "citation": {
+              "videoId": "youtube:cCPsdFdlshc",
+              "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+              "startSec": 219.3,
+              "endSec": 227.48,
+              "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=219s",
+              "quote": "171,000 miles on a 25-year-old truck. And when you look at the leather, there's no rips, tears, or cracks."
+            },
+            "score": 1
+          },
+          {
+            "id": "c5",
+            "claim": "The G55 AMG was sold in the US from 2003 to 2012, with a naturally aspirated V8 in 2003-2004 and a supercharged 491 hp version from 2005 onward.",
+            "topic": "Model Years",
+            "stance": "neutral",
+            "videoId": "youtube:cCPsdFdlshc",
+            "citation": {
+              "videoId": "youtube:cCPsdFdlshc",
+              "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+              "startSec": 255.64,
+              "endSec": 283.72,
+              "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=255s",
+              "quote": "The G55 didn't start until 2003, and it came in as a naturally aspirated model. And they ran it until 12, right? Yep, they ran it through 12. Now, the NA version of the G55 ran to 2003 and 2004, just two years. The compressor motor, that came out in 2005. That's where things got exciting. You had a 490 horsepower compressor motor, which is a supercharged motor."
+            },
+            "score": 1
+          },
+          {
+            "id": "c6",
+            "claim": "The supercharged M113 in the G55 AMG is robust and reliable but consumes about 1.5 quarts of oil per 5,000-mile interval at 131,000 miles.",
+            "topic": "Engine Reliability",
+            "stance": "reliable",
+            "videoId": "youtube:cCPsdFdlshc",
+            "citation": {
+              "videoId": "youtube:cCPsdFdlshc",
+              "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+              "startSec": 293.96,
+              "endSec": 311.14,
+              "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=293s",
+              "quote": "They're robust, reliable. They work really well. They just drink a little oil. They drink a little oil. As they age, one thing you will note on these trucks is they will drink some oil. Well, this one's got 131,000 miles on it, and it drinks a quart and a half between oil changes."
+            },
+            "score": 1
+          },
+          {
+            "id": "c7",
+            "claim": "The second-generation interior (2002-2012) has wider door panels with integrated switches, making the cabin feel snugger.",
+            "topic": "Interior Design",
+            "stance": "neutral",
+            "videoId": "youtube:cCPsdFdlshc",
+            "citation": {
+              "videoId": "youtube:cCPsdFdlshc",
+              "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+              "startSec": 350.8,
+              "endSec": 367.84,
+              "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=350s",
+              "quote": "The big thing on these trucks, and this is an MBUSA truck, is the first thing you're going to notice is the door panel. It is physically wider. We've now got our door switches and our seat switches on the door. The one thing I will note is this will make the cabin feel a little snugger."
+            },
+            "score": 1
+          },
+          {
+            "id": "c8",
+            "claim": "Designo seats introduced in 2010 were carried through 2018 unchanged and show no wear at 128,000 miles.",
+            "topic": "Leather Quality",
+            "stance": "reliable",
+            "videoId": "youtube:cCPsdFdlshc",
+            "citation": {
+              "videoId": "youtube:cCPsdFdlshc",
+              "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+              "startSec": 406.96,
+              "endSec": 427.68,
+              "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=406s",
+              "quote": "These design-o seats were carried through into 2018 that look identical because they are identical. Same seat controls, same pneumatic pumps, same stitching. And, again, from a vehicle that's however many years old this is, you don't see any rip, stains, tears, or fading in the leather."
+            },
+            "score": 1
+          },
+          {
+            "id": "c9",
+            "claim": "Early MBUSA G500s (2002-2010) represent the best value for first-time G-Wagon buyers on a budget.",
+            "topic": "Buying Advice",
+            "stance": "recommend",
+            "videoId": "youtube:cCPsdFdlshc",
+            "citation": {
+              "videoId": "youtube:cCPsdFdlshc",
+              "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+              "startSec": 497.46,
+              "endSec": 519.38,
+              "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=497s",
+              "quote": "This model, the G500 2002 through 2010, it's going to be your first-time G-Buyer. Those of you that are on a little bit of a budget and need an entry-level vehicle to get in, this represents the best value on the market, period."
+            },
+            "score": 1
+          },
+          {
+            "id": "c10",
+            "claim": "The 7-speed automatic transmission (2013-2018) is a major improvement over the 5-speed, keeping the engine in the right gear.",
+            "topic": "Transmission",
+            "stance": "recommend",
+            "videoId": "youtube:cCPsdFdlshc",
+            "citation": {
+              "videoId": "youtube:cCPsdFdlshc",
+              "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+              "startSec": 627.1999999999999,
+              "endSec": 642.34,
+              "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=627s",
+              "quote": "You got away from the 5-speed automatic and you go to a 7-speed automatic. I think that's just as much of a game changer in the way the truck handles and drives as the motor because it always keeps it in the right gear."
+            },
+            "score": 1
+          },
+          {
+            "id": "c11",
+            "claim": "2016-2018 models added auto start-stop, a manual shift mode, and a flat-bottom Alcantara steering wheel (2017-2018).",
+            "topic": "Model Years",
+            "stance": "neutral",
+            "videoId": "youtube:cCPsdFdlshc",
+            "citation": {
+              "videoId": "youtube:cCPsdFdlshc",
+              "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+              "startSec": 774.2,
+              "endSec": 796.24,
+              "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=774s",
+              "quote": "And in the introduction, I don't remember which year. Joe, do you remember what year it was where they introduced the auto start-stop? Was that? 16. 16. Yep. So, you will have auto stop-start. And again, in 2016 was the introduction. And then the last hurrah, 2017-18, you got the flat-bottom steering wheel in Alcantara."
+            },
+            "score": 0.8305084745762712
+          },
+          {
+            "id": "c12",
+            "claim": "The 2016-2018 G550/G63 use a 4.0L biturbo V8 with hot-V layout, offering ~60-70 more hp and ~1.5 mpg better fuel economy than the naturally aspirated V8.",
+            "topic": "Engine Specs",
+            "stance": "neutral",
+            "videoId": "youtube:cCPsdFdlshc",
+            "citation": {
+              "videoId": "youtube:cCPsdFdlshc",
+              "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+              "startSec": 796.5,
+              "endSec": 826.08,
+              "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=796s",
+              "quote": "The 4-liter bi-turbo is a unique one in that it is what they call a hot V. In other words, the turbochargers are in the middle of the motor, and it's a 419-horsepower power plant made it with the same 7-speed transmission. They probably went to that for economy purposes. You get approximately a mile and a half better fuel economy. Big whoop. But you do get more power. You get, oh golly, 60, 70 horsepower more than what you got with the naturally aspirated motor."
+            },
+            "score": 1
+          },
+          {
+            "id": "c13",
+            "claim": "The naturally aspirated V8 (2013-2015) is preferred off-road because it has no turbo lag, is less twitchy in 4Low, and has fewer coolers allowing more bumper modification options.",
+            "topic": "Off-Road Capability",
+            "stance": "recommend",
+            "videoId": "youtube:cCPsdFdlshc",
+            "citation": {
+              "videoId": "youtube:cCPsdFdlshc",
+              "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+              "startSec": 927.82,
+              "endSec": 960.72,
+              "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=927s",
+              "quote": "I really prefer the naturally aspirated engine off-road. There's no turbo lag. Right. It's less twitchy. It's beautiful. And the reason this is important is there's not a lot of extra coolers up here. We have a radiator. We've got a transmission cooler, an oil cooler, everything we've kind of tucked in and made it look nice. But you're not stuck with a bunch of auxiliary coolers down here, meaning that you have a lot of options when it comes to off-road bumpers and modifications."
+            },
+            "score": 0.8275862068965517
+          }
+        ],
+        "consensus": [],
+        "disagreements": [],
+        "singleSource": [
+          {
+            "topic": "Engine Reliability",
+            "kind": "single-source",
+            "statement": "The M113 V8 (2000-2012 G500/G55) is considered one of Mercedes' most reliable V8s.",
+            "support": [
+              {
+                "videoId": "youtube:cCPsdFdlshc",
+                "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+                "startSec": 47.02,
+                "endSec": 80.4,
+                "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=47s",
+                "quote": "This one has what we know the legendary M113 V8. This was Mercedes' big hurrah into the V8s, and this is arguably one of their most reliable V8s out there."
+              },
+              {
+                "videoId": "youtube:cCPsdFdlshc",
+                "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+                "startSec": 293.96,
+                "endSec": 311.14,
+                "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=293s",
+                "quote": "They're robust, reliable. They work really well. They just drink a little oil. They drink a little oil. As they age, one thing you will note on these trucks is they will drink some oil. Well, this one's got 131,000 miles on it, and it drinks a quart and a half between oil changes."
+              }
+            ],
+            "oppose": [],
+            "videos": [
+              "youtube:cCPsdFdlshc"
+            ],
+            "claimIds": {
+              "support": [
+                "c1",
+                "c6"
+              ],
+              "oppose": []
+            }
+          },
+          {
+            "topic": "Parts Availability",
+            "kind": "single-source",
+            "statement": "The M113 V8 is a global motor with cheap and widely available parts worldwide.",
+            "support": [
+              {
+                "videoId": "youtube:cCPsdFdlshc",
+                "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+                "startSec": 113.04,
+                "endSec": 119.98,
+                "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=113s",
+                "quote": "It means if you're in Dubai, if you're in India, if you're in Japan, wherever, you can always get parts for it. Or if you're in Arkansas."
+              }
+            ],
+            "oppose": [],
+            "videos": [
+              "youtube:cCPsdFdlshc"
+            ],
+            "claimIds": {
+              "support": [
+                "c2"
+              ],
+              "oppose": []
+            }
+          },
+          {
+            "topic": "Leather Quality",
+            "kind": "single-source",
+            "statement": "Mercedes leather quality is exceptional, showing no rips, tears, cracks, or fading even at high mileage (128k-171k miles).",
+            "support": [
+              {
+                "videoId": "youtube:cCPsdFdlshc",
+                "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+                "startSec": 219.3,
+                "endSec": 227.48,
+                "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=219s",
+                "quote": "171,000 miles on a 25-year-old truck. And when you look at the leather, there's no rips, tears, or cracks."
+              },
+              {
+                "videoId": "youtube:cCPsdFdlshc",
+                "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+                "startSec": 406.96,
+                "endSec": 427.68,
+                "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=406s",
+                "quote": "These design-o seats were carried through into 2018 that look identical because they are identical. Same seat controls, same pneumatic pumps, same stitching. And, again, from a vehicle that's however many years old this is, you don't see any rip, stains, tears, or fading in the leather."
+              }
+            ],
+            "oppose": [],
+            "videos": [
+              "youtube:cCPsdFdlshc"
+            ],
+            "claimIds": {
+              "support": [
+                "c4",
+                "c8"
+              ],
+              "oppose": []
+            }
+          },
+          {
+            "topic": "Model Years",
+            "kind": "single-source",
+            "statement": "G55 AMG was sold in the US from 2003-2012: naturally aspirated in 2003-2004, supercharged 491 hp from 2005 onward.",
+            "support": [
+              {
+                "videoId": "youtube:cCPsdFdlshc",
+                "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+                "startSec": 255.64,
+                "endSec": 283.72,
+                "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=255s",
+                "quote": "The G55 didn't start until 2003, and it came in as a naturally aspirated model. And they ran it until 12, right? Yep, they ran it through 12. Now, the NA version of the G55 ran to 2003 and 2004, just two years. The compressor motor, that came out in 2005. That's where things got exciting. You had a 490 horsepower compressor motor, which is a supercharged motor."
+              }
+            ],
+            "oppose": [],
+            "videos": [
+              "youtube:cCPsdFdlshc"
+            ],
+            "claimIds": {
+              "support": [
+                "c5"
+              ],
+              "oppose": []
+            }
+          },
+          {
+            "topic": "Model Years",
+            "kind": "single-source",
+            "statement": "2016-2018 models added auto start-stop, manual shift mode, and flat-bottom Alcantara steering wheel (2017-2018).",
+            "support": [
+              {
+                "videoId": "youtube:cCPsdFdlshc",
+                "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+                "startSec": 774.2,
+                "endSec": 796.24,
+                "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=774s",
+                "quote": "And in the introduction, I don't remember which year. Joe, do you remember what year it was where they introduced the auto start-stop? Was that? 16. 16. Yep. So, you will have auto stop-start. And again, in 2016 was the introduction. And then the last hurrah, 2017-18, you got the flat-bottom steering wheel in Alcantara."
+              }
+            ],
+            "oppose": [],
+            "videos": [
+              "youtube:cCPsdFdlshc"
+            ],
+            "claimIds": {
+              "support": [
+                "c11"
+              ],
+              "oppose": []
+            }
+          },
+          {
+            "topic": "Model Years",
+            "kind": "single-source",
+            "statement": "2016-2018 G550/G63 use a 4.0L biturbo V8 with hot-V layout, ~60-70 more hp and ~1.5 mpg better fuel economy than the naturally aspirated V8.",
+            "support": [
+              {
+                "videoId": "youtube:cCPsdFdlshc",
+                "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+                "startSec": 796.5,
+                "endSec": 826.08,
+                "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=796s",
+                "quote": "The 4-liter bi-turbo is a unique one in that it is what they call a hot V. In other words, the turbochargers are in the middle of the motor, and it's a 419-horsepower power plant made it with the same 7-speed transmission. They probably went to that for economy purposes. You get approximately a mile and a half better fuel economy. Big whoop. But you do get more power. You get, oh golly, 60, 70 horsepower more than what you got with the naturally aspirated motor."
+              }
+            ],
+            "oppose": [],
+            "videos": [
+              "youtube:cCPsdFdlshc"
+            ],
+            "claimIds": {
+              "support": [
+                "c12"
+              ],
+              "oppose": []
+            }
+          },
+          {
+            "topic": "Interior Design",
+            "kind": "single-source",
+            "statement": "First-gen interior (1991-2001) features wood trim, mechanical switches, and center shifter.",
+            "support": [
+              {
+                "videoId": "youtube:cCPsdFdlshc",
+                "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+                "startSec": 124.54000000000002,
+                "endSec": 137.24,
+                "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=124s",
+                "quote": "This is the first-gen 463 interior. You're going to notice right off the bat, we've got a lot of wood. We've got a lot of mechanical switches. We've got a shifter down in the middle."
+              }
+            ],
+            "oppose": [],
+            "videos": [
+              "youtube:cCPsdFdlshc"
+            ],
+            "claimIds": {
+              "support": [
+                "c3"
+              ],
+              "oppose": []
+            }
+          },
+          {
+            "topic": "Interior Design",
+            "kind": "single-source",
+            "statement": "Second-gen interior (2002-2012) has wider door panels with integrated switches, making the cabin feel snugger.",
+            "support": [
+              {
+                "videoId": "youtube:cCPsdFdlshc",
+                "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+                "startSec": 350.8,
+                "endSec": 367.84,
+                "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=350s",
+                "quote": "The big thing on these trucks, and this is an MBUSA truck, is the first thing you're going to notice is the door panel. It is physically wider. We've now got our door switches and our seat switches on the door. The one thing I will note is this will make the cabin feel a little snugger."
+              }
+            ],
+            "oppose": [],
+            "videos": [
+              "youtube:cCPsdFdlshc"
+            ],
+            "claimIds": {
+              "support": [
+                "c7"
+              ],
+              "oppose": []
+            }
+          },
+          {
+            "topic": "Transmission",
+            "kind": "single-source",
+            "statement": "The 7-speed automatic (2013-2018) is a major improvement over the 5-speed, keeping the engine in the right gear.",
+            "support": [
+              {
+                "videoId": "youtube:cCPsdFdlshc",
+                "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+                "startSec": 627.1999999999999,
+                "endSec": 642.34,
+                "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=627s",
+                "quote": "You got away from the 5-speed automatic and you go to a 7-speed automatic. I think that's just as much of a game changer in the way the truck handles and drives as the motor because it always keeps it in the right gear."
+              }
+            ],
+            "oppose": [],
+            "videos": [
+              "youtube:cCPsdFdlshc"
+            ],
+            "claimIds": {
+              "support": [
+                "c10"
+              ],
+              "oppose": []
+            }
+          },
+          {
+            "topic": "Buying Advice",
+            "kind": "single-source",
+            "statement": "Early MBUSA G500s (2002-2010) represent the best value for first-time buyers on a budget.",
+            "support": [
+              {
+                "videoId": "youtube:cCPsdFdlshc",
+                "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+                "startSec": 497.46,
+                "endSec": 519.38,
+                "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=497s",
+                "quote": "This model, the G500 2002 through 2010, it's going to be your first-time G-Buyer. Those of you that are on a little bit of a budget and need an entry-level vehicle to get in, this represents the best value on the market, period."
+              }
+            ],
+            "oppose": [],
+            "videos": [
+              "youtube:cCPsdFdlshc"
+            ],
+            "claimIds": {
+              "support": [
+                "c9"
+              ],
+              "oppose": []
+            }
+          },
+          {
+            "topic": "Off-Road Capability",
+            "kind": "single-source",
+            "statement": "The naturally aspirated V8 (2013-2015) is preferred off-road due to no turbo lag, less twitchy throttle in 4Low, and fewer coolers allowing more bumper modification options.",
+            "support": [
+              {
+                "videoId": "youtube:cCPsdFdlshc",
+                "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+                "startSec": 927.82,
+                "endSec": 960.72,
+                "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=927s",
+                "quote": "I really prefer the naturally aspirated engine off-road. There's no turbo lag. Right. It's less twitchy. It's beautiful. And the reason this is important is there's not a lot of extra coolers up here. We have a radiator. We've got a transmission cooler, an oil cooler, everything we've kind of tucked in and made it look nice. But you're not stuck with a bunch of auxiliary coolers down here, meaning that you have a lot of options when it comes to off-road bumpers and modifications."
+              }
+            ],
+            "oppose": [],
+            "videos": [
+              "youtube:cCPsdFdlshc"
+            ],
+            "claimIds": {
+              "support": [
+                "c13"
+              ],
+              "oppose": []
+            }
+          }
+        ],
+        "unverified": [
+          {
+            "claim": "The 2013-2015 G550 uses the M278 naturally aspirated 5.5L V8, which is very reliable with no catastrophic failures observed.",
+            "quote": "This is the M278 Dual Overhead Cam Naturally Aspirated V8. So this represents the big leap forward technologically for Mercedes. I love this motor. I think they're very reliable. They make the right amount of power for big stuff. They make the right noises and they're very reliable. I have yet to see anything catastrophic go wrong with one of these.",
+            "topic": "Engine Reliability",
+            "startSec": 577,
+            "videoId": "youtube:cCPsdFdlshc",
+            "reason": "quote-not-found",
+            "detail": "Best match near 9:37 covers 79% of the quote's words (needs 80%)."
+          },
+          {
+            "claim": "The third-generation interior (2013-2018) features a floating screen, dual gauge cluster, and Designo seats carried over from 2010.",
+            "quote": "Now this marks the big change. They started this interior in 2013 and ran this interior all the way through 2018. Notice the door cards are very similar to the prior gen. They're up-styled just a little bit, but the seats look identical. They started these in 2010 and ran these all the way through 2018.",
+            "topic": "Interior Design",
+            "startSec": 691,
+            "videoId": "youtube:cCPsdFdlshc",
+            "reason": "quote-not-found",
+            "detail": "Best match near 11:31 covers 75% of the quote's words (needs 80%)."
+          },
+          {
+            "claim": "The 2013-2015 G550 is recommended as the ultimate daily driver and favorite off-road build platform due to reliability, tech, and lack of auxiliary coolers.",
+            "quote": "The 2013-15 are those who are looking for the ultimate daily driver, fully user experience. Probably arguably my favorite platform as an off-road build. Just because it has all the right tech, it's not overly complicated, and it just works. This is my favorite platform by far to work with.",
+            "topic": "Buying Advice",
+            "startSec": 846,
+            "videoId": "youtube:cCPsdFdlshc",
+            "reason": "quote-not-found",
+            "detail": "Best match near 14:06 covers 73% of the quote's words (needs 80%)."
+          },
+          {
+            "claim": "Pre-MBUSA trucks (2001 and older) are predicted to appreciate and become future collectors.",
+            "quote": "If you're looking for something that will absolutely appreciate and gain in value, grab yourself a pre-MBUSA truck, i.e. a 2001 and older G500. In a future video, we're going to be sharing why both Joe and I believe that these are future collectors in the making.",
+            "topic": "Investment Value",
+            "startSec": 1030,
+            "videoId": "youtube:cCPsdFdlshc",
+            "reason": "quote-not-found",
+            "detail": "Best match near 17:10 covers 67% of the quote's words (needs 80%)."
+          }
+        ],
+        "sources": [
+          {
+            "videoId": "youtube:cCPsdFdlshc",
+            "ref": {
+              "input": "https://www.youtube.com/watch?v=cCPsdFdlshc",
+              "platform": "youtube",
+              "kind": "video",
+              "id": "youtube:cCPsdFdlshc",
+              "nativeId": "cCPsdFdlshc",
+              "url": "https://www.youtube.com/watch?v=cCPsdFdlshc"
+            },
+            "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+            "channel": "Alliance Motorworks",
+            "durationSec": 1084,
+            "publishedAt": "2025-03-09",
+            "url": "https://www.youtube.com/watch?v=cCPsdFdlshc",
+            "origin": "stt",
+            "language": "en"
+          }
+        ],
+        "rungs": [
+          {
+            "step": "single",
+            "rung": "llm/kilo/nvidia/nemotron-3-ultra-550b-a55b:free",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free"
+          }
+        ],
+        "attempts": [
+          {
+            "id": "llm/kilo/nvidia/nemotron-3-ultra-550b-a55b:free",
+            "stage": "llm",
+            "outcome": "ok",
+            "ms": 78691
+          }
+        ],
+        "notes": [],
+        "createdAt": "2026-11-14T18:46:06.260Z"
+      }
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "id": "transcript-vtt",
+  "recordedAt": "2026-11-14",
+  "server": {
+    "name": "vid2context",
+    "version": "0.1.0",
+    "runtime": "node"
+  },
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/transcript",
+    "query": [
+      [
+        "url",
+        "https://www.youtube.com/watch?v=jNQXAC9IVRw"
+      ],
+      [
+        "format",
+        "vtt"
+      ]
+    ]
+  },
+  "status": 200,
+  "ms": 2,
+  "headers": {
+    "content-type": "text/vtt; charset=utf-8"
+  },
+  "body": "WEBVTT\n\nNOTE\nMe at the zoo\nSource: https://www.youtube.com/watch?v=jNQXAC9IVRw\nTranscript: creator captions from youtube-captions\n\n00:00:01.200 --> 00:00:03.360\nAll right, so here we are,\nin front of the elephants\n\n00:00:05.318 --> 00:00:07.974\nthe cool thing about these guys\nis that they have really...\n\n00:00:07.974 --> 00:00:12.616\nreally really long trunks\n\n00:00:12.616 --> 00:00:14.367\nand that's cool\n\n00:00:14.421 --> 00:00:15.733\n(baaaaaaaaaaahhh!!)\n\n00:00:16.881 --> 00:00:18.881\nand that's pretty much all there is to say\n"
+}

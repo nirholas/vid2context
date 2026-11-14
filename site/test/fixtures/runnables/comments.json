@@ -1,0 +1,29 @@
+{
+  "id": "comments",
+  "recordedAt": "2026-11-14",
+  "server": {
+    "name": "vid2context",
+    "version": "0.1.0",
+    "runtime": "node"
+  },
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/comments",
+    "query": [
+      [
+        "url",
+        "https://www.youtube.com/watch?v=jNQXAC9IVRw"
+      ],
+      [
+        "limit",
+        "1"
+      ]
+    ]
+  },
+  "status": 200,
+  "ms": 1904,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": "{\"comments\":[{\"id\":\"UgzuC3zzpRZkjc5Qzsd4AaABAg\",\"author\":\"@SanDiegoZoo\",\"text\":\"We're so honored that the first ever YouTube video was filmed here!\",\"likes\":4800000,\"publishedAt\":\"2020-11-15\",\"isPinned\":true,\"replies\":[{\"id\":\"UgzuC3zzpRZkjc5Qzsd4AaABAg.958xaQsh63D958yN1-HDaK\",\"author\":\"@TheGreekPianist\",\"text\":\"San Diego Zoo That’s so awesome! I’m so glad the first YouTube video featured cute animals in it! 😊🐘\",\"likes\":206000,\"publishedAt\":\"2020-11-15\"},{\"id\":\"UgzuC3zzpRZkjc5Qzsd4AaABAg.958xaQsh63D959Rh74Nkgr\",\"author\":\"@twitchgraal9030\",\"text\":\"Very cool!\",\"likes\":71000,\"publishedAt\":\"2020-11-15\"},{\"id\":\"UgzuC3zzpRZkjc5Qzsd4AaABAg.958xaQsh63D959STS_MHCY\",\"author\":\"@simboca\",\"text\":\"cool\",\"likes\":57000,\"publishedAt\":\"2020-11-15\"},{\"id\":\"UgzuC3zzpRZkjc5Qzsd4AaABAg.958xaQsh63D959eJMn2Pcr\",\"author\":\"@newyork5532\",\"text\":\".\",\"likes\":54000,\"publishedAt\":\"2020-11-15\"},{\"id\":\"UgzuC3zzpRZkjc5Qzsd4AaABAg.958xaQsh63D95AEkVnh_di\",\"author\":\"@tacticals.1811\",\"text\":\"How did I randomly go to this video and see this comment 11 hours after it was posted? That's amazing\",\"likes\":57000,\"publishedAt\":\"2020-11-15\"}]}]}"
+}

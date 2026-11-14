@@ -1,0 +1,29 @@
+{
+  "id": "transcript-markdown",
+  "recordedAt": "2026-11-14",
+  "server": {
+    "name": "vid2context",
+    "version": "0.1.0",
+    "runtime": "node"
+  },
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/transcript",
+    "query": [
+      [
+        "url",
+        "https://www.youtube.com/watch?v=jNQXAC9IVRw"
+      ],
+      [
+        "format",
+        "markdown"
+      ]
+    ]
+  },
+  "status": 200,
+  "ms": 2,
+  "headers": {
+    "content-type": "text/markdown; charset=utf-8"
+  },
+  "body": "# Me at the zoo\n\n- Channel: [jawed](https://www.youtube.com/channel/UC4QobU6STFB0P71PMvOGN5A)\n- Published: 2005-04-23\n- Duration: 0:19\n- Source: https://www.youtube.com/watch?v=jNQXAC9IVRw\n- Language: en\n- Transcript: creator captions from youtube-captions\n\n## Description\n\n> Microplastics are accumulating in human brains at an alarming rate\n> https://www.youtube.com/watch?v=0PT5c1z3LL8\n>\n> “Nanoplastics and Human Health” with Matthew J Campen, PhD, MSPH\n> https://www.youtube.com/watch?v=RRBN_4L09Mg\n>\n> 00:00 Intro\n> 00:05 The cool thing\n> 00:17 End\n\n## Intro (0:00)\n\n[0:01](https://www.youtube.com/watch?v=jNQXAC9IVRw&t=1s) All right, so here we are, in front of the elephants\n\n## The cool thing (0:05)\n\n[0:05](https://www.youtube.com/watch?v=jNQXAC9IVRw&t=5s) the cool thing about these guys is that they have really... really really long trunks and that's cool (baaaaaaaaaaahhh!!) and that's pretty much all there is to say\n"
+}

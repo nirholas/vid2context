@@ -1,0 +1,148 @@
+{
+  "id": "extract-schema",
+  "recordedAt": "2026-11-14",
+  "server": {
+    "name": "vid2context",
+    "version": "0.1.0",
+    "runtime": "node"
+  },
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/extract",
+    "query": [],
+    "json": {
+      "inputs": [
+        "https://www.youtube.com/watch?v=cCPsdFdlshc"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "bestYears": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Model years the video recommends"
+          },
+          "worstYears": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Model years the video warns against"
+          }
+        },
+        "required": [
+          "bestYears",
+          "worstYears"
+        ]
+      }
+    }
+  },
+  "status": 202,
+  "ms": 6017,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": "{\"id\":\"job_X6ow8Guh6nUBFiQzoCk23w\",\"kind\":\"extract\",\"status\":\"queued\",\"createdAt\":\"2026-11-14T18:48:07.408Z\",\"updatedAt\":\"2026-11-14T18:48:07.408Z\"}",
+  "job": {
+    "polls": 4,
+    "final": {
+      "id": "job_X6ow8Guh6nUBFiQzoCk23w",
+      "kind": "extract",
+      "status": "succeeded",
+      "createdAt": "2026-11-14T18:48:07.408Z",
+      "updatedAt": "2026-11-14T18:48:12.516Z",
+      "progress": {
+        "done": 0,
+        "total": 1,
+        "message": "Extracting"
+      },
+      "result": {
+        "data": {
+          "bestYears": [
+            "2000-2001",
+            "2002-2010",
+            "2013-2015"
+          ],
+          "worstYears": []
+        },
+        "citations": [
+          {
+            "videoId": "youtube:cCPsdFdlshc",
+            "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+            "startSec": 1037.88,
+            "endSec": 1050.66,
+            "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=1037s",
+            "quote": "If you're looking for something that will absolutely appreciate and gain in value, grab yourself a pre-MBUSA truck, i.e. a 2001 and older G500.",
+            "path": "/bestYears/0"
+          },
+          {
+            "videoId": "youtube:cCPsdFdlshc",
+            "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+            "startSec": 497.46,
+            "endSec": 519.38,
+            "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=497s",
+            "quote": "This model, the G500 2002 through 2010, it's going to be your first-time G-Buyer. Those of you that are on a little bit of a budget and need an entry-level vehicle to get in, this represents the best value on the market, period.",
+            "path": "/bestYears/1"
+          },
+          {
+            "videoId": "youtube:cCPsdFdlshc",
+            "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+            "startSec": 842.74,
+            "endSec": 859.76,
+            "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=842s",
+            "quote": "The 2013-15 are those who are looking for the ultimate daily driver, fully user experience. In other words, you can hop in this thing, take your wife out on date night. You can daily driver it to work and back.",
+            "path": "/bestYears/2"
+          }
+        ],
+        "uncited": [],
+        "unverified": [],
+        "repaired": false,
+        "sources": [
+          {
+            "videoId": "youtube:cCPsdFdlshc",
+            "ref": {
+              "input": "https://www.youtube.com/watch?v=cCPsdFdlshc",
+              "platform": "youtube",
+              "kind": "video",
+              "id": "youtube:cCPsdFdlshc",
+              "nativeId": "cCPsdFdlshc",
+              "url": "https://www.youtube.com/watch?v=cCPsdFdlshc"
+            },
+            "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+            "channel": "Alliance Motorworks",
+            "durationSec": 1084,
+            "publishedAt": "2025-03-09",
+            "url": "https://www.youtube.com/watch?v=cCPsdFdlshc",
+            "origin": "stt",
+            "language": "en"
+          }
+        ],
+        "rungs": [
+          {
+            "step": "extract",
+            "rung": "llm/kilo/nvidia/nemotron-3-ultra-550b-a55b:free",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free"
+          }
+        ],
+        "attempts": [
+          {
+            "id": "llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+            "stage": "llm",
+            "outcome": "skipped",
+            "reason": "cooldown"
+          },
+          {
+            "id": "llm/kilo/nvidia/nemotron-3-ultra-550b-a55b:free",
+            "stage": "llm",
+            "outcome": "ok",
+            "ms": 5102
+          }
+        ],
+        "notes": [],
+        "createdAt": "2026-11-14T18:48:12.516Z"
+      }
+    }
+  }
+}

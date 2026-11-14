@@ -1,0 +1,25 @@
+{
+  "id": "skips",
+  "recordedAt": "2026-11-14",
+  "server": {
+    "name": "vid2context",
+    "version": "0.1.0",
+    "runtime": "node"
+  },
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/skips",
+    "query": [
+      [
+        "url",
+        "https://www.youtube.com/watch?v=MBRqu0YOH14"
+      ]
+    ]
+  },
+  "status": 200,
+  "ms": 538,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": "{\"videoId\":\"youtube:MBRqu0YOH14\",\"source\":\"sponsorblock\",\"attribution\":\"Segment data: SponsorBlock (sponsor.ajay.app), CC BY-NC-SA 4.0\",\"segments\":[{\"category\":\"selfpromo\",\"startSec\":352.286,\"endSec\":431.234,\"votes\":0,\"uuid\":\"b028b54b3a74297a9d1b3a7bfd1ac05651c0a843140800fb321299bd55d26a337\",\"actionType\":\"skip\",\"time\":\"5:52-7:11\",\"durationSec\":78.948,\"url\":\"https://www.youtube.com/watch?v=MBRqu0YOH14&t=352s\",\"transcript\":{\"lines\":0,\"share\":0,\"preview\":\"\"}},{\"category\":\"outro\",\"startSec\":431.234,\"endSec\":445.721,\"votes\":0,\"uuid\":\"046c26921855cbb5e3c655001554462bae5d982621f2dff74ab8bb474db0da1e7\",\"actionType\":\"skip\",\"time\":\"7:11-7:25\",\"durationSec\":14.487,\"url\":\"https://www.youtube.com/watch?v=MBRqu0YOH14&t=431s\",\"transcript\":{\"lines\":0,\"share\":0,\"preview\":\"\"}}],\"coveredSec\":93.435,\"coveredShare\":0.209,\"transcriptShare\":0}"
+}

@@ -1,0 +1,27 @@
+{
+  "id": "ask-stream",
+  "recordedAt": "2026-11-14",
+  "server": {
+    "name": "vid2context",
+    "version": "0.1.0",
+    "runtime": "node"
+  },
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/ask",
+    "query": [],
+    "json": {
+      "question": "What does he say about the elephants?",
+      "inputs": [
+        "https://www.youtube.com/watch?v=jNQXAC9IVRw"
+      ],
+      "stream": true
+    }
+  },
+  "status": 200,
+  "ms": 919,
+  "headers": {
+    "content-type": "text/event-stream"
+  },
+  "body": "event: meta\ndata: {\"rung\":\"llm/kilo/nvidia/nemotron-3-ultra-550b-a55b:free\",\"model\":\"nvidia/nemotron-3-ultra-550b-a55b:free\",\"contextTokens\":1000000,\"promptTokens\":429,\"sources\":[{\"n\":1,\"videoId\":\"youtube:jNQXAC9IVRw\",\"title\":\"Me at the zoo\",\"url\":\"https://www.youtube.com/watch?v=jNQXAC9IVRw&t=1s\",\"startSec\":1.2,\"endSec\":18.881}]}\n\nevent: delta\ndata: {\"text\":\"He says the cool thing about the elephants is that they have \\\"really... really really long trunks\\\" and adds \\\"that's pretty much all there is to say\\\" [1].\"}\n\nevent: done\ndata: {\"text\":\"He says the cool thing about the elephants is that they have \\\"really... really really long trunks\\\" and adds \\\"that's pretty much all there is to say\\\" [1].\",\"rung\":\"llm/kilo/nvidia/nemotron-3-ultra-550b-a55b:free\",\"model\":\"nvidia/nemotron-3-ultra-550b-a55b:free\",\"usage\":{\"inputTokens\":432,\"outputTokens\":38},\"citations\":[{\"n\":1,\"videoId\":\"youtube:jNQXAC9IVRw\",\"title\":\"Me at the zoo\",\"startSec\":5.318,\"endSec\":12.616,\"url\":\"https://www.youtube.com/watch?v=jNQXAC9IVRw&t=5s\",\"quote\":\"the cool thing about these guys is that they have really... really really long trunks\"}],\"unverified\":[],\"attempts\":[{\"id\":\"llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast\",\"stage\":\"llm\",\"outcome\":\"skipped\",\"reason\":\"cooldown\"},{\"id\":\"llm/kilo/nvidia/nemotron-3-ultra-550b-a55b:free\",\"stage\":\"llm\",\"outcome\":\"ok\",\"ms\":913}]}\n\n"
+}

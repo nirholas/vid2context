@@ -1,0 +1,23 @@
+{
+  "id": "chapters-auto",
+  "recordedAt": "2026-11-14",
+  "server": {
+    "name": "vid2context",
+    "version": "0.1.0",
+    "runtime": "node"
+  },
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/chapters",
+    "query": [],
+    "json": {
+      "url": "https://www.youtube.com/watch?v=1Xx1fmHIsiA"
+    }
+  },
+  "status": 422,
+  "ms": 19804,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": "{\"error\":{\"code\":\"no-transcript\",\"message\":\"Could not get a transcript for youtube:1Xx1fmHIsiA (mode: auto).\",\"hint\":\"Check `attempts` for why each step failed. Installing the yt-dlp provider and enabling a speech-to-text rung covers most videos.\"},\"attempts\":[{\"id\":\"youtube\",\"stage\":\"resolve\",\"outcome\":\"ok\",\"detail\":\"youtube:1Xx1fmHIsiA\"},{\"id\":\"youtube\",\"stage\":\"metadata\",\"outcome\":\"ok\",\"ms\":13},{\"id\":\"youtube-captions\",\"stage\":\"captions\",\"outcome\":\"error\",\"reason\":\"blocked\",\"detail\":\"YouTube requests are paused for 579s more: YouTube blocked this server's IP address 22s ago, so this request was not sent. The blocked request: YouTube captions en: YouTube answered HTTP 429 (automated-traffic block).\",\"ms\":0},{\"id\":\"ytdlp-captions\",\"stage\":\"captions\",\"outcome\":\"error\",\"reason\":\"rate-limited\",\"detail\":\"yt-dlp captions: Unable to download video subtitles for 'en-orig': HTTP Error 429: Too Many Requests\",\"ms\":7946},{\"id\":\"ytdlp\",\"stage\":\"audio\",\"outcome\":\"ok\",\"ms\":11835},{\"id\":\"stt/cloudflare/@cf/openai/whisper-large-v3-turbo\",\"stage\":\"stt\",\"outcome\":\"skipped\",\"reason\":\"cooldown\"},{\"id\":\"stt/cloudflare/@cf/openai/whisper\",\"stage\":\"stt\",\"outcome\":\"skipped\",\"reason\":\"cooldown\"},{\"id\":\"stt/ovh/whisper-large-v3-turbo\",\"stage\":\"stt\",\"outcome\":\"skipped\",\"reason\":\"cooldown\"}]}"
+}

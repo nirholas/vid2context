@@ -1,0 +1,29 @@
+{
+  "id": "items",
+  "recordedAt": "2026-11-14",
+  "server": {
+    "name": "vid2context",
+    "version": "0.1.0",
+    "runtime": "node"
+  },
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/items",
+    "query": [
+      [
+        "url",
+        "https://www.youtube.com/playlist?list=PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b"
+      ],
+      [
+        "limit",
+        "5"
+      ]
+    ]
+  },
+  "status": 200,
+  "ms": 237,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": "{\"items\":[{\"input\":\"https://www.youtube.com/playlist?list=PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b\",\"platform\":\"youtube\",\"kind\":\"video\",\"id\":\"youtube:PzJL3aBRas8\",\"nativeId\":\"PzJL3aBRas8\",\"url\":\"https://www.youtube.com/watch?v=PzJL3aBRas8\"},{\"input\":\"https://www.youtube.com/playlist?list=PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b\",\"platform\":\"youtube\",\"kind\":\"video\",\"id\":\"youtube:1Xx1fmHIsiA\",\"nativeId\":\"1Xx1fmHIsiA\",\"url\":\"https://www.youtube.com/watch?v=1Xx1fmHIsiA\"},{\"input\":\"https://www.youtube.com/playlist?list=PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b\",\"platform\":\"youtube\",\"kind\":\"video\",\"id\":\"youtube:AS6LYBzFtEU\",\"nativeId\":\"AS6LYBzFtEU\",\"url\":\"https://www.youtube.com/watch?v=AS6LYBzFtEU\"},{\"input\":\"https://www.youtube.com/playlist?list=PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b\",\"platform\":\"youtube\",\"kind\":\"video\",\"id\":\"youtube:EO1PYUnXHiM\",\"nativeId\":\"EO1PYUnXHiM\",\"url\":\"https://www.youtube.com/watch?v=EO1PYUnXHiM\"},{\"input\":\"https://www.youtube.com/playlist?list=PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b\",\"platform\":\"youtube\",\"kind\":\"video\",\"id\":\"youtube:U7Dmgpp5W-Q\",\"nativeId\":\"U7Dmgpp5W-Q\",\"url\":\"https://www.youtube.com/watch?v=U7Dmgpp5W-Q\"}]}"
+}

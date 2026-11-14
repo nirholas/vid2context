@@ -1,0 +1,29 @@
+{
+  "id": "pack",
+  "recordedAt": "2026-11-14",
+  "server": {
+    "name": "vid2context",
+    "version": "0.1.0",
+    "runtime": "node"
+  },
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/pack",
+    "query": [
+      [
+        "url",
+        "https://www.youtube.com/watch?v=cCPsdFdlshc"
+      ],
+      [
+        "maxTokens",
+        "1500"
+      ]
+    ]
+  },
+  "status": 200,
+  "ms": 18,
+  "headers": {
+    "content-type": "text/markdown; charset=utf-8"
+  },
+  "body": "# Video context pack\n\nThis document holds the transcripts and metadata of one video (18:04 in total), prepared by vid2context for an AI model to read. Each transcript paragraph starts with the time it begins in the video, in brackets; linked times open the video at that moment.\n\nCitation rule: when you use something from a video, cite it as [Title @ m:ss](link), using the time and link of the paragraph you drew on (or [Title @ m:ss] when the video has no link).\n\nSome content was left out to fit a budget of 1500 tokens. Each cut is marked where it happened.\n\n## Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!\n\n- Channel: [Alliance Motorworks](https://www.youtube.com/channel/UCdEjP_BjQ5audhxLKKzZl2A)\n- Published: 2025-03-09\n- Duration: 18:04\n- Source: https://www.youtube.com/watch?v=cCPsdFdlshc\n- Language: en\n- Transcript: speech-to-text by stt/cloudflare/@cf/openai/whisper-large-v3-turbo\n\n### Description\n\n> Watch this side-by-side comparison of G-Wagons from 2000 - 2018 to rank the best and worst for interiors, engines, and reliability. This is part 1 of a multi-video series for buying and building your\n\n_Description shortened to 199 of 799 characters._\n\n### Chapters\n\n- [0:00](https://www.youtube.com/watch?v=cCPsdFdlshc&t=0s) G wagon buying guide\n- [1:05](https://www.youtube.com/watch?v=cCPsdFdlshc&t=65s) G500 m113 engine overview\n- [2:04](https://www.youtube.com/watch?v=cCPsdFdlshc&t=124s) G500 interior and features\n- [4:12](https://www.youtube.com/watch?v=cCPsdFdlshc&t=252s) G55 AMG specs and history\n- [5:50](https://www.youtube.com/watch?v=cCPsdFdlshc&t=350s) G55 interior and technology\n- [8:25](https://www.youtube.com/watch?v=cCPsdFdlshc&t=505s) Best G-Wagon for your budget\n- [9:39](https://www.youtube.com/watch?v=cCPsdFdlshc&t=579s) G550 technological leap\n- [12:27](https://www.youtube.com/watch?v=cCPsdFdlshc&t=747s) 2016-2018 G-Wagon updates\n- [14:01](https://www.youtube.com/watch?v=cCPsdFdlshc&t=841s) Final recommendations\n\n### Transcript\n\n#### G wagon buying guide (0:00)\n\n[0:00](https://www.youtube.com/watch?v=cCPsdFdlshc&t=0s) So you're going to buy a G-Wagon. Which year is best for you? Well, in this video, we're going to do a year-by-year breakdown of the legendary W463 platform, so you can check out the model year ranges, the engine options, and the interior, because if you buy the wrong one, I don't want you getting buyer's remorse or ending up with a bad specimen. My name's Adam. Welcome to the G-Wheel and YouTube channel. I do everything here for the love of G. I'm joined by Joe from Alliance Auto Care. He is the G-Wagon specialist and helped me produce not only these videos, but also the ultimate build and buyer's guide for the G-Wagon. So if you're in the market, click the link in the description right now. Joe, thanks for being here, man.\n\n[0:39] All right. Let's get into it. Let's rock and roll. Let's introduce each one of these three trucks. We're going to hit the year range, the engine options, and give you an interior tour. Let's rock and roll. Cool. We have three trucks here. Starting with our first one, we have a 2000 G500. The second one is a 2012 G55 AMG. The third one is a 2015 G550. We're going to walk through and look at some of the engine options real quick. On the first one, the 2000 G500. Now, there's a couple of models prior to this one, but this is kind of the one everyone gravitates to.\n\n#### G500 m113 engine overview (1:05)\n\n[1:09] This one has what we know the legendary M113 V8. This was Mercedes' big hurrah into the V8s, and this is arguably one of their most reliable V8s out there. Some call it the Land Cruiser Killer. Yeah, it is known as the Land Cruiser Killer. I really like this motor. It's all aluminum. It's super light, and it is as reliable as it gets. Now, some of the key things. It's a single overhead cam motor. It's timing chains. It's two spark plugs per cylinder, and it makes 300 horsepower and 300 foot-pounds of torque. Nice round numbers.\n\n[1:41](https://www.youtube.com/watch?v=cCPsdFdlshc&t=101s) Yeah. It looks simple. It's neat. It's clean. Most importantly, it's easy to work on. Parts are cheap, and parts are available almost everywhere. This is what we call a global motor. Yeah. Sweet. Sweet. It means if you're in Dubai, if you're in India, if you're in Japan, wherever, you can always get parts for it. Or if you're in Arkansas. Let's hop into the inside. Yeah.\n\n> The rest, 2:04 to 18:02, is omitted for length. Fetch it with the get_section tool or the full transcript.\n"
+}

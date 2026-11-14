@@ -131,6 +131,8 @@ export function clip(text: string, max = 160): string {
 export interface RenderOptions {
   /** Rewrite a link or image href. Return undefined to keep it. */
   rewriteHref?: (href: string) => string | undefined;
+  /** Render a fenced block yourself (runnable examples). Return undefined for the default code block. */
+  renderCode?: (lang: string, text: string) => string | undefined;
 }
 
 export function renderMarkdown(source: string, opts: RenderOptions = {}): Rendered {
@@ -147,6 +149,8 @@ export function renderMarkdown(source: string, opts: RenderOptions = {}): Render
         return `<h${depth} id="${id}">${inner}<a class="anchor" href="#${id}" aria-hidden="true" tabindex="-1">#</a></h${depth}>\n`;
       },
       code({ text, lang }) {
+        const custom = opts.renderCode?.(lang ?? '', text);
+        if (custom !== undefined) return `${custom}\n`;
         const label = escapeHtml((lang ?? '').split(/\s+/)[0] || 'text');
         const bar = `<div class="code-bar"><span class="code-label">${label}</span><button type="button" class="copy-btn" data-copy-btn>Copy</button></div>`;
         return `<div class="code">${bar}${highlight(text, lang ?? '')}</div>\n`;

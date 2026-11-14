@@ -11,12 +11,15 @@ import { data, lastModOf, REPO_URL, SITE_URL } from '../data/site.ts';
 import { withBase } from './base.ts';
 import { type Heading, renderMarkdown } from './markdown.ts';
 import { repoPath } from './paths.ts';
+import { createRunnableRenderer, expandRunFencesForTwin, FIXTURE_DIR, RUN_FENCE, runFenceIds } from './runnable-render.ts';
 import { expandTokens } from './tokens.ts';
 
-export type Section = 'start' | 'how-to' | 'clients' | 'guides' | 'deploy' | 'compare' | 'contracts';
+export type Section = 'start' | 'tutorials' | 'examples' | 'how-to' | 'clients' | 'guides' | 'deploy' | 'compare' | 'contracts';
 
 export const SECTIONS: { id: Section; label: string }[] = [
   { id: 'start', label: 'Start here' },
+  { id: 'tutorials', label: 'Tutorials' },
+  { id: 'examples', label: 'Examples' },
   { id: 'how-to', label: 'How to' },
   { id: 'clients', label: 'Agent clients' },
   { id: 'guides', label: 'Guides' },
@@ -45,6 +48,8 @@ export interface DocPage {
   /** Where to edit the source on GitHub. */
   editUrl: string;
   order: number;
+  /** How many runnable examples the page has (the browser script loads only when there are some). */
+  runnables: number;
 }
 
 /** `/docs/x/` to `/docs/x.md`; `/` to `/index.md`. */
@@ -69,12 +74,26 @@ function repoDocs(): RepoDoc[] {
     { path: 'docs/ARCHITECTURE.md', slug: 'architecture', section: 'start', label: 'Architecture', order: 1 },
     { path: 'docs/providers.md', slug: 'providers', section: 'start', label: 'Providers and rungs', order: 2 },
   ];
-  const fromDir = (dir: string, section: Section): RepoDoc[] =>
+  // `readme` gives a directory's README.md its own slug and label; `offset` orders the pages after others in the section.
+  const fromDir = (dir: string, section: Section, opts: { offset?: number; readme?: { slug: string; label: string } } = {}): RepoDoc[] =>
     data.docSources
       .filter((p) => posix.dirname(p) === dir)
-      .map((p, n) => ({ path: p, slug: `${dir.replace(/^docs\//, '')}/${posix.basename(p, '.md')}`, section, order: n }));
+      .sort((a, b) => Number(posix.basename(b) === 'README.md') - Number(posix.basename(a) === 'README.md') || a.localeCompare(b))
+      .map((p, n) => {
+        const name = posix.basename(p, '.md');
+        const readme = name === 'README' ? opts.readme : undefined;
+        return {
+          path: p,
+          slug: readme ? readme.slug : `${dir.replace(/^docs\//, '')}/${name}`,
+          section,
+          ...(readme ? { label: readme.label } : {}),
+          order: (opts.offset ?? 0) + n,
+        };
+      });
   return [
     ...fixed,
+    // docs/examples: runnable scripts in examples/, after the site's own runnable example pages.
+    ...fromDir('docs/examples', 'examples', { offset: 50, readme: { slug: 'examples/scripts', label: 'Example scripts' } }),
     ...fromDir('docs/guides', 'guides'),
     ...fromDir('docs/deploy', 'deploy'),
     ...fromDir('docs/contracts', 'contracts'),
@@ -123,6 +142,7 @@ function repoPage(doc: RepoDoc): DocPage {
     lastmod: lastModOf([doc.path]),
     editUrl: `${REPO_URL}/blob/main/${doc.path}`,
     order: doc.order,
+    runnables: 0,
   };
 }
 
@@ -168,6 +188,8 @@ function parseFrontmatter(text: string, file: string): { fm: Frontmatter; body: 
 }
 
 const CONTENT_SECTIONS: { dir: string; section: Section }[] = [
+  { dir: 'tutorials', section: 'tutorials' },
+  { dir: 'examples', section: 'examples' },
   { dir: 'how-to', section: 'how-to' },
   { dir: 'compare', section: 'compare' },
 ];
@@ -184,14 +206,41 @@ function resolveSiteLink(href: string, twin: boolean): string | undefined {
   return `${REPO_URL}/blob/main/${posix.normalize(href)}`;
 }
 
-function authoredPage(section: Section, dir: string, file: string): DocPage | null {
-  const rel = `site/src/content/${dir}/${file}`;
-  const { fm, body } = parseFrontmatter(readFileSync(repoPath(rel), 'utf8'), rel);
-  if (fm.requires && !(data as unknown as Record<string, unknown>)[fm.requires]) return null;
-  const expanded = `# ${fm.title}\n\n${expandTokens(body, rel).trim()}\n`;
-  const rendered = renderMarkdown(expanded, { rewriteHref: (h) => resolveSiteLink(h, false) });
-  const slug = `${dir}/${file.replace(/\.md$/, '')}`;
+interface Authored {
+  file: string;
+  rel: string;
+  fm: Frontmatter;
+  body: string;
+  /** `index.md` is the section's landing page at /docs/<dir>/. */
+  slug: string;
+}
+
+/** `{{pages:<dir>}}`: the other pages of a section as a list, in sidebar order. */
+function pageList(entries: Authored[]): string {
+  return entries
+    .filter((e) => !e.file.startsWith('index.'))
+    .map((e) => `- [${e.fm.title}](/docs/${e.slug}/): ${e.fm.description}`)
+    .join('\n');
+}
+
+function authoredPage(section: Section, dir: string, entry: Authored, siblings: Authored[]): DocPage {
+  const { rel, fm, body, slug } = entry;
+  const withList = body.replace(/\{\{pages:([a-z-]+)\}\}/g, (_m, d: string) => {
+    if (d !== dir) throw new Error(`{{pages:${d}}} in ${rel}: only {{pages:${dir}}} is known here.`);
+    return pageList(siblings);
+  });
+  const expanded = `# ${fm.title}\n\n${expandTokens(withList, rel).trim()}\n`;
+  const ids = runFenceIds(expanded);
+  const renderRun = createRunnableRenderer();
+  const rendered = renderMarkdown(expanded, {
+    rewriteHref: (h) => resolveSiteLink(h, false),
+    renderCode: (lang) => {
+      const m = lang.match(RUN_FENCE);
+      return m?.[1] ? renderRun(m[1]) : undefined;
+    },
+  });
   const url = `/docs/${slug}/`;
+  const runSources = ids.length ? ['site/src/data/runnables.ts', ...ids.map((id) => `${FIXTURE_DIR}/${id}.json`)] : [];
   return {
     slug,
     url,
@@ -202,11 +251,12 @@ function authoredPage(section: Section, dir: string, file: string): DocPage | nu
     description: fm.description,
     html: rendered.html,
     headings: rendered.headings,
-    twin: renderTwin(expanded, (h) => resolveSiteLink(h, true)),
-    sources: [rel, 'tests/fixtures/contexts', 'packages/discovery/src'],
-    lastmod: lastModOf([rel]),
+    twin: renderTwin(expandRunFencesForTwin(expanded), (h) => resolveSiteLink(h, true)),
+    sources: [rel, ...runSources, 'tests/fixtures/contexts', 'packages/discovery/src'],
+    lastmod: lastModOf([rel, ...runSources]),
     editUrl: `${REPO_URL}/blob/main/${rel}`,
     order: fm.order,
+    runnables: ids.length,
   };
 }
 
@@ -214,11 +264,19 @@ function authoredPages(): DocPage[] {
   return CONTENT_SECTIONS.flatMap(({ dir, section }) => {
     const abs = repoPath('site/src/content', dir);
     if (!existsSync(abs)) return [];
-    return readdirSync(abs)
+    const entries = readdirSync(abs)
       .filter((f) => f.endsWith('.md'))
       .sort()
-      .map((f) => authoredPage(section, dir, f))
-      .filter((p): p is DocPage => p !== null);
+      .map((file): Authored | null => {
+        const rel = `site/src/content/${dir}/${file}`;
+        const { fm, body } = parseFrontmatter(readFileSync(repoPath(rel), 'utf8'), rel);
+        if (fm.requires && !(data as unknown as Record<string, unknown>)[fm.requires]) return null;
+        const slug = file === 'index.md' ? dir : `${dir}/${file.replace(/\.md$/, '')}`;
+        return { file, rel, fm, body, slug };
+      })
+      .filter((e): e is Authored => e !== null)
+      .sort((a, b) => a.fm.order - b.fm.order || a.fm.title.localeCompare(b.fm.title));
+    return entries.map((e) => authoredPage(section, dir, e, entries));
   });
 }
 
@@ -288,6 +346,7 @@ The full list, with every model override, is in [Providers and rungs](/docs/prov
     lastmod: lastModOf([rel, 'packages/discovery/src', 'tests/fixtures/contexts']),
     editUrl: `${REPO_URL}/blob/main/${rel}`,
     order,
+    runnables: 0,
   };
 }
 

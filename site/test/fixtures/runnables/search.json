@@ -1,0 +1,29 @@
+{
+  "id": "search",
+  "recordedAt": "2026-11-14",
+  "server": {
+    "name": "vid2context",
+    "version": "0.1.0",
+    "runtime": "node"
+  },
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/search",
+    "query": [
+      [
+        "q",
+        "elephants"
+      ],
+      [
+        "limit",
+        "5"
+      ]
+    ]
+  },
+  "status": 200,
+  "ms": 118,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": "{\"hits\":[{\"videoId\":\"youtube:jNQXAC9IVRw\",\"title\":\"Me at the zoo\",\"startSec\":1.2,\"endSec\":3.36,\"text\":\"All right, so here we are, in front of the elephants\",\"score\":0.01639344262295082,\"url\":\"https://www.youtube.com/watch?v=jNQXAC9IVRw&t=1s\",\"chapterTitle\":\"Intro\",\"sources\":[\"keyword\"],\"snippet\":\"All right, so here we are, in front of the **elephants**\",\"channel\":\"jawed\",\"ranks\":{\"keyword\":1}}],\"meta\":{\"query\":{\"text\":\"elephants\",\"phrases\":[],\"excluded\":[]},\"mode\":\"hybrid\",\"keyword\":{\"ran\":true,\"backend\":\"storage\",\"candidates\":1},\"vector\":\"partial\",\"rerank\":\"off\",\"fusion\":{\"k\":60,\"keywordWeight\":1,\"vectorWeight\":1},\"indexed\":{\"videos\":11,\"chunks\":339},\"timings\":{\"syncMs\":110,\"keywordMs\":3,\"vectorMs\":1,\"rerankMs\":0,\"totalMs\":115},\"attempts\":[{\"id\":\"embed/cloudflare/@cf/baai/bge-m3\",\"stage\":\"embed\",\"outcome\":\"error\",\"reason\":\"auth-401\",\"detail\":\"cloudflare embeddings: HTTP 401 {\\\"result\\\":null,\\\"success\\\":false,\\\"errors\\\":[{\\\"code\\\":10000,\\\"message\\\":\\\"Authentication error\\\"}],\\\"messages\\\":[]}\",\"ms\":63}],\"model\":\"embed/cloudflare/@cf/baai/bge-m3\",\"vectorCoverage\":{\"videos\":11,\"withVectors\":0},\"vectorReason\":\"11 of 11 videos have no vectors yet; they are embedded on a later index or search.\"}}"
+}

@@ -1,0 +1,37 @@
+{
+  "id": "transcript-captions-only",
+  "recordedAt": "2026-11-14",
+  "server": {
+    "name": "vid2context",
+    "version": "0.1.0",
+    "runtime": "node"
+  },
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/transcript",
+    "query": [
+      [
+        "url",
+        "https://www.youtube.com/watch?v=jNQXAC9IVRw"
+      ],
+      [
+        "format",
+        "text"
+      ],
+      [
+        "timestamps",
+        "1"
+      ],
+      [
+        "mode",
+        "captions"
+      ]
+    ]
+  },
+  "status": 200,
+  "ms": 1060,
+  "headers": {
+    "content-type": "text/plain; charset=utf-8"
+  },
+  "body": "[0:01] All right, so here we are, in front of the elephants\n[0:05] the cool thing about these guys is that they have really...\n[0:07] really really long trunks\n[0:12] and that's cool\n[0:14] (baaaaaaaaaaahhh!!)\n[0:16] and that's pretty much all there is to say\n"
+}

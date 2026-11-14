@@ -1,0 +1,25 @@
+{
+  "id": "outline-sections",
+  "recordedAt": "2026-11-14",
+  "server": {
+    "name": "vid2context",
+    "version": "0.1.0",
+    "runtime": "node"
+  },
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/outline",
+    "query": [
+      [
+        "url",
+        "https://www.youtube.com/watch?v=1Xx1fmHIsiA"
+      ]
+    ]
+  },
+  "status": 422,
+  "ms": 22967,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": "{\"error\":{\"code\":\"no-transcript\",\"message\":\"Could not get a transcript for youtube:1Xx1fmHIsiA (mode: auto).\",\"hint\":\"Check `attempts` for why each step failed. Installing the yt-dlp provider and enabling a speech-to-text rung covers most videos.\"},\"attempts\":[{\"id\":\"youtube\",\"stage\":\"resolve\",\"outcome\":\"ok\",\"detail\":\"youtube:1Xx1fmHIsiA\"},{\"id\":\"youtube\",\"stage\":\"metadata\",\"outcome\":\"ok\",\"ms\":813},{\"id\":\"youtube-captions\",\"stage\":\"captions\",\"outcome\":\"error\",\"reason\":\"blocked\",\"detail\":\"YouTube captions en: YouTube answered HTTP 429 (automated-traffic block).\",\"ms\":410},{\"id\":\"ytdlp-captions\",\"stage\":\"captions\",\"outcome\":\"error\",\"reason\":\"rate-limited\",\"detail\":\"yt-dlp captions: Unable to download video subtitles for 'en-orig': HTTP Error 429: Too Many Requests\",\"ms\":8114},{\"id\":\"ytdlp\",\"stage\":\"audio\",\"outcome\":\"ok\",\"ms\":10740},{\"id\":\"stt/cloudflare/@cf/openai/whisper-large-v3-turbo\",\"stage\":\"stt\",\"outcome\":\"error\",\"reason\":\"auth-401\",\"detail\":\"cloudflare @cf/openai/whisper-large-v3-turbo: 10000 Authentication error\",\"ms\":409},{\"id\":\"stt/cloudflare/@cf/openai/whisper\",\"stage\":\"stt\",\"outcome\":\"error\",\"reason\":\"auth-401\",\"detail\":\"cloudflare @cf/openai/whisper: 10000 Authentication error\",\"ms\":314},{\"id\":\"stt/ovh/whisper-large-v3-turbo\",\"stage\":\"stt\",\"outcome\":\"error\",\"reason\":\"rate-limited-429\",\"detail\":\"ovh transcription: HTTP 429 {\\n  \\\"message\\\":\\\"API rate limit exceeded\\\",\\n  \\\"request_id\\\":\\\"a7f3810c6d311e3dc29d7970d3414724\\\"\\n}\",\"ms\":2155}]}"
+}

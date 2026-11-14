@@ -1,0 +1,29 @@
+{
+  "id": "transcript-json",
+  "recordedAt": "2026-11-14",
+  "server": {
+    "name": "vid2context",
+    "version": "0.1.0",
+    "runtime": "node"
+  },
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/transcript",
+    "query": [
+      [
+        "url",
+        "https://www.youtube.com/watch?v=jNQXAC9IVRw"
+      ],
+      [
+        "format",
+        "json"
+      ]
+    ]
+  },
+  "status": 200,
+  "ms": 2,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": "{\n  \"metadata\": {\n    \"ref\": {\n      \"input\": \"https://www.youtube.com/watch?v=jNQXAC9IVRw\",\n      \"platform\": \"youtube\",\n      \"kind\": \"video\",\n      \"id\": \"youtube:jNQXAC9IVRw\",\n      \"nativeId\": \"jNQXAC9IVRw\",\n      \"url\": \"https://www.youtube.com/watch?v=jNQXAC9IVRw\"\n    },\n    \"title\": \"Me at the zoo\",\n    \"description\": \"Microplastics are accumulating in human brains at an alarming rate\\nhttps://www.youtube.com/watch?v=0PT5c1z3LL8\\n\\n“Nanoplastics and Human Health” with Matthew J Campen, PhD, MSPH\\nhttps://www.youtube.com/watch?v=RRBN_4L09Mg\\n\\n00:00 Intro\\n00:05 The cool thing\\n00:17 End\",\n    \"durationSec\": 19,\n    \"publishedAt\": \"2005-04-23\",\n    \"thumbnailUrl\": \"https://i.ytimg.com/vi/jNQXAC9IVRw/hqdefault.jpg?sqp=-oaymwEmCOADEOgC8quKqQMa8AEB-AG-AoAC8AGKAgwIABABGFUgWShlMA8=&rs=AOn4CLA9eLBatYv9WbkD4BbZ2Im-biSPTw\",\n    \"tags\": [\n      \"me at the zoo\",\n      \"jawed karim\",\n      \"first youtube video\"\n    ],\n    \"chapters\": [\n      {\n        \"title\": \"Intro\",\n        \"startSec\": 0,\n        \"endSec\": 5\n      },\n      {\n        \"title\": \"The cool thing\",\n        \"startSec\": 5,\n        \"endSec\": 17\n      },\n      {\n        \"title\": \"End\",\n        \"startSec\": 17,\n        \"endSec\": 19\n      }\n    ],\n    \"isLive\": false,\n    \"extra\": {\n      \"viewCount\": 448539222,\n      \"likeCount\": 20138476,\n      \"dateText\": \"Apr 23, 2005\",\n      \"channelHandle\": \"@jawed\",\n      \"channelHandleUrl\": \"https://www.youtube.com/@jawed\",\n      \"subscriberCountText\": \"6.74M subscribers\",\n      \"isShort\": false,\n      \"isLive\": false,\n      \"isUpcoming\": false,\n      \"isLiveContent\": false,\n      \"ageRestricted\": false,\n      \"membersOnly\": false,\n      \"playability\": \"OK\",\n      \"chapterSource\": \"description\",\n      \"links\": [\n        \"https://www.youtube.com/watch?v=0PT5c1z3LL8\",\n        \"https://www.youtube.com/watch?v=RRBN_4L09Mg\"\n      ]\n    },\n    \"channel\": {\n      \"name\": \"jawed\",\n      \"id\": \"UC4QobU6STFB0P71PMvOGN5A\",\n      \"url\": \"https://www.youtube.com/channel/UC4QobU6STFB0P71PMvOGN5A\"\n    }\n  },\n  \"transcript\": {\n    \"ref\": {\n      \"input\": \"https://www.youtube.com/watch?v=jNQXAC9IVRw\",\n      \"platform\": \"youtube\",\n      \"kind\": \"video\",\n      \"id\": \"youtube:jNQXAC9IVRw\",\n      \"nativeId\": \"jNQXAC9IVRw\",\n      \"url\": \"https://www.youtube.com/watch?v=jNQXAC9IVRw\"\n    },\n    \"language\": \"en\",\n    \"origin\": \"creator-captions\",\n    \"producer\": \"youtube-captions\",\n    \"segments\": [\n      {\n        \"startSec\": 1.2,\n        \"endSec\": 3.36,\n        \"text\": \"All right, so here we are, in front of the elephants\"\n      },\n      {\n        \"startSec\": 5.318,\n        \"endSec\": 7.974,\n        \"text\": \"the cool thing about these guys is that they have really...\"\n      },\n      {\n        \"startSec\": 7.974,\n        \"endSec\": 12.616,\n        \"text\": \"really really long trunks\"\n      },\n      {\n        \"startSec\": 12.616,\n        \"endSec\": 14.367,\n        \"text\": \"and that's cool\"\n      },\n      {\n        \"startSec\": 14.421,\n        \"endSec\": 15.733,\n        \"text\": \"(baaaaaaaaaaahhh!!)\"\n      },\n      {\n        \"startSec\": 16.881,\n        \"endSec\": 18.881,\n        \"text\": \"and that's pretty much all there is to say\"\n      }\n    ],\n    \"createdAt\": \"2026-11-14T18:44:30.584Z\"\n  },\n  \"attempts\": [\n    {\n      \"id\": \"youtube\",\n      \"stage\": \"resolve\",\n      \"outcome\": \"ok\",\n      \"detail\": \"youtube:jNQXAC9IVRw\"\n    },\n    {\n      \"id\": \"youtube\",\n      \"stage\": \"metadata\",\n      \"outcome\": \"ok\",\n      \"ms\": 823\n    },\n    {\n      \"id\": \"youtube-captions\",\n      \"stage\": \"captions\",\n      \"outcome\": \"ok\",\n      \"detail\": \"creator-captions\",\n      \"ms\": 233\n    }\n  ]\n}\n"
+}

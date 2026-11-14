@@ -1,0 +1,42 @@
+{
+  "id": "transcript-translate",
+  "recordedAt": "2026-11-14",
+  "server": {
+    "name": "vid2context",
+    "version": "0.1.0",
+    "runtime": "node"
+  },
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/transcript",
+    "query": [
+      [
+        "url",
+        "https://www.youtube.com/watch?v=jNQXAC9IVRw"
+      ],
+      [
+        "format",
+        "text"
+      ],
+      [
+        "timestamps",
+        "1"
+      ],
+      [
+        "lang",
+        "de"
+      ],
+      [
+        "translate",
+        "1"
+      ]
+    ]
+  },
+  "status": 200,
+  "ms": 642,
+  "headers": {
+    "content-type": "text/plain; charset=utf-8",
+    "x-translated-via": "platform"
+  },
+  "body": "[0:00] Also hier sind wir vor den Elefanten.\n[0:05] Das Coole an den Typen ist dass sie sehr, sehr, sehr, lange Rüssel haben.\n[0:12] Und das ist cool.\n[0:17] Ansonsten gibt es nicht wirklich viel zu sagen.\n"
+}

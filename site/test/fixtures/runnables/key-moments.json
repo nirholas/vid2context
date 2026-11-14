@@ -1,0 +1,29 @@
+{
+  "id": "key-moments",
+  "recordedAt": "2026-11-14",
+  "server": {
+    "name": "vid2context",
+    "version": "0.1.0",
+    "runtime": "node"
+  },
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/key-moments",
+    "query": [
+      [
+        "url",
+        "https://www.youtube.com/watch?v=cCPsdFdlshc"
+      ],
+      [
+        "count",
+        "5"
+      ]
+    ]
+  },
+  "status": 200,
+  "ms": 6728,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": "{\"videoId\":\"youtube:cCPsdFdlshc\",\"title\":\"Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!\",\"url\":\"https://www.youtube.com/watch?v=cCPsdFdlshc\",\"moments\":[{\"startSec\":69.5,\"timestamp\":\"[1:09]\",\"title\":\"M113 V8 Engine Praised\",\"why\":\"The 2000 G500's M113 V8 is highlighted as a legendary, ultra-reliable 'Land Cruiser Killer' with simple design, cheap parts, and global availability.\",\"url\":\"https://www.youtube.com/watch?v=cCPsdFdlshc&t=69s\"},{\"startSec\":276.11999999999995,\"timestamp\":\"[4:36]\",\"title\":\"G55 AMG Supercharged Era\",\"why\":\"Explains the shift from naturally aspirated to the 491-hp supercharged 'Kompressor' V8 in 2005, defining the performance character of the G55 through 2012.\",\"url\":\"https://www.youtube.com/watch?v=cCPsdFdlshc&t=276s\"},{\"startSec\":577.34,\"timestamp\":\"[9:37]\",\"title\":\"M278 V8 & 7-Speed Debut\",\"why\":\"Introduces the 2013-2015 G550's naturally aspirated M278 V8 and 7-speed transmission, called a major technological leap and the last of the NA V8s.\",\"url\":\"https://www.youtube.com/watch?v=cCPsdFdlshc&t=577s\"},{\"startSec\":919.1,\"timestamp\":\"[15:19]\",\"title\":\"Off-Road Sweet Spot Identified\",\"why\":\"Reveals the 2013-2015 NA V8 is preferred for off-roading due to lack of auxiliary coolers, allowing better bumper fitment and less throttle twitchiness than turbo models.\",\"url\":\"https://www.youtube.com/watch?v=cCPsdFdlshc&t=919s\"},{\"startSec\":1014.06,\"timestamp\":\"[16:54]\",\"title\":\"Final Buying Verdicts\",\"why\":\"Summarizes target buyers: early G500 for value/entry, G55 for power/fun, 2013-15 G550 for ultimate daily/off-road balance, and pre-2002 for investment/collectibility.\",\"url\":\"https://www.youtube.com/watch?v=cCPsdFdlshc&t=1014s\"}],\"requested\":5,\"proposed\":5,\"dropped\":0,\"droppedMoments\":[],\"rung\":\"llm/kilo/nvidia/nemotron-3-ultra-550b-a55b:free\",\"rungs\":[\"llm/kilo/nvidia/nemotron-3-ultra-550b-a55b:free\"],\"model\":\"nvidia/nemotron-3-ultra-550b-a55b:free\",\"chunks\":1,\"attempts\":[{\"id\":\"llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast\",\"stage\":\"llm\",\"outcome\":\"error\",\"reason\":\"auth-401\",\"detail\":\"cloudflare chat: HTTP 401 {\\\"result\\\":null,\\\"success\\\":false,\\\"errors\\\":[{\\\"code\\\":10000,\\\"message\\\":\\\"Authentication error\\\"}],\\\"messages\\\":[]}\",\"ms\":81},{\"id\":\"llm/kilo/nvidia/nemotron-3-ultra-550b-a55b:free\",\"stage\":\"llm\",\"outcome\":\"ok\",\"ms\":6639}],\"notes\":[]}"
+}

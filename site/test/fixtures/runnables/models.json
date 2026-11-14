@@ -1,0 +1,25 @@
+{
+  "id": "models",
+  "recordedAt": "2026-11-14",
+  "server": {
+    "name": "vid2context",
+    "version": "0.1.0",
+    "runtime": "node"
+  },
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/models",
+    "query": [
+      [
+        "kind",
+        "stt"
+      ]
+    ]
+  },
+  "status": 200,
+  "ms": 3,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": "{\"models\":[{\"id\":\"stt/cloudflare-binding/@cf/openai/whisper-large-v3-turbo\",\"kind\":\"stt\",\"label\":\"whisper-large-v3-turbo\",\"service\":\"cloudflare-binding\",\"provider\":\"cloudflare-ai-stt\",\"model\":\"@cf/openai/whisper-large-v3-turbo\",\"tier\":\"free\",\"quality\":4,\"capabilities\":[\"segments\",\"words\",\"language-detect\",\"prompt\"],\"enabled\":false,\"requires\":[\"CLOUDFLARE_AI_BINDING\"]},{\"id\":\"stt/cloudflare-binding/@cf/openai/whisper\",\"kind\":\"stt\",\"label\":\"whisper\",\"service\":\"cloudflare-binding\",\"provider\":\"cloudflare-ai-stt\",\"model\":\"@cf/openai/whisper\",\"tier\":\"free\",\"quality\":2,\"capabilities\":[\"segments\",\"words\"],\"enabled\":false,\"requires\":[\"CLOUDFLARE_AI_BINDING\"]},{\"id\":\"stt/cloudflare/@cf/openai/whisper-large-v3-turbo\",\"kind\":\"stt\",\"label\":\"whisper-large-v3-turbo\",\"service\":\"cloudflare\",\"provider\":\"cloudflare-ai-stt\",\"model\":\"@cf/openai/whisper-large-v3-turbo\",\"tier\":\"free\",\"quality\":4,\"capabilities\":[\"segments\",\"words\",\"language-detect\",\"prompt\"],\"enabled\":true,\"requires\":[\"CLOUDFLARE_ACCOUNT_ID\",\"CLOUDFLARE_API_TOKEN\"]},{\"id\":\"stt/cloudflare/@cf/openai/whisper\",\"kind\":\"stt\",\"label\":\"whisper\",\"service\":\"cloudflare\",\"provider\":\"cloudflare-ai-stt\",\"model\":\"@cf/openai/whisper\",\"tier\":\"free\",\"quality\":2,\"capabilities\":[\"segments\",\"words\"],\"enabled\":true,\"requires\":[\"CLOUDFLARE_ACCOUNT_ID\",\"CLOUDFLARE_API_TOKEN\"]},{\"id\":\"stt/local\",\"kind\":\"stt\",\"label\":\"\",\"service\":\"local\",\"provider\":\"stt-openai-compatible\",\"model\":\"\",\"tier\":\"local\",\"quality\":4,\"capabilities\":[\"segments\",\"language-detect\",\"prompt\"],\"enabled\":false,\"requires\":[\"LOCAL_STT_BASE_URL\",\"LOCAL_STT_MODEL\"]},{\"id\":\"stt/groq/whisper-large-v3-turbo\",\"kind\":\"stt\",\"label\":\"whisper-large-v3-turbo\",\"service\":\"groq\",\"provider\":\"stt-openai-compatible\",\"model\":\"whisper-large-v3-turbo\",\"tier\":\"free\",\"quality\":4,\"capabilities\":[\"segments\",\"words\",\"language-detect\",\"prompt\"],\"enabled\":false,\"requires\":[\"GROQ_API_KEY\"]},{\"id\":\"stt/mistral/voxtral-mini-transcribe-3\",\"kind\":\"stt\",\"label\":\"voxtral-mini-transcribe-3\",\"service\":\"mistral\",\"provider\":\"stt-openai-compatible\",\"model\":\"voxtral-mini-transcribe-3\",\"tier\":\"free\",\"quality\":4,\"capabilities\":[\"segments\",\"language-detect\",\"prompt\"],\"enabled\":false,\"requires\":[\"MISTRAL_API_KEY\"]},{\"id\":\"stt/ovh/whisper-large-v3-turbo\",\"kind\":\"stt\",\"label\":\"whisper-large-v3-turbo\",\"service\":\"ovh\",\"provider\":\"stt-openai-compatible\",\"model\":\"whisper-large-v3-turbo\",\"tier\":\"keyless\",\"quality\":4,\"capabilities\":[\"segments\",\"words\",\"language-detect\",\"prompt\"],\"enabled\":true,\"requires\":[]},{\"id\":\"stt/deepinfra/openai/whisper-large-v3-turbo\",\"kind\":\"stt\",\"label\":\"whisper-large-v3-turbo\",\"service\":\"deepinfra\",\"provider\":\"stt-openai-compatible\",\"model\":\"openai/whisper-large-v3-turbo\",\"tier\":\"paid\",\"quality\":4,\"capabilities\":[\"segments\",\"words\",\"language-detect\",\"prompt\"],\"enabled\":false,\"requires\":[\"DEEPINFRA_API_KEY\"]},{\"id\":\"stt/together/openai/whisper-large-v3\",\"kind\":\"stt\",\"label\":\"whisper-large-v3\",\"service\":\"together\",\"provider\":\"stt-openai-compatible\",\"model\":\"openai/whisper-large-v3\",\"tier\":\"paid\",\"quality\":4,\"capabilities\":[\"segments\",\"words\",\"language-detect\",\"prompt\"],\"enabled\":false,\"requires\":[\"TOGETHER_API_KEY\"]},{\"id\":\"stt/openai/whisper-1\",\"kind\":\"stt\",\"label\":\"whisper-1\",\"service\":\"openai\",\"provider\":\"stt-openai-compatible\",\"model\":\"whisper-1\",\"tier\":\"paid\",\"quality\":4,\"capabilities\":[\"segments\",\"words\",\"language-detect\",\"prompt\"],\"enabled\":false,\"requires\":[\"OPENAI_API_KEY\"]},{\"id\":\"stt/transformers/onnx-community/whisper-base\",\"kind\":\"stt\",\"label\":\"whisper-base\",\"service\":\"transformers\",\"provider\":\"stt-transformers\",\"model\":\"onnx-community/whisper-base\",\"tier\":\"local\",\"quality\":2,\"capabilities\":[\"segments\",\"language-detect\",\"translate\"],\"enabled\":false,\"requires\":[\"TRANSFORMERS_STT_MODEL\"]},{\"id\":\"stt/whisper-cpp\",\"kind\":\"stt\",\"label\":\"\",\"service\":\"whisper-cpp\",\"provider\":\"stt-whisper-cpp\",\"model\":\"\",\"tier\":\"local\",\"quality\":3,\"capabilities\":[\"segments\",\"language-detect\",\"prompt\",\"translate\"],\"enabled\":false,\"requires\":[\"WHISPER_CPP_MODEL\"]}],\"defaultPolicy\":\"free\"}"
+}

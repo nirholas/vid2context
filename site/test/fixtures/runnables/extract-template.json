@@ -1,0 +1,504 @@
+{
+  "id": "extract-template",
+  "recordedAt": "2026-11-14",
+  "server": {
+    "name": "vid2context",
+    "version": "0.1.0",
+    "runtime": "node"
+  },
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/extract",
+    "query": [],
+    "json": {
+      "inputs": [
+        "https://www.youtube.com/watch?v=cCPsdFdlshc"
+      ],
+      "template": "buyer-guide"
+    }
+  },
+  "status": 202,
+  "ms": 120205,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": "{\"id\":\"job_au2MqiPGOLjoJNGg4_Mlyw\",\"kind\":\"extract\",\"status\":\"queued\",\"createdAt\":\"2026-11-14T18:46:07.203Z\",\"updatedAt\":\"2026-11-14T18:46:07.203Z\"}",
+  "job": {
+    "polls": 80,
+    "final": {
+      "id": "job_au2MqiPGOLjoJNGg4_Mlyw",
+      "kind": "extract",
+      "status": "succeeded",
+      "createdAt": "2026-11-14T18:46:07.203Z",
+      "updatedAt": "2026-11-14T18:48:07.205Z",
+      "progress": {
+        "done": 0,
+        "total": 1,
+        "message": "Extracting"
+      },
+      "result": {
+        "template": "buyer-guide",
+        "data": {
+          "product": "Mercedes-Benz G-Wagon",
+          "summary": "The videos provide a year-by-year breakdown of the W463 platform, highlighting that early MBUSA G500s (2002-2010) offer the best value for first-time buyers, the G55 AMG (2003-2012) provides supercharged power at higher maintenance cost, and the 2013-2018 G550/G63 generations represent the best daily driver and off-road platforms with modern interiors and reliable engines, though the 2016-2018 bi-turbo models add complexity with extra coolers limiting bumper options. Ultimately, the best choice depends on whether the buyer prioritizes economy, power, or daily usability.",
+          "models": [
+            {
+              "name": "G500 (M113 V8)",
+              "years": "2000-2012",
+              "verdict": "Reliable, entry-level value; the M113 engine is legendary and as reliable as it gets.",
+              "sources": [
+                {
+                  "videoId": "youtube:cCPsdFdlshc",
+                  "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+                  "startSec": 0,
+                  "endSec": 39.08,
+                  "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=0s",
+                  "quote": "So you're going to buy a G-Wagon. Which year is best for you? Well, in this video, we're going to do a year-by-year breakdown of the legendary W463 platform, so you can check out the model year ranges, the engine options, and the interior, because if you buy the wrong one, I don't want you getting buyer's remorse or ending up with a bad specimen."
+                }
+              ]
+            },
+            {
+              "name": "G55 AMG (supercharged M113)",
+              "years": "2003-2012",
+              "verdict": "Robust and reliable but drinks oil; 490 horsepower supercharged motor is a blast but higher maintenance-intensive.",
+              "sources": [
+                {
+                  "videoId": "youtube:cCPsdFdlshc",
+                  "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+                  "startSec": 247.38,
+                  "endSec": 260.36,
+                  "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=247s",
+                  "quote": "All right. The G55. This is a really special truck. So, this represents the first foray into America with the G-Wagon, MBUSA."
+                }
+              ]
+            },
+            {
+              "name": "G550 (M278 naturally aspirated V8)",
+              "years": "2013-2018",
+              "verdict": "Ultimate daily driver and favorite off-road platform; reliable, user-friendly tech, and the last naturally aspirated V8.",
+              "sources": [
+                {
+                  "videoId": "youtube:cCPsdFdlshc",
+                  "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+                  "startSec": 577.34,
+                  "endSec": 586.9,
+                  "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=577s",
+                  "quote": "But anyway, back to this. Okay. What motor options were available in this generation? This is the M278 Dual Overhead Cam Naturally Aspirated V8."
+                }
+              ]
+            },
+            {
+              "name": "G63 AMG (4-liter bi-turbo)",
+              "years": "2016-2018",
+              "verdict": "More power (60-70 horsepower more) but adds complexity with hot V design and extra coolers; less ideal for off-road due to turbo lag and cooler constraints.",
+              "sources": [
+                {
+                  "videoId": "youtube:cCPsdFdlshc",
+                  "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+                  "startSec": 796.5,
+                  "endSec": 813.72,
+                  "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=796s",
+                  "quote": "The 4-liter bi-turbo is a unique one in that it is what they call a hot V. In other words, the turbochargers are in the middle of the motor, and it's a 419-horsepower power plant made it with the same 7-speed transmission."
+                }
+              ]
+            }
+          ],
+          "years": [
+            {
+              "range": "2002-2010",
+              "verdict": "consider",
+              "why": "Best value on the market; inexpensive, many available with low miles, fantastic entry vehicle.",
+              "sources": [
+                {
+                  "videoId": "youtube:cCPsdFdlshc",
+                  "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+                  "startSec": 497.46,
+                  "endSec": 515.54,
+                  "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=497s",
+                  "quote": "This model, the G500 2002 through 2010, it's going to be your first-time G-Buyer. Those of you that are on a little bit of a budget and need an entry-level vehicle to get in."
+                }
+              ]
+            },
+            {
+              "range": "2003-2012",
+              "verdict": "consider",
+              "why": "G55 AMG offers supercharged power and fun; robust reliable but drinks oil, requires 5,000-mile service intervals.",
+              "sources": [
+                {
+                  "videoId": "youtube:cCPsdFdlshc",
+                  "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+                  "startSec": 255.64,
+                  "endSec": 271.68,
+                  "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=255s",
+                  "quote": "This, MBUSA brought the truck in in 2002, and the G55 didn't start until 2003, and it came in as a naturally aspirated model. And they ran it until 12, right? Yep, they ran it through 12."
+                }
+              ]
+            },
+            {
+              "range": "2013-2015",
+              "verdict": "seek",
+              "why": "Favorite platform for off-road builds; has all the right tech, not overly complicated, just works. Best daily driver with user experience.",
+              "sources": [
+                {
+                  "videoId": "youtube:cCPsdFdlshc",
+                  "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+                  "startSec": 842.74,
+                  "endSec": 859.76,
+                  "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=842s",
+                  "quote": "The 2013-15 are those who are looking for the ultimate daily driver, fully user experience. In other words, you can hop in this thing, take your wife out on date night. You can daily driver it to work and back."
+                }
+              ]
+            },
+            {
+              "range": "2016-2018",
+              "verdict": "mixed",
+              "why": "Introduced bi-turbo and auto start-stop; more power but adds complexity, extra coolers limit bumper/modification options, and not as ideal for off-road due to turbo lag.",
+              "sources": [
+                {
+                  "videoId": "youtube:cCPsdFdlshc",
+                  "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+                  "startSec": 802.3,
+                  "endSec": 813.72,
+                  "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=802s",
+                  "quote": "The 4-liter bi-turbo is a unique one in that it is what they call a hot V."
+                }
+              ]
+            },
+            {
+              "range": "2001 and older",
+              "verdict": "avoid",
+              "why": "Pre-MBUSA trucks; feel so special and are future collectors' items, but not practical for regular use.",
+              "sources": [
+                {
+                  "videoId": "youtube:cCPsdFdlshc",
+                  "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+                  "startSec": 1037.88,
+                  "endSec": 1050.66,
+                  "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=1037s",
+                  "quote": "If you're looking for something that will absolutely appreciate and gain in value, grab yourself a pre-MBUSA truck, i.e. a 2001 and older G500."
+                }
+              ]
+            }
+          ],
+          "prices": [
+            {
+              "item": "entry-level G500",
+              "price": "inexpensive",
+              "sources": [
+                {
+                  "videoId": "youtube:cCPsdFdlshc",
+                  "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+                  "startSec": 515.7,
+                  "endSec": 525.18,
+                  "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=515s",
+                  "quote": "Early G500s are inexpensive. There's a lot of them out there, and not a lot of them have a whole lot of miles on them."
+                }
+              ]
+            },
+            {
+              "item": "G55 AMG",
+              "price": "a little bit more maintenance-intensive",
+              "sources": [
+                {
+                  "videoId": "youtube:cCPsdFdlshc",
+                  "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+                  "startSec": 532.1,
+                  "endSec": 546.86,
+                  "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=532s",
+                  "quote": "The G55 is for someone that wants to build a really bitchin' off-road platform and have a lot of power, a lot of fun with it. They are a little bit more maintenance-intensive, but, hey, man, they're a blast. Got to pay to play."
+                }
+              ]
+            }
+          ],
+          "knownProblems": [
+            {
+              "problem": "oil consumption",
+              "affects": "G55 AMG (2003-2012)",
+              "severity": "minor",
+              "sources": [
+                {
+                  "videoId": "youtube:cCPsdFdlshc",
+                  "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+                  "startSec": 300.44,
+                  "endSec": 311.14,
+                  "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=300s",
+                  "quote": "They drink a little oil. They drink a little oil. As they age, one thing you will note on these trucks is they will drink some oil. Well, this one's got 131,000 miles on it, and it drinks a quart and a half between oil changes."
+                }
+              ]
+            }
+          ],
+          "avoid": [
+            {
+              "what": "2016-2018 bi-turbo G63",
+              "why": "Extra coolers limit bumper and modification options; not as ideal for off-road due to turbo lag and added complexity.",
+              "sources": [
+                {
+                  "videoId": "youtube:cCPsdFdlshc",
+                  "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+                  "startSec": 903.84,
+                  "endSec": 933.48,
+                  "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=903s",
+                  "quote": "And they can't be re-well, as Joe says, anything's doable. But to date, no one's done it that I know of. Not yet. Stay tuned. We've got stuff in the works. What Adam's trying to say is, this marks the last year, the naturally aspirated V8."
+                }
+              ]
+            }
+          ],
+          "mileageAdvice": [
+            {
+              "advice": "171,000 miles on a 25-year-old truck can have excellent leather condition; mileage matters less than condition and maintenance history.",
+              "sources": [
+                {
+                  "videoId": "youtube:cCPsdFdlshc",
+                  "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+                  "startSec": 208.38,
+                  "endSec": 227.48,
+                  "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=208s",
+                  "quote": "The leather quality, I mean, how many miles run this one again? 171,000. 171,000 miles on a 25-year-old truck. And when you look at the leather, there's no rips, tears, or cracks."
+                }
+              ]
+            }
+          ],
+          "sellerQuestions": [
+            {
+              "question": "service records and maintenance history",
+              "why": "Critical for verifying oil consumption issues and overall reliability, especially for supercharged G55 AMG models.",
+              "sources": [
+                {
+                  "videoId": "youtube:cCPsdFdlshc",
+                  "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+                  "startSec": 319.68,
+                  "endSec": 332.98,
+                  "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=319s",
+                  "quote": "Yeah. You know, I'm not making excuses for anyone. You just got to just say, hey, I want a G55. I'll preface, that's on a 5,000-mile service interval, too. Yeah. So, they're pretty easy to maintain."
+                }
+              ]
+            }
+          ]
+        },
+        "citations": [
+          {
+            "videoId": "youtube:cCPsdFdlshc",
+            "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+            "startSec": 0,
+            "endSec": 39.08,
+            "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=0s",
+            "quote": "So you're going to buy a G-Wagon. Which year is best for you? Well, in this video, we're going to do a year-by-year breakdown of the legendary W463 platform, so you can check out the model year ranges, the engine options, and the interior, because if you buy the wrong one, I don't want you getting buyer's remorse or ending up with a bad specimen.",
+            "path": "/models/0/sources/0"
+          },
+          {
+            "videoId": "youtube:cCPsdFdlshc",
+            "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+            "startSec": 247.38,
+            "endSec": 260.36,
+            "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=247s",
+            "quote": "All right. The G55. This is a really special truck. So, this represents the first foray into America with the G-Wagon, MBUSA.",
+            "path": "/models/1/sources/0"
+          },
+          {
+            "videoId": "youtube:cCPsdFdlshc",
+            "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+            "startSec": 577.34,
+            "endSec": 586.9,
+            "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=577s",
+            "quote": "But anyway, back to this. Okay. What motor options were available in this generation? This is the M278 Dual Overhead Cam Naturally Aspirated V8.",
+            "path": "/models/2/sources/0"
+          },
+          {
+            "videoId": "youtube:cCPsdFdlshc",
+            "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+            "startSec": 796.5,
+            "endSec": 813.72,
+            "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=796s",
+            "quote": "The 4-liter bi-turbo is a unique one in that it is what they call a hot V. In other words, the turbochargers are in the middle of the motor, and it's a 419-horsepower power plant made it with the same 7-speed transmission.",
+            "path": "/models/3/sources/0"
+          },
+          {
+            "videoId": "youtube:cCPsdFdlshc",
+            "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+            "startSec": 497.46,
+            "endSec": 515.54,
+            "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=497s",
+            "quote": "This model, the G500 2002 through 2010, it's going to be your first-time G-Buyer. Those of you that are on a little bit of a budget and need an entry-level vehicle to get in.",
+            "path": "/years/0/sources/0"
+          },
+          {
+            "videoId": "youtube:cCPsdFdlshc",
+            "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+            "startSec": 255.64,
+            "endSec": 271.68,
+            "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=255s",
+            "quote": "This, MBUSA brought the truck in in 2002, and the G55 didn't start until 2003, and it came in as a naturally aspirated model. And they ran it until 12, right? Yep, they ran it through 12.",
+            "path": "/years/1/sources/0"
+          },
+          {
+            "videoId": "youtube:cCPsdFdlshc",
+            "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+            "startSec": 842.74,
+            "endSec": 859.76,
+            "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=842s",
+            "quote": "The 2013-15 are those who are looking for the ultimate daily driver, fully user experience. In other words, you can hop in this thing, take your wife out on date night. You can daily driver it to work and back.",
+            "path": "/years/2/sources/0"
+          },
+          {
+            "videoId": "youtube:cCPsdFdlshc",
+            "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+            "startSec": 802.3,
+            "endSec": 813.72,
+            "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=802s",
+            "quote": "The 4-liter bi-turbo is a unique one in that it is what they call a hot V.",
+            "path": "/years/3/sources/0"
+          },
+          {
+            "videoId": "youtube:cCPsdFdlshc",
+            "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+            "startSec": 1037.88,
+            "endSec": 1050.66,
+            "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=1037s",
+            "quote": "If you're looking for something that will absolutely appreciate and gain in value, grab yourself a pre-MBUSA truck, i.e. a 2001 and older G500.",
+            "path": "/years/4/sources/0"
+          },
+          {
+            "videoId": "youtube:cCPsdFdlshc",
+            "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+            "startSec": 515.7,
+            "endSec": 525.18,
+            "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=515s",
+            "quote": "Early G500s are inexpensive. There's a lot of them out there, and not a lot of them have a whole lot of miles on them.",
+            "path": "/prices/0/sources/0"
+          },
+          {
+            "videoId": "youtube:cCPsdFdlshc",
+            "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+            "startSec": 532.1,
+            "endSec": 546.86,
+            "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=532s",
+            "quote": "The G55 is for someone that wants to build a really bitchin' off-road platform and have a lot of power, a lot of fun with it. They are a little bit more maintenance-intensive, but, hey, man, they're a blast. Got to pay to play.",
+            "path": "/prices/1/sources/0"
+          },
+          {
+            "videoId": "youtube:cCPsdFdlshc",
+            "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+            "startSec": 300.44,
+            "endSec": 311.14,
+            "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=300s",
+            "quote": "They drink a little oil. They drink a little oil. As they age, one thing you will note on these trucks is they will drink some oil. Well, this one's got 131,000 miles on it, and it drinks a quart and a half between oil changes.",
+            "path": "/knownProblems/0/sources/0"
+          },
+          {
+            "videoId": "youtube:cCPsdFdlshc",
+            "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+            "startSec": 903.84,
+            "endSec": 933.48,
+            "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=903s",
+            "quote": "And they can't be re-well, as Joe says, anything's doable. But to date, no one's done it that I know of. Not yet. Stay tuned. We've got stuff in the works. What Adam's trying to say is, this marks the last year, the naturally aspirated V8.",
+            "path": "/avoid/0/sources/0"
+          },
+          {
+            "videoId": "youtube:cCPsdFdlshc",
+            "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+            "startSec": 208.38,
+            "endSec": 227.48,
+            "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=208s",
+            "quote": "The leather quality, I mean, how many miles run this one again? 171,000. 171,000 miles on a 25-year-old truck. And when you look at the leather, there's no rips, tears, or cracks.",
+            "path": "/mileageAdvice/0/sources/0"
+          },
+          {
+            "videoId": "youtube:cCPsdFdlshc",
+            "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+            "startSec": 319.68,
+            "endSec": 332.98,
+            "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=319s",
+            "quote": "Yeah. You know, I'm not making excuses for anyone. You just got to just say, hey, I want a G55. I'll preface, that's on a 5,000-mile service interval, too. Yeah. So, they're pretty easy to maintain.",
+            "path": "/sellerQuestions/0/sources/0"
+          }
+        ],
+        "unverified": [],
+        "repaired": true,
+        "sources": [
+          {
+            "videoId": "youtube:cCPsdFdlshc",
+            "ref": {
+              "input": "https://www.youtube.com/watch?v=cCPsdFdlshc",
+              "platform": "youtube",
+              "kind": "video",
+              "id": "youtube:cCPsdFdlshc",
+              "nativeId": "cCPsdFdlshc",
+              "url": "https://www.youtube.com/watch?v=cCPsdFdlshc"
+            },
+            "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+            "channel": "Alliance Motorworks",
+            "durationSec": 1084,
+            "publishedAt": "2025-03-09",
+            "url": "https://www.youtube.com/watch?v=cCPsdFdlshc",
+            "origin": "stt",
+            "language": "en"
+          }
+        ],
+        "rungs": [
+          {
+            "step": "extract",
+            "rung": "llm/kilo/nvidia/nemotron-3-ultra-550b-a55b:free",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free"
+          },
+          {
+            "step": "extract",
+            "rung": "llm/kilo/nvidia/nemotron-3.5-lightning:free",
+            "model": "nvidia/nemotron-3.5-lightning:free"
+          },
+          {
+            "step": "repair",
+            "rung": "llm/kilo/nvidia/nemotron-3-ultra-550b-a55b:free",
+            "model": "nvidia/nemotron-3-ultra-550b-a55b:free"
+          }
+        ],
+        "attempts": [
+          {
+            "id": "llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+            "stage": "llm",
+            "outcome": "skipped",
+            "reason": "cooldown"
+          },
+          {
+            "id": "llm/kilo/nvidia/nemotron-3-ultra-550b-a55b:free",
+            "stage": "llm",
+            "outcome": "ok",
+            "ms": 57390
+          },
+          {
+            "id": "llm/kilo/nvidia/nemotron-3-ultra-550b-a55b:free",
+            "stage": "llm",
+            "outcome": "error",
+            "reason": "bad-json",
+            "detail": "{\"product\": \"Mercedes-Benz G-Wagon (W463 platform) models 2000-2018 including G500, G55 AMG, G550, G63 AMG\", \"summary\": \"The video provides a year-by-year breakdown of the W463 G-Wagon platform from 2"
+          },
+          {
+            "id": "llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+            "stage": "llm",
+            "outcome": "skipped",
+            "reason": "cooldown"
+          },
+          {
+            "id": "llm/kilo/nvidia/nemotron-3.5-lightning:free",
+            "stage": "llm",
+            "outcome": "ok",
+            "ms": 27934
+          },
+          {
+            "id": "llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+            "stage": "llm",
+            "outcome": "skipped",
+            "reason": "cooldown"
+          },
+          {
+            "id": "llm/kilo/nvidia/nemotron-3-ultra-550b-a55b:free",
+            "stage": "llm",
+            "outcome": "ok",
+            "ms": 34666
+          }
+        ],
+        "notes": [],
+        "createdAt": "2026-11-14T18:48:07.205Z"
+      }
+    }
+  }
+}

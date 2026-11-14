@@ -1,0 +1,27 @@
+{
+  "id": "research",
+  "recordedAt": "2026-11-14",
+  "server": {
+    "name": "vid2context",
+    "version": "0.1.0",
+    "runtime": "node"
+  },
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/research",
+    "query": [],
+    "json": {
+      "urls": [
+        "https://www.youtube.com/watch?v=cCPsdFdlshc"
+      ],
+      "query": "reliability",
+      "maxExcerpts": 3
+    }
+  },
+  "status": 200,
+  "ms": 13,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": "{\"query\":\"reliability\",\"terms\":[\"reliability\"],\"phrases\":[],\"results\":[{\"videoId\":\"youtube:cCPsdFdlshc\",\"title\":\"Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!\",\"channel\":\"Alliance Motorworks\",\"url\":\"https://www.youtube.com/watch?v=cCPsdFdlshc\",\"durationSec\":1084,\"origin\":\"stt\",\"language\":\"en\",\"transcriptTokens\":5163,\"excerpts\":[{\"startSec\":612.34,\"endSec\":626.76,\"timestamp\":\"[10:12]\",\"text\":\"I think they're very reliable. They make the right amount of power for big stuff. They make the right noises and they're very reliable. I have yet to see anything catastrophic go wrong with one of these. And I say that because we work on a ton of these and they are super reliable.\",\"context\":{\"before\":\"They actually started this motor in 2011 in the G550 and then kept it all the way through the 2015 model year. This is the last hurrah for the naturally aspirated 5-mile liter V8. 13 to 15 is the year range for this generation, yes? Yep. This generation. You can still get this motor in the prior generation through 2011 and 2012, but for this interior and so forth. This is a great motor. I love this motor.\",\"after\":\"With that, the other thing aside from the motor that is a huge technological leap forward, it's going to be your transmission. You got away from the 5-speed automatic and you go to a 7-speed automatic. I think that's just as much of a game changer in the way the truck handles and drives as the motor because it always keeps it in the right gear. And it's just, it is light years forward of where we came from. So that's on the mechanical side of things.\",\"fromSec\":589.74,\"toSec\":647.64},\"url\":\"https://www.youtube.com/watch?v=cCPsdFdlshc&t=612s\",\"score\":2.315,\"matched\":[\"reliability\"]},{\"startSec\":994.9,\"endSec\":999.72,\"timestamp\":\"[16:34]\",\"text\":\"And reliability. That's it. Anything that's portion of induction is extra complexity. Yeah. Reliability.\",\"context\":{\"before\":\"And I will say, for those that do want to go wheeling, I find that this in 4Low, compared to the 4L bi-turbo in 4Low, this is less twitchy on the throttle. Yes, yes, agreed. And you don't have, there's, I really prefer the naturally aspirated engine off-road. There's no turbo lag. Right. It's less twitchy. It's beautiful. Same. Yep. Totally agree there.\",\"after\":\"And with an exhaust, it's louder. This sounds so pretty good. It sounds so good. We'll do that for another day. So anyway, Joe, anything to add on this series of which G-Wagon someone should end up with? I think we covered it all. Yeah. You have to know what your endgame is. If you want something that you, you've got a few extra dollars to spend, you want something really nice you can live with on a daily basis and just feel impressed every time you get in, grab one of these.\",\"fromSec\":972.32,\"toSec\":1021.18},\"url\":\"https://www.youtube.com/watch?v=cCPsdFdlshc&t=994s\",\"score\":2.173,\"matched\":[\"reliability\"]},{\"startSec\":69.5,\"endSec\":90.38,\"timestamp\":\"[1:09]\",\"text\":\"This one has what we know the legendary M113 V8. This was Mercedes' big hurrah into the V8s, and this is arguably one of their most reliable V8s out there. Some call it the Land Cruiser Killer. Yeah, it is known as the Land Cruiser Killer. I really like this motor. It's all aluminum. It's super light, and it is as reliable as it gets.\",\"context\":{\"before\":\"Cool. We have three trucks here. Starting with our first one, we have a 2000 G500. The second one is a 2012 G55 AMG. The third one is a 2015 G550. We're going to walk through and look at some of the engine options real quick. On the first one, the 2000 G500. Now, there's a couple of models prior to this one, but this is kind of the one everyone gravitates to.\",\"after\":\"Now, some of the key things. It's a single overhead cam motor. It's timing chains. It's two spark plugs per cylinder, and it makes 300 horsepower and 300 foot-pounds of torque. Nice round numbers. Yeah. It looks simple. It's neat. It's clean. Most importantly, it's easy to work on. Parts are cheap, and parts are available almost everywhere. This is what we call a global motor.\",\"fromSec\":47.02,\"toSec\":111.86},\"url\":\"https://www.youtube.com/watch?v=cCPsdFdlshc&t=69s\",\"score\":1.994,\"matched\":[\"reliability\"]}]}],\"failed\":[],\"tokens\":1027,\"transcriptTokens\":5163,\"truncated\":false,\"notes\":[]}"
+}
