@@ -7,7 +7,7 @@
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import llm from '../../../../providers/llm-openai-compatible/src/index.ts';
+import llm from '../../../../providers/llm-local/src/index.ts';
 import { runChain } from '../../src/chain.ts';
 import { chat } from '../../src/pipeline.ts';
 import { Registry } from '../../src/registry.ts';

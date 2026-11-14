@@ -37,6 +37,19 @@ export interface ItemResult {
   audioSec?: number;
   /** USD; 0 for free, keyless and local rungs, null when a paid rung has no listed price. */
   costUsd?: number | null;
+  /** Citations suite: how the answer's citations held up. */
+  citations?: {
+    /** Citations the producer returned (verified ones, for briefs). */
+    total: number;
+    /** Of those, how many quote the transcript within the tolerance of their time (our own check). */
+    verified: number;
+    /** At least one citation landed on an expected place for this question. */
+    hit: boolean;
+    /** Citations the producer itself rejected or could not resolve (unverified brief claims, unknown [n] refs). */
+    rejected: number;
+  };
+  /** Search suite: scores for one query. */
+  retrieval?: { k: number; precisionAtK: number; recallAtK: number; reciprocalRank: number };
   /** The first 300 characters of the hypothesis text, for diagnosing bad scores. */
   sample?: string;
   attempts?: Attempt[];
@@ -96,6 +109,17 @@ export interface RungSummary {
   realTimeFactor?: number;
   /** Total USD, null when any item was unpriced. */
   costUsd?: number | null;
+  /** Citations: verified over total, pooled. */
+  citationAccuracy?: number;
+  /** Citations: share of questions with a citation on an expected place. */
+  hitRate?: number;
+  /** Citations: share of the producer's citations it rejected itself. */
+  rejectedRate?: number;
+  /** Search: means over queries. */
+  precisionAtK?: number;
+  recallAtK?: number;
+  mrr?: number;
+  k?: number;
 }
 
 /** One summary row per rung, in first-seen order. Item-level failures (rung `reference`) are left out. */
@@ -139,6 +163,22 @@ export function summarize(items: readonly ItemResult[]): RungSummary[] {
       row.p90LatencyMs = percentile(lat, 90);
       const audio = ok.reduce((s, i) => s + (i.latencyMs !== undefined ? (i.audioSec ?? 0) : 0), 0);
       if (audio > 0) row.realTimeFactor = lat.reduce((s, l) => s + l, 0) / 1000 / audio;
+    }
+    const cites = ok.map((i) => i.citations).filter((c): c is NonNullable<typeof c> => Boolean(c));
+    if (cites.length > 0) {
+      const total = cites.reduce((n, c) => n + c.total, 0);
+      const rejected = cites.reduce((n, c) => n + c.rejected, 0);
+      row.citationAccuracy = total === 0 ? 0 : cites.reduce((n, c) => n + c.verified, 0) / total;
+      row.hitRate = cites.filter((c) => c.hit).length / cites.length;
+      row.rejectedRate = total + rejected === 0 ? 0 : rejected / (total + rejected);
+    }
+    const ret = ok.map((i) => i.retrieval).filter((r): r is NonNullable<typeof r> => Boolean(r));
+    if (ret.length > 0) {
+      const avg = (f: (r: (typeof ret)[number]) => number) => ret.reduce((n, r) => n + f(r), 0) / ret.length;
+      row.k = ret[0]?.k;
+      row.precisionAtK = avg((r) => r.precisionAtK);
+      row.recallAtK = avg((r) => r.recallAtK);
+      row.mrr = avg((r) => r.reciprocalRank);
     }
     const costs = ok.map((i) => i.costUsd);
     if (costs.some((c) => c !== undefined))

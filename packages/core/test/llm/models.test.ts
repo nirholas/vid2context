@@ -1,15 +1,16 @@
+import llmLocal from '@vid2context/provider-llm-local';
 import llmOpenAiCompatible from '@vid2context/provider-llm-openai-compatible';
 import { describe, expect, it } from 'vitest';
 import { groupModels, listModels, modelLabel } from '../../src/llm/models.ts';
 import { Registry } from '../../src/registry.ts';
 
-// The foundation's real llm provider (every OpenAI-compatible lane).
-const registry = new Registry([llmOpenAiCompatible], 'node');
+// The real llm providers: every OpenAI-compatible lane, plus the local servers (llm-local).
+const registry = new Registry([llmOpenAiCompatible, llmLocal], 'node');
 
 describe('listModels', () => {
   it('lists every llm rung with every ModelInfo field, enabled or not', () => {
     const models = listModels(registry, {}, { kind: 'llm' });
-    expect(models.length).toBe(llmOpenAiCompatible.rungs({}).length);
+    expect(models.length).toBe(llmOpenAiCompatible.rungs({}).length + llmLocal.rungs({}).length);
     const ovh = models.find((m) => m.id === 'llm/ovh/gpt-oss-120b');
     expect(ovh).toEqual({
       id: 'llm/ovh/gpt-oss-120b',
