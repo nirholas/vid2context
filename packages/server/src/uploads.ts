@@ -19,10 +19,10 @@ import {
   type AudioInput,
   type KvStore,
   type Storage,
+  Vid2ContextError,
   type VideoContext,
   type VideoMetadata,
   type VideoRef,
-  Vid2ContextError,
 } from '@vid2context/core';
 
 export const UPLOAD_PREFIX = 'upload:';
@@ -128,6 +128,21 @@ export class UploadStore {
   private entries = new Map<string, UploadEntry>();
   /** Transcripts in memory, by sha256 then language ('' for auto-detect). */
   private contexts = new Map<string, Map<string, VideoContext>>();
+  /** Storages that have the blob methods but no bucket bound (they answered no-provider). */
+  private noBucket = new WeakSet<object>();
+
+  /** The backend's blob store, unless it has none or turned out to have no bucket bound. */
+  private blobsOf(backend: UploadBackend | undefined): (Storage & BlobStore) | undefined {
+    const s = backend?.storage;
+    return s && hasBlobs(s) && !this.noBucket.has(s) ? s : undefined;
+  }
+
+  /** Remember a backend without a bucket and return true; false for any other error. */
+  private markNoBucket(backend: UploadBackend, err: unknown): boolean {
+    if (!(err instanceof Vid2ContextError && err.code === 'no-provider')) return false;
+    this.noBucket.add(backend.storage);
+    return true;
+  }
 
   private sweep(now: number): void {
     for (const [id, e] of this.entries) {
@@ -166,15 +181,16 @@ export class UploadStore {
     const expiresAt = now + opts.ttlMs;
     let persisted: 'blob' | 'memory' = 'memory';
     const backend = opts.backend;
-    if (backend && hasBlobs(backend.storage)) {
+    const blobs = this.blobsOf(backend);
+    if (backend && blobs) {
       try {
-        await backend.storage.putBlob(blobKey(sha256), data, mimeType);
+        await blobs.putBlob(blobKey(sha256), data, mimeType);
         const meta: UploadMeta = { filename, mimeType, bytes: data.byteLength, createdAt: now, expiresAt };
         await backend.kv.kvSet(metaKey(sha256), meta, { ttlSec: ttlSecUntil(expiresAt, now) });
         persisted = 'blob';
       } catch (err) {
         // A backend without a bucket bound answers no-provider; the upload then lives in memory only.
-        if (!(err instanceof Vid2ContextError && err.code === 'no-provider')) throw err;
+        if (!this.markNoBucket(backend, err)) throw err;
       }
     }
     const existing = this.entries.get(sha256);
@@ -198,45 +214,56 @@ export class UploadStore {
     const cached = this.entries.get(sha);
     if (cached) return cached;
     const backend = opts.backend;
-    const blobs = backend && hasBlobs(backend.storage) ? backend.storage : undefined;
+    const blobs = this.blobsOf(backend);
     if (backend && blobs) {
-      const meta = await backend.kv.kvGet<UploadMeta>(metaKey(sha));
-      const blob = meta && meta.expiresAt > now ? await blobs.getBlob(blobKey(sha)).catch(() => null) : null;
-      if (meta && blob) {
-        const entry: UploadEntry = {
-          sha256: sha,
-          filename: meta.filename,
-          mimeType: meta.mimeType,
-          data: blob.data,
-          createdAt: meta.createdAt,
-          expiresAt: meta.expiresAt,
-        };
-        this.remember(entry, opts.maxTotalBytes);
-        return entry;
+      try {
+        const meta = await backend.kv.kvGet<UploadMeta>(metaKey(sha));
+        const blob = meta && meta.expiresAt > now ? await blobs.getBlob(blobKey(sha)) : null;
+        if (meta && blob) {
+          const entry: UploadEntry = {
+            sha256: sha,
+            filename: meta.filename,
+            mimeType: meta.mimeType,
+            data: blob.data,
+            createdAt: meta.createdAt,
+            expiresAt: meta.expiresAt,
+          };
+          this.remember(entry, opts.maxTotalBytes);
+          return entry;
+        }
+        // Expired or never stored here: drop any bytes left behind (an R2 lifecycle rule is the backstop).
+        if (!meta) await blobs.deleteBlob(blobKey(sha));
+      } catch (err) {
+        if (!this.markNoBucket(backend, err)) throw err;
       }
-      // Expired or never stored here: drop any bytes left behind, best effort (an R2 lifecycle rule is the backstop).
-      if (!meta) await blobs.deleteBlob(blobKey(sha)).catch(() => undefined);
     }
+    const inMemory = !this.blobsOf(backend);
     throw new Vid2ContextError('not-found', `No upload ${input.slice(0, 80)} on this server.`, {
-      hint: `Uploads are kept for ${opts.ttlMin} minutes${blobs ? '' : ' in memory and are lost on restart'}. Upload the file again with POST /api/v1/uploads.`,
+      hint: `Uploads are kept for ${opts.ttlMin} minutes${inMemory ? ' in memory and are lost on restart' : ''}. Upload the file again with POST /api/v1/uploads.`,
     });
   }
 
   async getContext(entry: UploadEntry, lang: string, backend?: UploadBackend): Promise<VideoContext | null> {
     const hit = this.contexts.get(entry.sha256)?.get(lang);
     if (hit) return hit;
-    if (backend && hasBlobs(backend.storage)) return backend.kv.kvGet<VideoContext>(contextKey(entry.sha256, lang));
+    if (backend && this.blobsOf(backend)) return backend.kv.kvGet<VideoContext>(contextKey(entry.sha256, lang));
     return null;
   }
 
-  async putContext(entry: UploadEntry, lang: string, context: VideoContext, backend?: UploadBackend, now = Date.now()): Promise<void> {
+  async putContext(
+    entry: UploadEntry,
+    lang: string,
+    context: VideoContext,
+    backend?: UploadBackend,
+    now = Date.now(),
+  ): Promise<void> {
     let byLang = this.contexts.get(entry.sha256);
     if (!byLang) {
       byLang = new Map();
       this.contexts.set(entry.sha256, byLang);
     }
     byLang.set(lang, context);
-    if (backend && hasBlobs(backend.storage)) {
+    if (backend && this.blobsOf(backend)) {
       await backend.kv.kvSet(contextKey(entry.sha256, lang), context, { ttlSec: ttlSecUntil(entry.expiresAt, now) });
     }
   }

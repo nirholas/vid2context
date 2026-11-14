@@ -56,8 +56,9 @@ export interface AppOptions {
    */
   storage?: (ctx: Ctx) => Promise<Storage>;
   /**
-   * The jobs queue. When given, /jobs is mounted. Node creates an in-process
-   * queue (src/node.ts); Workers pass a Cloudflare Queues dispatch (prompt 50).
+   * The jobs queue. When given, /jobs is mounted and collection ingest and
+   * refresh run as jobs. Node creates an in-process queue (src/node.ts);
+   * the Worker gets one when the Cloudflare Queues binding is wired (prompt 50).
    */
   jobs?: Pick<JobsRouteDeps, 'queue' | 'run' | 'heartbeatMs'>;
   /** Check the Host header on /mcp against loopback names (turn on when listening on a loopback address). */
@@ -103,7 +104,12 @@ function subApps(services: Services, opts: AppOptions, version: string): { list:
   });
   const list: SubApp[] = [
     { name: '@vid2context/search', prefix: '/api/v1', routes: searchRoutes(deps) },
-    { name: '@vid2context/library', prefix: '/api/v1', routes: collectionRoutes({ ...deps, kv: services.kv }) },
+    {
+      name: '@vid2context/library',
+      prefix: '/api/v1',
+      // With the jobs queue, collection ingest and refresh answer 202 Job; without it they run inline.
+      routes: collectionRoutes({ ...deps, kv: services.kv, ...(opts.jobs ? { jobs: opts.jobs.queue } : {}) }),
+    },
     { name: '@vid2context/ask', prefix: '/api/v1', routes: askRoutes(deps) },
     ...(opts.jobs ? [{ name: '@vid2context/jobs', prefix: '/api/v1', routes: jobsRoutes({ ...deps, ...opts.jobs }) }] : []),
     { name: '@vid2context/skips', prefix: '/api/v1', routes: skipsRoutes(deps) },
