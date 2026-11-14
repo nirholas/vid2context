@@ -1,0 +1,1283 @@
+{
+  "metadata": {
+    "ref": {
+      "input": "https://www.youtube.com/watch?v=1Xx1fmHIsiA",
+      "platform": "youtube",
+      "kind": "video",
+      "id": "youtube:1Xx1fmHIsiA",
+      "nativeId": "1Xx1fmHIsiA",
+      "url": "https://www.youtube.com/watch?v=1Xx1fmHIsiA"
+    },
+    "title": "Owning a 2018 Mercedes G550 For 2 Years: Costs, Fuel Economy, & More",
+    "description": "Here's what it's like owning a 2018 Mercedes G550. Maintenance costs, fuel economy, livability, and the pros and cons.",
+    "durationSec": 906,
+    "publishedAt": "2025-10-05",
+    "thumbnailUrl": "https://i.ytimg.com/vi/1Xx1fmHIsiA/maxresdefault.jpg",
+    "language": "en",
+    "chapters": [],
+    "isLive": false,
+    "extra": {
+      "viewCount": 40532,
+      "likeCount": 786,
+      "dateText": "Oct 5, 2025",
+      "channelHandle": "@alliancemotorworks",
+      "channelHandleUrl": "https://www.youtube.com/@alliancemotorworks",
+      "subscriberCountText": "15.1K subscribers",
+      "isShort": false,
+      "isLive": false,
+      "isUpcoming": false,
+      "isLiveContent": false,
+      "ageRestricted": false,
+      "membersOnly": false,
+      "playability": "OK"
+    },
+    "channel": {
+      "name": "Alliance Motorworks",
+      "id": "UCdEjP_BjQ5audhxLKKzZl2A",
+      "url": "https://www.youtube.com/channel/UCdEjP_BjQ5audhxLKKzZl2A"
+    }
+  },
+  "transcript": {
+    "ref": {
+      "input": "https://www.youtube.com/watch?v=1Xx1fmHIsiA",
+      "platform": "youtube",
+      "kind": "video",
+      "id": "youtube:1Xx1fmHIsiA",
+      "nativeId": "1Xx1fmHIsiA",
+      "url": "https://www.youtube.com/watch?v=1Xx1fmHIsiA"
+    },
+    "language": "en",
+    "origin": "stt",
+    "producer": "stt/whisper-cpp/small",
+    "model": "small",
+    "segments": [
+      {
+        "startSec": 0,
+        "endSec": 7.12,
+        "text": "Here's a two-year owner history of a 2018 Mercedes G550 with the 4-liter bi-turbo V8."
+      },
+      {
+        "startSec": 7.12,
+        "endSec": 10.28,
+        "text": "And in this video, I'm going to answer the common questions like, what does it cost to"
+      },
+      {
+        "startSec": 10.28,
+        "endSec": 11.96,
+        "text": "maintain one of these things?"
+      },
+      {
+        "startSec": 11.96,
+        "endSec": 13.16,
+        "text": "Is it reliable?"
+      },
+      {
+        "startSec": 13.16,
+        "endSec": 17.28,
+        "text": "What kind of fuel economy do you get, especially with one like this one has a two-inch lift"
+      },
+      {
+        "startSec": 17.28,
+        "endSec": 18.28,
+        "text": "and 33s?"
+      },
+      {
+        "startSec": 18.28,
+        "endSec": 22.06,
+        "text": "I'll talk about that 2015, the white one here, in just a little bit."
+      },
+      {
+        "startSec": 22.06,
+        "endSec": 26.12,
+        "text": "So if you're shopping for a G-Wagon or maybe you have one and you just love this content,"
+      },
+      {
+        "startSec": 26.12,
+        "endSec": 27.4,
+        "text": "I'm really glad to have you here."
+      },
+      {
+        "startSec": 27.4,
+        "endSec": 28.4,
+        "text": "Welcome or welcome back."
+      },
+      {
+        "startSec": 28.4,
+        "endSec": 29.84,
+        "text": "My name is Adam."
+      },
+      {
+        "startSec": 29.84,
+        "endSec": 34.4,
+        "text": "And I just want to say thank you to all of you who've been tuned in."
+      },
+      {
+        "startSec": 34.4,
+        "endSec": 36,
+        "text": "You've been asking for more G content."
+      },
+      {
+        "startSec": 36,
+        "endSec": 37.08,
+        "text": "It's been a little bit."
+      },
+      {
+        "startSec": 37.08,
+        "endSec": 39.48,
+        "text": "Life and business has been incredibly busy."
+      },
+      {
+        "startSec": 39.48,
+        "endSec": 41.76,
+        "text": "And you know, we all go through seasons in our life."
+      },
+      {
+        "startSec": 41.76,
+        "endSec": 43.24,
+        "text": "My seasons have changed."
+      },
+      {
+        "startSec": 43.24,
+        "endSec": 45.98,
+        "text": "You might notice an adventure van back there."
+      },
+      {
+        "startSec": 45.98,
+        "endSec": 54.36,
+        "text": "And it's a season of two aging dogs and less time for four-wheeling, which is why I built"
+      },
+      {
+        "startSec": 54.36,
+        "endSec": 55.36,
+        "text": "the 2015."
+      },
+      {
+        "startSec": 55.36,
+        "endSec": 59.88,
+        "text": "Anyway, let's get into today's update on this vehicle, but first I just want to do a quick"
+      },
+      {
+        "startSec": 59.88,
+        "endSec": 60.88,
+        "text": "walk around."
+      },
+      {
+        "startSec": 60.88,
+        "endSec": 62.84,
+        "text": "I've done a full build tour of this truck."
+      },
+      {
+        "startSec": 62.84,
+        "endSec": 64.44,
+        "text": "It's a 2018 limited edition."
+      },
+      {
+        "startSec": 64.44,
+        "endSec": 67.58,
+        "text": "There was 463 of these made."
+      },
+      {
+        "startSec": 67.58,
+        "endSec": 75.56,
+        "text": "And this limited edition was a send off to the W463 platform in 2018 before the 463A in"
+      },
+      {
+        "startSec": 75.56,
+        "endSec": 77.2,
+        "text": "2019."
+      },
+      {
+        "startSec": 77.2,
+        "endSec": 80.28,
+        "text": "So with this limited edition, you have limited edition paint."
+      },
+      {
+        "startSec": 80.28,
+        "endSec": 85.64,
+        "text": "You have a two inch lift, a jack wagon, overlanding springs, Coney Raid shocks."
+      },
+      {
+        "startSec": 85.64,
+        "endSec": 91,
+        "text": "We've got Alfie equipped wheels and 33 by 1250 Mickey Thompson, Baja Boss AT."
+      },
+      {
+        "startSec": 91,
+        "endSec": 96.2,
+        "text": "These are by far my favorite, not only AT tire, favorite tire I've ever run."
+      },
+      {
+        "startSec": 96.2,
+        "endSec": 99.56,
+        "text": "The limited edition, which is really neat, I think only a hundred of these made it into"
+      },
+      {
+        "startSec": 99.56,
+        "endSec": 100.56,
+        "text": "the USA."
+      },
+      {
+        "startSec": 100.56,
+        "endSec": 106.32,
+        "text": "You know, you've got a limited edition stamp on the door sill and Alcantara headliner."
+      },
+      {
+        "startSec": 106.32,
+        "endSec": 109.92,
+        "text": "And we'll get in here and I'll start touring you around and answering some of the common"
+      },
+      {
+        "startSec": 109.92,
+        "endSec": 112.04,
+        "text": "questions that you get."
+      },
+      {
+        "startSec": 112.04,
+        "endSec": 120.84,
+        "text": "But you even see here on the center console, the limited edition, one of 463 if you can"
+      },
+      {
+        "startSec": 120.84,
+        "endSec": 121.84,
+        "text": "see that."
+      },
+      {
+        "startSec": 121.84,
+        "endSec": 127.92,
+        "text": "You've got the AMG accents and this thing is just a joy to drive."
+      },
+      {
+        "startSec": 127.92,
+        "endSec": 134.76,
+        "text": "And compared to the 2015, which has the 5.5 liter V8, I'll compare these in just a minute."
+      },
+      {
+        "startSec": 134.76,
+        "endSec": 137.56,
+        "text": "But this vehicle has 61,000 miles."
+      },
+      {
+        "startSec": 137.56,
+        "endSec": 142.12,
+        "text": "It was a two owner, very, very well-maintained vehicle."
+      },
+      {
+        "startSec": 142.12,
+        "endSec": 144.64,
+        "text": "And I just want to answer the question on fuel economy, because people are like, oh, what"
+      },
+      {
+        "startSec": 144.64,
+        "endSec": 146.24,
+        "text": "kind of fuel economy do you get?"
+      },
+      {
+        "startSec": 146.24,
+        "endSec": 148,
+        "text": "So I'll just show you real world right now."
+      },
+      {
+        "startSec": 148,
+        "endSec": 154.2,
+        "text": "So we have had this since 40, let's see, from Reset."
+      },
+      {
+        "startSec": 154.2,
+        "endSec": 161.68,
+        "text": "The last 14,000 miles that we've driven, averaging 14.2 miles a gallon."
+      },
+      {
+        "startSec": 161.68,
+        "endSec": 165.32,
+        "text": "And that is, again, with a two inch lift and 33s."
+      },
+      {
+        "startSec": 165.32,
+        "endSec": 168.6,
+        "text": "And mixed use, so I have done some towing with this."
+      },
+      {
+        "startSec": 168.6,
+        "endSec": 177.04,
+        "text": "In fact, I've towed my side-by-side on a trailer, which is the extent of it, a handful of times."
+      },
+      {
+        "startSec": 177.04,
+        "endSec": 180.32,
+        "text": "And there is some off-roading miles for both camping trips."
+      },
+      {
+        "startSec": 180.32,
+        "endSec": 186.28,
+        "text": "And when we got this vehicle, while it was stock, we ran the world-famous Imogene Pass."
+      },
+      {
+        "startSec": 186.28,
+        "endSec": 189.12,
+        "text": "And however you pronounce it, you can correct me in the comments below."
+      },
+      {
+        "startSec": 189.12,
+        "endSec": 191.36,
+        "text": "So there's the first question."
+      },
+      {
+        "startSec": 191.36,
+        "endSec": 192.88,
+        "text": "What kind of fuel economy do you get?"
+      },
+      {
+        "startSec": 192.88,
+        "endSec": 195.4,
+        "text": "There you go, 14.2 overall."
+      },
+      {
+        "startSec": 195.4,
+        "endSec": 197.68,
+        "text": "Could you get a little better, possibly?"
+      },
+      {
+        "startSec": 197.68,
+        "endSec": 200.92,
+        "text": "Where I drive most, if you can't tell, is up in the mountains."
+      },
+      {
+        "startSec": 200.92,
+        "endSec": 203.4,
+        "text": "We do a fair bit of highway driving."
+      },
+      {
+        "startSec": 203.4,
+        "endSec": 204.56,
+        "text": "But overall, this thing's been great."
+      },
+      {
+        "startSec": 204.56,
+        "endSec": 206.52,
+        "text": "Now, let's talk maintenance."
+      },
+      {
+        "startSec": 206.52,
+        "endSec": 209.76,
+        "text": "What has this thing needed in 14,000 miles?"
+      },
+      {
+        "startSec": 209.76,
+        "endSec": 211.72,
+        "text": "I'm going to list it all right now."
+      },
+      {
+        "startSec": 211.72,
+        "endSec": 215.64,
+        "text": "Number one, coolant was low, and it was only mildly low."
+      },
+      {
+        "startSec": 215.64,
+        "endSec": 218.56,
+        "text": "So we ran a whole set of tests."
+      },
+      {
+        "startSec": 218.56,
+        "endSec": 219.56,
+        "text": "Turns out it was fine."
+      },
+      {
+        "startSec": 219.56,
+        "endSec": 225.2,
+        "text": "But for coolant, no big deal, that there can be-- and please correct me, I'm not a mechanic."
+      },
+      {
+        "startSec": 225.2,
+        "endSec": 227.56,
+        "text": "So to all my mechanic friends, drop a comment."
+      },
+      {
+        "startSec": 227.56,
+        "endSec": 230.52,
+        "text": "That's why I've done a lot of videos with Joe from Nothing But G's, the channel, because"
+      },
+      {
+        "startSec": 230.52,
+        "endSec": 232.12,
+        "text": "he's the G-Wagon specialist."
+      },
+      {
+        "startSec": 232.12,
+        "endSec": 237.68,
+        "text": "Both vehicles have been exclusively serviced and built by Joe over at Alliance AutoCare"
+      },
+      {
+        "startSec": 237.68,
+        "endSec": 238.68,
+        "text": "with Nothing But G's."
+      },
+      {
+        "startSec": 238.68,
+        "endSec": 241,
+        "text": "But anyway, so coolant topped off."
+      },
+      {
+        "startSec": 241,
+        "endSec": 242,
+        "text": "No problem."
+      },
+      {
+        "startSec": 242,
+        "endSec": 245.76,
+        "text": "It was a couple hundred bucks just to double check and do a service check."
+      },
+      {
+        "startSec": 245.76,
+        "endSec": 249.72,
+        "text": "Great, let's see, what else did we end up doing?"
+      },
+      {
+        "startSec": 249.72,
+        "endSec": 250.72,
+        "text": "Nothing."
+      },
+      {
+        "startSec": 250.72,
+        "endSec": 253.84,
+        "text": "Nothing except basic service, and I will talk about what that cost."
+      },
+      {
+        "startSec": 253.84,
+        "endSec": 259.12,
+        "text": "So the service-- I think it's service B, the 50,000-mile service on this is not cheap."
+      },
+      {
+        "startSec": 259.12,
+        "endSec": 262.56,
+        "text": "It was about, gosh, I want to say 14 to 1,700."
+      },
+      {
+        "startSec": 262.56,
+        "endSec": 264.2,
+        "text": "I can't remember the exact number."
+      },
+      {
+        "startSec": 264.2,
+        "endSec": 270.56,
+        "text": "But what that includes is front and rear differentials, transfer case, transmission, oil change, filters,"
+      },
+      {
+        "startSec": 270.56,
+        "endSec": 271.56,
+        "text": "et cetera."
+      },
+      {
+        "startSec": 271.56,
+        "endSec": 273.6,
+        "text": "So it is a bigger service."
+      },
+      {
+        "startSec": 273.6,
+        "endSec": 279.44,
+        "text": "And again, that's not a super-- you're not doing that service all the time."
+      },
+      {
+        "startSec": 279.44,
+        "endSec": 284.16,
+        "text": "Outside of that, this thing has been very, very, very easy to maintain."
+      },
+      {
+        "startSec": 284.16,
+        "endSec": 286.2,
+        "text": "Oh, one other thing, chip in the windshield."
+      },
+      {
+        "startSec": 286.2,
+        "endSec": 288.04,
+        "text": "We were driving to New Mexico."
+      },
+      {
+        "startSec": 288.04,
+        "endSec": 289.04,
+        "text": "We watched it happen."
+      },
+      {
+        "startSec": 289.04,
+        "endSec": 293.52,
+        "text": "This car picked up a rock and shot it over, and I got the chip repaired."
+      },
+      {
+        "startSec": 293.52,
+        "endSec": 295.28,
+        "text": "I can't even see where it was."
+      },
+      {
+        "startSec": 295.28,
+        "endSec": 297.36,
+        "text": "It was somewhere over here."
+      },
+      {
+        "startSec": 297.36,
+        "endSec": 302.96,
+        "text": "But these windshields are obviously just straight up and down and are very prone to rock chips."
+      },
+      {
+        "startSec": 302.96,
+        "endSec": 306.32,
+        "text": "They're very expensive because they are heated windshields."
+      },
+      {
+        "startSec": 306.32,
+        "endSec": 309.32,
+        "text": "So you can see there's heat coils in them."
+      },
+      {
+        "startSec": 309.32,
+        "endSec": 314.24,
+        "text": "Outside of that, literally, we haven't done anything to it in 14,000 miles."
+      },
+      {
+        "startSec": 314.24,
+        "endSec": 318.2,
+        "text": "Now the cool thing, when you are shopping for a G, which I did another video on what"
+      },
+      {
+        "startSec": 318.2,
+        "endSec": 324.44,
+        "text": "to look for and all that, especially when looking through a Carfax report, this had"
+      },
+      {
+        "startSec": 324.44,
+        "endSec": 329.04,
+        "text": "no major repeated service issues."
+      },
+      {
+        "startSec": 329.04,
+        "endSec": 333.28,
+        "text": "And you'll see when you start looking through these Gs that they just don't have it, whereas"
+      },
+      {
+        "startSec": 333.28,
+        "endSec": 337.24,
+        "text": "if you've looked at Land Rover-- and I know I looked at an LR4, and you'll see timing"
+      },
+      {
+        "startSec": 337.24,
+        "endSec": 340.8,
+        "text": "chain-- excuse me, was it timing something?"
+      },
+      {
+        "startSec": 340.8,
+        "endSec": 344.6,
+        "text": "Anyway, you'll see electrical issues and the same things coming up over and over again."
+      },
+      {
+        "startSec": 344.6,
+        "endSec": 350.2,
+        "text": "But the one common thing-- and this is on this vehicle, this little seat piece cracks."
+      },
+      {
+        "startSec": 350.2,
+        "endSec": 351.2,
+        "text": "It's very common."
+      },
+      {
+        "startSec": 351.2,
+        "endSec": 356.16,
+        "text": "You'll see this on a lot of new vehicles under warranty replaced, and it is a relatively"
+      },
+      {
+        "startSec": 356.16,
+        "endSec": 357.52,
+        "text": "inexpensive part."
+      },
+      {
+        "startSec": 357.52,
+        "endSec": 360.6,
+        "text": "My other white truck here did not have that crack."
+      },
+      {
+        "startSec": 360.6,
+        "endSec": 364.88,
+        "text": "But anyway, so that is one thing just to be mindful of when you look through one."
+      },
+      {
+        "startSec": 364.88,
+        "endSec": 369.6,
+        "text": "Now other than that, let's talk livability."
+      },
+      {
+        "startSec": 369.6,
+        "endSec": 372.48,
+        "text": "Livability, there's a few things that are worth noting."
+      },
+      {
+        "startSec": 372.48,
+        "endSec": 375.92,
+        "text": "And I'm actually going to be doing another video on this."
+      },
+      {
+        "startSec": 375.92,
+        "endSec": 378.8,
+        "text": "And I've shared this in some previous videos."
+      },
+      {
+        "startSec": 378.8,
+        "endSec": 381.2,
+        "text": "There's really no place to put anything."
+      },
+      {
+        "startSec": 381.2,
+        "endSec": 385.8,
+        "text": "So you've got your one cup holder down here, cell phone, what I usually do-- and I'm filming"
+      },
+      {
+        "startSec": 385.8,
+        "endSec": 390.48,
+        "text": "on my phone-- but I'll usually set mine between the handbrake and the center console, and"
+      },
+      {
+        "startSec": 390.48,
+        "endSec": 391.48,
+        "text": "it'll stay put."
+      },
+      {
+        "startSec": 391.48,
+        "endSec": 394.6,
+        "text": "So that's my preferred place to keep my cell phone."
+      },
+      {
+        "startSec": 394.6,
+        "endSec": 399.96,
+        "text": "The other thing that's kind of curious is there's nowhere to put sunglasses up here."
+      },
+      {
+        "startSec": 399.96,
+        "endSec": 402.44,
+        "text": "There's just nothing at all for storage."
+      },
+      {
+        "startSec": 402.44,
+        "endSec": 409.52,
+        "text": "So in terms of usability, day to day, they are less practical vehicles, which I'll talk"
+      },
+      {
+        "startSec": 409.52,
+        "endSec": 412.04,
+        "text": "about in a minute."
+      },
+      {
+        "startSec": 412.04,
+        "endSec": 419.16,
+        "text": "But the creature comforts, even driving passengers, the rear seats are also heated."
+      },
+      {
+        "startSec": 419.16,
+        "endSec": 422.12,
+        "text": "In terms of comfort, here's the interesting thing."
+      },
+      {
+        "startSec": 422.12,
+        "endSec": 425.44,
+        "text": "A lot of people complain about the comfort in these vehicles."
+      },
+      {
+        "startSec": 425.44,
+        "endSec": 428.16,
+        "text": "And I'll be honest with you, I go back and forth."
+      },
+      {
+        "startSec": 428.16,
+        "endSec": 433.52,
+        "text": "There's times like the white one, my 2015, which teaser is actually going to be available"
+      },
+      {
+        "startSec": 433.52,
+        "endSec": 435.36,
+        "text": "for purchase very soon."
+      },
+      {
+        "startSec": 435.36,
+        "endSec": 437.28,
+        "text": "There's a reason for this, and I'll share."
+      },
+      {
+        "startSec": 437.28,
+        "endSec": 440,
+        "text": "By the way, we're not getting rid of that G."
+      },
+      {
+        "startSec": 440,
+        "endSec": 444,
+        "text": "This one is coming up because of some lifestyle changes, which I'll talk about here at the"
+      },
+      {
+        "startSec": 444,
+        "endSec": 445,
+        "text": "end."
+      },
+      {
+        "startSec": 445,
+        "endSec": 450.84,
+        "text": "But I drove this vehicle all the way down to Texas, 12 hours straight nonstop."
+      },
+      {
+        "startSec": 450.84,
+        "endSec": 453.92,
+        "text": "And the reason I went down there is actually to hang out with Jack, with Jack Wagon Overlanding"
+      },
+      {
+        "startSec": 453.92,
+        "endSec": 456.36,
+        "text": "when I film those videos, and to get this bumper."
+      },
+      {
+        "startSec": 456.36,
+        "endSec": 461.52,
+        "text": "And I was blown away because these seats in the Gs are very upright, and I was like, \"Ah,"
+      },
+      {
+        "startSec": 461.52,
+        "endSec": 463.84,
+        "text": "you know, you first get in them.\""
+      },
+      {
+        "startSec": 463.84,
+        "endSec": 465.36,
+        "text": "I didn't like them that much."
+      },
+      {
+        "startSec": 465.36,
+        "endSec": 470.32,
+        "text": "I thought they needed to be a little softer."
+      },
+      {
+        "startSec": 470.32,
+        "endSec": 473.84,
+        "text": "I thought that they just, I don't know, they feel like a bench."
+      },
+      {
+        "startSec": 473.84,
+        "endSec": 476.72,
+        "text": "And then I drove 12 hours, and I got out, and I was totally fine."
+      },
+      {
+        "startSec": 476.72,
+        "endSec": 482.76,
+        "text": "In fact, on this white one, I drove, from where I live in Colorado, out to Moab, Utah,"
+      },
+      {
+        "startSec": 482.76,
+        "endSec": 488.84,
+        "text": "six hours straight there, wheeled for three hours, and then finished up and went out wheeling"
+      },
+      {
+        "startSec": 488.84,
+        "endSec": 489.84,
+        "text": "the next day."
+      },
+      {
+        "startSec": 489.84,
+        "endSec": 490.84,
+        "text": "And I was totally fine."
+      },
+      {
+        "startSec": 490.84,
+        "endSec": 496.72,
+        "text": "I also did the trifecta in this, in Moab, which was about nine hours in the vehicle."
+      },
+      {
+        "startSec": 496.72,
+        "endSec": 501.52,
+        "text": "And I was a little stiff at the end, but the seats are like, they're, it's like, you're"
+      },
+      {
+        "startSec": 501.52,
+        "endSec": 503.48,
+        "text": "really dialed or you're not dialed."
+      },
+      {
+        "startSec": 503.48,
+        "endSec": 506.8,
+        "text": "They do take some playing with to get right."
+      },
+      {
+        "startSec": 506.8,
+        "endSec": 511.64,
+        "text": "And I will share, there is one thing that is very common that breaks on these Gs, which"
+      },
+      {
+        "startSec": 511.64,
+        "endSec": 513.28,
+        "text": "has not happened on this one."
+      },
+      {
+        "startSec": 513.28,
+        "endSec": 515,
+        "text": "I expect it will at some point."
+      },
+      {
+        "startSec": 515,
+        "endSec": 521.64,
+        "text": "But I did, when I, when I purchased this vehicle, which I'll talk about in another video."
+      },
+      {
+        "startSec": 521.64,
+        "endSec": 524.56,
+        "text": "The dealer, I had them test that, and it was broken."
+      },
+      {
+        "startSec": 524.56,
+        "endSec": 529.48,
+        "text": "So there's a pneumatic pump that runs these seat controls, which are right here, and you"
+      },
+      {
+        "startSec": 529.48,
+        "endSec": 530.6,
+        "text": "have quite a lot."
+      },
+      {
+        "startSec": 530.6,
+        "endSec": 532.84,
+        "text": "This will extend the bolster."
+      },
+      {
+        "startSec": 532.84,
+        "endSec": 535.68,
+        "text": "This we, my wife and I call them the pinchers."
+      },
+      {
+        "startSec": 535.68,
+        "endSec": 537.8,
+        "text": "So that's really nice for off-road."
+      },
+      {
+        "startSec": 537.8,
+        "endSec": 544.08,
+        "text": "That's your lateral support will pinch in and they hold you in place when you're off-roading."
+      },
+      {
+        "startSec": 544.08,
+        "endSec": 546.2,
+        "text": "And then you've got two lumbar upper and lower."
+      },
+      {
+        "startSec": 546.2,
+        "endSec": 548.84,
+        "text": "So high and low lumbar support there."
+      },
+      {
+        "startSec": 548.84,
+        "endSec": 552.76,
+        "text": "So other than that livability, you have some sacrifice in terms of space."
+      },
+      {
+        "startSec": 552.76,
+        "endSec": 556.48,
+        "text": "You have some sacrifice in terms of like where you store things."
+      },
+      {
+        "startSec": 556.48,
+        "endSec": 560.2,
+        "text": "But I will say, and people have emailed me asking, you know, what do you think you go"
+      },
+      {
+        "startSec": 560.2,
+        "endSec": 566.92,
+        "text": "with the, the older G 500 or G 550, the five liter, the 5.5 liter, both naturally aspirated"
+      },
+      {
+        "startSec": 566.92,
+        "endSec": 573.16,
+        "text": "or the four liter, by the way, I'm talking the non AMG variants."
+      },
+      {
+        "startSec": 573.16,
+        "endSec": 579.52,
+        "text": "I got to say the four liter, if you're just going to daily it, like it's, it's, it's"
+      },
+      {
+        "startSec": 579.52,
+        "endSec": 581.04,
+        "text": "more responsive."
+      },
+      {
+        "startSec": 581.04,
+        "endSec": 582.28,
+        "text": "It's fun to drive."
+      },
+      {
+        "startSec": 582.28,
+        "endSec": 583.44,
+        "text": "It is zippy."
+      },
+      {
+        "startSec": 583.44,
+        "endSec": 585,
+        "text": "The low end torque is phenomenal."
+      },
+      {
+        "startSec": 585,
+        "endSec": 588.16,
+        "text": "And this thing has like no turbo lag."
+      },
+      {
+        "startSec": 588.16,
+        "endSec": 591.36,
+        "text": "It's freaking awesome."
+      },
+      {
+        "startSec": 591.36,
+        "endSec": 599.96,
+        "text": "The 5.5 liter V8 that's in the 2015 is louder, more raw feeling."
+      },
+      {
+        "startSec": 599.96,
+        "endSec": 604.04,
+        "text": "The sound is just beautiful, especially with that MBRP exhaust, which I did have on this"
+      },
+      {
+        "startSec": 604.04,
+        "endSec": 608.56,
+        "text": "truck and it was far quieter, by the way, on this turbo vehicle."
+      },
+      {
+        "startSec": 608.56,
+        "endSec": 614.36,
+        "text": "But for overall daily use, this is the one now final things to note is on the tailgate"
+      },
+      {
+        "startSec": 614.36,
+        "endSec": 622.28,
+        "text": "and this is different between these two trucks, just the thing, I forget the name of the,"
+      },
+      {
+        "startSec": 622.28,
+        "endSec": 627.12,
+        "text": "the company 9 11 or something does this mount because the factory G wagon spare tire mount"
+      },
+      {
+        "startSec": 627.12,
+        "endSec": 630.6,
+        "text": "faces in and this faces out, but in high wind."
+      },
+      {
+        "startSec": 630.6,
+        "endSec": 638.04,
+        "text": "So tailgate and to my American friends here, this opens up obviously curbside and the one"
+      },
+      {
+        "startSec": 638.04,
+        "endSec": 642.96,
+        "text": "thing that is a little annoying is if in real high wind, this will close on you."
+      },
+      {
+        "startSec": 642.96,
+        "endSec": 650.52,
+        "text": "So but what I will say, these trunks are massive, like absolutely massive."
+      },
+      {
+        "startSec": 650.52,
+        "endSec": 654.76,
+        "text": "And I just ran an event for business and we drove this vehicle down."
+      },
+      {
+        "startSec": 654.76,
+        "endSec": 658.44,
+        "text": "I had this thing filled to the brim, even though it's small, the amount of usability"
+      },
+      {
+        "startSec": 658.44,
+        "endSec": 663.08,
+        "text": "and the ability, sorry for all the dog hair, I have two dogs to stack things on the sides"
+      },
+      {
+        "startSec": 663.08,
+        "endSec": 664.8,
+        "text": "is fantastic."
+      },
+      {
+        "startSec": 664.8,
+        "endSec": 671.84,
+        "text": "And the height goes up, but I do have a complaint when these seats fold down, there's, it really"
+      },
+      {
+        "startSec": 671.84,
+        "endSec": 675.32,
+        "text": "doesn't open up that much room and when they fold and tumble, then the front seats need"
+      },
+      {
+        "startSec": 675.32,
+        "endSec": 680.44,
+        "text": "to push up in like, I'm a short person and it's too tight for me."
+      },
+      {
+        "startSec": 680.44,
+        "endSec": 687.6,
+        "text": "So big trunk space, if you're looking to like really haul with it, you're going to want"
+      },
+      {
+        "startSec": 687.6,
+        "endSec": 688.8,
+        "text": "something bigger."
+      },
+      {
+        "startSec": 688.8,
+        "endSec": 691.68,
+        "text": "But if you just like, hey, I need to throw some stuff in the trunk, you can go all the"
+      },
+      {
+        "startSec": 691.68,
+        "endSec": 699.08,
+        "text": "way up, the height is, is massive, massive, massive, which is why in my, the white 2015,"
+      },
+      {
+        "startSec": 699.08,
+        "endSec": 702.16,
+        "text": "which I'm going to show you the comparison now, this has two things."
+      },
+      {
+        "startSec": 702.16,
+        "endSec": 707.48,
+        "text": "One, the AFN bumper, which I've done a tour on, which is a steel bumper, but you'll see"
+      },
+      {
+        "startSec": 707.48,
+        "endSec": 712.4,
+        "text": "this arm, this is where all the load of this 35 inch spare tire goes."
+      },
+      {
+        "startSec": 712.4,
+        "endSec": 717.88,
+        "text": "But what happens is when this is open, and I'll see if I can get a shot down here, when"
+      },
+      {
+        "startSec": 717.88,
+        "endSec": 720.4,
+        "text": "this is open, all the load is on this tire."
+      },
+      {
+        "startSec": 720.4,
+        "endSec": 728.28,
+        "text": "So when I'm like out hiking with my dogs, the, this stays open even in wind, that load"
+      },
+      {
+        "startSec": 728.28,
+        "endSec": 729.28,
+        "text": "is off there."
+      },
+      {
+        "startSec": 729.28,
+        "endSec": 732.5,
+        "text": "Now the other thing, and this is a mess inside, it's getting cleaned up because this is coming"
+      },
+      {
+        "startSec": 732.5,
+        "endSec": 737.48,
+        "text": "for sale, and I'll explain why in a moment, but I had, I pulled their seats out, Joe and"
+      },
+      {
+        "startSec": 737.48,
+        "endSec": 742,
+        "text": "Alliance AutoCare is putting those back in for me, and doing the final thing, which this"
+      },
+      {
+        "startSec": 742,
+        "endSec": 743.48,
+        "text": "needs an oil change, everything else."
+      },
+      {
+        "startSec": 743.48,
+        "endSec": 748.16,
+        "text": "This was a one owner vehicle before me, all dealer service, Joe did absolutely everything."
+      },
+      {
+        "startSec": 748.16,
+        "endSec": 753.96,
+        "text": "This has been, even though I've used it, and I've wheeled it, like it is, everything has"
+      },
+      {
+        "startSec": 753.96,
+        "endSec": 758.68,
+        "text": "been cared for meticulously, and you can ask Joe, I have every service record down to like"
+      },
+      {
+        "startSec": 758.68,
+        "endSec": 763.16,
+        "text": "fixing a rear wiper that didn't work, like all the things have been taken care of."
+      },
+      {
+        "startSec": 763.16,
+        "endSec": 767.04,
+        "text": "But anyway, the reason people have been giving me a hard time, dude, you're the G wheeling"
+      },
+      {
+        "startSec": 767.04,
+        "endSec": 768.04,
+        "text": "guy, you love Gs."
+      },
+      {
+        "startSec": 768.04,
+        "endSec": 773.76,
+        "text": "I do, in our phases of life change, and I pulled the seats, by the way, those were on the back"
+      },
+      {
+        "startSec": 773.76,
+        "endSec": 776.72,
+        "text": "of my seats, I'm just kind of getting ready to get this all unloaded, but I pulled the"
+      },
+      {
+        "startSec": 776.72,
+        "endSec": 781.84,
+        "text": "seats because I've been hauling things from having to go to our recycle center and loading"
+      },
+      {
+        "startSec": 781.84,
+        "endSec": 785.76,
+        "text": "up a bunch of boxes, I'll put my bike back there, because I love mountain biking, and"
+      },
+      {
+        "startSec": 785.76,
+        "endSec": 790.32,
+        "text": "I'm in a chapter in my life right now, where I originally built this truck to wheel, oh"
+      },
+      {
+        "startSec": 790.32,
+        "endSec": 794.32,
+        "text": "my gosh, you can't, unless you want a portal build, you're not going to set up something"
+      },
+      {
+        "startSec": 794.32,
+        "endSec": 799.72,
+        "text": "as nice as this, you're just not, and I'm in a chapter in my life, after building up"
+      },
+      {
+        "startSec": 799.72,
+        "endSec": 805.56,
+        "text": "this beautiful vehicle, that I don't need something like this, I actually need to be"
+      },
+      {
+        "startSec": 805.56,
+        "endSec": 810.88,
+        "text": "in a truck for, you know, we've got our van, and we've got two Gs."
+      },
+      {
+        "startSec": 810.88,
+        "endSec": 816.2,
+        "text": "This thing, I absolutely, like, Sheena was like, my wife, she was like, pry it out of"
+      },
+      {
+        "startSec": 816.2,
+        "endSec": 820,
+        "text": "my dead lifeless fingers, that thing's not going anywhere, but sadly, and I freaking"
+      },
+      {
+        "startSec": 820,
+        "endSec": 824.52,
+        "text": "love this truck, it is going to be for sale, I'm asking $100,000 for it, I'll break all"
+      },
+      {
+        "startSec": 824.52,
+        "endSec": 829.24,
+        "text": "that down, I've done a build video, I'll do a new video, once this is all cleaned up,"
+      },
+      {
+        "startSec": 829.24,
+        "endSec": 833.88,
+        "text": "seats are in, and it's ready to go, it needs an oil change, and then it's turned key and"
+      },
+      {
+        "startSec": 833.88,
+        "endSec": 840.2,
+        "text": "ready to rock, so if you're interested, email [email redacted], I'll put you at the top"
+      },
+      {
+        "startSec": 840.2,
+        "endSec": 846.84,
+        "text": "of the list, and anyway, so that's that, so there's my owner update on the 2018 G550,"
+      },
+      {
+        "startSec": 846.84,
+        "endSec": 852.2,
+        "text": "these things have been awesome, they are a ton of fun, and I hit all of the cons that"
+      },
+      {
+        "startSec": 852.2,
+        "endSec": 858.04,
+        "text": "you're going to want to know about, if you're shopping for one, overall, if you find one"
+      },
+      {
+        "startSec": 858.04,
+        "endSec": 863.6,
+        "text": "that's been well maintained, well cared for with service records, like both of ours have,"
+      },
+      {
+        "startSec": 863.6,
+        "endSec": 867.36,
+        "text": "and you take care of it, and you're comfortable with the fact that yes, parts and maintenance"
+      },
+      {
+        "startSec": 867.36,
+        "endSec": 872.4,
+        "text": "is a little bit more than if you bought a Jeep or a Toyota, but there's literally nothing"
+      },
+      {
+        "startSec": 872.4,
+        "endSec": 875,
+        "text": "that drives like a G-Wagon, period."
+      },
+      {
+        "startSec": 875,
+        "endSec": 883,
+        "text": "It is raw, it is connected, and there's nothing, there's no other V8's available that feel"
+      },
+      {
+        "startSec": 883,
+        "endSec": 887.8,
+        "text": "like a German V8, I love it, and I know these are made in Austria, I know that, so I hope"
+      },
+      {
+        "startSec": 887.8,
+        "endSec": 893.04,
+        "text": "this answers your questions, if you have others, leave a comment below, I'll be happy to respond"
+      },
+      {
+        "startSec": 893.04,
+        "endSec": 897.96,
+        "text": "to as many as I can, and then pop in and maybe do an update. If you have any questions again"
+      },
+      {
+        "startSec": 897.96,
+        "endSec": 904.56,
+        "text": "about that truck, and you want to be the proud owner of the G-Wheeler, just email adamantgwheeling.com."
+      },
+      {
+        "startSec": 904.56,
+        "endSec": 905.76,
+        "text": "Appreciate you, we'll see you soon."
+      }
+    ],
+    "createdAt": "2026-11-14T17:50:12.338Z"
+  },
+  "attempts": [
+    {
+      "id": "youtube",
+      "stage": "resolve",
+      "outcome": "ok",
+      "detail": "youtube:1Xx1fmHIsiA"
+    },
+    {
+      "id": "youtube",
+      "stage": "metadata",
+      "outcome": "ok",
+      "ms": 244672
+    },
+    {
+      "id": "yt-dlp",
+      "stage": "audio",
+      "outcome": "ok",
+      "detail": "bestaudio, re-encoded to 16 kHz mono MP3 with ffmpeg"
+    },
+    {
+      "id": "stt/whisper-cpp/small",
+      "stage": "stt",
+      "outcome": "ok",
+      "ms": 243558
+    }
+  ]
+}
