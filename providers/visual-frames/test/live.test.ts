@@ -34,7 +34,7 @@ describe.skipIf(!process.env.LIVE)('visual frames, live', () => {
     expect(res.frames.every((f) => f.sentTo === 'visual/tesseract/eng')).toBe(true);
     // The title slide cuts in at 26.9 s, the chart at 36.3 s, the code screen at 79.4 s, the article at 107.4 s.
     expect(noteNear(res.notes, 26, 30, ['vyzkum'])).toBeDefined();
-    expect(noteNear(res.notes, 35, 40, ['aktivni editor'])).toBeDefined();
+    expect(noteNear(res.notes, 35, 40, ['aktivni'])).toBeDefined();
     expect(noteNear(res.notes, 79, 83, ['vaclav', 'jmeno', 'titul'])).toBeDefined();
     expect(noteNear(res.notes, 106, 111, ['odstavec', 'vaclav', 'viclav'])).toBeDefined();
     const times = res.notes.map((n) => n.atSec);

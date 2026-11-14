@@ -134,14 +134,14 @@ describe.skipIf(!LIVE)('storage-postgres live', () => {
     it('answers vector queries from the HNSW index on a real server', async (t) => {
       if (!db.live) return t.skip();
       const live = db.live as LiveDb;
-      // The 12 real bge-m3 vectors recorded from OVH, each stored under 400
-      // ids (4,800 rows): enough rows that the planner's cost model prefers
+      // The 12 real bge-m3 vectors recorded from OVH, each stored under 1,500
+      // ids (18,000 rows): enough rows that the planner's cost model prefers
       // the HNSW graph over scanning and sorting, as it does on a real library.
       const fx = loadEmbeddings();
       const model = 'embed/ovh/bge-m3';
       const vectorOf = (i: number) => fx.response.data.find((d) => d.index === i)?.embedding ?? [];
       const records = [];
-      for (let copy = 0; copy < 400; copy++) {
+      for (let copy = 0; copy < 1500; copy++) {
         for (const [i, c] of fx.chunks.entries()) {
           records.push({
             id: `${c.videoId}#${c.startSec}#${copy}`,
