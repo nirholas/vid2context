@@ -14,7 +14,10 @@ import { accountsRoutes, hostedMiddleware } from '@vid2context/accounts/http';
 import { askRoutes } from '@vid2context/ask/http';
 import { chaptersRoutes } from '@vid2context/chapters/http';
 import { type Ctx, formatters, type Registry, type Storage } from '@vid2context/core';
+import type { DownloadManager } from '@vid2context/downloads';
+import { downloadsRoutes } from '@vid2context/downloads/http';
 import { exporterRoutes } from '@vid2context/exporters/http';
+import { importRoutes } from '@vid2context/imports/http';
 import { insightsRoutes } from '@vid2context/insights/http';
 import { type JobsRouteDeps, jobsRoutes } from '@vid2context/jobs/http';
 import { libraryRoutes as collectionRoutes } from '@vid2context/library/http';
@@ -66,6 +69,11 @@ export interface AppOptions {
   jobs?: Pick<JobsRouteDeps, 'queue' | 'run' | 'heartbeatMs'>;
   /** Check the Host header on /mcp against loopback names (turn on when listening on a loopback address). */
   mcpDnsRebindingProtection?: boolean;
+  /**
+   * Server-side video and audio downloads (Node: createDownloadManager from
+   * @vid2context/downloads/node). Without it /downloads answers no-provider.
+   */
+  downloads?: DownloadManager;
 }
 
 /** The app plus `close()`, which ends open MCP sessions (call it on shutdown). */
@@ -98,6 +106,8 @@ export const MOUNTED_SUB_APPS = [
   '@vid2context/research',
   '@vid2context/exporters',
   '@vid2context/webhooks',
+  '@vid2context/imports',
+  '@vid2context/downloads',
 ] as const;
 
 function subApps(
@@ -139,6 +149,18 @@ function subApps(
       name: '@vid2context/webhooks',
       prefix: '/api/v1',
       routes: webhookRoutes({ makeCtx: services.ctxFor, storage: services.storage }),
+    },
+    // Hosted mode returns imports without saving them (shared storage, unverified transcripts).
+    {
+      name: '@vid2context/imports',
+      prefix: '/api/v1',
+      routes: importRoutes({ ...deps, hosted: (req) => services.config(req).hosted }),
+    },
+    // Off on public servers unless VID2CONTEXT_DOWNLOADS=1; no-provider where no manager is passed (Workers).
+    {
+      name: '@vid2context/downloads',
+      prefix: '/api/v1',
+      routes: downloadsRoutes({ makeCtx: services.ctxFor, ...(opts.downloads ? { manager: opts.downloads } : {}) }),
     },
     { name: '@vid2context/mcp-http', prefix: '', routes: mcp },
   ];

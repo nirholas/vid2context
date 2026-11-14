@@ -3,7 +3,18 @@
  * browser, and a footer with docs, source and the theme. The shell decides
  * whether it is a column (wide screens) or a drawer (narrow ones).
  */
-import { ChevronDown, CircleHelp, Film, House, MessageSquare, PanelLeftClose, Search, Settings } from 'lucide-react';
+import {
+  Braces,
+  ChevronDown,
+  CircleHelp,
+  Download,
+  Film,
+  House,
+  MessageSquare,
+  PanelLeftClose,
+  Search,
+  Settings,
+} from 'lucide-react';
 import { type ReactNode, useState } from 'react';
 import { runKey } from '../../lib/history.ts';
 import { CHAT_PATH } from '../../lib/links.ts';
@@ -101,6 +112,20 @@ export function Sidebar({
         </NavLink>
         <NavLink href={CHAT_PATH} icon={<MessageSquare className={ICON} strokeWidth={1.75} aria-hidden />}>
           Chat
+        </NavLink>
+        <NavLink
+          search="?view=download"
+          icon={<Download className={ICON} strokeWidth={1.75} aria-hidden />}
+          active={route.view === 'download'}
+        >
+          Download
+        </NavLink>
+        <NavLink
+          search="?view=api"
+          icon={<Braces className={ICON} strokeWidth={1.75} aria-hidden />}
+          active={route.view === 'api'}
+        >
+          API
         </NavLink>
         <NavLink
           search="?view=settings"

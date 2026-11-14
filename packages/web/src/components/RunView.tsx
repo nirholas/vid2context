@@ -9,9 +9,12 @@ import { getComments, getContext, isListError } from '../lib/api.ts';
 import { isClientOnly, useApiStatus } from '../lib/api-status.tsx';
 import { type AppError, isAbort, toAppError } from '../lib/errors.ts';
 import { getEntry, putEntry, runKey, summarize } from '../lib/history.ts';
+import { canImportAfter, type ImportResponse, youtubeVideoId } from '../lib/imports.ts';
 import { navigate, type RunParams } from '../lib/route.ts';
 import { ClientOnlyNotice } from './ClientOnlyNotice.tsx';
 import { ErrorPanel } from './ErrorPanel.tsx';
+import { ImportedNotice } from './import/ImportedNotice.tsx';
+import { ImportPanel } from './import/ImportPanel.tsx';
 import { Button, Card, Spinner } from './ui.tsx';
 
 const ResultView = lazy(() => import('./results/ResultView.tsx'));
@@ -19,7 +22,13 @@ const BatchView = lazy(() => import('./batch/BatchView.tsx'));
 
 type State =
   | { kind: 'loading'; startedAt: number }
-  | { kind: 'result'; context: VideoContext; cachedAt?: number; notice?: AppError }
+  | {
+      kind: 'result';
+      context: VideoContext;
+      cachedAt?: number;
+      notice?: AppError;
+      imported?: { saved: boolean; clientOnly: boolean };
+    }
   | { kind: 'list' }
   | { kind: 'error'; error: unknown }
   | { kind: 'needs-api' }
@@ -112,6 +121,13 @@ export function RunView({ params }: { params: RunParams }) {
     return () => ac.abort();
   }, [key, params.url, params.mode, params.lang, params.comments, api, refresh]);
 
+  // An imported transcript is shown like any fetched result, and goes into this browser's history the same way.
+  const onImported = useCallback(
+    (res: ImportResponse) =>
+      setState({ kind: 'result', context: res.context, imported: { saved: res.saved, clientOnly: isClientOnly(api) } }),
+    [api],
+  );
+
   const fresh = state.kind === 'result' && state.cachedAt === undefined ? state.context : undefined;
   const onBundle = useCallback(
     (bundle: Bundle) => {
@@ -133,7 +149,14 @@ export function RunView({ params }: { params: RunParams }) {
         <Fetching url={params.url} startedAt={state.startedAt} />
       );
     case 'needs-api':
-      return <ClientOnlyNotice api={api} input={params.url} />;
+      return youtubeVideoId(params.url) ? (
+        <div className="space-y-4">
+          <ClientOnlyNotice api={api} input={params.url} />
+          <ImportPanel url={params.url} lang={params.lang} clientOnly onImported={onImported} />
+        </div>
+      ) : (
+        <ClientOnlyNotice api={api} input={params.url} />
+      );
     case 'missing-local':
       return (
         <ErrorPanel
@@ -152,7 +175,11 @@ export function RunView({ params }: { params: RunParams }) {
           error={state.error}
           onRetry={() => setRefresh((n) => n + 1)}
           showSettings
-        />
+        >
+          {canImportAfter(params.url, state.error) && (
+            <ImportPanel url={params.url} lang={params.lang} clientOnly={false} onImported={onImported} />
+          )}
+        </ErrorPanel>
       );
     case 'list':
       return (
@@ -170,11 +197,14 @@ export function RunView({ params }: { params: RunParams }) {
             onRefresh={params.url.startsWith('file:') ? undefined : () => setRefresh((n) => n + 1)}
             onBundle={onBundle}
             notices={
-              state.notice && (
-                <ErrorPanel title="Comments could not be fetched" error={state.notice}>
-                  <p className="text-sm text-muted">The rest of the result is complete.</p>
-                </ErrorPanel>
-              )
+              <>
+                {state.imported && <ImportedNotice {...state.imported} />}
+                {state.notice && (
+                  <ErrorPanel title="Comments could not be fetched" error={state.notice}>
+                    <p className="text-sm text-muted">The rest of the result is complete.</p>
+                  </ErrorPanel>
+                )}
+              </>
             }
           />
         </Suspense>

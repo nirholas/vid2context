@@ -13,6 +13,8 @@ export function UrlForm({
   initial = '',
   tools,
   footer,
+  submitLabel = 'Get context',
+  formLabel = 'Get context for a video link',
 }: {
   onSubmit: (url: string) => void;
   initial?: string;
@@ -20,6 +22,10 @@ export function UrlForm({
   tools?: ReactNode;
   /** A strip attached under the composer. */
   footer?: ReactNode;
+  /** Name of the round submit button. */
+  submitLabel?: string;
+  /** Accessible name of the form. */
+  formLabel?: string;
 }) {
   const [value, setValue] = useState(initial);
   const [error, setError] = useState('');
@@ -37,7 +43,7 @@ export function UrlForm({
     onSubmit(url);
   };
   return (
-    <form onSubmit={submit} className="w-full" aria-label="Get context for a video link">
+    <form onSubmit={submit} className="w-full" aria-label={formLabel}>
       <div className="rounded-[22px] border border-border bg-surface shadow-v2c transition focus-within:border-border-strong">
         <label htmlFor={id} className="sr-only">
           Video link
@@ -61,8 +67,8 @@ export function UrlForm({
           <div className="min-w-0 flex-1">{tools}</div>
           <button
             type="submit"
-            aria-label="Get context"
-            title="Get context (Enter)"
+            aria-label={submitLabel}
+            title={`${submitLabel} (Enter)`}
             className="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-accent text-on-accent transition hover:opacity-90"
           >
             <ArrowUp className="size-5" strokeWidth={2.25} aria-hidden />

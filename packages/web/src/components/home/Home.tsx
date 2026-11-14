@@ -6,6 +6,7 @@
 import { MessageSquare, Play, ServerOff, Settings, Upload } from 'lucide-react';
 import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { isClientOnly, useApiStatus } from '../../lib/api-status.tsx';
+import { EXAMPLES } from '../../lib/examples.ts';
 import { clearHistory } from '../../lib/history.ts';
 import { CHAT_PATH } from '../../lib/links.ts';
 import { appHref, navigate, onAppLinkClick, runSearch } from '../../lib/route.ts';
@@ -20,11 +21,8 @@ import { UrlForm } from './UrlForm.tsx';
 
 const UploadRun = lazy(() => import('../upload/UploadRun.tsx'));
 
-/** Real public videos, both recorded in tests/fixtures/contexts. */
-export const EXAMPLES = [
-  { label: 'Me at the zoo (0:19)', url: 'https://www.youtube.com/watch?v=jNQXAC9IVRw' },
-  { label: 'Best and Worst G-Wagon Years (18:13)', url: 'https://www.youtube.com/watch?v=cCPsdFdlshc' },
-];
+/** Real public videos, both recorded in tests/fixtures/contexts (shared with the API page). */
+export { EXAMPLES };
 
 const CHIP =
   'inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm text-fg transition hover:border-border-strong hover:bg-surface-2';

@@ -14,11 +14,15 @@ import { ApiStatusProvider, useApiStatus } from './lib/api-status.tsx';
 import { appHref, onAppLinkClick, type Route, useRoute } from './lib/route.ts';
 
 const Settings = lazy(() => import('./components/Settings.tsx'));
+const ApiPlayground = lazy(() => import('./components/api/ApiPlayground.tsx'));
+const DownloadPage = lazy(() => import('./components/download/DownloadPage.tsx'));
 
 const TITLES: Record<Route['view'], string> = {
   home: 'vid2context: any video as context for AI agents',
   run: 'Result | vid2context',
   settings: 'Settings | vid2context',
+  api: 'API | vid2context',
+  download: 'Download video or audio | vid2context',
 };
 
 /** localStorage key for the collapsed sidebar on wide screens. */
@@ -78,7 +82,11 @@ function Shell() {
   }, []);
 
   const runKey =
-    route.view === 'run' ? `${route.url}|${route.mode}|${route.lang}|${route.comments}|${route.timestamps}` : route.view;
+    route.view === 'run'
+      ? `${route.url}|${route.mode}|${route.lang}|${route.comments}|${route.timestamps}`
+      : route.view === 'download'
+        ? `download|${route.url ?? ''}`
+        : route.view;
 
   // New view: set the title, close the drawer and start the panel at the top.
   // biome-ignore lint/correctness/useExhaustiveDependencies: runKey is the trigger: a new run in the same view also starts at the top.
@@ -173,6 +181,16 @@ function Shell() {
               {route.view === 'settings' && (
                 <Suspense fallback={<Loading label="Loading settings" />}>
                   <Settings />
+                </Suspense>
+              )}
+              {route.view === 'download' && (
+                <Suspense fallback={<Loading label="Loading the download page" />}>
+                  <DownloadPage url={route.url} />
+                </Suspense>
+              )}
+              {route.view === 'api' && (
+                <Suspense fallback={<Loading label="Loading the API page" />}>
+                  <ApiPlayground initial={route} />
                 </Suspense>
               )}
             </div>

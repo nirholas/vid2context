@@ -6,6 +6,7 @@ import { CircleCheck, Monitor, Moon, Plus, Sun, X } from 'lucide-react';
 import { type FormEvent, useEffect, useId, useState } from 'react';
 import { apiBase, DEFAULT_API_BASE, getHealth, normalizeApiBase, setApiBase } from '../lib/api.ts';
 import { useApiStatus } from '../lib/api-status.tsx';
+import { appHref, onAppLinkClick } from '../lib/route.ts';
 import { cleanKeys, KEY_NAME, loadProviderKeys, saveProviderKeys } from '../lib/settings.ts';
 import { saveTheme, type Theme, useTheme } from '../lib/theme.ts';
 import { ErrorPanel } from './ErrorPanel.tsx';
@@ -100,6 +101,17 @@ function ApiSection() {
                 : `No API answered at ${state.base}. The app is in client-only mode.`)}
       </p>
       {test.status === 'error' && <ErrorPanel title="The API did not answer" error={test.error} />}
+      <p className="text-sm text-muted">
+        Try every endpoint against a video on the{' '}
+        <a
+          href={appHref('?view=api')}
+          onClick={(e) => onAppLinkClick(e, '?view=api')}
+          className="text-fg underline underline-offset-2"
+        >
+          API page
+        </a>
+        .
+      </p>
     </Card>
   );
 }

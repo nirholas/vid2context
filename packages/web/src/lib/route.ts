@@ -4,6 +4,8 @@
  *   /app/                                   home
  *   /app/?url=<input>&mode=&lang=&comments=1&timestamps=1   run and show the result
  *   /app/?view=settings                     settings
+ *   /app/?view=api&endpoint=<id>&video=<url>  the API page, with an endpoint and a video picked
+ *   /app/?view=download&url=<input>         download a video or its audio (a playlist lists its items)
  */
 
 import type { TranscriptMode } from '@vid2context/core';
@@ -24,7 +26,19 @@ export interface RunParams {
   timestamps: boolean;
 }
 
-export type Route = { view: 'home' } | { view: 'settings' } | ({ view: 'run' } & RunParams);
+export interface ApiParams {
+  /** An endpoint id from the API catalog. */
+  endpoint?: string;
+  /** The video every example is built from. */
+  video?: string;
+}
+
+export type Route =
+  | { view: 'home' }
+  | { view: 'settings' }
+  | ({ view: 'api' } & ApiParams)
+  | ({ view: 'run' } & RunParams)
+  | { view: 'download'; url?: string };
 
 const ON = ['1', 'true', 'yes'];
 
@@ -35,6 +49,10 @@ export function readMode(v: string | null): TranscriptMode {
 export function parseRoute(search: string): Route {
   const q = new URLSearchParams(search);
   if (q.get('view') === 'settings') return { view: 'settings' };
+  if (q.get('view') === 'download') return { view: 'download', url: q.get('url')?.trim() || undefined };
+  if (q.get('view') === 'api') {
+    return { view: 'api', endpoint: q.get('endpoint')?.trim() || undefined, video: q.get('video')?.trim() || undefined };
+  }
   const url = q.get('url')?.trim();
   if (url) {
     return {
@@ -55,6 +73,19 @@ export function runSearch(p: Partial<RunParams> & { url: string }): string {
   if (p.lang) q.set('lang', p.lang);
   if (p.comments) q.set('comments', '1');
   if (p.timestamps) q.set('timestamps', '1');
+  return `?${q.toString()}`;
+}
+
+export function downloadSearch(url?: string): string {
+  const q = new URLSearchParams({ view: 'download' });
+  if (url) q.set('url', url);
+  return `?${q.toString()}`;
+}
+
+export function apiSearch(p: ApiParams = {}): string {
+  const q = new URLSearchParams({ view: 'api' });
+  if (p.endpoint) q.set('endpoint', p.endpoint);
+  if (p.video) q.set('video', p.video);
   return `?${q.toString()}`;
 }
 

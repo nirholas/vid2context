@@ -6,11 +6,13 @@
  * Opens the library storage once and shares it between the HTTP app and the
  * in-process jobs queue. On SIGTERM or SIGINT it stops accepting connections,
  * lets in-flight requests finish (up to VID2CONTEXT_SHUTDOWN_TIMEOUT_MS,
- * default 10000), closes MCP sessions and the jobs queue, then exits.
+ * default 10000), closes MCP sessions, the jobs queue and the download queue
+ * (deleting its temporary files), then exits.
  */
 import { serve } from '@hono/node-server';
 import { getConnInfo } from '@hono/node-server/conninfo';
 import { MemoryStorage } from '@vid2context/core';
+import { createDownloader, createDownloadManager } from '@vid2context/downloads/node';
 import { createJobQueue, registerBuiltinKinds } from '@vid2context/jobs';
 import { createNodeContext, createRegistry, loadEnvFiles } from '@vid2context/registry/node';
 import pkg from '../package.json' with { type: 'json' };
@@ -22,6 +24,7 @@ const baseCtx = createNodeContext();
 const storage = (await registry.openStorage(baseCtx)) ?? new MemoryStorage();
 const queue = createJobQueue({ registry, ctx: baseCtx, storage });
 registerBuiltinKinds(queue);
+const downloads = createDownloadManager({ downloader: createDownloader({ registry }) });
 
 const port = Number(process.env.PORT) || 8787;
 const hostname = process.env.HOST || '127.0.0.1';
@@ -33,6 +36,7 @@ const app = createApp({
   version: pkg.version,
   storage: async () => storage,
   jobs: { queue },
+  downloads,
   clientIp: (c) => {
     try {
       return getConnInfo(c).remote.address;
@@ -62,7 +66,7 @@ async function shutdown(signal: string): Promise<void> {
   // Keep-alive sockets with no request in progress would otherwise hold close() open.
   if ('closeIdleConnections' in server) server.closeIdleConnections();
   await closed;
-  await Promise.allSettled([app.close(), queue.close()]);
+  await Promise.allSettled([app.close(), queue.close(), downloads.close()]);
   clearTimeout(force);
   console.error('[vid2context] stopped');
   process.exit(0);

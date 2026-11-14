@@ -79,27 +79,47 @@ export interface CallOptions {
   fetch?: typeof fetch;
 }
 
-async function getJson<T>(path: string, params: Record<string, string | undefined>, call: CallOptions = {}): Promise<T> {
+/**
+ * One JSON call with the app's error handling: unreachable servers, non-JSON
+ * answers and API error bodies all become AppErrors with hints.
+ */
+export async function requestJson<T>(
+  method: string,
+  path: string,
+  params: Record<string, string | undefined>,
+  body: unknown,
+  call: CallOptions = {},
+): Promise<T> {
   const base = call.base ?? apiBase();
   const doFetch = call.fetch ?? globalThis.fetch.bind(globalThis);
   let res: Response;
   try {
-    res = await doFetch(apiUrl(path, params, base), { signal: call.signal, headers: { accept: 'application/json' } });
+    res = await doFetch(apiUrl(path, params, base), {
+      method,
+      signal: call.signal,
+      headers:
+        body === undefined ? { accept: 'application/json' } : { accept: 'application/json', 'content-type': 'application/json' },
+      ...(body === undefined ? {} : { body: JSON.stringify(body) }),
+    });
   } catch (err) {
     if (isAbort(err)) throw err;
     throw unreachable(base, err);
   }
-  let body: unknown;
+  let parsed: unknown;
   try {
-    body = await res.json();
+    parsed = await res.json();
   } catch {
     throw notAnApi(base, res.status);
   }
   if (!res.ok) {
-    if (isApiErrorBody(body)) throw fromApiBody(body, res.status);
+    if (isApiErrorBody(parsed)) throw fromApiBody(parsed, res.status);
     throw notAnApi(base, res.status);
   }
-  return body as T;
+  return parsed as T;
+}
+
+function getJson<T>(path: string, params: Record<string, string | undefined>, call: CallOptions = {}): Promise<T> {
+  return requestJson<T>('GET', path, params, undefined, call);
 }
 
 export interface RunOptions {
