@@ -1,0 +1,13 @@
+{
+  "recordedAt": "2026-11-14T17:21:43.650Z",
+  "rung": "llm/ovh/Meta-Llama-3_3-70B-Instruct",
+  "calls": [
+    {
+      "url": "https://oai.endpoints.kepler.ai.cloud.ovh.net/v1/chat/completions",
+      "method": "POST",
+      "status": 200,
+      "contentType": "application/json",
+      "body": "{\"id\":\"chatcmpl-acad2a7a0db05b8e\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"speakers\\\":[{\\\"label\\\":\\\"Speaker 0\\\",\\\"name\\\":null,\\\"confidence\\\":0,\\\"evidence\\\":[]}]}\"},\"finish_reason\":\"stop\"}],\"created\":1794676881,\"model\":\"Meta-Llama-3_3-70B-Instruct\",\"object\":\"chat.completion\",\"usage\":{\"prompt_tokens\":850,\"completion_tokens\":24,\"total_tokens\":874}}"
+    }
+  ]
+}
