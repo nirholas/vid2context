@@ -22,8 +22,10 @@ export const PLAYLIST_FIRST3 = ['youtube:jNQXAC9IVRw', 'youtube:Ay22n7jR2j4', 'y
 const JSON_HEADERS = { 'content-type': 'application/json' };
 
 function playerFor(videoId: string): RecordedResponse {
-  if (videoId === 'jNQXAC9IVRw' || videoId === 'cCPsdFdlshc') return { body: ytFixture(`player-${videoId}.json`), headers: JSON_HEADERS };
-  if (videoId === 'Ay22n7jR2j4' || videoId === 'cBsRvPSWXQk') return { body: jobsFixture(`player-${videoId}.json`), headers: JSON_HEADERS };
+  if (videoId === 'jNQXAC9IVRw' || videoId === 'cCPsdFdlshc')
+    return { body: ytFixture(`player-${videoId}.json`), headers: JSON_HEADERS };
+  if (videoId === 'Ay22n7jR2j4' || videoId === 'cBsRvPSWXQk')
+    return { body: jobsFixture(`player-${videoId}.json`), headers: JSON_HEADERS };
   return { body: ytFixture('player-unavailable.json'), headers: JSON_HEADERS };
 }
 
@@ -49,7 +51,8 @@ export function youtubeRoutes(opts: ReplayOptions = {}): Route[] {
       url: /youtubei\/v1\/browse/,
       response: (call: RecordedCall) => {
         const body = JSON.parse(String(call.body)) as { browseId?: string };
-        if (body.browseId === 'VLPLDWrj3hS12VU') return { body: jobsFixture('browse-playlist-PLDWrj3hS12VU.json'), headers: JSON_HEADERS };
+        if (body.browseId === 'VLPLDWrj3hS12VU')
+          return { body: jobsFixture('browse-playlist-PLDWrj3hS12VU.json'), headers: JSON_HEADERS };
         throw new Error(`no recorded browse response for ${String(call.body).slice(0, 120)}`);
       },
     },

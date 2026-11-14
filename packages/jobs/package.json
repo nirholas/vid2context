@@ -15,6 +15,7 @@
   },
   "devDependencies": {
     "@hono/node-server": "^2.1.8",
-    "@vid2context/provider-youtube": "*"
+    "@vid2context/provider-youtube": "*",
+    "@vid2context/server": "*"
   }
 }

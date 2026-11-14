@@ -5,8 +5,8 @@ import { testContext } from '@vid2context/core/testing';
 import { resetBreaker } from '@vid2context/provider-youtube';
 import { createApp } from '@vid2context/server';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { createJobQueue, type InProcessQueue, registerBuiltinKinds } from '../src/index.ts';
 import { jobsRoutes } from '../src/http.ts';
+import { createJobQueue, type InProcessQueue, registerBuiltinKinds } from '../src/index.ts';
 import { PLAYLIST, PLAYLIST_FIRST3, waitFor, youtubeCtx, youtubeRegistry } from './helpers.ts';
 
 interface SseEvent {
@@ -16,7 +16,10 @@ interface SseEvent {
 }
 
 /** Read an SSE response with a real stream reader. Stops when `stop` returns true or the stream ends. */
-async function readEvents(res: Response, stop: (e: SseEvent, all: SseEvent[]) => boolean = () => false): Promise<{ events: SseEvent[]; comments: string[] }> {
+async function readEvents(
+  res: Response,
+  stop: (e: SseEvent, all: SseEvent[]) => boolean = () => false,
+): Promise<{ events: SseEvent[]; comments: string[] }> {
   const reader = (res.body as ReadableStream<Uint8Array>).getReader();
   const decoder = new TextDecoder();
   const events: SseEvent[] = [];
@@ -129,7 +132,7 @@ describe('jobs HTTP routes and SSE', () => {
     expect(all.filter((e) => e.event === 'item').map((e) => (e.data as { id: string }).id)).toEqual(PLAYLIST_FIRST3);
     const end = all.at(-1);
     expect(end?.event).toBe('done');
-    expect((end?.data as { result: { succeeded: number; failed: number } }).result).toMatchObject({ succeeded: 1, failed: 2 });
+    expect(end?.data).toMatchObject({ result: { succeeded: 1, failed: 2 } });
 
     // A fresh connection to a finished job replays the state and closes.
     const replay = await readEvents(await fetch(`${base}/jobs/${job.id}/events`));
@@ -180,7 +183,9 @@ describe('jobs HTTP routes and SSE', () => {
       body: JSON.stringify({ kind: 'nope', input: 'x' }),
     });
     expect(badKind.status).toBe(400);
-    expect(await badKind.json()).toMatchObject({ error: { code: 'bad-request', hint: 'Registered kinds: bundle, context, items.' } });
+    expect(await badKind.json()).toMatchObject({
+      error: { code: 'bad-request', hint: 'Registered kinds: bundle, context, items.' },
+    });
 
     const badJson = await fetch(`${base}/jobs`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{' });
     expect(badJson.status).toBe(400);

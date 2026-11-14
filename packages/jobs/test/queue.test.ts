@@ -9,7 +9,17 @@ import {
   type JobRecord,
   registerBuiltinKinds,
 } from '../src/index.ts';
-import { collect, gate, jobsFixture, PLAYLIST, PLAYLIST_FIRST3, waitFor, youtubeCtx, youtubeRegistry, ytFixture } from './helpers.ts';
+import {
+  collect,
+  gate,
+  jobsFixture,
+  PLAYLIST,
+  PLAYLIST_FIRST3,
+  waitFor,
+  youtubeCtx,
+  youtubeRegistry,
+  ytFixture,
+} from './helpers.ts';
 
 const open: InProcessQueue[] = [];
 
@@ -42,7 +52,9 @@ describe('context job', () => {
     expect(result.video.origin).toBe('creator-captions');
     expect(result.segments).toBeGreaterThan(0);
 
-    const stages = events.filter((e) => e.type === 'progress').map((e) => String((e.data as { message?: string }).message).split(':')[0]);
+    const stages = events
+      .filter((e) => e.type === 'progress')
+      .map((e) => String((e.data as { message?: string }).message).split(':')[0]);
     expect(stages).toEqual(['resolve', 'metadata', 'captions', 'saving', 'done']);
     expect(events.at(-1)?.type).toBe('done');
     // Event ids are monotonic per job.
@@ -79,7 +91,9 @@ describe('items job', () => {
     const job = await q.enqueue('items', PLAYLIST, { limit: 3, concurrency: 1 });
     const events = await collect(q, job.id).done;
 
-    const items = events.filter((e) => e.type === 'item').map((e) => e.data as { id: string; outcome: string; error?: { code: string } });
+    const items = events
+      .filter((e) => e.type === 'item')
+      .map((e) => e.data as { id: string; outcome: string; error?: { code: string } });
     expect(items.map((i) => i.id)).toEqual(PLAYLIST_FIRST3);
     expect(items.map((i) => i.outcome)).toEqual(['ok', 'error', 'error']);
     // Ay22n7jR2j4 answered LOGIN_REQUIRED; cBsRvPSWXQk's only track answered HTTP 429, leaving no transcript.
@@ -109,7 +123,10 @@ describe('retries', () => {
         ? new Response(ytFixture('timedtext-429-blocked.html'), { status: 429 })
         : new Response(ytFixture('timedtext-jNQXAC9IVRw-en.srv3.xml'), { status: 200 });
     };
-    const q = queueWith({ ctx: { ...ctx, fetch: Object.assign(replay, { calls: [] }) as unknown as typeof ctx.fetch }, random: () => 0 });
+    const q = queueWith({
+      ctx: { ...ctx, fetch: Object.assign(replay, { calls: [] }) as unknown as typeof ctx.fetch },
+      random: () => 0,
+    });
     q.registerKind(
       'timedtext',
       async ({ ctx: jobCtx, input }) => {
@@ -127,8 +144,10 @@ describe('retries', () => {
     expect((rec.result as { segments: number }).segments).toBeGreaterThan(0);
     // random() = 0 gives the lower bound of equal jitter: half of baseMs.
     expect((calls[1] as number) - (calls[0] as number)).toBeGreaterThanOrEqual(95);
-    const retryMsg = events.find((e) => e.type === 'progress' && String((e.data as { message?: string }).message).includes('retrying'));
-    expect((retryMsg?.data as { message: string }).message).toBe('Attempt 1 of 3 failed (rate-limited); retrying in 1 s.');
+    const retryMsg = events.find(
+      (e) => e.type === 'progress' && String((e.data as { message?: string }).message).includes('retrying'),
+    );
+    expect(retryMsg?.data).toMatchObject({ message: 'Attempt 1 of 3 failed (rate-limited); retrying in 1 s.' });
   });
 
   it('gives up after maxAttempts and keeps the last error', async () => {
@@ -286,8 +305,8 @@ describe('persistence details', () => {
   it('reads concurrency and TTL from env and rejects bad values', () => {
     const q = queueWith({ ctx: youtubeCtx({ env: { VID2CONTEXT_JOB_CONCURRENCY: '5' } }), autoStart: false });
     expect(q.concurrency).toBe(5);
-    expect(() => createJobQueue({ registry: youtubeRegistry(), ctx: youtubeCtx({ env: { VID2CONTEXT_JOB_CONCURRENCY: 'many' } }) })).toThrow(
-      /VID2CONTEXT_JOB_CONCURRENCY/,
-    );
+    expect(() =>
+      createJobQueue({ registry: youtubeRegistry(), ctx: youtubeCtx({ env: { VID2CONTEXT_JOB_CONCURRENCY: 'many' } }) }),
+    ).toThrow(/VID2CONTEXT_JOB_CONCURRENCY/);
   });
 });
