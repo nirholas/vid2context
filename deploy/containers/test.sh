@@ -12,6 +12,8 @@
 #
 # Needs Docker. hadolint, yq and the Railway schema check run through
 # containers or are skipped with a note when they cannot.
+# pass() only prints, so `cmd && pass ... || fail ...` never runs both.
+# shellcheck disable=SC2015
 set -uo pipefail
 
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -40,6 +42,7 @@ have() { command -v "$1" >/dev/null 2>&1; }
 
 containers=()
 volumes=()
+# shellcheck disable=SC2329 # called by the EXIT trap below
 cleanup() {
   for c in "${containers[@]}"; do docker rm -f "$c" >/dev/null 2>&1; done
   for v in "${volumes[@]}"; do docker volume rm "$v" >/dev/null 2>&1; done

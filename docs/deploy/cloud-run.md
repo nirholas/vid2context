@@ -89,7 +89,7 @@ curl -H "Authorization: Bearer $KEY" "$URL/api/v1/transcript?url=https://youtu.b
 
 - Cloud Run (request-based billing) includes, per month, 180,000 vCPU-seconds, 360,000 GiB-seconds and 2 million requests. At 2 vCPU and 2 GiB that is about 25 hours of instance time while requests run; idle time at zero instances costs nothing.
 - Cloud Build includes 2,500 build-minutes a month on the default machine, which `cloudbuild.yaml` uses. A build with whisper.cpp takes noticeably longer.
-- Artifact Registry includes 0.5 GB of storage. Each pushed image is several hundred MB compressed, so add a cleanup policy that keeps the last few tags.
+- Artifact Registry includes 0.5 GB of storage. Each pushed image is about 410 MB compressed (unchanged layers are shared between tags), so add a cleanup policy that keeps the last few tags.
 - Secret Manager includes 6 active secret versions and 10,000 access operations a month.
 
 Check Google's pricing pages for current numbers; free tiers change.

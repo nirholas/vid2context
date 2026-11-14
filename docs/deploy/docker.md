@@ -41,14 +41,14 @@ Only the server and what it imports go in: `@vid2context/server`, every provider
 
 **Why the unpacked yt-dlp.** The single-file yt-dlp unpacks its libraries into `/tmp` on every run. That fails when `/tmp` is mounted `noexec` (as `--tmpfs` does) and costs startup time on every call.
 
-**Size**, measured on 2026-11-14 (uncompressed, linux/amd64):
+**Size**, measured on 2026-11-14 at commit 67c7578 (linux/amd64):
 
-| Image | Size |
-|---|---|
-| default | 1398 MB |
-| `--build-arg WITH_WHISPER=1` | 1429 MB |
+| Image | Uncompressed | gzip (roughly what a registry stores) |
+|---|---|---|
+| default | 1533 MB | 410 MB |
+| `--build-arg WITH_WHISPER=1` | 1565 MB | 419 MB |
 
-Debian's ffmpeg package and its libraries are 461 MB of that, node_modules 105 MB plus the transformers.js runtime for local speech-to-text (onnxruntime-node, trimmed to this platform), the unpacked yt-dlp 99 MB, deno 92 MB, Node 122 MB.
+Debian's ffmpeg package and its libraries are 461 MB of that (it pulls in codec, X11 and Vulkan libraries), node_modules 196 MB (most of it the transformers.js runtime for local speech-to-text, with onnxruntime-node trimmed to this platform and the browser-only onnxruntime-web removed), Node 122 MB, the unpacked yt-dlp 95 MB, deno 92 MB. The image grows as the server gains routes and providers: every provider that declares the `node` runtime is included.
 
 ## Environment
 
@@ -93,7 +93,7 @@ The server reads the repository's `.env` and runs read-only with all capabilitie
 | Profile | Service | Line for `.env` |
 |---|---|---|
 | `postgres` | `pgvector/pgvector:0.8.1-pg17` | `DATABASE_URL=postgres://vid2context:vid2context@postgres:5432/vid2context` (set `POSTGRES_PASSWORD` in your shell to change the password, and use it here) |
-| `stt` | `speaches` 0.8.3, CPU | `LOCAL_STT_BASE_URL=http://stt:8000/v1` and `LOCAL_STT_MODEL=Systran/faster-whisper-small`; download the model once with `curl -X POST http://127.0.0.1:8000/v1/models/Systran/faster-whisper-small` from inside the network (`docker compose exec server node -e "fetch('http://stt:8000/v1/models/Systran/faster-whisper-small',{method:'POST'}).then(r=>console.log(r.status))"`) |
+| `stt` | `speaches` 0.8.3, CPU | `LOCAL_STT_BASE_URL=http://stt:8000/v1` and `LOCAL_STT_MODEL=Systran/faster-whisper-small`. speaches downloads a model on request; its port is not published, so ask from inside the network: `docker compose -f deploy/containers/compose.yaml exec server node -e "fetch('http://stt:8000/v1/models/Systran/faster-whisper-small',{method:'POST'}).then(r=>console.log(r.status))"` |
 | `ollama` | `ollama/ollama:0.40.13` | `OLLAMA_BASE_URL=http://ollama:11434/v1` and `OLLAMA_MODEL=qwen3:8b`, after `docker compose exec ollama ollama pull qwen3:8b` |
 
 `WITH_WHISPER=1 docker compose ... up --build` builds the whisper.cpp variant. `VID2CONTEXT_BIND=0.0.0.0` publishes the port beyond loopback (set `VID2CONTEXT_API_KEYS` first).
