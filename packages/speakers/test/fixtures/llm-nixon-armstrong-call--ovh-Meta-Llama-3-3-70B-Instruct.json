@@ -1,0 +1,13 @@
+{
+  "recordedAt": "2026-11-14T17:27:01.586Z",
+  "rung": "llm/ovh/Meta-Llama-3_3-70B-Instruct",
+  "calls": [
+    {
+      "url": "https://oai.endpoints.kepler.ai.cloud.ovh.net/v1/chat/completions",
+      "method": "POST",
+      "status": 200,
+      "contentType": "application/json",
+      "body": "{\"id\":\"chatcmpl-b7bc0ce218a8a946\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"speakers\\\":[{\\\"label\\\":\\\"Speaker 0\\\",\\\"name\\\":null,\\\"confidence\\\":0,\\\"evidence\\\":[]},{\\\"label\\\":\\\"Speaker 2\\\",\\\"name\\\":\\\"Richard Nixon\\\",\\\"confidence\\\":1,\\\"evidence\\\":[{\\\"quote\\\":\\\"Hello, Neil and Buzz. I'm talking to you by telephone from the over room at the White House\\\",\\\"startSec\\\":54.0}]},{\\\"label\\\":\\\"Speaker 1\\\",\\\"name\\\":null,\\\"confidence\\\":0,\\\"evidence\\\":[]}]}\"},\"finish_reason\":\"stop\"}],\"created\":1794677124,\"model\":\"Meta-Llama-3_3-70B-Instruct\",\"object\":\"chat.completion\",\"usage\":{\"prompt_tokens\":1352,\"completion_tokens\":94,\"total_tokens\":1446}}"
+    }
+  ]
+}
