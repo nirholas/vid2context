@@ -2,11 +2,10 @@
  * The sub-apps other packages export, mounted by createApp: their routes
  * answer through the main app, share its storage, middleware and error body.
  */
-import { testContext } from '@vid2context/core/testing';
+import { replayFetch, testContext } from '@vid2context/core/testing';
 import { createJobQueue, registerBuiltinKinds } from '@vid2context/jobs';
 import { describe, expect, it } from 'vitest';
 import { makeApp, recordedRoutes, seededStorage, testRegistry } from './helpers.ts';
-import { replayFetch } from '@vid2context/core/testing';
 
 async function until<T>(get: () => Promise<T>, done: (v: T) => boolean, ms = 5000): Promise<T> {
   const end = Date.now() + ms;
@@ -43,7 +42,10 @@ describe('mounted sub-apps', () => {
     registerBuiltinKinds(queue);
     try {
       const { app } = makeApp({ storage, app: { jobs: { queue } } });
-      const post = await app.request('/api/v1/jobs', { method: 'POST', body: JSON.stringify({ kind: 'context', input: 'https://youtu.be/jNQXAC9IVRw' }) });
+      const post = await app.request('/api/v1/jobs', {
+        method: 'POST',
+        body: JSON.stringify({ kind: 'context', input: 'https://youtu.be/jNQXAC9IVRw' }),
+      });
       expect(post.status).toBe(202);
       const job = await post.json();
       const finished = await until(
@@ -52,7 +54,9 @@ describe('mounted sub-apps', () => {
       );
       expect(finished.status).toBe('succeeded');
 
-      const created = await (await app.request('/api/v1/collections', { method: 'POST', body: JSON.stringify({ name: 'Zoo' }) })).json();
+      const created = await (
+        await app.request('/api/v1/collections', { method: 'POST', body: JSON.stringify({ name: 'Zoo' }) })
+      ).json();
       const ingest = await app.request(`/api/v1/collections/${created.id}/items`, {
         method: 'POST',
         body: JSON.stringify({ inputs: ['https://youtu.be/jNQXAC9IVRw'] }),
