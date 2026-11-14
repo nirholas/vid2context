@@ -14,15 +14,16 @@ const { code, lang = 'bash', label, copy = true } = Astro.props;
 const html = highlight(code, lang);
 ---
 
-<div class="code">
+<div class={label ? 'code' : 'code code-compact'}>
   {
-    (label || copy) && (
+    label && (
       <div class="code-bar">
-        <span class="code-label">{label ?? ''}</span>
+        <span class="code-label">{label}</span>
         {copy && <CopyButton client:visible text={code} />}
       </div>
     )
   }
+  {!label && copy && <div class="code-float"><CopyButton client:visible text={code} /></div>}
   <Fragment set:html={html} />
 </div>
 
@@ -56,6 +57,15 @@ const html = highlight(code, lang);
     color: var(--v2c-text);
     font-size: 0.75rem;
     cursor: pointer;
+  }
+  .code-float {
+    position: absolute;
+    top: 0.45rem;
+    right: 0.45rem;
+    z-index: 1;
+  }
+  .code-compact pre {
+    padding-right: 5.5rem;
   }
   .copy-btn:hover {
     border-color: var(--v2c-muted);

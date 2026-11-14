@@ -10,10 +10,16 @@ const videoRungs = allRungs().filter((r) => r.kind === 'video').length;
 const nativeSources = data.sources.filter((s) => !s.catchAll);
 const ytdlpSources = data.sources.filter((s) => s.catchAll);
 
+/** How a source name reads inside a sentence. */
+const SENTENCE_NAME: Record<string, string> = {
+  Podcasts: 'podcast feeds',
+  'Google Drive, Dropbox and OneDrive links': 'Google Drive, Dropbox and OneDrive',
+};
+
 export const hero = {
   title: 'Turn any video into context for AI agents',
   sub: 'Paste a link or drop a file. Get the transcript, chapters and metadata as Markdown, a .zip, or straight into your agent over MCP.',
-  placeholder: 'Paste a YouTube, Vimeo or podcast link',
+  placeholder: 'Paste a video or podcast link',
   button: 'Get context',
   chips: [
     { label: 'G-Wagon buyer’s guide', url: 'https://www.youtube.com/watch?v=cCPsdFdlshc' },
@@ -37,13 +43,10 @@ export const steps: Step[] = [
   {
     n: '01',
     title: 'Paste a link or upload a file',
-    body:
-      `A video page from ${nativeSources
-        .filter((s) => s.name !== 'Local files')
-        .map((s) => s.name)
-        .join(', ')}` +
-      (ytdlpSources.length ? ` or any site yt-dlp supports` : '') +
-      ', or an audio or video file from your machine.',
+    body: `A link from ${nativeSources
+      .filter((s) => s.name !== 'Local files')
+      .map((s) => SENTENCE_NAME[s.name] ?? s.name)
+      .join(', ')}${ytdlpSources.length ? ' or any other site yt-dlp supports' : ''}, or an audio or video file from your machine.`,
   },
   {
     n: '02',
@@ -99,7 +102,7 @@ export interface UseCase {
 export const useCases: UseCase[] = [
   {
     title: 'Research a buying decision across a playlist',
-    body: 'A buyer’s series on the Mercedes G-Wagon runs for hours. Load the episodes into your agent and ask which model, year and mileage to buy. Every transcript line carries its timestamp, so each claim in the answer can cite the episode and the moment that said it.',
+    body: 'A buyer’s series on the Mercedes G-Wagon spans several long episodes. Load the episodes into your agent and ask which model, year and mileage to buy. Every transcript line carries its timestamp, so each claim in the answer can cite the episode and the moment that said it.',
     example: {
       caption: `The first lines of "${data.gwagon.title}" (${data.gwagon.duration}, ${data.gwagon.segments} caption lines), as the agent receives them`,
       lang: 'text',
