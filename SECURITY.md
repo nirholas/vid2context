@@ -18,6 +18,8 @@ Please include:
 
 You should get a first reply within a week. Once a fix is ready, we'll publish an advisory and credit you unless you prefer to stay anonymous.
 
+Threat model and hardening guide: [docs/security/threat-model.md](docs/security/threat-model.md).
+
 ## Scope
 
 In scope, for example:

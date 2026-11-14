@@ -73,6 +73,20 @@ Every free and paid lane takes `<PROVIDER>_FALLBACK_KEYS` (one extra rung per ke
 | `OTEL_EXPORTER_OTLP_ENDPOINT` and other `OTEL_*` | OpenTelemetry export of traces and metrics; see [observability.md](observability.md) |
 | `VID2CONTEXT_ENV_FILE` | an env file to load before `./.env` (shell variables always win) |
 
+## Security and limits
+
+See [security/hardening.md](security/hardening.md) and [security/threat-model.md](security/threat-model.md).
+
+| Env var | Effect |
+|---|---|
+| `VID2CONTEXT_PUBLIC=1` | public mode: refuse local file paths, `file://` and URLs pointing at private, loopback, link-local or cloud metadata addresses |
+| `VID2CONTEXT_MAX_INPUT_CHARS` | longest input accepted in public mode (default 2048) |
+| `VID2CONTEXT_MAX_PLAYLIST_ITEMS` | most videos expanded from one playlist, channel or feed (default 500) |
+| `VID2CONTEXT_MAX_UPLOAD_MB` | largest upload to the HTTP API or web app (default 200) |
+| `VID2CONTEXT_MAX_AUDIO_MB` | largest audio download or file read for speech-to-text (default 1024) |
+| `VID2CONTEXT_MAX_SEGMENTS` | most transcript segments kept from one source (default 200000) |
+| `VID2CONTEXT_FETCH_TIMEOUT_MS` | default timeout for one outbound request through `safeFetch` (default 30000) |
+
 ## Exports
 
 | Env var | Used by | Notes |
