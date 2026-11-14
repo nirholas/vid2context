@@ -71,3 +71,5 @@ Webhook payloads link to the API (`data.added[].links.transcript`, `data.job.lin
 ## Tests
 
 `npx vitest run packages/n8n-nodes` starts a real vid2context server on a random port (recorded YouTube responses replayed underneath, the webhook routes mounted) and checks the request building, the transcript, metadata and context calls, Add to Collection through the server's collection routes, the trigger's register, exists and delete logic, and signature checks against the Standard Webhooks published vector, the official `standardwebhooks` library and `@vid2context/webhooks`.
+
+Loaded into a real n8n (2.47.7, installed with npm and the packed `.tgz` in `~/.n8n/nodes`) on 2026-11-14 against a local vid2context server: Get Transcript returned the live YouTube transcript of "Me at the zoo", Add to Collection queued the ingest job that added it, activating the trigger workflow registered its webhook through `POST /api/v1/webhooks`, a `POST /api/v1/webhooks/:id/test` ping ran the workflow, a request with a wrong signature got `401` and ran nothing, and deactivating the workflow deleted the webhook.
