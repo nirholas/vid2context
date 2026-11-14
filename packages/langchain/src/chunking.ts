@@ -101,7 +101,7 @@ export function byChapters(ctx: VideoContext, windowSec = 60): Chunk[] {
   const chapters = [...ctx.metadata.chapters].sort((a, b) => a.startSec - b.startSec);
   if (chapters.length === 0) return byWindow(ctx, windowSec, true);
   const segs = ctx.transcript.segments;
-  const lastEnd = Math.max(ctx.metadata.durationSec ?? 0, ...segs.map((s) => s.endSec));
+  const lastEnd = segs.reduce((max, s) => Math.max(max, s.endSec), ctx.metadata.durationSec ?? 0);
   const out: Chunk[] = [];
   chapters.forEach((ch, i) => {
     const next = chapters[i + 1];

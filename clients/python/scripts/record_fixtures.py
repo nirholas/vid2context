@@ -4,13 +4,15 @@ Starts packages/server on a random local port (20000 to 29999), calls it for
 the videos and error cases the tests replay, writes one JSON file per call into
 tests/fixtures/, then stops the server. Run from anywhere:
 
-    uv run python scripts/record_fixtures.py [name ...]
+    uv run python scripts/record_fixtures.py [--youtube-only] [name ...]
 
 With names (such as `context-cCPsdFdlshc`), only those fixtures are recorded.
 A response with a different status than expected (YouTube rate-limits busy
 machines with HTTP 429, which the server reports as `blocked`) is retried a
 few times and then left unwritten, so a good fixture is never replaced by a
-transient failure. Needs Node 22+ and `npm install` at the repo root. Personal details (email
+transient failure. `--youtube-only` serves the same packages/server app with
+only the YouTube provider registered (scripts/record_server.ts), for when the
+full provider registry does not build. Needs Node 22+ and `npm install` at the repo root. Personal details (email
 addresses, phone numbers) in video descriptions are replaced before writing,
 as AGENTS.md requires for committed fixtures.
 """
@@ -98,7 +100,9 @@ def wait_for(base: str, proc: subprocess.Popen[bytes], seconds: float = 60) -> N
 
 
 def main() -> None:
-    only = set(sys.argv[1:])
+    args = sys.argv[1:]
+    youtube_only = "--youtube-only" in args
+    only = {a for a in args if a != "--youtube-only"}
     unknown = only - {c[0] for c in CALLS}
     if unknown:
         sys.exit(f"unknown fixture names: {', '.join(sorted(unknown))}")
@@ -106,7 +110,10 @@ def main() -> None:
     base = f"http://127.0.0.1:{port}"
     env = {**os.environ, "PORT": str(port), "HOST": "127.0.0.1"}
     proc = subprocess.Popen(
-        ["npx", "tsx", "packages/server/src/node.ts"], cwd=REPO, env=env, start_new_session=True
+        ["npx", "tsx", str(HERE / "record_server.ts") if youtube_only else "packages/server/src/node.ts"],
+        cwd=REPO,
+        env=env,
+        start_new_session=True,
     )
     try:
         wait_for(base, proc)
