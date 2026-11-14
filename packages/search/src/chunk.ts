@@ -15,8 +15,9 @@
  * (Core's chunkTranscript is token-budget based and is not exported from the
  * core index, so search keeps this small time-based chunker of its own.)
  */
-import { segmentsToText } from '@vid2context/core';
+
 import type { Segment, VideoContext } from '@vid2context/core';
+import { segmentsToText } from '@vid2context/core';
 
 export interface ChunkOptions {
   /** Shortest window before a cut is considered. Default 30. */

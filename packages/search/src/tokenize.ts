@@ -47,7 +47,8 @@ const VOWEL = /[aeiouy]/;
 function undouble(w: string): string {
   // stopped -> stopp -> stop; keep "ll", "ss", "zz" (fall, miss, buzz).
   const last = w.at(-1);
-  if (w.length > 3 && last !== undefined && last === w.at(-2) && !'lsz'.includes(last) && !VOWEL.test(last)) return w.slice(0, -1);
+  if (w.length > 3 && last !== undefined && last === w.at(-2) && !'lsz'.includes(last) && !VOWEL.test(last))
+    return w.slice(0, -1);
   return w;
 }
 

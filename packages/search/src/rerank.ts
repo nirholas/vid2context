@@ -9,8 +9,9 @@
  * in Workers and slow to cold-start in the browser, while this package
  * declares all three runtimes.
  */
-import { chat, Vid2ContextError } from '@vid2context/core';
+
 import type { ChainOptions, Ctx, Registry } from '@vid2context/core';
+import { chat, Vid2ContextError } from '@vid2context/core';
 
 export interface RerankCandidate {
   id: string;

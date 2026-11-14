@@ -4,8 +4,9 @@
  * range (chunks overlap by design, so this also removes duplicate text), and
  * each hit gets a snippet with the matched words highlighted.
  */
-import { segmentsToText } from '@vid2context/core';
+
 import type { Segment } from '@vid2context/core';
+import { segmentsToText } from '@vid2context/core';
 import type { SearchSide } from './fuse.ts';
 import { indexTerms, stem, words } from './tokenize.ts';
 
@@ -84,7 +85,10 @@ export function mergeAdjacent(ranked: RankedChunk[], opts: MergeOptions = {}): M
     if (c.startSec < target.startSec && c.chapterTitle) target.chapterTitle = c.chapterTitle;
     target.startSec = Math.min(target.startSec, c.startSec);
     target.endSec = Math.max(target.endSec, c.endSec);
-    target.segmentRange = [Math.min(target.segmentRange[0], c.segmentRange[0]), Math.max(target.segmentRange[1], c.segmentRange[1])];
+    target.segmentRange = [
+      Math.min(target.segmentRange[0], c.segmentRange[0]),
+      Math.max(target.segmentRange[1], c.segmentRange[1]),
+    ];
     target.sources = union(target.sources, c.sources);
     target.chunkIds.push(c.id);
   });
