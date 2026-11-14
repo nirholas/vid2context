@@ -105,6 +105,18 @@ describe('citations', () => {
     expect(r.unverified).toEqual([9]);
   });
 
+  it('rewrites gpt-oss native markers as [n], also when split across deltas', () => {
+    const native = 'Seats carried through 2018\u30107\u2020L0-L4\u3011\u301013\u2020L0-L4\u3011.';
+    expect(rewriteCitations(native, new Set([7, 13])).text).toBe('Seats carried through 2018[7][13].');
+    const f = new CitationFilter(new Set([7]));
+    let out = '';
+    for (const piece of ['through 2018', '\u3010', '7', '\u2020', 'L0', '-L4', '\u3011\u3010', '13', '\u2020L0-L4\u3011', '.'])
+      out += f.push(piece);
+    out += f.end();
+    expect(out).toBe('through 2018[7].');
+    expect(f.state.unverified).toEqual([13]);
+  });
+
   it('expands ranges', () => {
     expect(rewriteCitations('Seats [1-3].', valid).used).toEqual([1, 2, 3]);
   });

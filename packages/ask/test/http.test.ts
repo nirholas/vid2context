@@ -76,6 +76,7 @@ describe('POST /chat', () => {
     expect(done.text).toBe(deltas.join('').trim());
     expect(done.rung).toBe(meta.rung);
     expect(done.text).toMatch(/2018/);
+    expect(done.citations.length).toBeGreaterThan(0);
     for (const c of done.citations) {
       expect(keys(c)).toEqual(['endSec', 'n', 'quote', 'startSec', 'title', 'url', 'videoId']);
       expect(meta.sources.some((s: { n: number }) => s.n === c.n)).toBe(true);

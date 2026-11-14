@@ -1,6 +1,6 @@
 /**
- * Citation checking. The model cites sources as `[n]` (also `[1, 3]` and
- * `[2-4]`). Every number must name an existing source: unknown numbers are
+ * Citation checking. The model cites sources as `[n]` (also `[1, 3]`,
+ * `[2-4]`, and gpt-oss's native lenticular-bracket form, rewritten to `[n]`). Every number must name an existing source: unknown numbers are
  * removed from the text and reported as unverified. The streaming filter
  * applies the same rule to deltas, holding back an unfinished `[...` until
  * its `]` arrives, so streamed text and the final text always agree.
@@ -12,7 +12,18 @@ import type { Citation, Source } from './types.ts';
 /** A bracket whose content is only numbers, commas, spaces and ranges. */
 const MARKER = /\s?\[(\d{1,3}(?:\s*(?:,|-|\u2013)\s*\d{1,3})*)\]/g;
 /** Prefix of a marker that may still complete. */
-const PARTIAL = /\[[\d,\s\-\u2013]{0,24}$/;
+const PARTIAL = /(?:\[[\d,\s\-\u2013]{0,24}|\u3010[^\u3011\n]{0,40})$/;
+/**
+ * gpt-oss models cite in their native browsing format, `\u30107\u2020L0-L4\u3011`
+ * (lenticular brackets, a dagger, line numbers). The number before the dagger
+ * is the source number; the rest is dropped.
+ */
+const NATIVE = /\u3010(\d{1,3})(?:\u2020[^\u3011\n]{0,40})?\u3011/g;
+
+/** Rewrite native `\u3010n\u2020...\u3011` markers as `[n]`. */
+export function normalizeMarkers(text: string): string {
+  return text.replace(NATIVE, (_m, n: string) => `[${n}]`);
+}
 
 function expand(body: string): number[] {
   const out: number[] = [];
@@ -44,7 +55,7 @@ export function rewriteCitations(
   valid: Set<number>,
   acc: Rewritten = { text: '', used: [], unverified: [] },
 ): Rewritten {
-  const out = text.replace(MARKER, (whole, body: string) => {
+  const out = normalizeMarkers(text).replace(MARKER, (whole, body: string) => {
     const nums = expand(body);
     const good = nums.filter((n) => valid.has(n));
     for (const n of nums) {
@@ -93,9 +104,14 @@ export class CitationFilter {
   }
 }
 
-/** Content words; numbers count double because they are the most specific part of a claim. */
-function weight(w: string): number {
-  return /\d/.test(w) ? 2 : 1;
+/**
+ * How much a shared word says about where a claim is supported: numbers count
+ * double (the most specific part of a claim), and a word is worth less the
+ * more segments of the source repeat it, so "491" beats "G55" in a stretch
+ * that keeps saying "G55".
+ */
+function weight(w: string, df: Map<string, number>): number {
+  return (/\d/.test(w) ? 2 : 1) / (df.get(w) ?? 1);
 }
 
 /** The sentences of the answer that cite `n`. */
@@ -105,17 +121,19 @@ function citingText(answer: string, n: number): string {
   return sentences.filter((s) => re.test(s)).join(' ');
 }
 
-/** The segment (with its neighbour) inside the source that shares the most words with the citing sentences. */
+/** The segment (with its neighbour) inside the source whose words best match the citing sentences. */
 function bestMoment(source: Source, segments: Segment[], claim: string): { startSec: number; endSec: number; quote: string } {
   const inRange = segments.filter((s) => s.endSec > source.startSec && s.startSec < source.endSec && s.text.trim());
   if (inRange.length === 0) return { startSec: source.startSec, endSec: source.endSec, quote: source.text };
   const want = new Set(keywords(claim));
+  const df = new Map<string, number>();
+  for (const seg of inRange) for (const w of new Set(keywords(seg.text))) df.set(w, (df.get(w) ?? 0) + 1);
   let best = 0;
   let bestScore = -1;
   for (let i = 0; i < inRange.length; i++) {
     const window = `${inRange[i]?.text ?? ''} ${inRange[i + 1]?.text ?? ''}`;
     let score = 0;
-    for (const w of keywords(window)) if (want.has(w)) score += weight(w);
+    for (const w of new Set(keywords(window))) if (want.has(w)) score += weight(w, df);
     if (score > bestScore) {
       best = i;
       bestScore = score;

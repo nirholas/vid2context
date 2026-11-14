@@ -4,9 +4,42 @@
 
 ```ts
 import { ask } from '@vid2context/ask';
-const r = await ask(registry, { question: 'Which G-Wagon years have the M113 engine?', inputs: ['https://www.youtube.com/watch?v=cCPsdFdlshc'], storage }, ctx);
-r.answer;     // "The 2000 G500 uses the M113 V8 [2]. ..."
-r.citations;  // [{ n: 2, videoId, title, startSec: 64.3, endSec, url: '...&t=64s', quote: '...' }]
+const r = await ask(registry, {
+  question: 'How much horsepower does the G55 AMG compressor engine make, and does it have any known issues?',
+  inputs: ['https://www.youtube.com/watch?v=cCPsdFdlshc'],
+  storage,
+}, ctx);
+```
+
+The real result (replayed from `packages/ask/test/fixtures/gwagon-g55.json`, OVH Llama 3.3 70B, keyless):
+
+```json
+{
+  "answer": "The G55 AMG compressor engine makes 491 horsepower [5]. One known issue with this engine is that it \"drinks a little oil\" as it ages, with the example given being a truck with 131,000 miles that drinks a quart and a half of oil between oil changes [5][6].",
+  "citations": [
+    {
+      "n": 5,
+      "videoId": "youtube:cCPsdFdlshc",
+      "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+      "startSec": 285.039,
+      "endSec": 291.24,
+      "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=285s",
+      "quote": "supercharged just so so we know but this is 491 horsepower of"
+    },
+    {
+      "n": 6,
+      "videoId": "youtube:cCPsdFdlshc",
+      "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+      "startSec": 306.8,
+      "endSec": 310.84,
+      "url": "https://www.youtube.com/watch?v=cCPsdFdlshc&t=306s",
+      "quote": "this one's got 131,000 mil on it and it drinks a quart and a half between oil"
+    }
+  ],
+  "unverified": [],
+  "rung": "llm/ovh/Meta-Llama-3_3-70B-Instruct",
+  "model": "Meta-Llama-3_3-70B-Instruct"
+}
 ```
 
 `askStream()` yields the same answer as events. `prepareAsk()` plus `streamAnswer()` are the two halves, for servers that must reject a bad request before they start streaming.
@@ -53,10 +86,37 @@ Resolution is core's `resolveModelChoice`; generation is core's `chatStream`, wh
 
 `POST /api/v1/chat` always streams; `POST /api/v1/ask` streams when `stream: true`. Events: `meta`, then `reasoning` (only when the model exposes it), then `delta` one or more times, then `done`, or `error` instead of `done`. A `: keep-alive` comment goes out every 15 seconds; a client disconnect aborts the upstream call. Request errors are answered before streaming with the standard error body. Shapes are in [contracts/http-api.md](../contracts/http-api.md#post-chat-and-post-ask-with-stream-true).
 
-A real stream, replayed from `packages/ask/test/fixtures/chat-sse-designo.json` (recorded from OVH Llama 3.3 70B, keyless), with the middle deltas and most sources cut for length:
+A real stream: `POST /api/v1/chat` with "Which years have the designo seats?" over the G-Wagon video, replayed from `packages/ask/test/fixtures/chat-sse-designo.json` (recorded 2026-11-14 from the keyless lanes). OVH Llama 3.3 timed out, so the chain fell back to OVH gpt-oss-120b, which streamed 405 `reasoning` events and 59 `delta` events. Reasoning, the middle deltas and all but two sources are cut here. gpt-oss wrote its native `【7†L0-L4】` markers; they arrive as `[7]`.
 
 ```
-SSE_EXAMPLE
+event: meta
+data: {"rung":"llm/ovh/gpt-oss-120b","model":"gpt-oss-120b","contextTokens":131072,"promptTokens":5401,"sources":[{"n":7,"videoId":"youtube:cCPsdFdlshc","title":"Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!","url":"https://www.youtube.com/watch?v=cCPsdFdlshc&t=364s","startSec":364,"endSec":423.479},{"n":8,"videoId":"youtube:cCPsdFdlshc","title":"Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!","url":"https://www.youtube.com/watch?v=cCPsdFdlshc&t=423s","startSec":423.479,"endSec":484.24}]}
+
+event: delta
+data: {"text":"The"}
+
+event: delta
+data: {"text":" video says the"}
+
+event: delta
+data: {"text":" “"}
+
+event: delta
+data: {"text":"design"}
+
+...
+
+event: delta
+data: {"text":"[7]"}
+
+event: delta
+data: {"text":"[13]"}
+
+event: delta
+data: {"text":"."}
+
+event: done
+data: {"text":"The video says the “designo” seats first appear on the 2012 G‑55 AMG and that the exact same seats are carried forward unchanged through the later models \u2013 they remain on every G‑Wagon from 2012 up through the 2018 model year (the 2013‑2018 interior generation)[7][13].","rung":"llm/ovh/gpt-oss-120b","model":"gpt-oss-120b","usage":{"inputTokens":5080,"outputTokens":579},"citations":[{"n":7,"videoId":"youtube:cCPsdFdlshc","title":"Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!","startSec":408.4,"endSec":414.56,"url":"https://www.youtube.com/watch?v=cCPsdFdlshc&t=408s","quote":"2012 with 128,000 mil these deso seats were carried through into 2018 that look"},{"n":13,"videoId":"youtube:cCPsdFdlshc","title":"Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!","startSec":751.68,"endSec":757.16,"url":"https://www.youtube.com/watch?v=cCPsdFdlshc&t=751s","quote":"designo seats as in the 2012 same color same little compartment"}],"unverified":[],"attempts":[{"id":"llm/ovh/Meta-Llama-3_3-70B-Instruct","stage":"llm","outcome":"error","reason":"timeout","detail":"ovh chat stream timed out","ms":6},{"id":"llm/ovh/gpt-oss-120b","stage":"llm","outcome":"ok","ms":38}]}
 ```
 
 ## MCP
