@@ -76,7 +76,7 @@ export function CopyButton({
         {state === 'copied' ? <Check className="size-4" aria-hidden /> : (icon ?? <Copy className="size-4" aria-hidden />)}
         <span>{state === 'copied' ? copiedLabel : label}</span>
       </Button>
-      <span className="v2c-sr-only" role="status">
+      <span className="sr-only" role="status">
         {state === 'copied' ? copiedLabel : state === 'failed' ? `Copy failed: ${error}` : ''}
       </span>
       {state === 'failed' && <span className="text-xs text-muted">{error}</span>}

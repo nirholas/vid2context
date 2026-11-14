@@ -10,6 +10,7 @@ import { type ReactNode, useEffect, useMemo, useState } from 'react';
 import { resultBundle, type ViewFile, viewFiles } from '../../lib/bundle.ts';
 import { saveBlob, streamToBlob } from '../../lib/download.ts';
 import { timeAgo } from '../../lib/format.ts';
+import { chatHref } from '../../lib/links.ts';
 import type { RunParams } from '../../lib/route.ts';
 import { AttemptsTimeline } from '../AttemptsTimeline.tsx';
 import { Tabs } from '../Tabs.tsx';
@@ -19,13 +20,6 @@ import { FileList } from './FileList.tsx';
 import { FileViewer } from './FileViewer.tsx';
 import { ResultHeader } from './ResultHeader.tsx';
 import { TranscriptTab } from './TranscriptTab.tsx';
-
-/** Where the chat app lives (prompt 28). */
-export const CHAT_PATH = '/chat/';
-
-export function chatHref(input: string): string {
-  return `${CHAT_PATH}?input=${encodeURIComponent(input)}`;
-}
 
 /** The input the chat page and the server can resolve again, or undefined for results that exist only in this browser. */
 export function shareableInput(context: VideoContext, params?: RunParams): string | undefined {

@@ -22,7 +22,7 @@ export function UrlForm({ onSubmit, initial = '' }: { onSubmit: (url: string) =>
   };
   return (
     <form onSubmit={submit} className="w-full" role="search" aria-label="Get context for a video link">
-      <label htmlFor={id} className="v2c-sr-only">
+      <label htmlFor={id} className="sr-only">
         Video link
       </label>
       <div className="flex flex-col gap-2 rounded-v2c-lg border border-border-strong bg-surface p-2 shadow-v2c focus-within:border-accent sm:flex-row sm:items-center">

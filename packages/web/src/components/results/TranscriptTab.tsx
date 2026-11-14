@@ -80,7 +80,7 @@ export function TranscriptTab({ context }: { context: VideoContext }) {
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-2">
-        <label htmlFor={searchId} className="v2c-sr-only">
+        <label htmlFor={searchId} className="sr-only">
           Search the transcript
         </label>
         <div className="relative min-w-0 flex-1 basis-60">

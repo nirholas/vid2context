@@ -150,7 +150,7 @@ export function UploadRun({
                     <CircleDashed className="size-4 text-subtle" aria-hidden />
                   )}
                   <span className={done || active ? 'text-fg' : 'text-muted'}>{LABELS[s]}</span>
-                  <span className="v2c-sr-only">{done ? '(done)' : active ? '(in progress)' : '(waiting)'}</span>
+                  <span className="sr-only">{done ? '(done)' : active ? '(in progress)' : '(waiting)'}</span>
                   {active && percent !== undefined && <span className="text-xs text-muted tabular-nums">{Math.round(percent)}%</span>}
                 </div>
                 {active && (s === 'read' || s === 'upload' || s === 'model') && (
@@ -160,7 +160,7 @@ export function UploadRun({
             );
           })}
         </ol>
-        <p className="v2c-sr-only" role="status" aria-live="polite">
+        <p className="sr-only" role="status" aria-live="polite">
           {error ? 'Stopped with an error.' : `${LABELS[step]}${percent !== undefined ? `, ${Math.round(percent)} percent` : ''}`}
         </p>
         {prepared && (

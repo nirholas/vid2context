@@ -116,7 +116,7 @@ export function RunView({ params }: { params: RunParams }) {
   const onBundle = useCallback(
     (bundle: Bundle) => {
       if (!fresh) return;
-      putEntry(summarize(fresh, params, bundle.files.length)).catch((err) => {
+      putEntry(summarize(fresh, { input: params.url, mode: params.mode, lang: params.lang }, bundle.files.length)).catch((err) => {
         console.error('[vid2context] could not save the result to history', err);
       });
     },

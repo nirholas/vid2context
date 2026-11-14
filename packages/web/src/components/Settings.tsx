@@ -11,18 +11,21 @@ import { loadTheme, saveTheme, type Theme } from '../lib/theme.ts';
 import { ErrorPanel } from './ErrorPanel.tsx';
 import { Button, Card, Spinner } from './ui.tsx';
 
-/** Env names the browser chain reads. Suggestions only; any env-style name can be saved. */
-export const KEY_SUGGESTIONS = [
-  'TRANSFORMERS_STT_MODEL',
-  'TRANSFORMERS_DEVICE',
-  'GROQ_API_KEY',
-  'OPENAI_API_KEY',
-  'GEMINI_API_KEY',
-  'OPENROUTER_API_KEY',
-  'CEREBRAS_API_KEY',
-  'MISTRAL_API_KEY',
-  'DEEPGRAM_API_KEY',
-];
+/**
+ * Env names the browser's speech-to-text rungs read, from the browser
+ * registry itself, so the suggestions match what the code actually uses.
+ * Any env-style name can still be saved.
+ */
+export async function sttKeyNames(): Promise<string[]> {
+  const { createRegistry } = await import('@vid2context/registry/browser');
+  const names = new Set<string>();
+  for (const p of createRegistry().health({})) {
+    if (p.kind !== 'stt') continue;
+    for (const r of p.rungs ?? []) for (const n of r.requires) names.add(n);
+  }
+  names.add('TRANSFORMERS_DEVICE');
+  return [...names].sort();
+}
 
 function ApiSection() {
   const { state, recheck } = useApiStatus();
@@ -127,7 +130,7 @@ function ThemeSection() {
                   setTheme(t.id);
                   saveTheme(t.id);
                 }}
-                className="v2c-sr-only"
+                className="sr-only"
               />
               <t.icon className="size-4" aria-hidden />
               {t.label}
@@ -149,7 +152,12 @@ function KeysSection() {
   const [rows, setRows] = useState<KeyRow[]>();
   const [status, setStatus] = useState<{ kind: 'idle' | 'saved' | 'error'; text?: string }>({ kind: 'idle' });
   const [nextId, setNextId] = useState(1);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
   const listId = useId();
+
+  useEffect(() => {
+    sttKeyNames().then(setSuggestions, (err) => console.error('[vid2context] could not list provider key names', err));
+  }, []);
 
   useEffect(() => {
     loadProviderKeys().then(
@@ -208,7 +216,7 @@ function KeysSection() {
       </div>
       <form onSubmit={save} className="space-y-3">
         <datalist id={listId}>
-          {KEY_SUGGESTIONS.map((k) => (
+          {suggestions.map((k) => (
             <option key={k} value={k} />
           ))}
         </datalist>
@@ -218,7 +226,7 @@ function KeysSection() {
             return (
               <li key={r.id} className="flex flex-col gap-2 sm:flex-row sm:items-start">
                 <div className="min-w-0 sm:w-64">
-                  <label htmlFor={`key-name-${r.id}`} className="v2c-sr-only">
+                  <label htmlFor={`key-name-${r.id}`} className="sr-only">
                     Name {i + 1}
                   </label>
                   <input
@@ -235,7 +243,7 @@ function KeysSection() {
                   {bad && <p className="mt-1 text-xs text-fg">Use letters, digits and underscores, starting with a letter.</p>}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <label htmlFor={`key-value-${r.id}`} className="v2c-sr-only">
+                  <label htmlFor={`key-value-${r.id}`} className="sr-only">
                     Value {i + 1}
                   </label>
                   <input

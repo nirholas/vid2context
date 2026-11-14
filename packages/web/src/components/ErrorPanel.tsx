@@ -1,5 +1,5 @@
 /** Every failure shows its message, its hint and what was tried. Never a bare "something went wrong". */
-import { RefreshCw, Settings, TriangleExclamationPoint } from 'lucide-react';
+import { RefreshCw, Settings, AlertTriangle } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { type AppError, toAppError } from '../lib/errors.ts';
 import { appHref, onAppLinkClick } from '../lib/route.ts';
@@ -23,7 +23,7 @@ export function ErrorPanel({
   return (
     <section role="alert" aria-labelledby="error-title" className="rounded-v2c-lg border border-danger/60 bg-surface p-5 sm:p-6">
       <div className="flex items-start gap-3">
-        <TriangleExclamationPoint className="mt-0.5 size-5 shrink-0 text-danger" aria-hidden />
+        <AlertTriangle className="mt-0.5 size-5 shrink-0 text-danger" aria-hidden />
         <div className="min-w-0 flex-1 space-y-3">
           <div>
             <h2 id="error-title" className="text-base font-semibold text-fg">

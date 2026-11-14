@@ -21,7 +21,7 @@ export function OriginBadges({ context }: { context: VideoContext }) {
           data-testid="origin-badge"
         >
           {b.label}
-          <span className="v2c-sr-only">: {b.title}</span>
+          <span className="sr-only">: {b.title}</span>
         </li>
       ))}
     </ul>
@@ -51,7 +51,7 @@ export function ResultHeader({ context }: { context: VideoContext }) {
       node: (
         <span>
           <span aria-hidden>{formatDuration(m.durationSec)}</span>
-          <span className="v2c-sr-only">Duration {spokenDuration(m.durationSec)}</span>
+          <span className="sr-only">Duration {spokenDuration(m.durationSec)}</span>
         </span>
       ),
     });
@@ -97,7 +97,7 @@ export function ResultHeader({ context }: { context: VideoContext }) {
             className="inline-flex items-center gap-1 text-sm text-accent underline-offset-4 hover:underline"
           >
             Open the original <ExternalLink className="size-3.5" aria-hidden />
-            <span className="v2c-sr-only">(opens in a new tab)</span>
+            <span className="sr-only">(opens in a new tab)</span>
           </a>
         )}
       </div>
