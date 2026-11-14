@@ -29,7 +29,10 @@ const shortCtx = JSON.parse(
 ) as { transcript: { segments: { text: string }[] } };
 const shortTranscript = shortCtx.transcript.segments.map((s) => s.text).join(' ');
 
-const apollo: ChatRequest = { messages: [{ role: 'user', content: 'Which year did Apollo 11 land on the moon? One sentence.' }], maxTokens: 2000 };
+const apollo: ChatRequest = {
+  messages: [{ role: 'user', content: 'Which year did Apollo 11 land on the moon? One sentence.' }],
+  maxTokens: 2000,
+};
 
 function rungById(id: string, env: Record<string, string>): StreamingLlmRung {
   const r = nativeRungs(env).find((x) => x.id === id);
@@ -215,7 +218,12 @@ describe('Anthropic request bodies', () => {
       type: 'object',
       properties: {
         year: { type: 'integer', minimum: 1900 },
-        crew: { type: 'array', items: { type: 'object', properties: { name: { type: 'string', maxLength: 40 } } }, maxItems: 3, minItems: 1 },
+        crew: {
+          type: 'array',
+          items: { type: 'object', properties: { name: { type: 'string', maxLength: 40 } } },
+          maxItems: 3,
+          minItems: 1,
+        },
       },
       required: ['year'],
       additionalProperties: true,
@@ -228,7 +236,11 @@ describe('Anthropic request bodies', () => {
           type: 'object',
           properties: {
             year: { type: 'integer' },
-            crew: { type: 'array', items: { type: 'object', properties: { name: { type: 'string' } }, additionalProperties: false }, minItems: 1 },
+            crew: {
+              type: 'array',
+              items: { type: 'object', properties: { name: { type: 'string' } }, additionalProperties: false },
+              minItems: 1,
+            },
           },
           required: ['year'],
           additionalProperties: false,
@@ -251,7 +263,9 @@ describe('Anthropic request bodies', () => {
       stream: true,
       thinking: { type: 'adaptive', display: 'summarized' },
     });
-    expect(buildAnthropicBody({ model: 'claude-haiku-4-5', flavor: 'api' }, apollo, { stream: true })).not.toHaveProperty('thinking');
+    expect(buildAnthropicBody({ model: 'claude-haiku-4-5', flavor: 'api' }, apollo, { stream: true })).not.toHaveProperty(
+      'thinking',
+    );
   });
 
   it('puts anthropic_version in the body instead of the model for Vertex', () => {
@@ -302,18 +316,28 @@ describe('Gemini request bodies', () => {
         required: ['mission'],
       },
     });
-    expect(geminiSchema({ anyOf: [{ type: 'string', maxLength: 3 }, { type: 'null' }] })).toEqual({ anyOf: [{ type: 'string' }, { type: 'null' }] });
+    expect(geminiSchema({ anyOf: [{ type: 'string', maxLength: 3 }, { type: 'null' }] })).toEqual({
+      anyOf: [{ type: 'string' }, { type: 'null' }],
+    });
   });
 
   it('asks for thought summaries only when streaming', () => {
     expect(buildGeminiBody(apollo)).not.toHaveProperty('generationConfig.thinkingConfig');
-    expect(buildGeminiBody(apollo, { stream: true })).toMatchObject({ generationConfig: { thinkingConfig: { includeThoughts: true } } });
+    expect(buildGeminiBody(apollo, { stream: true })).toMatchObject({
+      generationConfig: { thinkingConfig: { includeThoughts: true } },
+    });
   });
 });
 
+const vertexEnv = { GOOGLE_CLOUD_PROJECT: 'redacted-project', GOOGLE_ACCESS_TOKEN: 'token-1' };
+const project = 'https://us-central1-aiplatform.googleapis.com/v1/projects/redacted-project/locations/us-central1';
+const globalProject = 'https://aiplatform.googleapis.com/v1/projects/redacted-project/locations/global';
+
 describe('requests on the wire and real error responses', () => {
   it('Anthropic: sends x-api-key and anthropic-version, maps a real 401 to auth with a hint', async () => {
-    const fetch = replayFetch([{ method: 'POST', url: 'https://api.anthropic.com/v1/messages', response: fixture('anthropic.401-invalid-key.json') }]);
+    const fetch = replayFetch([
+      { method: 'POST', url: 'https://api.anthropic.com/v1/messages', response: fixture('anthropic.401-invalid-key.json') },
+    ]);
     const r = rungById('llm/anthropic/claude-haiku-5-5', { ANTHROPIC_API_KEY: 'sk-ant-invalid' });
     const err = await caught(r.chat(apollo, testContext({ fetch })));
     expect(err.code).toBe('auth');
@@ -327,8 +351,13 @@ describe('requests on the wire and real error responses', () => {
   });
 
   it('Anthropic: honours ANTHROPIC_BASE_URL', async () => {
-    const fetch = replayFetch([{ url: 'https://proxy.example.org/v1/messages', response: fixture('anthropic.401-invalid-key.json') }]);
-    const r = rungById('llm/anthropic/claude-haiku-5-5', { ANTHROPIC_API_KEY: 'k', ANTHROPIC_BASE_URL: 'https://proxy.example.org/' });
+    const fetch = replayFetch([
+      { url: 'https://proxy.example.org/v1/messages', response: fixture('anthropic.401-invalid-key.json') },
+    ]);
+    const r = rungById('llm/anthropic/claude-haiku-5-5', {
+      ANTHROPIC_API_KEY: 'k',
+      ANTHROPIC_BASE_URL: 'https://proxy.example.org/',
+    });
     expect((await caught(r.stream(apollo, testContext({ fetch })))).code).toBe('auth');
     expect(JSON.parse(String(fetch.calls[0]?.body)).stream).toBe(true);
   });
@@ -356,14 +385,16 @@ describe('requests on the wire and real error responses', () => {
     expect((await caught(r.stream(apollo, testContext({ fetch })))).code).toBe('auth');
   });
 
-  const vertexEnv = { GOOGLE_CLOUD_PROJECT: 'redacted-project', GOOGLE_ACCESS_TOKEN: 'token-1' };
-  const project = 'https://us-central1-aiplatform.googleapis.com/v1/projects/redacted-project/locations/us-central1';
-  const globalProject = 'https://aiplatform.googleapis.com/v1/projects/redacted-project/locations/global';
-
   it('Vertex Gemini: regional URL, bearer token, real billing 403 becomes auth with a billing hint', async () => {
     const fetch = replayFetch([
-      { url: `${project}/publishers/google/models/gemini-3.8-flash:generateContent`, response: fixture('vertex-gemini.chat.403.json') },
-      { url: `${project}/publishers/google/models/gemini-3.8-flash:streamGenerateContent?alt=sse`, response: fixture('vertex-gemini.stream.403.json') },
+      {
+        url: `${project}/publishers/google/models/gemini-3.8-flash:generateContent`,
+        response: fixture('vertex-gemini.chat.403.json'),
+      },
+      {
+        url: `${project}/publishers/google/models/gemini-3.8-flash:streamGenerateContent?alt=sse`,
+        response: fixture('vertex-gemini.stream.403.json'),
+      },
     ]);
     const r = rungById('llm/vertex-gemini/gemini-3.8-flash', vertexEnv);
     const ctx = testContext({ env: vertexEnv, fetch });
@@ -377,8 +408,14 @@ describe('requests on the wire and real error responses', () => {
 
   it('Vertex Claude: global endpoint, rawPredict and streamRawPredict, including the array-wrapped stream error', async () => {
     const fetch = replayFetch([
-      { url: `${globalProject}/publishers/anthropic/models/claude-haiku-5-5:rawPredict`, response: fixture('vertex-anthropic.chat.403.json') },
-      { url: `${globalProject}/publishers/anthropic/models/claude-haiku-5-5:streamRawPredict`, response: fixture('vertex-anthropic.stream.403.json') },
+      {
+        url: `${globalProject}/publishers/anthropic/models/claude-haiku-5-5:rawPredict`,
+        response: fixture('vertex-anthropic.chat.403.json'),
+      },
+      {
+        url: `${globalProject}/publishers/anthropic/models/claude-haiku-5-5:streamRawPredict`,
+        response: fixture('vertex-anthropic.stream.403.json'),
+      },
     ]);
     const r = rungById('llm/vertex-anthropic/claude-haiku-5-5', vertexEnv);
     const ctx = testContext({ env: vertexEnv, fetch });
@@ -413,7 +450,10 @@ describe('Vertex token sources', () => {
     const env = { GOOGLE_CLOUD_PROJECT: 'redacted-project', VID2CONTEXT_GCE_METADATA: '1' };
     const fetch = replayFetch([
       { url: METADATA_TOKEN_URL, response: fixture('gce-metadata.token.json') },
-      { url: `${project}/publishers/google/models/gemini-3.8-flash:generateContent`, response: fixture('vertex-gemini.chat.403.json') },
+      {
+        url: `${project}/publishers/google/models/gemini-3.8-flash:generateContent`,
+        response: fixture('vertex-gemini.chat.403.json'),
+      },
     ]);
     await caught(rungById('llm/vertex-gemini/gemini-3.8-flash', env).chat(apollo, testContext({ env, fetch })));
     expect(fetch.calls[1]?.headers.authorization).toBe('Bearer redacted-token');
@@ -422,7 +462,9 @@ describe('Vertex token sources', () => {
   it('refuses the metadata server outside Node and never calls it', async () => {
     const env = { GOOGLE_CLOUD_PROJECT: 'redacted-project', VID2CONTEXT_GCE_METADATA: '1' };
     const fetch = replayFetch([]);
-    const err = await caught(rungById('llm/vertex-gemini/gemini-3.8-flash', env).chat(apollo, testContext({ env, fetch, runtime: 'workers' })));
+    const err = await caught(
+      rungById('llm/vertex-gemini/gemini-3.8-flash', env).chat(apollo, testContext({ env, fetch, runtime: 'workers' })),
+    );
     expect(err.code).toBe('auth');
     expect(err.hint).toContain('GOOGLE_ACCESS_TOKEN');
     expect(fetch.calls).toHaveLength(0);

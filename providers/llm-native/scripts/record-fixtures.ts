@@ -16,7 +16,7 @@
  */
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { type ChatRequest, createContext, type Ctx, type Env, type StreamingLlmRung } from '@vid2context/core';
+import { type ChatRequest, type Ctx, createContext, type Env, type StreamingLlmRung } from '@vid2context/core';
 import { nativeRungs } from '../src/index.ts';
 
 const here = import.meta.dirname;
@@ -72,24 +72,45 @@ function rungFor(e: Env, id: string): StreamingLlmRung {
   return r;
 }
 
-const transcriptCtx = JSON.parse(readFileSync(join(here, '..', '..', '..', 'tests', 'fixtures', 'contexts', 'youtube-cCPsdFdlshc.json'), 'utf8')) as {
+const transcriptCtx = JSON.parse(
+  readFileSync(join(here, '..', '..', '..', 'tests', 'fixtures', 'contexts', 'youtube-cCPsdFdlshc.json'), 'utf8'),
+) as {
   metadata: { title: string };
   transcript: { segments: { startSec: number; text: string }[] };
 };
 const transcript = transcriptCtx.transcript.segments.map((s) => `[${Math.floor(s.startSec)}s] ${s.text}`).join('\n');
 const system = `You answer questions about one video transcript. Cite timestamps like [123s].\n\nVideo: ${transcriptCtx.metadata.title}\n\nTranscript:\n${transcript}`;
 
-const apollo: ChatRequest = { messages: [{ role: 'user', content: 'Which year did Apollo 11 land on the moon? One sentence.' }], maxTokens: 2000 };
+const apollo: ChatRequest = {
+  messages: [{ role: 'user', content: 'Which year did Apollo 11 land on the moon? One sentence.' }],
+  maxTokens: 2000,
+};
 const apolloJson: ChatRequest = {
   messages: [{ role: 'user', content: 'Which year did Apollo 11 land on the moon? Use keys year and mission.' }],
   maxTokens: 2000,
   json: {
     name: 'answer',
-    schema: { type: 'object', properties: { year: { type: 'integer' }, mission: { type: 'string' } }, required: ['year', 'mission'] },
+    schema: {
+      type: 'object',
+      properties: { year: { type: 'integer' }, mission: { type: 'string' } },
+      required: ['year', 'mission'],
+    },
   },
 };
-const q1: ChatRequest = { messages: [{ role: 'system', content: system }, { role: 'user', content: 'Which model years does the video recommend avoiding?' }], maxTokens: 4000 };
-const q2: ChatRequest = { messages: [{ role: 'system', content: system }, { role: 'user', content: 'What does the video say about the interior?' }], maxTokens: 4000 };
+const q1: ChatRequest = {
+  messages: [
+    { role: 'system', content: system },
+    { role: 'user', content: 'Which model years does the video recommend avoiding?' },
+  ],
+  maxTokens: 4000,
+};
+const q2: ChatRequest = {
+  messages: [
+    { role: 'system', content: system },
+    { role: 'user', content: 'What does the video say about the interior?' },
+  ],
+  maxTokens: 4000,
+};
 
 async function run(name: string, fn: () => Promise<unknown>): Promise<void> {
   current = name;
