@@ -23,6 +23,8 @@ export interface Exchange {
   contentType?: string;
   retryAfter?: string;
   body: string;
+  /** Set when the request threw instead of answering (timeouts): status is 0 and body empty. */
+  error?: { name: string; message: string };
 }
 
 export interface Recording {
@@ -83,6 +85,7 @@ export function replayRecording(rec: Recording, start = Date.UTC(2026, 10, 14, 1
           );
         }
         vi.setSystemTime(start + ex.atMs);
+        if (ex.error) throw new DOMException(ex.error.message, ex.error.name);
         return {
           status: ex.status,
           headers: {

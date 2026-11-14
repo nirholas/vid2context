@@ -11,14 +11,14 @@ export const QUESTION = 'Which G-Wagon should I buy: model, year range and milea
 export const REPAIR_SCHEMA: JsonSchema = {
   type: 'object',
   properties: {
-    bestYears: { type: 'array', maxItems: 2, items: { type: 'string', pattern: '^\\d{4}-\\d{4}$' } },
+    bestYears: { type: 'array', maxItems: 1, items: { type: 'string', pattern: '^\\d{4}-\\d{4}$' } },
     problems: {
       type: 'array',
       minItems: 3,
       maxItems: 3,
       items: {
         type: 'object',
-        properties: { name: { type: 'string', maxLength: 10 }, fixCost: { type: 'string', pattern: '^\\$' } },
+        properties: { name: { type: 'string', maxLength: 10 }, fixCost: { type: 'string', pattern: '^\\$[0-9]' } },
         required: ['name', 'fixCost'],
         additionalProperties: false,
       },

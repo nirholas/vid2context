@@ -56,10 +56,12 @@ describe('insightsRoutes', () => {
   it('answers POST /extract synchronously without a queue, with verified citations', async () => {
     const storage = await storageWith([0]);
     const fetch = replayRecording(loadRecording('extract-repair'));
-    const app = mount(
-      insightsRoutes({ registry, makeCtx: () => testContext({ fetch }), storage: async () => storage }),
-    );
-    const res = await post(app, '/extract', { inputs: [url(0)], schema: repair.options.schema, question: repair.options.question });
+    const app = mount(insightsRoutes({ registry, makeCtx: () => testContext({ fetch }), storage: async () => storage }));
+    const res = await post(app, '/extract', {
+      inputs: [url(0)],
+      schema: repair.options.schema,
+      question: repair.options.question,
+    });
     expect(res.status).toBe(200);
     const body = (await res.json()) as ExtractionResult;
     expect(body.citations.length).toBeGreaterThan(0);
@@ -83,7 +85,7 @@ describe('insightsRoutes', () => {
   });
 
   it('answers 202 Job through a @vid2context/jobs queue and registers the brief and extract kinds', async () => {
-    const queue = createJobQueue({ registry, ctx: testContext(), storage: new MemoryStorage(), start: false });
+    const queue = createJobQueue({ registry, ctx: testContext(), storage: new MemoryStorage(), autoStart: false });
     const app = mount(insightsRoutes({ registry, makeCtx: () => testContext(), queue }));
     expect(queue.kinds()).toEqual(expect.arrayContaining(['brief', 'extract']));
     const res = await post(app, '/briefs', { inputs: [url(0)], question: 'Which year?' });

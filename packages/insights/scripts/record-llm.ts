@@ -39,8 +39,25 @@ const recordingFetch: typeof fetch = async (input, init) => {
   } catch {
     model = undefined;
   }
-  const res = await globalThis.fetch(input, init);
-  const body = await res.text();
+  let res: Response;
+  let body: string;
+  try {
+    res = await globalThis.fetch(input, init);
+    body = await res.text();
+  } catch (err) {
+    const e = err as Error;
+    exchanges.push({
+      atMs,
+      url,
+      method: (init?.method ?? 'GET').toUpperCase(),
+      ...(model ? { model } : {}),
+      status: 0,
+      body: '',
+      error: { name: e.name, message: e.message },
+    });
+    console.error(`[record] ${e.name} ${model ?? ''} ${url} after ${Math.round((Date.now() - started - atMs) / 1000)} s`);
+    throw err;
+  }
   exchanges.push({
     atMs,
     url,
