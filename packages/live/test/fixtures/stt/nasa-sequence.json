@@ -1,0 +1,21 @@
+[
+  {
+    "status": 429,
+    "headers": {
+      "content-type": "application/json; charset=utf-8",
+      "retry-after": "46",
+      "x-ratelimit-limit-minute": "2",
+      "x-ratelimit-remaining-minute": "0"
+    },
+    "body": "{\n  \"message\":\"API rate limit exceeded\",\n  \"request_id\":\"0dac8c676f346a3ae2a342150b4e3f13\"\n}"
+  },
+  {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json",
+      "x-ratelimit-limit-minute": "2",
+      "x-ratelimit-remaining-minute": "1"
+    },
+    "body": "{\"task\":\"transcribe\",\"success\":true,\"language\":\"en\",\"duration\":15.0,\"text\":\" Thank you.\",\"words\":[{\"word\":\"Thank\",\"start\":0.0,\"end\":0.32},{\"word\":\"you.\",\"start\":0.32,\"end\":0.32}],\"segments\":[{\"id\":1,\"seek\":0,\"start\":0.0,\"end\":0.32,\"text\":\" Thank you.\",\"tokens\":[50365,1044,291,13,51864],\"temperature\":0.0,\"avg_logprob\":-0.9479167,\"compression_ratio\":0.5555556,\"no_speech_prob\":0.0}],\"diarization\":[],\"usage\":{\"type\":\"duration\",\"seconds\":15.0}}"
+  }
+]
