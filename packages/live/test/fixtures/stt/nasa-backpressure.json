@@ -1,0 +1,20 @@
+[
+  {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json",
+      "x-ratelimit-limit-minute": "2",
+      "x-ratelimit-remaining-minute": "0"
+    },
+    "body": "{\"task\":\"transcribe\",\"success\":true,\"language\":\"en\",\"duration\":5.0,\"text\":\" ギギギギギギギ\",\"words\":[{\"word\":\"ギギギギギギギ\",\"start\":3.58,\"end\":4.98}],\"segments\":[{\"id\":1,\"seek\":0,\"start\":3.58,\"end\":4.98,\"text\":\" ギギギギギギギ\",\"tokens\":[50365,220,824,106,824,106,824,106,824,106,824,106,824,106,824,106],\"temperature\":0.0,\"avg_logprob\":-0.9705882,\"compression_ratio\":1.5,\"no_speech_prob\":0.0}],\"diarization\":[],\"usage\":{\"type\":\"duration\",\"seconds\":5.0}}"
+  },
+  {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json",
+      "x-ratelimit-limit-minute": "2",
+      "x-ratelimit-remaining-minute": "1"
+    },
+    "body": "{\"task\":\"transcribe\",\"success\":true,\"language\":\"en\",\"duration\":5.0,\"text\":\" ギギギギギギギ\",\"words\":[{\"word\":\"ギギギギギギギ\",\"start\":3.58,\"end\":4.98}],\"segments\":[{\"id\":1,\"seek\":0,\"start\":3.58,\"end\":4.98,\"text\":\" ギギギギギギギ\",\"tokens\":[50365,220,824,106,824,106,824,106,824,106,824,106,824,106,824,106],\"temperature\":0.0,\"avg_logprob\":-0.9944853,\"compression_ratio\":1.5,\"no_speech_prob\":0.0}],\"diarization\":[],\"usage\":{\"type\":\"duration\",\"seconds\":5.0}}"
+  }
+]
