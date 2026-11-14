@@ -140,7 +140,7 @@ describe('evaluation: keyword vs vector vs hybrid', () => {
       const missed = queries.filter((q) => (per.get(q.id) as Scores).hit5 === 0).map((q) => q.id);
       return `${mode} misses (no relevant hit in top 5): ${missed.join(', ') || 'none'}`;
     });
-    console.log(`\n${rows.join('\n')}\n\n${misses.join('\n')}\n`);
+    process.stderr.write(`\n${rows.join('\n')}\n\n${misses.join('\n')}\n\n`);
 
     const kw = overall.get('keyword') as Scores;
     const vec = overall.get('vector') as Scores;

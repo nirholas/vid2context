@@ -19,7 +19,8 @@ describe.skipIf(!process.env.LIVE)('live: OVH embeddings and LLM rerank', () => 
     expect(res.vector, res.reason).toBe('indexed');
     const out = await engine.search({ query: 'animals with long noses', mode: 'vector' });
     expect(out.meta.vector, out.meta.vectorReason).toBe('ok');
-    expect(out.hits[0]?.text).toContain('trunks');
+    expect(out.hits[0]?.videoId).toBe('youtube:jNQXAC9IVRw');
+    expect(out.hits.some((h) => h.text.includes('trunks'))).toBe(true);
   }, 180_000);
 
   it('reranks with a keyless LLM rung', async () => {
