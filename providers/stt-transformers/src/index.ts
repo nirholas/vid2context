@@ -9,6 +9,7 @@
  * the registry never pulls in onnxruntime when the rung is disabled.
  */
 import {
+  type AudioInput,
   type Ctx,
   defineProvider,
   type Env,
@@ -19,7 +20,6 @@ import {
   type SttResult,
   type SttRung,
   Vid2ContextError,
-  type AudioInput,
 } from '@vid2context/core';
 
 /** Repo on the Hugging Face Hub that publishes the Whisper ONNX exports. */
@@ -51,7 +51,15 @@ export interface PipelineOutput {
 }
 
 /** A Transformers.js download progress event, as passed to `progress_callback`. */
-export type ProgressEvent = { status: string; name?: string; file?: string; progress?: number; loaded?: number; total?: number; [k: string]: unknown };
+export type ProgressEvent = {
+  status: string;
+  name?: string;
+  file?: string;
+  progress?: number;
+  loaded?: number;
+  total?: number;
+  [k: string]: unknown;
+};
 
 const listeners = new Set<(e: ProgressEvent) => void>();
 
@@ -70,7 +78,15 @@ export function resolveModelId(name: string): string {
 export function modelsFromEnv(env: Env): string[] {
   const raw = env.TRANSFORMERS_STT_MODEL?.trim();
   if (!raw) return [];
-  return [...new Set(raw.split(',').map((s) => s.trim()).filter(Boolean).map(resolveModelId))];
+  return [
+    ...new Set(
+      raw
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean)
+        .map(resolveModelId),
+    ),
+  ];
 }
 
 const isEnglishOnly = (model: string) => /\.en$/i.test(model);
@@ -103,16 +119,47 @@ export function chooseDevice(runtime: Runtime, override: string | undefined, web
   return 'cpu';
 }
 
+export type Dtype = string | { encoder_model: string; decoder_model_merged: string };
+const DTYPES = ['fp32', 'fp16', 'q8', 'int8', 'uint8', 'q4', 'bnb4', 'q4f16'];
+
 /**
- * Weight precision per device: 8-bit quantized weights on CPU and WASM (small
- * and fast), full-precision encoder with a 4-bit decoder on GPUs (the encoder
- * is sensitive to quantization; the decoder runs once per token).
+ * Weight precision for the encoder and decoder. TRANSFORMERS_DTYPE overrides:
+ * one value for both ('fp32') or 'encoder=<dtype>,decoder=<dtype>'.
+ *
+ * Defaults, chosen from runs on the Apollo clip: the 8-bit decoder of the
+ * small models falls into repetition loops ("4-4-4-..."), so on CPU and WASM
+ * tiny, base and small use an 8-bit encoder with a full-precision decoder.
+ * Large and turbo models tolerate a 4-bit decoder, which keeps their download
+ * reasonable. GPUs get a full-precision encoder (fp16 for the large ones) and
+ * a 4-bit decoder.
  */
-export function chooseDtype(device: TransformersDevice): string | Record<string, string> {
+export function chooseDtype(device: TransformersDevice, model: string, override?: string): Dtype {
+  const want = override?.trim();
+  if (want) return parseDtype(want);
+  const large = /large|turbo|medium/i.test(model);
   if (device === 'webgpu' || device === 'cuda' || device === 'dml') {
-    return { encoder_model: 'fp32', decoder_model_merged: 'q4' };
+    return { encoder_model: large ? 'fp16' : 'fp32', decoder_model_merged: 'q4' };
   }
-  return 'q8';
+  return { encoder_model: 'q8', decoder_model_merged: large ? 'q4' : 'fp32' };
+}
+
+function parseDtype(value: string): Dtype {
+  const check = (d: string) => {
+    if (!DTYPES.includes(d)) {
+      throw new Vid2ContextError('bad-request', `TRANSFORMERS_DTYPE: unknown dtype ${d}`, {
+        hint: `Use one of: ${DTYPES.join(', ')}.`,
+      });
+    }
+    return d;
+  };
+  if (!value.includes('=')) return check(value);
+  const parts = Object.fromEntries(value.split(',').map((p) => p.split('=').map((s) => s.trim()) as [string, string]));
+  if (!parts.encoder || !parts.decoder) {
+    throw new Vid2ContextError('bad-request', `TRANSFORMERS_DTYPE: expected encoder=<dtype>,decoder=<dtype>, got ${value}`, {
+      hint: 'For example TRANSFORMERS_DTYPE=encoder=q8,decoder=fp32, or a single value such as fp32.',
+    });
+  }
+  return { encoder_model: check(parts.encoder), decoder_model_merged: check(parts.decoder) };
 }
 
 /**
@@ -188,7 +235,7 @@ function emit(ctx: Ctx, model: string, e: ProgressEvent, state: { lastPct: numbe
 }
 
 async function loadPipeline(hooks: RuntimeHooks, model: string, device: TransformersDevice, ctx: Ctx): Promise<AsrPipeline> {
-  const dtype = chooseDtype(device);
+  const dtype = chooseDtype(device, model, ctx.env.TRANSFORMERS_DTYPE);
   const key = `${model}|${device}|${JSON.stringify(dtype)}`;
   let p = pipelines.get(key);
   if (!p) {
@@ -220,10 +267,14 @@ async function loadPipeline(hooks: RuntimeHooks, model: string, device: Transfor
     return await p;
   } catch (err) {
     if (err instanceof Vid2ContextError) throw err;
-    throw new Vid2ContextError('upstream', `transformers: could not load ${model} on ${device}: ${String((err as Error)?.message ?? err)}`, {
-      cause: err,
-      hint: 'The first run downloads the model from huggingface.co. Check the network, the model id in TRANSFORMERS_STT_MODEL, or set TRANSFORMERS_DEVICE=wasm (browser) or cpu (Node).',
-    });
+    throw new Vid2ContextError(
+      'upstream',
+      `transformers: could not load ${model} on ${device}: ${String((err as Error)?.message ?? err)}`,
+      {
+        cause: err,
+        hint: 'The first run downloads the model from huggingface.co. Check the network, the model id in TRANSFORMERS_STT_MODEL, or set TRANSFORMERS_DEVICE=wasm (browser) or cpu (Node).',
+      },
+    );
   }
 }
 
@@ -271,8 +322,12 @@ export async function transcribeSamples(
   samples: Float32Array,
   opts: TransformersSttOptions,
   ctx: Ctx,
-): Promise<SttResult & { device: TransformersDevice; raw: PipelineOutput }> {
-  const device = chooseDevice(hooks.runtime, ctx.env.TRANSFORMERS_DEVICE, hooks.runtime === 'browser' ? await hooks.webgpuWorks() : false);
+): Promise<SttResult & { device: TransformersDevice; dtype: Dtype; raw: PipelineOutput }> {
+  const device = chooseDevice(
+    hooks.runtime,
+    ctx.env.TRANSFORMERS_DEVICE,
+    hooks.runtime === 'browser' ? await hooks.webgpuWorks() : false,
+  );
   const pipe = await loadPipeline(hooks, model, device, ctx);
   const tf = await (transformersModule as Promise<Transformers>);
   const durationSec = samples.length / SAMPLE_RATE;
@@ -297,6 +352,7 @@ export async function transcribeSamples(
     segments: mapChunks(raw, durationSec),
     model,
     device,
+    dtype: chooseDtype(device, model, ctx.env.TRANSFORMERS_DTYPE),
     raw,
   };
 }

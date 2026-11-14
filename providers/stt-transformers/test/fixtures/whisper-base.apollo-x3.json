@@ -2,13 +2,17 @@
   "recordedAt": "2026-11-14",
   "model": "onnx-community/whisper-base",
   "device": "cpu",
+  "dtype": {
+    "encoder_model": "q8",
+    "decoder_model_merged": "fp32"
+  },
   "runtime": "node",
   "input": "apollo-x3",
   "durationSec": 72.4041875,
   "detectedLanguage": "en",
-  "ms": 15026,
+  "ms": 4330,
   "output": {
-    "text": " have no step off the land now. It's one small step for man. One time lead for man. now go step of the land. And a step off the land now. That's one small step to man. One by three to man. 1-4-4-3-4-3-4-3-4-3-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4- It's one small spare for man, one by a wheel for man, so...",
+    "text": " have no step off the land now. It's one small step for man. One time lead for man. Now go end of the land. And a step off the land now. That's one small spare for man. One tire free for man 1 by 3 for man and a step for the land now That's one small spare for man. One by a wheel for man.",
     "chunks": [
       {
         "timestamp": [
@@ -27,37 +31,51 @@
       {
         "timestamp": [
           18,
-          23
-        ],
-        "text": " One time lead for man."
-      },
-      {
-        "timestamp": [
-          23,
           27
         ],
-        "text": " now go step of the land."
+        "text": " One time lead for man. Now go end of the land."
       },
       {
         "timestamp": [
           27,
-          30
+          32
         ],
         "text": " And a step off the land now."
       },
       {
         "timestamp": [
-          30,
-          37
+          32,
+          42
         ],
-        "text": " That's one small step to man."
+        "text": " That's one small spare for man."
       },
       {
         "timestamp": [
-          37,
-          72.16
+          42,
+          47
         ],
-        "text": " One by three to man. 1-4-4-3-4-3-4-3-4-3-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4-4- It's one small spare for man, one by a wheel for man, so..."
+        "text": " One tire free for man 1 by 3 for man"
+      },
+      {
+        "timestamp": [
+          52,
+          59
+        ],
+        "text": " and a step for the land now"
+      },
+      {
+        "timestamp": [
+          59,
+          67
+        ],
+        "text": " That's one small spare for man."
+      },
+      {
+        "timestamp": [
+          67,
+          71
+        ],
+        "text": " One by a wheel for man."
       }
     ]
   }

@@ -4,7 +4,9 @@
  * <VID2CONTEXT_HOME or ./.vid2context>/models/transformers/.
  */
 import { spawn } from 'node:child_process';
-import { resolve } from 'node:path';
+import { mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join, resolve } from 'node:path';
 import { type AudioInput, type Ctx, errorFromResponse, Vid2ContextError } from '@vid2context/core';
 import { createTransformersProvider, type RuntimeHooks, SAMPLE_RATE } from './index.ts';
 
@@ -23,13 +25,41 @@ async function audioBytes(audio: AudioInput, ctx: Ctx): Promise<Uint8Array> {
   return new Uint8Array(await res.arrayBuffer());
 }
 
-/** Decode any container ffmpeg understands into 16 kHz mono float32 samples. */
+/**
+ * Decode any container ffmpeg understands into 16 kHz mono float32 samples.
+ * The input goes through a temp file, not stdin: MP4 and M4A files often keep
+ * their index (moov atom) at the end, which ffmpeg cannot seek to in a pipe.
+ */
 export async function decodeWithFfmpeg(audio: AudioInput, ctx: Ctx): Promise<Float32Array> {
-  const input = await audioBytes(audio, ctx);
+  const dir = await mkdtemp(join(tmpdir(), 'v2c-transformers-'));
+  try {
+    const file = join(dir, 'input');
+    await writeFile(file, await audioBytes(audio, ctx));
+    return await runFfmpeg(file, ctx);
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+}
+
+function runFfmpeg(file: string, ctx: Ctx): Promise<Float32Array> {
   const bin = ctx.env.FFMPEG_PATH?.trim() || 'ffmpeg';
-  const args = ['-hide_banner', '-loglevel', 'error', '-i', 'pipe:0', '-vn', '-ac', '1', '-ar', String(SAMPLE_RATE), '-f', 'f32le', 'pipe:1'];
-  return await new Promise<Float32Array>((ok, fail) => {
-    const child = spawn(bin, args, { stdio: ['pipe', 'pipe', 'pipe'], signal: ctx.signal });
+  const args = [
+    '-hide_banner',
+    '-loglevel',
+    'error',
+    '-i',
+    file,
+    '-vn',
+    '-ac',
+    '1',
+    '-ar',
+    String(SAMPLE_RATE),
+    '-f',
+    'f32le',
+    'pipe:1',
+  ];
+  return new Promise<Float32Array>((ok, fail) => {
+    const child = spawn(bin, args, { stdio: ['ignore', 'pipe', 'pipe'], signal: ctx.signal });
     const out: Buffer[] = [];
     let err = '';
     child.stdout.on('data', (b: Buffer) => out.push(b));
@@ -60,10 +90,6 @@ export async function decodeWithFfmpeg(audio: AudioInput, ctx: Ctx): Promise<Flo
       copy.set(buf.subarray(0, copy.byteLength));
       ok(new Float32Array(copy.buffer));
     });
-    child.stdin.on('error', () => {
-      // ffmpeg may close stdin early on bad input; the close handler reports it.
-    });
-    child.stdin.end(input);
   });
 }
 

@@ -43,6 +43,7 @@ for (const [name, data, mimeType] of inputs) {
     recordedAt: new Date().toISOString().slice(0, 10),
     model,
     device: result.device,
+    dtype: result.dtype,
     runtime: 'node',
     input: name,
     durationSec: samples.length / 16000,
