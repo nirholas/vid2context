@@ -50,7 +50,8 @@ export function RecentList({
         </h2>
         <div className="ml-auto flex items-center gap-2">
           {confirming ? (
-            <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Confirm clearing history">
+            <fieldset className="m-0 flex min-w-0 flex-wrap items-center gap-2 border-0 p-0">
+              <legend className="sr-only">Confirm clearing history</legend>
               <span className="text-sm text-fg">
                 Delete all {total} saved result{total === 1 ? '' : 's'} from this browser?
               </span>
@@ -73,7 +74,7 @@ export function RecentList({
               <Button variant="ghost" onClick={() => setConfirming(false)} autoFocus>
                 Cancel
               </Button>
-            </div>
+            </fieldset>
           ) : (
             <Button variant="ghost" className="px-2 py-1" onClick={() => setConfirming(true)}>
               <Trash className="size-4" aria-hidden /> Clear history

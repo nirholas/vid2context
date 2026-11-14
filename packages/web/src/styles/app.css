@@ -89,12 +89,16 @@ mark[data-current="true"] {
   background-image: var(--v2c-gradient);
 }
 
+/* Utility classes set transitions with higher specificity than `*`, so reduced motion must use !important to win. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
+    /* biome-ignore lint/complexity/noImportantStyles: must override utility classes for users who ask for less motion */
     animation-duration: 0.01ms !important;
+    /* biome-ignore lint/complexity/noImportantStyles: as above */
     transition-duration: 0.01ms !important;
+    /* biome-ignore lint/complexity/noImportantStyles: as above */
     scroll-behavior: auto !important;
   }
 }

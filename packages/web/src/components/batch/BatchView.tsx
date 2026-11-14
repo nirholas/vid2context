@@ -42,6 +42,7 @@ export function BatchView({ params }: { params: RunParams }) {
   const abort = useRef<AbortController | null>(null);
   const [reload, setReload] = useState(0);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: `reload` re-runs the request when the user presses "Try again"
   useEffect(() => {
     const ac = new AbortController();
     setItems(undefined);

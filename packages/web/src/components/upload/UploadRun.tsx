@@ -140,7 +140,13 @@ export function UploadRun({
               {file.name} ({formatBytes(file.size)})
             </p>
           </div>
-          <Button variant="ghost" onClick={() => (abort.current?.abort(), onCancel())}>
+          <Button
+            variant="ghost"
+            onClick={() => {
+              abort.current?.abort();
+              onCancel();
+            }}
+          >
             {error ? 'Choose another file' : 'Cancel'}
           </Button>
         </div>

@@ -4,7 +4,7 @@
  */
 import { type Chapter, formatTimestamp, type Segment, timestampUrl, type VideoContext } from '@vid2context/core';
 import { ChevronDown, ChevronUp, Search } from 'lucide-react';
-import { Fragment, type ReactNode, useDeferredValue, useEffect, useId, useMemo, useRef, useState } from 'react';
+import { type ReactNode, useDeferredValue, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Button } from '../ui.tsx';
 
 function escapeRegExp(s: string): string {
@@ -70,7 +70,6 @@ export function TranscriptTab({ context }: { context: VideoContext }) {
   const searchId = useId();
   const currentKey = keys.length ? keys[Math.min(cursor, keys.length - 1)] : undefined;
 
-  useEffect(() => setCursor(0), [deferred]);
   useEffect(() => {
     if (!currentKey) return;
     listRef.current?.querySelector(`[data-match="${currentKey}"]`)?.scrollIntoView?.({ block: 'center' });
@@ -94,7 +93,10 @@ export function TranscriptTab({ context }: { context: VideoContext }) {
             id={searchId}
             type="search"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setCursor(0);
+            }}
             onKeyDown={(e) => {
               if (e.key === 'Enter' && keys.length) {
                 e.preventDefault();
@@ -173,7 +175,7 @@ export function TranscriptTab({ context }: { context: VideoContext }) {
               )}
               <span className="text-fg">
                 {s.speaker && <span className="mr-1 font-semibold">{s.speaker}:</span>}
-                <Fragment>{highlight(s.text, matches.get(i), currentKey, i)}</Fragment>
+                {highlight(s.text, matches.get(i), currentKey, i)}
               </span>
             </li>
           );

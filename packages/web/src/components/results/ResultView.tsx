@@ -6,7 +6,7 @@
  */
 import { agentPrompt, type Bundle, estimateTokens, type VideoContext } from '@vid2context/core';
 import { Bot, Clock, FileArchive, MessageSquare, RefreshCw } from 'lucide-react';
-import { type ReactNode, useEffect, useMemo, useState } from 'react';
+import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { resultBundle, type ViewFile, viewFiles } from '../../lib/bundle.ts';
 import { saveBlob, streamToBlob } from '../../lib/download.ts';
 import { timeAgo } from '../../lib/format.ts';
@@ -49,6 +49,9 @@ export function ResultView({ context, params, cachedAt, onRefresh, onBundle, not
   const [tab, setTab] = useState('transcript');
   const [zipping, setZipping] = useState(false);
   const timestamps = params?.timestamps ?? false;
+  // The latest callback, without rebuilding the bundle when its identity changes.
+  const onBundleRef = useRef(onBundle);
+  onBundleRef.current = onBundle;
 
   useEffect(() => {
     let live = true;
@@ -57,15 +60,13 @@ export function ResultView({ context, params, cachedAt, onRefresh, onBundle, not
       (b) => {
         if (!live) return;
         setBundle(b);
-        onBundle?.(b);
+        onBundleRef.current?.(b);
       },
       (err) => live && setBundleError(err),
     );
     return () => {
       live = false;
     };
-    // onBundle is a callback from the parent; rebuilding when it changes identity would loop.
-    // biome-ignore lint/correctness/useExhaustiveDependencies: see above
   }, [context, timestamps, createdAt]);
 
   const files: ViewFile[] = useMemo(() => (bundle ? viewFiles(bundle) : []), [bundle]);

@@ -25,9 +25,10 @@ describe('FileViewer', () => {
   it('shows the file in a labeled, keyboard-scrollable monospace region', async () => {
     const f = await file('transcript.vtt');
     render(createElement(FileViewer, { file: f }));
-    const pre = screen.getByLabelText('Contents of transcript.vtt');
+    const region = screen.getByRole('region', { name: 'Contents of transcript.vtt' });
+    expect(region.getAttribute('tabindex')).toBe('0');
+    const pre = screen.getByTestId('file-content');
     expect(pre.tagName).toBe('PRE');
-    expect(pre.getAttribute('tabindex')).toBe('0');
     expect(pre.textContent?.startsWith('WEBVTT')).toBe(true);
     expect(pre.textContent).toBe(fileText(f));
   });

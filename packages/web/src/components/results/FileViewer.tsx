@@ -35,16 +35,19 @@ export function FileViewer({ file }: { file: ViewFile }) {
           </Button>
         </div>
       </div>
-      <pre
-        // A scrollable region must be reachable by keyboard.
-        // biome-ignore lint/a11y/noNoninteractiveTabindex: scrollable content needs focus for keyboard scrolling
+      <section
+        // biome-ignore lint/a11y/noNoninteractiveTabindex: a scrollable region must be reachable by keyboard
         tabIndex={0}
         aria-label={`Contents of ${file.path}`}
-        className="max-h-[34rem] min-h-64 overflow-auto whitespace-pre-wrap break-words p-4 font-mono text-[0.8125rem] leading-relaxed text-fg"
-        data-testid="file-content"
+        className="max-h-[34rem] min-h-64 overflow-auto"
       >
-        {shown}
-      </pre>
+        <pre
+          className="whitespace-pre-wrap break-words p-4 font-mono text-[0.8125rem] leading-relaxed text-fg"
+          data-testid="file-content"
+        >
+          {shown}
+        </pre>
+      </section>
       {shown.length < text.length && (
         <p className="border-t border-border px-3 py-2 text-xs text-muted">
           Showing the first {VIEW_LIMIT.toLocaleString('en-US')} of {text.length.toLocaleString('en-US')} characters. Copy and
