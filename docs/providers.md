@@ -258,6 +258,25 @@ See [security/hardening.md](security/hardening.md) and [security/threat-model.md
 | `VID2CONTEXT_MAX_SEGMENTS` | most transcript segments kept from one source (default 200000) |
 | `VID2CONTEXT_FETCH_TIMEOUT_MS` | default timeout for one outbound request through `safeFetch` (default 30000) |
 
+## HTTP API server
+
+Read by `@vid2context/server` (`npm run start:server`, the Worker, containers). See [guides/http-api.md](guides/http-api.md) and [contracts/http-api.md](contracts/http-api.md). Every variable is optional.
+
+| Env var | Effect |
+|---|---|
+| `PORT`, `HOST` | Node listen address; default `8787` on `127.0.0.1` (not reachable from the network until you set `HOST=0.0.0.0`) |
+| `VID2CONTEXT_API_KEYS` | comma-separated API keys; when set, every `/api/*` route except `/health` needs `Authorization: Bearer <key>`. Plain keys have full access; hashed entries `name:scope:sha256hex` (scope `read`, `write` or `admin`) keep the key itself out of the config. Ignored in hosted mode |
+| `VID2CONTEXT_RATE_LIMIT` | requests per minute per key, or per client IP in open mode; default `120`, `0` off. Answers 429 with `Retry-After` |
+| `VID2CONTEXT_RATE_BURST` | requests allowed at once before the per-minute rate applies; default half of `VID2CONTEXT_RATE_LIMIT` |
+| `VID2CONTEXT_TRUST_PROXY` | `1` behind a reverse proxy you control: take the client IP from `X-Forwarded-For` or `X-Real-IP`. Off by default because clients can forge them |
+| `VID2CONTEXT_CORS_ORIGINS` | browser origins allowed to call `/api/*` (`https://vid2context.com`, `chrome-extension://<id>`, or `*`), comma-separated; shared with `/mcp`. Off by default |
+| `VID2CONTEXT_MAX_BODY_KB` | largest JSON body; default `1024` |
+| `VID2CONTEXT_MAX_UPLOAD_MB` | largest `POST /uploads` file. The HTTP API's default is `100` (the Workers free-plan request limit) when this is unset |
+| `VID2CONTEXT_UPLOAD_TTL_MIN` | minutes an upload stays available; default `60`. Kept in R2 (`VID2CONTEXT_R2`) when the Cloudflare storage has a bucket, else in memory |
+| `VID2CONTEXT_REQUEST_TIMEOUT_MS` | longest a request may run before it is answered with `timeout` (504); default `300000` |
+| `VID2CONTEXT_ACCESS_LOG` | `0` turns off the JSON access log line per request on stderr |
+| `VID2CONTEXT_SHUTDOWN_TIMEOUT_MS` | Node: how long in-flight requests may finish after `SIGTERM` or `SIGINT`; default `10000` |
+
 ## Exports
 
 | Env var | Used by | Notes |
