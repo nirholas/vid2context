@@ -1,4 +1,4 @@
-import { Registry, createContext, type Ctx, type Env } from '@vid2context/core';
+import { type Ctx, createContext, type Env, Registry } from '@vid2context/core';
 import { providers } from './generated/browser.ts';
 
 export { providers };

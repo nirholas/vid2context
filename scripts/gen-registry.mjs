@@ -10,7 +10,7 @@
  * provider never means editing a shared file. Output is sorted, so concurrent
  * runs always produce the same files.
  */
-import { mkdirSync, readFileSync, readdirSync, writeFileSync, existsSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 

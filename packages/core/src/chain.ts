@@ -6,7 +6,7 @@
  * rung that just failed with a quota or auth error cools down so the next
  * request does not waste an attempt on it.
  */
-import { Vid2ContextError, isInputError } from './errors.ts';
+import { isInputError, Vid2ContextError } from './errors.ts';
 import type { ChainOptions, Rung } from './provider.ts';
 import type { Attempt, Ctx, Env, Policy, Tier } from './types.ts';
 

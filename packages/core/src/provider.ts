@@ -14,6 +14,8 @@
  *   visual    contributes rungs that read frames (OCR, vision models)
  *   storage   creates a Storage backend
  */
+
+import type { Storage } from './storage.ts';
 import type {
   Attempt,
   AudioInput,
@@ -29,7 +31,6 @@ import type {
   VideoRef,
   VisualNote,
 } from './types.ts';
-import type { Storage } from './storage.ts';
 
 export type ProviderKind = 'source' | 'captions' | 'stt' | 'llm' | 'embed' | 'video' | 'visual' | 'storage';
 

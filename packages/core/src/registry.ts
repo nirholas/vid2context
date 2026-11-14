@@ -1,4 +1,5 @@
 import { isRungEnabled } from './chain.ts';
+import { Vid2ContextError } from './errors.ts';
 import type {
   CaptionsProvider,
   EmbedRung,
@@ -12,7 +13,6 @@ import type {
   VisualRung,
 } from './provider.ts';
 import type { Ctx, Env, Runtime, VideoRef } from './types.ts';
-import { Vid2ContextError } from './errors.ts';
 
 export interface ProviderHealth {
   id: string;

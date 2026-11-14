@@ -221,7 +221,9 @@ export async function getVideoContext(
     attempts.push({ id: source.id, stage: 'metadata', outcome: 'ok', ms: Date.now() - mStart });
   } catch (err) {
     if (err instanceof Vid2ContextError && (err.code === 'not-found' || err.code === 'unavailable' || err.code === 'blocked')) {
-      throw Object.assign(err, { attempts: [...attempts, { id: source.id, stage: 'metadata', outcome: 'error', ...errInfo(err) }] });
+      throw Object.assign(err, {
+        attempts: [...attempts, { id: source.id, stage: 'metadata', outcome: 'error', ...errInfo(err) }],
+      });
     }
     attempts.push({ id: source.id, stage: 'metadata', outcome: 'error', ...errInfo(err), ms: Date.now() - mStart });
     metadata = minimalMetadata(ref);
@@ -233,7 +235,13 @@ export async function getVideoContext(
   if (mode === 'video') {
     const rungs = registry.videoRungs().filter((r) => r.supports(ref));
     try {
-      const res = await runChain('video', rungs, (r) => r.understand(ref, { language: opts.language }, ctx), opts.chain ?? {}, ctx);
+      const res = await runChain(
+        'video',
+        rungs,
+        (r) => r.understand(ref, { language: opts.language }, ctx),
+        opts.chain ?? {},
+        ctx,
+      );
       attempts.push(...res.attempts);
       transcript = res.value.transcript ?? null;
       visual = res.value.visual;

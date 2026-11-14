@@ -4,6 +4,7 @@
  * Postgres). MemoryStorage below is the zero-dependency backend used when no
  * persistent backend is configured (single process, lost on restart).
  */
+import { Vid2ContextError } from './errors.ts';
 import type { VideoContext, VideoRef } from './types.ts';
 
 export interface VideoSummary {
@@ -148,14 +149,15 @@ export class MemoryStorage implements Storage {
 
   private must(id: string): Collection {
     const c = this.collections.get(id);
-    if (!c) throw new Error(`collection not found: ${id}`);
+    if (!c) {
+      throw new Vid2ContextError('not-found', `Collection not found: ${id}`, {
+        hint: 'List collections to see valid ids.',
+      });
+    }
     return c;
   }
 
-  async updateCollection(
-    id: string,
-    patch: Partial<Pick<Collection, 'name' | 'description' | 'sources'>>,
-  ): Promise<Collection> {
+  async updateCollection(id: string, patch: Partial<Pick<Collection, 'name' | 'description' | 'sources'>>): Promise<Collection> {
     const c = this.must(id);
     Object.assign(c, patch, { updatedAt: new Date().toISOString() });
     return c;
