@@ -17,6 +17,8 @@ export interface EvalArgs {
   check: boolean;
   /** Save fetched creator-caption references into datasets/refs instead of the cache. */
   record: boolean;
+  /** A dataset file to use instead of the suite's default. */
+  dataset?: string;
   help: boolean;
 }
 
@@ -30,6 +32,8 @@ Options:
   --rungs <ids>      comma-separated rung ids, services or providers to score,
                      each pinned on its own; paid rungs run only when named here
   --limit <n>        evaluate only the first n dataset items
+  --dataset <file>   use this dataset file instead of the suite's default
+                     (a name in packages/evals/datasets/ or a path)
   --out <dir>        where to write <date>-<suite>.json and .md
                      (default: packages/evals/results)
   --json             print the result JSON instead of the Markdown report
@@ -79,6 +83,9 @@ export function parseArgs(argv: readonly string[]): EvalArgs {
         args.limit = n;
         break;
       }
+      case '--dataset':
+        args.dataset = take();
+        break;
       case '--out':
         args.out = take();
         break;

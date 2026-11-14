@@ -8,18 +8,19 @@
  * product would send it. Rate limits are waited out by `transcribeLong`.
  */
 import { attemptsOf, clearCooldowns, transcribeLong } from '@vid2context/core';
-import { loadVideoDataset } from '../dataset.ts';
+import { datasetLabel, datasetPath, loadVideoDataset } from '../dataset.ts';
 import { costOf } from '../metrics/cost.ts';
 import { timingError } from '../metrics/timing.ts';
 import { characterErrorRate, wordErrorRate } from '../metrics/wer.ts';
 import { textOf } from '../refs.ts';
-import type { EvalResult, ItemResult } from '../results.ts';
-import { audioFor, creatorReference, errorInfo, limited, type SuiteContext, selectSttRungs } from './common.ts';
+import { type EvalResult, type ItemResult, REFERENCE } from '../results.ts';
+import { audioFor, creatorReference, errorInfo, limited, referenceFailure, type SuiteContext, selectSttRungs } from './common.ts';
 
 export type SuiteOutput = Pick<EvalResult, 'dataset' | 'skippedRungs' | 'notes' | 'items'> & { rungs: string[] };
 
-export async function runSttSuite(sc: SuiteContext, file = 'stt.json'): Promise<SuiteOutput> {
-  const dataset = loadVideoDataset(file);
+export async function runSttSuite(sc: SuiteContext): Promise<SuiteOutput> {
+  const path = datasetPath(sc.dataset ?? 'stt.json');
+  const dataset = loadVideoDataset(path);
   const items = limited(dataset.items, sc.limit);
   const { rungs, skipped } = selectSttRungs(sc);
   const notes: string[] = [];
@@ -34,7 +35,7 @@ export async function runSttSuite(sc: SuiteContext, file = 'stt.json'): Promise<
       videoId = ref.id;
       const reference = await creatorReference(sc, item, ref);
       if (!reference) {
-        results.push({ ...base, videoId, rung: 'reference', outcome: 'skipped', reason: 'no-creator-captions' });
+        results.push({ ...base, videoId, rung: REFERENCE, outcome: 'skipped', reason: 'no-creator-captions' });
         continue;
       }
       const got = await audioFor(sc, ref);
@@ -76,6 +77,7 @@ export async function runSttSuite(sc: SuiteContext, file = 'stt.json'): Promise<
             wallMs,
             audioSec,
             costUsd: costOf(rung.id, rung.tier, { audioSec }),
+            sample: hyp.slice(0, 300),
             attempts: res.attempts,
           });
         } catch (err) {
@@ -93,7 +95,14 @@ export async function runSttSuite(sc: SuiteContext, file = 'stt.json'): Promise<
         }
       }
     } catch (err) {
-      results.push({ ...base, videoId, rung: 'reference', outcome: 'error', ...errorInfo(err), attempts: attemptsOf(err) });
+      results.push({ ...base, videoId, rung: REFERENCE, outcome: 'error', ...referenceFailure(err), attempts: attemptsOf(err) });
+    }
+  }
+  for (const r of results) {
+    if (r.wer && r.wer.insertions > r.wer.refLength) {
+      notes.push(
+        `${r.rung} on ${r.item}: ${r.wer.insertions} insertions for ${r.wer.refLength} reference words, which usually means the model looped or hallucinated (sample: "${(r.sample ?? '').slice(0, 160)}").`,
+      );
     }
   }
   if (results.some((r) => r.reason === 'no-audio')) {
@@ -101,7 +110,7 @@ export async function runSttSuite(sc: SuiteContext, file = 'stt.json'): Promise<
   }
   const evaluated = new Set(results.filter((r) => r.outcome === 'ok').map((r) => r.item)).size;
   return {
-    dataset: { file: `packages/evals/datasets/${file}`, items: items.length, evaluated },
+    dataset: { file: datasetLabel(path), items: items.length, evaluated },
     skippedRungs: skipped,
     notes,
     items: results,

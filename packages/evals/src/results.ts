@@ -12,6 +12,9 @@ import { pooledRate } from './metrics/wer.ts';
 
 export type SuiteName = 'stt' | 'captions' | 'cleanup' | 'citations' | 'search';
 
+/** Pseudo-rung for item-level failures before any rung ran (no reference, resolve errors). Not summarized. */
+export const REFERENCE = 'reference';
+
 export interface ItemResult {
   /** Dataset item id. */
   item: string;
@@ -34,6 +37,8 @@ export interface ItemResult {
   audioSec?: number;
   /** USD; 0 for free, keyless and local rungs, null when a paid rung has no listed price. */
   costUsd?: number | null;
+  /** The first 300 characters of the hypothesis text, for diagnosing bad scores. */
+  sample?: string;
   attempts?: Attempt[];
 }
 
@@ -93,10 +98,10 @@ export interface RungSummary {
   costUsd?: number | null;
 }
 
-/** One summary row per rung, in first-seen order. */
+/** One summary row per rung, in first-seen order. Item-level failures (rung `reference`) are left out. */
 export function summarize(items: readonly ItemResult[]): RungSummary[] {
   const byRung = new Map<string, ItemResult[]>();
-  for (const it of items) byRung.set(it.rung, [...(byRung.get(it.rung) ?? []), it]);
+  for (const it of items) if (it.rung !== REFERENCE) byRung.set(it.rung, [...(byRung.get(it.rung) ?? []), it]);
   return [...byRung.entries()].map(([rung, list]) => {
     const ok = list.filter((i) => i.outcome === 'ok');
     const row: RungSummary = { rung, tier: list[0]?.tier, items: list.length, ok: ok.length };

@@ -93,6 +93,7 @@ export async function main(argv: readonly string[], deps: RunDeps): Promise<numb
     record: args.record,
     limit: args.limit,
     rungs: args.rungs,
+    dataset: args.dataset ? resolve(cwd, args.dataset) : undefined,
   };
   const outDir = args.out ? resolve(cwd, args.out) : RESULTS_DIR;
   const thresholds = args.check ? loadThresholds() : undefined;

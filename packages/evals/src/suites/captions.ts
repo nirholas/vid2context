@@ -15,13 +15,13 @@
  * when a creator track exists (see docs/evals.md).
  */
 import { cleanTranscript, type Segment, type Transcript } from '@vid2context/core';
-import { loadVideoDataset, type VideoItem } from '../dataset.ts';
+import { datasetLabel, datasetPath, loadVideoDataset, type VideoItem } from '../dataset.ts';
 import { punctuationF1 } from '../metrics/punctuation.ts';
 import { timingError } from '../metrics/timing.ts';
 import { characterErrorRate, wordErrorRate } from '../metrics/wer.ts';
 import { findRef, type RecordedRef, textOf } from '../refs.ts';
 import type { ItemResult } from '../results.ts';
-import { creatorReference, errorInfo, limited, type SuiteContext } from './common.ts';
+import { creatorReference, limited, referenceFailure, type SuiteContext } from './common.ts';
 import type { SuiteOutput } from './stt.ts';
 
 export const RAW_PRODUCER = 'youtube-auto-captions';
@@ -63,8 +63,9 @@ function asTranscript(rec: RecordedRef, url: string): Transcript {
   };
 }
 
-export async function runCaptionsSuite(sc: SuiteContext, withCleanup: boolean, file = 'captions.json'): Promise<SuiteOutput> {
-  const dataset = loadVideoDataset(file);
+export async function runCaptionsSuite(sc: SuiteContext, withCleanup: boolean): Promise<SuiteOutput> {
+  const path = datasetPath(sc.dataset ?? 'captions.json');
+  const dataset = loadVideoDataset(path);
   const items = limited(dataset.items, sc.limit);
   const results: ItemResult[] = [];
   const notes: string[] = [];
@@ -86,7 +87,14 @@ export async function runCaptionsSuite(sc: SuiteContext, withCleanup: boolean, f
         results.push(scoreCaptions(item, videoId, CLEAN_PRODUCER, creator.segments, cleaned.transcript.segments));
       }
     } catch (err) {
-      results.push({ item: item.id, videoId, language: item.language, rung: RAW_PRODUCER, outcome: 'error', ...errorInfo(err) });
+      results.push({
+        item: item.id,
+        videoId,
+        language: item.language,
+        rung: RAW_PRODUCER,
+        outcome: 'error',
+        ...referenceFailure(err),
+      });
     }
   }
   if (results.some((r) => r.reason === 'no-recorded-auto-captions')) {
@@ -96,7 +104,7 @@ export async function runCaptionsSuite(sc: SuiteContext, withCleanup: boolean, f
   }
   const evaluated = new Set(results.filter((r) => r.outcome === 'ok').map((r) => r.item)).size;
   return {
-    dataset: { file: `packages/evals/datasets/${file}`, items: items.length, evaluated },
+    dataset: { file: datasetLabel(path), items: items.length, evaluated },
     skippedRungs: [],
     notes,
     items: results,

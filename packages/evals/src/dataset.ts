@@ -5,7 +5,7 @@
  * clear message instead of a confusing score.
  */
 import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Vid2ContextError } from '@vid2context/core';
 
@@ -64,6 +64,16 @@ export interface SearchDataset {
 
 export const DATASETS_DIR = fileURLToPath(new URL('../datasets/', import.meta.url));
 
+/** A dataset file name relative to datasets/, or any path (absolute, or relative to the working directory). */
+export function datasetPath(file: string, cwd: string = process.cwd()): string {
+  return file.includes('/') ? resolve(cwd, file) : resolve(DATASETS_DIR, file);
+}
+
+/** How a dataset is named in results: a path relative to the working directory. */
+export function datasetLabel(path: string, cwd: string = process.cwd()): string {
+  return relative(cwd, path) || path;
+}
+
 function bad(file: string, msg: string): Vid2ContextError {
   return new Vid2ContextError('bad-request', `Dataset ${file}: ${msg}`, {
     hint: 'Fix the entry so it matches the shape documented in docs/evals.md ("Adding a dataset entry").',
@@ -72,7 +82,7 @@ function bad(file: string, msg: string): Vid2ContextError {
 
 function readJson(file: string, dir: string): unknown {
   try {
-    return JSON.parse(readFileSync(join(dir, file), 'utf8'));
+    return JSON.parse(readFileSync(resolve(dir, file), 'utf8'));
   } catch (err) {
     throw bad(file, `cannot be read as JSON (${(err as Error).message})`);
   }

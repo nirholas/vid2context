@@ -3,6 +3,7 @@
  * reference transcript, getting audio, and choosing which rungs to score.
  */
 import {
+  attemptsOf,
   type Ctx,
   fetchAudioBytes,
   getVideoContext,
@@ -30,11 +31,30 @@ export interface SuiteContext {
   limit?: number;
   /** Rung ids, services or providers named with --rungs. */
   rungs?: string[];
+  /** --dataset: a dataset file to use instead of the suite's default. */
+  dataset?: string;
 }
 
 export function errorInfo(err: unknown): { reason: string; detail: string } {
   if (err instanceof Vid2ContextError) return { reason: err.code, detail: err.message.slice(0, 300) };
   return { reason: 'error', detail: (err instanceof Error ? err.message : String(err)).slice(0, 300) };
+}
+
+/**
+ * Why a reference could not be fetched. A pipeline `no-transcript` error
+ * hides the real cause in its attempts (YouTube's 429 block, for example),
+ * so the failed captions attempts are surfaced as the reason and detail.
+ */
+export function referenceFailure(err: unknown): { reason: string; detail: string } {
+  const failed = attemptsOf(err).filter((a) => a.stage === 'captions' && a.outcome === 'error');
+  if (failed.length === 0) return errorInfo(err);
+  return {
+    reason: `captions-${failed[0]?.reason ?? 'error'}`,
+    detail: failed
+      .map((a) => `${a.id}: ${a.detail ?? a.reason}`)
+      .join('; ')
+      .slice(0, 300),
+  };
 }
 
 /**
