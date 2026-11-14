@@ -1,0 +1,15 @@
+---
+import Docs from '../../layouts/Docs.astro';
+import { type DocPage, docPages } from '../../lib/docs.ts';
+
+export function getStaticPaths() {
+  return docPages().map((page) => ({ params: { slug: page.slug || undefined }, props: { page } }));
+}
+
+interface Props {
+  page: DocPage;
+}
+const { page } = Astro.props;
+---
+
+<Docs page={page} />

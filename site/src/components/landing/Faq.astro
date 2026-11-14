@@ -1,0 +1,59 @@
+---
+import { faq } from '../../data/landing.ts';
+import SectionHead from './SectionHead.astro';
+---
+
+<section id="faq" class="section" aria-labelledby="faq-title">
+  <div class="wrap faq-wrap">
+    <SectionHead id="faq" eyebrow="FAQ" title="Questions people ask" />
+    <div class="faq">
+      {
+        faq.map((f) => (
+          <details class="faq-item">
+            <summary>{f.q}</summary>
+            <p>{f.a}</p>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  .faq {
+    max-width: 48rem;
+    border-top: 1px solid var(--v2c-border);
+  }
+  .faq-item {
+    border-bottom: 1px solid var(--v2c-border);
+  }
+  .faq-item summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 3.5rem;
+    padding-block: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    list-style: none;
+  }
+  .faq-item summary::-webkit-details-marker {
+    display: none;
+  }
+  .faq-item summary::after {
+    content: '+';
+    flex: none;
+    color: var(--v2c-muted);
+    font-size: 1.25rem;
+    font-weight: 400;
+    transition: transform 0.15s;
+  }
+  .faq-item[open] summary::after {
+    transform: rotate(45deg);
+  }
+  .faq-item p {
+    padding-bottom: 1.1rem;
+    color: var(--v2c-muted);
+  }
+</style>

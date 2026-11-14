@@ -1,0 +1,138 @@
+---
+import { chain, steps } from '../../data/landing.ts';
+import SectionHead from './SectionHead.astro';
+---
+
+<section id="how" class="section" aria-labelledby="how-title">
+  <div class="wrap">
+    <SectionHead
+      id="how"
+      eyebrow="How it works"
+      title="Captions when they exist, free speech-to-text when they do not"
+      sub="Three steps, the same in the app, the CLI, the HTTP API and the MCP server."
+    />
+    <ol class="steps">
+      {
+        steps.map((s) => (
+          <li class="card step">
+            <span class="step-n font-mono">{s.n}</span>
+            <h3>{s.title}</h3>
+            <p>{s.body}</p>
+          </li>
+        ))
+      }
+    </ol>
+    <div class="chain card" aria-labelledby="chain-title">
+      <h3 id="chain-title">The transcript chain</h3>
+      <p class="chain-sub">Tried in this order until one works. Each step that runs is recorded with its outcome.</p>
+      <ol class="chain-list">
+        {
+          chain.map((c, n) => (
+            <li class="chain-node">
+              <span class="chain-index font-mono">{n + 1}</span>
+              <div>
+                <strong>{c.title}</strong>
+                <p>{c.body}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  .steps {
+    display: grid;
+    gap: 1rem;
+  }
+  @media (min-width: 860px) {
+    .steps {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .step {
+    padding: 1.5rem;
+  }
+  .step-n {
+    color: var(--site-link);
+    font-size: 0.875rem;
+  }
+  .step h3 {
+    margin-top: 0.75rem;
+    font-size: 1.125rem;
+    font-weight: 650;
+  }
+  .step p {
+    margin-top: 0.5rem;
+    color: var(--v2c-muted);
+    font-size: 0.9375rem;
+  }
+  .chain {
+    margin-top: 1rem;
+    padding: 1.5rem;
+  }
+  .chain h3 {
+    font-size: 1.125rem;
+    font-weight: 650;
+  }
+  .chain-sub {
+    margin-top: 0.35rem;
+    color: var(--v2c-muted);
+    font-size: 0.9375rem;
+  }
+  .chain-list {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+  }
+  @media (min-width: 860px) {
+    .chain-list {
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(0, 1fr);
+    }
+  }
+  .chain-node {
+    position: relative;
+    display: flex;
+    gap: 0.75rem;
+    padding: 1rem;
+    border: 1px solid var(--v2c-border);
+    border-radius: var(--v2c-radius);
+    background: var(--v2c-surface-2);
+  }
+  @media (min-width: 860px) {
+    .chain-node:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      right: -0.75rem;
+      width: 0.75rem;
+      height: 1px;
+      background: var(--v2c-border-strong);
+    }
+  }
+  .chain-index {
+    display: inline-grid;
+    flex: none;
+    place-items: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 50%;
+    background:
+      linear-gradient(var(--site-btn-shade), var(--site-btn-shade)),
+      var(--v2c-gradient);
+    color: var(--site-btn-fg);
+    font-size: 0.8125rem;
+    font-weight: 700;
+  }
+  .chain-node strong {
+    font-weight: 600;
+  }
+  .chain-node p {
+    margin-top: 0.25rem;
+    color: var(--v2c-muted);
+    font-size: 0.875rem;
+  }
+</style>

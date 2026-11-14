@@ -1,0 +1,198 @@
+---
+import { chatgpt, clients, npmPublished, primaryCommand } from '../../data/agents.ts';
+import { data } from '../../data/site.ts';
+import { withBase } from '../../lib/base.ts';
+import CodeBlock from '../CodeBlock.astro';
+import SectionHead from './SectionHead.astro';
+
+const featured = ['claude-code', 'claude-desktop', 'cursor', 'vscode'];
+const top = clients.filter((c) => featured.includes(c.slug));
+const rest = clients.filter((c) => !featured.includes(c.slug));
+const i = data.install;
+const tools = data.mcpTools;
+const chatgptCmd = chatgpt.steps.find((s) => s.code)?.code;
+---
+
+<section id="agents" class="section" aria-labelledby="agents-title">
+  <div class="wrap">
+    <SectionHead
+      id="agents"
+      eyebrow="Agents and MCP"
+      title="Your agent fetches the video itself"
+      sub={npmPublished
+        ? `Add the MCP server once (${data.npm.mcpPackage} on npm) and ask about any video. No key needed.`
+        : 'Add the MCP server once and ask about any video. No key needed. Until the npm package is published, the server runs from a clone of the repo.'}
+    />
+
+    {
+      npmPublished && (
+        <div class="install-row" aria-label="One-click install">
+          <a class="btn btn-primary" href={i.vscodeInstallUrl}>Install in VS Code</a>
+          <a class="btn" href={i.vscodeInsidersInstallUrl}>VS Code Insiders</a>
+          <a class="btn" href={i.cursorDeeplink}>Add to Cursor</a>
+          <a class="btn" href={i.lmStudioDeeplink}>Add to LM Studio</a>
+          <a class="btn" href={i.gooseDeeplink}>Add to Goose</a>
+        </div>
+      )
+    }
+    {
+      !npmPublished && (
+        <div class="clone-step">
+          <CodeBlock label="Once: clone and install (Node.js 22+)" code={'git clone https://github.com/nirholas/vid2context.git\ncd vid2context\nnpm install'} />
+        </div>
+      )
+    }
+
+    <div class="agents">
+      {
+        top.map((c) => {
+          const cmd = primaryCommand(c);
+          return (
+            <article class="card agent">
+              <header>
+                <h3>{c.name}</h3>
+                <a href={withBase(`/docs/clients/${c.slug}/`)} aria-label={`${c.name} setup guide`}>
+                  Guide
+                </a>
+              </header>
+              <p>{c.short}</p>
+              {cmd && <CodeBlock code={cmd.text} lang={cmd.lang} />}
+            </article>
+          );
+        })
+      }
+      <article class="card agent">
+        <header>
+          <h3>{chatgpt.name}</h3>
+          <a href={withBase('/docs/how-to/give-chatgpt-a-youtube-video/')} aria-label="ChatGPT guide">Guide</a>
+        </header>
+        <p>{chatgpt.short} ChatGPT connects only to remote MCP servers over HTTPS.</p>
+        {chatgptCmd && <CodeBlock code={chatgptCmd.text} lang={chatgptCmd.lang} />}
+      </article>
+    </div>
+
+    <p class="agents-more">
+      Also:
+      {
+        rest.map((c, n) => (
+          <>
+            <a href={withBase(`/docs/clients/${c.slug}/`)}>{c.name}</a>
+            {n < rest.length - 1 ? ', ' : '.'}
+          </>
+        ))
+      }
+    </p>
+
+    {
+      tools && (
+        <div class="tools card">
+          <h3>
+            {tools.length} tools your agent can call
+          </h3>
+          <p class="tools-sub">Read from the MCP server itself when this site was built.</p>
+          <ul>
+            {tools.map((t) => (
+              <li>
+                <code>{t.name}</code>
+                <span>{t.description}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style is:global>
+  .install-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-bottom: 1.5rem;
+  }
+  .clone-step {
+    max-width: 40rem;
+    margin-bottom: 1.5rem;
+  }
+  .agents {
+    display: grid;
+    gap: 1rem;
+  }
+  @media (min-width: 860px) {
+    .agents {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .agent {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    min-width: 0;
+    padding: 1.25rem;
+  }
+  .agent header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+  .agent h3 {
+    font-size: 1.0625rem;
+    font-weight: 650;
+  }
+  .agent header a,
+  .agents-more a {
+    color: var(--site-link);
+    font-size: 0.875rem;
+  }
+  .agent > p {
+    color: var(--v2c-muted);
+    font-size: 0.9375rem;
+  }
+  .agent .code {
+    margin-top: auto;
+  }
+  .agents-more {
+    margin-top: 1rem;
+    color: var(--v2c-muted);
+    font-size: 0.9375rem;
+  }
+  .tools {
+    margin-top: 2rem;
+    padding: 1.5rem;
+  }
+  .tools h3 {
+    font-size: 1.125rem;
+    font-weight: 650;
+  }
+  .tools-sub {
+    margin-top: 0.3rem;
+    color: var(--v2c-muted);
+    font-size: 0.875rem;
+  }
+  .tools ul {
+    display: grid;
+    gap: 0.25rem 1.5rem;
+    margin-top: 1rem;
+  }
+  @media (min-width: 860px) {
+    .tools ul {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .tools li {
+    display: grid;
+    gap: 0.15rem;
+    padding-block: 0.55rem;
+    border-top: 1px solid var(--v2c-border);
+    font-size: 0.875rem;
+  }
+  .tools code {
+    color: var(--v2c-text);
+    font-size: 0.8125rem;
+  }
+  .tools li span {
+    color: var(--v2c-muted);
+  }
+</style>

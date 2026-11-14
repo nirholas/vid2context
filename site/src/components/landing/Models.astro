@@ -1,0 +1,141 @@
+---
+import { modelsCopy } from '../../data/landing.ts';
+import { KIND_LABEL, rungsByTier, TIER_INFO, TIERS } from '../../data/site.ts';
+import { withBase } from '../../lib/base.ts';
+import SectionHead from './SectionHead.astro';
+
+const byTier = rungsByTier();
+const KIND_ORDER = ['stt', 'llm', 'embed', 'video', 'visual'];
+const grouped = TIERS.map((tier) => {
+  const rungs = byTier[tier];
+  const kinds = KIND_ORDER.map((kind) => ({ kind, rungs: rungs.filter((r) => r.kind === kind) })).filter((k) => k.rungs.length);
+  return { tier, info: TIER_INFO[tier], count: rungs.length, kinds };
+});
+---
+
+<section id="models" class="section" aria-labelledby="models-title">
+  <div class="wrap">
+    <SectionHead id="models" eyebrow="Free first" title={modelsCopy.title} sub={modelsCopy.sub} />
+    <div class="tiers" data-rung-grid>
+      {
+        grouped.map((g) => (
+          <section class={`card tier tier-${g.tier}`} aria-labelledby={`tier-${g.tier}`} data-tier={g.tier} data-count={g.count}>
+            <header class="tier-head">
+              <h3 id={`tier-${g.tier}`}>
+                <span class="tier-dot" aria-hidden="true" />
+                {g.info.label}
+              </h3>
+              <span class="tier-count">{g.count} rungs</span>
+            </header>
+            <p class="tier-meaning">{g.info.meaning}</p>
+            {g.kinds.map((k) => (
+              <div class="tier-kind">
+                <h4>{KIND_LABEL[k.kind] ?? k.kind}</h4>
+                <ul>
+                  {k.rungs.map((r) => (
+                    <li data-rung={r.id} title={r.note || undefined}>
+                      <span class="rung-service">{r.service}</span>
+                      <span class="rung-model font-mono">{r.model || r.requires[0] || 'any model'}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </section>
+        ))
+      }
+    </div>
+    <p class="tiers-note">
+      Every model id can be overridden from the environment, and extra free keys can be pooled into their own rungs. Limits and env vars for each rung are in
+      <a href={withBase('/docs/providers/')}>Providers and rungs</a>.
+    </p>
+  </div>
+</section>
+
+<style is:global>
+  .tiers {
+    display: grid;
+    gap: 1rem;
+  }
+  @media (min-width: 720px) {
+    .tiers {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1100px) {
+    .tiers {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  .tier {
+    padding: 1.25rem;
+    border-top: 3px solid var(--tier);
+  }
+  .tier-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+  .tier-head h3 {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.0625rem;
+    font-weight: 650;
+  }
+  .tier-dot {
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 50%;
+    background: var(--tier);
+  }
+  .tier-count {
+    color: var(--tier-text);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .tier-meaning {
+    margin-top: 0.4rem;
+    color: var(--v2c-muted);
+    font-size: 0.875rem;
+  }
+  .tier-kind {
+    margin-top: 1.1rem;
+  }
+  .tier-kind h4 {
+    margin-bottom: 0.4rem;
+    color: var(--v2c-muted);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .tier-kind li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.15rem 0.5rem;
+    padding-block: 0.3rem;
+    border-top: 1px solid var(--v2c-border);
+    font-size: 0.8125rem;
+  }
+  .rung-service {
+    font-weight: 600;
+  }
+  .rung-model {
+    min-width: 0;
+    color: var(--v2c-muted);
+    font-size: 0.75rem;
+    overflow-wrap: anywhere;
+  }
+  .tiers-note {
+    margin-top: 1.25rem;
+    color: var(--v2c-muted);
+    font-size: 0.9375rem;
+  }
+  .tiers-note a {
+    color: var(--site-link);
+  }
+</style>

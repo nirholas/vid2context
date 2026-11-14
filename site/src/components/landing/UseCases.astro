@@ -1,0 +1,78 @@
+---
+import { useCases } from '../../data/landing.ts';
+import CodeBlock from '../CodeBlock.astro';
+import SectionHead from './SectionHead.astro';
+---
+
+<section id="use-cases" class="section" aria-labelledby="use-cases-title">
+  <div class="wrap">
+    <SectionHead id="use-cases" eyebrow="Use cases" title="Hours of video, read in seconds" />
+    <div class="uses">
+      {
+        useCases.map((u, n) => (
+          <article class={`card use ${n === 0 ? 'use-wide' : ''}`}>
+            <div>
+              <h3>{u.title}</h3>
+              <p>{u.body}</p>
+            </div>
+            {u.example && (
+              <figure>
+                <CodeBlock code={u.example.text} lang={u.example.lang} copy={false} label="get_transcript" />
+                <figcaption>{u.example.caption}</figcaption>
+              </figure>
+            )}
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  .uses {
+    display: grid;
+    gap: 1rem;
+  }
+  @media (min-width: 860px) {
+    .uses {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .use-wide {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+  }
+  .use {
+    min-width: 0;
+    padding: 1.5rem;
+  }
+  .use h3 {
+    font-size: 1.125rem;
+    font-weight: 650;
+  }
+  .use p {
+    margin-top: 0.5rem;
+    color: var(--v2c-muted);
+    font-size: 0.9375rem;
+  }
+  .use figure {
+    min-width: 0;
+    margin-top: 1rem;
+  }
+  @media (min-width: 860px) {
+    .use-wide figure {
+      margin-top: 0;
+    }
+  }
+  .use figcaption {
+    margin-top: 0.5rem;
+    color: var(--v2c-muted);
+    font-size: 0.8125rem;
+  }
+  .use pre {
+    max-height: 18rem;
+  }
+</style>

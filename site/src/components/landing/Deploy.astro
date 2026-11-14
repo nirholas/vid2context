@@ -1,0 +1,64 @@
+---
+import { data, REPO_URL } from '../../data/site.ts';
+import { withBase } from '../../lib/base.ts';
+import CodeBlock from '../CodeBlock.astro';
+import SectionHead from './SectionHead.astro';
+
+const targets = data.deployTargets;
+const docUrl = (doc: string) => `/docs/${doc.replace(/^docs\//, '').replace(/\.md$/, '')}/`;
+---
+
+{
+  targets.length > 0 && (
+    <section id="deploy" class="section" aria-labelledby="deploy-title">
+      <div class="wrap">
+        <SectionHead
+          id="deploy"
+          eyebrow="Self-host"
+          title="Run it on your own machine or your own cloud"
+          sub="The same TypeScript core runs everywhere. Locally it has the best success rate, because requests come from your own connection."
+        />
+        <div class="deploys">
+          {targets.map((t) => (
+            <article class="card deploy">
+              <h3>{t.name}</h3>
+              <p>{t.summary}</p>
+              {t.command && <CodeBlock code={t.command} lang="sh" />}
+              <a href={t.doc ? withBase(docUrl(t.doc)) : `${REPO_URL}/tree/main/${t.evidence}`} rel={t.doc ? undefined : 'noopener'}>
+                {t.doc ? `${t.name} guide` : `See ${t.evidence}`}
+              </a>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style is:global>
+  .deploys {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+  }
+  .deploy {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    min-width: 0;
+    padding: 1.25rem;
+  }
+  .deploy h3 {
+    font-size: 1.0625rem;
+    font-weight: 650;
+  }
+  .deploy p {
+    color: var(--v2c-muted);
+    font-size: 0.9375rem;
+  }
+  .deploy a {
+    margin-top: auto;
+    color: var(--site-link);
+    font-size: 0.875rem;
+  }
+</style>

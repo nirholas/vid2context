@@ -1,0 +1,278 @@
+---
+/** Docs pages: sidebar, article, in-page table of contents. */
+import { type DocPage, docPages, SECTIONS, sectionLabel } from '../lib/docs.ts';
+import { withBase } from '../lib/base.ts';
+import { breadcrumbNode } from '../lib/seo.ts';
+import Base from './Base.astro';
+
+interface Props {
+  page: DocPage;
+}
+const { page } = Astro.props;
+const all = docPages();
+const groups = SECTIONS.map((s) => ({ ...s, pages: all.filter((p) => p.section === s.id) })).filter((g) => g.pages.length);
+const toc = page.headings.filter((h) => h.depth === 2 || h.depth === 3);
+const trail = [
+  { name: 'Home', url: '/' },
+  { name: 'Docs', url: '/docs/' },
+  ...(page.slug ? [{ name: page.label, url: page.url }] : []),
+];
+const updated = new Date(page.lastmod).toISOString().slice(0, 10);
+const index = all.indexOf(page);
+const prev = index > 0 ? all[index - 1] : undefined;
+const next = index < all.length - 1 ? all[index + 1] : undefined;
+const copyScript = `document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-copy-btn]');if(!b)return;var pre=b.closest('.code').querySelector('pre');if(!pre)return;navigator.clipboard.writeText(pre.innerText).then(function(){b.textContent='Copied'},function(){b.textContent='Select and copy'});setTimeout(function(){b.textContent='Copy'},1800)});`;
+---
+
+<Base title={page.slug ? `${page.title}: vid2context docs` : page.title} description={page.description} path={page.url} ogType="article" graph={[breadcrumbNode(trail)]}>
+  <div class="wrap docs">
+    <aside class="docs-side" aria-label="Documentation">
+      <details class="docs-menu" open>
+        <summary>Docs menu</summary>
+        <nav aria-label="Docs pages">
+          {
+            groups.map((g) => (
+              <div class="docs-group">
+                <h2>{g.label}</h2>
+                <ul>
+                  {g.pages.map((p) => (
+                    <li>
+                      <a href={withBase(p.url)} aria-current={p.url === page.url ? 'page' : undefined}>
+                        {p.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))
+          }
+        </nav>
+      </details>
+    </aside>
+
+    <main id="main" class="docs-main">
+      <nav aria-label="Breadcrumb" class="crumbs">
+        <ol>
+          {
+            trail.map((t, n) => (
+              <li>{n < trail.length - 1 ? <a href={withBase(t.url)}>{t.name}</a> : <span aria-current="page">{t.name}</span>}</li>
+            ))
+          }
+        </ol>
+      </nav>
+      <p class="docs-section">{sectionLabel(page.section)}</p>
+      <article class="prose" set:html={page.html} />
+      <div class="docs-meta">
+        <span>Updated {updated}</span>
+        <a href={page.editUrl} rel="noopener">Edit on GitHub</a>
+        <a href={withBase(page.twinUrl)}>View as Markdown</a>
+      </div>
+      <nav class="docs-pager" aria-label="Previous and next page">
+        {prev ? <a href={withBase(prev.url)} rel="prev"><span>Previous</span>{prev.label}</a> : <span />}
+        {next ? <a href={withBase(next.url)} rel="next" class="next"><span>Next</span>{next.label}</a> : <span />}
+      </nav>
+    </main>
+
+    {
+      toc.length > 1 && (
+        <aside class="docs-toc" aria-labelledby="toc-title">
+          <h2 id="toc-title">On this page</h2>
+          <ul>
+            {toc.map((h) => (
+              <li class={`toc-${h.depth}`}>
+                <a href={`#${h.id}`}>{h.text}</a>
+              </li>
+            ))}
+          </ul>
+        </aside>
+      )
+    }
+  </div>
+  <script is:inline set:html={copyScript} />
+</Base>
+
+<style is:global>
+  .docs {
+    display: grid;
+    gap: 2rem;
+    padding-block: 2rem 0;
+  }
+  @media (min-width: 900px) {
+    .docs {
+      grid-template-columns: 14rem minmax(0, 1fr);
+    }
+  }
+  @media (min-width: 1240px) {
+    .docs {
+      grid-template-columns: 14rem minmax(0, 1fr) 13rem;
+      max-width: 84rem;
+    }
+  }
+  .docs-side {
+    min-width: 0;
+  }
+  @media (min-width: 900px) {
+    .docs-side {
+      position: sticky;
+      top: 5rem;
+      align-self: start;
+      max-height: calc(100vh - 6rem);
+      overflow-y: auto;
+    }
+  }
+  .docs-menu summary {
+    display: flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding: 0.5rem 0.9rem;
+    border: 1px solid var(--v2c-border);
+    border-radius: var(--v2c-radius);
+    font-weight: 600;
+    cursor: pointer;
+  }
+  @media (min-width: 900px) {
+    .docs-menu summary {
+      display: none;
+    }
+  }
+  .docs-group {
+    margin-top: 1.25rem;
+  }
+  .docs-group h2 {
+    margin-bottom: 0.35rem;
+    padding-inline: 0.6rem;
+    color: var(--v2c-text);
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+  .docs-group a {
+    display: block;
+    padding: 0.3rem 0.6rem;
+    border-radius: var(--v2c-radius-sm);
+    color: var(--v2c-muted);
+    font-size: 0.875rem;
+    line-height: 1.4;
+    text-decoration: none;
+  }
+  .docs-group a:hover {
+    color: var(--v2c-text);
+    background: var(--v2c-surface-2);
+  }
+  .docs-group a[aria-current='page'] {
+    color: var(--v2c-text);
+    background: var(--v2c-surface-3);
+    font-weight: 500;
+  }
+  .docs-main {
+    min-width: 0;
+  }
+  .crumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    color: var(--v2c-muted);
+    font-size: 0.8125rem;
+  }
+  .crumbs li:not(:last-child)::after {
+    content: '/';
+    margin-left: 0.35rem;
+    color: var(--v2c-border-strong);
+  }
+  .crumbs a {
+    color: var(--v2c-muted);
+  }
+  .docs-section {
+    margin-top: 1.5rem;
+    margin-bottom: 0.4rem;
+    color: var(--site-link);
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+  .docs-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    margin-top: 3rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--v2c-border);
+    color: var(--v2c-muted);
+    font-size: 0.875rem;
+  }
+  .docs-meta a {
+    color: var(--site-link);
+  }
+  .docs-pager {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  .docs-pager a {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: 0.9rem 1rem;
+    border: 1px solid var(--v2c-border);
+    border-radius: var(--v2c-radius);
+    color: var(--v2c-text);
+    font-weight: 500;
+    text-decoration: none;
+  }
+  .docs-pager a:hover {
+    border-color: var(--v2c-border-strong);
+  }
+  .docs-pager a span {
+    color: var(--v2c-muted);
+    font-size: 0.8125rem;
+    font-weight: 400;
+  }
+  .docs-pager .next {
+    text-align: right;
+  }
+  .docs-toc {
+    display: none;
+  }
+  @media (min-width: 1240px) {
+    .docs-toc {
+      display: block;
+      position: sticky;
+      top: 5rem;
+      align-self: start;
+      max-height: calc(100vh - 6rem);
+      overflow-y: auto;
+      font-size: 0.8125rem;
+    }
+  }
+  .docs-toc h2 {
+    margin-bottom: 0.6rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+  .docs-toc li {
+    padding-block: 0.2rem;
+  }
+  .docs-toc .toc-3 {
+    padding-left: 0.85rem;
+  }
+  .docs-toc a {
+    color: var(--v2c-muted);
+    text-decoration: none;
+  }
+  .docs-toc a:hover {
+    color: var(--v2c-text);
+  }
+  .prose .code {
+    margin-block: 1.1em;
+  }
+  .prose .install-btn {
+    margin: 0.25rem 0.5rem 0.25rem 0;
+    text-decoration: none;
+  }
+  .prose .img-alt {
+    display: inline-block;
+    padding: 0.05rem 0.5rem;
+    border: 1px solid var(--v2c-border);
+    border-radius: var(--v2c-radius-pill);
+    font-size: 0.75rem;
+  }
+</style>

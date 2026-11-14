@@ -1,0 +1,29 @@
+---
+import Agents from '../components/landing/Agents.astro';
+import Demo from '../components/landing/Demo.astro';
+import Deploy from '../components/landing/Deploy.astro';
+import Faq from '../components/landing/Faq.astro';
+import Hero from '../components/landing/Hero.astro';
+import HowItWorks from '../components/landing/HowItWorks.astro';
+import Models from '../components/landing/Models.astro';
+import Sources from '../components/landing/Sources.astro';
+import UseCases from '../components/landing/UseCases.astro';
+import { faq } from '../data/landing.ts';
+import Base from '../layouts/Base.astro';
+import { HOME } from '../lib/pages.ts';
+import { faqNode } from '../lib/seo.ts';
+---
+
+<Base title={HOME.title} description={HOME.description} path="/" graph={[faqNode(faq)]}>
+  <main id="main">
+    <Hero />
+    <Demo />
+    <HowItWorks />
+    <Sources />
+    <Models />
+    <Agents />
+    <UseCases />
+    <Deploy />
+    <Faq />
+  </main>
+</Base>

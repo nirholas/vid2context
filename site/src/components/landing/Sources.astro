@@ -1,0 +1,56 @@
+---
+import { sourcesCopy } from '../../data/landing.ts';
+import { data } from '../../data/site.ts';
+import SectionHead from './SectionHead.astro';
+
+const sources = data.sources;
+---
+
+<section id="sources" class="section" aria-labelledby="sources-title">
+  <div class="wrap">
+    <SectionHead id="sources" eyebrow="Sources" title={sourcesCopy.title} sub={sourcesCopy.sub} />
+    <ul class="sources">
+      {
+        sources.map((s) => (
+          <li class="card source">
+            <strong>{s.name}</strong>
+            <span>{s.catchAll ? 'with the yt-dlp provider' : `${s.providerName} provider`}</span>
+          </li>
+        ))
+      }
+      {
+        data.ytdlpExtractors && (
+          <li class="card source source-more">
+            <strong>{data.ytdlpExtractors.toLocaleString('en-US')} more sites</strong>
+            <span>everything yt-dlp supports</span>
+          </li>
+        )
+      }
+    </ul>
+  </div>
+</section>
+
+<style is:global>
+  .sources {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 13rem), 1fr));
+    gap: 0.75rem;
+  }
+  .source {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding: 1.1rem 1.25rem;
+    border-radius: var(--v2c-radius);
+  }
+  .source strong {
+    font-weight: 600;
+  }
+  .source span {
+    color: var(--v2c-muted);
+    font-size: 0.8125rem;
+  }
+  .source-more {
+    border-style: dashed;
+  }
+</style>

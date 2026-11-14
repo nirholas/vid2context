@@ -139,7 +139,9 @@ export function renderMarkdown(source: string, opts: RenderOptions = {}): Render
         return `<h${depth} id="${id}">${inner}<a class="anchor" href="#${id}" aria-label="Link to this section">#</a></h${depth}>\n`;
       },
       code({ text, lang }) {
-        return `<div class="code" data-copy>${highlight(text, lang ?? '')}</div>\n`;
+        const label = escapeHtml((lang ?? '').split(/\s+/)[0] || 'text');
+        const bar = `<div class="code-bar"><span class="code-label">${label}</span><button type="button" class="copy-btn" data-copy-btn>Copy</button></div>`;
+        return `<div class="code">${bar}${highlight(text, lang ?? '')}</div>\n`;
       },
       link({ href, title, tokens }) {
         const inner = this.parser.parseInline(tokens);
