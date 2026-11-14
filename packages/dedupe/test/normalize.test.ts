@@ -28,6 +28,16 @@ describe('normalizeWords', () => {
     expect(numberWordsToDigits(['two', 'thousand', 'twelve'])).toEqual(['2012']);
     expect(numberWordsToDigits(['one', 'two', 'three'])).toEqual(['1', '2', '3']);
     expect(numberWordsToDigits(['rock', 'and', 'roll'])).toEqual(['rock', 'and', 'roll']);
-    expect(normalizeWords('$5, 1,000 people and 10% of them')).toEqual(['5', 'dollars', '1000', 'people', 'and', '10', 'percent', 'of', 'them']);
+    expect(normalizeWords('$5, 1,000 people and 10% of them')).toEqual([
+      '5',
+      'dollars',
+      '1000',
+      'people',
+      'and',
+      '10',
+      'percent',
+      'of',
+      'them',
+    ]);
   });
 });

@@ -116,17 +116,11 @@ describe('find_duplicates MCP tool', () => {
 
 describe.skipIf(!process.env.LIVE)('POST /duplicates live', () => {
   it('fetches real videos by URL and finds the reupload', async () => {
-    const { createNodeRegistry } = await import('@vid2context/registry');
-    const { createContext, stderrLogger } = await import('@vid2context/core');
-    const live = createNodeRegistry();
+    const { createNodeContext, createRegistry } = await import('@vid2context/registry/node');
     const main = new Hono();
     main.route(
       '/api/v1',
-      dedupeRoutes({
-        registry: live,
-        makeCtx: () => createContext({ runtime: 'node', env: {}, fetch: globalThis.fetch, log: stderrLogger('warn') }),
-        storage: async () => new MemoryStorage(),
-      }),
+      dedupeRoutes({ registry: createRegistry(), makeCtx: () => createNodeContext(), storage: async () => new MemoryStorage() }),
     );
     const inputs = ['https://www.youtube.com/watch?v=jNQXAC9IVRw', 'https://www.youtube.com/watch?v=g5RBHWskGtc'];
     const res = await main.request('/api/v1/duplicates', post({ inputs }));
