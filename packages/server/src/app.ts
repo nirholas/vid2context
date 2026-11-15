@@ -316,8 +316,9 @@ export function createApp(opts: AppOptions): ServerApp {
     const result = await deepHealth(services.ctxFor(c.req.raw));
     return c.json({ ...result, version }, result.ok ? 200 : 503, { 'cache-control': 'no-store' });
   };
-  app.get('/healthz', healthz);
   app.get('/api/v1/healthz', healthz);
+  // The conventional root path for container probes: an alias of the documented operation above, not a second one.
+  app.use('/healthz', async (c, next) => (c.req.method === 'GET' || c.req.method === 'HEAD' ? healthz(c) : next()));
 
   const deps = { services, docs, version };
   app.route('/api/v1', videoRoutes(deps));
