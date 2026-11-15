@@ -32,7 +32,7 @@ import { renderSource, type Source, type SourceSet, sourceSet } from './sources.
 import type { Template } from './templates/index.ts';
 import { chunkLines } from './text.ts';
 import type { Citation, ExtractionResult, LlmOptions, UnverifiedClaim } from './types.ts';
-import { verifyQuote } from './verify.ts';
+import { trimQuote, verifyQuote } from './verify.ts';
 
 export interface ExtractOptions extends LlmOptions {
   /** Template id (default `summary` when no schema is given). */
@@ -110,8 +110,9 @@ export function verifyExtraction(
     const source: Source | undefined = set.find(raw.videoId);
     const claim =
       describe(slot.owner ? slot.owner.list[slot.owner.index] : undefined) || (typeof raw.path === 'string' ? raw.path : '');
+    const quote = trimQuote(raw.quote);
     const r = source
-      ? verifyQuote(source.context, raw.quote, raw.startSec)
+      ? verifyQuote(source.context, quote, raw.startSec)
       : {
           ok: false as const,
           reason: 'unknown-video' as const,
@@ -126,7 +127,7 @@ export function verifyExtraction(
         startSec: r.startSec,
         ...(r.endSec !== undefined ? { endSec: r.endSec } : {}),
         ...(url ? { url } : {}),
-        quote: String(raw.quote),
+        quote: String(quote),
         ...(typeof raw.path === 'string' ? { path: raw.path } : {}),
       };
       (slot.holder as Record<string | number, unknown>)[slot.key] = cite;

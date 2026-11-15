@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { VideoContext } from '@vid2context/core';
 import { describe, expect, it } from 'vitest';
-import { normalize, parseSeconds, THRESHOLD, verifyCitations, verifyQuote } from '../src/index.ts';
+import { MAX_QUOTE_WORDS, normalize, parseSeconds, THRESHOLD, trimQuote, verifyCitations, verifyQuote } from '../src/index.ts';
 
 // Real auto-captions: part 1 of the Alliance Motorworks G-Wagon buyer's series (tests/fixtures/README.md).
 const gwagon = JSON.parse(
@@ -129,5 +129,28 @@ describe('verifyCitations', () => {
     });
     expect(verified[1]?.stance).toBe('reliable');
     expect(unverified.map((u) => u.reason)).toEqual(['quote-not-found', 'unknown-video']);
+  });
+});
+
+describe('over-long quotes', () => {
+  it('cuts a quote copied from minutes of transcript to its first MAX_QUOTE_WORDS words, keeping the start', () => {
+    // A live keyless run (2026-11-15) returned a 710-word "quote" copied from 12:54 onward; this rebuilds that shape from the transcript.
+    const long = gwagon.transcript.segments
+      .filter((s) => s.startSec >= 774)
+      .map((s) => s.text)
+      .join(' ')
+      .split(/\s+/)
+      .slice(0, 300)
+      .join(' ');
+    expect(trimQuote(long).split(' ')).toHaveLength(MAX_QUOTE_WORDS);
+    const { verified } = verifyCitations(
+      [{ claim: 'The biturbo makes 419 hp', quote: long, videoId: 'V1', startSec: 774, topic: 'engines' }],
+      [gwagon],
+    );
+    expect(verified).toHaveLength(1);
+    expect(verified[0]?.citation.quote.split(' ')).toHaveLength(MAX_QUOTE_WORDS);
+    expect(verified[0]?.citation.startSec).toBeGreaterThanOrEqual(770);
+    expect(verified[0]?.citation.startSec).toBeLessThan(780);
+    expect(trimQuote('short quote stays')).toBe('short quote stays');
   });
 });

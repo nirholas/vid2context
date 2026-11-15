@@ -35,4 +35,4 @@ export { sourceSet, summarizeSource } from './sources.ts';
 export { CITE_SCHEMA, getTemplate, type Template, templates } from './templates/index.ts';
 export { normalize, parseSeconds, topicKey } from './text.ts';
 export type * from './types.ts';
-export { MIN_QUOTE_TOKENS, THRESHOLD, verifyCitations, verifyQuote, WINDOW_SEC } from './verify.ts';
+export { MAX_QUOTE_WORDS, MIN_QUOTE_TOKENS, THRESHOLD, trimQuote, verifyCitations, verifyQuote, WINDOW_SEC } from './verify.ts';

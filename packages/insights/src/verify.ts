@@ -18,6 +18,11 @@
  *   THRESHOLD (0.8) or more: an exact quote scores 1.0; a quote with one word
  *   in five changed or misheard still passes; a paraphrase in different words
  *   fails.
+ * - Quotes longer than MAX_QUOTE_WORDS (40) words are cut to their first 40
+ *   words before checking, and the cut quote is what the citation keeps.
+ *   Free models sometimes copy whole minutes of transcript as a "quote"; a
+ *   citation should point at one moment, and the start is what the
+ *   timestamp refers to.
  * - On a pass, startSec is snapped to the start of the segment holding the
  *   first matched word, and endSec to the end of the segment holding the last.
  * - On a fail, the whole transcript is searched. If the quote is there at a
@@ -33,6 +38,14 @@ import type { Claim, RawClaim, UnverifiedClaim, UnverifiedReason } from './types
 export const WINDOW_SEC = 30;
 export const THRESHOLD = 0.8;
 export const MIN_QUOTE_TOKENS = 4;
+export const MAX_QUOTE_WORDS = 40;
+
+/** A quote cut to its first MAX_QUOTE_WORDS words (whitespace-separated, as written). Other values pass through. */
+export function trimQuote<T>(quote: T): T | string {
+  if (typeof quote !== 'string') return quote;
+  const words = quote.trim().split(/\s+/);
+  return words.length > MAX_QUOTE_WORDS ? words.slice(0, MAX_QUOTE_WORDS).join(' ') : quote;
+}
 const SPAN_FACTOR = 1.25;
 
 interface TokenStream {
@@ -222,7 +235,8 @@ export function verifyCitations(
       });
       continue;
     }
-    const r = verifyQuote(source.context, c.quote, c.startSec, opts);
+    const quote = trimQuote(c.quote);
+    const r = verifyQuote(source.context, quote, c.startSec, opts);
     if (!r.ok || r.startSec === undefined) {
       unverified.push({
         ...base,
@@ -247,7 +261,7 @@ export function verifyCitations(
         startSec: r.startSec,
         ...(r.endSec !== undefined ? { endSec: r.endSec } : {}),
         ...(timestampUrl(ref, r.startSec) ? { url: timestampUrl(ref, r.startSec) } : {}),
-        quote: String(c.quote),
+        quote: String(quote),
       },
       score: r.score,
     });
