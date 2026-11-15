@@ -41,12 +41,12 @@ Only the server and what it imports go in: `@vid2context/server`, every provider
 
 **Why the unpacked yt-dlp.** The single-file yt-dlp unpacks its libraries into `/tmp` on every run. That fails when `/tmp` is mounted `noexec` (as `--tmpfs` does) and costs startup time on every call.
 
-**Size**, measured on 2026-11-14 at commit 67c7578 (linux/amd64):
+**Size**, measured on 2026-11-15 at commit c6575ec (linux/amd64):
 
 | Image | Uncompressed | gzip (roughly what a registry stores) |
 |---|---|---|
-| default | 1533 MB | 410 MB |
-| `--build-arg WITH_WHISPER=1` | 1565 MB | 419 MB |
+| default | 1537 MB | 411 MB |
+| `--build-arg WITH_WHISPER=1` | 1569 MB | 420 MB |
 
 Debian's ffmpeg package and its libraries are 461 MB of that (it pulls in codec, X11 and Vulkan libraries), node_modules 196 MB (most of it the transformers.js runtime for local speech-to-text, with onnxruntime-node trimmed to this platform and the browser-only onnxruntime-web removed), Node 122 MB, the unpacked yt-dlp 95 MB, deno 92 MB. The image grows as the server gains routes and providers: every provider that declares the `node` runtime is included.
 
@@ -79,7 +79,7 @@ docker run --rm -v vid2context-data:/data vid2context:whisper \
 docker run -d -p 127.0.0.1:8787:8787 -v vid2context-data:/data -e WHISPER_CPP_MODEL=base.en vid2context:whisper
 ```
 
-The build compiles `whisper-cli` and `whisper-server` with one CPU backend per instruction set (`GGML_CPU_ALL_VARIANTS`), so the image runs well on any x86-64 or arm64 host, not only the build machine. Models are never in the image: the setup command downloads a verified model into `/data/models/whisper`. Tested on 2026-11-14: `tiny.en` transcribed the Apollo 11 clip in under a second, read-only root, no network rungs.
+The build compiles `whisper-cli` and `whisper-server` with one CPU backend per instruction set (`GGML_CPU_ALL_VARIANTS`), so the image runs well on any x86-64 or arm64 host, not only the build machine. Models are never in the image: the setup command downloads a verified model into `/data/models/whisper`. Tested on 2026-11-14 and again on 2026-11-15: `tiny.en` transcribed the Apollo 11 clip ("one small step for man, one giant leap for mankind") with a read-only root and no network rungs.
 
 ## Compose
 
@@ -118,6 +118,8 @@ LIVE=1 deploy/containers/test.sh          # plus a real YouTube transcript and s
 deploy/containers/test.sh --whisper       # the whisper.cpp variant
 deploy/containers/test.sh --lint-only     # configs only
 ```
+
+On 2026-11-15 every config and run check passed for both variants. The two LIVE checks failed for reasons outside the image: from this build machine YouTube answered HTTP 429 to captions (innertube and yt-dlp) while metadata and yt-dlp's audio download inside the container worked, and the keyless OVH Whisper host answered 429 "API rate limit exceeded" to the Apollo clip after the container had read and converted it. Rerun `LIVE=1` from a residential IP, or add `GROQ_API_KEY`, to see both pass.
 
 The run checks start the image on a random port with `--read-only --tmpfs /tmp` and a temporary volume, then check health, the health check command, non-root uid, the read-only root, a writable `/data`, and that yt-dlp, deno, ffmpeg and ffprobe run.
 
