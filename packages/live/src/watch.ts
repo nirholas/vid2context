@@ -49,6 +49,26 @@ const TAIL_WORDS = 24;
 const MAX_TAIL_RETRIES = 2;
 /** Tolerance for comparing sums of segment durations. */
 const EPSILON = 0.01;
+/**
+ * Longest audio one merged catch-up request may carry, overlap included. The
+ * keyless OVH rung answers 413 "Audio duration too long, max duration allowed
+ * for unauthenticated users is 60 seconds" above this (checked 2026-11-15),
+ * and core then splits the audio into more requests, which is the opposite of
+ * what merging is for on a rung limited to 2 requests per minute.
+ */
+export const MAX_MERGED_SEC = 60;
+
+/**
+ * Seconds of new audio (after the overlap lead-in) the next request covers.
+ * One chunk normally; when two or more chunks are waiting, up to
+ * `catchUpChunks` of them at once, capped so lead-in plus audio stays within
+ * MAX_MERGED_SEC. Never less than one chunk, so an explicit chunkSec wins.
+ */
+export function nextChunkLength(opts: { availSec: number; chunkSec: number; catchUpChunks: number; leadSec: number }): number {
+  const { availSec, chunkSec, catchUpChunks, leadSec } = opts;
+  if (availSec < 2 * chunkSec) return chunkSec;
+  return Math.max(chunkSec, Math.min(availSec, chunkSec * catchUpChunks, MAX_MERGED_SEC - leadSec));
+}
 
 type DoneReason = Extract<LiveEvent, { type: 'done' }>['reason'];
 
@@ -523,7 +543,7 @@ export async function* watchLive(input: string, opts: WatchLiveOptions, deps: Li
       const windowStart = cursor as number;
       const chunkStart = Math.max(windowStart - (overlapNext ? overlapSec : 0), (buffer[0] as Buffered).startSec);
       // Behind by two chunks or more: take several at once, so a rate-limited rung needs fewer requests to catch up.
-      const chunkLen = avail >= 2 * chunkSec ? Math.min(avail, chunkSec * catchUpChunks) : chunkSec;
+      const chunkLen = nextChunkLength({ availSec: avail, chunkSec, catchUpChunks, leadSec: windowStart - chunkStart });
       const chunkEnd = Math.min(windowStart + chunkLen, end as number);
       const parts = buffer.filter((b) => endOf(b) > chunkStart && b.startSec < chunkEnd);
       const firstPart = parts[0] as Buffered;

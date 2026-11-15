@@ -12,7 +12,7 @@ import { registerLiveTools } from '../src/mcp.ts';
 import { dedupeOverlap, wordsOf } from '../src/overlap.ts';
 import { resolveLive } from '../src/resolve.ts';
 import type { LiveEvent } from '../src/types.ts';
-import { chooseStartSequence, watchLive } from '../src/watch.ts';
+import { chooseStartSequence, MAX_MERGED_SEC, nextChunkLength, watchLive } from '../src/watch.ts';
 import { matchYouTubeVideo } from '../src/youtube.ts';
 import {
   APOLLO_URL,
@@ -101,6 +101,24 @@ describe('HLS playlists (recorded from NASA live on YouTube)', () => {
       start: 323503,
       gap: { from: 323400, to: 323502 },
     });
+  });
+
+  it('merges waiting chunks to catch up, but never past the 60 s the keyless rung accepts', () => {
+    const next = (availSec: number, o: { chunkSec?: number; catchUpChunks?: number; leadSec?: number } = {}) =>
+      nextChunkLength({ availSec, chunkSec: o.chunkSec ?? 30, catchUpChunks: o.catchUpChunks ?? 3, leadSec: o.leadSec ?? 2 });
+    // Less than two chunks waiting: one chunk.
+    expect(next(30)).toBe(30);
+    expect(next(59)).toBe(30);
+    // Two or more waiting: merge, with the 2 s lead-in counted against the 60 s cap.
+    expect(next(60)).toBe(MAX_MERGED_SEC - 2);
+    expect(next(150)).toBe(58);
+    expect(next(150, { leadSec: 0 })).toBe(60);
+    // Short chunks merge up to catchUpChunks, below the cap.
+    expect(next(40, { chunkSec: 10 })).toBe(30);
+    expect(next(25, { chunkSec: 10 })).toBe(25);
+    // catchUpChunks 1 never merges; a chunkSec above the cap is kept as the caller chose it.
+    expect(next(150, { catchUpChunks: 1 })).toBe(30);
+    expect(next(400, { chunkSec: 90 })).toBe(90);
   });
 });
 
