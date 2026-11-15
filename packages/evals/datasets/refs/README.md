@@ -42,3 +42,4 @@ Creator-uploaded caption tracks of NASA (public domain) and TED, TED-Ed and TEDx
 | File | Video | Downloaded |
 |---|---|---|
 | `youtube-GB06dUoGGRI.creator-captions.en.json` | NASA, "How Do We Know the Earth Isn't Flat? We Asked a NASA Expert" | 2026-11-15 |
+| `youtube-qD0_yWgifDM.creator-captions.en.json` | TED-Ed, "The science of spiciness - Rose Eveleth" (`ted-ed-spiciness`) | 2026-11-15 |

@@ -171,6 +171,24 @@ Every labeled range was in the top 5 for both modes. On one video, hybrid ranked
 
 Reading these numbers: `ask` quotes are transcript excerpts it chooses from the numbered sources, not text the model writes, so its citation accuracy is high by construction; the meaningful number is that all 8 questions got a citation on the labeled place. `brief` quotes are written by the model and verified by insights with an 80% fuzzy word overlap; 2 of the 50 claims insights accepted fail this suite's exact-quote check (`g55-oil` and `add-tech`), and `add-tech` produced 15 cited claims, none on the labeled CarPlay passage. Those are findings for prompt 32 (brief), not fixed here.
 
-### Not yet measured
+### 2026-11-15: stt (word error rate)
 
-The `stt`, `captions` and `cleanup` suites need creator-caption references from YouTube. During this session YouTube answered every caption download from this VM with HTTP 429 (automated-traffic block, through both the innertube client and yt-dlp), so no WER table has been produced yet. The pipeline itself was verified end to end on "Me at the zoo" (whose creator captions are already recorded in the shared fixtures): audio through yt-dlp, three free and keyless rungs, scoring and report. That smoke run is not a results table: one 19-second clip is too small to compare rungs.
+Run on this repository's VM, `LIVE=1 WHISPER_CPP_MODEL=small npm run eval -- --suite stt --record --rungs stt/ovh/whisper-large-v3-turbo,stt/whisper-cpp/small`. Raw results: `packages/evals/results/2026-11-15-stt.json`, report next to it. Dataset `datasets/stt.json`, 29 items; 17 were scored: the 14 NASA Image and Video Library videos (12 English, 2 Spanish), the Apollo 11 clip, and the two YouTube videos whose creator captions could be downloaded that day (NASA "Earth isn't flat", TED-Ed "spiciness"). The other 12 YouTube items failed with `captions-blocked` (YouTube HTTP 429 on caption downloads from this VM) and are not in the numbers. About 31 minutes of audio, 5,647 reference words.
+
+Rungs: the keyless OVH Whisper rung and local whisper.cpp with the `small` model on CPU. The Cloudflare Workers AI rungs were not scored: the `CLOUDFLARE_API_TOKEN` on this VM was rejected ("Invalid API Token") that day. No other free-tier STT key was set.
+
+| Rung | Tier | Items | WER | CER | S / D / I | English WER | Spanish WER | p50 latency | p90 latency | RTF | Cost |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| `stt/ovh/whisper-large-v3-turbo` | keyless | 17 | 8.8% | 7.5% | 96 / 364 / 36 | 9.1% | 6.2% | 5.0 s | 8.0 s | 0.05 | $0 |
+| `stt/whisper-cpp/small` | local | 17 | 8.1% | 6.4% | 108 / 329 / 18 | 8.2% | 6.8% | 21.9 s | 33.4 s | 0.20 | $0 |
+
+WER and CER are pooled (total errors over total reference words or characters). Latency is per item (one 1 to 3.5 minute video). RTF is speech-to-text time over audio length.
+
+Reading these numbers:
+
+- Both rungs land near 8 to 9 percent, and most errors are deletions. Part of that is the references: NASA's captions include the on-screen question titles ("We Asked a NASA Scientist.") as cues, which are read by nobody, so every rung "deletes" them. Treat absolute WER as an upper bound and compare rungs with each other.
+- OVH scored 22.8 percent on the YouTube copy of "Earth isn't flat" against 8.7 percent for whisper.cpp, almost all deletions (49). OVH's keyless lane accepts 60 s per request, so `transcribeLong` splits the audio; the lost words suggest text is dropped at chunk boundaries. On "Have We Been to Uranus" the OVH text skips a whole sentence that whisper.cpp has ("The Voyager 2 spacecraft flew by the planet Uranus back in 1986"). That is a finding for the owners of core `transcribeLong` and the OVH rung, not fixed here.
+- The Apollo clip (1969 radio, 17 reference words) is hard for both: 29 and 41 percent. It is one segment, so its timing column means nothing.
+- OVH is about four times faster than whisper.cpp small on this CPU but was rate-limited (HTTP 429) several times during the run; `transcribeLong` waited those out, so the latency columns include no waits but the wall time did.
+
+A three-item run (`LIVE=1 npm run eval -- --suite stt --limit 3`, black hole, Recientemente, Apollo) gives the same per-item numbers.

@@ -1,0 +1,4315 @@
+{
+  "suite": "stt",
+  "date": "2026-11-15",
+  "startedAt": "2026-11-15T15:25:48.863Z",
+  "finishedAt": "2026-11-15T16:06:08.127Z",
+  "dataset": {
+    "file": "packages/evals/datasets/stt.json",
+    "items": 29,
+    "evaluated": 17
+  },
+  "environment": {
+    "node": "24.22.2",
+    "platform": "linux-x64",
+    "policy": "free",
+    "keyless": true,
+    "rungs": [
+      "stt/ovh/whisper-large-v3-turbo",
+      "stt/whisper-cpp/small"
+    ],
+    "envFiles": 1
+  },
+  "skippedRungs": [],
+  "notes": [],
+  "items": [
+    {
+      "item": "nasa-lib-black-hole",
+      "language": "en",
+      "videoId": "media:b833c14db9d938f3a5ca3c2bcc266ae2",
+      "rung": "stt/ovh/whisper-large-v3-turbo",
+      "tier": "keyless",
+      "outcome": "ok",
+      "wer": {
+        "matches": 223,
+        "substitutions": 1,
+        "deletions": 22,
+        "insertions": 0,
+        "refLength": 246,
+        "hypLength": 224,
+        "errors": 23,
+        "rate": 0.09349593495934959
+      },
+      "cer": {
+        "matches": 1011,
+        "substitutions": 4,
+        "deletions": 94,
+        "insertions": 0,
+        "refLength": 1109,
+        "hypLength": 1015,
+        "errors": 98,
+        "rate": 0.08836789900811542
+      },
+      "timing": {
+        "matched": 223,
+        "medianSec": 0.12912121212121264,
+        "p90Sec": 0.3873800000000004,
+        "maxSec": 0.8010069930069932
+      },
+      "latencyMs": 4162,
+      "wallMs": 322141,
+      "audioSec": 93.312,
+      "costUsd": 0,
+      "sample": "What is a black hole? Well the name is actually a little misleading because black holes aren't actually holes. They're regions in space that have a gravitational pull that is so strong that nothing can escape, not even light. Scientists know about two different sizes of black holes, stellar mass bla",
+      "attempts": [
+        {
+          "id": "mp3-frames",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "split",
+          "detail": "1 chunks of at most any size",
+          "ms": 3
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "rate-limited-429",
+          "detail": "chunk 1/1: ovh transcription: HTTP 429 {\n  \"message\":\"API rate limit exceeded\",\n  \"request_id\":\"ea63e417c296c9567aafd27fa8e22a0f\"\n}",
+          "ms": 1441
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "rate-limited-429",
+          "detail": "chunk 1/1: ovh transcription: HTTP 429 {\n  \"message\":\"API rate limit exceeded\",\n  \"request_id\":\"b4d5c0760da1f2683fc4f9565b019926\"\n}",
+          "ms": 1110
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "rate-limited-429",
+          "detail": "chunk 1/1: ovh transcription: HTTP 429 {\n  \"message\":\"API rate limit exceeded\",\n  \"request_id\":\"879b45199c922d78899923169f93755c\"\n}",
+          "ms": 1098
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "rate-limited-429",
+          "detail": "chunk 1/1: ovh transcription: HTTP 429 {\n  \"message\":\"API rate limit exceeded\",\n  \"request_id\":\"e987b50f9e752a1486cf5a39843fc60d\"\n}",
+          "ms": 1116
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "too-large-413",
+          "detail": "chunk 1/1: ovh transcription: HTTP 413 {\"message\":\"Audio duration too long, max duration allowed for unauthenticated users is 60 seconds\"}",
+          "ms": 1110
+        },
+        {
+          "id": "longform",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "resplit",
+          "detail": "chunk 1/1: every rung refused 93.3s as too large; splitting to 57.0s pieces"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "rate-limited-429",
+          "detail": "chunk 1/1 part 1/2: ovh transcription: HTTP 429 {\n  \"message\":\"API rate limit exceeded\",\n  \"request_id\":\"40dd25176956ba21c32472725aa2c049\"\n}",
+          "ms": 945
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 1/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 1/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 1/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 1/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 1/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 1970,
+          "detail": "chunk 1/1 part 1/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "rate-limited-429",
+          "detail": "chunk 1/1 part 2/2: ovh transcription: HTTP 429 {\n  \"message\":\"API rate limit exceeded\",\n  \"request_id\":\"b5954b2c78bca6696df057754aff9c01\"\n}",
+          "ms": 961
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 2192,
+          "detail": "chunk 1/1 part 2/2"
+        },
+        {
+          "id": "longform/stitch",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "aligned",
+          "detail": "chunk 1/1 seam 1/1 at 45.71s, 4 words matched"
+        }
+      ]
+    },
+    {
+      "item": "nasa-lib-black-hole",
+      "language": "en",
+      "videoId": "media:b833c14db9d938f3a5ca3c2bcc266ae2",
+      "rung": "stt/whisper-cpp/small",
+      "tier": "local",
+      "outcome": "ok",
+      "wer": {
+        "matches": 221,
+        "substitutions": 2,
+        "deletions": 23,
+        "insertions": 0,
+        "refLength": 246,
+        "hypLength": 223,
+        "errors": 25,
+        "rate": 0.1016260162601626
+      },
+      "cer": {
+        "matches": 1011,
+        "substitutions": 4,
+        "deletions": 94,
+        "insertions": 1,
+        "refLength": 1109,
+        "hypLength": 1016,
+        "errors": 99,
+        "rate": 0.08926961226330027
+      },
+      "timing": {
+        "matched": 221,
+        "medianSec": 0.2334040404040394,
+        "p90Sec": 0.6099607843137278,
+        "maxSec": 5.672
+      },
+      "latencyMs": 14921,
+      "wallMs": 14922,
+      "audioSec": 93.312,
+      "costUsd": 0,
+      "sample": "What is a black hole? Well, the name is actually a little misleading because black holes aren't actually holes. They're regions in space that have a gravitational pull that is so strong that nothing can escape, not even light. Scientists know about two different sizes of black holes, stellar mass bl",
+      "attempts": [
+        {
+          "id": "mp3-frames",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "split",
+          "detail": "1 chunks of at most any size",
+          "ms": 1
+        },
+        {
+          "id": "stt/whisper-cpp/small",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 14921,
+          "detail": "chunk 1/1"
+        }
+      ]
+    },
+    {
+      "item": "nasa-lib-recientemente",
+      "language": "es",
+      "videoId": "media:15fc54ad2e38617d86cd5f0817c5898b",
+      "rung": "stt/ovh/whisper-large-v3-turbo",
+      "tier": "keyless",
+      "outcome": "ok",
+      "wer": {
+        "matches": 358,
+        "substitutions": 5,
+        "deletions": 0,
+        "insertions": 7,
+        "refLength": 363,
+        "hypLength": 370,
+        "errors": 12,
+        "rate": 0.03305785123966942
+      },
+      "cer": {
+        "matches": 1778,
+        "substitutions": 6,
+        "deletions": 3,
+        "insertions": 29,
+        "refLength": 1787,
+        "hypLength": 1813,
+        "errors": 38,
+        "rate": 0.021264689423614997
+      },
+      "timing": {
+        "matched": 358,
+        "medianSec": 0.16659595959430362,
+        "p90Sec": 0.565438571426832,
+        "maxSec": 1.7285384615376245
+      },
+      "latencyMs": 6656,
+      "wallMs": 99635,
+      "audioSec": 130.464,
+      "costUsd": 0,
+      "sample": "El presidente solicita presupuesto para la NASA. Crew-5 regresa a salvo a la Tierra. Y un vistazo a un posible traje espacial para una misión a la Luna. Estas son algunas de las historias para contarles sobre lo que sucedió recientemente en la NASA. El presupuesto para el año fiscal 2024, publicado ",
+      "attempts": [
+        {
+          "id": "mp3-frames",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "split",
+          "detail": "1 chunks of at most any size",
+          "ms": 1
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "too-large-413",
+          "detail": "chunk 1/1: ovh transcription: HTTP 413 {\"message\":\"Audio duration too long, max duration allowed for unauthenticated users is 60 seconds\"}",
+          "ms": 1301
+        },
+        {
+          "id": "longform",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "resplit",
+          "detail": "chunk 1/1: every rung refused 130.5s as too large; splitting to 57.0s pieces"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "rate-limited-429",
+          "detail": "chunk 1/1 part 1/3: ovh transcription: HTTP 429 {\n  \"message\":\"API rate limit exceeded\",\n  \"request_id\":\"72ba01185ec4650004f6286701e7a853\"\n}",
+          "ms": 950
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 1/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 1/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 1/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 2240,
+          "detail": "chunk 1/1 part 1/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 2488,
+          "detail": "chunk 1/1 part 2/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "rate-limited-429",
+          "detail": "chunk 1/1 part 3/3: ovh transcription: HTTP 429 {\n  \"message\":\"API rate limit exceeded\",\n  \"request_id\":\"55af995d661ed4027b70d55831f95322\"\n}",
+          "ms": 642
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 3/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 3/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 3/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 3/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 1928,
+          "detail": "chunk 1/1 part 3/3"
+        },
+        {
+          "id": "longform/stitch",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "aligned",
+          "detail": "chunk 1/1 seam 1/2 at 42.72s, 7 words matched"
+        },
+        {
+          "id": "longform/stitch",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "aligned",
+          "detail": "chunk 1/1 seam 2/2 at 85.81s, 5 words matched"
+        }
+      ]
+    },
+    {
+      "item": "nasa-lib-recientemente",
+      "language": "es",
+      "videoId": "media:15fc54ad2e38617d86cd5f0817c5898b",
+      "rung": "stt/whisper-cpp/small",
+      "tier": "local",
+      "outcome": "ok",
+      "wer": {
+        "matches": 342,
+        "substitutions": 18,
+        "deletions": 3,
+        "insertions": 1,
+        "refLength": 363,
+        "hypLength": 361,
+        "errors": 22,
+        "rate": 0.06060606060606061
+      },
+      "cer": {
+        "matches": 1759,
+        "substitutions": 13,
+        "deletions": 15,
+        "insertions": 3,
+        "refLength": 1787,
+        "hypLength": 1775,
+        "errors": 31,
+        "rate": 0.017347509792949075
+      },
+      "timing": {
+        "matched": 342,
+        "medianSec": 0.2552142857142812,
+        "p90Sec": 0.6321621378621404,
+        "maxSec": 1.3060000000000045
+      },
+      "latencyMs": 27464,
+      "wallMs": 27467,
+      "audioSec": 130.464,
+      "costUsd": 0,
+      "sample": "El presidente solicita presupuesto para la NASA. Crew-5 regresa a Salvo a la Tierra, y un vistazo a un posible traje espacial para una misión a la Luna. Estas son algunas de las historias para contarles sobre lo que sucedió recientemente en la NASA. El presupuesto para el año fiscal 2024, publicado ",
+      "attempts": [
+        {
+          "id": "mp3-frames",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "split",
+          "detail": "1 chunks of at most any size",
+          "ms": 0
+        },
+        {
+          "id": "stt/whisper-cpp/small",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 27464,
+          "detail": "chunk 1/1"
+        }
+      ]
+    },
+    {
+      "item": "apollo11-small-step",
+      "language": "en",
+      "videoId": "file:38010fa474cd134a25d80936cf1877b2",
+      "rung": "stt/ovh/whisper-large-v3-turbo",
+      "tier": "keyless",
+      "outcome": "ok",
+      "wer": {
+        "matches": 15,
+        "substitutions": 2,
+        "deletions": 0,
+        "insertions": 3,
+        "refLength": 17,
+        "hypLength": 20,
+        "errors": 5,
+        "rate": 0.29411764705882354
+      },
+      "cer": {
+        "matches": 62,
+        "substitutions": 1,
+        "deletions": 0,
+        "insertions": 9,
+        "refLength": 63,
+        "hypLength": 72,
+        "errors": 10,
+        "rate": 0.15873015873015872
+      },
+      "timing": {
+        "matched": 15,
+        "medianSec": 2.405529411764709,
+        "p90Sec": 5.289341176470589,
+        "maxSec": 5.901058823529412
+      },
+      "latencyMs": 1371,
+      "wallMs": 32360,
+      "audioSec": 24.192,
+      "costUsd": 0,
+      "sample": "I'm going to step off the limb now That's one small step for man, one giant leap for mankind.",
+      "attempts": [
+        {
+          "id": "mp3-frames",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "split",
+          "detail": "1 chunks of at most any size",
+          "ms": 0
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "rate-limited-429",
+          "detail": "chunk 1/1: ovh transcription: HTTP 429 {\n  \"message\":\"API rate limit exceeded\",\n  \"request_id\":\"a2c07968253d9d5d4f3653188c67ee4b\"\n}",
+          "ms": 963
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 1371,
+          "detail": "chunk 1/1"
+        }
+      ]
+    },
+    {
+      "item": "apollo11-small-step",
+      "language": "en",
+      "videoId": "file:38010fa474cd134a25d80936cf1877b2",
+      "rung": "stt/whisper-cpp/small",
+      "tier": "local",
+      "outcome": "ok",
+      "wer": {
+        "matches": 14,
+        "substitutions": 3,
+        "deletions": 0,
+        "insertions": 4,
+        "refLength": 17,
+        "hypLength": 21,
+        "errors": 7,
+        "rate": 0.4117647058823529
+      },
+      "cer": {
+        "matches": 59,
+        "substitutions": 4,
+        "deletions": 0,
+        "insertions": 10,
+        "refLength": 63,
+        "hypLength": 73,
+        "errors": 14,
+        "rate": 0.2222222222222222
+      },
+      "timing": {
+        "matched": 14,
+        "medianSec": 2.026437908496731,
+        "p90Sec": 5.919196078431372,
+        "maxSec": 6.902352941176469
+      },
+      "latencyMs": 2876,
+      "wallMs": 2877,
+      "audioSec": 24.192,
+      "costUsd": 0,
+      "sample": "I'm going to step off the lambs now. That's one small step for man, one giant leap for man time.",
+      "attempts": [
+        {
+          "id": "mp3-frames",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "split",
+          "detail": "1 chunks of at most any size",
+          "ms": 1
+        },
+        {
+          "id": "stt/whisper-cpp/small",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 2876,
+          "detail": "chunk 1/1"
+        }
+      ]
+    },
+    {
+      "item": "nasa-lib-uranus",
+      "language": "en",
+      "videoId": "media:4e088fa3f3173e25edcb517e8774e49f",
+      "rung": "stt/ovh/whisper-large-v3-turbo",
+      "tier": "keyless",
+      "outcome": "ok",
+      "wer": {
+        "matches": 252,
+        "substitutions": 0,
+        "deletions": 46,
+        "insertions": 0,
+        "refLength": 298,
+        "hypLength": 252,
+        "errors": 46,
+        "rate": 0.15436241610738255
+      },
+      "cer": {
+        "matches": 1150,
+        "substitutions": 0,
+        "deletions": 203,
+        "insertions": 0,
+        "refLength": 1353,
+        "hypLength": 1150,
+        "errors": 203,
+        "rate": 0.15003695491500368
+      },
+      "timing": {
+        "matched": 252,
+        "medianSec": 0.17930757575695822,
+        "p90Sec": 0.4947357142845778,
+        "maxSec": 5.355708333333332
+      },
+      "latencyMs": 4634,
+      "wallMs": 118090,
+      "audioSec": 109.26,
+      "costUsd": 0,
+      "sample": "Have we ever been to the planet Uranus? The answer is simple. Yes, but only once. The Voyager spacecraft explored all four giant planets of our solar system. It revealed an extreme world, a planet that had been bowled over onto its side by some extreme cataclysm early in the formation of the solar s",
+      "attempts": [
+        {
+          "id": "mp3-frames",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "split",
+          "detail": "1 chunks of at most any size",
+          "ms": 0
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "rate-limited-429",
+          "detail": "chunk 1/1: ovh transcription: HTTP 429 {\n  \"message\":\"API rate limit exceeded\",\n  \"request_id\":\"6171410cddf3e30498b60b2254b8b55b\"\n}",
+          "ms": 1247
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "too-large-413",
+          "detail": "chunk 1/1: ovh transcription: HTTP 413 {\"message\":\"Audio duration too long, max duration allowed for unauthenticated users is 60 seconds\"}",
+          "ms": 1304
+        },
+        {
+          "id": "longform",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "resplit",
+          "detail": "chunk 1/1: every rung refused 109.3s as too large; splitting to 57.0s pieces"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 2196,
+          "detail": "chunk 1/1 part 1/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "rate-limited-429",
+          "detail": "chunk 1/1 part 2/2: ovh transcription: HTTP 429 {\n  \"message\":\"API rate limit exceeded\",\n  \"request_id\":\"649e692744adc85a03b66f7c7c754368\"\n}",
+          "ms": 801
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 2438,
+          "detail": "chunk 1/1 part 2/2"
+        },
+        {
+          "id": "longform/stitch",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "aligned",
+          "detail": "chunk 1/1 seam 1/1 at 53.19s, 7 words matched"
+        }
+      ]
+    },
+    {
+      "item": "nasa-lib-uranus",
+      "language": "en",
+      "videoId": "media:4e088fa3f3173e25edcb517e8774e49f",
+      "rung": "stt/whisper-cpp/small",
+      "tier": "local",
+      "outcome": "ok",
+      "wer": {
+        "matches": 272,
+        "substitutions": 2,
+        "deletions": 24,
+        "insertions": 0,
+        "refLength": 298,
+        "hypLength": 274,
+        "errors": 26,
+        "rate": 0.087248322147651
+      },
+      "cer": {
+        "matches": 1247,
+        "substitutions": 3,
+        "deletions": 103,
+        "insertions": 2,
+        "refLength": 1353,
+        "hypLength": 1252,
+        "errors": 108,
+        "rate": 0.07982261640798226
+      },
+      "timing": {
+        "matched": 272,
+        "medianSec": 0.25947478991596995,
+        "p90Sec": 0.5798980769230724,
+        "maxSec": 4.604
+      },
+      "latencyMs": 22681,
+      "wallMs": 22685,
+      "audioSec": 109.26,
+      "costUsd": 0,
+      "sample": "Have we ever been to the planet Uranus? The answer is simple. Yes, but only once. The Voyager 2 spacecraft flew by the planet Uranus back in 1986, during a golden era where the Voyager spacecraft explored all four giant planets of our solar system. It revealed an extreme world, a planet that had bee",
+      "attempts": [
+        {
+          "id": "mp3-frames",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "split",
+          "detail": "1 chunks of at most any size",
+          "ms": 1
+        },
+        {
+          "id": "stt/whisper-cpp/small",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 22681,
+          "detail": "chunk 1/1"
+        }
+      ]
+    },
+    {
+      "item": "nasa-lib-space-dangers",
+      "language": "en",
+      "videoId": "media:63c8389f8073f3d3ffdbd93a0b05fd51",
+      "rung": "stt/ovh/whisper-large-v3-turbo",
+      "tier": "keyless",
+      "outcome": "ok",
+      "wer": {
+        "matches": 210,
+        "substitutions": 4,
+        "deletions": 25,
+        "insertions": 2,
+        "refLength": 239,
+        "hypLength": 216,
+        "errors": 31,
+        "rate": 0.1297071129707113
+      },
+      "cer": {
+        "matches": 955,
+        "substitutions": 2,
+        "deletions": 109,
+        "insertions": 5,
+        "refLength": 1066,
+        "hypLength": 962,
+        "errors": 116,
+        "rate": 0.10881801125703565
+      },
+      "timing": {
+        "matched": 210,
+        "medianSec": 0.22766666666623436,
+        "p90Sec": 0.6577514285722117,
+        "maxSec": 0.9280588235302787
+      },
+      "latencyMs": 3779,
+      "wallMs": 35864,
+      "audioSec": 88.668,
+      "costUsd": 0,
+      "sample": "what are the dangers of going into space for human space flight the first thing i think about is the astronauts actually strapping themselves to a rocket. And if that isn't dangerous enough, once they launch and they're out into space and deep exploration, we have to worry about radiation. Radiation",
+      "attempts": [
+        {
+          "id": "mp3-frames",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "split",
+          "detail": "1 chunks of at most any size",
+          "ms": 1
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "too-large-413",
+          "detail": "chunk 1/1: ovh transcription: HTTP 413 {\"message\":\"Audio duration too long, max duration allowed for unauthenticated users is 60 seconds\"}",
+          "ms": 1117
+        },
+        {
+          "id": "longform",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "resplit",
+          "detail": "chunk 1/1: every rung refused 88.7s as too large; splitting to 57.0s pieces"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "rate-limited-429",
+          "detail": "chunk 1/1 part 1/2: ovh transcription: HTTP 429 {\n  \"message\":\"API rate limit exceeded\",\n  \"request_id\":\"f45bba2d6942a774855592112f94714e\"\n}",
+          "ms": 953
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 1/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 1/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 1816,
+          "detail": "chunk 1/1 part 1/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 1963,
+          "detail": "chunk 1/1 part 2/2"
+        },
+        {
+          "id": "longform/stitch",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "aligned",
+          "detail": "chunk 1/1 seam 1/1 at 43.23s, 5 words matched"
+        }
+      ]
+    },
+    {
+      "item": "nasa-lib-space-dangers",
+      "language": "en",
+      "videoId": "media:63c8389f8073f3d3ffdbd93a0b05fd51",
+      "rung": "stt/whisper-cpp/small",
+      "tier": "local",
+      "outcome": "ok",
+      "wer": {
+        "matches": 209,
+        "substitutions": 3,
+        "deletions": 27,
+        "insertions": 0,
+        "refLength": 239,
+        "hypLength": 212,
+        "errors": 30,
+        "rate": 0.12552301255230125
+      },
+      "cer": {
+        "matches": 946,
+        "substitutions": 7,
+        "deletions": 113,
+        "insertions": 4,
+        "refLength": 1066,
+        "hypLength": 957,
+        "errors": 124,
+        "rate": 0.11632270168855535
+      },
+      "timing": {
+        "matched": 209,
+        "medianSec": 0.3407142857142844,
+        "p90Sec": 0.7149742857142841,
+        "maxSec": 5.538
+      },
+      "latencyMs": 18395,
+      "wallMs": 18398,
+      "audioSec": 88.668,
+      "costUsd": 0,
+      "sample": "What are the dangers of going into space? For human spaceflight, the first thing I think about is the astronauts actually strapping themselves to a rocket and if that isn't dangerous enough, once they launch and they're out into space and deep exploration, we have to worry about radiation. Astronaut",
+      "attempts": [
+        {
+          "id": "mp3-frames",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "split",
+          "detail": "1 chunks of at most any size",
+          "ms": 0
+        },
+        {
+          "id": "stt/whisper-cpp/small",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 18395,
+          "detail": "chunk 1/1"
+        }
+      ]
+    },
+    {
+      "item": "nasa-lib-moon-horizon",
+      "language": "en",
+      "videoId": "media:8bf3c9a2c444d0d789ce3cd80bca09de",
+      "rung": "stt/ovh/whisper-large-v3-turbo",
+      "tier": "keyless",
+      "outcome": "ok",
+      "wer": {
+        "matches": 215,
+        "substitutions": 0,
+        "deletions": 26,
+        "insertions": 0,
+        "refLength": 241,
+        "hypLength": 215,
+        "errors": 26,
+        "rate": 0.1078838174273859
+      },
+      "cer": {
+        "matches": 948,
+        "substitutions": 0,
+        "deletions": 108,
+        "insertions": 0,
+        "refLength": 1056,
+        "hypLength": 948,
+        "errors": 108,
+        "rate": 0.10227272727272728
+      },
+      "timing": {
+        "matched": 215,
+        "medianSec": 0.15899999999999892,
+        "p90Sec": 0.363779740260013,
+        "maxSec": 0.633636363637045
+      },
+      "latencyMs": 4990,
+      "wallMs": 98092,
+      "audioSec": 79.092,
+      "costUsd": 0,
+      "sample": "So, why does the moon look larger on the horizon? The short answer is, we don't know. We've been talking about this for 2,000 years. Aristotle mentions it. And in our own time, scientists are designing experiments to figure out exactly what's going on. But there's no consensus yet. Here's what we do",
+      "attempts": [
+        {
+          "id": "mp3-frames",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "split",
+          "detail": "1 chunks of at most any size",
+          "ms": 1
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "rate-limited-429",
+          "detail": "chunk 1/1: ovh transcription: HTTP 429 {\n  \"message\":\"API rate limit exceeded\",\n  \"request_id\":\"51c57e35f554ef335b44e55db4c77837\"\n}",
+          "ms": 1254
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "too-large-413",
+          "detail": "chunk 1/1: ovh transcription: HTTP 413 {\"message\":\"Audio duration too long, max duration allowed for unauthenticated users is 60 seconds\"}",
+          "ms": 1149
+        },
+        {
+          "id": "longform",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "resplit",
+          "detail": "chunk 1/1: every rung refused 79.1s as too large; splitting to 57.0s pieces"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 2326,
+          "detail": "chunk 1/1 part 1/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "rate-limited-429",
+          "detail": "chunk 1/1 part 2/2: ovh transcription: HTTP 429 {\n  \"message\":\"API rate limit exceeded\",\n  \"request_id\":\"5024300ffe85ed0fe08829030ff75556\"\n}",
+          "ms": 636
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 2664,
+          "detail": "chunk 1/1 part 2/2"
+        },
+        {
+          "id": "longform/stitch",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "aligned",
+          "detail": "chunk 1/1 seam 1/1 at 39.18s, 2 words matched"
+        }
+      ]
+    },
+    {
+      "item": "nasa-lib-moon-horizon",
+      "language": "en",
+      "videoId": "media:8bf3c9a2c444d0d789ce3cd80bca09de",
+      "rung": "stt/whisper-cpp/small",
+      "tier": "local",
+      "outcome": "ok",
+      "wer": {
+        "matches": 215,
+        "substitutions": 0,
+        "deletions": 26,
+        "insertions": 0,
+        "refLength": 241,
+        "hypLength": 215,
+        "errors": 26,
+        "rate": 0.1078838174273859
+      },
+      "cer": {
+        "matches": 948,
+        "substitutions": 0,
+        "deletions": 108,
+        "insertions": 0,
+        "refLength": 1056,
+        "hypLength": 948,
+        "errors": 108,
+        "rate": 0.10227272727272728
+      },
+      "timing": {
+        "matched": 215,
+        "medianSec": 0.2678571428571459,
+        "p90Sec": 0.5428666666666664,
+        "maxSec": 5.338
+      },
+      "latencyMs": 15366,
+      "wallMs": 15368,
+      "audioSec": 79.092,
+      "costUsd": 0,
+      "sample": "So why does the moon look larger on the horizon? The short answer is, we don't know. We've been talking about this for 2,000 years. Aristotle mentions it. And in our own time, scientists are designing experiments to figure out exactly what's going on. But there's no consensus yet. Here's what we do ",
+      "attempts": [
+        {
+          "id": "mp3-frames",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "split",
+          "detail": "1 chunks of at most any size",
+          "ms": 0
+        },
+        {
+          "id": "stt/whisper-cpp/small",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 15366,
+          "detail": "chunk 1/1"
+        }
+      ]
+    },
+    {
+      "item": "nasa-lib-zero-gravity",
+      "language": "en",
+      "videoId": "media:f557aea8751192b50eb2c1f093c6b14e",
+      "rung": "stt/ovh/whisper-large-v3-turbo",
+      "tier": "keyless",
+      "outcome": "ok",
+      "wer": {
+        "matches": 422,
+        "substitutions": 3,
+        "deletions": 29,
+        "insertions": 0,
+        "refLength": 454,
+        "hypLength": 425,
+        "errors": 32,
+        "rate": 0.07048458149779736
+      },
+      "cer": {
+        "matches": 1899,
+        "substitutions": 8,
+        "deletions": 119,
+        "insertions": 2,
+        "refLength": 2026,
+        "hypLength": 1909,
+        "errors": 129,
+        "rate": 0.06367226061204344
+      },
+      "timing": {
+        "matched": 422,
+        "medianSec": 0.1606320346294936,
+        "p90Sec": 0.43476727272657345,
+        "maxSec": 0.9642500000000007
+      },
+      "latencyMs": 6511,
+      "wallMs": 160895,
+      "audioSec": 132.48,
+      "costUsd": 0,
+      "sample": "Actually, when astronauts do experiments on the International Space Station, for instance, to look at the effect of the space environment on organisms. That environment is actually technically called microgravity. That is, things feel weightless, but we're still under the influence of Earth's gravit",
+      "attempts": [
+        {
+          "id": "mp3-frames",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "split",
+          "detail": "1 chunks of at most any size",
+          "ms": 0
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "rate-limited-429",
+          "detail": "chunk 1/1: ovh transcription: HTTP 429 {\n  \"message\":\"API rate limit exceeded\",\n  \"request_id\":\"7011b301ebb48468bbec9f57ea931a7a\"\n}",
+          "ms": 1289
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "too-large-413",
+          "detail": "chunk 1/1: ovh transcription: HTTP 413 {\"message\":\"Audio duration too long, max duration allowed for unauthenticated users is 60 seconds\"}",
+          "ms": 1404
+        },
+        {
+          "id": "longform",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "resplit",
+          "detail": "chunk 1/1: every rung refused 132.5s as too large; splitting to 57.0s pieces"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 1943,
+          "detail": "chunk 1/1 part 1/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "rate-limited-429",
+          "detail": "chunk 1/1 part 2/3: ovh transcription: HTTP 429 {\n  \"message\":\"API rate limit exceeded\",\n  \"request_id\":\"a6884b60e6b4e86d8d53667dbc9a0165\"\n}",
+          "ms": 616
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 2411,
+          "detail": "chunk 1/1 part 2/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "rate-limited-429",
+          "detail": "chunk 1/1 part 3/3: ovh transcription: HTTP 429 {\n  \"message\":\"API rate limit exceeded\",\n  \"request_id\":\"2dd951363b6ab810a667ca108df3b07a\"\n}",
+          "ms": 950
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 3/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 3/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 3/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 3/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 2157,
+          "detail": "chunk 1/1 part 3/3"
+        },
+        {
+          "id": "longform/stitch",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "aligned",
+          "detail": "chunk 1/1 seam 1/2 at 42.71s, 9 words matched"
+        },
+        {
+          "id": "longform/stitch",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "aligned",
+          "detail": "chunk 1/1 seam 2/2 at 87.14s, 7 words matched"
+        }
+      ]
+    },
+    {
+      "item": "nasa-lib-zero-gravity",
+      "language": "en",
+      "videoId": "media:f557aea8751192b50eb2c1f093c6b14e",
+      "rung": "stt/whisper-cpp/small",
+      "tier": "local",
+      "outcome": "ok",
+      "wer": {
+        "matches": 423,
+        "substitutions": 3,
+        "deletions": 28,
+        "insertions": 0,
+        "refLength": 454,
+        "hypLength": 426,
+        "errors": 31,
+        "rate": 0.06828193832599119
+      },
+      "cer": {
+        "matches": 1904,
+        "substitutions": 6,
+        "deletions": 116,
+        "insertions": 2,
+        "refLength": 2026,
+        "hypLength": 1912,
+        "errors": 124,
+        "rate": 0.06120434353405726
+      },
+      "timing": {
+        "matched": 423,
+        "medianSec": 0.18599999999999994,
+        "p90Sec": 0.4432769230769239,
+        "maxSec": 0.8999230769230735
+      },
+      "latencyMs": 27550,
+      "wallMs": 27552,
+      "audioSec": 132.48,
+      "costUsd": 0,
+      "sample": "[Music] Actually, when astronauts do experiments on the International Space Station, for instance, to look at the effect of the space environment on organisms, that environment is actually technically called microgravity. That is, things feel weightless, but we're still under the influence of Earth'",
+      "attempts": [
+        {
+          "id": "mp3-frames",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "split",
+          "detail": "1 chunks of at most any size",
+          "ms": 0
+        },
+        {
+          "id": "stt/whisper-cpp/small",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 27550,
+          "detail": "chunk 1/1"
+        }
+      ]
+    },
+    {
+      "item": "nasa-lib-planet-names",
+      "language": "en",
+      "videoId": "media:7025f35850370eb17c1bb88bddaae6d1",
+      "rung": "stt/ovh/whisper-large-v3-turbo",
+      "tier": "keyless",
+      "outcome": "ok",
+      "wer": {
+        "matches": 385,
+        "substitutions": 11,
+        "deletions": 24,
+        "insertions": 3,
+        "refLength": 420,
+        "hypLength": 399,
+        "errors": 38,
+        "rate": 0.09047619047619047
+      },
+      "cer": {
+        "matches": 1770,
+        "substitutions": 14,
+        "deletions": 116,
+        "insertions": 15,
+        "refLength": 1900,
+        "hypLength": 1799,
+        "errors": 145,
+        "rate": 0.07631578947368421
+      },
+      "timing": {
+        "matched": 385,
+        "medianSec": 0.1938785425101237,
+        "p90Sec": 0.5551783333321424,
+        "maxSec": 1.078647058822341
+      },
+      "latencyMs": 5382,
+      "wallMs": 88480,
+      "audioSec": 105.732,
+      "costUsd": 0,
+      "sample": "So if you stick back in time, thousands of years ago, people knew about the brightest planets pretty much everywhere. These are Mercury, Venus, Mars, Jupiter, and Saturn. Pretty much every culture knew about these five planets because they could easily see up in the sky. They had different names for",
+      "attempts": [
+        {
+          "id": "mp3-frames",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "split",
+          "detail": "1 chunks of at most any size",
+          "ms": 1
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "rate-limited-429",
+          "detail": "chunk 1/1: ovh transcription: HTTP 429 {\n  \"message\":\"API rate limit exceeded\",\n  \"request_id\":\"89ce9e0839acc308db836121e6befd16\"\n}",
+          "ms": 1094
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "too-large-413",
+          "detail": "chunk 1/1: ovh transcription: HTTP 413 {\"message\":\"Audio duration too long, max duration allowed for unauthenticated users is 60 seconds\"}",
+          "ms": 1151
+        },
+        {
+          "id": "longform",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "resplit",
+          "detail": "chunk 1/1: every rung refused 105.7s as too large; splitting to 57.0s pieces"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 2799,
+          "detail": "chunk 1/1 part 1/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "rate-limited-429",
+          "detail": "chunk 1/1 part 2/2: ovh transcription: HTTP 429 {\n  \"message\":\"API rate limit exceeded\",\n  \"request_id\":\"8d2db92f2f9313415d1d7b22d413b66f\"\n}",
+          "ms": 794
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 2583,
+          "detail": "chunk 1/1 part 2/2"
+        },
+        {
+          "id": "longform/stitch",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "aligned",
+          "detail": "chunk 1/1 seam 1/1 at 51.68s, 4 words matched"
+        }
+      ]
+    },
+    {
+      "item": "nasa-lib-planet-names",
+      "language": "en",
+      "videoId": "media:7025f35850370eb17c1bb88bddaae6d1",
+      "rung": "stt/whisper-cpp/small",
+      "tier": "local",
+      "outcome": "ok",
+      "wer": {
+        "matches": 378,
+        "substitutions": 15,
+        "deletions": 27,
+        "insertions": 3,
+        "refLength": 420,
+        "hypLength": 396,
+        "errors": 45,
+        "rate": 0.10714285714285714
+      },
+      "cer": {
+        "matches": 1746,
+        "substitutions": 29,
+        "deletions": 125,
+        "insertions": 16,
+        "refLength": 1900,
+        "hypLength": 1791,
+        "errors": 170,
+        "rate": 0.08947368421052632
+      },
+      "timing": {
+        "matched": 378,
+        "medianSec": 0.1804607142857133,
+        "p90Sec": 0.5058593939393944,
+        "maxSec": 5.9719999999999995
+      },
+      "latencyMs": 23427,
+      "wallMs": 23429,
+      "audioSec": 105.732,
+      "costUsd": 0,
+      "sample": "So if you stick back in time, thousands of years ago, people knew about the brightest planets pretty much everywhere. These are Mercury, Venus, Mars, Jupiter, and Saturn. Pretty much every culture knew about these five planets because they could easily see up in the sky. They had different names for",
+      "attempts": [
+        {
+          "id": "mp3-frames",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "split",
+          "detail": "1 chunks of at most any size",
+          "ms": 0
+        },
+        {
+          "id": "stt/whisper-cpp/small",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 23427,
+          "detail": "chunk 1/1"
+        }
+      ]
+    },
+    {
+      "item": "nasa-lib-found-life",
+      "language": "en",
+      "videoId": "media:632c5fb846d126b5bf339c2375b04856",
+      "rung": "stt/ovh/whisper-large-v3-turbo",
+      "tier": "keyless",
+      "outcome": "ok",
+      "wer": {
+        "matches": 647,
+        "substitutions": 1,
+        "deletions": 33,
+        "insertions": 0,
+        "refLength": 681,
+        "hypLength": 648,
+        "errors": 34,
+        "rate": 0.049926578560939794
+      },
+      "cer": {
+        "matches": 2881,
+        "substitutions": 2,
+        "deletions": 135,
+        "insertions": 1,
+        "refLength": 3018,
+        "hypLength": 2884,
+        "errors": 138,
+        "rate": 0.04572564612326044
+      },
+      "timing": {
+        "matched": 647,
+        "medianSec": 0.19733333333019232,
+        "p90Sec": 0.4854454014939321,
+        "maxSec": 1.036294117647067
+      },
+      "latencyMs": 9898,
+      "wallMs": 103476,
+      "audioSec": 207.324,
+      "costUsd": 0,
+      "sample": "What would it take for you personally to confidently stand up in front of an international audience and make that claim. When you put it in that way, I think for a lot of scientists, the bar is really high. So of course there would be obvious things, you know, a very clear signature of technology or",
+      "attempts": [
+        {
+          "id": "mp3-frames",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "split",
+          "detail": "1 chunks of at most any size",
+          "ms": 1
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "too-large-413",
+          "detail": "chunk 1/1: ovh transcription: HTTP 413 {\"message\":\"Audio duration too long, max duration allowed for unauthenticated users is 60 seconds\"}",
+          "ms": 1780
+        },
+        {
+          "id": "longform",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "resplit",
+          "detail": "chunk 1/1: every rung refused 207.3s as too large; splitting to 57.0s pieces"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "rate-limited-429",
+          "detail": "chunk 1/1 part 1/4: ovh transcription: HTTP 429 {\n  \"message\":\"API rate limit exceeded\",\n  \"request_id\":\"9cb1d8192b2e6f17bf8177779631f103\"\n}",
+          "ms": 928
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 1/4"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 1/4"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 2346,
+          "detail": "chunk 1/1 part 1/4"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 2533,
+          "detail": "chunk 1/1 part 2/4"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "rate-limited-429",
+          "detail": "chunk 1/1 part 3/4: ovh transcription: HTTP 429 {\n  \"message\":\"API rate limit exceeded\",\n  \"request_id\":\"2f36ae7cfd4ea916f25b2d471b6ed043\"\n}",
+          "ms": 792
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 3/4"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 3/4"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 3/4"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 3/4"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 3/4"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 2776,
+          "detail": "chunk 1/1 part 3/4"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 2243,
+          "detail": "chunk 1/1 part 4/4"
+        },
+        {
+          "id": "longform/stitch",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "aligned",
+          "detail": "chunk 1/1 seam 1/3 at 50.80s, 7 words matched"
+        },
+        {
+          "id": "longform/stitch",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "aligned",
+          "detail": "chunk 1/1 seam 2/3 at 102.92s, 7 words matched"
+        },
+        {
+          "id": "longform/stitch",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "aligned",
+          "detail": "chunk 1/1 seam 3/3 at 154.76s, 4 words matched"
+        }
+      ]
+    },
+    {
+      "item": "nasa-lib-found-life",
+      "language": "en",
+      "videoId": "media:632c5fb846d126b5bf339c2375b04856",
+      "rung": "stt/whisper-cpp/small",
+      "tier": "local",
+      "outcome": "ok",
+      "wer": {
+        "matches": 653,
+        "substitutions": 2,
+        "deletions": 26,
+        "insertions": 0,
+        "refLength": 681,
+        "hypLength": 655,
+        "errors": 28,
+        "rate": 0.041116005873715125
+      },
+      "cer": {
+        "matches": 2902,
+        "substitutions": 5,
+        "deletions": 111,
+        "insertions": 2,
+        "refLength": 3018,
+        "hypLength": 2909,
+        "errors": 118,
+        "rate": 0.0390987408880053
+      },
+      "timing": {
+        "matched": 653,
+        "medianSec": 0.19989473684211134,
+        "p90Sec": 0.621068355957769,
+        "maxSec": 6.633
+      },
+      "latencyMs": 40237,
+      "wallMs": 40241,
+      "audioSec": 207.324,
+      "costUsd": 0,
+      "sample": "We call this the podium test. What would it take for you personally to confidently stand up in front of an international audience and make that claim? When you put it in that way, I think for a lot of scientists, the bar is really high. So of course, there would be obvious things, you know, a very c",
+      "attempts": [
+        {
+          "id": "mp3-frames",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "split",
+          "detail": "1 chunks of at most any size",
+          "ms": 2
+        },
+        {
+          "id": "stt/whisper-cpp/small",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 40237,
+          "detail": "chunk 1/1"
+        }
+      ]
+    },
+    {
+      "item": "nasa-lib-spinoff",
+      "language": "en",
+      "videoId": "media:2d3be2fb14cf02734e71494824e2102b",
+      "rung": "stt/ovh/whisper-large-v3-turbo",
+      "tier": "keyless",
+      "outcome": "ok",
+      "wer": {
+        "matches": 291,
+        "substitutions": 5,
+        "deletions": 18,
+        "insertions": 0,
+        "refLength": 314,
+        "hypLength": 296,
+        "errors": 23,
+        "rate": 0.0732484076433121
+      },
+      "cer": {
+        "matches": 1369,
+        "substitutions": 11,
+        "deletions": 86,
+        "insertions": 2,
+        "refLength": 1466,
+        "hypLength": 1382,
+        "errors": 99,
+        "rate": 0.06753069577080491
+      },
+      "timing": {
+        "matched": 291,
+        "medianSec": 0.27999999999802583,
+        "p90Sec": 0.6866666666660777,
+        "maxSec": 5.550000000001987
+      },
+      "latencyMs": 6029,
+      "wallMs": 79249,
+      "audioSec": 110.664,
+      "costUsd": 0,
+      "sample": "Well, to answer that question, we're going to have to go all the way back to 1958, back to the legislation that originally created the space agency, NASA. So in that legislation, there's some forward looking language that says, make sure that all the cool stuff you develop for space doesn't just get",
+      "attempts": [
+        {
+          "id": "mp3-frames",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "split",
+          "detail": "1 chunks of at most any size",
+          "ms": 2
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "rate-limited-429",
+          "detail": "chunk 1/1: ovh transcription: HTTP 429 {\n  \"message\":\"API rate limit exceeded\",\n  \"request_id\":\"45ec254472137d1a4b1719015289f859\"\n}",
+          "ms": 1238
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "too-large-413",
+          "detail": "chunk 1/1: ovh transcription: HTTP 413 {\"message\":\"Audio duration too long, max duration allowed for unauthenticated users is 60 seconds\"}",
+          "ms": 1297
+        },
+        {
+          "id": "longform",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "resplit",
+          "detail": "chunk 1/1: every rung refused 110.7s as too large; splitting to 57.0s pieces"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 1815,
+          "detail": "chunk 1/1 part 1/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "rate-limited-429",
+          "detail": "chunk 1/1 part 2/3: ovh transcription: HTTP 429 {\n  \"message\":\"API rate limit exceeded\",\n  \"request_id\":\"2176c45d9eb4593412fc362e3d09ca71\"\n}",
+          "ms": 637
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 2286,
+          "detail": "chunk 1/1 part 2/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 1928,
+          "detail": "chunk 1/1 part 3/3"
+        },
+        {
+          "id": "longform/stitch",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "aligned",
+          "detail": "chunk 1/1 seam 1/2 at 35.52s, 4 words matched"
+        },
+        {
+          "id": "longform/stitch",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "aligned",
+          "detail": "chunk 1/1 seam 2/2 at 72.08s, 3 words matched"
+        }
+      ]
+    },
+    {
+      "item": "nasa-lib-spinoff",
+      "language": "en",
+      "videoId": "media:2d3be2fb14cf02734e71494824e2102b",
+      "rung": "stt/whisper-cpp/small",
+      "tier": "local",
+      "outcome": "ok",
+      "wer": {
+        "matches": 290,
+        "substitutions": 2,
+        "deletions": 22,
+        "insertions": 1,
+        "refLength": 314,
+        "hypLength": 293,
+        "errors": 25,
+        "rate": 0.07961783439490445
+      },
+      "cer": {
+        "matches": 1363,
+        "substitutions": 1,
+        "deletions": 102,
+        "insertions": 2,
+        "refLength": 1466,
+        "hypLength": 1366,
+        "errors": 105,
+        "rate": 0.07162346521145975
+      },
+      "timing": {
+        "matched": 290,
+        "medianSec": 0.2771190476190526,
+        "p90Sec": 0.7273333333333399,
+        "maxSec": 6.3
+      },
+      "latencyMs": 18892,
+      "wallMs": 18894,
+      "audioSec": 110.664,
+      "costUsd": 0,
+      "sample": "Well, to answer that question, we're going to have to go all the way back to 1958. Back to the legislation that originally created the Space Agency NASA. So in that legislation, there's some forward-looking language that says, \"Make sure that all the cool stuff you develop for space doesn't just get",
+      "attempts": [
+        {
+          "id": "mp3-frames",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "split",
+          "detail": "1 chunks of at most any size",
+          "ms": 1
+        },
+        {
+          "id": "stt/whisper-cpp/small",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 18892,
+          "detail": "chunk 1/1"
+        }
+      ]
+    },
+    {
+      "item": "nasa-lib-northern-lights",
+      "language": "en",
+      "videoId": "media:27c24a387ccb592d20119ded04edff29",
+      "rung": "stt/ovh/whisper-large-v3-turbo",
+      "tier": "keyless",
+      "outcome": "ok",
+      "wer": {
+        "matches": 239,
+        "substitutions": 2,
+        "deletions": 25,
+        "insertions": 0,
+        "refLength": 266,
+        "hypLength": 241,
+        "errors": 27,
+        "rate": 0.10150375939849623
+      },
+      "cer": {
+        "matches": 1049,
+        "substitutions": 0,
+        "deletions": 106,
+        "insertions": 0,
+        "refLength": 1155,
+        "hypLength": 1049,
+        "errors": 106,
+        "rate": 0.09177489177489177
+      },
+      "timing": {
+        "matched": 239,
+        "medianSec": 0.23532727272727172,
+        "p90Sec": 0.6504666666659834,
+        "maxSec": 1.2409999999988628
+      },
+      "latencyMs": 4115,
+      "wallMs": 97227,
+      "audioSec": 103.14,
+      "costUsd": 0,
+      "sample": "To see the northern lights, you need to be in the right place at the right time. Auroras are the result of charged particles and magnetism from the sun called space weather, dancing with the Earth's magnetic field, and they happen far above the clouds. So you need clear skies, good space weather at ",
+      "attempts": [
+        {
+          "id": "mp3-frames",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "split",
+          "detail": "1 chunks of at most any size",
+          "ms": 1
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "rate-limited-429",
+          "detail": "chunk 1/1: ovh transcription: HTTP 429 {\n  \"message\":\"API rate limit exceeded\",\n  \"request_id\":\"4c600d7c0204e10eb32d220906acc563\"\n}",
+          "ms": 1106
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "too-large-413",
+          "detail": "chunk 1/1: ovh transcription: HTTP 413 {\"message\":\"Audio duration too long, max duration allowed for unauthenticated users is 60 seconds\"}",
+          "ms": 1167
+        },
+        {
+          "id": "longform",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "resplit",
+          "detail": "chunk 1/1: every rung refused 103.1s as too large; splitting to 57.0s pieces"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 2077,
+          "detail": "chunk 1/1 part 1/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "rate-limited-429",
+          "detail": "chunk 1/1 part 2/2: ovh transcription: HTTP 429 {\n  \"message\":\"API rate limit exceeded\",\n  \"request_id\":\"0d576e27ac625067a1d27d1dad4ec637\"\n}",
+          "ms": 780
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 2038,
+          "detail": "chunk 1/1 part 2/2"
+        },
+        {
+          "id": "longform/stitch",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "aligned",
+          "detail": "chunk 1/1 seam 1/1 at 50.51s, 6 words matched"
+        }
+      ]
+    },
+    {
+      "item": "nasa-lib-northern-lights",
+      "language": "en",
+      "videoId": "media:27c24a387ccb592d20119ded04edff29",
+      "rung": "stt/whisper-cpp/small",
+      "tier": "local",
+      "outcome": "ok",
+      "wer": {
+        "matches": 238,
+        "substitutions": 3,
+        "deletions": 25,
+        "insertions": 0,
+        "refLength": 266,
+        "hypLength": 241,
+        "errors": 28,
+        "rate": 0.10526315789473684
+      },
+      "cer": {
+        "matches": 1049,
+        "substitutions": 0,
+        "deletions": 106,
+        "insertions": 1,
+        "refLength": 1155,
+        "hypLength": 1050,
+        "errors": 107,
+        "rate": 0.09264069264069263
+      },
+      "timing": {
+        "matched": 238,
+        "medianSec": 0.32858333333333345,
+        "p90Sec": 0.766197147950091,
+        "maxSec": 6.773
+      },
+      "latencyMs": 17189,
+      "wallMs": 17190,
+      "audioSec": 103.14,
+      "costUsd": 0,
+      "sample": "To see the northern lights, you need to be in the right place at the right time. Aurora's are the results of charged particles and magnetism from the sun called space weather, dancing with the Earth's magnetic field, and they happen far above the clouds. So you need clear skies, good space weather a",
+      "attempts": [
+        {
+          "id": "mp3-frames",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "split",
+          "detail": "1 chunks of at most any size",
+          "ms": 0
+        },
+        {
+          "id": "stt/whisper-cpp/small",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 17189,
+          "detail": "chunk 1/1"
+        }
+      ]
+    },
+    {
+      "item": "nasa-lib-polar-ice",
+      "language": "en",
+      "videoId": "media:6efef7ccef975d8541bf1149b385243b",
+      "rung": "stt/ovh/whisper-large-v3-turbo",
+      "tier": "keyless",
+      "outcome": "ok",
+      "wer": {
+        "matches": 214,
+        "substitutions": 0,
+        "deletions": 18,
+        "insertions": 0,
+        "refLength": 232,
+        "hypLength": 214,
+        "errors": 18,
+        "rate": 0.07758620689655173
+      },
+      "cer": {
+        "matches": 915,
+        "substitutions": 0,
+        "deletions": 82,
+        "insertions": 0,
+        "refLength": 997,
+        "hypLength": 915,
+        "errors": 82,
+        "rate": 0.08224674022066199
+      },
+      "timing": {
+        "matched": 214,
+        "medianSec": 0.1381331738437055,
+        "p90Sec": 0.4317114035087727,
+        "maxSec": 0.7525
+      },
+      "latencyMs": 3839,
+      "wallMs": 36107,
+      "audioSec": 76.536,
+      "costUsd": 0,
+      "sample": "Is polar ice melting? the simple and straightforward answer is yes it is in fact melting but it's a bit more complicated than that you can think of ice sheets or antarctica and greenland as a bathtub full of water and we want to know how much is going into that bathtub and how much is coming out so ",
+      "attempts": [
+        {
+          "id": "mp3-frames",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "split",
+          "detail": "1 chunks of at most any size",
+          "ms": 0
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "too-large-413",
+          "detail": "chunk 1/1: ovh transcription: HTTP 413 {\"message\":\"Audio duration too long, max duration allowed for unauthenticated users is 60 seconds\"}",
+          "ms": 1301
+        },
+        {
+          "id": "longform",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "resplit",
+          "detail": "chunk 1/1: every rung refused 76.5s as too large; splitting to 57.0s pieces"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "rate-limited-429",
+          "detail": "chunk 1/1 part 1/2: ovh transcription: HTTP 429 {\n  \"message\":\"API rate limit exceeded\",\n  \"request_id\":\"d29c743f5a80937307709a52f3c89372\"\n}",
+          "ms": 944
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 1/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 1/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 2020,
+          "detail": "chunk 1/1 part 1/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 1819,
+          "detail": "chunk 1/1 part 2/2"
+        },
+        {
+          "id": "longform/stitch",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "aligned",
+          "detail": "chunk 1/1 seam 1/1 at 37.18s, 5 words matched"
+        }
+      ]
+    },
+    {
+      "item": "nasa-lib-polar-ice",
+      "language": "en",
+      "videoId": "media:6efef7ccef975d8541bf1149b385243b",
+      "rung": "stt/whisper-cpp/small",
+      "tier": "local",
+      "outcome": "ok",
+      "wer": {
+        "matches": 213,
+        "substitutions": 1,
+        "deletions": 18,
+        "insertions": 0,
+        "refLength": 232,
+        "hypLength": 214,
+        "errors": 19,
+        "rate": 0.08189655172413793
+      },
+      "cer": {
+        "matches": 915,
+        "substitutions": 0,
+        "deletions": 82,
+        "insertions": 1,
+        "refLength": 997,
+        "hypLength": 916,
+        "errors": 83,
+        "rate": 0.08324974924774323
+      },
+      "timing": {
+        "matched": 213,
+        "medianSec": 0.28187499999999943,
+        "p90Sec": 0.5242000000000004,
+        "maxSec": 3.1324999999999994
+      },
+      "latencyMs": 13586,
+      "wallMs": 13587,
+      "audioSec": 76.536,
+      "costUsd": 0,
+      "sample": "Is polar ice melting? The simple and straightforward answer is yes, it is in fact melting, but it's a bit more complicated than that. You can think of ice sheets or Antarctica and Greenland as a bathtub full of water and we want to know how much is going into that bathtub and how much is coming out.",
+      "attempts": [
+        {
+          "id": "mp3-frames",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "split",
+          "detail": "1 chunks of at most any size",
+          "ms": 1
+        },
+        {
+          "id": "stt/whisper-cpp/small",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 13586,
+          "detail": "chunk 1/1"
+        }
+      ]
+    },
+    {
+      "item": "nasa-lib-earthquakes",
+      "language": "en",
+      "videoId": "media:933a47b055ddd2ecf17dbcc0acd777e0",
+      "rung": "stt/ovh/whisper-large-v3-turbo",
+      "tier": "keyless",
+      "outcome": "ok",
+      "wer": {
+        "matches": 249,
+        "substitutions": 11,
+        "deletions": 21,
+        "insertions": 4,
+        "refLength": 281,
+        "hypLength": 264,
+        "errors": 36,
+        "rate": 0.12811387900355872
+      },
+      "cer": {
+        "matches": 1248,
+        "substitutions": 2,
+        "deletions": 111,
+        "insertions": 0,
+        "refLength": 1361,
+        "hypLength": 1250,
+        "errors": 113,
+        "rate": 0.08302718589272594
+      },
+      "timing": {
+        "matched": 249,
+        "medianSec": 0.13722222222335745,
+        "p90Sec": 0.48490023310023256,
+        "maxSec": 0.9773055555544232
+      },
+      "latencyMs": 4656,
+      "wallMs": 107749,
+      "audioSec": 102.96,
+      "costUsd": 0,
+      "sample": "Yes, definitely, but on other worlds, these aren't called Earthquakes, they're called moonquakes , or Marsquakes, if they're on the moon and Mars. We know that these exist because we actually sent seismometers to the moon and to Mars. And when we sent seismometers to these worlds, we actually found ",
+      "attempts": [
+        {
+          "id": "mp3-frames",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "split",
+          "detail": "1 chunks of at most any size",
+          "ms": 0
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "rate-limited-429",
+          "detail": "chunk 1/1: ovh transcription: HTTP 429 {\n  \"message\":\"API rate limit exceeded\",\n  \"request_id\":\"21cd223b5c327b767e30b032500a5e1a\"\n}",
+          "ms": 1111
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "too-large-413",
+          "detail": "chunk 1/1: ovh transcription: HTTP 413 {\"message\":\"Audio duration too long, max duration allowed for unauthenticated users is 60 seconds\"}",
+          "ms": 1127
+        },
+        {
+          "id": "longform",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "resplit",
+          "detail": "chunk 1/1: every rung refused 103.0s as too large; splitting to 57.0s pieces"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 1923,
+          "detail": "chunk 1/1 part 1/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "rate-limited-429",
+          "detail": "chunk 1/1 part 2/2: ovh transcription: HTTP 429 {\n  \"message\":\"API rate limit exceeded\",\n  \"request_id\":\"da957b087addbb3c9be4bd7e91e2622b\"\n}",
+          "ms": 782
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 2733,
+          "detail": "chunk 1/1 part 2/2"
+        },
+        {
+          "id": "longform/stitch",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "aligned",
+          "detail": "chunk 1/1 seam 1/1 at 50.18s, 7 words matched"
+        }
+      ]
+    },
+    {
+      "item": "nasa-lib-earthquakes",
+      "language": "en",
+      "videoId": "media:933a47b055ddd2ecf17dbcc0acd777e0",
+      "rung": "stt/whisper-cpp/small",
+      "tier": "local",
+      "outcome": "ok",
+      "wer": {
+        "matches": 253,
+        "substitutions": 6,
+        "deletions": 22,
+        "insertions": 0,
+        "refLength": 281,
+        "hypLength": 259,
+        "errors": 28,
+        "rate": 0.099644128113879
+      },
+      "cer": {
+        "matches": 1247,
+        "substitutions": 0,
+        "deletions": 114,
+        "insertions": 0,
+        "refLength": 1361,
+        "hypLength": 1247,
+        "errors": 114,
+        "rate": 0.08376193975018369
+      },
+      "timing": {
+        "matched": 253,
+        "medianSec": 0.2574000000000005,
+        "p90Sec": 0.6670005602240907,
+        "maxSec": 5.446
+      },
+      "latencyMs": 18266,
+      "wallMs": 18267,
+      "audioSec": 102.96,
+      "costUsd": 0,
+      "sample": "Yes, definitely. But on other worlds, these aren't called earthquakes, they're called moonquakes or Marsquakes if they're on the Moon and Mars. We know that these exist because we actually sent seismometers to the Moon and to Mars. And when we sent seismometers to these worlds, we actually found tho",
+      "attempts": [
+        {
+          "id": "mp3-frames",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "split",
+          "detail": "1 chunks of at most any size",
+          "ms": 0
+        },
+        {
+          "id": "stt/whisper-cpp/small",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 18266,
+          "detail": "chunk 1/1"
+        }
+      ]
+    },
+    {
+      "item": "nasa-lib-moon-rocks",
+      "language": "en",
+      "videoId": "media:80f530b5eba7f7cf327ecd8d65031363",
+      "rung": "stt/ovh/whisper-large-v3-turbo",
+      "tier": "keyless",
+      "outcome": "ok",
+      "wer": {
+        "matches": 207,
+        "substitutions": 1,
+        "deletions": 24,
+        "insertions": 1,
+        "refLength": 232,
+        "hypLength": 209,
+        "errors": 26,
+        "rate": 0.11206896551724138
+      },
+      "cer": {
+        "matches": 880,
+        "substitutions": 2,
+        "deletions": 107,
+        "insertions": 4,
+        "refLength": 989,
+        "hypLength": 886,
+        "errors": 113,
+        "rate": 0.11425682507583418
+      },
+      "timing": {
+        "matched": 207,
+        "medianSec": 0.15119999999999933,
+        "p90Sec": 0.41095714285684015,
+        "maxSec": 0.6512941176470566
+      },
+      "latencyMs": 3895,
+      "wallMs": 36004,
+      "audioSec": 69.696,
+      "costUsd": 0,
+      "sample": "We're in the lunar curation facility here, and this is where the moon rocks are stored. I'm super excited about the upcoming Artemis missions because we're going to go back to the Moon. We're going to go to the South Pole. We're going to bring back different samples this time. Studying moon rocks is",
+      "attempts": [
+        {
+          "id": "mp3-frames",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "split",
+          "detail": "1 chunks of at most any size",
+          "ms": 1
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "too-large-413",
+          "detail": "chunk 1/1: ovh transcription: HTTP 413 {\"message\":\"Audio duration too long, max duration allowed for unauthenticated users is 60 seconds\"}",
+          "ms": 1145
+        },
+        {
+          "id": "longform",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "resplit",
+          "detail": "chunk 1/1: every rung refused 69.7s as too large; splitting to 57.0s pieces"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "rate-limited-429",
+          "detail": "chunk 1/1 part 1/2: ovh transcription: HTTP 429 {\n  \"message\":\"API rate limit exceeded\",\n  \"request_id\":\"79504a03bec1bf223609ab42a5698b5c\"\n}",
+          "ms": 948
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 1/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 1/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 1777,
+          "detail": "chunk 1/1 part 1/2"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 2118,
+          "detail": "chunk 1/1 part 2/2"
+        },
+        {
+          "id": "longform/stitch",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "aligned",
+          "detail": "chunk 1/1 seam 1/1 at 33.30s, 6 words matched"
+        }
+      ]
+    },
+    {
+      "item": "nasa-lib-moon-rocks",
+      "language": "en",
+      "videoId": "media:80f530b5eba7f7cf327ecd8d65031363",
+      "rung": "stt/whisper-cpp/small",
+      "tier": "local",
+      "outcome": "ok",
+      "wer": {
+        "matches": 193,
+        "substitutions": 17,
+        "deletions": 22,
+        "insertions": 3,
+        "refLength": 232,
+        "hypLength": 213,
+        "errors": 42,
+        "rate": 0.1810344827586207
+      },
+      "cer": {
+        "matches": 869,
+        "substitutions": 18,
+        "deletions": 102,
+        "insertions": 15,
+        "refLength": 989,
+        "hypLength": 902,
+        "errors": 135,
+        "rate": 0.1365015166835187
+      },
+      "timing": {
+        "matched": 193,
+        "medianSec": 0.25900000000000034,
+        "p90Sec": 0.6588571428571443,
+        "maxSec": 5.793
+      },
+      "latencyMs": 22268,
+      "wallMs": 22273,
+      "audioSec": 69.696,
+      "costUsd": 0,
+      "sample": "We're in the Mooner Curation Facility here, and this is where the Mooner Oaks is stored. I'm super excited about the upcoming launch of this mission because we're going to go back to the Moon, we're going to go to the South Pole, we're going to bring back different samples this time. Studying Mooner",
+      "attempts": [
+        {
+          "id": "mp3-frames",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "split",
+          "detail": "1 chunks of at most any size",
+          "ms": 1
+        },
+        {
+          "id": "stt/whisper-cpp/small",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 22268,
+          "detail": "chunk 1/1"
+        }
+      ]
+    },
+    {
+      "item": "nasa-lib-rubio-treadmill",
+      "language": "es",
+      "videoId": "media:abd56704e5f555c2886ca040e531a79d",
+      "rung": "stt/ovh/whisper-large-v3-turbo",
+      "tier": "keyless",
+      "outcome": "ok",
+      "wer": {
+        "matches": 323,
+        "substitutions": 15,
+        "deletions": 4,
+        "insertions": 13,
+        "refLength": 342,
+        "hypLength": 351,
+        "errors": 32,
+        "rate": 0.0935672514619883
+      },
+      "cer": {
+        "matches": 1396,
+        "substitutions": 15,
+        "deletions": 34,
+        "insertions": 53,
+        "refLength": 1445,
+        "hypLength": 1464,
+        "errors": 102,
+        "rate": 0.07058823529411765
+      },
+      "timing": {
+        "matched": 323,
+        "medianSec": 0.5451012145779544,
+        "p90Sec": 2.2084361445752734,
+        "maxSec": 5.1467469879487595
+      },
+      "latencyMs": 6578,
+      "wallMs": 100143,
+      "audioSec": 153.108,
+      "costUsd": 0,
+      "sample": "Ok, amigos, aquí estamos en el nodo 3, aquí es donde hacemos ejercicio, ok, primero les enseño la cinta de correr, claro, la cinta como les dije está al lado, entonces mientras corremos, estamos viendo hacia el piso y corremos en la cinta, más temprano les enseñé cuando Soltan estaba corriendo, pero",
+      "attempts": [
+        {
+          "id": "mp3-frames",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "split",
+          "detail": "1 chunks of at most any size",
+          "ms": 2
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "rate-limited-429",
+          "detail": "chunk 1/1: ovh transcription: HTTP 429 {\n  \"message\":\"API rate limit exceeded\",\n  \"request_id\":\"4f4f5f34936f01439035560462602a28\"\n}",
+          "ms": 1260
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "too-large-413",
+          "detail": "chunk 1/1: ovh transcription: HTTP 413 {\"message\":\"Audio duration too long, max duration allowed for unauthenticated users is 60 seconds\"}",
+          "ms": 1453
+        },
+        {
+          "id": "longform",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "resplit",
+          "detail": "chunk 1/1: every rung refused 153.1s as too large; splitting to 57.0s pieces"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 2181,
+          "detail": "chunk 1/1 part 1/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "rate-limited-429",
+          "detail": "chunk 1/1 part 2/3: ovh transcription: HTTP 429 {\n  \"message\":\"API rate limit exceeded\",\n  \"request_id\":\"82b2ff5a09912e2daeb69939f870fc2a\"\n}",
+          "ms": 778
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 2273,
+          "detail": "chunk 1/1 part 2/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 2124,
+          "detail": "chunk 1/1 part 3/3"
+        },
+        {
+          "id": "longform/stitch",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "aligned",
+          "detail": "chunk 1/1 seam 1/2 at 49.65s, 3 words matched"
+        },
+        {
+          "id": "longform/stitch",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "silence",
+          "detail": "chunk 1/1 seam 2/2 at 101.11s"
+        }
+      ]
+    },
+    {
+      "item": "nasa-lib-rubio-treadmill",
+      "language": "es",
+      "videoId": "media:abd56704e5f555c2886ca040e531a79d",
+      "rung": "stt/whisper-cpp/small",
+      "tier": "local",
+      "outcome": "ok",
+      "wer": {
+        "matches": 318,
+        "substitutions": 18,
+        "deletions": 6,
+        "insertions": 2,
+        "refLength": 342,
+        "hypLength": 338,
+        "errors": 26,
+        "rate": 0.07602339181286549
+      },
+      "cer": {
+        "matches": 1401,
+        "substitutions": 16,
+        "deletions": 28,
+        "insertions": 10,
+        "refLength": 1445,
+        "hypLength": 1427,
+        "errors": 54,
+        "rate": 0.03737024221453287
+      },
+      "timing": {
+        "matched": 318,
+        "medianSec": 0.471623931623931,
+        "p90Sec": 0.8997613636363627,
+        "maxSec": 2.211294117647057
+      },
+      "latencyMs": 28844,
+      "wallMs": 28847,
+      "audioSec": 153.108,
+      "costUsd": 0,
+      "sample": "Ok amigos, aquí estamos en el nodo 3. Aquí es a donde hacemos ejercicio. Ok, primero les enseño la cinta de correr. Claro, la cinta, como les dije, está al lado, entonces mientras corremos, estamos viendo hacia el piso y corremos en la cinta. Más temprano les enseñé cuando Solsan estaba corriendo, p",
+      "attempts": [
+        {
+          "id": "mp3-frames",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "split",
+          "detail": "1 chunks of at most any size",
+          "ms": 1
+        },
+        {
+          "id": "stt/whisper-cpp/small",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 28844,
+          "detail": "chunk 1/1"
+        }
+      ]
+    },
+    {
+      "item": "nasa-flat-earth",
+      "language": "en",
+      "videoId": "youtube:GB06dUoGGRI",
+      "rung": "stt/ovh/whisper-large-v3-turbo",
+      "tier": "keyless",
+      "outcome": "ok",
+      "wer": {
+        "matches": 275,
+        "substitutions": 32,
+        "deletions": 49,
+        "insertions": 0,
+        "refLength": 356,
+        "hypLength": 307,
+        "errors": 81,
+        "rate": 0.22752808988764045
+      },
+      "cer": {
+        "matches": 1174,
+        "substitutions": 151,
+        "deletions": 120,
+        "insertions": 22,
+        "refLength": 1445,
+        "hypLength": 1347,
+        "errors": 293,
+        "rate": 0.2027681660899654
+      },
+      "timing": {
+        "matched": 275,
+        "medianSec": 0.2711428571407879,
+        "p90Sec": 0.7571428571428579,
+        "maxSec": 2.6550000000020617
+      },
+      "latencyMs": 5666,
+      "wallMs": 89123,
+      "audioSec": 114,
+      "costUsd": 0,
+      "sample": "that's a great question in fact two or three thousand years ago ancient people on this planet that did great things figured out that the earth was round it was a sphere this was a magical revelation for the greeks and the egyptians who were able to see from the motions of the stars and the way the s",
+      "attempts": [
+        {
+          "id": "mp3-frames",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "split",
+          "detail": "1 chunks of at most any size",
+          "ms": 1
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "rate-limited-429",
+          "detail": "chunk 1/1: ovh transcription: HTTP 429 {\n  \"message\":\"API rate limit exceeded\",\n  \"request_id\":\"c0b6a462477fae6aa0908c36658cd00c\"\n}",
+          "ms": 1281
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "too-large-413",
+          "detail": "chunk 1/1: ovh transcription: HTTP 413 {\"message\":\"Audio duration too long, max duration allowed for unauthenticated users is 60 seconds\"}",
+          "ms": 1459
+        },
+        {
+          "id": "longform",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "resplit",
+          "detail": "chunk 1/1: every rung refused 113.9s as too large; splitting to 57.0s pieces"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 1655,
+          "detail": "chunk 1/1 part 1/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "rate-limited-429",
+          "detail": "chunk 1/1 part 2/3: ovh transcription: HTTP 429 {\n  \"message\":\"API rate limit exceeded\",\n  \"request_id\":\"b015b915d3fb384610a62f5d3eb75715\"\n}",
+          "ms": 649
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 2196,
+          "detail": "chunk 1/1 part 2/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 1815,
+          "detail": "chunk 1/1 part 3/3"
+        },
+        {
+          "id": "longform/stitch",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "aligned",
+          "detail": "chunk 1/1 seam 1/2 at 36.81s, 5 words matched"
+        },
+        {
+          "id": "longform/stitch",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "aligned",
+          "detail": "chunk 1/1 seam 2/2 at 74.82s, 4 words matched"
+        }
+      ]
+    },
+    {
+      "item": "nasa-flat-earth",
+      "language": "en",
+      "videoId": "youtube:GB06dUoGGRI",
+      "rung": "stt/whisper-cpp/small",
+      "tier": "local",
+      "outcome": "ok",
+      "wer": {
+        "matches": 325,
+        "substitutions": 4,
+        "deletions": 27,
+        "insertions": 0,
+        "refLength": 356,
+        "hypLength": 329,
+        "errors": 31,
+        "rate": 0.08707865168539326
+      },
+      "cer": {
+        "matches": 1338,
+        "substitutions": 4,
+        "deletions": 103,
+        "insertions": 2,
+        "refLength": 1445,
+        "hypLength": 1344,
+        "errors": 109,
+        "rate": 0.0754325259515571
+      },
+      "timing": {
+        "matched": 325,
+        "medianSec": 0.18822368421052715,
+        "p90Sec": 0.5172000000000007,
+        "maxSec": 6.139
+      },
+      "latencyMs": 21890,
+      "wallMs": 21892,
+      "audioSec": 114,
+      "costUsd": 0,
+      "sample": "That's a great question. In fact, two or three thousand years ago, ancient people on this planet that did great things figured out that the Earth was round. It was a sphere. This was a magical revelation for the Greeks and the Egyptians who were able to see from the motions of the stars and the way ",
+      "attempts": [
+        {
+          "id": "mp3-frames",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "split",
+          "detail": "1 chunks of at most any size",
+          "ms": 1
+        },
+        {
+          "id": "stt/whisper-cpp/small",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 21890,
+          "detail": "chunk 1/1"
+        }
+      ]
+    },
+    {
+      "item": "dw-kurz-und-leicht",
+      "language": "de",
+      "videoId": "youtube:I7LkhKr24lY",
+      "rung": "reference",
+      "outcome": "error",
+      "reason": "captions-blocked",
+      "detail": "youtube-captions: YouTube captions de: YouTube answered HTTP 429 (automated-traffic block).; ytdlp-captions: yt-dlp captions: Unable to download video subtitles for 'de': HTTP Error 429: Too Many Requests",
+      "attempts": [
+        {
+          "id": "youtube",
+          "stage": "resolve",
+          "outcome": "ok",
+          "detail": "youtube:I7LkhKr24lY"
+        },
+        {
+          "id": "youtube",
+          "stage": "metadata",
+          "outcome": "ok",
+          "ms": 1293
+        },
+        {
+          "id": "youtube-captions",
+          "stage": "captions",
+          "outcome": "error",
+          "reason": "blocked",
+          "detail": "YouTube captions de: YouTube answered HTTP 429 (automated-traffic block).",
+          "ms": 394
+        },
+        {
+          "id": "ytdlp-captions",
+          "stage": "captions",
+          "outcome": "error",
+          "reason": "rate-limited",
+          "detail": "yt-dlp captions: Unable to download video subtitles for 'de': HTTP Error 429: Too Many Requests",
+          "ms": 7968
+        }
+      ]
+    },
+    {
+      "item": "tedx-one-minute",
+      "language": "en",
+      "videoId": "youtube:1aA1WGON49E",
+      "rung": "reference",
+      "outcome": "error",
+      "reason": "captions-blocked",
+      "detail": "youtube-captions: YouTube caption downloads are paused for 592s more: YouTube blocked this IP address 9s ago, so this request was not sent. The blocked request: YouTube captions de: YouTube answered HTTP 429 (automated-traffic block).; ytdlp-captions: yt-dlp captions: Unable to download video subtit",
+      "attempts": [
+        {
+          "id": "youtube",
+          "stage": "resolve",
+          "outcome": "ok",
+          "detail": "youtube:1aA1WGON49E"
+        },
+        {
+          "id": "youtube",
+          "stage": "metadata",
+          "outcome": "ok",
+          "ms": 1015
+        },
+        {
+          "id": "youtube-captions",
+          "stage": "captions",
+          "outcome": "error",
+          "reason": "blocked",
+          "detail": "YouTube caption downloads are paused for 592s more: YouTube blocked this IP address 9s ago, so this request was not sent. The blocked request: YouTube captions de: YouTube answered HTTP 429 (automated-traffic block).",
+          "ms": 1
+        },
+        {
+          "id": "ytdlp-captions",
+          "stage": "captions",
+          "outcome": "error",
+          "reason": "rate-limited",
+          "detail": "yt-dlp captions: Unable to download video subtitles for 'en': HTTP Error 429: Too Many Requests",
+          "ms": 7925
+        }
+      ]
+    },
+    {
+      "item": "nasa-sea-level",
+      "language": "en",
+      "videoId": "youtube:WadD54Ywvz4",
+      "rung": "reference",
+      "outcome": "error",
+      "reason": "captions-blocked",
+      "detail": "youtube-captions: YouTube caption downloads are paused for 582s more: YouTube blocked this IP address 18s ago, so this request was not sent. The blocked request: YouTube captions de: YouTube answered HTTP 429 (automated-traffic block).; ytdlp-captions: yt-dlp captions: Unable to download video subti",
+      "attempts": [
+        {
+          "id": "youtube",
+          "stage": "resolve",
+          "outcome": "ok",
+          "detail": "youtube:WadD54Ywvz4"
+        },
+        {
+          "id": "youtube",
+          "stage": "metadata",
+          "outcome": "ok",
+          "ms": 1332
+        },
+        {
+          "id": "youtube-captions",
+          "stage": "captions",
+          "outcome": "error",
+          "reason": "blocked",
+          "detail": "YouTube caption downloads are paused for 582s more: YouTube blocked this IP address 18s ago, so this request was not sent. The blocked request: YouTube captions de: YouTube answered HTTP 429 (automated-traffic block).",
+          "ms": 0
+        },
+        {
+          "id": "ytdlp-captions",
+          "stage": "captions",
+          "outcome": "error",
+          "reason": "rate-limited",
+          "detail": "yt-dlp captions: Unable to download video subtitles for 'en': HTTP Error 429: Too Many Requests",
+          "ms": 8597
+        }
+      ]
+    },
+    {
+      "item": "nasa-spacecraft-comms",
+      "language": "en",
+      "videoId": "youtube:MDMM9MZNcco",
+      "rung": "reference",
+      "outcome": "error",
+      "reason": "captions-blocked",
+      "detail": "youtube-captions: YouTube caption downloads are paused for 573s more: YouTube blocked this IP address 28s ago, so this request was not sent. The blocked request: YouTube captions de: YouTube answered HTTP 429 (automated-traffic block).; ytdlp-captions: yt-dlp captions: Unable to download video subti",
+      "attempts": [
+        {
+          "id": "youtube",
+          "stage": "resolve",
+          "outcome": "ok",
+          "detail": "youtube:MDMM9MZNcco"
+        },
+        {
+          "id": "youtube",
+          "stage": "metadata",
+          "outcome": "ok",
+          "ms": 873
+        },
+        {
+          "id": "youtube-captions",
+          "stage": "captions",
+          "outcome": "error",
+          "reason": "blocked",
+          "detail": "YouTube caption downloads are paused for 573s more: YouTube blocked this IP address 28s ago, so this request was not sent. The blocked request: YouTube captions de: YouTube answered HTTP 429 (automated-traffic block).",
+          "ms": 1
+        },
+        {
+          "id": "ytdlp-captions",
+          "stage": "captions",
+          "outcome": "error",
+          "reason": "rate-limited",
+          "detail": "yt-dlp captions: Unable to download video subtitles for 'en': HTTP Error 429: Too Many Requests",
+          "ms": 7956
+        }
+      ]
+    },
+    {
+      "item": "ted-ed-spiciness",
+      "language": "en",
+      "videoId": "youtube:qD0_yWgifDM",
+      "rung": "stt/ovh/whisper-large-v3-turbo",
+      "tier": "keyless",
+      "outcome": "ok",
+      "wer": {
+        "matches": 662,
+        "substitutions": 3,
+        "deletions": 0,
+        "insertions": 3,
+        "refLength": 665,
+        "hypLength": 668,
+        "errors": 6,
+        "rate": 0.009022556390977444
+      },
+      "cer": {
+        "matches": 3077,
+        "substitutions": 2,
+        "deletions": 3,
+        "insertions": 6,
+        "refLength": 3082,
+        "hypLength": 3085,
+        "errors": 11,
+        "rate": 0.0035691109669046075
+      },
+      "timing": {
+        "matched": 662,
+        "medianSec": 0.24463888888841367,
+        "p90Sec": 0.5385513461560307,
+        "maxSec": 1.275666666666666
+      },
+      "latencyMs": 15514,
+      "wallMs": 271519,
+      "audioSec": 234,
+      "costUsd": 0,
+      "sample": "Why does your mouth feel like it's on fire when you eat a spicy pepper? And how do you soothe the burn? Why does wasabi make your eyes water? And how spicy is the spiciest spice? Let's back up a bit. First, what is spiciness? Even though we often say that something tastes spicy, it's not actually a ",
+      "attempts": [
+        {
+          "id": "mp3-frames",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "split",
+          "detail": "1 chunks of at most any size",
+          "ms": 0
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "too-large-413",
+          "detail": "chunk 1/1: ovh transcription: HTTP 413 {\"message\":\"Audio duration too long, max duration allowed for unauthenticated users is 60 seconds\"}",
+          "ms": 1483
+        },
+        {
+          "id": "longform",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "resplit",
+          "detail": "chunk 1/1: every rung refused 234.5s as too large; splitting to 57.0s pieces"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 2254,
+          "detail": "chunk 1/1 part 1/5"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "rate-limited-429",
+          "detail": "chunk 1/1 part 2/5: ovh transcription: HTTP 429 {\n  \"message\":\"API rate limit exceeded\",\n  \"request_id\":\"b8f684293e60bd27ad72144889c84965\"\n}",
+          "ms": 801
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/5"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 2/5"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 2605,
+          "detail": "chunk 1/1 part 2/5"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 2144,
+          "detail": "chunk 1/1 part 3/5"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "rate-limited-429",
+          "detail": "chunk 1/1 part 4/5: ovh transcription: HTTP 429 {\n  \"message\":\"API rate limit exceeded\",\n  \"request_id\":\"7d152b423f954e51f5cf032ee328eb74\"\n}",
+          "ms": 801
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 4/5"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 4/5"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 4/5"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 4/5"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "too-large-413",
+          "detail": "chunk 1/1 part 4/5: ovh transcription: HTTP 413 {\"message\":\"Audio duration too long, max duration allowed for unauthenticated users is 60 seconds\"}",
+          "ms": 1284
+        },
+        {
+          "id": "longform",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "resplit",
+          "detail": "chunk 1/1 part 4/5: every rung refused 48.9s as too large; splitting to 24.4s pieces"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 1302,
+          "detail": "chunk 1/1 part 4/5 part 1/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "rate-limited-429",
+          "detail": "chunk 1/1 part 4/5 part 2/3: ovh transcription: HTTP 429 {\n  \"message\":\"API rate limit exceeded\",\n  \"request_id\":\"6c03b12aa6385e56054e13658b123a15\"\n}",
+          "ms": 482
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 4/5 part 2/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 4/5 part 2/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 4/5 part 2/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 4/5 part 2/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 4/5 part 2/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 1503,
+          "detail": "chunk 1/1 part 4/5 part 2/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 1350,
+          "detail": "chunk 1/1 part 4/5 part 3/3"
+        },
+        {
+          "id": "longform/stitch",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "aligned",
+          "detail": "chunk 1/1 part 4/5 seam 1/2 at 15.32s, 4 words matched"
+        },
+        {
+          "id": "longform/stitch",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "aligned",
+          "detail": "chunk 1/1 part 4/5 seam 2/2 at 32.04s, 4 words matched"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "rate-limited-429",
+          "detail": "chunk 1/1 part 5/5 part 1/3: ovh transcription: HTTP 429 {\n  \"message\":\"API rate limit exceeded\",\n  \"request_id\":\"10861f67732dab31f00a9c6d3aef1b4b\"\n}",
+          "ms": 468
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 5/5 part 1/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 5/5 part 1/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 5/5 part 1/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 5/5 part 1/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 1539,
+          "detail": "chunk 1/1 part 5/5 part 1/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 1613,
+          "detail": "chunk 1/1 part 5/5 part 2/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "error",
+          "reason": "rate-limited-429",
+          "detail": "chunk 1/1 part 5/5 part 3/3: ovh transcription: HTTP 429 {\n  \"message\":\"API rate limit exceeded\",\n  \"request_id\":\"0720e21566510e6851e8e30e80f8861d\"\n}",
+          "ms": 481
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 5/5 part 3/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 5/5 part 3/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 5/5 part 3/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 5/5 part 3/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "skipped",
+          "reason": "cooldown",
+          "detail": "chunk 1/1 part 5/5 part 3/3"
+        },
+        {
+          "id": "stt/ovh/whisper-large-v3-turbo",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 1204,
+          "detail": "chunk 1/1 part 5/5 part 3/3"
+        },
+        {
+          "id": "longform/stitch",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "aligned",
+          "detail": "chunk 1/1 part 5/5 seam 1/2 at 15.37s, 6 words matched"
+        },
+        {
+          "id": "longform/stitch",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "aligned",
+          "detail": "chunk 1/1 part 5/5 seam 2/2 at 31.14s, 9 words matched"
+        },
+        {
+          "id": "longform/stitch",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "aligned",
+          "detail": "chunk 1/1 seam 1/4 at 45.99s, 7 words matched"
+        },
+        {
+          "id": "longform/stitch",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "time-cut",
+          "detail": "chunk 1/1 seam 2/4 at 92.83s"
+        },
+        {
+          "id": "longform/stitch",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "aligned",
+          "detail": "chunk 1/1 seam 3/4 at 139.51s, 3 words matched"
+        },
+        {
+          "id": "longform/stitch",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "aligned",
+          "detail": "chunk 1/1 seam 4/4 at 186.28s, 7 words matched"
+        }
+      ]
+    },
+    {
+      "item": "ted-ed-spiciness",
+      "language": "en",
+      "videoId": "youtube:qD0_yWgifDM",
+      "rung": "stt/whisper-cpp/small",
+      "tier": "local",
+      "outcome": "ok",
+      "wer": {
+        "matches": 653,
+        "substitutions": 9,
+        "deletions": 3,
+        "insertions": 4,
+        "refLength": 665,
+        "hypLength": 666,
+        "errors": 16,
+        "rate": 0.02406015037593985
+      },
+      "cer": {
+        "matches": 3066,
+        "substitutions": 7,
+        "deletions": 9,
+        "insertions": 9,
+        "refLength": 3082,
+        "hypLength": 3082,
+        "errors": 25,
+        "rate": 0.008111615833874108
+      },
+      "timing": {
+        "matched": 653,
+        "medianSec": 0.23725000000000307,
+        "p90Sec": 0.5669090909090928,
+        "maxSec": 6.951
+      },
+      "latencyMs": 47047,
+      "wallMs": 47050,
+      "audioSec": 234,
+      "costUsd": 0,
+      "sample": "Why does your mouth feel like it's on fire when you eat a spicy pepper? And how do you soothe the burn? Why does wasabi make your eyes water? And how spicy is the spiciest spice? Let's back up a bit. First, what is spiciness? Even though we often say that something tastes spicy, it's not actually a ",
+      "attempts": [
+        {
+          "id": "mp3-frames",
+          "stage": "stt",
+          "outcome": "ok",
+          "reason": "split",
+          "detail": "1 chunks of at most any size",
+          "ms": 1
+        },
+        {
+          "id": "stt/whisper-cpp/small",
+          "stage": "stt",
+          "outcome": "ok",
+          "ms": 47047,
+          "detail": "chunk 1/1"
+        }
+      ]
+    },
+    {
+      "item": "ted-ed-bridge-riddle",
+      "language": "en",
+      "videoId": "youtube:7yDmGnA8Hw0",
+      "rung": "reference",
+      "outcome": "error",
+      "reason": "captions-blocked",
+      "detail": "youtube-captions: YouTube caption downloads are paused for 217s more: YouTube blocked this IP address 6 min ago, so this request was not sent. The blocked request: YouTube captions de: YouTube answered HTTP 429 (automated-traffic block).; ytdlp-captions: yt-dlp captions: Unable to download video sub",
+      "attempts": [
+        {
+          "id": "youtube",
+          "stage": "resolve",
+          "outcome": "ok",
+          "detail": "youtube:7yDmGnA8Hw0"
+        },
+        {
+          "id": "youtube",
+          "stage": "metadata",
+          "outcome": "ok",
+          "ms": 1065
+        },
+        {
+          "id": "youtube-captions",
+          "stage": "captions",
+          "outcome": "error",
+          "reason": "blocked",
+          "detail": "YouTube caption downloads are paused for 217s more: YouTube blocked this IP address 6 min ago, so this request was not sent. The blocked request: YouTube captions de: YouTube answered HTTP 429 (automated-traffic block).",
+          "ms": 0
+        },
+        {
+          "id": "ytdlp-captions",
+          "stage": "captions",
+          "outcome": "error",
+          "reason": "rate-limited",
+          "detail": "yt-dlp captions: Unable to download video subtitles for 'en': HTTP Error 429: Too Many Requests",
+          "ms": 8459
+        }
+      ]
+    },
+    {
+      "item": "kurzgesagt-hidden-superpower",
+      "language": "en",
+      "videoId": "youtube:itBBsQRv0EU",
+      "rung": "reference",
+      "outcome": "error",
+      "reason": "captions-blocked",
+      "detail": "youtube-captions: YouTube caption downloads are paused for 208s more: YouTube blocked this IP address 7 min ago, so this request was not sent. The blocked request: YouTube captions de: YouTube answered HTTP 429 (automated-traffic block).; ytdlp-captions: yt-dlp captions: Unable to download video sub",
+      "attempts": [
+        {
+          "id": "youtube",
+          "stage": "resolve",
+          "outcome": "ok",
+          "detail": "youtube:itBBsQRv0EU"
+        },
+        {
+          "id": "youtube",
+          "stage": "metadata",
+          "outcome": "ok",
+          "ms": 905
+        },
+        {
+          "id": "youtube-captions",
+          "stage": "captions",
+          "outcome": "error",
+          "reason": "blocked",
+          "detail": "YouTube caption downloads are paused for 208s more: YouTube blocked this IP address 7 min ago, so this request was not sent. The blocked request: YouTube captions de: YouTube answered HTTP 429 (automated-traffic block).",
+          "ms": 0
+        },
+        {
+          "id": "ytdlp-captions",
+          "stage": "captions",
+          "outcome": "error",
+          "reason": "rate-limited",
+          "detail": "yt-dlp captions: Unable to download video subtitles for 'en': HTTP Error 429: Too Many Requests",
+          "ms": 8077
+        }
+      ]
+    },
+    {
+      "item": "smithsonian-hudson",
+      "language": "en",
+      "videoId": "youtube:4v7kASXPQMc",
+      "rung": "reference",
+      "outcome": "error",
+      "reason": "captions-blocked",
+      "detail": "youtube-captions: YouTube caption downloads are paused for 199s more: YouTube blocked this IP address 7 min ago, so this request was not sent. The blocked request: YouTube captions de: YouTube answered HTTP 429 (automated-traffic block).; ytdlp-captions: yt-dlp captions: Unable to download video sub",
+      "attempts": [
+        {
+          "id": "youtube",
+          "stage": "resolve",
+          "outcome": "ok",
+          "detail": "youtube:4v7kASXPQMc"
+        },
+        {
+          "id": "youtube",
+          "stage": "metadata",
+          "outcome": "ok",
+          "ms": 897
+        },
+        {
+          "id": "youtube-captions",
+          "stage": "captions",
+          "outcome": "error",
+          "reason": "blocked",
+          "detail": "YouTube caption downloads are paused for 199s more: YouTube blocked this IP address 7 min ago, so this request was not sent. The blocked request: YouTube captions de: YouTube answered HTTP 429 (automated-traffic block).",
+          "ms": 0
+        },
+        {
+          "id": "ytdlp-captions",
+          "stage": "captions",
+          "outcome": "error",
+          "reason": "rate-limited",
+          "detail": "yt-dlp captions: Unable to download video subtitles for 'en': HTTP Error 429: Too Many Requests",
+          "ms": 8890
+        }
+      ]
+    },
+    {
+      "item": "google-ai-agents",
+      "language": "en",
+      "videoId": "youtube:d0wUM8hIaxE",
+      "rung": "reference",
+      "outcome": "error",
+      "reason": "captions-blocked",
+      "detail": "youtube-captions: YouTube caption downloads are paused for 189s more: YouTube blocked this IP address 7 min ago, so this request was not sent. The blocked request: YouTube captions de: YouTube answered HTTP 429 (automated-traffic block).; ytdlp-captions: yt-dlp captions: Unable to download video sub",
+      "attempts": [
+        {
+          "id": "youtube",
+          "stage": "resolve",
+          "outcome": "ok",
+          "detail": "youtube:d0wUM8hIaxE"
+        },
+        {
+          "id": "youtube",
+          "stage": "metadata",
+          "outcome": "ok",
+          "ms": 1063
+        },
+        {
+          "id": "youtube-captions",
+          "stage": "captions",
+          "outcome": "error",
+          "reason": "blocked",
+          "detail": "YouTube caption downloads are paused for 189s more: YouTube blocked this IP address 7 min ago, so this request was not sent. The blocked request: YouTube captions de: YouTube answered HTTP 429 (automated-traffic block).",
+          "ms": 0
+        },
+        {
+          "id": "ytdlp-captions",
+          "stage": "captions",
+          "outcome": "error",
+          "reason": "rate-limited",
+          "detail": "yt-dlp captions: Unable to download video subtitles for 'en-j3PyPqV-e1s': HTTP Error 429: Too Many Requests",
+          "ms": 8207
+        }
+      ]
+    },
+    {
+      "item": "bbc-scotland-accent-coaching",
+      "language": "en",
+      "videoId": "youtube:k1QZRJhyvkg",
+      "rung": "reference",
+      "outcome": "error",
+      "reason": "captions-blocked",
+      "detail": "youtube-captions: YouTube caption downloads are paused for 179s more: YouTube blocked this IP address 7 min ago, so this request was not sent. The blocked request: YouTube captions de: YouTube answered HTTP 429 (automated-traffic block).; ytdlp-captions: yt-dlp captions: Unable to download video sub",
+      "attempts": [
+        {
+          "id": "youtube",
+          "stage": "resolve",
+          "outcome": "ok",
+          "detail": "youtube:k1QZRJhyvkg"
+        },
+        {
+          "id": "youtube",
+          "stage": "metadata",
+          "outcome": "ok",
+          "ms": 889
+        },
+        {
+          "id": "youtube-captions",
+          "stage": "captions",
+          "outcome": "error",
+          "reason": "blocked",
+          "detail": "YouTube caption downloads are paused for 179s more: YouTube blocked this IP address 7 min ago, so this request was not sent. The blocked request: YouTube captions de: YouTube answered HTTP 429 (automated-traffic block).",
+          "ms": 0
+        },
+        {
+          "id": "ytdlp-captions",
+          "stage": "captions",
+          "outcome": "error",
+          "reason": "rate-limited",
+          "detail": "yt-dlp captions: Unable to download video subtitles for 'en': HTTP Error 429: Too Many Requests",
+          "ms": 8754
+        }
+      ]
+    },
+    {
+      "item": "bbc-ideas-introverts",
+      "language": "en-GB",
+      "videoId": "youtube:o1Y4Z0oh1GE",
+      "rung": "reference",
+      "outcome": "error",
+      "reason": "captions-blocked",
+      "detail": "youtube-captions: YouTube caption downloads are paused for 170s more: YouTube blocked this IP address 7 min ago, so this request was not sent. The blocked request: YouTube captions de: YouTube answered HTTP 429 (automated-traffic block).; ytdlp-captions: yt-dlp captions: Unable to download video sub",
+      "attempts": [
+        {
+          "id": "youtube",
+          "stage": "resolve",
+          "outcome": "ok",
+          "detail": "youtube:o1Y4Z0oh1GE"
+        },
+        {
+          "id": "youtube",
+          "stage": "metadata",
+          "outcome": "ok",
+          "ms": 809
+        },
+        {
+          "id": "youtube-captions",
+          "stage": "captions",
+          "outcome": "error",
+          "reason": "blocked",
+          "detail": "YouTube caption downloads are paused for 170s more: YouTube blocked this IP address 7 min ago, so this request was not sent. The blocked request: YouTube captions de: YouTube answered HTTP 429 (automated-traffic block).",
+          "ms": 0
+        },
+        {
+          "id": "ytdlp-captions",
+          "stage": "captions",
+          "outcome": "error",
+          "reason": "rate-limited",
+          "detail": "yt-dlp captions: Unable to download video subtitles for 'en-GB': HTTP Error 429: Too Many Requests",
+          "ms": 7919
+        }
+      ]
+    },
+    {
+      "item": "kurzgesagt-de-black-hole",
+      "language": "de",
+      "videoId": "youtube:SigkkLej2Bk",
+      "rung": "reference",
+      "outcome": "error",
+      "reason": "captions-blocked",
+      "detail": "youtube-captions: YouTube caption downloads are paused for 161s more: YouTube blocked this IP address 7 min ago, so this request was not sent. The blocked request: YouTube captions de: YouTube answered HTTP 429 (automated-traffic block).; ytdlp-captions: yt-dlp captions: Unable to download video sub",
+      "attempts": [
+        {
+          "id": "youtube",
+          "stage": "resolve",
+          "outcome": "ok",
+          "detail": "youtube:SigkkLej2Bk"
+        },
+        {
+          "id": "youtube",
+          "stage": "metadata",
+          "outcome": "ok",
+          "ms": 758
+        },
+        {
+          "id": "youtube-captions",
+          "stage": "captions",
+          "outcome": "error",
+          "reason": "blocked",
+          "detail": "YouTube caption downloads are paused for 161s more: YouTube blocked this IP address 7 min ago, so this request was not sent. The blocked request: YouTube captions de: YouTube answered HTTP 429 (automated-traffic block).",
+          "ms": 0
+        },
+        {
+          "id": "ytdlp-captions",
+          "stage": "captions",
+          "outcome": "error",
+          "reason": "rate-limited",
+          "detail": "yt-dlp captions: Unable to download video subtitles for 'de-4-ZN6wfFlF4': HTTP Error 429: Too Many Requests",
+          "ms": 7817
+        }
+      ]
+    },
+    {
+      "item": "kurzgesagt-ja-calendar",
+      "language": "ja",
+      "videoId": "youtube:qWj7M28B-So",
+      "rung": "reference",
+      "outcome": "error",
+      "reason": "captions-blocked",
+      "detail": "youtube-captions: YouTube caption downloads are paused for 152s more: YouTube blocked this IP address 7 min ago, so this request was not sent. The blocked request: YouTube captions de: YouTube answered HTTP 429 (automated-traffic block).; ytdlp-captions: yt-dlp captions: Unable to download video sub",
+      "attempts": [
+        {
+          "id": "youtube",
+          "stage": "resolve",
+          "outcome": "ok",
+          "detail": "youtube:qWj7M28B-So"
+        },
+        {
+          "id": "youtube",
+          "stage": "metadata",
+          "outcome": "ok",
+          "ms": 933
+        },
+        {
+          "id": "youtube-captions",
+          "stage": "captions",
+          "outcome": "error",
+          "reason": "blocked",
+          "detail": "YouTube caption downloads are paused for 152s more: YouTube blocked this IP address 7 min ago, so this request was not sent. The blocked request: YouTube captions de: YouTube answered HTTP 429 (automated-traffic block).",
+          "ms": 0
+        },
+        {
+          "id": "ytdlp-captions",
+          "stage": "captions",
+          "outcome": "error",
+          "reason": "rate-limited",
+          "detail": "yt-dlp captions: Unable to download video subtitles for 'ja': HTTP Error 429: Too Many Requests",
+          "ms": 7901
+        }
+      ]
+    }
+  ]
+}
