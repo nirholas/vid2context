@@ -24,7 +24,7 @@ Numbers match `docs/ROADMAP.md` and the owner columns in `docs/contracts/`. Ever
 | 04 | [Long audio: split, transcribe in parallel, stitch, resume](archive/04-long-audio.md) | `packages/core/src/longform/` | A. Core bones |
 | 05 | [Config files, profiles and provider policy](archive/05-config-profiles.md) | `packages/config/` | A. Core bones |
 | 06 | [YouTube: player clients, caption formats, IP-block resilience](archive/06-youtube-captions-resilience.md) | `providers/youtube/src/captions/`, `src/resilience/` | B. YouTube |
-| 07 | [YouTube: metadata, chapters and video states](07-youtube-metadata-chapters.md) | `providers/youtube/src/metadata/` | B. YouTube |
+| 07 | [YouTube: metadata, chapters and video states](archive/07-youtube-metadata-chapters.md) | `providers/youtube/src/metadata/` | B. YouTube |
 | 08 | [YouTube: playlists, channels and search](archive/08-youtube-playlists-channels-search.md) | `providers/youtube/src/browse/` | B. YouTube |
 | 09 | [YouTube comments](09-youtube-comments.md) | `providers/youtube/src/comments/` | B. YouTube |
 | 10 | [Security hardening and threat model](archive/10-security.md) | `packages/core/src/security/` | A. Core bones |
