@@ -222,6 +222,9 @@ Reads what a transcript misses: slide text, code, charts. `extractVisualNotes` i
 | `VID2CONTEXT_PRICE_<RUNG_ID>` | price used to estimate paid spend: `in,out` USD per million tokens, or USD per audio minute |
 | `OTEL_EXPORTER_OTLP_ENDPOINT` and other `OTEL_*` | OpenTelemetry export of traces and metrics; see [observability.md](observability.md) |
 | `VID2CONTEXT_ENV_FILE` | an env file to load before `./.env` (shell variables always win) |
+| `VID2CONTEXT_CONFIG` | path of the config file with profiles; unset: `./vid2context.config.json`, `./vid2context.config.jsonc`, then `$XDG_CONFIG_HOME/vid2context/config.json` (default `~/.config/vid2context/config.json`). A missing file at this path is an error. See [configuration.md](configuration.md) |
+| `VID2CONTEXT_PROFILE` | profile to use when none is passed; default: the file's `defaultProfile`, then `default` (`@vid2context/config/node`) |
+| `VID2CONTEXT_FORMAT`, `VID2CONTEXT_TIMESTAMPS`, `VID2CONTEXT_MODE`, `VID2CONTEXT_LANG`, `VID2CONTEXT_COMMENTS` | emitted by a config profile's `defaults` block (format id, `1`/`0`, `auto`/`captions`/`stt`/`video`, a BCP-47 language, `1`/`0` or a count) for surfaces and scripts that load a profile; no built-in surface reads them yet |
 | `VID2CONTEXT_CONFIRM_STT_MINUTES` | MCP: ask the user (elicitation) before speech-to-text on audio at least this many minutes long; default 20, `0` always asks; clients without elicitation get no question (`@vid2context/mcp-agentic`) |
 
 ## Library storage
