@@ -21,6 +21,7 @@ import { translateContext } from '@vid2context/translate';
 import { type Context, Hono } from 'hono';
 import { badRequest } from '../errors.ts';
 import {
+  attachment,
   jsonWithEtag,
   optionalPositiveInt,
   optionalString,
@@ -30,9 +31,11 @@ import {
   readInt,
   readJsonObject,
   readMode,
+  readOptOut,
   readUrl,
 } from '../http-util.ts';
 import { json, P, ref, textResponse } from '../openapi.ts';
+import type { LoadOptions } from '../services.ts';
 import type { AppEnv, RouteDeps } from '../types.ts';
 import { isUploadInput } from '../uploads.ts';
 
@@ -41,13 +44,14 @@ const MAX_TOKENS = 2_000_000;
 
 export function videoRoutes({ services, docs }: RouteDeps): Hono<AppEnv> {
   const app = new Hono<AppEnv>();
-  const load = (c: Context<AppEnv>) =>
+  const load = (c: Context<AppEnv>, extra: Pick<LoadOptions, 'allowAuto' | 'allowTranslated'> = {}) =>
     services.loadContext(
       readUrl(c.req.query('url')),
       {
         mode: readMode(c.req.query('mode')),
         language: c.req.query('lang') || undefined,
         refresh: readFlag(c.req.query('refresh')),
+        ...extra,
       },
       services.ctxFor(c.req.raw),
     );
@@ -74,7 +78,7 @@ export function videoRoutes({ services, docs }: RouteDeps): Hono<AppEnv> {
     path: `${V}/transcript`,
     summary: 'The transcript rendered by a formatter.',
     description:
-      "skip= removes SponsorBlock segments (sponsor, selfpromo, ...; 1 for the defaults) from a copy of the transcript; the raw transcript stays stored. translate=1 (with lang) returns the transcript in lang: the platform's own track or translation first, then LLM translation that keeps every timestamp. X-Translated-Via says which (source, platform or llm).",
+      "skip= removes SponsorBlock segments (sponsor, selfpromo, ...; 1 for the defaults) from a copy of the transcript; the raw transcript stays stored. translate=1 (with lang) returns the transcript in lang: the platform's own track or translation first, then LLM translation that keeps every timestamp. X-Translated-Via says which (source, platform or llm). auto=0 refuses auto-captions and translated=0 refuses the platform's machine translation (both apply without translate=1). download=1 adds Content-Disposition: attachment, named <title>.<lang>.<extension>.",
     tags: ['videos'],
     params: [
       P.url,
@@ -84,13 +88,25 @@ export function videoRoutes({ services, docs }: RouteDeps): Hono<AppEnv> {
       P.lang,
       { name: 'skip', description: 'Comma-separated SponsorBlock categories to remove, or 1 for the defaults.' },
       { name: 'translate', description: '1 to translate into lang when the platform has no track in it. Needs lang.' },
+      { name: 'auto', description: '0 to refuse platform auto-captions (creator captions only). Default 1.' },
+      { name: 'translated', description: "0 to refuse the platform's machine translation into lang. Default 1." },
+      { name: 'download', description: '1 to send Content-Disposition: attachment, so a browser saves the file.' },
     ],
-    responses: { '200': { ...textResponse(), headers: { 'X-Translated-Via': 'With translate=1: source, platform or llm.' } } },
+    responses: {
+      '200': {
+        ...textResponse(),
+        headers: {
+          'X-Translated-Via': 'With translate=1: source, platform or llm.',
+          'Content-Disposition':
+            'With download=1: attachment; filename="<title>.<lang>.<extension>", plus filename* (RFC 5987) for non-ASCII titles.',
+        },
+      },
+    },
   });
   app.get('/transcript', async (c) => {
     const ctx = services.ctxFor(c.req.raw);
     const formatter = readFormat(c.req.query('format'));
-    const headers: Record<string, string> = { 'content-type': formatter.mimeType };
+    const headers: Record<string, string> = { 'content-type': formatter.mimeType || 'text/plain; charset=utf-8' };
     const lang = c.req.query('lang') || undefined;
     let context: VideoContext;
     if (readFlag(c.req.query('translate'))) {
@@ -105,12 +121,20 @@ export function videoRoutes({ services, docs }: RouteDeps): Hono<AppEnv> {
       context = { ...source, transcript: res.transcript, attempts: [...source.attempts, ...res.attempts] };
       headers['x-translated-via'] = res.via;
     } else {
-      context = await load(c);
+      context = await load(c, {
+        allowAuto: readOptOut(c.req.query('auto')),
+        allowTranslated: readOptOut(c.req.query('translated')),
+      });
     }
     const skip = c.req.query('skip');
     const transcript = skip ? await skipQueryOption(context.transcript, ctx, skip) : context.transcript;
     if (transcript.producer.endsWith('+skips')) headers[ATTRIBUTION_HEADER] = SPONSORBLOCK_ATTRIBUTION;
     const timestamps = readFlag(c.req.query('timestamps'));
+    if (readFlag(c.req.query('download'))) {
+      const title = Array.from(context.metadata.title).slice(0, 120).join('');
+      const lang = transcript.language.replace(/[^A-Za-z0-9-]/g, '');
+      headers['content-disposition'] = attachment([title, lang, formatter.extension || 'txt'].filter(Boolean).join('.'));
+    }
     return c.body(render({ ...context, transcript }, formatter.id, { timestamps }), 200, headers);
   });
 

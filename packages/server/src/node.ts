@@ -7,8 +7,12 @@
  * in-process jobs queue. On SIGTERM or SIGINT it stops accepting connections,
  * lets in-flight requests finish (up to VID2CONTEXT_SHUTDOWN_TIMEOUT_MS,
  * default 10000), closes MCP sessions, the jobs queue and the download queue
- * (deleting its temporary files), then exits.
+ * (deleting its temporary files), then cuts connections still open (event
+ * streams) and exits. Socket timeouts: VID2CONTEXT_HEADERS_TIMEOUT_MS,
+ * VID2CONTEXT_KEEPALIVE_TIMEOUT_MS, VID2CONTEXT_BODY_TIMEOUT_MS. Unhandled
+ * rejections are logged, not fatal (VID2CONTEXT_EXIT_ON_UNHANDLED=1 exits).
  */
+import type { Server } from 'node:http';
 import { serve } from '@hono/node-server';
 import { getConnInfo } from '@hono/node-server/conninfo';
 import { MemoryStorage } from '@vid2context/core';
@@ -18,8 +22,10 @@ import { createNodeContext, createRegistry, loadEnvFiles } from '@vid2context/re
 import pkg from '../package.json' with { type: 'json' };
 import { createApp } from './app.ts';
 import { nodeHealthChecks } from './health-node.ts';
+import { gracefulClose, installRejectionGuard, tuneServer } from './lifecycle.ts';
 
 loadEnvFiles();
+installRejectionGuard(process.env, (msg) => console.error(`[vid2context] ${msg}`));
 const registry = createRegistry();
 const baseCtx = createNodeContext();
 const storage = (await registry.openStorage(baseCtx)) ?? new MemoryStorage();
@@ -51,7 +57,8 @@ const app = createApp({
 
 const server = serve({ fetch: app.fetch, port, hostname }, (info) => {
   console.error(`[vid2context] HTTP API listening on http://${hostname}:${info.port}/api/v1/health`);
-});
+}) as Server;
+tuneServer(server, process.env);
 
 let stopping = false;
 async function shutdown(signal: string): Promise<void> {
@@ -60,17 +67,17 @@ async function shutdown(signal: string): Promise<void> {
   const graceMs = Number(process.env.VID2CONTEXT_SHUTDOWN_TIMEOUT_MS) || 10_000;
   console.error(`[vid2context] ${signal}: no longer accepting connections, finishing in-flight requests (up to ${graceMs} ms)`);
   const force = setTimeout(() => {
-    console.error('[vid2context] in-flight requests did not finish in time; exiting');
+    console.error('[vid2context] shutdown did not finish in time; exiting');
     process.exit(1);
-  }, graceMs);
+  }, graceMs + 2000);
   force.unref();
-  const closed = new Promise<void>((resolve) => server.close(() => resolve()));
-  // Keep-alive sockets with no request in progress would otherwise hold close() open.
-  if ('closeIdleConnections' in server) server.closeIdleConnections();
-  await closed;
-  await Promise.allSettled([app.close(), queue.close(), downloads.close()]);
+  const outcome = await gracefulClose(server, {
+    graceMs,
+    cleanup: () => Promise.allSettled([app.close(), queue.close(), downloads.close()]),
+    log: (msg) => console.error(`[vid2context] ${msg}`),
+  });
   clearTimeout(force);
-  console.error('[vid2context] stopped');
+  console.error(`[vid2context] stopped (${outcome})`);
   process.exit(0);
 }
 

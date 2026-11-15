@@ -49,6 +49,10 @@ export interface LoadOptions {
   comments?: boolean | number;
   /** Ignore the library copy and rebuild. */
   refresh?: boolean;
+  /** Allow platform auto-captions. Default true. */
+  allowAuto?: boolean;
+  /** Allow a platform machine translation into `language`. Default true. */
+  allowTranslated?: boolean;
 }
 
 /** Most videos one POST /pack or POST /bundle may combine. Larger sets belong in a collection and a job. */
@@ -277,6 +281,8 @@ export function createServices(
       opts.language ?? '',
       opts.comments ?? false,
       opts.refresh ?? false,
+      opts.allowAuto ?? true,
+      opts.allowTranslated ?? true,
       hosted?.principal ?? '',
       keysTag(ctx),
     ]);
@@ -284,7 +290,15 @@ export function createServices(
       getVideoContext(
         registryFor(ctx),
         input,
-        { mode: opts.mode, language: opts.language, comments: opts.comments, refresh: opts.refresh, storage: store },
+        {
+          mode: opts.mode,
+          language: opts.language,
+          comments: opts.comments,
+          refresh: opts.refresh,
+          allowAuto: opts.allowAuto,
+          allowTranslated: opts.allowTranslated,
+          storage: store,
+        },
         runCtx,
       ),
     );

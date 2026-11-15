@@ -131,3 +131,34 @@ export async function jsonWithEtag(c: Context, value: unknown): Promise<Response
   if (etagMatches(c.req.header('if-none-match'), etag)) return c.body(null, 304, headers);
   return c.body(text, 200, { ...headers, 'content-type': 'application/json' });
 }
+
+/** `false` when an opt-out flag is set to 0, false, no or off; undefined (the default applies) otherwise. */
+export function readOptOut(v: string | undefined): false | undefined {
+  return ['0', 'false', 'no', 'off'].includes((v ?? '').trim().toLowerCase()) ? false : undefined;
+}
+
+// Titles come from the internet: path separators, characters Windows forbids, and control characters go.
+// biome-ignore lint/suspicious/noControlCharactersInRegex: removing control characters.
+const UNSAFE_NAME = /[\u0000-\u001f\u007f"\\/:*?<>|]+/g;
+
+/**
+ * `Content-Disposition: attachment` for a download named `name`. The quoted
+ * `filename` is a plain ASCII fallback; when the name has other characters,
+ * `filename*` (RFC 5987) carries it in UTF-8 for browsers that read it.
+ */
+export function attachment(name: string): string {
+  const safe =
+    name
+      .replace(UNSAFE_NAME, ' ')
+      .replace(/\s+/g, ' ')
+      .replace(/ (?=\.)/g, '')
+      .replace(/^[\s.]+|[\s.]+$/g, '') || 'download';
+  const ascii = safe
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^\x20-\x7e]+|[%;]/g, '_')
+    .replace(/_+/g, '_');
+  if (ascii === safe) return `attachment; filename="${ascii}"`;
+  const encoded = encodeURIComponent(safe).replace(/['()*]/g, (ch) => `%${ch.charCodeAt(0).toString(16).toUpperCase()}`);
+  return `attachment; filename="${ascii}"; filename*=UTF-8''${encoded}`;
+}

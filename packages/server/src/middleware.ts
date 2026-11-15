@@ -13,7 +13,7 @@
  *
  * Settings are read from the request's env on every request.
  */
-import { Vid2ContextError } from '@vid2context/core';
+import { type Ctx, Vid2ContextError } from '@vid2context/core';
 import type { Context, MiddlewareHandler } from 'hono';
 import { bodyLimit as honoBodyLimit } from 'hono/body-limit';
 import { cors as honoCors } from 'hono/cors';
@@ -144,12 +144,38 @@ export function auth(services: Services): MiddlewareHandler<AppEnv> {
   };
 }
 
+/** The Cloudflare Workers rate limiting binding (`ratelimits` in wrangler.jsonc). */
+export interface RateLimitBinding {
+  limit(opts: { key: string }): Promise<{ success: boolean }>;
+}
+
+/** The binding VID2CONTEXT_RATE_LIMIT_BINDING names, when this runtime has it. */
+export function rateLimitBinding(ctx: Ctx): RateLimitBinding | undefined {
+  const name = ctx.env.VID2CONTEXT_RATE_LIMIT_BINDING;
+  const binding = name ? (ctx.bindings?.[name] as Partial<RateLimitBinding> | undefined) : undefined;
+  return typeof binding?.limit === 'function' ? (binding as RateLimitBinding) : undefined;
+}
+
 export function rateLimit(services: Services, clientIp: (c: Context<AppEnv>) => string | undefined): MiddlewareHandler<AppEnv> {
   return async (c, next) => {
     const cfg = services.config(c.req.raw);
     if (cfg.ratePerMinute <= 0 || cfg.hosted || OPEN_PATHS.has(c.req.path) || c.req.method === 'OPTIONS') return next();
     const principal = c.get('principal');
     const who = principal ? `key:${principal.name}` : `ip:${clientIp(c) ?? 'unknown'}`;
+    // On Workers each isolate has its own in-memory KV, so without a KV binding the token bucket
+    // below only limits one isolate. Cloudflare's rate limiting binding counts across isolates;
+    // its limit and period are set in wrangler.jsonc, not by VID2CONTEXT_RATE_LIMIT.
+    const binding = rateLimitBinding(services.ctxFor(c.req.raw));
+    if (binding) {
+      const { success } = await binding.limit({ key: who });
+      if (!success) {
+        throw new Vid2ContextError('rate-limited', 'Too many requests from this client.', {
+          hint: 'Wait a minute before retrying (see Retry-After).',
+          retryAfterSec: 60,
+        });
+      }
+      return next();
+    }
     const result = await takeToken(await services.kv(services.ctxFor(c.req.raw)), who, {
       perMinute: cfg.ratePerMinute,
       burst: cfg.rateBurst,
