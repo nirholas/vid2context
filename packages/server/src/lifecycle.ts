@@ -30,7 +30,28 @@ export function socketTimeouts(env: Env): SocketTimeouts {
   };
 }
 
-/** Apply the socket timeouts to a Node http server. */
+/**
+ * Options for http.createServer (pass as `serverOptions` to @hono/node-server's
+ * serve). Node checks these timeouts every connectionsCheckingInterval, fixed
+ * at creation (default 30 s), so it is set from the headers timeout here.
+ */
+export function serverOptions(env: Env): {
+  headersTimeout: number;
+  requestTimeout: number;
+  keepAliveTimeout: number;
+  connectionsCheckingInterval: number;
+} {
+  const t = socketTimeouts(env);
+  const headersTimeout = t.requestTimeoutMs > 0 ? Math.min(t.headersTimeoutMs, t.requestTimeoutMs) : t.headersTimeoutMs;
+  return {
+    headersTimeout,
+    requestTimeout: t.requestTimeoutMs,
+    keepAliveTimeout: t.keepAliveTimeoutMs,
+    connectionsCheckingInterval: Math.max(250, Math.min(30_000, Math.floor((headersTimeout || 30_000) / 2))),
+  };
+}
+
+/** Apply the socket timeouts to a Node http server that already exists. */
 export function tuneServer(server: Server, env: Env): SocketTimeouts {
   const t = socketTimeouts(env);
   // Node requires headersTimeout <= requestTimeout when both are set.

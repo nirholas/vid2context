@@ -10,11 +10,11 @@ import { join } from 'node:path';
 import { serve } from '@hono/node-server';
 import { Hono } from 'hono';
 import { describe, expect, it } from 'vitest';
-import { gracefulClose, socketTimeouts, tuneServer } from '../src/lifecycle.ts';
+import { gracefulClose, serverOptions, socketTimeouts, tuneServer } from '../src/lifecycle.ts';
 
-async function listen(app: Hono): Promise<{ server: Server; url: string }> {
+async function listen(app: Hono, env: Record<string, string> = {}): Promise<{ server: Server; url: string }> {
   return new Promise((resolve) => {
-    const server = serve({ fetch: app.fetch, port: 0, hostname: '127.0.0.1' }, (info) =>
+    const server = serve({ fetch: app.fetch, port: 0, hostname: '127.0.0.1', serverOptions: serverOptions(env) }, (info) =>
       resolve({ server, url: `http://127.0.0.1:${info.port}` }),
     ) as Server;
   });
@@ -81,8 +81,11 @@ describe('socket timeouts', () => {
   });
 
   it('drops a client that never finishes its headers', async () => {
-    const { server, url } = await listen(streamingApp());
-    tuneServer(server, { VID2CONTEXT_HEADERS_TIMEOUT_MS: '500', VID2CONTEXT_BODY_TIMEOUT_MS: '1000' });
+    const { server, url } = await listen(streamingApp(), {
+      VID2CONTEXT_HEADERS_TIMEOUT_MS: '500',
+      VID2CONTEXT_BODY_TIMEOUT_MS: '1000',
+    });
+    expect(serverOptions({ VID2CONTEXT_HEADERS_TIMEOUT_MS: '500' }).connectionsCheckingInterval).toBe(250);
     const { connect } = await import('node:net');
     const port = (server.address() as AddressInfo).port;
     const started = Date.now();

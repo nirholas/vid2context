@@ -22,7 +22,7 @@ import { createNodeContext, createRegistry, loadEnvFiles } from '@vid2context/re
 import pkg from '../package.json' with { type: 'json' };
 import { createApp } from './app.ts';
 import { nodeHealthChecks } from './health-node.ts';
-import { gracefulClose, installRejectionGuard, tuneServer } from './lifecycle.ts';
+import { gracefulClose, installRejectionGuard, serverOptions } from './lifecycle.ts';
 
 loadEnvFiles();
 installRejectionGuard(process.env, (msg) => console.error(`[vid2context] ${msg}`));
@@ -55,10 +55,9 @@ const app = createApp({
   healthChecks: nodeHealthChecks,
 });
 
-const server = serve({ fetch: app.fetch, port, hostname }, (info) => {
+const server = serve({ fetch: app.fetch, port, hostname, serverOptions: serverOptions(process.env) }, (info) => {
   console.error(`[vid2context] HTTP API listening on http://${hostname}:${info.port}/api/v1/health`);
 }) as Server;
-tuneServer(server, process.env);
 
 let stopping = false;
 async function shutdown(signal: string): Promise<void> {

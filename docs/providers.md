@@ -292,7 +292,11 @@ Read by `@vid2context/server` (`npm run start:server`, the Worker, containers). 
 | `VID2CONTEXT_HEALTH_PROBE_URL` | URL the `network` check fetches; default the keyless OVH model list when keyless rungs are on, `0` turns it off |
 | `VID2CONTEXT_ACCESS_LOG` | `0` turns off the JSON access log line per request on stderr |
 | `VID2CONTEXT_REQUEST_KEYS` | `0` stops accepting provider keys sent per request in `X-Vid2Context-Keys`. On by default: a caller whose run failed for lack of a key can retry with its own, used for that request only and never stored. Only credential names registered providers declare are accepted (see [contracts/http-api.md](contracts/http-api.md#provider-keys-per-request)) |
-| `VID2CONTEXT_SHUTDOWN_TIMEOUT_MS` | Node: how long in-flight requests may finish after `SIGTERM` or `SIGINT`; default `10000` |
+| `VID2CONTEXT_SHUTDOWN_TIMEOUT_MS` | Node: how long in-flight requests may finish after `SIGTERM` or `SIGINT`; default `10000`. Connections still open after that (event streams, stuck requests) are cut so the process exits |
+| `VID2CONTEXT_HEADERS_TIMEOUT_MS` | Node: longest a client may take to send its request headers; default `30000` |
+| `VID2CONTEXT_BODY_TIMEOUT_MS` | Node: longest a client may take to send the whole request, body included; default `300000`, `0` none |
+| `VID2CONTEXT_KEEPALIVE_TIMEOUT_MS` | Node: how long an idle keep-alive socket stays open; default `5000` |
+| `VID2CONTEXT_EXIT_ON_UNHANDLED` | Node: `1` exits on an unhandled promise rejection; by default it is logged with its stack and the server keeps serving |
 
 ## Exports
 
