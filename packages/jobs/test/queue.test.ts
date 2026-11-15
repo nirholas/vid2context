@@ -150,7 +150,7 @@ describe('retries', () => {
     );
     expect(retryMsg?.data).toMatchObject({ message: 'Attempt 1 of 3 failed (rate-limited); retrying in 1 s.' });
     // When the retry starts, as data, so clients can count down without parsing the message.
-    const retryAt = Date.parse(String((retryMsg?.data as { retryAt?: string }).retryAt));
+    const retryAt = Date.parse(String((retryMsg?.data as { retryAt?: string } | undefined)?.retryAt));
     expect(retryAt - (calls[0] as number)).toBeGreaterThanOrEqual(90);
     expect(retryAt - (calls[0] as number)).toBeLessThan(1000);
   });

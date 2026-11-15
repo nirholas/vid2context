@@ -11,7 +11,7 @@ interface Job {
   id: string;            // "job_" + 22 random URL-safe characters, never sequential
   kind: string;
   status: 'queued' | 'running' | 'succeeded' | 'failed' | 'canceled';
-  progress?: { done: number; total?: number; message?: string };
+  progress?: { done: number; total?: number; message?: string; retryAt?: string };
   result?: unknown;
   error?: { code: string; message: string; hint?: string };
   createdAt: string;
@@ -87,7 +87,7 @@ queue.registerKind(
 
 ## The live stream
 
-`GET /api/v1/jobs/:id/events` is a Server-Sent Events stream with four events: `progress` `{ done, total?, message? }`, `item` `{ id, outcome, title?, error? }`, `done` `{ result }` and `error` `{ code, message, hint? }`.
+`GET /api/v1/jobs/:id/events` is a Server-Sent Events stream with four events: `progress` `{ done, total?, message?, retryAt? }` (`retryAt` is set while a failed attempt waits for its retry: when the next attempt starts, ISO 8601, so a client can count down), `item` `{ id, outcome, title?, error? }`, `done` `{ result }` and `error` `{ code, message, hint? }`.
 
 ```sh
 curl -s -X POST localhost:8787/api/v1/jobs -H 'content-type: application/json' \
