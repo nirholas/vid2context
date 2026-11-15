@@ -7,8 +7,12 @@ import { formatters } from '@vid2context/core';
 import {
   AUDIO_FORMATS,
   AUDIO_QUALITIES,
+  CAPTION_FORMATS,
+  CAPTION_VIA,
+  FRAME_FORMATS,
   NOTICE,
   SPONSOR_CATEGORIES,
+  THUMBNAIL_FORMATS,
   VIDEO_CONTAINERS,
   VIDEO_QUALITIES,
 } from '@vid2context/downloads';
@@ -189,6 +193,61 @@ export const FLAGS: Record<string, FlagSpec> = {
     description: 'Save files here (default: VID2CONTEXT_DOWNLOAD_DIR or the current directory)',
   },
   info: { name: 'info', type: 'boolean', description: 'Show qualities, formats and estimated sizes; download nothing' },
+  'burn-subs': {
+    name: 'burn-subs',
+    type: 'string',
+    arg: '<lang>',
+    description: 'Burn one language of subtitles into the picture (video only; re-encodes)',
+  },
+  'split-chapters': {
+    name: 'split-chapters',
+    type: 'boolean',
+    description: 'Also save one file per chapter, next to the full file',
+  },
+  thumbnail: {
+    name: 'thumbnail',
+    type: 'string',
+    arg: '[jpg|png|webp]',
+    description: 'Save only the thumbnail image (format default jpg)',
+    choices: () => [...THUMBNAIL_FORMATS],
+  },
+  frames: {
+    name: 'frames',
+    type: 'string',
+    arg: '<times>',
+    description: 'Save still frames at these times instead of the video, e.g. 0:10,1:30 (several come as a .zip)',
+  },
+  'frame-format': {
+    name: 'frame-format',
+    type: 'string',
+    arg: '<png|jpg>',
+    description: 'Image format for --frames (default png)',
+    choices: () => [...FRAME_FORMATS],
+  },
+  gif: {
+    name: 'gif',
+    type: 'boolean',
+    description: 'Save --from to --to as an animated GIF (short ranges; see VID2CONTEXT_MAX_CLIP_SEC)',
+  },
+  webp: { name: 'webp', type: 'boolean', description: 'Save --from to --to as an animated WebP' },
+  fps: { name: 'fps', type: 'string', arg: '<n>', description: 'Frames per second for --gif and --webp (default 10)' },
+  width: {
+    name: 'width',
+    type: 'string',
+    arg: '<px>',
+    description: 'Width for --gif, --webp (default 480) and --frames (default: source)',
+  },
+  zip: { name: 'zip', type: 'boolean', description: 'Pack every saved file into one .zip' },
+  list: { name: 'list', type: 'boolean', description: 'List the caption tracks and translation languages; download nothing' },
+  via: {
+    name: 'via',
+    type: 'string',
+    arg: '<path>',
+    description: 'auto | pipeline | ytdlp: where captions come from (default auto: the transcript pipeline, then yt-dlp)',
+    choices: () => [...CAPTION_VIA],
+  },
+  'no-auto': { name: 'no-auto', type: 'boolean', description: "Never use the platform's automatic captions" },
+  'no-translate': { name: 'no-translate', type: 'boolean', description: "Never use the platform's machine translation" },
 };
 
 export const GLOBAL_FLAGS = [
@@ -218,6 +277,15 @@ const DOWNLOAD_NOTES = [
   'Files go to --dir, else VID2CONTEXT_DOWNLOAD_DIR, else the current directory. Existing files are kept (--force replaces them).',
   'stdout gets one saved path per line (JSON with --json); progress and notes go to stderr.',
   NOTICE,
+];
+
+const CAPTIONS_NOTES = [
+  `-f picks the format: ${CAPTION_FORMATS.join(', ')} (default srt). txt takes --timestamps.`,
+  '--lang takes one or several codes (en,de) or all; without it you get the spoken language. Several files come as one .zip (--zip forces one).',
+  'Text comes from the transcript pipeline first (any source, no yt-dlp needed), then from yt-dlp. -f original keeps the file the site serves (or the local sidecar or embedded stream).',
+  '--mode auto (default) transcribes the audio with speech-to-text when a video has no captions; --mode captions never does; --mode stt always does.',
+  'Several inputs, playlists and channels run as a batch: failed items are listed on stderr and the rest are saved.',
+  'Files go to --dir, else VID2CONTEXT_DOWNLOAD_DIR, else the current directory. stdout gets the saved paths (JSON with --json).',
 ];
 
 const MEMORY_NOTE =
@@ -310,6 +378,16 @@ export const COMMANDS: CommandSpec[] = [
       'info',
       'limit',
       'playlist',
+      'burn-subs',
+      'split-chapters',
+      'thumbnail',
+      'frames',
+      'frame-format',
+      'gif',
+      'webp',
+      'fps',
+      'width',
+      'zip',
     ],
     completesFiles: true,
     notes: DOWNLOAD_NOTES,
@@ -322,6 +400,28 @@ export const COMMANDS: CommandSpec[] = [
       'vid2context download <playlist-url> --audio --limit 20 --sponsorblock',
       'vid2context download aqz-KE-bpKQ --info',
       'vid2context download ./lecture.mkv --audio opus',
+      'vid2context download aqz-KE-bpKQ --frames 0:30,1:00,2:00 --frame-format jpg',
+      'vid2context download aqz-KE-bpKQ --gif --from 1:00 --to 1:04 --width 320',
+      'vid2context download aqz-KE-bpKQ --burn-subs en --quality 720',
+      'vid2context download aqz-KE-bpKQ --thumbnail png',
+      'vid2context download <url1> <url2> --audio --zip',
+    ],
+  },
+  {
+    name: 'captions',
+    args: '<inputs...>',
+    summary: 'Save captions or subtitles only: srt, vtt, txt, json, markdown or the original file',
+    flags: ['list', 'via', 'no-auto', 'no-translate', 'zip', 'dir', 'limit', 'playlist'],
+    completesFiles: true,
+    notes: CAPTIONS_NOTES,
+    examples: [
+      'vid2context captions jNQXAC9IVRw                       # srt in the spoken language',
+      'vid2context captions jNQXAC9IVRw --list                # tracks and translation languages',
+      'vid2context captions jNQXAC9IVRw --lang en,de -f vtt   # two files, as one .zip',
+      'vid2context captions jNQXAC9IVRw --lang all -f original',
+      'vid2context captions ./lecture.mkv -f txt --timestamps',
+      'vid2context captions <podcast-or-video-without-captions> --mode auto  # speech-to-text',
+      'vid2context captions <playlist-url> --limit 20 --zip',
     ],
   },
   {

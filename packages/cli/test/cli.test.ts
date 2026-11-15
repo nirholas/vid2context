@@ -78,7 +78,8 @@ describe('get', () => {
     expect(res.stderr).toContain('error (not-found)');
     expect(res.stderr).toContain('hint: ');
     expect(res.stderr).toContain('Ways to get it anyway:\n  1. Check the link');
-    expect(res.stderr).toContain('$ yt-dlp -x --audio-format mp3 -o audio.mp3 xxxxxxxxxxx');
+    // A video that does not exist gets no paste or download advice: only the link can be fixed.
+    expect(res.stderr).not.toContain('$ yt-dlp');
     expect(res.stderr).not.toContain('Attempts:');
     const verbose = await cli(['xxxxxxxxxxx', '--verbose']);
     expect(verbose.stderr).toMatch(/metadata error +youtube/);
@@ -105,7 +106,7 @@ describe('usage errors', () => {
   it('rejects flags that belong to another command, mistyped commands and bad values', async () => {
     const limit = await cli(['get', 'jNQXAC9IVRw', '--limit', '3']);
     expect(limit.code).toBe(2);
-    expect(limit.stderr).toContain('It is a flag of: list, download, search, library');
+    expect(limit.stderr).toContain('It is a flag of: list, download, captions, search, library');
     expect((await cli(['doctr'])).stderr).toContain('Did you mean `vid2context doctor`?');
     expect((await cli(['jNQXAC9IVRw', '--format', 'pdf'])).code).toBe(2);
     const mode = await cli(['jNQXAC9IVRw', '--mode', 'captins']);
