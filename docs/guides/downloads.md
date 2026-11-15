@@ -94,7 +94,15 @@ vid2context captions ./lecture.mkv -f txt --timestamps   # an embedded subtitle 
 vid2context captions <video-without-captions>            # transcribed with speech-to-text
 ```
 
-Formats (`-f`): `srt` (default), `vtt`, `txt` (plain, `--timestamps` for `[m:ss]` lines), `json` (timed segments with language and origin), `markdown` (the readable transcript document) and `original` (the file the site serves, such as YouTube's srv3 or a site's TTML; for a local file, its sidecar file or embedded stream as it is).
+Formats (`-f`): every subtitle format vid2context's formatters have, today `srt` (default), `vtt`, `ass`, `ttml`, `sbv`, `lrc` and `csv`, plus `txt` (plain, `--timestamps` for `[m:ss]` lines), `json` (timed segments with language and origin), `markdown` (the readable transcript document) and `original` (the file the site serves, such as YouTube's srv3 or a site's TTML; for a local file, its sidecar file or embedded stream as it is). A format added to the formatters shows up here by itself.
+
+```sh
+vid2context captions jNQXAC9IVRw --offset 2.5                 # every cue 2.5 s later (negative: earlier)
+vid2context captions jNQXAC9IVRw --max-line-chars 32 --max-lines 1
+vid2context captions jNQXAC9IVRw --lang en --secondary de -f ass   # German under each English line
+```
+
+`--offset` retimes the timed formats (not markdown, whose times are links into the video); cues that end before 0 are dropped. `--max-line-chars` (10 to 200, default 42) and `--max-lines` (1 to 4, default 2) reflow the cue formats. `--secondary <lang>` makes bilingual files (srt, vtt, ass, ttml, sbv, csv, txt, json): the second language is fetched like the first and each of its lines goes under the caption it overlaps most. `original` cannot be retimed, reflowed or made bilingual.
 
 Where the text comes from, per language:
 
@@ -148,7 +156,7 @@ The local stdio server (`npx vid2context-mcp`) adds these tools:
 - `download_media { url, kind?, format?, quality?, from?, to?, chapter?, subtitles?, burnSubtitles?, splitChapters?, removeSegments?, dir?, limit?, ... }`: saves the files and returns their paths (and each chapter file's path with `splitChapters`). Default folder: `VID2CONTEXT_DOWNLOAD_DIR`, else `~/Downloads/vid2context`. It reports progress to clients that ask for it.
 - `download_thumbnail { url, format?, dir? }`: saves the thumbnail as jpg (default), png or webp and returns its path.
 - `get_caption_options { url }`: every caption track (creator or automatic, which provider lists it), the translation languages, and whether speech-to-text can fill in.
-- `download_captions { url, languages?, format?, mode?, via?, allowAuto?, allowTranslated?, timestamps?, zip?, dir? }`: captions only, as above.
+- `download_captions { url, languages?, format?, mode?, via?, allowAuto?, allowTranslated?, timestamps?, offsetSec?, maxLineChars?, maxLines?, secondary?, zip?, dir? }`: captions only, as above.
 - `grab_frames { url, times, format?, width?, quality?, zip?, dir? }`: still images at the given times.
 - `export_clip { url, from?, to?, format?, fps?, width?, loop?, dir? }`: an animated GIF or WebP.
 - `download_batch { urls, kind?, format?, quality?, languages?, mode?, limit?, playlist?, zip?, dir? }`: many videos, audio files or caption files, with a status per item.

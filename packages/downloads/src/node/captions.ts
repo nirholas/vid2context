@@ -45,10 +45,10 @@ import {
 import { fetchYouTubePlayer, readTranslationLanguages } from '@vid2context/research';
 import {
   type CaptionRenderOptions,
-  captionFormatList,
   type CaptionsRequest,
   type CaptionTrack,
   type CaptionTracks,
+  captionFormatList,
   renderCaptions,
   subtitleMime,
 } from '../captions.ts';
@@ -458,7 +458,9 @@ export function createCaptionsEngine({ registry }: CaptionsEngineDeps) {
       report?.({ phase: 'downloading', downloadedBytes: 0, percent: 0, step: `Captions ${req.secondary} (second language)` });
       second = await secondaryTranscript(req, target, req.secondary, ctx, opts).catch((err: unknown) => {
         if (ctx.signal?.aborted) throw err;
-        warnings.push(`The second language (${req.secondary}) could not be fetched, so the files have one language: ${message(err)}`);
+        warnings.push(
+          `The second language (${req.secondary}) could not be fetched, so the files have one language: ${message(err)}`,
+        );
         return undefined;
       });
     }

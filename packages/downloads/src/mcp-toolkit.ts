@@ -202,7 +202,13 @@ export function registerToolkitTools(server: McpServer, deps: ToolkitToolDeps): 
           .max(LINE_CHARS_RANGE.max)
           .optional()
           .describe('Longest caption line in characters (cue formats, default 42)'),
-        maxLines: z.number().int().min(LINES_RANGE.min).max(LINES_RANGE.max).optional().describe('Most lines per cue (default 2)'),
+        maxLines: z
+          .number()
+          .int()
+          .min(LINES_RANGE.min)
+          .max(LINES_RANGE.max)
+          .optional()
+          .describe('Most lines per cue (default 2)'),
         secondary: z.string().optional().describe('A second language shown under each caption, e.g. "de" (bilingual formats)'),
         mode: z
           .enum(CAPTION_MODES)

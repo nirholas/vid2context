@@ -81,7 +81,6 @@ export type CaptionMode = (typeof CAPTION_MODES)[number];
 export const CAPTION_VIA = ['auto', 'pipeline', 'ytdlp'] as const;
 export type CaptionVia = (typeof CAPTION_VIA)[number];
 
-
 export interface CaptionsRequest {
   kind: 'captions';
   /** A video URL, a YouTube id, or (CLI and MCP on this machine) a local file path. */
@@ -239,7 +238,10 @@ export function normalizeCaptionsRequest(raw: RawCaptionsRequest, env: Record<st
   if (offsetRaw !== undefined && offsetRaw !== null && offsetRaw !== '') {
     offsetSec = typeof offsetRaw === 'number' ? offsetRaw : Number(String(offsetRaw).trim().replace(/s$/i, ''));
     if (!Number.isFinite(offsetSec) || Math.abs(offsetSec) > 86_400) {
-      throw bad(`offset "${String(offsetRaw).slice(0, 20)}" is not a number of seconds.`, 'Pass seconds, e.g. 2.5 (later) or -1 (earlier).');
+      throw bad(
+        `offset "${String(offsetRaw).slice(0, 20)}" is not a number of seconds.`,
+        'Pass seconds, e.g. 2.5 (later) or -1 (earlier).',
+      );
     }
     if (offsetSec === 0) offsetSec = undefined;
   }
@@ -256,7 +258,8 @@ export function normalizeCaptionsRequest(raw: RawCaptionsRequest, env: Record<st
   let secondary: string | undefined;
   if (raw.secondary !== undefined && raw.secondary !== null && raw.secondary !== '') {
     secondary = String(raw.secondary).trim();
-    if (!LANG.test(secondary)) throw bad(`secondary "${secondary.slice(0, 20)}" is not a language code.`, 'Use a code like de or pt-BR.');
+    if (!LANG.test(secondary))
+      throw bad(`secondary "${secondary.slice(0, 20)}" is not a language code.`, 'Use a code like de or pt-BR.');
   }
   const core = formatters[format === 'txt' ? 'text' : format];
   if (format === 'original' && (offsetSec !== undefined || secondary || maxLineChars || maxLines)) {
@@ -266,7 +269,10 @@ export function normalizeCaptionsRequest(raw: RawCaptionsRequest, env: Record<st
     );
   }
   if (offsetSec !== undefined && format === 'markdown') {
-    throw bad('markdown timestamps are links into the video, so they are not shifted.', 'Use a timed format (srt, vtt, txt, json, ...).');
+    throw bad(
+      'markdown timestamps are links into the video, so they are not shifted.',
+      'Use a timed format (srt, vtt, txt, json, ...).',
+    );
   }
   if (secondary && format !== 'json' && !core?.bilingual) {
     const bi = captionFormatList()
@@ -349,7 +355,10 @@ export function renderCaptions(context: VideoContext, format: CaptionFormat, opt
   const id = format === 'txt' ? 'text' : format;
   const f = formatters[id];
   if (!f || format === 'original' || id === 'pack') {
-    throw bad(`Unknown caption format "${format.slice(0, 20)}".`, `Use ${CAPTION_FORMATS.filter((x) => x !== 'original').join(', ')}.`);
+    throw bad(
+      `Unknown caption format "${format.slice(0, 20)}".`,
+      `Use ${CAPTION_FORMATS.filter((x) => x !== 'original').join(', ')}.`,
+    );
   }
   const o: FormatOptions = {
     ...(format === 'txt' ? { timestamps: opts.timestamps ?? false } : {}),

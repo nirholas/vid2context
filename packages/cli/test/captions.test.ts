@@ -7,9 +7,10 @@
 import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { replayFetch } from '@vid2context/core/testing';
 import { tryLocateFfmpeg } from '@vid2context/ffmpeg';
 import { afterAll, describe, expect, it } from 'vitest';
-import { APOLLO, cli, ROOT } from './helpers.ts';
+import { APOLLO, cli, ROOT, read, routes } from './helpers.ts';
 
 const MP4 = join(ROOT, 'packages/ffmpeg/test/fixtures/apollo11-first-steps.mp4');
 const MKV = join(ROOT, 'packages/ffmpeg/test/fixtures/apollo11-first-steps-subs.mkv');
@@ -93,5 +94,46 @@ describe.skipIf(!hasFfmpeg)('download --frames, --gif, --webp and --zip', () => 
     expect(out.file.format).toBe('zip');
     expect(out.file.entries.map((e) => e.name).sort()).toEqual(['apollo11-first-steps.opus', 'apollo11-small-step.opus']);
     expect(out.items.map((i) => i.status)).toEqual(['done', 'done']);
+  });
+});
+
+describe('bilingual captions from recorded YouTube tracks', () => {
+  // "Me at the zoo" has creator captions in English and German; both srv3 files are real recordings.
+  const fetch = () =>
+    replayFetch(
+      routes([
+        {
+          url: /timedtext\?v=jNQXAC9IVRw.*lang=de.*fmt=srv3/,
+          response: { body: read('providers/youtube/test/fixtures/timedtext-jNQXAC9IVRw-de.srv3.xml') },
+        },
+      ]),
+    );
+
+  it('puts the German line under each English caption, retimed by --offset', async () => {
+    const res = await cli(
+      ['captions', 'jNQXAC9IVRw', '--lang', 'en', '--secondary', 'de', '--offset', '1', '-d', tmp, '--json'],
+      { env, fetch: fetch() },
+    );
+    expect(res.code).toBe(0);
+    const out = JSON.parse(res.stdout) as { file: { path: string; filename: string; tracks: { secondary?: string }[] } };
+    expect(out.file.filename).toBe('Me at the zoo [jNQXAC9IVRw].en+de.srt');
+    expect(out.file.tracks[0]?.secondary).toBe('de');
+    const srt = readFileSync(out.file.path, 'utf8');
+    expect(srt).toContain('elephants');
+    expect(srt).toMatch(/Elefant/);
+    const plain = await cli(['captions', 'jNQXAC9IVRw', '--lang', 'en', '-f', 'json', '-d', tmp], { env, fetch: fetch() });
+    const shifted = await cli(['captions', 'jNQXAC9IVRw', '--lang', 'en', '-f', 'json', '--offset', '1', '-d', tmp], {
+      env,
+      fetch: fetch(),
+    });
+    const s0 = (JSON.parse(readFileSync(plain.stdout.trim(), 'utf8')) as { segments: { startSec: number }[] }).segments[0];
+    const s1 = (JSON.parse(readFileSync(shifted.stdout.trim(), 'utf8')) as { segments: { startSec: number }[] }).segments[0];
+    expect((s1?.startSec ?? 0) - (s0?.startSec ?? 0)).toBeCloseTo(1, 6);
+  });
+
+  it('refuses bad layout values with a clear error', async () => {
+    const res = await cli(['captions', 'jNQXAC9IVRw', '--max-lines', '7'], { env, fetch: fetch() });
+    expect(res.code).not.toBe(0);
+    expect(res.stderr).toContain('maxLines must be a whole number from 1 to 4');
   });
 });

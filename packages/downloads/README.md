@@ -80,9 +80,9 @@ Everything below is relative to `/api/v1`. Errors are `{ "error": { "code", "mes
 | Route | Answer |
 |---|---|
 | `GET /downloads/status` | `{ enabled, reason?, notice, limits: { maxBytes, maxDurationSec, ttlMin }, formats: { video: [{id,label}], audio: [{id,label}] }, qualities: { video, audio }, sponsorCategories, thumbnailFormats, ytdlp? }` |
-| `GET /downloads/toolkit` | `{ enabled, reason?, captions: { formats: [{id,label}], modes, via, defaults, maxTracks }, frames: { formats, defaults, maxFrames }, clips: { formats, defaults: { format, fps, width, lengthSec }, maxSec, maxWidth, maxFps }, batch: { kinds: ["video","audio","captions"], maxItems }, watchdog: { stallSec, stallRetries, minFreeMb } }` |
+| `GET /downloads/toolkit` | `{ enabled, reason?, captions: { formats: [{id,label,timed,bilingual}], modes, via, defaults, maxTracks, layout: { maxLineChars: {min,max}, maxLines: {min,max} } }, frames: { formats, defaults, maxFrames }, clips: { formats, defaults: { format, fps, width, lengthSec }, maxSec, maxWidth, maxFps }, batch: { kinds: ["video","audio","captions"], maxItems }, watchdog: { stallSec, stallRetries, minFreeMb } }` |
 | `GET /downloads/options?url=` | `MediaOptions`: `{ id?, title, channel?, durationSec?, thumbnailUrl?, isLive, chapters: [{title,startSec,endSec?}], video: [{quality,label,height,fps?,hdr?,sizes:{mp4?,webm?,mkv?},codecs}], audio: [{format,quality,label,sizeBytes?,kbps?,method}], subtitles: [{language,name?,auto}], canRemoveSegments, formats }` |
-| `GET /downloads/captions/tracks?url=` | `CaptionTracks`: `{ input, id?, title?, url?, tracks: [{ language, name, auto, origin: "creator-captions"\|"auto-captions"\|"native-transcript", sources: string[], translatable? }], translationTargets: [{language,name}], speechToText: boolean, formats: [{id,label}], notes: string[] }` |
+| `GET /downloads/captions/tracks?url=` | `CaptionTracks`: `{ input, id?, title?, url?, tracks: [{ language, name, auto, origin: "creator-captions"\|"auto-captions"\|"native-transcript", sources: string[], translatable? }], translationTargets: [{language,name}], speechToText: boolean, formats: [{id,label,timed,bilingual}], notes: string[] }` |
 | `GET /downloads/thumbnail?url=&format=jpg\|png\|webp&inline=1` | the image itself (headers `x-thumbnail-origin`, `x-thumbnail-width`, `x-thumbnail-height`) |
 
 ### Creating jobs (all answer `202` with the job and a `location` header)
@@ -90,10 +90,12 @@ Everything below is relative to `/api/v1`. Errors are `{ "error": { "code", "mes
 | Route | Body (strings accepted everywhere; times are seconds, `m:ss` or `h:mm:ss`) |
 |---|---|
 | `POST /downloads` | `{ url, kind?: "video"\|"audio", format?: mp4\|webm\|mkv\|mp3\|m4a\|opus\|flac\|wav, quality?, from?, to?, chapter?, exactCuts?, subtitles?: string[], burnSubtitles?: lang, splitChapters?, removeSegments?: string[], embedThumbnail?, embedMetadata?, embedChapters? }` |
-| `POST /downloads/captions` | `{ url, languages?: string[] \| "en,de" \| ["all"], format?: "srt"\|"vtt"\|"txt"\|"json"\|"markdown"\|"original" (default srt), mode?: "auto"\|"captions"\|"stt" (default auto), via?: "auto"\|"pipeline"\|"ytdlp", allowAuto? (true), allowTranslated? (true), timestamps? (txt), zip? }` |
+| `POST /downloads/captions` | `{ url, languages?: string[] \| "en,de" \| ["all"], format?: one of `captions.formats` (default srt; today srt, vtt, ass, ttml, sbv, lrc, csv, txt, json, markdown, original), offsetSec? (seconds, negative = earlier; timed formats), maxLineChars? (10 to 200), maxLines? (1 to 4), secondary?: lang (a second language under each caption; formats with bilingual: true), mode?: "auto"\|"captions"\|"stt" (default auto), via?: "auto"\|"pipeline"\|"ytdlp", allowAuto? (true), allowTranslated? (true), timestamps? (txt), zip? }` |
 | `POST /downloads/frames` | `{ url, times: (string\|number)[] \| "0:10,1:30", format?: "png"\|"jpg", width?, quality? (download size for web videos, default 1080), zip? }` |
 | `POST /downloads/clips` | `{ url, from? (0), to? (from + 5 s), format?: "gif"\|"webp", fps? (10), width? (480), loop? (true) }` |
 | `POST /downloads/batch` | `{ urls: string[], kind?: "video"\|"audio"\|"captions", limit?, playlist?, zip?, ...the fields of that kind (format, quality, languages, mode, ...) }` |
+
+Caption formats come from core's formatters: every formatter whose times are subtitle times (`timed: 'always'`), then txt, json, markdown and original, so a format added to core appears in `captions.formats`, in `CaptionTracks.formats`, in the CLI and in the MCP enum without changes here. With `secondary`, the second language is fetched the same way as the first (the pipeline's captions, then yt-dlp; never speech-to-text), and the file is named `Title [id].en+de.srt`; when it cannot be fetched the file is saved in one language with a warning.
 
 A single-video route answers `404` before queueing when the video does not exist (local files, and sites with their own provider such as YouTube), and `400` when the URL is a playlist (use `/downloads/batch`).
 
@@ -122,7 +124,7 @@ type Job = {
     kind: 'video' | 'audio' | 'captions' | 'frames' | 'animation' | 'batch';
     format: string;          // mp4 ... wav, srt, vtt, txt, json, md, png, jpg, gif, webp, zip, or the original subtitle extension
     entries?: { name: string; bytes: number }[];       // a .zip: the files inside
-    tracks?: { language: string; origin: string; producer: string; via: 'pipeline' | 'ytdlp' | 'file'; translated?: boolean }[]; // captions
+    tracks?: { language: string; origin: string; producer: string; via: 'pipeline' | 'ytdlp' | 'file'; translated?: boolean; secondary?: string }[]; // captions
     parts?: { filename: string; bytes: number; index: number; title: string; fromSec: number; toSec: number }[];         // splitChapters
     section?: { fromSec: number; toSec?: number; chapter?: string };
   };
@@ -149,11 +151,11 @@ A batch is `done` when at least one item was saved; failed items keep their `err
 
 ### MCP tools (stdio server only)
 
-`get_media_options { url }`, `download_media { url, kind?, format?, quality?, from?, to?, chapter?, exactCuts?, subtitles?, burnSubtitles?, splitChapters?, removeSegments?, embed*?, dir?, limit? }`, `download_thumbnail { url, format?, dir? }`, `get_caption_options { url }`, `download_captions { url, languages?, format?, mode?, via?, allowAuto?, allowTranslated?, timestamps?, zip?, dir? }`, `grab_frames { url, times, format?, width?, quality?, zip?, dir? }`, `export_clip { url, from?, to?, format?, fps?, width?, loop?, dir? }`, `download_batch { urls, kind?, format?, quality?, languages?, mode?, limit?, playlist?, zip?, dir? }`. Results carry `structuredContent` (`{ dir, file?, items? }` for the toolkit tools) and send `notifications/progress` when the call has a progress token.
+`get_media_options { url }`, `download_media { url, kind?, format?, quality?, from?, to?, chapter?, exactCuts?, subtitles?, burnSubtitles?, splitChapters?, removeSegments?, embed*?, dir?, limit? }`, `download_thumbnail { url, format?, dir? }`, `get_caption_options { url }`, `download_captions { url, languages?, format?, mode?, via?, allowAuto?, allowTranslated?, timestamps?, offsetSec?, maxLineChars?, maxLines?, secondary?, zip?, dir? }`, `grab_frames { url, times, format?, width?, quality?, zip?, dir? }`, `export_clip { url, from?, to?, format?, fps?, width?, loop?, dir? }`, `download_batch { urls, kind?, format?, quality?, languages?, mode?, limit?, playlist?, zip?, dir? }`. Results carry `structuredContent` (`{ dir, file?, items? }` for the toolkit tools) and send `notifications/progress` when the call has a progress token.
 
 ### CLI
 
 - `vid2context download <inputs...>`: `--video [mp4|webm|mkv]`, `--audio [mp3|m4a|opus|flac|wav]`, `--quality`, `--from`, `--to`, `--chapter`, `--exact-cuts`, `--subs <langs>`, `--burn-subs <lang>`, `--split-chapters`, `--sponsorblock [cats]`, `--no-thumbnail`, `--no-metadata`, `--no-chapters`, `--thumbnail [jpg|png|webp]`, `--frames <times>`, `--frame-format png|jpg`, `--gif`, `--webp`, `--fps <n>`, `--width <px>`, `--zip`, `--info`, `--limit`, `--playlist`, `-d/--dir`, `--force`, `--json`.
-- `vid2context captions <inputs...>`: `-f srt|vtt|txt|json|markdown|original`, `--lang <codes|all>`, `--mode auto|captions|stt`, `--via auto|pipeline|ytdlp`, `--no-auto`, `--no-translate`, `--timestamps`, `--list`, `--zip`, `--limit`, `--playlist`, `-d/--dir`, `--force`, `--json`.
+- `vid2context captions <inputs...>`: `-f <format>` (any caption format above), `--offset <sec>`, `--max-line-chars <n>`, `--max-lines <n>`, `--secondary <lang>`, `--lang <codes|all>`, `--mode auto|captions|stt`, `--via auto|pipeline|ytdlp`, `--no-auto`, `--no-translate`, `--timestamps`, `--list`, `--zip`, `--limit`, `--playlist`, `-d/--dir`, `--force`, `--json`.
 
 stdout gets the saved paths (one per line) or JSON with `--json`; progress, notes and failures go to stderr.

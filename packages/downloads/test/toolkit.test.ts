@@ -12,13 +12,13 @@ import { join } from 'node:path';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { Registry, Vid2ContextError } from '@vid2context/core';
+import { formatters, Registry, Vid2ContextError } from '@vid2context/core';
 import { testContext } from '@vid2context/core/testing';
 import { probe, tryLocateFfmpeg } from '@vid2context/ffmpeg';
 import mediaFile from '@vid2context/provider-media-file';
 import { Hono } from 'hono';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { normalizeCaptionsRequest } from '../src/captions.ts';
+import { CAPTION_FORMATS, captionFormatList, normalizeCaptionsRequest } from '../src/captions.ts';
 import { normalizeAnimationRequest, normalizeFramesRequest } from '../src/clips.ts';
 import { downloadsRoutes } from '../src/http.ts';
 import { registerDownloadTools } from '../src/mcp.ts';
@@ -113,7 +113,78 @@ describe.skipIf(!hasFfmpeg)('captions only', () => {
     expect((err as Vid2ContextError).code).toBe('no-transcript');
   });
 
+  it('offers every core subtitle format, and renders each one through the captions path', async () => {
+    const timed = Object.values(formatters)
+      .filter((f) => f.timed === 'always')
+      .map((f) => f.id);
+    expect(CAPTION_FORMATS.slice(0, timed.length).sort()).toEqual(timed.sort());
+    expect(CAPTION_FORMATS[0]).toBe('srt');
+    expect(CAPTION_FORMATS).toEqual(
+      expect.arrayContaining(['ass', 'ttml', 'sbv', 'lrc', 'csv', 'txt', 'json', 'markdown', 'original']),
+    );
+    expect(captionFormatList().find((f) => f.id === 'ass')).toMatchObject({ timed: true, bilingual: true });
+    const signature: Record<string, RegExp> = {
+      srt: /^1\n00:00:0\d,\d{3} --> /,
+      vtt: /^WEBVTT/,
+      ass: /^\[Script Info\]/,
+      ttml: /<tt[\s>]/,
+      sbv: /^0:00:0\d\.\d{3},0:00:/,
+      lrc: /\[00:0\d\.\d{2}\]/,
+      csv: /^start/,
+    };
+    const out = join(dir, 'formats');
+    for (const id of CAPTION_FORMATS.filter((f) => f !== 'original')) {
+      const file = await toolkit.captions(normalizeCaptionsRequest({ url: MP4, format: id }), ctx, { dir: out });
+      const ext = id === 'txt' ? 'txt' : id === 'markdown' ? 'md' : id === 'json' ? 'json' : formatters[id]?.extension;
+      expect(file.filename).toBe(`apollo11-first-steps.en.${ext}`);
+      const body = await text(file.path);
+      expect(body.length).toBeGreaterThan(50);
+      if (signature[id]) expect(body).toMatch(signature[id] as RegExp);
+    }
+  });
+
+  it('shifts every cue by the offset and reflows lines', async () => {
+    const out = join(dir, 'offset');
+    const first = async (raw: Record<string, unknown>) => {
+      const f = await toolkit.captions(normalizeCaptionsRequest({ url: MP4, format: 'json', ...raw }), ctx, { dir: out });
+      return JSON.parse(await text(f.path)) as { segments: { startSec: number; endSec: number }[]; offsetSec?: number };
+    };
+    const base = await first({});
+    const later = await first({ offset: '2.5' });
+    expect(later.offsetSec).toBe(2.5);
+    expect(later.segments[0]?.startSec).toBeCloseTo((base.segments[0]?.startSec ?? 0) + 2.5, 6);
+    expect(later.segments.at(-1)?.endSec).toBeCloseTo((base.segments.at(-1)?.endSec ?? 0) + 2.5, 6);
+
+    const srt0 = await text((await toolkit.captions(normalizeCaptionsRequest({ url: MP4 }), ctx, { dir: join(out, 'a') })).path);
+    const srt1 = await text(
+      (await toolkit.captions(normalizeCaptionsRequest({ url: MP4, offsetSec: -1 }), ctx, { dir: join(out, 'b') })).path,
+    );
+    const start = (srt: string) => {
+      const m = /(\d\d):(\d\d):(\d\d),(\d{3}) -->/.exec(srt);
+      return m ? Number(m[1]) * 3600 + Number(m[2]) * 60 + Number(m[3]) + Number(m[4]) / 1000 : Number.NaN;
+    };
+    expect(start(srt1)).toBeCloseTo(Math.max(0, start(srt0) - 1), 3);
+
+    const narrow = await text(
+      (
+        await toolkit.captions(normalizeCaptionsRequest({ url: MP4, maxLineChars: 12, maxLines: 1 }), ctx, {
+          dir: join(out, 'c'),
+        })
+      ).path,
+    );
+    const lines = narrow.split('\n').filter((l) => l && !/^\d+$/.test(l) && !l.includes('-->'));
+    expect(Math.max(...lines.map((l) => l.length))).toBeLessThanOrEqual(12);
+  });
+
   it('validates requests', () => {
+    expect(() => normalizeCaptionsRequest({ url: MP4, offset: 'soon' })).toThrow(/not a number of seconds/);
+    expect(() => normalizeCaptionsRequest({ url: MP4, maxLineChars: 5 })).toThrow(/from 10 to 200/);
+    expect(() => normalizeCaptionsRequest({ url: MP4, maxLines: 9 })).toThrow(/from 1 to 4/);
+    expect(() => normalizeCaptionsRequest({ url: MP4, format: 'original', offset: 1 })).toThrow(/cannot be retimed/);
+    expect(() => normalizeCaptionsRequest({ url: MP4, format: 'markdown', offset: 1 })).toThrow(/not shifted/);
+    expect(() => normalizeCaptionsRequest({ url: MP4, format: 'lrc', secondary: 'de' })).toThrow(/cannot show a second language/);
+    expect(() => normalizeCaptionsRequest({ url: MP4, languages: 'de', secondary: 'de' })).toThrow(/same as a requested/);
+    expect(normalizeCaptionsRequest({ url: MP4, format: 'subrip', offset: '0' })).not.toHaveProperty('offsetSec');
     expect(() => normalizeCaptionsRequest({ url: MP4, format: 'docx' })).toThrow(/Unknown caption format/);
     expect(() => normalizeCaptionsRequest({ url: MP4, languages: 'english!' })).toThrow(/not a language code/);
     expect(() => normalizeCaptionsRequest({ url: MP4, format: 'original', mode: 'stt' })).toThrow(/no original/);
