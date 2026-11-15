@@ -42,7 +42,14 @@ Recorded from this repo's VM on 2026-11-14 with `POST /youtubei/v1/player` (`hl=
 
 The player endpoint itself was never blocked from the VM, so the block-during-fallback test serves the real `timedtext-429-blocked.html` page as a player answer.
 
-Not recorded, because none could be found or reached from the VM: a region-blocked video, a real 5xx or a 429 with Retry-After that is not the block page, and a 403 on timedtext. The timedtext endpoint answered every request from the VM with the 429 block page from about 16:55 UTC onward, so no json3, WebVTT or `tlang` caption payload could be recorded.
+Not recorded, because none could be found or reached from the VM: a region-blocked video, a real 5xx or a 429 with Retry-After that is not the block page, and a 403 on timedtext. The timedtext endpoint answered every request from the VM with the 429 block page from about 16:55 UTC onward, so no json3, WebVTT or `tlang` caption payload could be recorded that day.
+
+| File | Source |
+|---|---|
+| `timedtext-jNQXAC9IVRw-en.json3.json` | Recorded 2026-11-15 from the same VM: the en creator track of "Me at the zoo" with `fmt=json3`, fetched through the provider's own path (`getPlayer` picked ANDROID 20.10.38, then `trackUrl` and `youtubeGet`). The endpoint honoured `fmt=json3` this time. Byte-for-byte as served |
+| `timedtext-jNQXAC9IVRw-en.vtt` | Same track and path with `fmt=vtt` (`text/vtt`). Byte-for-byte as served |
+
+Neither file holds a URL, IP address or other personal data. A `tlang` translated track is still not recorded: on 2026-11-15 every `tlang` request (jNQXAC9IVRw en to fr as srv3 and VTT, en to de as json3, de to fr as srv1; dQw4w9WgXcQ de-DE to en; arj7oStGLkU en to es as srv3) got the 429 block page, while the untranslated requests above succeeded from the same IP minutes earlier.
 
 To re-record, call the player as `src/resilience/transport.ts` does, with the client from `src/resilience/clients.ts`, apply the same trimming, and grep for your public IP before committing.
 

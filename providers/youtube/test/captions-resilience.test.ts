@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import { type Attempt, createContext, type Env, Vid2ContextError, type VideoRef } from '@vid2context/core';
 import { type RecordedCall, type RecordedResponse, replayFetch, testContext } from '@vid2context/core/testing';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { detectFormat, parseJson3, parseSrv3, parseTimedText, parseVtt } from '../src/captions/formats.ts';
 import { youtubeCaptions } from '../src/captions/provider.ts';
 import { chooseTrack } from '../src/captions/tracks.ts';
 import { youtubeSource } from '../src/index.ts';
@@ -331,6 +332,34 @@ describe('backoff', () => {
     expect(isRetryable(bad)).toBe(false);
     expect(isRetryable(new Vid2ContextError('rate-limited', 'YouTube: HTTP 429', { status: 429 }))).toBe(true);
     expect(isRetryable(new Vid2ContextError('upstream', 'YouTube: HTTP 503', { status: 503 }))).toBe(true);
+  });
+});
+
+describe('caption formats (real payloads)', () => {
+  // The same en track of jNQXAC9IVRw fetched as srv3, json3 and WebVTT: every parser must agree.
+  const srv3 = fixture('timedtext-jNQXAC9IVRw-en.srv3.xml');
+  const json3 = fixture('timedtext-jNQXAC9IVRw-en.json3.json');
+  const vtt = fixture('timedtext-jNQXAC9IVRw-en.vtt');
+
+  it('detects each format from the body, not the request', () => {
+    expect(detectFormat(srv3)).toBe('srv3');
+    expect(detectFormat(json3)).toBe('json3');
+    expect(detectFormat(vtt)).toBe('vtt');
+  });
+
+  it('parses json3 and WebVTT into the same segments as srv3', () => {
+    const reference = parseSrv3(srv3);
+    expect(reference).toHaveLength(6);
+    expect(reference[0]).toEqual({ startSec: 1.2, endSec: 3.36, text: 'All right, so here we are, in front of the elephants' });
+    expect(parseJson3(json3)).toEqual(reference);
+    expect(parseVtt(vtt)).toEqual(reference);
+    expect(parseTimedText(json3)).toEqual(reference);
+    expect(parseTimedText(vtt)).toEqual(reference);
+  });
+
+  it('joins lines wrapped inside one cue', () => {
+    expect(parseVtt(vtt).at(-1)?.text).toBe("and that's pretty much all there is to say");
+    expect(parseJson3(json3)[1]?.text).toBe('the cool thing about these guys is that they have really...');
   });
 });
 
