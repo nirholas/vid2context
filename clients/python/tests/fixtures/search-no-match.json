@@ -1,0 +1,15 @@
+{
+  "recorded": "2026-11-15",
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/search",
+    "query": {
+      "q": "zebra giraffe"
+    }
+  },
+  "status": 200,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": "{\"hits\":[],\"meta\":{\"query\":{\"text\":\"zebra giraffe\",\"phrases\":[],\"excluded\":[]},\"mode\":\"hybrid\",\"keyword\":{\"ran\":true,\"backend\":\"bm25\",\"candidates\":0},\"vector\":\"disabled\",\"rerank\":\"off\",\"fusion\":{\"k\":60,\"keywordWeight\":1,\"vectorWeight\":1},\"indexed\":{\"videos\":2,\"chunks\":35},\"timings\":{\"syncMs\":0,\"keywordMs\":0,\"vectorMs\":0,\"rerankMs\":0,\"totalMs\":0},\"attempts\":[],\"vectorReason\":\"No embedding provider is installed.\"}}"
+}

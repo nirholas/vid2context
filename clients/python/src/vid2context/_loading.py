@@ -5,12 +5,12 @@ from __future__ import annotations
 
 import logging
 from collections.abc import AsyncIterator, Iterator, Sequence
-from typing import Optional, Union
+from typing import Any, Optional, Union
 
 from .chunking import CHUNKING_MODES, Chunk, chunk_context
 from .client import AsyncClient, Client
 from .errors import Vid2ContextError
-from .models import TranscriptMode
+from .models import SearchHit, TranscriptMode
 
 log = logging.getLogger("vid2context")
 
@@ -134,3 +134,25 @@ class VideoLoading:
         finally:
             if own:
                 await client.aclose()
+
+
+def hit_metadata(hit: SearchHit) -> dict[str, Any]:
+    """Citation metadata for one search hit, shared by the LangChain and LlamaIndex retrievers."""
+    meta: dict[str, Any] = {
+        "source": hit.url or hit.video_id,
+        "video_id": hit.video_id,
+        "title": hit.title,
+        "start_sec": hit.start_sec,
+        "end_sec": hit.end_sec,
+        "score": hit.score,
+        "search_sources": list(hit.sources),
+    }
+    for key, value in (
+        ("url", hit.url),
+        ("channel", hit.channel),
+        ("chapter", hit.chapter_title),
+        ("rerank_score", hit.rerank_score),
+    ):
+        if value is not None:
+            meta[key] = value
+    return meta

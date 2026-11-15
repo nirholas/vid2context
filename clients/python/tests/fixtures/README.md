@@ -31,3 +31,30 @@ Each file is `{ recorded, request: { method, path, query }, status, headers: { c
 `context-cCPsdFdlshc.json` had a person's email address and phone number in the video description; they are replaced with `[email redacted]` and `[phone redacted]` (the record script does this inside JSON strings and re-serializes only bodies it changed). No other edits. No stream URLs or IP addresses appear in these bodies.
 
 Why some files came from `--minimal`: while these were recorded, about 60 agents were editing the repo, so the full provider registry often failed to load (a provider package without its `src/index.ts` yet), and YouTube was answering this machine's caption requests with HTTP 429. `--minimal` runs the same `createApp` from `packages/server` with only the YouTube, media-file and speech-to-text providers (`scripts/record_server.ts`). The transcript, outline and section routes are recorded against the shared Apollo 11 clip instead of a YouTube video because of the 429 block, as the prompt allows. The record script still lists `outline-jNQXAC9IVRw`, `section-jNQXAC9IVRw-chapter`, `section-jNQXAC9IVRw-range` and `items-playlist` (three videos of a public playlist); they were not written because YouTube's 429 block (and the server's circuit breaker after it) was in force each time they were tried on 2026-11-14. `context-apollo11.json`, `outline-apollo11.json` and `items-apollo11.json` contain the server's absolute path to that clip in the repo checkout (`/home/user/...`), which names no person.
+
+## Search and collections
+
+Recorded on 2026-11-15 with `uv run python scripts/record_fixtures.py --library`: one scripted session, in order, against the real `packages/server` app (`createApp` with the YouTube, media-file and speech-to-text providers, `scripts/record_server.ts`) on a random local port. The library is a fresh in-memory store seeded with the two committed real contexts `tests/fixtures/contexts/youtube-jNQXAC9IVRw.json` and `youtube-cCPsdFdlshc.json` (repo root), because YouTube answered this machine's caption requests with HTTP 429 that day; ingesting those two videos reads them from storage, as the library does for any saved video. No embedding provider is installed, so search runs keyword-only (`meta.vector: "disabled"`). Each file also has `request.json`, the JSON body sent, and the replay server matches on it. Collection ids are the server's own (`<slug>-<random hex>`).
+
+| File | Request | Status |
+|---|---|---|
+| `collection-create.json` | `POST /api/v1/collections` `{name, description}` | 201 |
+| `collection-add-items.json` | `POST /api/v1/collections/{id}/items` with both videos (no jobs queue, so the ingest runs inline and returns `{collection, summary}`) | 200 |
+| `collections-list.json` | `GET /api/v1/collections` | 200 |
+| `collection-detail.json` | `GET /api/v1/collections/{id}` (videos, pending, watch `null`) | 200 |
+| `collection-update.json` | `PATCH /api/v1/collections/{id}` with a new description and a daily 06:00 watch schedule | 200 |
+| `search-collection.json` | `GET /api/v1/search?q=elephants&collectionId={id}` (one hit with a timestamp link and chapter) | 200 |
+| `search-keyword.json` | `GET /api/v1/search?q=reliable V8 engine&mode=keyword&limit=5` | 200 |
+| `search-no-match.json` | `GET /api/v1/search?q=zebra giraffe` | 200, no hits |
+| `search-missing-q.json` | `GET /api/v1/search` | 400 `bad-request` |
+| `search-bad-mode.json` | `GET /api/v1/search?q=step&mode=fuzzy` | 400 `bad-request` |
+| `collection-export.json` | `GET /api/v1/collections/{id}/export` | 200 |
+| `collection-refresh.json` | `POST /api/v1/collections/{id}/refresh` `{limit: 5}` (no sources, nothing new) | 200 |
+| `collection-remove-items.json` | `DELETE /api/v1/collections/{id}/items` `{videoIds: ["youtube:jNQXAC9IVRw"]}` | 200 |
+| `collection-import.json` | `POST /api/v1/collections/import` with the export body unchanged | 201 |
+| `collection-delete.json` | `DELETE /api/v1/collections/{id}` | 204 |
+| `collection-not-found.json` | `GET /api/v1/collections/{id}` after the delete (not served by default: same request as `collection-detail.json`) | 404 `not-found` |
+| `collection-create-bad.json` | `POST /api/v1/collections` `{name: ""}` | 400 `bad-request` |
+| `collection-create-jobs.json`, `collection-add-items-job.json` | `--library --jobs`: the same server with an in-process jobs queue (as the Node entry has); ingest answers 202 with a queued `ingest` Job | 201, 202 |
+
+The G-Wagon video description in the seeded context had its email address and phone number replaced when that context was committed; the record script's redaction runs on these bodies too. No stream URLs or IP addresses appear.

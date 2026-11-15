@@ -12,7 +12,15 @@ machines with HTTP 429, which the server reports as `blocked`) is retried a
 few times and then left unwritten, so a good fixture is never replaced by a
 transient failure. `--minimal` serves the same packages/server app with only
 the YouTube, media-file and speech-to-text providers (scripts/record_server.ts),
-for when the full provider registry does not build. Needs Node 22+ and `npm install` at the repo root. Personal details (email
+for when the full provider registry does not build. `--library` records the
+collection and search routes instead: one scripted session against the minimal
+server (an empty in-memory library), creating a collection, ingesting two
+public YouTube videos (read from a library seeded with the committed real
+contexts in tests/fixtures/contexts/, since YouTube rate-limits caption
+requests from busy machines), searching them, editing, exporting, importing and deleting, with
+each call's JSON request body saved next to its response; `--library --jobs`
+records the same ingest call against a server with a jobs queue (202 Job).
+Needs Node 22+ and `npm install` at the repo root. Personal details (email
 addresses, phone numbers) in video descriptions are replaced before writing,
 as AGENTS.md requires for committed fixtures.
 """
@@ -88,6 +96,55 @@ CALLS: list[tuple[str, str, dict[str, str], int]] = [
 ]
 RETRIES = 4
 
+ZOO = "https://youtu.be/jNQXAC9IVRw"
+GWAGON = "https://www.youtube.com/watch?v=cCPsdFdlshc"
+
+# Real VideoContext output committed at the repo root, saved into the recording server's library
+# first, so ingesting ZOO and GWAGON reads them from storage instead of asking YouTube for captions.
+SEED = ["youtube-jNQXAC9IVRw.json", "youtube-cCPsdFdlshc.json"]
+
+# The library session: (fixture name, method, path, query, JSON body, expected status). Paths and
+# bodies may use {id} (the collection created first), {video} (the ingested video id), {export}
+# (the export response body) and {imported} (the collection the import created).
+LIBRARY_CALLS: list[tuple[str, str, str, dict[str, str], object, int]] = [
+    (
+        "collection-create",
+        "POST",
+        "/api/v1/collections",
+        {},
+        {"name": "Car and zoo videos", "description": "Two public YouTube videos"},
+        201,
+    ),
+    ("collection-add-items", "POST", "/api/v1/collections/{id}/items", {}, {"inputs": [ZOO, GWAGON]}, 200),
+    ("collections-list", "GET", "/api/v1/collections", {}, None, 200),
+    ("collection-detail", "GET", "/api/v1/collections/{id}", {}, None, 200),
+    (
+        "collection-update",
+        "PATCH",
+        "/api/v1/collections/{id}",
+        {},
+        {"description": "Two public YouTube videos, checked daily", "watch": {"every": "daily", "at": "06:00"}},
+        200,
+    ),
+    ("search-collection", "GET", "/api/v1/search", {"q": "elephants", "collectionId": "{id}"}, None, 200),
+    ("search-keyword", "GET", "/api/v1/search", {"q": "reliable V8 engine", "mode": "keyword", "limit": "5"}, None, 200),
+    ("search-no-match", "GET", "/api/v1/search", {"q": "zebra giraffe"}, None, 200),
+    ("search-missing-q", "GET", "/api/v1/search", {}, None, 400),
+    ("search-bad-mode", "GET", "/api/v1/search", {"q": "step", "mode": "fuzzy"}, None, 400),
+    ("collection-export", "GET", "/api/v1/collections/{id}/export", {}, None, 200),
+    ("collection-refresh", "POST", "/api/v1/collections/{id}/refresh", {}, {"limit": 5}, 200),
+    ("collection-remove-items", "DELETE", "/api/v1/collections/{id}/items", {}, {"videoIds": ["{video}"]}, 200),
+    ("collection-import", "POST", "/api/v1/collections/import", {}, "{export}", 201),
+    ("collection-delete", "DELETE", "/api/v1/collections/{id}", {}, None, 204),
+    ("collection-not-found", "GET", "/api/v1/collections/{id}", {}, None, 404),
+    ("collection-create-bad", "POST", "/api/v1/collections", {}, {"name": ""}, 400),
+]
+# With RECORD_JOBS=1: ingest answers 202 with a queued Job.
+JOBS_CALLS: list[tuple[str, str, str, dict[str, str], object, int]] = [
+    ("collection-create-jobs", "POST", "/api/v1/collections", {}, {"name": "Queued ingest"}, 201),
+    ("collection-add-items-job", "POST", "/api/v1/collections/{id}/items", {}, {"inputs": [ZOO]}, 202),
+]
+
 EMAIL = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")
 PHONE = re.compile(r"(?<![\d.])(?:\+?1[ .-]?)?\(?\d{3}\)?[ .-]\d{3}[ .-]\d{4}(?![\d.])")
 
@@ -118,6 +175,62 @@ def redact(body: str) -> str:
     return json.dumps(clean, ensure_ascii=False, separators=(",", ":"))
 
 
+def _fill(v: object, values: dict[str, object]) -> object:
+    """Substitute {name} placeholders; a string that is exactly one placeholder takes the value as is."""
+    if isinstance(v, str):
+        for k, val in values.items():
+            if v == "{" + k + "}":
+                return val
+        for k, val in values.items():
+            if isinstance(val, str):
+                v = v.replace("{" + k + "}", val)
+        return v
+    if isinstance(v, list):
+        return [_fill(x, values) for x in v]
+    if isinstance(v, dict):
+        return {k: _fill(x, values) for k, x in v.items()}
+    return v
+
+
+def record_session(http: httpx.Client, calls: list[tuple[str, str, str, dict[str, str], object, int]]) -> int:
+    """Run one scripted session in order, writing every response. Stops at the first unexpected status."""
+    today = dt.date.today().isoformat()
+    values: dict[str, object] = {}
+    for name, method, path_t, query_t, body_t, expected in calls:
+        path = str(_fill(path_t, values))
+        query = {k: str(_fill(v, values)) for k, v in query_t.items()}
+        body = _fill(body_t, values) if body_t is not None else None
+        res = http.request(method, path, params=query or None, json=body)
+        if res.status_code != expected:
+            print(f"{res.status_code} {method} {path}: expected {expected}, stopping: {res.text[:300]}", file=sys.stderr)
+            return 1
+        data = res.json() if res.content and "json" in res.headers.get("content-type", "") else None
+        if name.startswith("collection-create") and res.status_code == 201 and isinstance(data, dict):
+            values["id"] = data["id"]
+        if name == "collection-add-items" and isinstance(data, dict):
+            added = data["summary"]["added"]
+            if not added:
+                print(f"ingest added nothing: {res.text[:500]}", file=sys.stderr)
+                return 1
+            values["video"] = added[0]["id"]
+        if name == "collection-export":
+            values["export"] = data
+        request: dict[str, object] = {"method": method, "path": path, "query": query}
+        if body is not None:
+            request["json"] = body
+        record = {
+            "recorded": today,
+            "request": request,
+            "status": res.status_code,
+            "headers": {"content-type": res.headers.get("content-type", "")},
+            "body": redact(res.text),
+        }
+        out = FIXTURES / f"{name}.json"
+        out.write_text(json.dumps(record, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        print(f"{res.status_code} {method} {path} -> {out.relative_to(REPO)}", file=sys.stderr)
+    return 0
+
+
 def wait_for(base: str, proc: subprocess.Popen[bytes], seconds: float = 60) -> None:
     deadline = time.monotonic() + seconds
     while time.monotonic() < deadline:
@@ -136,14 +249,20 @@ def main() -> None:
     # Turn SIGTERM (from `timeout` or a killed shell) into an exit so the server below is always stopped.
     signal.signal(signal.SIGTERM, lambda *_: sys.exit(143))
     args = sys.argv[1:]
-    minimal = "--minimal" in args
-    only = {a for a in args if a != "--minimal"}
+    library = "--library" in args
+    jobs = "--jobs" in args
+    minimal = "--minimal" in args or library
+    only = {a for a in args if a not in ("--minimal", "--library", "--jobs")}
     unknown = only - {c[0] for c in CALLS}
     if unknown:
         sys.exit(f"unknown fixture names: {', '.join(sorted(unknown))}")
     port = random.randint(20000, 29999)
     base = f"http://127.0.0.1:{port}"
     env = {**os.environ, "PORT": str(port), "HOST": "127.0.0.1"}
+    if jobs:
+        env["RECORD_JOBS"] = "1"
+    if library:
+        env["RECORD_SEED"] = ",".join(str(REPO / "tests/fixtures/contexts" / f) for f in SEED)
     proc = subprocess.Popen(
         ["npx", "tsx", str(HERE / "record_server.ts") if minimal else "packages/server/src/node.ts"],
         cwd=REPO,
@@ -152,6 +271,12 @@ def main() -> None:
     )
     try:
         wait_for(base, proc)
+        if library:
+            FIXTURES.mkdir(parents=True, exist_ok=True)
+            with httpx.Client(base_url=base, timeout=300) as http:
+                if record_session(http, JOBS_CALLS if jobs else LIBRARY_CALLS):
+                    sys.exit("library session not fully recorded")
+            return
         today = dt.date.today().isoformat()
         FIXTURES.mkdir(parents=True, exist_ok=True)
         failed = 0

@@ -8,12 +8,30 @@ somewhere else.
 from __future__ import annotations
 
 import os
-from typing import Any, Mapping, Optional, Union
+from typing import Any, Mapping, Optional, Sequence, Union
+from urllib.parse import quote
 
 import httpx
 
 from .errors import Vid2ContextError, error_from_body
-from .models import FormatInfo, Health, Outline, TranscriptMode, VideoContext, VideoMetadata, VideoRef
+from .models import (
+    Collection,
+    CollectionDefinition,
+    CollectionDetail,
+    FormatInfo,
+    Health,
+    ImportResult,
+    IngestResult,
+    Job,
+    Outline,
+    Schedule,
+    SearchMode,
+    SearchResult,
+    TranscriptMode,
+    VideoContext,
+    VideoMetadata,
+    VideoRef,
+)
 
 DEFAULT_BASE_URL = "http://127.0.0.1:8787"
 DEFAULT_TIMEOUT = 300.0
@@ -105,6 +123,116 @@ def _items_query(url: str, limit: Optional[int]) -> dict[str, str]:
     return q
 
 
+def _search_query(
+    q: str,
+    collection_id: Optional[str],
+    video_ids: Optional[Sequence[str]],
+    limit: Optional[int],
+    mode: Optional[SearchMode],
+    rerank: bool,
+    channel: Optional[str],
+    origin: Optional[Sequence[str]],
+    published_after: Optional[str],
+    published_before: Optional[str],
+) -> dict[str, str]:
+    # An empty q is left out rather than checked here: the server answers bad-request with a hint,
+    # and the client reports exactly that.
+    p: dict[str, str] = {"q": q} if q else {}
+    if collection_id:
+        p["collectionId"] = collection_id
+    if video_ids:
+        p["videoIds"] = ",".join(video_ids)
+    if limit is not None:
+        p["limit"] = str(limit)
+    if mode:
+        p["mode"] = mode
+    if rerank:
+        p["rerank"] = "1"
+    if channel:
+        p["channel"] = channel
+    if origin:
+        p["origin"] = ",".join(origin)
+    if published_after:
+        p["publishedAfter"] = published_after
+    if published_before:
+        p["publishedBefore"] = published_before
+    return p
+
+
+class _Unset:
+    def __repr__(self) -> str:
+        return "UNSET"
+
+
+UNSET: Any = _Unset()
+"""Default for `update_collection(watch=...)`: leave the schedule as it is. Pass None to remove it."""
+
+ScheduleArg = Union[Schedule, Mapping[str, Any]]
+"""A `Schedule`, or the JSON form: {"every": "daily", "at": "06:00"}."""
+
+
+def _cid(collection_id: str) -> str:
+    if not collection_id:
+        raise Vid2ContextError("bad-request", "No collection id given.", hint="Pass an id from collections().")
+    return "/collections/" + quote(collection_id, safe="")
+
+
+def _schedule(v: ScheduleArg) -> dict[str, Any]:
+    return v.to_dict() if isinstance(v, Schedule) else dict(v)
+
+
+def _create_body(
+    name: str, description: Optional[str], sources: Optional[Sequence[str]], watch: Optional[ScheduleArg]
+) -> dict[str, Any]:
+    body: dict[str, Any] = {"name": name}
+    if description is not None:
+        body["description"] = description
+    if sources is not None:
+        body["sources"] = list(sources)
+    if watch is not None:
+        body["watch"] = _schedule(watch)
+    return body
+
+
+def _update_body(
+    name: Optional[str], description: Optional[str], sources: Optional[Sequence[str]], watch: Any
+) -> dict[str, Any]:
+    body: dict[str, Any] = {}
+    if name is not None:
+        body["name"] = name
+    if description is not None:
+        body["description"] = description
+    if sources is not None:
+        body["sources"] = list(sources)
+    if watch is None:
+        body["watch"] = None
+    elif watch is not UNSET:
+        body["watch"] = _schedule(watch)
+    return body
+
+
+def _limit_body(limit: Optional[int], **fields: Any) -> dict[str, Any]:
+    body = dict(fields)
+    if limit is not None:
+        body["limit"] = limit
+    return body
+
+
+def _ingest(res: httpx.Response) -> Union[IngestResult, Job]:
+    """202 means the server queued a job; 200 means it ran the ingest inline and returns the summary."""
+    body = _json(res)
+    return Job.from_dict(body) if res.status_code == 202 else IngestResult.from_dict(body)
+
+
+def _definition(d: Union[CollectionDefinition, Mapping[str, Any]]) -> dict[str, Any]:
+    return d.to_dict() if isinstance(d, CollectionDefinition) else dict(d)
+
+
+def _no_content(res: httpx.Response) -> None:
+    if res.status_code >= 400:
+        raise error_from_body(res.status_code, res.text)
+
+
 def _json(res: httpx.Response) -> Any:
     if res.status_code >= 400:
         raise error_from_body(res.status_code, res.text)
@@ -167,6 +295,14 @@ class Client:
         except httpx.TransportError as e:
             raise _transport_error(self.base_url, e) from e
 
+    def _send(
+        self, method: str, path: str, body: Any = None, params: Optional[dict[str, str]] = None
+    ) -> httpx.Response:
+        try:
+            return self._http.request(method, path, json=body, params=params)
+        except httpx.TransportError as e:
+            raise _transport_error(self.base_url, e) from e
+
     def health(self) -> Health:
         """Server version, transcript formats and providers (env var names only, never values)."""
         return Health.from_dict(_json(self._get("/health")))
@@ -216,6 +352,87 @@ class Client:
         """Output formats this server can render, with file extensions."""
         return [FormatInfo.from_dict(f) for f in _json(self._get("/formats")).get("formats", [])]
 
+    def search(
+        self,
+        q: str,
+        collection_id: Optional[str] = None,
+        video_ids: Optional[Sequence[str]] = None,
+        limit: Optional[int] = None,
+        mode: Optional[SearchMode] = None,
+        rerank: bool = False,
+        *,
+        channel: Optional[str] = None,
+        origin: Optional[Sequence[str]] = None,
+        published_after: Optional[str] = None,
+        published_before: Optional[str] = None,
+    ) -> SearchResult:
+        """Search saved transcripts (hybrid keyword and vector by default). Hits carry timestamp links."""
+        p = _search_query(
+            q, collection_id, video_ids, limit, mode, rerank, channel, origin, published_after, published_before
+        )
+        return SearchResult.from_dict(_json(self._get("/search", p)))
+
+    def collections(self) -> list[Collection]:
+        """Every collection in the server's library."""
+        return [Collection.from_dict(c) for c in _json(self._get("/collections")).get("collections", [])]
+
+    def create_collection(
+        self,
+        name: str,
+        description: Optional[str] = None,
+        sources: Optional[Sequence[str]] = None,
+        watch: Optional[ScheduleArg] = None,
+    ) -> Collection:
+        """Create a collection. `sources` are playlist, channel or feed inputs; `watch` refreshes it on a schedule."""
+        return Collection.from_dict(_json(self._send("POST", "/collections", _create_body(name, description, sources, watch))))
+
+    def collection(self, collection_id: str) -> CollectionDetail:
+        """One collection with its videos, pending imports and watch schedule."""
+        return CollectionDetail.from_dict(_json(self._get(_cid(collection_id))))
+
+    def update_collection(
+        self,
+        collection_id: str,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+        sources: Optional[Sequence[str]] = None,
+        watch: Any = UNSET,
+    ) -> Collection:
+        """Change fields; `watch=None` removes the schedule, a schedule sets it, leaving it out keeps it."""
+        body = _update_body(name, description, sources, watch)
+        return Collection.from_dict(_json(self._send("PATCH", _cid(collection_id), body)))
+
+    def delete_collection(self, collection_id: str) -> None:
+        """Delete a collection. Its saved videos stay in the library."""
+        _no_content(self._send("DELETE", _cid(collection_id)))
+
+    def add_to_collection(
+        self, collection_id: str, inputs: Sequence[str], limit: Optional[int] = None
+    ) -> Union[IngestResult, Job]:
+        """Fetch videos or lists into a collection. A `Job` when the server has a jobs queue, else the run's result."""
+        body = _limit_body(limit, inputs=list(inputs))
+        return _ingest(self._send("POST", _cid(collection_id) + "/items", body))
+
+    def remove_from_collection(self, collection_id: str, video_ids: Sequence[str]) -> Collection:
+        """Remove videos (ids such as "youtube:cCPsdFdlshc"); a refresh will not bring them back."""
+        body = {"videoIds": list(video_ids)}
+        return Collection.from_dict(_json(self._send("DELETE", _cid(collection_id) + "/items", body)))
+
+    def refresh_collection(self, collection_id: str, limit: Optional[int] = None) -> Union[IngestResult, Job]:
+        """Check the collection's sources for new videos and ingest them."""
+        return _ingest(self._send("POST", _cid(collection_id) + "/refresh", _limit_body(limit)))
+
+    def export_collection(self, collection_id: str) -> CollectionDefinition:
+        """The portable definition (sources and video URLs, no transcripts), for import elsewhere."""
+        return CollectionDefinition.from_dict(_json(self._get(_cid(collection_id) + "/export")))
+
+    def import_collection(
+        self, definition: Union[CollectionDefinition, Mapping[str, Any]], refresh: bool = False
+    ) -> ImportResult:
+        """Create a collection from a definition. `refresh=True` ingests its videos now instead of on the next refresh."""
+        params = {"refresh": "1"} if refresh else None
+        return ImportResult.from_dict(_json(self._send("POST", "/collections/import", _definition(definition), params)))
+
     def close(self) -> None:
         self._http.close()
 
@@ -246,6 +463,14 @@ class AsyncClient:
     async def _get(self, path: str, params: Optional[dict[str, str]] = None) -> httpx.Response:
         try:
             return await self._http.get(path, params=params)
+        except httpx.TransportError as e:
+            raise _transport_error(self.base_url, e) from e
+
+    async def _send(
+        self, method: str, path: str, body: Any = None, params: Optional[dict[str, str]] = None
+    ) -> httpx.Response:
+        try:
+            return await self._http.request(method, path, json=body, params=params)
         except httpx.TransportError as e:
             raise _transport_error(self.base_url, e) from e
 
@@ -292,6 +517,78 @@ class AsyncClient:
     async def formats(self) -> list[FormatInfo]:
         return [FormatInfo.from_dict(f) for f in _json(await self._get("/formats")).get("formats", [])]
 
+    async def search(
+        self,
+        q: str,
+        collection_id: Optional[str] = None,
+        video_ids: Optional[Sequence[str]] = None,
+        limit: Optional[int] = None,
+        mode: Optional[SearchMode] = None,
+        rerank: bool = False,
+        *,
+        channel: Optional[str] = None,
+        origin: Optional[Sequence[str]] = None,
+        published_after: Optional[str] = None,
+        published_before: Optional[str] = None,
+    ) -> SearchResult:
+        p = _search_query(
+            q, collection_id, video_ids, limit, mode, rerank, channel, origin, published_after, published_before
+        )
+        return SearchResult.from_dict(_json(await self._get("/search", p)))
+
+    async def collections(self) -> list[Collection]:
+        return [Collection.from_dict(c) for c in _json(await self._get("/collections")).get("collections", [])]
+
+    async def create_collection(
+        self,
+        name: str,
+        description: Optional[str] = None,
+        sources: Optional[Sequence[str]] = None,
+        watch: Optional[ScheduleArg] = None,
+    ) -> Collection:
+        body = _create_body(name, description, sources, watch)
+        return Collection.from_dict(_json(await self._send("POST", "/collections", body)))
+
+    async def collection(self, collection_id: str) -> CollectionDetail:
+        return CollectionDetail.from_dict(_json(await self._get(_cid(collection_id))))
+
+    async def update_collection(
+        self,
+        collection_id: str,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+        sources: Optional[Sequence[str]] = None,
+        watch: Any = UNSET,
+    ) -> Collection:
+        body = _update_body(name, description, sources, watch)
+        return Collection.from_dict(_json(await self._send("PATCH", _cid(collection_id), body)))
+
+    async def delete_collection(self, collection_id: str) -> None:
+        _no_content(await self._send("DELETE", _cid(collection_id)))
+
+    async def add_to_collection(
+        self, collection_id: str, inputs: Sequence[str], limit: Optional[int] = None
+    ) -> Union[IngestResult, Job]:
+        body = _limit_body(limit, inputs=list(inputs))
+        return _ingest(await self._send("POST", _cid(collection_id) + "/items", body))
+
+    async def remove_from_collection(self, collection_id: str, video_ids: Sequence[str]) -> Collection:
+        body = {"videoIds": list(video_ids)}
+        return Collection.from_dict(_json(await self._send("DELETE", _cid(collection_id) + "/items", body)))
+
+    async def refresh_collection(self, collection_id: str, limit: Optional[int] = None) -> Union[IngestResult, Job]:
+        return _ingest(await self._send("POST", _cid(collection_id) + "/refresh", _limit_body(limit)))
+
+    async def export_collection(self, collection_id: str) -> CollectionDefinition:
+        return CollectionDefinition.from_dict(_json(await self._get(_cid(collection_id) + "/export")))
+
+    async def import_collection(
+        self, definition: Union[CollectionDefinition, Mapping[str, Any]], refresh: bool = False
+    ) -> ImportResult:
+        params = {"refresh": "1"} if refresh else None
+        res = await self._send("POST", "/collections/import", _definition(definition), params)
+        return ImportResult.from_dict(_json(res))
+
     async def aclose(self) -> None:
         await self._http.aclose()
 
@@ -302,4 +599,4 @@ class AsyncClient:
         await self.aclose()
 
 
-__all__ = ["AsyncClient", "Client", "DEFAULT_BASE_URL", "DEFAULT_TIMEOUT", "TimeArg"]
+__all__ = ["UNSET", "AsyncClient", "Client", "DEFAULT_BASE_URL", "DEFAULT_TIMEOUT", "ScheduleArg", "TimeArg"]

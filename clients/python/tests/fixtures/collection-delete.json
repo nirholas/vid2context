@@ -1,0 +1,13 @@
+{
+  "recorded": "2026-11-15",
+  "request": {
+    "method": "DELETE",
+    "path": "/api/v1/collections/car-and-zoo-videos-eba8ec85",
+    "query": {}
+  },
+  "status": 204,
+  "headers": {
+    "content-type": ""
+  },
+  "body": ""
+}

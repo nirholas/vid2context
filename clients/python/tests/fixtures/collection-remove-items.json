@@ -1,0 +1,18 @@
+{
+  "recorded": "2026-11-15",
+  "request": {
+    "method": "DELETE",
+    "path": "/api/v1/collections/car-and-zoo-videos-eba8ec85/items",
+    "query": {},
+    "json": {
+      "videoIds": [
+        "youtube:jNQXAC9IVRw"
+      ]
+    }
+  },
+  "status": 200,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": "{\"id\":\"car-and-zoo-videos-eba8ec85\",\"name\":\"Car and zoo videos\",\"description\":\"Two public YouTube videos, checked daily\",\"sources\":[],\"videoIds\":[\"youtube:cCPsdFdlshc\"],\"createdAt\":\"2026-11-15T15:15:48.165Z\",\"updatedAt\":\"2026-11-15T15:15:48.234Z\"}"
+}

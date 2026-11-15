@@ -1,0 +1,29 @@
+{
+  "recorded": "2026-11-15",
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/collections/import",
+    "query": {},
+    "json": {
+      "format": "vid2context.collection",
+      "version": 1,
+      "name": "Car and zoo videos",
+      "description": "Two public YouTube videos, checked daily",
+      "sources": [],
+      "videos": [
+        "https://www.youtube.com/watch?v=jNQXAC9IVRw",
+        "https://www.youtube.com/watch?v=cCPsdFdlshc"
+      ],
+      "schedule": {
+        "every": "daily",
+        "at": "06:00",
+        "enabled": true
+      }
+    }
+  },
+  "status": 201,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": "{\"collection\":{\"id\":\"car-and-zoo-videos-3d2984a2\",\"name\":\"Car and zoo videos\",\"description\":\"Two public YouTube videos, checked daily\",\"sources\":[],\"videoIds\":[],\"createdAt\":\"2026-11-15T15:15:48.236Z\",\"updatedAt\":\"2026-11-15T15:15:48.236Z\"}}"
+}

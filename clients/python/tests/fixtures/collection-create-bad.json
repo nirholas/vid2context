@@ -1,0 +1,16 @@
+{
+  "recorded": "2026-11-15",
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/collections",
+    "query": {},
+    "json": {
+      "name": ""
+    }
+  },
+  "status": 400,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": "{\"error\":{\"code\":\"bad-request\",\"message\":\"A collection needs a name.\",\"hint\":\"Send {\\\"name\\\": \\\"G-Wagon\\\"}.\"},\"attempts\":[],\"recovery\":[{\"action\":\"fix-input\",\"title\":\"Change the request\",\"detail\":\"The hint above says which field to fix.\"}]}"
+}

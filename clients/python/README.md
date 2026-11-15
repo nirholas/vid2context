@@ -83,8 +83,29 @@ with Client() as v2c:
 | `section(url, start=None, end=None, chapter=None, format="text", timestamps=False, mode=None, lang=None)` | `GET /api/v1/section` | `str`: one range (`start` to `end`, end exclusive) or one chapter (outline index or title). Times are seconds or `"m:ss"` / `"h:mm:ss"` strings. Pass at least one of them; the server answers `bad-request` otherwise |
 | `items(url, limit=None)` | `GET /api/v1/items` | `list[VideoRef]`: a playlist, channel, feed or page expanded to videos; a single video returns itself |
 | `formats()` | `GET /api/v1/formats` | `list[FormatInfo]` with `extension` |
+| `search(q, collection_id=None, video_ids=None, limit=None, mode=None, rerank=False, *, channel=None, origin=None, published_after=None, published_before=None)` | `GET /api/v1/search` | `SearchResult`: `hits` (`SearchHit` with `text`, `snippet`, `start_sec`, `end_sec`, a timestamp `url`, `chapter_title`, `score`) and `meta` (`mode`, `vector` status, indexed counts, full JSON on `raw`). Searches videos saved in the server's library; `mode` is `hybrid` (default), `keyword` or `vector` |
+| `collections()` | `GET /api/v1/collections` | `list[Collection]` (`id`, `name`, `description`, `sources`, `video_ids`) |
+| `create_collection(name, description=None, sources=None, watch=None)` | `POST /api/v1/collections` | `Collection`. `sources` are playlist, channel or feed inputs; `watch` is a `Schedule` or `{"every": "daily", "at": "06:00"}` |
+| `collection(id)` | `GET /api/v1/collections/{id}` | `CollectionDetail`: the collection plus `videos` (`VideoSummary`), `pending` and `watch` |
+| `update_collection(id, name=None, description=None, sources=None, watch=UNSET)` | `PATCH /api/v1/collections/{id}` | `Collection`. `watch=None` removes the schedule; leaving it out keeps it |
+| `delete_collection(id)` | `DELETE /api/v1/collections/{id}` | `None`. Saved videos stay in the library |
+| `add_to_collection(id, inputs, limit=None)` | `POST /api/v1/collections/{id}/items` | `IngestResult` (`collection`, `summary` with `added`, `skipped`, `failed`, `remaining`) when the server runs it inline, or a `Job` when the server has a jobs queue (the Node entry does: poll `GET /api/v1/jobs/{id}`) |
+| `remove_from_collection(id, video_ids)` | `DELETE /api/v1/collections/{id}/items` | `Collection` |
+| `refresh_collection(id, limit=None)` | `POST /api/v1/collections/{id}/refresh` | `IngestResult` or `Job`, as above |
+| `export_collection(id)` | `GET /api/v1/collections/{id}/export` | `CollectionDefinition` (sources and video URLs, no transcripts) |
+| `import_collection(definition, refresh=False)` | `POST /api/v1/collections/import` | `ImportResult`. `definition` is a `CollectionDefinition` or its JSON |
 
-Left out because `packages/server` does not mount them yet (November 2026): `search`, collections (`/collections/...`), jobs, and the intelligence routes (`/ask`, `/chat`, `/briefs`, `/extract`). The server does serve `/comments`, `/pack`, `/bundle` and `/library`; this client does not wrap them yet. Call them through `httpx` against the same base URL in the meantime.
+The server also serves `/comments`, `/pack`, `/bundle`, `/library`, jobs and the intelligence routes (`/ask`, `/chat`, `/briefs`, `/extract`); this client does not wrap them yet. Call them through `httpx` against the same base URL in the meantime.
+
+```python
+from vid2context import Client
+
+with Client() as v2c:
+    c = v2c.create_collection("Watched playlist", sources=["https://www.youtube.com/playlist?list=PL59FEE129ADFF2B12"])
+    v2c.refresh_collection(c.id, limit=20)
+    for hit in v2c.search("which engine is most reliable", collection_id=c.id).hits:
+        print(hit.url, hit.snippet)
+```
 
 `Client(base_url=None, api_key=None, timeout=300.0, *, headers=None, transport=None)`:
 
@@ -116,6 +137,19 @@ Every failure raises `Vid2ContextError` with `code`, `message`, `hint`, `attempt
 
 Document text is the raw transcript text of that chunk with whitespace collapsed; nothing is summarized. Each document gets a stable id, `<video_id>#<chunking>-<index>`, so loading the same video again upserts instead of duplicating.
 
+## Search retrievers
+
+`vid2context.langchain.VideoSearchRetriever` (a LangChain `BaseRetriever`) and `vid2context.llama_index.VideoSearchRetriever` (a LlamaIndex `BaseRetriever`) call `search` and return one document or scored node per hit, so an agent can query a collection the server already holds without loading every transcript:
+
+```python
+from vid2context.langchain import VideoSearchRetriever
+
+retriever = VideoSearchRetriever(collection_id=c.id, limit=8)   # c from create_collection above
+docs = retriever.invoke("which engine is most reliable")   # or await retriever.ainvoke(...)
+```
+
+Options: `collection_id`, `video_ids`, `limit`, `mode`, `rerank`, `client` / `async_client`, `base_url`, `api_key`. Metadata: `source` and `url` (timestamp link), `video_id`, `title`, `channel`, `chapter`, `start_sec`, `end_sec`, `score`, `search_sources` (and `rerank_score` when reranked).
+
 ## Metadata fields
 
 | Field | Example |
@@ -144,7 +178,7 @@ uv run pytest            # replays recorded server responses, no network
 LIVE=1 VID2CONTEXT_API_URL=http://127.0.0.1:8787 uv run pytest tests/test_live.py
 ```
 
-Unit tests replay real responses recorded from a running vid2context server through `httpx.MockTransport` (see [tests/fixtures/README.md](tests/fixtures/README.md)). To re-record them, run `uv run python scripts/record_fixtures.py`: it starts `packages/server` on a random local port, makes the calls, redacts emails and phone numbers, writes the fixtures and stops the server. Pass fixture names to record only those, and `--minimal` to serve the same app with only the YouTube, media-file and speech-to-text providers when the full registry does not load. A response with an unexpected status is retried and never replaces a good fixture. The live test starts nothing; it uses the server at `VID2CONTEXT_API_URL` and is skipped when that or `LIVE` is unset.
+Unit tests replay real responses recorded from a running vid2context server through `httpx.MockTransport` (see [tests/fixtures/README.md](tests/fixtures/README.md)). To re-record them, run `uv run python scripts/record_fixtures.py`: it starts `packages/server` on a random local port, makes the calls, redacts emails and phone numbers, writes the fixtures and stops the server. Pass fixture names to record only those, `--library` to record the search and collection session (and `--library --jobs` for the queued ingest), and `--minimal` to serve the same app with only the YouTube, media-file and speech-to-text providers when the full registry does not load. A response with an unexpected status is retried and never replaces a good fixture. The live test starts nothing; it uses the server at `VID2CONTEXT_API_URL` and is skipped when that or `LIVE` is unset.
 
 ## Build and publish
 

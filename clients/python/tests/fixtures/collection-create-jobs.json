@@ -1,0 +1,16 @@
+{
+  "recorded": "2026-11-15",
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/collections",
+    "query": {},
+    "json": {
+      "name": "Queued ingest"
+    }
+  },
+  "status": 201,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": "{\"id\":\"queued-ingest-47231524\",\"name\":\"Queued ingest\",\"sources\":[],\"videoIds\":[],\"createdAt\":\"2026-11-15T15:15:49.963Z\",\"updatedAt\":\"2026-11-15T15:15:49.963Z\"}"
+}

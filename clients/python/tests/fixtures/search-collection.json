@@ -1,0 +1,16 @@
+{
+  "recorded": "2026-11-15",
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/search",
+    "query": {
+      "q": "elephants",
+      "collectionId": "car-and-zoo-videos-eba8ec85"
+    }
+  },
+  "status": 200,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": "{\"hits\":[{\"videoId\":\"youtube:jNQXAC9IVRw\",\"title\":\"Me at the zoo\",\"startSec\":1.2,\"endSec\":3.36,\"text\":\"All right, so here we are, in front of the elephants\",\"score\":0.01639344262295082,\"url\":\"https://www.youtube.com/watch?v=jNQXAC9IVRw&t=1s\",\"chapterTitle\":\"Intro\",\"sources\":[\"keyword\"],\"snippet\":\"All right, so here we are, in front of the **elephants**\",\"channel\":\"jawed\",\"ranks\":{\"keyword\":1}}],\"meta\":{\"query\":{\"text\":\"elephants\",\"phrases\":[],\"excluded\":[]},\"mode\":\"hybrid\",\"keyword\":{\"ran\":true,\"backend\":\"bm25\",\"candidates\":1},\"vector\":\"disabled\",\"rerank\":\"off\",\"fusion\":{\"k\":60,\"keywordWeight\":1,\"vectorWeight\":1},\"indexed\":{\"videos\":2,\"chunks\":35},\"timings\":{\"syncMs\":15,\"keywordMs\":1,\"vectorMs\":0,\"rerankMs\":0,\"totalMs\":17},\"attempts\":[],\"vectorReason\":\"No embedding provider is installed.\"}}"
+}

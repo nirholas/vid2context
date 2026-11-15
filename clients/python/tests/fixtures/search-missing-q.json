@@ -1,0 +1,13 @@
+{
+  "recorded": "2026-11-15",
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/search",
+    "query": {}
+  },
+  "status": 400,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": "{\"error\":{\"code\":\"bad-request\",\"message\":\"Missing the q query parameter.\",\"hint\":\"Pass ?q=<words to search for>.\"},\"attempts\":[],\"recovery\":[{\"action\":\"fix-input\",\"title\":\"Change the request\",\"detail\":\"The hint above says which field to fix.\"}]}"
+}

@@ -12,17 +12,20 @@ from collections.abc import AsyncIterator, Iterator
 from typing import Optional
 
 try:
+    from langchain_core.callbacks import AsyncCallbackManagerForRetrieverRun, CallbackManagerForRetrieverRun
     from langchain_core.document_loaders import BaseLoader
     from langchain_core.documents import Document
+    from langchain_core.retrievers import BaseRetriever
+    from pydantic import ConfigDict
 except ImportError as e:  # pragma: no cover - exercised only without the extra installed
     raise ImportError(
         'vid2context.langchain needs langchain-core. Install it with: pip install "vid2context[langchain]"'
     ) from e
 
-from ._loading import Urls, VideoLoading, chunk_id
+from ._loading import Urls, VideoLoading, chunk_id, hit_metadata
 from .chunking import Chunk, Chunking
 from .client import AsyncClient, Client
-from .models import TranscriptMode
+from .models import SearchMode, SearchResult, TranscriptMode
 
 
 def _document(chunk: Chunk, index: int) -> Document:
@@ -95,4 +98,57 @@ class VideoContextLoader(BaseLoader):
             yield _document(chunk, index)
 
 
-__all__ = ["VideoContextLoader"]
+def _hit_documents(result: SearchResult) -> list[Document]:
+    return [
+        Document(id=f"{h.video_id}@{h.start_sec:g}", page_content=h.text, metadata=hit_metadata(h)) for h in result.hits
+    ]
+
+
+class VideoSearchRetriever(BaseRetriever):
+    """Retrieve passages from videos saved in a vid2context server's library (GET /api/v1/search).
+
+    >>> from vid2context.langchain import VideoSearchRetriever
+    >>> docs = VideoSearchRetriever(collection_id=collection.id).invoke("which engine is most reliable")
+
+    Each Document is one matching passage with metadata: source and url (a timestamp link),
+    video_id, title, channel, chapter, start_sec, end_sec, score and search_sources. Add videos
+    to the library first, for example with `Client.add_to_collection`.
+    """
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    collection_id: Optional[str] = None
+    video_ids: Optional[list[str]] = None
+    limit: Optional[int] = None
+    mode: Optional[SearchMode] = None
+    rerank: bool = False
+    client: Optional[Client] = None
+    async_client: Optional[AsyncClient] = None
+    base_url: Optional[str] = None
+    api_key: Optional[str] = None
+
+    def _search_kwargs(self) -> dict[str, object]:
+        return {
+            "collection_id": self.collection_id,
+            "video_ids": self.video_ids,
+            "limit": self.limit,
+            "mode": self.mode,
+            "rerank": self.rerank,
+        }
+
+    def _get_relevant_documents(self, query: str, *, run_manager: CallbackManagerForRetrieverRun) -> list[Document]:
+        if self.client is not None:
+            return _hit_documents(self.client.search(query, **self._search_kwargs()))  # type: ignore[arg-type]
+        with Client(self.base_url, self.api_key) as client:
+            return _hit_documents(client.search(query, **self._search_kwargs()))  # type: ignore[arg-type]
+
+    async def _aget_relevant_documents(
+        self, query: str, *, run_manager: AsyncCallbackManagerForRetrieverRun
+    ) -> list[Document]:
+        if self.async_client is not None:
+            return _hit_documents(await self.async_client.search(query, **self._search_kwargs()))  # type: ignore[arg-type]
+        async with AsyncClient(self.base_url, self.api_key) as client:
+            return _hit_documents(await client.search(query, **self._search_kwargs()))  # type: ignore[arg-type]
+
+
+__all__ = ["VideoContextLoader", "VideoSearchRetriever"]

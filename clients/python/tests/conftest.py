@@ -21,7 +21,8 @@ def load(name: str) -> dict[str, Any]:
 
 # Same request as context-jNQXAC9IVRw, recorded while YouTube was blocking the machine.
 # Error tests load it by name; the replay server answers that request with the good recording.
-NOT_SERVED = {"context-blocked"}
+# collection-not-found is the same GET as collection-detail, recorded after the delete.
+NOT_SERVED = {"context-blocked", "collection-not-found"}
 
 
 def all_recordings() -> list[dict[str, Any]]:
@@ -29,7 +30,9 @@ def all_recordings() -> list[dict[str, Any]]:
 
 
 class Replay:
-    """Serves recordings by method, path and exact query; keeps every request for assertions."""
+    """Serves recordings by method, path, exact query and, when one was recorded, the exact JSON body.
+
+    Keeps every request for assertions."""
 
     def __init__(self, recordings: list[dict[str, Any]]) -> None:
         self.recordings = recordings
@@ -40,8 +43,13 @@ class Replay:
         query = dict(request.url.params.multi_items())
         for rec in self.recordings:
             r = rec["request"]
-            if r["method"] == request.method and r["path"] == request.url.path and r["query"] == query:
-                return httpx.Response(rec["status"], headers=rec["headers"], content=rec["body"].encode("utf-8"))
+            if r["method"] != request.method or r["path"] != request.url.path or r["query"] != query:
+                continue
+            if "json" in r and (not request.content or json.loads(request.content) != r["json"]):
+                continue
+            if "json" not in r and request.content:
+                continue
+            return httpx.Response(rec["status"], headers=rec["headers"], content=rec["body"].encode("utf-8"))
         raise AssertionError(f"no recorded response for {request.method} {request.url}")
 
 

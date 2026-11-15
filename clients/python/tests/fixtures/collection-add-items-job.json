@@ -1,0 +1,18 @@
+{
+  "recorded": "2026-11-15",
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/collections/queued-ingest-47231524/items",
+    "query": {},
+    "json": {
+      "inputs": [
+        "https://youtu.be/jNQXAC9IVRw"
+      ]
+    }
+  },
+  "status": 202,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": "{\"id\":\"job_fL2z8FVqicNzgr9hfKBvfg\",\"kind\":\"ingest\",\"status\":\"queued\",\"createdAt\":\"2026-11-15T15:15:49.969Z\",\"updatedAt\":\"2026-11-15T15:15:49.969Z\"}"
+}
