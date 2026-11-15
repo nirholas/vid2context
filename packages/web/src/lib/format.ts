@@ -127,3 +127,16 @@ export function shortInput(input: string, max = 64): string {
   const s = input.replace(/^https?:\/\/(www\.)?/, '');
   return s.length > max ? `${s.slice(0, max - 3)}...` : s;
 }
+
+/**
+ * The server's download limits as one sentence. A limit of 0 means none, so
+ * it is left out rather than shown as "0:00" or "0 B".
+ */
+export function downloadLimitsText(limits: { maxBytes: number; maxDurationSec: number; ttlMin: number }): string {
+  const caps: string[] = [];
+  if (limits.maxDurationSec > 0) caps.push(`up to ${formatDuration(limits.maxDurationSec)} long`);
+  if (limits.maxBytes > 0) caps.push(`up to ${formatBytes(limits.maxBytes)}`);
+  const which = caps.length > 0 ? `Videos ${caps.join(' and ')}` : 'Videos of any length and size';
+  const keep = limits.ttlMin > 0 ? `; the file stays on the server for ${limits.ttlMin} min.` : '.';
+  return `${which}${keep}`;
+}

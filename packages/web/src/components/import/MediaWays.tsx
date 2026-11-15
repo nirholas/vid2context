@@ -9,7 +9,7 @@ import { CloudDownload, Download, FileAudio, Laptop, Server } from 'lucide-react
 import { type ChangeEvent, useEffect, useId, useRef, useState } from 'react';
 import { type DownloadJob, downloadFileUrl } from '../../lib/downloads.ts';
 import { isAbort } from '../../lib/errors.ts';
-import { formatBytes, formatDuration } from '../../lib/format.ts';
+import { downloadLimitsText, formatBytes, formatDuration } from '../../lib/format.ts';
 import {
   downloadAudioOnServer,
   fetchJobFile,
@@ -229,8 +229,7 @@ export function ServerDownload({ props, state }: { props: ImportPanelProps; stat
       <p className="text-muted">
         The server downloads the video's audio with yt-dlp. That often still works when YouTube refuses the server's caption
         requests. Then save the audio to your device, or transcribe it here in this browser with Whisper, free and with no keys.
-        Videos up to {formatDuration(limits.maxDurationSec)} and {formatBytes(limits.maxBytes)}; the file stays on the server for{' '}
-        {limits.ttlMin} min.
+        {downloadLimitsText(limits)}
       </p>
       {dl.kind === 'idle' && (
         <Button variant="accent" onClick={start} data-testid="server-download-start">
