@@ -81,7 +81,7 @@ A review of wave 1 against popular open-source projects (`docs/prior-art.md`) fo
 | 53 | [SponsorBlock: skip sponsor reads, intros and self-promotion](53-sponsorblock.md) | `packages/skips/` | K. Content quality |
 | 54 | [Research tools: cited excerpts, caption languages, key moments](54-research-tools.md) | `packages/research/` | J. Agent experience |
 | 55 | [Client libraries: Python, LangChain and LlamaIndex](55-client-libraries.md) | `clients/python/`, `packages/langchain/` | L. Reach |
-| 56 | [Chat bots: Telegram, Discord and Slack](56-chat-bots.md) | `packages/bots/` | L. Reach |
+| 56 | [Chat bots: Telegram, Discord and Slack](archive/56-chat-bots.md) | `packages/bots/` | L. Reach |
 | 57 | [Note exports: Obsidian vaults and Notion pages](archive/57-note-exports.md) | `packages/exporters/` | L. Reach |
 | 58 | [Hosted mode: accounts, quotas, shared cache, abuse protection](58-hosted-accounts.md) | `packages/accounts/` | M. Hosting |
 | 59 | [Outbound webhooks and an n8n node](59-webhooks-n8n.md) | `packages/webhooks/`, `packages/n8n-nodes/` | L. Reach |
