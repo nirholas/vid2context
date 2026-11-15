@@ -57,7 +57,7 @@ Numbers match `docs/ROADMAP.md` and the owner columns in `docs/contracts/`. Ever
 | 37 | [SQLite library with full-text search](archive/37-storage-sqlite.md) | `providers/storage-sqlite/` | G. Library and search |
 | 38 | [Local CI, Cloud Build and release engineering](38-ci-release.md) | `tooling/` | I. Deploy and quality |
 | 39 | [Postgres and pgvector storage](archive/39-storage-postgres.md) | `providers/storage-postgres/` | G. Library and search |
-| 40 | [Hybrid search engine](40-search.md) | `packages/search/` | G. Library and search |
+| 40 | [Hybrid search engine](archive/40-search.md) | `packages/search/` | G. Library and search |
 | 41 | [Collections and watch lists](41-library-watch.md) | `packages/library/` | G. Library and search |
 | 42 | [Jobs, queues and live progress](42-jobs.md) | `packages/jobs/` | G. Library and search |
 | 43 | [The full CLI](archive/43-cli.md) | `packages/cli/` | H. Surfaces |
