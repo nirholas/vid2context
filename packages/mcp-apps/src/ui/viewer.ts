@@ -516,6 +516,12 @@ export function createViewer(mount: HTMLElement, host: ViewerHost = {}): Viewer 
       else selectRange(i, i);
       return;
     }
+    if (selFrom >= 0) {
+      // Checking a second box grows the range to it, so "check the first
+      // line, check the last line" selects everything in between.
+      selectRange(Math.min(selFrom, i), Math.max(selTo, i));
+      return;
+    }
     anchor = i;
     selectRange(i, i);
   }
