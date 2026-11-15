@@ -10,6 +10,8 @@ Real responses recorded on 2026-11-14 with `scripts/record-fixtures.ts`, which r
 | `vertex-gemini.stream.403.json` | the same, `:streamGenerateContent?alt=sse` | the same error as a plain JSON object |
 | `vertex-anthropic.chat.403.json` | Vertex `publishers/anthropic/models/claude-haiku-5-5:rawPredict`, global | HTTP 403, Google error shape (not Anthropic's) |
 | `vertex-anthropic.stream.403.json` | the same, `:streamRawPredict` | the error body is wrapped in a one-element JSON array |
+| `vertex-gemini.chat.403-scope.json` | Vertex `gemini-3.8-flash:generateContent`, us-central1, token from the GCE metadata server, recorded 2026-11-15 on the owner's VM | HTTP 403 `ACCESS_TOKEN_SCOPE_INSUFFICIENT`: the VM's default access scopes do not include cloud-platform |
+| `vertex-anthropic.chat.403-scope.json` | Vertex `claude-haiku-5-5:rawPredict`, global, the same metadata token, 2026-11-15 | the same 403 and reason on the Claude endpoint |
 | `gce-metadata.token.json` | `GET http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token` on the owner's GCP VM | the metadata server's token shape (`access_token`, `expires_in`, `token_type`) |
 
 Not recorded yet: successful Anthropic, Gemini and Vertex responses (chat, SSE stream, JSON Schema, the two-question cache pair) and a real 429. No Anthropic or Gemini key was available, and the Vertex project's billing was locked. To record them, set the keys and run:

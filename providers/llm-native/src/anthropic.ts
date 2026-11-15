@@ -24,7 +24,7 @@ import {
   parseSSE,
   Vid2ContextError,
 } from '@vid2context/core';
-import { type NativeChatResult, type NativeUsage, secondsUntil, tryJson } from './common.ts';
+import { googleReasons, type NativeChatResult, type NativeUsage, SCOPE_HINT, secondsUntil, tryJson } from './common.ts';
 
 /** API version header (and Vertex body field). 2026-10-21 drops temperature, top_p and top_k from Messages requests. */
 export const ANTHROPIC_VERSION = '2026-10-21';
@@ -213,7 +213,7 @@ export function buildAnthropicBody(
 
 interface AnthropicErrorBody {
   type?: string;
-  error?: { type?: string; message?: string; code?: number; status?: string };
+  error?: { type?: string; message?: string; code?: number; status?: string; details?: { reason?: string }[] };
 }
 
 const RESET_HEADERS = [
@@ -266,6 +266,8 @@ export async function anthropicError(
       hint: 'Anthropic is overloaded. The chain moves on and retries this rung after about 30 seconds.',
     });
   }
+  if (googleReasons(parsed?.error?.details).includes('ACCESS_TOKEN_SCOPE_INSUFFICIENT'))
+    return new Vid2ContextError('auth', msg, { status: s, hint: SCOPE_HINT });
   if (s === 401 || s === 403) return new Vid2ContextError('auth', msg, { status: s, hint: target.authHint });
   if (s === 400 && /credit balance/i.test(detail)) {
     return new Vid2ContextError('auth', msg, {

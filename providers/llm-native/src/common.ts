@@ -65,3 +65,16 @@ export function tryJson<T>(text: string): T | undefined {
     return undefined;
   }
 }
+
+/**
+ * Hint for a Google 403 with reason ACCESS_TOKEN_SCOPE_INSUFFICIENT: the token
+ * is valid but was minted without a Vertex AI scope. Seen live from the GCE
+ * metadata server on a VM created with the default Compute Engine scopes.
+ */
+export const SCOPE_HINT =
+  'The Google token lacks the cloud-platform scope. On a GCE VM, stop it and set its access scopes to "Allow full access to all Cloud APIs" (or add the cloud-platform scope), or set GOOGLE_ACCESS_TOKEN from `gcloud auth print-access-token` instead of VID2CONTEXT_GCE_METADATA=1.';
+
+/** The `reason` values in a Google error body's `details`. */
+export function googleReasons(details: { reason?: string }[] | undefined): string[] {
+  return (details ?? []).map((d) => d.reason).filter((r): r is string => Boolean(r));
+}

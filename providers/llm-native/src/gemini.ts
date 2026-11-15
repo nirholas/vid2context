@@ -20,7 +20,7 @@ import {
   parseSSE,
   Vid2ContextError,
 } from '@vid2context/core';
-import { type NativeChatResult, type NativeUsage, tryJson } from './common.ts';
+import { googleReasons, type NativeChatResult, type NativeUsage, SCOPE_HINT, tryJson } from './common.ts';
 
 export interface GeminiTarget {
   label: string;
@@ -145,7 +145,7 @@ export async function googleError(res: Response, target: Pick<GeminiTarget, 'lab
   const body = Array.isArray(parsed) ? parsed[0] : parsed;
   const detail = body?.error?.message ?? raw.slice(0, 500);
   const status = body?.error?.status;
-  const reasons = (body?.error?.details ?? []).map((d) => d.reason).filter(Boolean);
+  const reasons = googleReasons(body?.error?.details);
   const s = res.status;
   const msg = `${target.label} chat: HTTP ${s}${status ? ` ${status}` : ''}${detail ? `: ${detail}` : ''}`;
   const headerRetry = Number(res.headers.get('retry-after'));
@@ -158,6 +158,8 @@ export async function googleError(res: Response, target: Pick<GeminiTarget, 'lab
   }
   if (reasons.includes('API_KEY_INVALID') || s === 401)
     return new Vid2ContextError('auth', msg, { status: s, hint: target.authHint });
+  if (reasons.includes('ACCESS_TOKEN_SCOPE_INSUFFICIENT'))
+    return new Vid2ContextError('auth', msg, { status: s, hint: SCOPE_HINT });
   if (s === 403) {
     const billing = /billing/i.test(detail);
     const disabled = reasons.includes('SERVICE_DISABLED');

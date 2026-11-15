@@ -459,6 +459,29 @@ describe('Vertex token sources', () => {
     expect(fetch.calls[1]?.headers.authorization).toBe('Bearer redacted-token');
   });
 
+  it('a metadata token without the cloud-platform scope (real 403) gets the access-scope hint on both Vertex paths', async () => {
+    const env = { GOOGLE_CLOUD_PROJECT: 'redacted-project', VID2CONTEXT_GCE_METADATA: '1' };
+    const fetch = replayFetch([
+      { url: METADATA_TOKEN_URL, response: fixture('gce-metadata.token.json') },
+      {
+        url: `${project}/publishers/google/models/gemini-3.8-flash:generateContent`,
+        response: fixture('vertex-gemini.chat.403-scope.json'),
+      },
+      {
+        url: `${globalProject}/publishers/anthropic/models/claude-haiku-5-5:rawPredict`,
+        response: fixture('vertex-anthropic.chat.403-scope.json'),
+      },
+    ]);
+    const ctx = testContext({ env, fetch });
+    for (const id of ['llm/vertex-gemini/gemini-3.8-flash', 'llm/vertex-anthropic/claude-haiku-5-5']) {
+      const err = await caught(rungById(id, env).chat(apollo, ctx));
+      expect(err.code).toBe('auth');
+      expect(err.status).toBe(403);
+      expect(err.message).toContain('insufficient authentication scopes');
+      expect(err.hint).toContain('cloud-platform scope');
+    }
+  });
+
   it('refuses the metadata server outside Node and never calls it', async () => {
     const env = { GOOGLE_CLOUD_PROJECT: 'redacted-project', VID2CONTEXT_GCE_METADATA: '1' };
     const fetch = replayFetch([]);

@@ -2,7 +2,7 @@
 
 `providers/llm-native` talks to Claude and Gemini through their own APIs instead of the OpenAI-compatible endpoints. The native APIs add what matters for long transcripts: Anthropic prompt caching, Gemini's 1M-token context with implicit caching, native streaming with reasoning summaries, and schema-constrained JSON. The rungs show up in the chat page's model picker and in `GET /api/v1/models` like any other.
 
-Status on 2026-11-15: only the error paths are verified against the real services. Successful answers have never been seen by this code: no Anthropic or Gemini key was available, the Vertex project's billing was locked, and there is no keyless endpoint that speaks the native `messages` or `generateContent` protocols (keyless hosts such as Pollinations and OVH are OpenAI-compatible only, which the other LLM providers already cover). See [Verification status](#verification-status) for exactly what is and is not checked, and the one command that records the rest.
+Status on 2026-11-15 (re-checked the same day: still no keys, Vertex billing still locked): only the error paths are verified against the real services. Successful answers have never been seen by this code: no Anthropic or Gemini key was available, the Vertex project's billing was locked, and there is no keyless endpoint that speaks the native `messages` or `generateContent` protocols (keyless hosts such as Pollinations and OVH are OpenAI-compatible only, which the other LLM providers already cover). See [Verification status](#verification-status) for exactly what is and is not checked, and the one command that records the rest.
 
 ## Rungs
 
@@ -85,6 +85,8 @@ Gemini on Vertex uses `.../publishers/google/models/{model}:generateContent` and
 
 A project with a billing problem answers HTTP 403 "There are issues with your billing account"; it maps to `auth` with a billing hint, and the chain moves on.
 
+A token minted without that scope (the metadata server on a VM created with default access scopes) answers HTTP 403 "Request had insufficient authentication scopes" with reason `ACCESS_TOKEN_SCOPE_INSUFFICIENT`, on both Gemini and Claude endpoints. It maps to `auth` with a hint to widen the VM's access scopes (stop the VM, then edit it) or to use `GOOGLE_ACCESS_TOKEN` instead. Recorded on the owner's VM on 2026-11-15.
+
 ## Verification status
 
 | Path | Anthropic | Gemini (AI Studio) | Vertex Gemini | Vertex Claude |
@@ -92,6 +94,7 @@ A project with a billing problem answers HTTP 403 "There are issues with your bi
 | URL, headers, auth placement | recorded error | recorded error | recorded error | recorded error |
 | Error mapping (bad key, billing) | recorded 401 | recorded 400 `API_KEY_INVALID` | recorded 403 | recorded 403 |
 | GCE metadata token | | | recorded on the owner's VM | recorded on the owner's VM |
+| Token without the cloud-platform scope | | | recorded 403 | recorded 403 |
 | Non-streaming answer and usage | not verified | not verified | not verified | not verified |
 | SSE stream (text, reasoning, usage) | not verified | not verified | not verified | not verified |
 | JSON Schema output | not verified | not verified | not verified | not verified |
