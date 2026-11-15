@@ -12,4 +12,4 @@ Fixtures (real data, no invented content):
 |---|---|
 | `site-fixture.ts` | the static landing page `site/index.html` and `site/404.html` from commit 09fe38a (2026-11-14), read with `git show` at test time |
 | repo `llms.txt`, `llms-full.txt` | the current files at the repo root |
-| Worker SPA test app | the same real files, copied under `/app/` to exercise the fallback paths |
+| Worker SPA test app | the same real files, copied under `/app/` to exercise the fallback paths, both in `spa-worker.ts` and in the real entry `packages/server/src/workers.ts` |

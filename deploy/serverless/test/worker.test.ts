@@ -7,7 +7,7 @@
  *   LIVE=1 ...   also fetches a real YouTube transcript through the Worker
  */
 import { type ChildProcess, spawn } from 'node:child_process';
-import { cpSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterAll, describe, expect, it } from 'vitest';
 // @ts-expect-error: plain ESM build script without type declarations
@@ -99,6 +99,51 @@ describe.skipIf(!enabled)('SPA fallback in the Workers runtime', () => {
     expect(notFound.status).toBe(404);
     expect(await notFound.text()).toContain('<html');
     expect((await fetch(`${base}/`)).status).toBe(200);
+  });
+});
+
+describe.skipIf(!enabled)('the real Worker entry (packages/server/src/workers.ts)', () => {
+  it('serves the app shell for /app/* deep links and keeps the API and the site 404', async () => {
+    const dir = mkdtempSync(join(root, '.vid2context', 'worker-entry-test-'));
+    dirs.push(dir);
+    const assets = join(dir, 'assets');
+    const siteDir = staticSiteFixture(root);
+    dirs.push(siteDir);
+    buildAssets({ root, out: assets, build: false, siteDir, log: () => {} });
+    // The app shell: a real repo page copied to /app/index.html, as in the SPA test above.
+    mkdirSync(join(assets, 'app'), { recursive: true });
+    cpSync(join(siteDir, 'index.html'), join(assets, 'app/index.html'));
+    const shell = readFileSync(join(assets, 'app/index.html'), 'utf8');
+    const config = join(dir, 'wrangler.jsonc');
+    writeFileSync(
+      config,
+      JSON.stringify({
+        name: 'v2c-entry-test',
+        main: join(root, 'packages/server/src/workers.ts'),
+        compatibility_date: '2026-10-01',
+        assets: {
+          directory: assets,
+          binding: 'ASSETS',
+          run_worker_first: true,
+          html_handling: 'auto-trailing-slash',
+          not_found_handling: '404-page',
+        },
+        vars: { VID2CONTEXT_PUBLIC: '1' },
+      }),
+    );
+    const base = await startWrangler(config);
+
+    const deep = await fetch(`${base}/app/some/path`);
+    expect(deep.status).toBe(200);
+    expect(deep.headers.get('content-type')).toContain('text/html');
+    expect(await deep.text()).toBe(shell);
+    expect((await fetch(`${base}/app`)).status).toBe(200);
+    expect((await fetch(`${base}/app/assets/missing.js`)).status).toBe(404);
+
+    const health = await fetch(`${base}/api/v1/health`);
+    expect(health.status).toBe(200);
+    expect((await health.json()).runtime).toBe('workers');
+    expect((await fetch(`${base}/no/such/page`)).status).toBe(404);
   });
 });
 

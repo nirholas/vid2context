@@ -10,10 +10,8 @@
  * this itself: ask ASSETS first, and only on a 404 for a GET or HEAD under an
  * app mount, serve that app's index.html.
  *
- * Wiring (packages/server/src/workers.ts, owned by prompt 46): replace
- *   return env.ASSETS.fetch(req);
- * with
- *   return fetchAssetWithSpaFallback(req, env.ASSETS);
+ * packages/server/src/workers.ts passes every site request through this
+ * helper (as the asset fetcher it hands to serveSite).
  */
 
 export interface AssetsBinding {

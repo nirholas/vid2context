@@ -2,13 +2,15 @@
  * Cloudflare Workers entry: one Worker serves the site and the API.
  * `/api/*` (and, with mcp-http mounted, `/mcp`, `/oauth/*` and its
  * `/.well-known/*` documents) go to the Hono app; everything else is a static
- * asset from the directory wrangler.jsonc names, with markdown negotiation and
- * discovery headers (src/discovery.ts). `www.` and `http:` are redirected at
- * the zone, not here. Provider keys come from Worker vars and secrets
+ * asset from the directory wrangler.jsonc names, with markdown negotiation,
+ * discovery headers (src/discovery.ts) and the /app/ and /chat/ SPA
+ * fallback. `www.` and `http:` are redirected at the zone, not here.
+ * Provider keys come from Worker vars and secrets
  * (`wrangler secret put GROQ_API_KEY`).
  */
 import { MCP_HTTP_PATHS } from '@vid2context/mcp-http';
 import { createRegistry, createWorkersContext } from '@vid2context/registry/workers';
+import { fetchAssetWithSpaFallback } from '../../../deploy/serverless/cloudflare/spa-fallback.ts';
 import pkg from '../package.json' with { type: 'json' };
 import { createApp, MOUNTED_SUB_APPS, type ServerApp } from './app.ts';
 import { isAppPath, serveSite } from './discovery.ts';
@@ -42,6 +44,7 @@ export default {
   async fetch(req: Request, env: WorkerEnv, execCtx: unknown): Promise<Response> {
     const url = new URL(req.url);
     if (isAppPath(url.pathname, appPaths)) return appFor(env).fetch(req, env, execCtx as never);
-    return serveSite(req, (r) => env.ASSETS.fetch(r), { mcp: mcpMounted });
+    // Deep links under /app/ and /chat/ get that app's index.html (deploy/serverless/cloudflare/spa-fallback.ts).
+    return serveSite(req, (r) => fetchAssetWithSpaFallback(r, env.ASSETS), { mcp: mcpMounted });
   },
 };
