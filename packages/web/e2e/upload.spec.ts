@@ -5,8 +5,9 @@ const LIVE = !!process.env.LIVE;
 const APOLLO = fileURLToPath(new URL('../../../tests/fixtures/media/apollo11-small-step.mp3', import.meta.url));
 
 test('decodes and resamples the Apollo clip to 16 kHz mono in the browser', async ({ page }) => {
-  // Without LIVE the upload is refused so no speech-to-text service is called; the decode runs in full.
-  if (!LIVE) await page.route('**/api/v1/uploads', (route) => route.abort('connectionrefused'));
+  // The upload is always refused so no speech-to-text service is called and the view stays on the decode
+  // result (with LIVE, a real upload could finish or fail and replace it). The live test below covers the upload.
+  await page.route('**/api/v1/uploads', (route) => route.abort('connectionrefused'));
   await page.goto('/app/');
   await page.getByTestId('file-input').setInputFiles(APOLLO);
   const info = page.getByTestId('decode-info');
@@ -20,10 +21,8 @@ test('decodes and resamples the Apollo clip to 16 kHz mono in the browser', asyn
   // The 145 KB MP3 is smaller than the 16 kHz WAV (about 774 KB), so the original is sent.
   expect(await info.getAttribute('data-upload-kind')).toBe('original');
   await expect(info).toContainText('16 kHz mono');
-  if (!LIVE) {
-    await expect(page.getByRole('alert')).toContainText('The upload failed');
-    await expect(page.getByTestId('error-hint')).toBeVisible();
-  }
+  await expect(page.getByRole('alert')).toContainText('The upload failed');
+  await expect(page.getByTestId('error-hint')).toBeVisible();
 });
 
 test('rejects a file that is not audio or video with a clear message', async ({ page }) => {
