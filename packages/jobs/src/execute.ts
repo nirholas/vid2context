@@ -334,6 +334,7 @@ export async function runJob(id: string, deps: RunDeps, signal: AbortSignal): Pr
         data: {
           ...(rec.progress ?? { done: 0 }),
           message: `Attempt ${attempt} of ${kind.maxAttempts} failed (${failure.code}); retrying in ${Math.ceil(delay / 1000)} s.`,
+          retryAt: notBefore,
         },
       });
       writer.update({ status: 'queued', notBefore });

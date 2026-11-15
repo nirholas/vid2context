@@ -13,6 +13,8 @@ export interface JobProgress {
   done: number;
   total?: number;
   message?: string;
+  /** Set while a failed attempt waits to be retried: when the next attempt starts (ISO 8601). */
+  retryAt?: string;
 }
 
 export interface JobError {

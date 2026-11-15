@@ -10,7 +10,7 @@ import { createJobQueue, type InProcessQueue } from '@vid2context/jobs';
 import { jobsRoutes } from '@vid2context/jobs/http';
 import { Hono } from 'hono';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { followJob, type JobProgress, postJob } from '../src/lib/jobs.ts';
+import { contextViaJob, followJob, type JobProgress, postJob } from '../src/lib/jobs.ts';
 
 const BASE = 'http://v2c.test/api/v1';
 
@@ -179,5 +179,50 @@ describe('followJob', () => {
     const err = await following;
     expect(err.name).toBe('AbortError');
     expect(requests.length).toBe(1);
+  });
+});
+
+describe('stopping and retrying', () => {
+  it('cancels the server job when a context run is aborted', async () => {
+    const started = gate();
+    queue.registerKind(
+      'context',
+      async ({ signal }) => {
+        started.release();
+        await new Promise((_, reject) => signal.addEventListener('abort', () => reject(signal.reason), { once: true }));
+      },
+      { maxAttempts: 1 },
+    );
+    const ac = new AbortController();
+    const call = { base: BASE, fetch: fetchVia(), signal: ac.signal };
+    const run = contextViaJob('https://www.youtube.com/watch?v=PzJL3aBRas8', {}, () => undefined, call);
+    await started.promise;
+    const {
+      records: [job],
+    } = await queue.store.list({ limit: 1 });
+    ac.abort();
+    await expect(run).rejects.toMatchObject({ name: 'AbortError' });
+    await expect.poll(async () => (await queue.store.get(job?.id ?? ''))?.status).toBe('canceled');
+  });
+
+  it('passes the retry time of a failed attempt to the client', async () => {
+    let n = 0;
+    queue.registerKind(
+      'flaky',
+      async () => {
+        n += 1;
+        if (n === 1) throw new Vid2ContextError('rate-limited', 'Slow down.');
+        return { ok: true };
+      },
+      { maxAttempts: 2, backoff: { baseMs: 40 } },
+    );
+    const call = { base: BASE, fetch: fetchVia() };
+    const job = await postJob('flaky', 'x', {}, call);
+    const seen: JobProgress[] = [];
+    const before = Date.now();
+    await expect(followJob(job.id, (p) => seen.push(p), call, noWait)).resolves.toEqual({ ok: true });
+    const retry = seen.find((p) => p.retryAt);
+    expect(retry?.message).toMatch(/^Attempt 1 of 2 failed \(rate-limited\); retrying in \d+ s\.$/);
+    expect(Date.parse(retry?.retryAt ?? '')).toBeGreaterThanOrEqual(before);
   });
 });

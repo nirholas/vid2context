@@ -2,7 +2,8 @@
  * Jobs (docs/contracts/http-api.md, Jobs): POST /jobs, then the job's
  * text/event-stream. The batch view runs each selected video as a `context`
  * job, which reports stage progress and retries transient failures on the
- * server, then reads the saved VideoContext with GET /context.
+ * server, then reads the saved VideoContext with GET /context. Aborting
+ * the call cancels the server job too.
  */
 import { Vid2ContextError, type VideoContext } from '@vid2context/core';
 import { apiBase, type CallOptions, getContext, type RunOptions, unreachable } from './api.ts';
@@ -12,6 +13,8 @@ export interface JobProgress {
   done: number;
   total?: number;
   message?: string;
+  /** While a failed attempt waits on the server: when the next attempt starts (ISO 8601). */
+  retryAt?: string;
 }
 
 export interface Job {
@@ -101,6 +104,21 @@ export async function postJob(
     throw unreachable(base);
   }
   return body as Job;
+}
+
+/**
+ * DELETE /jobs/:id: ask the server to cancel a job. Best effort: a job that
+ * already finished, a server without jobs or a lost connection are all fine,
+ * so this never throws.
+ */
+export async function cancelJob(id: string, call: CallOptions = {}): Promise<void> {
+  const base = call.base ?? apiBase();
+  const doFetch = call.fetch ?? globalThis.fetch.bind(globalThis);
+  try {
+    await doFetch(`${base}/jobs/${encodeURIComponent(id)}`, { method: 'DELETE', headers: { accept: 'application/json' } });
+  } catch (err) {
+    console.error('[vid2context] could not cancel job', id, err);
+  }
 }
 
 /**
@@ -308,7 +326,11 @@ export async function contextViaJob(
   try {
     await followJob(job.id, onProgress, call);
   } catch (err) {
-    if (isAbort(err)) throw err;
+    if (isAbort(err)) {
+      // Stopped here (Stop, Retry now, leaving the page): the server job would keep running and retrying for nobody.
+      void cancelJob(job.id, { ...call, signal: undefined });
+      throw err;
+    }
     // The job's error has no attempts; a direct call either succeeds now or fails with them.
     return getContext(input, run, call).catch((direct: AppError) => {
       throw direct.attempts.length ? direct : err;
