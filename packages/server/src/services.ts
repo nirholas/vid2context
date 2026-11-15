@@ -268,6 +268,19 @@ export function createServices(
     });
   };
 
+  /**
+   * What identical concurrent requests share: the resolved video id, so youtu.be/X, watch?v=X and
+   * a bare X arriving together run once. Input no source understands keeps its text; the run
+   * itself then reports the error.
+   */
+  const dedupeId = (input: string, ctx: Ctx): string => {
+    try {
+      return registryFor(ctx).resolve(input).ref.id;
+    } catch {
+      return input.trim();
+    }
+  };
+
   const loadContext = async (input: string, opts: LoadOptions, ctx: Ctx): Promise<VideoContext> => {
     check(input, ctx);
     if (isUploadInput(input)) return loadUpload(input, opts, ctx);
@@ -276,7 +289,7 @@ export function createServices(
     // Hosted mode: public videos come from (and go to) the shared cache, and work is metered per caller.
     const store = hosted ? hosted.storage(base, { mode: opts.mode, language: opts.language, refresh: opts.refresh }) : base;
     const key = JSON.stringify([
-      input.trim(),
+      dedupeId(input, ctx),
       opts.mode ?? 'auto',
       opts.language ?? '',
       opts.comments ?? false,
