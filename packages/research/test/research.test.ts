@@ -114,6 +114,18 @@ describe('research', () => {
     expect(missing.notes[0]).toContain('The exact phrase "chain timing" was not found');
   });
 
+  it('leaves out passages that match only the commonest word of a multi-word query', async () => {
+    // "timing" and "time" share a stem; "see you next time" must not pad the "timing chain" answer.
+    const r = await run('timing chain', {}, [GWAGON]);
+    const ex = excerptsOf(r);
+    expect(ex.map((e) => e.startSec)).toEqual([92.6]);
+    expect(ex[0]?.matched).toEqual(['timing', 'chain']);
+    expect(r.notes.some((n) => /^Left out \d+ passages that match only "timing"/.test(n))).toBe(true);
+    // A window with one distinctive word still counts: "interior" alone passes for "G500 interior".
+    const mixed = excerptsOf(await run('G500 interior', { maxExcerpts: 5 }, [GWAGON]));
+    expect(mixed.some((e) => e.matched.length === 1)).toBe(true);
+  });
+
   it('cuts to the token cap, dropping context before excerpts, and says so', async () => {
     const full = await run('engine G500 interior oil', { maxExcerpts: 5, maxTokens: 20_000 });
     expect(full.truncated).toBe(false);

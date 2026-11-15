@@ -84,6 +84,8 @@ export interface ScoredWindow {
   matched: string[];
   /** Quoted phrases found verbatim. */
   phrases: number;
+  /** Share of the query's IDF weight that the window's matched terms carry, 0 to 1. */
+  coverage: number;
 }
 
 export interface Bm25Options {
@@ -110,6 +112,7 @@ export function scoreWindows(windows: Window[], query: ParsedQuery, opts: Bm25Op
   const df = documentFrequency(windows);
   const avgdl = windows.reduce((sum, w) => sum + w.length, 0) / n || 1;
   const idf = new Map(query.terms.map((t) => [t, Math.log(1 + (n - (df.get(t) ?? 0) + 0.5) / ((df.get(t) ?? 0) + 0.5))]));
+  const totalIdf = query.terms.reduce((sum, t) => sum + (idf.get(t) ?? 0), 0) || 1;
   const out: ScoredWindow[] = [];
   for (const w of windows) {
     let score = 0;
@@ -123,7 +126,24 @@ export function scoreWindows(windows: Window[], query: ParsedQuery, opts: Bm25Op
     if (score <= 0) continue;
     const phrases = query.phrases.filter((p) => containsSequence(w.sequence, p)).length;
     if (phrases > 0) score *= 1 + boost * phrases;
-    out.push({ window: w, score, matched, phrases });
+    const coverage = matched.reduce((sum, t) => sum + (idf.get(t) ?? 0), 0) / totalIdf;
+    out.push({ window: w, score, matched, phrases, coverage });
   }
   return out.sort((x, y) => y.score - x.score || x.window.doc - y.window.doc || x.window.startSec - y.window.startSec);
+}
+
+/**
+ * Drop windows whose matched terms carry less than an average query word's
+ * share of the best window's coverage (best coverage / number of terms). In
+ * "timing chain" a window matching only "timing" (stemmed like "time", so it
+ * hits "see you next time") is noise once other windows match both words; a
+ * window matching one distinctive word of a longer query still passes.
+ */
+export function dropPartialMatches(scored: ScoredWindow[], termCount: number): { kept: ScoredWindow[]; dropped: ScoredWindow[] } {
+  const best = scored.reduce((m, s) => Math.max(m, s.coverage), 0);
+  const floor = termCount > 1 ? best / termCount : 0;
+  const kept: ScoredWindow[] = [];
+  const dropped: ScoredWindow[] = [];
+  for (const s of scored) (s.coverage >= floor ? kept : dropped).push(s);
+  return { kept, dropped };
 }

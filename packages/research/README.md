@@ -19,6 +19,7 @@ Ranking:
 - Each transcript is cut into windows of about 30 seconds, one starting every 15 seconds, so a passage on a window edge lands whole in the next window.
 - Windows are scored with BM25 (k1 1.2, b 0.75). Document frequency and average length are taken over every window of every video in the call, so a word all the videos use counts for less.
 - Words are lowercased, diacritics folded, English stop words and auto-caption filler (uh, yeah) removed, and a small English stemmer maps plurals, -ing, -ed and -ability forms to one stem. Model codes and numbers (g500, 2018) pass through.
+- In a query of several words, a window whose matched words carry less than an average word's share of the best window's coverage (IDF-weighted, best coverage divided by the number of words) is left out, with a note. So "timing chain" does not return "see you next time" (timing and time share a stem) once other passages say both words, while a passage with one distinctive word of a longer query still counts.
 - Put a phrase in double quotes for the exact-phrase boost: each quoted phrase found verbatim doubles the window's score. When it is not found anywhere, the result says so and ranks by its words.
 - Each excerpt is trimmed to the segments that contain a query word; `contextSec` (default 20) of transcript before and after is added. A window whose context would overlap an excerpt already chosen is merged into it (when it scores at least half as well and the excerpt stays within 30 seconds) or skipped, so no transcript text appears twice.
 

@@ -25,7 +25,15 @@ import {
   type VideoContext,
   type VideoRef,
 } from '@vid2context/core';
-import { buildWindows, DEFAULT_WINDOW_SEC, documentFrequency, type ScoredWindow, scoreWindows, type Window } from './bm25.ts';
+import {
+  buildWindows,
+  DEFAULT_WINDOW_SEC,
+  documentFrequency,
+  dropPartialMatches,
+  type ScoredWindow,
+  scoreWindows,
+  type Window,
+} from './bm25.ts';
 import { mapLimit, openStorage, type ResearchDeps } from './deps.ts';
 import { editDistance, type ParsedQuery, parseQuery, STOP_WORDS, stem, terms, tokenize } from './text.ts';
 
@@ -442,10 +450,16 @@ export async function research(
   }
 
   const windows = contexts.flatMap((c, doc) => buildWindows(c.transcript.segments, doc, { windowSec }));
-  const scored = scoreWindows(windows, parsed);
+  const { kept: scored, dropped: partial } = dropPartialMatches(scoreWindows(windows, parsed), parsed.terms.length);
   if (parsed.phrases.length > 0 && scored.length > 0 && !scored.some((s) => s.phrases > 0)) {
     notes.push(
       `The exact phrase ${parsed.phraseText.map((p) => `"${p}"`).join(', ')} was not found; these excerpts match its words.`,
+    );
+  }
+  if (partial.length > 0) {
+    const only = [...new Set(partial.flatMap((s) => s.matched))].map((t) => `"${parsed.display.get(t) ?? t}"`);
+    notes.push(
+      `Left out ${partial.length} passage${partial.length === 1 ? '' : 's'} that match only ${only.join(' or ')}, far less of the query than the best matches.`,
     );
   }
 
