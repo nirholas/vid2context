@@ -11,7 +11,15 @@
  */
 import { getUiCapability, RESOURCE_MIME_TYPE, registerAppResource, registerAppTool } from '@modelcontextprotocol/ext-apps/server';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { type Ctx, getVideoContext, type Registry, render, type Storage, type VideoContext } from '@vid2context/core';
+import {
+  type Ctx,
+  getVideoContext,
+  type Registry,
+  render,
+  type Storage,
+  type TranscriptOrigin,
+  type VideoContext,
+} from '@vid2context/core';
 import { contextHeader, toolError } from '@vid2context/mcp';
 import { z } from 'zod';
 import { toViewerData } from './context.ts';
@@ -37,6 +45,21 @@ const resourceMeta = {
     'An interactive transcript viewer is showing the video transcript with chapters, search, timestamps and citation buttons. Do not repeat the transcript; answer questions about it or cite moments as [Title @ m:ss](url).',
 };
 
+// Every transcript origin, checked both ways against core's TranscriptOrigin so a
+// new origin in core fails the typecheck here instead of failing outputSchema
+// validation at call time.
+const ORIGINS = [
+  'creator-captions',
+  'auto-captions',
+  'native-transcript',
+  'stt',
+  'video-model',
+  'imported',
+] as const satisfies readonly TranscriptOrigin[];
+type MissingOrigin = Exclude<TranscriptOrigin, (typeof ORIGINS)[number]>;
+const allOriginsListed: [MissingOrigin] extends [never] ? true : MissingOrigin = true;
+void allOriginsListed;
+
 const segmentTuple = z.tuple([z.number(), z.number(), z.string()]);
 const outputSchema = {
   metadata: z.object({
@@ -46,7 +69,7 @@ const outputSchema = {
     channel: z.string().optional(),
     durationSec: z.number().optional(),
     publishedAt: z.string().optional(),
-    origin: z.enum(['creator-captions', 'auto-captions', 'native-transcript', 'stt', 'video-model', 'imported']),
+    origin: z.enum(ORIGINS),
     language: z.string(),
     translated: z.boolean().optional(),
   }),
