@@ -14,8 +14,18 @@ import { cli, findAll, isMain } from './lib.mjs';
  */
 export const RECORDED_DATA = /(?:^|\/)tests?\/(?:[^/]+\/)*fixtures\//;
 
+/**
+ * Third-party text kept byte-exact outside a test fixtures directory, listed
+ * one by one. Eval reference transcripts are published captions stored
+ * "exactly as published" (packages/evals/datasets/refs/README.md), so a
+ * dash in them is the creator's, and rewriting it would change the reference
+ * the word error rate is scored against.
+ */
+export const BYTE_EXACT_THIRD_PARTY = [/^packages\/evals\/datasets\/refs\/[^/]+\.json$/];
+
 export function isRecordedData(path) {
-  return RECORDED_DATA.test(path) && !/(?:^|\/)README\.md$/i.test(path);
+  if (/(?:^|\/)README\.md$/i.test(path)) return false;
+  return RECORDED_DATA.test(path) || BYTE_EXACT_THIRD_PARTY.some((re) => re.test(path));
 }
 
 const DASH = /[\u2013\u2014]/g;

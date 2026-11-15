@@ -24,6 +24,14 @@ describe('no-dashes', () => {
     expect(found[1].message).toContain('U+2014');
   });
 
+  it('skips eval reference transcripts, which keep the published captions byte-exact', () => {
+    const path = 'packages/evals/datasets/refs/media-7025f35850370eb17c1bb88bddaae6d1.creator-captions.en.json';
+    expect(/[\u2013\u2014]/.test(real(path))).toBe(true);
+    expect(noDashes.select(path)).toBe(false);
+    expect(noDashes.select('packages/evals/datasets/refs/README.md')).toBe(true);
+    expect(noDashes.select('packages/evals/src/refs.ts')).toBe(true);
+  });
+
   it('passes the house rules file, which is written without dashes', () => {
     expect(noDashes.check('AGENTS.md', real('AGENTS.md'))).toEqual([]);
   });
