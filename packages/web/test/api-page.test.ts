@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { cleanup, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { createElement } from 'react';
+import { type ComponentProps, createElement } from 'react';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { ApiPlayground } from '../src/components/api/ApiPlayground.tsx';
 import type { Health } from '../src/lib/api.ts';
@@ -17,7 +17,7 @@ function renderPage(endpoint?: string, video?: string) {
   return render(
     createElement(
       ApiStatusProvider,
-      { initial: { status: 'online', base: BASE, health } },
+      { initial: { status: 'online', base: BASE, health } } as ComponentProps<typeof ApiStatusProvider>,
       createElement(ApiPlayground, { initial: { endpoint, video } }),
     ),
   );
