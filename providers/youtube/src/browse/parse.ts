@@ -7,7 +7,10 @@
  */
 import type { Json } from './request.ts';
 
-export type ListItem = { type: 'video'; id: string; available: boolean } | { type: 'playlist'; id: string };
+/** `title` and `durationSec` are what the list page shows, when it shows them. */
+export type ListItem =
+  | { type: 'video'; id: string; available: boolean; title?: string; durationSec?: number }
+  | { type: 'playlist'; id: string };
 
 export interface ListPage {
   items: ListItem[];
@@ -97,6 +100,37 @@ export function findString(v: unknown, key: string): string | undefined {
   return undefined;
 }
 
+/** Seconds from a clock duration such as "8:59" or "1:02:03"; undefined for anything else (LIVE, SHORTS). */
+export function clockSeconds(text: string | undefined): number | undefined {
+  const m = /^(?:(\d+):)?(\d{1,2}):(\d{2})$/.exec(text?.trim() ?? '');
+  if (!m) return undefined;
+  return Number(m[1] ?? 0) * 3600 + Number(m[2]) * 60 + Number(m[3]);
+}
+
+/** The duration badge on a lockup's thumbnail ("11:38"). */
+function lockupDuration(r: Json): number | undefined {
+  const overlays = obj(obj(r.contentImage)?.thumbnailViewModel)?.overlays;
+  for (const o of Array.isArray(overlays) ? overlays : []) {
+    const badges = obj(obj(o)?.thumbnailBottomOverlayViewModel)?.badges;
+    for (const b of Array.isArray(badges) ? badges : []) {
+      const sec = clockSeconds(str(obj(obj(b)?.thumbnailBadgeViewModel)?.text));
+      if (sec !== undefined) return sec;
+    }
+  }
+  return undefined;
+}
+
+/** A video item with the title and duration when the page shows them. */
+function videoItem(id: string, available: boolean, title: string | undefined, durationSec: number | undefined): ListItem {
+  return {
+    type: 'video',
+    id,
+    available,
+    ...(available && title ? { title } : {}),
+    ...(durationSec !== undefined ? { durationSec } : {}),
+  };
+}
+
 function continuationToken(renderer: Json): string | undefined {
   const cmd = obj(renderer.continuationCommand) ?? obj(renderer.continuationEndpoint) ?? renderer;
   return findString(cmd, 'token');
@@ -112,9 +146,11 @@ function itemOf(el: Json): ListItem | null {
     if (VIDEO_RENDERERS.has(key)) {
       const id = str(r.videoId);
       if (!id || !VIDEO_ID.test(id)) return null;
-      const title = textOf(r.title) ?? textOf(r.headline);
-      const unavailable = r.isPlayable === false || (title !== undefined && UNAVAILABLE_TITLES.test(title.trim()));
-      return { type: 'video', id, available: !unavailable };
+      const title = (textOf(r.title) ?? textOf(r.headline))?.trim();
+      const unavailable = r.isPlayable === false || (title !== undefined && UNAVAILABLE_TITLES.test(title));
+      const seconds = typeof r.lengthSeconds === 'string' ? Number(r.lengthSeconds) : Number.NaN;
+      const durationSec = Number.isFinite(seconds) && seconds > 0 ? seconds : clockSeconds(textOf(r.lengthText));
+      return videoItem(id, !unavailable, title, durationSec);
     }
     if (key === 'lockupViewModel') {
       const id = str(r.contentId);
@@ -123,7 +159,8 @@ function itemOf(el: Json): ListItem | null {
       if (type === 'LOCKUP_CONTENT_TYPE_VIDEO' && VIDEO_ID.test(id)) {
         // Unavailable videos come back as lockups without a title.
         const title = textOf(obj(obj(r.metadata)?.lockupMetadataViewModel)?.title)?.trim();
-        return { type: 'video', id, available: Boolean(title) && !UNAVAILABLE_TITLES.test(title ?? '') };
+        const available = Boolean(title) && !UNAVAILABLE_TITLES.test(title ?? '');
+        return videoItem(id, available, title, lockupDuration(r));
       }
       if (type && PLAYLIST_LOCKUPS.has(type)) return { type: 'playlist', id };
       return null;

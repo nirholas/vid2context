@@ -7,6 +7,7 @@ Real innertube responses recorded from this repo's VM on 2026-11-14 by running `
 | File | Request | What it shows |
 |---|---|---|
 | `browse-gwagon.json` | `browse` `VLPLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b` | "G-Wagon Buyer's Guide" (Alliance Motorworks): 9 videos, no continuation, playlist header and metadata |
+| `browse-gwagon-badges.json` | the same `browse` request, recorded 2026-11-15 | The same playlist with each lockup's duration badge kept (`contentImage` reduced to the badge text, `11:38` and so on). Used by the parser test only, not listed in `requests.json` (the replay serves `browse-gwagon.json` for that body). |
 | `browse-nasa-uploads.json`, `-p2.json` | `browse` `VLUULA_DiR1FfKNvjuUpBHmylQ` and its continuation | NASA's uploads playlist: 100 items on page 1, then a continuation page |
 | `browse-29c3.json` | `browse` `VLPLwP_SiAcdui0KVebT0mU9Apz359a4ubsC` | "29C3: Not my department": 96 entries with `MxMrnsxX9ZA` twice; its only continuation sits beside the item section and leads to related playlists |
 | `browse-unavailable.json` | `browse` `VLPL59FEE129ADFF2B12` | Google playlist with 3 unavailable entries (lockups without a title: `yi50KlsCBio`, `ZNbHGrGJu8Q`, `JUf1zxjR_Qw`) |
@@ -24,7 +25,7 @@ Trimming, so nothing personal lands in this public repo and the files stay small
 
 - Dropped top-level `responseContext` (it holds a visitor id), `topbar`, `frameworkUpdates`, `trackingParams` and `sidebar`.
 - Dropped everywhere: `watchEndpointSupportedOnesieConfig` (its URLs embed the requesting machine's IP address), tracking and logging fields (`trackingParams`, `clickTrackingParams`, `loggingDirectives`, `loggingContext`, `serviceTrackingParams`), menus (`menu`, `menuButton`, `menuOnTap`), `thumbnailOverlays` and accessibility labels.
-- Inside list items only: thumbnails, avatars, badges, inline playback and expanded snippets.
+- Inside list items only: thumbnails, avatars, badges, inline playback and expanded snippets. Exception: `browse-gwagon-badges.json` keeps the duration badge text of each lockup and nothing else of its `contentImage`.
 - Email addresses and phone numbers in descriptions replaced with `[email redacted]` and `[phone redacted]`.
 - Every file was checked to contain no copy of the recording machine's IP address and no visitor data.
 

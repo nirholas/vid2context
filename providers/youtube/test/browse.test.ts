@@ -6,7 +6,7 @@ import { type RecordedCall, type ReplayFetch, replayFetch, testContext } from '@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { listYouTube } from '../src/browse/list.ts';
 import { listMetadata } from '../src/browse/metadata.ts';
-import { parsePage } from '../src/browse/parse.ts';
+import { clockSeconds, parsePage } from '../src/browse/parse.ts';
 import { youtubeSource } from '../src/index.ts';
 import { resetBreaker } from '../src/resilience/breaker.ts';
 import { matchYouTube, matchYouTubeList, videoRef } from '../src/url.ts';
@@ -231,7 +231,7 @@ describe('matchYouTube list inputs', () => {
 });
 
 describe('listYouTube: playlists', () => {
-  it('lists a playlist in playlist order with refs identical to single-video refs', async () => {
+  it('lists a playlist in playlist order with refs like single-video refs plus the listed title', async () => {
     const { ctx, fetch } = setup();
     const input = 'https://www.youtube.com/playlist?list=PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b';
     const refs: VideoRef[] = [];
@@ -245,7 +245,10 @@ describe('listYouTube: playlists', () => {
       ...refs.slice(5).map((r) => r.nativeId),
     ]);
     expect(refs).toHaveLength(9);
-    expect(refs[0]).toEqual(videoRef(input, 'PzJL3aBRas8'));
+    expect(refs[0]).toEqual({
+      ...videoRef(input, 'PzJL3aBRas8'),
+      title: "Why I'm Selling My DREAM G-Wagon (Custom Build 2015 Mercedes G550)",
+    });
     expect(callBodies(fetch)).toEqual([
       { endpoint: 'browse', browseId: 'VLPLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b', params: 'wgYCCAA%3D' },
     ]);
@@ -444,6 +447,54 @@ describe('a video URL inside a playlist', () => {
   });
 });
 
+describe('listing hints: title and duration', () => {
+  it('reads each lockup title and its duration badge', () => {
+    const page = parsePage(JSON.parse(read('browse-gwagon-badges.json')), { continuation: false });
+    const videos = page.items.filter((i) => i.type === 'video');
+    expect(videos).toHaveLength(9);
+    expect(videos[0]).toEqual({
+      type: 'video',
+      id: 'PzJL3aBRas8',
+      available: true,
+      title: "Why I'm Selling My DREAM G-Wagon (Custom Build 2015 Mercedes G550)",
+      durationSec: 698,
+    });
+    expect(videos.map((v) => (v.type === 'video' ? v.durationSec : undefined))).toEqual([
+      698, 907, 1354, 539, 1285, 1834, 721, 822, 1084,
+    ]);
+  });
+
+  it('reads title and lengthText from classic video renderers', () => {
+    const page = parsePage(JSON.parse(read('search-search.json')), {
+      continuation: false,
+      sectionLevelNext: true,
+      skipShelves: true,
+    });
+    expect(page.items[0]).toMatchObject({
+      type: 'video',
+      title: 'Mercedes G Wagon W463 buyers guide (1990-2017) Common problems and costly repairs to avoid G-Class',
+      durationSec: 2544,
+    });
+  });
+
+  it('gives unavailable entries no title', () => {
+    const page = parsePage(JSON.parse(read('browse-unavailable.json')), { continuation: false });
+    const hidden = page.items.filter((i) => i.type === 'video' && !i.available);
+    expect(hidden.length).toBe(3);
+    for (const h of hidden) expect(h).not.toHaveProperty('title');
+  });
+
+  it('parses clock durations and nothing else', () => {
+    expect(clockSeconds('8:59')).toBe(539);
+    expect(clockSeconds('1:02:03')).toBe(3723);
+    expect(clockSeconds('0:07')).toBe(7);
+    expect(clockSeconds('LIVE')).toBeUndefined();
+    expect(clockSeconds('SHORTS')).toBeUndefined();
+    expect(clockSeconds('1:2')).toBeUndefined();
+    expect(clockSeconds(undefined)).toBeUndefined();
+  });
+});
+
 describe('listMetadata', () => {
   it('reads playlist metadata from the browse response', async () => {
     const { ctx } = setup();
@@ -495,7 +546,7 @@ describe.skipIf(!process.env.LIVE)('live YouTube lists', () => {
     const refs = await expandInput(registry, GWAGON, live(), { limit: 10 });
     console.error('live playlist', JSON.stringify(refs.map((r) => r.id)));
     expect(refs.length).toBeGreaterThanOrEqual(3);
-    expect(refs[0]).toEqual(videoRef(GWAGON, refs[0]?.nativeId ?? ''));
+    expect(refs[0]).toMatchObject(videoRef(GWAGON, refs[0]?.nativeId ?? ''));
     expect(new Set(refs.map((r) => r.id)).size).toBe(refs.length);
   }, 60_000);
 

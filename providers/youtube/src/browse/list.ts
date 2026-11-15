@@ -236,7 +236,11 @@ export async function* listYouTube(ref: VideoRef, ctx: Ctx, opts: { limit?: numb
         continue;
       }
       seen.add(item.id);
-      yield videoRef(ref.input, item.id);
+      yield {
+        ...videoRef(ref.input, item.id),
+        ...(item.title ? { title: item.title } : {}),
+        ...(item.durationSec !== undefined ? { durationSec: item.durationSec } : {}),
+      };
       emitted += 1;
       if (emitted >= limit) return;
     }
