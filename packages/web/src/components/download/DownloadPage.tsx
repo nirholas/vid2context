@@ -1,11 +1,13 @@
 /**
  * The Download page (?view=download&url=...): paste a link, pick video or
- * audio, save the file. A playlist or channel link lists its videos; one set
- * of choices applies to all of them and the jobs run one after another, so
- * the server is never asked for many downloads at once.
+ * audio (or, with the media toolkit, captions, frames or a clip), save the
+ * file. A playlist or channel link lists its videos; one set of choices
+ * applies to all of them and the jobs run one after another, so the server
+ * is never asked for many downloads at once. With the toolkit, the whole
+ * list can also be fetched as one server batch and saved as a single .zip.
  */
 import type { VideoRef } from '@vid2context/core';
-import { Download, ListVideo } from 'lucide-react';
+import { Captions, Download, FileArchive, ListVideo } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { type CallOptions, getItems, isListError } from '../../lib/api.ts';
 import {
@@ -15,6 +17,8 @@ import {
   type DownloadSettings,
   type DownloadStatus,
   startDownload,
+  startTask,
+  type TaskJob,
 } from '../../lib/downloads.ts';
 import { shortInput } from '../../lib/format.ts';
 import { downloadSearch, navigate } from '../../lib/route.ts';
@@ -26,6 +30,7 @@ import { DownloadForm } from './DownloadForm.tsx';
 import { DownloadJobView, POLL_MS } from './DownloadJobView.tsx';
 import { DownloadPanel } from './DownloadPanel.tsx';
 import { useDownloadStatus } from './use-download-status.ts';
+import { useToolkit } from './use-toolkit.ts';
 
 /** Most items listed from one playlist or channel. */
 export const LIST_LIMIT = 50;
@@ -49,6 +54,10 @@ export function PlaylistDownloads({
   const [state, setState] = useState<Record<string, ItemState>>({});
   const [queue, setQueue] = useState<string[]>([]);
   const [active, setActive] = useState<string>();
+  const [batch, setBatch] = useState<TaskJob>();
+  const [batchError, setBatchError] = useState<unknown>();
+  const [batchStarting, setBatchStarting] = useState(false);
+  const toolkit = useToolkit(call);
   const callRef = useRef(call);
   callRef.current = call;
   const settingsRef = useRef(settings);
@@ -92,6 +101,23 @@ export function PlaylistDownloads({
     setQueue((q) => [...q, ...fresh]);
   };
 
+  /** One server batch for the whole list: video or audio with the current choices, or captions, always as one .zip. */
+  const startBatch = async (kind: 'media' | 'captions') => {
+    if (!items) return;
+    setBatchStarting(true);
+    setBatchError(undefined);
+    const urls = items.map((r) => r.url ?? r.id);
+    const { url: _first, ...choices } = buildBody(urls[0] ?? url, settingsRef.current);
+    const body = kind === 'captions' ? { urls, kind: 'captions', format: 'srt', zip: true } : { urls, ...choices, zip: true };
+    try {
+      setBatch(await startTask('batch', body, callRef.current));
+    } catch (err) {
+      setBatchError(err);
+    } finally {
+      setBatchStarting(false);
+    }
+  };
+
   if (error) return <ErrorPanel error={error} title="Could not list the videos" />;
   if (!items) {
     return (
@@ -112,9 +138,37 @@ export function PlaylistDownloads({
         a time.
       </p>
       <DownloadForm settings={settings} onChange={setSettings} qualities={status.qualities} disabled={!!active} />
-      <Button variant="accent" onClick={() => enqueue(items.map(keyOf))} disabled={pending === 0} data-testid="download-all">
-        <Download className="size-4" aria-hidden /> Download all ({pending})
-      </Button>
+      <div className="flex flex-wrap gap-2">
+        <Button variant="accent" onClick={() => enqueue(items.map(keyOf))} disabled={pending === 0} data-testid="download-all">
+          <Download className="size-4" aria-hidden /> Download all ({pending})
+        </Button>
+        {toolkit && items.length <= toolkit.batch.maxItems && (
+          <>
+            <Button
+              variant="secondary"
+              onClick={() => startBatch('media')}
+              disabled={batchStarting || !!batch}
+              data-testid="download-all-zip"
+            >
+              <FileArchive className="size-4" aria-hidden /> All as one .zip
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => startBatch('captions')}
+              disabled={batchStarting || !!batch}
+              data-testid="captions-all-zip"
+            >
+              <Captions className="size-4" aria-hidden /> Captions of every video (.zip)
+            </Button>
+          </>
+        )}
+      </div>
+      {batchError ? <ErrorPanel error={batchError} title="The batch did not start" /> : null}
+      {batch && (
+        <section className="rounded-v2c border border-border p-3" data-testid="batch-job">
+          <DownloadJobView job={batch} call={call} pollMs={pollMs} onReset={() => setBatch(undefined)} />
+        </section>
+      )}
       <ol className="divide-y divide-border rounded-v2c border border-border" data-testid="playlist-items">
         {items.map((r, i) => {
           const key = keyOf(r);
@@ -168,8 +222,9 @@ export function DownloadPage({ url, call, pollMs }: { url?: string; call?: CallO
       <header className="space-y-1">
         <h1 className="text-xl font-semibold text-fg">Download video or audio</h1>
         <p className="text-sm text-muted">
-          Save a video as MP4, WebM or MKV, or its sound as MP3, M4A, Opus, FLAC or WAV. Works with YouTube and the other sites
-          yt-dlp supports.
+          Save a video as MP4, WebM or MKV, or its sound as MP3, M4A, Opus, FLAC or WAV. Where the server has the media toolkit,
+          also save captions in any language and subtitle format, frames as images, a GIF or WebP clip, or a whole playlist as one
+          .zip. Works with YouTube and the other sites yt-dlp supports.
         </p>
       </header>
 

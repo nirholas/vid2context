@@ -1,12 +1,12 @@
 {
   "request": {
     "method": "GET",
-    "path": "/downloads/a0ec437a-600b-40b9-9241-9fe82747113a"
+    "path": "/downloads/a0a1f8cc-cf2a-4eb0-9392-e2749cb7f70b"
   },
   "status": 200,
   "contentType": "application/json",
   "body": {
-    "id": "a0ec437a-600b-40b9-9241-9fe82747113a",
+    "id": "a0a1f8cc-cf2a-4eb0-9392-e2749cb7f70b",
     "status": "running",
     "request": {
       "kind": "animation",
@@ -22,7 +22,7 @@
       "phase": "preparing",
       "downloadedBytes": 0
     },
-    "createdAt": "2026-11-15T15:49:04.030Z",
-    "updatedAt": "2026-11-15T15:49:04.030Z"
+    "createdAt": "2026-11-15T15:55:51.751Z",
+    "updatedAt": "2026-11-15T15:55:51.752Z"
   }
 }

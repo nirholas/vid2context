@@ -1,12 +1,12 @@
 {
   "request": {
     "method": "GET",
-    "path": "/downloads/73fd30c2-58b6-4f78-af54-f0ad2c56cdfa"
+    "path": "/downloads/b20596c7-1a6b-4091-a45f-7660eec24481"
   },
   "status": 200,
   "contentType": "application/json",
   "body": {
-    "id": "73fd30c2-58b6-4f78-af54-f0ad2c56cdfa",
+    "id": "b20596c7-1a6b-4091-a45f-7660eec24481",
     "status": "running",
     "request": {
       "input": "packages/ffmpeg/test/fixtures/apollo11-first-steps-chapters.m4a",
@@ -25,7 +25,7 @@
       "phase": "preparing",
       "downloadedBytes": 0
     },
-    "createdAt": "2026-11-15T15:49:04.855Z",
-    "updatedAt": "2026-11-15T15:49:04.855Z"
+    "createdAt": "2026-11-15T15:55:52.595Z",
+    "updatedAt": "2026-11-15T15:55:52.596Z"
   }
 }

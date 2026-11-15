@@ -1,0 +1,54 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/downloads/583d1ad2-9e9e-44ab-b188-1fd37e01bac9"
+  },
+  "status": 200,
+  "contentType": "application/json",
+  "body": {
+    "id": "583d1ad2-9e9e-44ab-b188-1fd37e01bac9",
+    "status": "done",
+    "request": {
+      "kind": "captions",
+      "input": "packages/ffmpeg/test/fixtures/apollo11-first-steps-subs.mkv",
+      "languages": [],
+      "allLanguages": false,
+      "format": "ass",
+      "mode": "auto",
+      "via": "auto",
+      "allowAuto": true,
+      "allowTranslated": true,
+      "timestamps": false,
+      "zip": false,
+      "offsetSec": -1,
+      "maxLineChars": 32
+    },
+    "progress": {
+      "phase": "finished",
+      "percent": 100,
+      "downloadedBytes": 1711,
+      "totalBytes": 1711
+    },
+    "createdAt": "2026-11-15T15:55:51.527Z",
+    "updatedAt": "2026-11-15T15:55:51.573Z",
+    "expiresAt": "2026-11-15T16:25:51.573Z",
+    "file": {
+      "filename": "apollo11-first-steps-subs.en.ass",
+      "bytes": 1711,
+      "mimeType": "text/x-ssa; charset=utf-8",
+      "format": "ass",
+      "kind": "captions",
+      "title": "apollo11-first-steps-subs",
+      "source": "packages/ffmpeg/test/fixtures/apollo11-first-steps-subs.mkv",
+      "tracks": [
+        {
+          "language": "en",
+          "origin": "creator-captions",
+          "producer": "media-file-captions",
+          "via": "pipeline"
+        }
+      ],
+      "warnings": []
+    }
+  }
+}

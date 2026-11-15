@@ -1,12 +1,12 @@
 {
   "request": {
     "method": "GET",
-    "path": "/downloads/bfe79c2d-7ea2-4f26-9537-268782e0cb5a"
+    "path": "/downloads/271a1ff6-cbc3-4cde-8051-f704a9397198"
   },
   "status": 200,
   "contentType": "application/json",
   "body": {
-    "id": "bfe79c2d-7ea2-4f26-9537-268782e0cb5a",
+    "id": "271a1ff6-cbc3-4cde-8051-f704a9397198",
     "status": "done",
     "request": {
       "kind": "frames",
@@ -25,9 +25,9 @@
       "downloadedBytes": 42918,
       "totalBytes": 42918
     },
-    "createdAt": "2026-11-15T15:49:03.880Z",
-    "updatedAt": "2026-11-15T15:49:04.021Z",
-    "expiresAt": "2026-11-15T16:19:04.021Z",
+    "createdAt": "2026-11-15T15:55:51.586Z",
+    "updatedAt": "2026-11-15T15:55:51.738Z",
+    "expiresAt": "2026-11-15T16:25:51.738Z",
     "file": {
       "filename": "apollo11-first-steps frames.zip",
       "bytes": 42918,

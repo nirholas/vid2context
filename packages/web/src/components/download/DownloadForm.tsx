@@ -1,6 +1,7 @@
 /**
  * The download choices: video or audio, format, quality with estimated sizes,
- * which part to keep, and what to embed. Controlled: the parent owns the
+ * which part to keep, what to embed, subtitles burned into the picture, and
+ * one file per chapter. Controlled: the parent owns the
  * settings, so the playlist page can apply one set of choices to every item.
  * Without `options` (a playlist) the qualities come from the server's list
  * and no sizes are shown.
@@ -223,6 +224,21 @@ export function DownloadForm({
               />
               Chapter markers
             </label>
+            {chapters.length > 0 && (
+              <label
+                className="inline-flex items-center gap-2"
+                title="Needs the whole video; a trimmed part has no chapters to split by."
+              >
+                <input
+                  type="checkbox"
+                  checked={settings.splitChapters && settings.part === 'all'}
+                  disabled={settings.part !== 'all'}
+                  onChange={(e) => set({ splitChapters: e.target.checked })}
+                  data-testid="split-chapters"
+                />
+                Also one file per chapter ({chapters.length})
+              </label>
+            )}
             {(!options || options.canRemoveSegments) && (
               <label className="inline-flex items-center gap-2">
                 <input
@@ -235,18 +251,43 @@ export function DownloadForm({
             )}
           </div>
           {settings.kind === 'video' && subtitles.length > 0 && (
-            <label className="block max-w-md space-y-1.5">
-              <span className={LABEL}>Embed subtitles</span>
-              <select className={FIELD} value={settings.subtitles} onChange={(e) => set({ subtitles: e.target.value })}>
-                <option value="">None</option>
-                {subtitles.map((s) => (
-                  <option key={`${s.language}-${s.auto}`} value={s.language}>
-                    {s.name ? `${s.name} (${s.language})` : s.language}
-                    {s.auto ? ', automatic' : ''}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <div className="grid max-w-2xl gap-3 sm:grid-cols-2">
+              <label className="block space-y-1.5">
+                <span className={LABEL}>Embed subtitles (a track you can turn on and off)</span>
+                <select className={FIELD} value={settings.subtitles} onChange={(e) => set({ subtitles: e.target.value })}>
+                  <option value="">None</option>
+                  {subtitles.map((s) => (
+                    <option key={`${s.language}-${s.auto}`} value={s.language}>
+                      {s.name ? `${s.name} (${s.language})` : s.language}
+                      {s.auto ? ', automatic' : ''}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="block space-y-1.5">
+                <span className={LABEL}>Burn into the picture (always visible)</span>
+                <select
+                  className={FIELD}
+                  value={settings.burnSubtitles}
+                  onChange={(e) => set({ burnSubtitles: e.target.value })}
+                  data-testid="burn-subtitles"
+                >
+                  <option value="">None</option>
+                  {subtitles.map((s) => (
+                    <option key={`${s.language}-${s.auto}`} value={s.language}>
+                      {s.name ? `${s.name} (${s.language})` : s.language}
+                      {s.auto ? ', automatic' : ''}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              {settings.burnSubtitles && (
+                <p className="text-xs text-subtle sm:col-span-2">
+                  Burning in re-encodes the whole video, so it takes longer than the download itself. Use it for players and sites
+                  that cannot show a subtitle track.
+                </p>
+              )}
+            </div>
           )}
           <p className="text-xs text-subtle">
             {settings.kind === 'video' && settings.format === 'mp4'

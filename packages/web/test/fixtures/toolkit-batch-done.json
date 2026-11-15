@@ -1,12 +1,12 @@
 {
   "request": {
     "method": "GET",
-    "path": "/downloads/9f15698c-ad47-4655-9d63-26952c3e8358"
+    "path": "/downloads/fbc1d3b5-2dc4-402f-b81b-87b634adea89"
   },
   "status": 200,
   "contentType": "application/json",
   "body": {
-    "id": "9f15698c-ad47-4655-9d63-26952c3e8358",
+    "id": "fbc1d3b5-2dc4-402f-b81b-87b634adea89",
     "status": "done",
     "request": {
       "kind": "batch",
@@ -34,8 +34,8 @@
       "percent": 100,
       "downloadedBytes": 0
     },
-    "createdAt": "2026-11-15T15:49:04.248Z",
-    "updatedAt": "2026-11-15T15:49:04.845Z",
+    "createdAt": "2026-11-15T15:55:51.984Z",
+    "updatedAt": "2026-11-15T15:55:52.585Z",
     "items": [
       {
         "index": 0,
@@ -62,6 +62,6 @@
         }
       }
     ],
-    "expiresAt": "2026-11-15T16:19:04.845Z"
+    "expiresAt": "2026-11-15T16:25:52.585Z"
   }
 }

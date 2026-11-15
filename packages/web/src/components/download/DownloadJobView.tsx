@@ -1,8 +1,9 @@
 /**
- * One server-side download: polls the job until it ends, shows the phase, a
- * progress bar, bytes, speed and time left, and offers Cancel. When done it
- * links the file straight from the API (the browser streams it to disk) and
- * plays it inline. Errors use the same panel as every other failure.
+ * One server-side job (a video or audio download, or a captions, frames,
+ * clip or batch task): polls it until it ends, shows the phase, a progress
+ * bar, bytes, speed and time left (and each video of a batch), and offers
+ * Cancel. When done, JobResult links the files straight from the API.
+ * Errors use the same panel as every other failure.
  *
  * A failed poll does not end the view: rate limits (the server allows 120
  * requests a minute per IP, shared by every tab), timeouts and dropped
@@ -10,13 +11,12 @@
  * view says it is reconnecting. Only a job that is gone, downloads turned
  * off, a refused key, or three minutes without an answer show the error.
  */
-import { Download, RotateCcw, X } from 'lucide-react';
+import { RotateCcw, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import type { CallOptions } from '../../lib/api.ts';
 import {
-  type DownloadJob,
+  type AnyJob,
   deleteDownload,
-  downloadFileUrl,
   formatEta,
   formatSpeed,
   getDownloadJob,
@@ -27,9 +27,10 @@ import {
   phaseLabel,
 } from '../../lib/downloads.ts';
 import { fromApiBody } from '../../lib/errors.ts';
-import { formatBytes, formatDuration } from '../../lib/format.ts';
+import { formatBytes } from '../../lib/format.ts';
 import { ErrorPanel } from '../ErrorPanel.tsx';
-import { Button, buttonClass, ProgressBar } from '../ui.tsx';
+import { Button, ProgressBar } from '../ui.tsx';
+import { JobResult } from './JobResult.tsx';
 
 export const POLL_MS = 700;
 
@@ -41,10 +42,10 @@ export function DownloadJobView({
   pollMs = POLL_MS,
   compact = false,
 }: {
-  job: DownloadJob;
+  job: AnyJob;
   /** Back to the form (after done, error or cancel). */
   onReset?: () => void;
-  onFinished?: (job: DownloadJob) => void;
+  onFinished?: (job: AnyJob) => void;
   call?: CallOptions;
   pollMs?: number;
   /** One line per job, for playlist lists: no preview. */
@@ -115,7 +116,7 @@ export function DownloadJobView({
     setCanceling(true);
     try {
       await deleteDownload(job.id, callRef.current);
-      const canceled: DownloadJob = { ...job, status: 'canceled' };
+      const canceled: AnyJob = { ...job, status: 'canceled' };
       setJob(canceled);
       finishedRef.current?.(canceled);
     } catch (err) {
@@ -137,58 +138,7 @@ export function DownloadJobView({
   const running = job.status === 'queued' || job.status === 'running';
   const label = phaseLabel(job);
 
-  if (job.status === 'done' && job.file) {
-    const f = job.file;
-    const url = downloadFileUrl(job.id, false, call.base);
-    const inline = downloadFileUrl(job.id, true, call.base);
-    return (
-      <div className="space-y-3" data-testid="download-done">
-        <div className="flex flex-wrap items-center gap-3">
-          <a href={url} download={f.filename} className={buttonClass('accent')} data-testid="download-save">
-            <Download className="size-4" aria-hidden /> Save {f.format.toUpperCase()}
-          </a>
-          <span className="min-w-0 text-sm text-muted">
-            <span className="break-all text-fg">{f.filename}</span> ({formatBytes(f.bytes)}
-            {f.durationSec ? `, ${formatDuration(f.durationSec)}` : ''})
-          </span>
-          {onReset && (
-            <Button variant="ghost" className="ml-auto" onClick={onReset}>
-              <RotateCcw className="size-4" aria-hidden /> Download another
-            </Button>
-          )}
-        </div>
-        {f.warnings.length > 0 && (
-          <ul
-            className="space-y-1 rounded-v2c border border-border bg-surface-2 px-3 py-2 text-sm text-fg"
-            data-testid="download-warnings"
-          >
-            {f.warnings.map((w) => (
-              <li key={w}>{w}</li>
-            ))}
-          </ul>
-        )}
-        {!compact &&
-          (f.kind === 'video' ? (
-            // biome-ignore lint/a11y/useMediaCaption: a preview of the user's own download; captions are embedded in the file when asked for.
-            <video
-              controls
-              preload="metadata"
-              src={inline}
-              className="max-h-[360px] w-full rounded-v2c bg-black"
-              data-testid="download-preview"
-            />
-          ) : (
-            // biome-ignore lint/a11y/useMediaCaption: an audio preview of the user's own download.
-            <audio controls preload="metadata" src={inline} className="w-full" data-testid="download-preview" />
-          ))}
-        {job.expiresAt && (
-          <p className="text-xs text-subtle">
-            The server keeps this file until {new Date(job.expiresAt).toLocaleTimeString()}. Save it before then.
-          </p>
-        )}
-      </div>
-    );
-  }
+  if (job.status === 'done') return <JobResult job={job} call={call} compact={compact} onReset={onReset} />;
 
   if (job.status === 'canceled') {
     return (
@@ -224,7 +174,14 @@ export function DownloadJobView({
           <X className="size-4" aria-hidden /> Cancel
         </Button>
       </div>
-      <ProgressBar value={p.phase === 'downloading' || p.phase === 'finished' ? p.percent : undefined} label={label} />
+      {/* The percentage is the current step's real progress; absent while unknown, which shows a moving bar. */}
+      <ProgressBar value={p.phase === 'preparing' || p.phase === 'queued' ? undefined : p.percent} label={label} />
+      {'items' in job && job.items && job.items.length > 0 && (
+        <p className="text-xs text-muted tabular-nums" data-testid="batch-progress">
+          {job.items.filter((i) => i.status === 'done').length} of {job.items.length} saved
+          {job.items.some((i) => i.status === 'error') ? `, ${job.items.filter((i) => i.status === 'error').length} failed` : ''}
+        </p>
+      )}
       {retrying && (
         <p className="text-xs text-muted" data-testid="download-reconnecting" aria-live="polite">
           Reconnecting to the server (retry in {retrying.nextInSec} s): {retrying.message}

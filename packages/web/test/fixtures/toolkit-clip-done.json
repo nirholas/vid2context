@@ -1,12 +1,12 @@
 {
   "request": {
     "method": "GET",
-    "path": "/downloads/a0ec437a-600b-40b9-9241-9fe82747113a"
+    "path": "/downloads/a0a1f8cc-cf2a-4eb0-9392-e2749cb7f70b"
   },
   "status": 200,
   "contentType": "application/json",
   "body": {
-    "id": "a0ec437a-600b-40b9-9241-9fe82747113a",
+    "id": "a0a1f8cc-cf2a-4eb0-9392-e2749cb7f70b",
     "status": "done",
     "request": {
       "kind": "animation",
@@ -24,9 +24,9 @@
       "downloadedBytes": 3050532,
       "totalBytes": 3050532
     },
-    "createdAt": "2026-11-15T15:49:04.030Z",
-    "updatedAt": "2026-11-15T15:49:04.241Z",
-    "expiresAt": "2026-11-15T16:19:04.241Z",
+    "createdAt": "2026-11-15T15:55:51.751Z",
+    "updatedAt": "2026-11-15T15:55:51.974Z",
+    "expiresAt": "2026-11-15T16:25:51.974Z",
     "file": {
       "filename": "apollo11-first-steps (0m10s-0m13s).gif",
       "bytes": 3050532,

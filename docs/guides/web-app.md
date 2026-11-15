@@ -99,6 +99,14 @@ Besides the files and the .zip on every result, the **Download** page saves the 
 
 ![Download page for Me at the zoo with format, quality and part](web-app/download-page.png)
 
+Under **More options**, a video can also get a subtitle track embedded (one you can turn on and off), subtitles burned into the picture (always visible; this re-encodes the video), and, when it has chapters, one extra file per chapter. When the server has the media toolkit (`GET /downloads/toolkit`), tabs sit next to video and audio:
+
+- **Captions**: tick one, several or all caption tracks, add a machine translation, pick any subtitle format the server lists (SRT, WebVTT, ASS, TTML, SBV, LRC, CSV, text, JSON, Markdown or the original file), shift the timing, set the line length, or put a second language under each caption. Several languages come as one .zip. With no tracks, speech-to-text writes them.
+- **Frames**: images at the times you list, or at each chapter start or ten evenly spaced points, as PNG or JPEG.
+- **GIF or WebP**: an animated clip of a short range, with frame rate and width (the limits come from the server).
+
+A thumbnail row saves the cover image as JPEG, PNG or WebP. On a playlist or channel, **All as one .zip** and **Captions of every video** run one server batch and return a single .zip. Finished jobs show what they made: the file with a preview, the files inside a .zip, where each caption came from, one link per chapter or per video, and any warnings. Progress keeps going through rate limits and dropped connections, and says when it is reconnecting.
+
 The **Captions** page lists every caption track of a video for preview and download (SRT, WebVTT, text, JSON, or all as a .zip) and can translate one. The **API** page calls any API endpoint against a video, with the request and response shown.
 
 ## History

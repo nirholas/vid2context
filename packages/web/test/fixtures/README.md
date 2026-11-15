@@ -46,6 +46,22 @@ Same `{ request, status, contentType, body }` shape. The local file was passed a
 | `downloads-start-mp4.json`, `downloads-job-mp4-running.json`, `downloads-job-mp4-error.json` | the Apollo clip as mp4 | A job that fails with `unsupported-input` (no video track) and a hint. |
 | `downloads-job-rate-limited.json` | `GET /downloads/:id` the second time within a minute | 429 `rate-limited` with `retry-after: 60`, kept in the file's `headers` field. Recorded 2026-11-15 from `npm run start:server` with `VID2CONTEXT_RATE_LIMIT=1 VID2CONTEXT_RATE_BURST=1`, so the limiter answered on the second request. |
 | `downloads-job-gone.json` | `GET /downloads/:id` for a job the server no longer has (same recording) | 404 `not-found`: the job expired or the server restarted, which the job view must not retry. |
+
+## Toolkit fixtures
+
+`toolkit*.json` were recorded on 2026-11-15 by `npx tsx packages/web/scripts/record-toolkit-fixtures.ts`, which mounts the real `/downloads` routes, task queue and downloader (with the real provider registry) in-process, with ffmpeg 7.0.2. Every input is a public-domain Apollo 11 clip from `packages/ffmpeg/test/fixtures` (see its README), passed as a relative path, so nothing is fetched from the network and no local path is recorded. Same `{ request, status, contentType, body }` shape; job ids are the server's random UUIDs.
+
+| File | Request | What it shows |
+|---|---|---|
+| `toolkit.json` | `GET /downloads/toolkit` | Caption formats (with `timed` and `bilingual`), modes, line layout ranges, frame and clip formats, defaults and limits, batch kinds. |
+| `toolkit-options-mp4.json`, `toolkit-options-m4a.json` | `GET /downloads/options` | The mp4 clip (one video quality) and the m4a (audio only, four chapters). |
+| `toolkit-tracks-mkv.json` | `GET /downloads/captions/tracks?url=<mkv>` | The mkv's embedded English subrip track, and the formats it can be saved as. |
+| `toolkit-captions-{start,running,done}.json` | `POST /downloads/captions` `{ format: srt }`, then polls | The embedded track saved as SRT, with where its text came from. |
+| `toolkit-captions-ass-{start,running,done}.json` | `POST /downloads/captions` `{ format: ass, offsetSec: -1, maxLineChars: 32 }`, then polls | The same track as ASS, shifted and rewrapped. |
+| `toolkit-frames-{start,running,done}.json` | `POST /downloads/frames` `{ times: "0:05,0:30", format: png }` | Two PNG frames in one .zip, with its entries. |
+| `toolkit-clip-{start,running,done}.json` | `POST /downloads/clips` `{ from: "0:10", to: "0:13" }` | A 3 s GIF. |
+| `toolkit-batch-{start,running,done}.json` | `POST /downloads/batch` `{ urls: [m4a, mkv], kind: audio, format: mp3 }` | A batch without zip: one mp3 per item, served at `/downloads/:id/items/:n/file`. |
+| `toolkit-split-{start,running,done}.json` | `POST /downloads` `{ url: m4a, format: m4a, splitChapters: true }` | The m4a plus one file per chapter in `file.parts`. |
 | `downloads-start-invalid.json` | `POST /downloads` with mp3 quality 1080 | 400 `bad-request` with the list of valid qualities. |
 | `downloads-start-bbb.json`, `downloads-job-bbb-running.json`, `downloads-job-bbb-done.json` | `POST /downloads` (Big Buck Bunny, mp4 480p), then `GET /downloads/:id` | A real YouTube download: a snapshot at 38% of two streams (135+140) with speed, and the finished 37 MB file. |
 | `captions-languages-jNQXAC9IVRw.json` | `GET /caption-languages?url=https://www.youtube.com/watch?v=jNQXAC9IVRw` | Every caption track for "Me at the zoo": English and German creator captions listed by both `youtube-captions` and `ytdlp-captions`, and auto-captions from `ytdlp-captions` (recorded 2026-11-15). The Captions page merges them into one row per language. |

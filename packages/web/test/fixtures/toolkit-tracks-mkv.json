@@ -26,27 +26,69 @@
     "formats": [
       {
         "id": "srt",
-        "label": "SubRip (.srt)"
+        "label": "SubRip (.srt) captions: at most 2 lines of 42 characters per cue, no overlaps, for players and editors.",
+        "timed": true,
+        "bilingual": true
       },
       {
         "id": "vtt",
-        "label": "WebVTT (.vtt)"
+        "label": "WebVTT (.vtt) captions for the HTML <track> element, with speaker voice tags when known.",
+        "timed": true,
+        "bilingual": true
+      },
+      {
+        "id": "ass",
+        "label": "Advanced SubStation Alpha (.ass) subtitles with a readable default style, for mpv, VLC, ffmpeg burn-in and Aegisub. Bilingual subtitles show the second language in a smaller style.",
+        "timed": true,
+        "bilingual": true
+      },
+      {
+        "id": "ttml",
+        "label": "TTML / IMSC (.ttml) timed text XML for broadcast, streaming packagers and players that read TTML or DFXP.",
+        "timed": true,
+        "bilingual": true
+      },
+      {
+        "id": "sbv",
+        "label": "YouTube SubViewer (.sbv) captions, the format YouTube Studio imports and exports.",
+        "timed": true,
+        "bilingual": true
+      },
+      {
+        "id": "lrc",
+        "label": "LRC (.lrc) timed lyrics, one [mm:ss.xx] line per cue, for music players and karaoke apps.",
+        "timed": true,
+        "bilingual": false
+      },
+      {
+        "id": "csv",
+        "label": "CSV (.csv) with one row per segment: start,end,speaker,text in seconds, plus secondary_text for bilingual output. For spreadsheets and data tools.",
+        "timed": true,
+        "bilingual": true
       },
       {
         "id": "txt",
-        "label": "Plain text (.txt)"
+        "label": "Plain text (.txt), with [m:ss] lines when timestamps is on",
+        "timed": true,
+        "bilingual": true
       },
       {
         "id": "json",
-        "label": "JSON segments (.json)"
+        "label": "JSON segments (.json): start, end, text, speaker, with language and origin",
+        "timed": true,
+        "bilingual": true
       },
       {
         "id": "markdown",
-        "label": "Markdown transcript (.md)"
+        "label": "Markdown transcript (.md)",
+        "timed": false,
+        "bilingual": false
       },
       {
         "id": "original",
-        "label": "Original file as the site serves it"
+        "label": "Original file as the site (or the local sidecar) has it",
+        "timed": false,
+        "bilingual": false
       }
     ],
     "notes": []

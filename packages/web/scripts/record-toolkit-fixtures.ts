@@ -1,6 +1,6 @@
 /**
- * Record real /downloads toolkit responses (captions, frames, clips, batch,
- * thumbnail-free) for the web app's tests into test/fixtures/toolkit-*.json.
+ * Record real /downloads toolkit responses (captions, frames, clips, batch and
+ * a chapter split) for the web app's tests into test/fixtures/toolkit-*.json.
  * Mounts the real routes, task queue and downloader (with the real provider
  * registry) on an in-process Hono app, the same code the Node server mounts,
  * so it needs no running server and no network: every input is a local,
@@ -90,9 +90,18 @@ async function follow(id: string, prefix: string): Promise<void> {
 const q = (u: string) => encodeURIComponent(u);
 try {
   await record('toolkit.json', 'GET', '/downloads/toolkit');
+  await record('toolkit-options-mp4.json', 'GET', `/downloads/options?url=${q(MP4)}`);
+  await record('toolkit-options-m4a.json', 'GET', `/downloads/options?url=${q(M4A)}`);
   await record('toolkit-tracks-mkv.json', 'GET', `/downloads/captions/tracks?url=${q(MKV)}`);
   const captions = await record('toolkit-captions-start.json', 'POST', '/downloads/captions', { url: MKV, format: 'srt' });
   await follow(captions.id, 'toolkit-captions');
+  const ass = await record('toolkit-captions-ass-start.json', 'POST', '/downloads/captions', {
+    url: MKV,
+    format: 'ass',
+    offsetSec: -1,
+    maxLineChars: 32,
+  });
+  await follow(ass.id, 'toolkit-captions-ass');
   const frames = await record('toolkit-frames-start.json', 'POST', '/downloads/frames', {
     url: MP4,
     times: '0:05,0:30',

@@ -32,6 +32,14 @@ export interface DownloadStatus {
   ytdlp?: string;
 }
 
+/** One caption output format the server offers. Older servers send only id and label. */
+export interface CaptionFormatInfo {
+  id: string;
+  label: string;
+  timed?: boolean | string;
+  bilingual?: boolean;
+}
+
 /** A download (video or audio) or a toolkit task (captions, frames, clip, batch): one job API serves both. */
 export type AnyJob = DownloadJob | TaskJob;
 
@@ -40,11 +48,14 @@ export interface ToolkitInfo {
   enabled: boolean;
   reason?: string;
   captions: {
-    formats: { id: string; label: string }[];
+    /** `timed`: the format has subtitle times (offset and line layout apply). `bilingual`: it can show a second language. */
+    formats: CaptionFormatInfo[];
     modes: string[];
     via: string[];
     defaults: { format: string; mode: string };
     maxTracks: number;
+    /** Allowed ranges for the line layout inputs (newer servers). */
+    layout?: { maxLineChars: { min: number; max: number }; maxLines: { min: number; max: number } };
   };
   frames: { formats: string[]; defaults: { format: string; quality: string }; maxFrames: number };
   clips: {
@@ -109,8 +120,8 @@ export function startDownload(body: DownloadBody, call: CallOptions = {}): Promi
 }
 
 /** GET /downloads/:id: the job with its progress. */
-export function getDownloadJob(id: string, call: CallOptions = {}): Promise<AnyJob> {
-  return requestJson<AnyJob>('GET', `/downloads/${encodeURIComponent(id)}`, {}, undefined, call);
+export function getDownloadJob<J extends AnyJob = AnyJob>(id: string, call: CallOptions = {}): Promise<J> {
+  return requestJson<J>('GET', `/downloads/${encodeURIComponent(id)}`, {}, undefined, call);
 }
 
 /** DELETE /downloads/:id: cancel a running job or delete a finished file. */

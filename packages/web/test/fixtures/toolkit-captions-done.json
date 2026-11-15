@@ -1,12 +1,12 @@
 {
   "request": {
     "method": "GET",
-    "path": "/downloads/b6554e76-9e0d-462b-aad0-54a8a7318d61"
+    "path": "/downloads/c740b38e-661b-4d17-b6d0-8c282efeb0ce"
   },
   "status": 200,
   "contentType": "application/json",
   "body": {
-    "id": "b6554e76-9e0d-462b-aad0-54a8a7318d61",
+    "id": "c740b38e-661b-4d17-b6d0-8c282efeb0ce",
     "status": "done",
     "request": {
       "kind": "captions",
@@ -27,9 +27,9 @@
       "downloadedBytes": 577,
       "totalBytes": 577
     },
-    "createdAt": "2026-11-15T15:49:03.816Z",
-    "updatedAt": "2026-11-15T15:49:03.869Z",
-    "expiresAt": "2026-11-15T16:19:03.869Z",
+    "createdAt": "2026-11-15T15:55:51.466Z",
+    "updatedAt": "2026-11-15T15:55:51.521Z",
+    "expiresAt": "2026-11-15T16:25:51.521Z",
     "file": {
       "filename": "apollo11-first-steps-subs.en.srt",
       "bytes": 577,
