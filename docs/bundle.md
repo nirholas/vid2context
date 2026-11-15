@@ -87,6 +87,7 @@ The formatter files are read from the `formatters` map in `packages/core/src/for
 | `srt` | `transcript.srt` |
 | `vtt` | `transcript.vtt` |
 | `json` | `context.json` |
+| `ass`, `ttml`, `sbv`, `lrc`, `csv` | `transcript.<id>` (for example `transcript.ass`) |
 | any other | `<id>.<extension>` |
 
 `context.md` is always written. It comes from `pack`; if that formatter is missing it falls back to `markdown`, then `text`, and `manifest.json` records which one was used in `contextFormatter`.
