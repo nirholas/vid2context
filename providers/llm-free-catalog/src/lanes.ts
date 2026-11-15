@@ -105,7 +105,9 @@ export const CATALOG_LANES: CatalogLane[] = [
   // ---- keyless: Kilo Code's gateway serves free Nemotron routes with no key
   // (verified 2026-11-14). Kilo routes reasoning by default and the answer can
   // then land in the reasoning field; `reasoning.enabled: false` keeps it in
-  // content. A key (KILO_API_KEY) only raises the limits.
+  // content. A key (KILO_API_KEY) only raises the limits. Ultra ignores that
+  // switch and always reasons (about 75 s per answer on 2026-11-15, against
+  // under 1 s for the other two once warm), so it is the last Kilo fallback.
   {
     service: 'kilo',
     tier: 'keyless',
@@ -114,9 +116,9 @@ export const CATALOG_LANES: CatalogLane[] = [
     keyVar: 'KILO_API_KEY',
     modelVar: 'KILO_MODEL',
     models: [
-      { id: 'nvidia/nemotron-3-ultra-550b-a55b:free', quality: 4, contextTokens: 1_000_000, maxOutputTokens: 65_536, json: true },
       { id: 'nvidia/nemotron-3.5-super-vl:free', quality: 4, contextTokens: 1_000_000, maxOutputTokens: 131_072 },
       { id: 'nvidia/nemotron-3.5-lightning:free', quality: 3, contextTokens: 1_000_000, maxOutputTokens: 65_536, json: true },
+      { id: 'nvidia/nemotron-3-ultra-550b-a55b:free', quality: 4, contextTokens: 1_000_000, maxOutputTokens: 65_536, json: true },
     ],
     extraBody: { reasoning: { enabled: false } },
     freeSuffixOnly: true,

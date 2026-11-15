@@ -103,9 +103,9 @@ More free lanes on top of `llm-openai-compatible`. "Verified live" means a real 
 
 | Rung id | Tier | Enabled by | Free limits and notes | Verified |
 |---|---|---|---|---|
-| `llm/kilo/nvidia/nemotron-3-ultra-550b-a55b:free` | keyless | none | Kilo Code gateway, about 200 requests per hour; JSON mode. Runs before OVH and Pollinations | live, 2026-11-14 |
-| `llm/kilo/nvidia/nemotron-3.5-super-vl:free` | keyless | none | separate model quota on the same gateway | live, 2026-11-14 |
-| `llm/kilo/nvidia/nemotron-3.5-lightning:free` | keyless | none | smaller and faster; JSON mode | live, 2026-11-14 |
+| `llm/kilo/nvidia/nemotron-3.5-super-vl:free` | keyless | none | Kilo Code gateway, about 200 requests per hour per model. Runs before OVH and Pollinations | live, 2026-11-15 |
+| `llm/kilo/nvidia/nemotron-3.5-lightning:free` | keyless | none | smaller and faster; JSON mode | live, 2026-11-15 |
+| `llm/kilo/nvidia/nemotron-3-ultra-550b-a55b:free` | keyless | none | always reasons, so slow (about 75 s per answer); last Kilo fallback; JSON mode | live, 2026-11-15 |
 | `llm/nvidia/nvidia/nemotron-3-super-120b-a12b` | free | `NVIDIA_API_KEY` | free NIM tier, can queue under load (45 s lane timeout); thinking turned off | id in the public NIM list 2026-11-14; not verified live |
 | `llm/sambanova/Meta-Llama-3.3-70B-Instruct` | free | `SAMBANOVA_API_KEY` | about 20 requests per minute and 200k tokens per day per model; output capped at 3072 tokens | id and cap in the public model list 2026-11-14; not verified live |
 | `llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast` | free | `CLOUDFLARE_ACCOUNT_ID` + `CLOUDFLARE_API_TOKEN` | 10,000 neurons per day per account (a short answer costs about 2 to 5); 24k-token context; JSON and JSON Schema | live, 2026-11-14 |

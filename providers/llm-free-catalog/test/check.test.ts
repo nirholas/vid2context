@@ -51,13 +51,13 @@ describe('runChecks', () => {
     const { run } = selectRungs(catalogRungs(env), env);
     const rows = await runChecks(run, testContext({ fetch, env }), { concurrency: 2 });
     expect(rows.map((r) => [r.id, r.outcome, r.code, r.correct])).toEqual([
-      ['llm/kilo/nvidia/nemotron-3-ultra-550b-a55b:free', 'ok', undefined, true],
       // A recorded answer to a different question: it answered, but not 42.
       ['llm/kilo/nvidia/nemotron-3.5-super-vl:free', 'ok', undefined, false],
       ['llm/kilo/nvidia/nemotron-3.5-lightning:free', 'error', 'not-found-404', false],
+      ['llm/kilo/nvidia/nemotron-3-ultra-550b-a55b:free', 'ok', undefined, true],
       ['llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast', 'ok', undefined, true],
     ]);
-    expect(rows[2]?.reason).toMatch(/^kilo chat: HTTP 404/);
+    expect(rows[1]?.reason).toMatch(/^kilo chat: HTTP 404/);
     expect(fetch.calls).toHaveLength(4);
     expect(JSON.parse(String(fetch.calls[0]?.body))).toMatchObject({
       messages: [{ role: 'user', content: 'What is 17 plus 25? Reply with the number only.' }],

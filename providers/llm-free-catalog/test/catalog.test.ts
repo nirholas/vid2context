@@ -51,9 +51,9 @@ describe('rungs from env', () => {
   it('runs only the Kilo keyless lane with zero configuration and lists the rest with what they need', () => {
     const rungs = catalogRungs({});
     expect(rankRungs(rungs, {}, {}).map((r) => r.id)).toEqual([
-      'llm/kilo/nvidia/nemotron-3-ultra-550b-a55b:free',
       'llm/kilo/nvidia/nemotron-3.5-super-vl:free',
       'llm/kilo/nvidia/nemotron-3.5-lightning:free',
+      'llm/kilo/nvidia/nemotron-3-ultra-550b-a55b:free',
     ]);
     const disabled = Object.fromEntries(rungs.filter((r) => r.tier === 'free').map((r) => [r.id, r.requires]));
     expect(disabled).toEqual({
@@ -340,12 +340,15 @@ describe.skipIf(!process.env.LIVE)('live', () => {
   const env = process.env as Env;
   const live = () => createContext({ runtime: 'node', env });
 
-  it('Kilo answers keyless on every default model', async () => {
-    for (const r of catalogRungs({}).filter((x) => x.service === 'kilo')) {
+  // One test per model so a slow or busy model fails alone. Ultra always
+  // reasons (about 75 s per answer on 2026-11-15), so each gets the client's
+  // full 120 s request timeout plus headroom.
+  for (const r of catalogRungs({}).filter((x) => x.service === 'kilo')) {
+    it(`${r.id} answers keyless`, { timeout: 150_000 }, async () => {
       const res = await r.chat(question, live());
       expect(res.text).toContain('1969');
-    }
-  });
+    });
+  }
 
   it.skipIf(!process.env.CLOUDFLARE_API_TOKEN || !process.env.CLOUDFLARE_ACCOUNT_ID)(
     'Cloudflare answers with the account token',
