@@ -33,12 +33,12 @@ Hardened in this round by another session (stall and per-attempt timeouts, a cap
 
 | Risk | Evidence | Status |
 |---|---|---|
-| A handler that never settles and ignores its signal holds a concurrency slot forever. | `src/execute.ts:153` `raceAbort` only rejects on abort | Jobs owner |
-| On start, every `running` record is requeued, including jobs another live process sharing the store is still running (no heartbeat on the record). | `src/queue.ts:126` | Jobs owner |
-| `enqueue` grows `pending` without bound. | `src/queue.ts:144` | Jobs owner |
+| A handler that never settles and ignores its signal holds a concurrency slot forever. | `src/execute.ts:153` `raceAbort` only rejects on abort | Fixed: the stall watchdog aborts it, the slot is freed after a 5 s grace (`src/watchdog.ts`) |
+| On start, every `running` record is requeued, including jobs another live process sharing the store is still running (no heartbeat on the record). | `src/queue.ts:126` | Fixed: running attempts heartbeat every 30 s; a fresh `running` record is watched and taken over only when stale or handed back |
+| `enqueue` grows `pending` without bound. | `src/queue.ts:144` | Fixed: `VID2CONTEXT_MAX_QUEUED_JOBS` (1000), then `rate-limited` |
 | `close()` aborts running jobs at once instead of draining them. | `src/queue.ts:193` | Jobs owner; the server's shutdown gives it half the grace period before cutting connections |
-| Cloud Tasks token, enqueue and JWKS fetches use `ctx.fetch` with no timeout. | `src/cloud-tasks.ts:85`, `:104`, `:200` | Jobs owner |
-| The SSE heartbeat timer writes into the stream without a try; a write after the consumer is gone throws from a timer. | `src/sse.ts:127` | Jobs owner |
+| Cloud Tasks token, enqueue and JWKS fetches use `ctx.fetch` with no timeout. | `src/cloud-tasks.ts:85`, `:104`, `:200` | Fixed: 15 s deadline, then `timeout` |
+| The SSE heartbeat timer writes into the stream without a try; a write after the consumer is gone throws from a timer. | `src/sse.ts:127` | Fixed: a failed write ends the stream |
 
 ## yt-dlp provider (`providers/ytdlp`)
 

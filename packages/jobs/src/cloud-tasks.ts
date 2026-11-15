@@ -71,6 +71,29 @@ export function buildCloudTask(cfg: CloudTasksConfig, job: Pick<Job, 'id'>, dela
   };
 }
 
+/** Longest one Google API call (metadata token, createTask, JWKS) may take. */
+export const GOOGLE_FETCH_TIMEOUT_MS = 15_000;
+
+/**
+ * ctx.fetch with a deadline. These calls sit on the request path (enqueue,
+ * task delivery), so a Google endpoint that stops answering must fail the
+ * request with `timeout` instead of holding it open.
+ */
+async function googleFetch(ctx: Ctx, what: string, url: string, init: RequestInit = {}): Promise<Response> {
+  const deadline = AbortSignal.timeout(GOOGLE_FETCH_TIMEOUT_MS);
+  const signal = ctx.signal ? AbortSignal.any([ctx.signal, deadline]) : deadline;
+  try {
+    return await ctx.fetch(url, { ...init, signal });
+  } catch (err) {
+    if (deadline.aborted && !ctx.signal?.aborted) {
+      throw new Vid2ContextError('timeout', `${what} did not answer within ${GOOGLE_FETCH_TIMEOUT_MS / 1000} s.`, {
+        hint: 'Google APIs are slow or unreachable from here; retry. On Cloud Run, check the service has network egress.',
+      });
+    }
+    throw err;
+  }
+}
+
 /** OAuth access token for the Cloud Tasks API. */
 export type AccessTokenSource = () => Promise<string>;
 
@@ -82,10 +105,12 @@ export function metadataAccessToken(ctx: Ctx): AccessTokenSource {
   let cached: { token: string; expiresAt: number } | null = null;
   return async () => {
     if (cached && cached.expiresAt > Date.now() + 60_000) return cached.token;
-    const res = await ctx.fetch('http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token', {
-      headers: { 'Metadata-Flavor': 'Google' },
-      ...(ctx.signal ? { signal: ctx.signal } : {}),
-    });
+    const res = await googleFetch(
+      ctx,
+      'The GCP metadata server',
+      'http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token',
+      { headers: { 'Metadata-Flavor': 'Google' } },
+    );
     if (!res.ok) throw await errorFromResponse(res, 'GCP metadata token');
     const json = (await res.json()) as { access_token: string; expires_in: number };
     cached = { token: json.access_token, expiresAt: Date.now() + json.expires_in * 1000 };
@@ -101,11 +126,10 @@ export function cloudTasksDispatch(
 ): Dispatch {
   return async (job, delayMs) => {
     const task = buildCloudTask(cfg, job, delayMs);
-    const res = await ctx.fetch(`https://cloudtasks.googleapis.com/v2/${cfg.queue}/tasks`, {
+    const res = await googleFetch(ctx, 'Cloud Tasks createTask', `https://cloudtasks.googleapis.com/v2/${cfg.queue}/tasks`, {
       method: 'POST',
       headers: { authorization: `Bearer ${await accessToken()}`, 'content-type': 'application/json' },
       body: JSON.stringify({ task }),
-      ...(ctx.signal ? { signal: ctx.signal } : {}),
     });
     if (!res.ok) throw await errorFromResponse(res, 'Cloud Tasks createTask');
     await res.body?.cancel();
@@ -197,7 +221,7 @@ export class GoogleOidcVerifier {
 
   private async keys(ctx: Ctx, force: boolean): Promise<Map<string, CryptoKey>> {
     if (!force && this.cache && this.cache.expiresAt > Date.now()) return this.cache.keys;
-    const res = await ctx.fetch(this.opts.jwksUrl ?? GOOGLE_JWKS_URL, ctx.signal ? { signal: ctx.signal } : {});
+    const res = await googleFetch(ctx, 'Google JWKS', this.opts.jwksUrl ?? GOOGLE_JWKS_URL);
     if (!res.ok) throw await errorFromResponse(res, 'Google JWKS');
     const maxAge = Number(/max-age=(\d+)/.exec(res.headers.get('cache-control') ?? '')?.[1] ?? 3600);
     const keys = await importJwks((await res.json()) as { keys: Jwk[] });

@@ -21,6 +21,16 @@ import {
 /** How long an aborted attempt keeps its slot while the handler winds down. */
 export const DEFAULT_ABORT_GRACE_MS = 5_000;
 
+/**
+ * A running attempt rewrites its record this often (only `updatedAt`
+ * changes), so another process sharing the store can tell a live job from
+ * one whose runner died. See InProcessQueue.recover.
+ */
+export const DEFAULT_HEARTBEAT_MS = 30_000;
+
+/** A `running` record not written for this many heartbeats belongs to a runner that is gone. */
+export const STALE_HEARTBEATS = 3;
+
 /** Abort reason when a user cancels a job. */
 export class JobCanceled extends Error {
   constructor() {
@@ -88,6 +98,8 @@ export interface RunDeps {
    * job while this one still holds connections or a child process. Default 5000.
    */
   abortGraceMs?: number;
+  /** See DEFAULT_HEARTBEAT_MS. 0 turns the heartbeat off. */
+  heartbeatMs?: number;
 }
 
 export type RunOutcome =
@@ -251,6 +263,13 @@ export async function runJob(id: string, deps: RunDeps, signal: AbortSignal): Pr
   const attempt = rec.attempts + 1;
   writer.update({ status: 'running', attempts: attempt, notBefore: undefined, error: undefined });
   const dog = startWatchdog(rec.kind, limitsFor(rec, kind, deps.ctx));
+  const heartbeatMs = deps.heartbeatMs ?? DEFAULT_HEARTBEAT_MS;
+  const beat = heartbeatMs > 0 ? setInterval(() => writer.update({}), heartbeatMs) : undefined;
+  (beat as { unref?: () => void } | undefined)?.unref?.();
+  const stopTimers = () => {
+    dog.stop();
+    if (beat) clearInterval(beat);
+  };
   const stopSignal = AbortSignal.any([signal, dog.signal]);
   const jobSignal = deps.ctx.signal ? AbortSignal.any([deps.ctx.signal, stopSignal]) : stopSignal;
   const ctx: Ctx = { ...deps.ctx, signal: jobSignal };
@@ -279,14 +298,14 @@ export async function runJob(id: string, deps: RunDeps, signal: AbortSignal): Pr
       }),
     );
     const result = await raceAbort(work, stopSignal);
-    dog.stop();
+    stopTimers();
     writer.update({ status: 'succeeded', result: result === undefined ? null : result });
     writer.emit({ type: 'done', data: { result: result === undefined ? null : result } });
     writer.seal();
     await writer.flush();
     return { status: 'succeeded', job: publicJob(rec) };
   } catch (thrown) {
-    dog.stop();
+    stopTimers();
     if (signal.aborted || dog.signal.aborted) await settleWithin(work, deps.abortGraceMs ?? DEFAULT_ABORT_GRACE_MS);
     // A stalled attempt fails with the watchdog's timeout error (retryable), whatever the handler threw on abort.
     const err = !signal.aborted && dog.signal.reason instanceof JobStalled ? dog.signal.reason.error : thrown;

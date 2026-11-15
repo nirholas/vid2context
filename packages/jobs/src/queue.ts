@@ -14,7 +14,16 @@ import {
   type Storage,
   Vid2ContextError,
 } from '@vid2context/core';
-import { EventHub, finishCanceled, JobCanceled, type RunDeps, RunnerShutdown, runJob } from './execute.ts';
+import {
+  DEFAULT_HEARTBEAT_MS,
+  EventHub,
+  finishCanceled,
+  JobCanceled,
+  type RunDeps,
+  RunnerShutdown,
+  runJob,
+  STALE_HEARTBEATS,
+} from './execute.ts';
 import { JobKinds } from './kinds.ts';
 import { isFinished, JobStore, newRecord, publicJob } from './store.ts';
 import type { Job, JobHandler, JobListener, JobQueue, JobSnapshot, KindOptions, ListJobsQuery } from './types.ts';
@@ -35,6 +44,8 @@ export interface InProcessQueueOptions {
   maxQueued?: number;
   /** See RunDeps.abortGraceMs. */
   abortGraceMs?: number;
+  /** See RunDeps.heartbeatMs. Default 30000. */
+  heartbeatMs?: number;
   /** Start running (and resume persisted jobs) right away. Default true; otherwise call `start()`. */
   autoStart?: boolean;
   /** Random source for retry jitter. */
@@ -88,6 +99,8 @@ export class InProcessQueue implements JobQueue {
   private readonly deps: RunDeps;
   private pending: string[] = [];
   private delayed = new Map<string, ReturnType<typeof setTimeout>>();
+  /** Jobs another live process is running: checked again until they finish or their heartbeat goes stale. */
+  private watching = new Map<string, ReturnType<typeof setTimeout>>();
   private running = new Map<string, Running>();
   private starting: Promise<void> | null = null;
   private closed = false;
@@ -108,6 +121,7 @@ export class InProcessQueue implements JobQueue {
       hub: this.hub,
       ...(opts.random ? { random: opts.random } : {}),
       ...(opts.abortGraceMs !== undefined ? { abortGraceMs: opts.abortGraceMs } : {}),
+      ...(opts.heartbeatMs !== undefined ? { heartbeatMs: opts.heartbeatMs } : {}),
     };
     if (opts.autoStart !== false) void this.start();
   }
@@ -134,8 +148,19 @@ export class InProcessQueue implements JobQueue {
       .sort((a, b) => a.createdAt.localeCompare(b.createdAt));
     for (const rec of records) {
       if (this.closed) return;
-      if (this.running.has(rec.id) || this.pending.includes(rec.id) || this.delayed.has(rec.id)) continue;
+      if (this.running.has(rec.id) || this.pending.includes(rec.id) || this.delayed.has(rec.id) || this.watching.has(rec.id))
+        continue;
       if (rec.status === 'running') {
+        const left = this.staleMs() - (Date.now() - Date.parse(rec.updatedAt));
+        if (left > 0) {
+          // Written recently: another process sharing the store is still running it. Running it here too would do the work twice.
+          this.opts.ctx.log.info('jobs: job is running in another process, watching its heartbeat', {
+            id: rec.id,
+            kind: rec.kind,
+          });
+          this.watch(rec.id, left);
+          continue;
+        }
         rec.status = 'queued';
         rec.updatedAt = new Date().toISOString();
         await this.store.put(rec);
@@ -213,6 +238,8 @@ export class InProcessQueue implements JobQueue {
     this.closed = true;
     for (const timer of this.delayed.values()) clearTimeout(timer);
     this.delayed.clear();
+    for (const timer of this.watching.values()) clearTimeout(timer);
+    this.watching.clear();
     this.pending = [];
     const runs = [...this.running.values()];
     for (const run of runs) run.controller.abort(new RunnerShutdown());
@@ -226,6 +253,48 @@ export class InProcessQueue implements JobQueue {
     while (this.running.size || this.pending.length || this.delayed.size) {
       await new Promise((r) => setTimeout(r, 10));
     }
+  }
+
+  /** How old a `running` record's last write must be before its runner is taken for dead. */
+  private staleMs(): number {
+    const beat = this.deps.heartbeatMs ?? DEFAULT_HEARTBEAT_MS;
+    return beat > 0 ? beat * STALE_HEARTBEATS : 0;
+  }
+
+  /** Check a job another process runs again in `ms`; requeue it here once its heartbeat is stale. */
+  private watch(id: string, ms: number): void {
+    const timer = setTimeout(async () => {
+      this.watching.delete(id);
+      if (this.closed) return;
+      try {
+        const rec = await this.store.get(id);
+        if (!rec || this.running.has(id) || this.pending.includes(id) || this.delayed.has(id)) return;
+        if (rec.status === 'queued') {
+          // The other process shut down cleanly and handed the job back: run it here.
+          this.opts.ctx.log.info('jobs: taking over a job another process handed back', { id, kind: rec.kind });
+          const wait = rec.notBefore ? Date.parse(rec.notBefore) - Date.now() : 0;
+          if (wait > 0) this.later(id, wait);
+          else {
+            this.pending.push(id);
+            this.pump();
+          }
+          return;
+        }
+        if (rec.status !== 'running') return;
+        const left = this.staleMs() - (Date.now() - Date.parse(rec.updatedAt));
+        if (left > 0) return this.watch(id, left);
+        rec.status = 'queued';
+        rec.updatedAt = new Date().toISOString();
+        await this.store.put(rec);
+        this.opts.ctx.log.info('jobs: taking over a job whose runner stopped', { id, kind: rec.kind });
+        this.pending.push(id);
+        this.pump();
+      } catch (err) {
+        this.opts.ctx.log.error('jobs: could not check a job running elsewhere', { id, message: (err as Error).message });
+      }
+    }, ms + 50);
+    (timer as { unref?: () => void }).unref?.();
+    this.watching.set(id, timer);
   }
 
   private later(id: string, ms: number): void {

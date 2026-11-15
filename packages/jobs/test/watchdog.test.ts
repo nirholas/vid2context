@@ -251,3 +251,35 @@ describe('job streams', () => {
     expect(body).toMatch(/: heartbeat/);
   });
 });
+
+describe('jobs running in another process', () => {
+  it('leaves a job alone while its runner keeps writing heartbeats, and runs it once that runner hands it back', async () => {
+    const kv = new MemoryKv();
+    const hold = gate();
+    let otherCalls = 0;
+    // The first process runs the job and stays alive, heartbeating every 20 ms.
+    const first = createJobQueue({
+      registry: youtubeRegistry(),
+      ctx: youtubeCtx({ beforePlayer: () => hold.promise }),
+      kv,
+      heartbeatMs: 20,
+      abortGraceMs: 0,
+    });
+    registerBuiltinKinds(first);
+    const job = await first.enqueue('context', 'jNQXAC9IVRw');
+    await waitFor(async () => (await first.store.get(job.id))?.status === 'running');
+
+    // A second process starts on the same store.
+    const second = queueWith({ ctx: youtubeCtx({ beforePlayer: () => void otherCalls++ }), kv, heartbeatMs: 20 });
+    await second.start();
+    await sleep(200);
+    expect(otherCalls).toBe(0);
+    expect((await second.get(job.id))?.status).toBe('running');
+
+    // The first process shuts down: it hands the job back as queued, and the second runs it.
+    await first.close();
+    hold.open();
+    await waitFor(async () => (await second.get(job.id))?.status === 'succeeded');
+    expect(otherCalls).toBeGreaterThan(0);
+  });
+});

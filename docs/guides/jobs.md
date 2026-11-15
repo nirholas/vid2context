@@ -116,7 +116,7 @@ curl -N localhost:8787/api/v1/jobs/job_.../events
 
 ## Persistence and resume
 
-The queue persists to `opts.kv`, else to the storage backend when it implements KvStore (SQLite, Postgres and Cloudflare D1 storage do), else to a process-local `MemoryKv` that is lost on restart. On start it lists every stored job: jobs left `running` by a crash go back to `queued`, and queued jobs run in creation order (a job waiting for a retry keeps its scheduled time). `queue.close()` aborts running jobs and puts them back to `queued`, so a deploy loses nothing.
+The queue persists to `opts.kv`, else to the storage backend when it implements KvStore (SQLite, Postgres and Cloudflare D1 storage do), else to a process-local `MemoryKv` that is lost on restart. On start it lists every stored job: jobs left `running` by a crash go back to `queued`, and queued jobs run in creation order (a job waiting for a retry keeps its scheduled time). A running attempt rewrites its record every 30 seconds as a heartbeat, so a process that starts while another one sharing the store is still running a job leaves it alone. It takes the job over only once no heartbeat has arrived for 90 seconds, or once the other process hands it back on shutdown. After a crash, the job therefore resumes up to 90 seconds after the restart. `queue.close()` aborts running jobs and puts them back to `queued`, so a deploy loses nothing.
 
 Events are published only after the state that contains them has been written, so a client that sees `done` and then reads `GET /jobs/:id` always sees the result.
 

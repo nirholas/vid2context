@@ -152,7 +152,13 @@ export async function toSSE(queue: JobQueue, id: string, opts: SSEOptions = {}):
       };
       heartbeat = setInterval(() => {
         if (closed) return;
-        controller.enqueue(encoder.encode(': heartbeat\n\n'));
+        try {
+          controller.enqueue(encoder.encode(': heartbeat\n\n'));
+        } catch {
+          // The consumer is gone (the stream errored or was torn down without cancel): stop, do not throw from a timer.
+          cleanup();
+          return;
+        }
         void poll();
       }, opts.heartbeatMs ?? 15_000);
       if (opts.signal) {

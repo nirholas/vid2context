@@ -229,8 +229,10 @@ describe('restart resume', () => {
     await waitFor(() => reached);
     expect((await crashed.store.get(job.id))?.status).toBe('running');
 
-    const next = queueWith({ ctx: youtubeCtx(), kv });
-    await next.idle();
+    // The record was written moments ago, so the new process first treats it as running elsewhere,
+    // then takes it over once no heartbeat has arrived for 3 x heartbeatMs.
+    const next = queueWith({ ctx: youtubeCtx(), kv, heartbeatMs: 20 });
+    await waitFor(async () => (await next.store.get(job.id))?.status === 'succeeded');
     const rec = (await next.store.get(job.id)) as JobRecord;
     expect(rec.status).toBe('succeeded');
     expect(rec.events.filter((e) => e.type === 'done')).toHaveLength(1);
