@@ -120,6 +120,12 @@ The jobs consumer acks and drops messages without a `jobId`, so on a shared queu
 
 Emitters call `webhookEmitter(store, ctx).on(type, data)`, which never throws (failures are logged to stderr). These builders make the `data` from core types without transcripts: `videoIngestedData(context)`, `collectionUpdatedData(collection, { added, removed, checkedAt })`, `jobData(job)`, `briefReadyData(brief)`.
 
+No package calls the emitter yet, so until the integration pass wires it, registered hooks receive only `test.ping` from `POST /webhooks/:id/test`. None of the producers exposes a general event hook to subscribe to:
+
+- `video.ingested` and `collection.updated`: `@vid2context/library` (watch lists) posts to its own single `VID2CONTEXT_WEBHOOK_URL` from `Library.notify` after a refresh adds videos. The server should pass a callback there that calls `collectionUpdatedData` and `videoIngestedData`.
+- `job.succeeded` and `job.failed`: `@vid2context/jobs` offers only per-job `EventHub.subscribe(id)`. It needs a process-wide listener, or a hook in the executor where a job settles, that calls `jobData(job)`.
+- `brief.ready`: `@vid2context/insights` has no hook. Its brief route and job kind should call `briefReadyData(brief)` when a brief is saved.
+
 Share one store between the routes and the emitters with `webhookStoreResolver({ storage })` and pass it as `stores` to `webhookRoutes`. The store keeps hooks under `webhooks:` keys in the storage backend's KvStore, or in process memory when the backend has none.
 
 ## SSRF protection
