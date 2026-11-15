@@ -128,14 +128,114 @@ function listSourceFiles(dir: string): string[] {
   return out;
 }
 
-/** Scan one provider package's src/ for code that cannot run on Workers or in a browser. */
-export function scanPortable(pkgDir: string, root = repoRoot): { file: string; line: number; rule: string; message: string }[] {
-  const hits: { file: string; line: number; rule: string; message: string }[] = [];
+/** Export conditions each runtime's bundler or loader honours, in the order they are tried. */
+export const RUNTIME_CONDITIONS: Record<Runtime, string[]> = {
+  node: ['node', 'import', 'default'],
+  workers: ['workerd', 'worker', 'edge-light', 'browser', 'import', 'default'],
+  browser: ['browser', 'import', 'default'],
+};
+
+/** Resolve an `exports` target the way Node does: the first key of a conditions object that the runtime honours. */
+function resolveTarget(target: unknown, conditions: string[]): string | undefined {
+  if (typeof target === 'string') return target;
+  if (Array.isArray(target)) {
+    for (const t of target) {
+      const r = resolveTarget(t, conditions);
+      if (r) return r;
+    }
+    return undefined;
+  }
+  if (target && typeof target === 'object') {
+    for (const [k, v] of Object.entries(target as Record<string, unknown>)) {
+      if (conditions.includes(k)) {
+        const r = resolveTarget(v, conditions);
+        if (r) return r;
+      }
+    }
+  }
+  return undefined;
+}
+
+/** The file a runtime loads for `import '<package>'`, from package.json `exports` (or `main`). */
+export function runtimeEntry(pkgDir: string, runtime: Runtime): string | undefined {
+  const pkg = JSON.parse(readFileSync(join(pkgDir, 'package.json'), 'utf8')) as {
+    exports?: unknown;
+    main?: string;
+  };
+  const exp = pkg.exports;
+  const dot =
+    exp && typeof exp === 'object' && !Array.isArray(exp) && Object.keys(exp).some((k) => k.startsWith('.'))
+      ? (exp as Record<string, unknown>)['.']
+      : exp;
+  const target = resolveTarget(dot, RUNTIME_CONDITIONS[runtime]) ?? pkg.main;
+  if (!target) return undefined;
+  const file = join(pkgDir, target);
+  return existsSync(file) ? file : undefined;
+}
+
+const RELATIVE_IMPORT =
+  /\b(?:import|export)\s[^'"]*?\bfrom\s*['"](\.{1,2}\/[^'"]+)['"]|\bimport\s*['"](\.{1,2}\/[^'"]+)['"]|\bimport\s*\(\s*['"](\.{1,2}\/[^'"]+)['"]\s*\)/g;
+
+function resolveRelative(fromFile: string, spec: string): string | undefined {
+  const base = join(fromFile, '..', spec);
+  const candidates = [base, base.replace(/\.js$/, '.ts'), `${base}.ts`, join(base, 'index.ts')];
+  return candidates.find((c) => existsSync(c) && statSync(c).isFile());
+}
+
+/**
+ * Source files reachable from an entry through relative static and dynamic
+ * imports. Dynamic imports count as reachable on purpose: a bundler still
+ * pulls them into the runtime build.
+ */
+export function reachableFiles(entry: string): string[] {
+  const seen = new Set<string>();
+  const stack = [entry];
+  while (stack.length > 0) {
+    const file = stack.pop() as string;
+    if (seen.has(file)) continue;
+    seen.add(file);
+    const src = stripComments(readFileSync(file, 'utf8'));
+    for (const m of src.matchAll(RELATIVE_IMPORT)) {
+      const spec = m[1] ?? m[2] ?? m[3];
+      const next = spec ? resolveRelative(file, spec) : undefined;
+      if (next && !seen.has(next)) stack.push(next);
+    }
+  }
+  return [...seen].sort();
+}
+
+export interface PortableHit {
+  file: string;
+  line: number;
+  rule: string;
+  message: string;
+  /** False when the file is in src/ but not loaded by the runtime's entry (a node-only entry, a CLI script). */
+  reachable: boolean;
+}
+
+/**
+ * Scan one provider package's src/ for code that cannot run on Workers or in a
+ * browser. With a runtime, each hit says whether the file is reachable from
+ * the entry that runtime resolves through package.json `exports` conditions.
+ */
+export function scanPortable(pkgDir: string, root = repoRoot, runtime?: Runtime): PortableHit[] {
+  const hits: PortableHit[] = [];
+  const entry = runtime ? runtimeEntry(pkgDir, runtime) : undefined;
+  const reachable = entry ? new Set(reachableFiles(entry)) : undefined;
   for (const file of listSourceFiles(join(pkgDir, 'src'))) {
+    const isReachable = reachable ? reachable.has(file) : true;
     const lines = stripComments(readFileSync(file, 'utf8')).split('\n');
     lines.forEach((text, idx) => {
       for (const rule of SCAN_RULES) {
-        if (rule.re.test(text)) hits.push({ file: relative(root, file), line: idx + 1, rule: rule.name, message: rule.message });
+        if (rule.re.test(text)) {
+          hits.push({
+            file: relative(root, file),
+            line: idx + 1,
+            rule: rule.name,
+            message: rule.message,
+            reachable: isReachable,
+          });
+        }
       }
     });
   }
@@ -158,6 +258,24 @@ export function documentedEnvVars(root = repoRoot): string[] {
 /** Model override variables: `<PROVIDER>_MODEL`, `_STT_MODEL`, `_EMBED_MODEL` and the other `_<KIND>_MODEL` forms. */
 export function modelVars(names: string[]): string[] {
   return names.filter((n) => /_MODEL$/.test(n) && !n.startsWith('VID2CONTEXT_'));
+}
+
+/**
+ * Env for checking one model variable. Some rungs exist only once their
+ * server is configured (LOCAL_LLM_MODEL needs LOCAL_LLM_BASE_URL), so every
+ * documented `<PREFIX>_BASE_URL` / `_URL` / `_HOST` sharing the variable's
+ * prefix is set too, to an address that is never contacted.
+ */
+export function overrideEnv(name: string, value: string, documented: string[]): Env {
+  const env: Env = { [name]: value };
+  const parts = name.replace(/_MODEL$/, '').split('_');
+  for (let n = parts.length; n >= 1; n--) {
+    const prefix = parts.slice(0, n).join('_');
+    for (const d of documented) {
+      if (d.startsWith(`${prefix}_`) && /_(BASE_URL|URL|HOST)$/.test(d) && !(d in env)) env[d] = 'http://127.0.0.1:9/v1';
+    }
+  }
+  return env;
 }
 
 const SECRET_NAME = /_(API_KEY|KEY|TOKEN|SECRET|PASSWORD|FALLBACK_KEYS|KEYS)$/;
@@ -433,10 +551,15 @@ export async function checkInvariants(opts: CheckOptions = {}): Promise<Invarian
           notes.push(`${p.id} (${runtime}): could not map to a package directory, source scan skipped`);
           continue;
         }
-        const key = `${pkg.dir}`;
+        const key = `${runtime}:${pkg.dir}`;
         if (checkedPortable.has(key)) continue;
         checkedPortable.add(key);
-        for (const hit of scanPortable(pkg.dir, root)) {
+        const skipped = new Set<string>();
+        for (const hit of scanPortable(pkg.dir, root, runtime)) {
+          if (!hit.reachable) {
+            skipped.add(hit.file);
+            continue;
+          }
           v({
             check: `portable-source:${hit.rule}`,
             provider: p.id,
@@ -444,6 +567,11 @@ export async function checkInvariants(opts: CheckOptions = {}): Promise<Invarian
             file: `${hit.file}:${hit.line}`,
             message: hit.message,
           });
+        }
+        if (skipped.size > 0) {
+          notes.push(
+            `${p.id} (${runtime}): Node-only code in ${[...skipped].join(', ')} is not reachable from the ${runtime} entry, so it is allowed`,
+          );
         }
       }
     }
@@ -469,13 +597,14 @@ export async function checkInvariants(opts: CheckOptions = {}): Promise<Invarian
       for (const name of vars) {
         let after: Rung[];
         try {
-          after = rungsOf(p, { [name]: sentinel });
+          after = rungsOf(p, overrideEnv(name, sentinel, docVars));
         } catch {
           continue;
         }
         let hit = false;
         for (const r of base) {
-          if (after.some((x) => x.service === r.service && x.model === sentinel)) {
+          // Providers may normalise the value (an org prefix, a lowercase form), so the sentinel only has to appear in the model.
+          if (after.some((x) => x.service === r.service && (x.model ?? '').toLowerCase().includes(sentinel))) {
             overridden.add(r.id);
             hit = true;
           }

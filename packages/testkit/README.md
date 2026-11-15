@@ -31,6 +31,8 @@ CLI: `npm run record -- --out <dir> [--name <n>] -- <input> [--mode ...] [--lang
 
 `checkInvariants()` returns `{ violations, notes, providers }` for the generated node, workers and browser registries. `formatReport(report)` renders it as text. `npm run conformance` runs it through vitest (`vitest.conformance.config.ts`) together with the storage suite on `MemoryStorage` and the formatter suite on every formatter.
 
+The building blocks are exported too: `scanPortable(pkgDir, root?, runtime?)` (hits carry `reachable`), `runtimeEntry(pkgDir, runtime)` (the file `exports` conditions resolve to, per `RUNTIME_CONDITIONS`), `reachableFiles(entry)` and `overrideEnv(var, value, documented)`.
+
 ## Helpers
 
 `loadContextFixtures()`, `loadContextFixture(file)`, `withoutNetwork(fn)`, `withoutNetworkAsync(fn)`, `offlineContext(env)`, `repoRoot`, `BCP47`.

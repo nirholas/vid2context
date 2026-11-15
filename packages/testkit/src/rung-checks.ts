@@ -72,7 +72,7 @@ export function rungProblems(rung: Rung, kind: RungKind, opts: { builtFromEmptyE
     p.push('contextTokens is set but not positive');
   }
   if (kind === 'embed' && !(Number.isInteger(extra.dimensions) && Number(extra.dimensions) > 0)) {
-    p.push('dimensions is not a positive integer');
+    p.push(`dimensions is ${String(extra.dimensions)}, not a positive integer known before the first call`);
   }
   return p;
 }
