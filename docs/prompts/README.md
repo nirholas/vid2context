@@ -37,7 +37,7 @@ Numbers match `docs/ROADMAP.md` and the owner columns in `docs/contracts/`. Ever
 | 17 | [Speech-to-text: more OpenAI-compatible rungs](archive/17-stt-openai-compatible.md) | `providers/stt-openai-compatible/` | D. Speech-to-text |
 | 18 | [Local speech-to-text with whisper.cpp](archive/18-whisper-cpp.md) | `providers/stt-whisper-cpp/` | D. Speech-to-text |
 | 19 | [In-browser and offline AI](19-browser-offline-ai.md) | `providers/stt-transformers/`, `providers/llm-browser/` | D. Speech-to-text |
-| 20 | [Cloudflare: Workers AI rungs and D1, R2, KV storage](20-cloudflare.md) | `providers/cloudflare-ai/`, `providers/storage-cloudflare/` | D. Speech-to-text |
+| 20 | [Cloudflare: Workers AI rungs and D1, R2, KV storage](archive/20-cloudflare.md) | `providers/cloudflare-ai/`, `providers/storage-cloudflare/` | D. Speech-to-text |
 | 21 | [Observability: tracing, metrics, usage and cost](21-telemetry.md) | `packages/core/src/telemetry/` | A. Core bones |
 | 22 | [Hosted diarization and speaker naming](22-diarization.md) | `providers/stt-deepgram-assemblyai/`, `packages/speakers/` | D. Speech-to-text |
 | 23 | [Provider conformance kit and fixture recorder](23-testkit.md) | `packages/testkit/` | A. Core bones |
