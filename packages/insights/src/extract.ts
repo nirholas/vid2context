@@ -28,9 +28,8 @@ import type { InsightsDeps } from './brief.ts';
 import { chatJson, type JsonAnswer, Ledger, sourceBudget, withJson } from './llm.ts';
 import { extractionSchema, extractMessages, mergeMessages, repairMessages } from './prompts.ts';
 import { type JsonSchema, validate } from './schema.ts';
-import { renderSource, type Source, type SourceSet, sourceSet } from './sources.ts';
+import { chunkSource, renderSource, type Source, type SourceSet, sourceSet } from './sources.ts';
 import type { Template } from './templates/index.ts';
-import { chunkLines } from './text.ts';
 import type { Citation, ExtractionResult, LlmOptions, UnverifiedClaim } from './types.ts';
 import { trimQuote, verifyQuote } from './verify.ts';
 
@@ -283,7 +282,7 @@ async function extractInParts(
   const partials: string[] = [];
   let lastErr: unknown;
   for (const s of set.sources) {
-    const chunks = chunkLines(s.lines, p.budget);
+    const chunks = chunkSource(s, p.budget);
     for (const [i, lines] of chunks.entries()) {
       const messages = extractMessages([s], {
         schema: p.schema,

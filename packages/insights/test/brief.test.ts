@@ -87,12 +87,15 @@ describe('buildBrief, single pass (replayed)', () => {
 });
 
 describe('buildBrief, map-reduce (replayed)', () => {
-  it('maps each chunk, reduces once, and records which rung served each step', async () => {
+  it('maps each chunk, reduces once, records which rung served each step, and survives a chunk every rung failed', async () => {
     const { brief, contexts, fetch } = await runBrief('brief-map-reduce');
     expect(fetch.remaining()).toBe(0);
     expect(brief.strategy).toBe('map-reduce');
     const maps = brief.rungs.filter((r) => r.step === 'map');
     expect(maps.length).toBeGreaterThan(2);
+    // Live, one chunk met a 429, an empty answer at the output limit and a free-limit 402: its claims are missing, the rest stand.
+    expect(brief.notes.some((n) => /^Map step for youtube:cCPsdFdlshc part \d+ failed/.test(n))).toBe(true);
+    expect(brief.claims.length).toBeGreaterThan(0);
     expect(new Set(maps.map((r) => r.videoId))).toEqual(new Set(contexts.map((c) => c.metadata.ref.id)));
     expect(brief.rungs.filter((r) => r.step === 'reduce').length).toBeGreaterThanOrEqual(1);
     expectVerified(brief, contexts);

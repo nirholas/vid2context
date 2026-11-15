@@ -23,6 +23,6 @@ Real LLM exchanges recorded LIVE on 2026-11-14 by `scripts/record-llm.ts` from t
 | File | Scenario |
 |---|---|
 | `brief-single.json` | `buildBrief` over the four videos, buyer-guide template, one pass |
-| `brief-map-reduce.json` | `buildBrief` over parts 1 and 3 with a 2500-token chunk cap: one map call per chunk, then reduce |
+| `brief-map-reduce.json` | `buildBrief` over parts 1 and 3 with a 2500-token chunk cap: one map call per chunk, then reduce. Re-recorded LIVE on 2026-11-15 after chunking moved to core `chunkTranscript`; in this run one chunk of part 1 met a 429, an empty answer at the output limit and a free-limit 402 on every keyless rung, so the brief notes it and goes on without that chunk |
 | `extract-buyer.json` | `extract` with the buyer-guide template over the four videos; the first answer broke the template schema and one repair call fixed it |
 | `extract-repair.json` | `extract` with a strict custom schema over part 1; the first answer met it, so no repair call was made |

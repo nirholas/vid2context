@@ -27,9 +27,9 @@ import {
 import { chatJson, Ledger, sourceBudget, withJson } from './llm.ts';
 import { renderBrief } from './markdown.ts';
 import { mapMessages, reduceMessages, singleMessages } from './prompts.ts';
-import { renderSource, type Source, sourceSet } from './sources.ts';
+import { chunkSource, renderSource, type Source, sourceSet } from './sources.ts';
 import { getTemplate, type Template } from './templates/index.ts';
-import { chunkLines, topicKey } from './text.ts';
+import { topicKey } from './text.ts';
 import type { Brief, BriefOptions, Citation, Claim, Point, RawClaim, UnverifiedClaim } from './types.ts';
 import { verifyCitations } from './verify.ts';
 
@@ -266,7 +266,7 @@ export async function buildBrief(contexts: VideoContext[], opts: BriefOptions, d
     topics = asTopics(res.value.topics);
   } else {
     strategy = 'map-reduce';
-    const plan = set.sources.map((s) => chunkLines(s.lines, budget).length);
+    const plan = set.sources.map((s) => chunkSource(s, budget).length);
     const steps = plan.reduce((a, b) => a + b, 0) + 1;
     let done = 0;
     for (const s of set.sources) {
@@ -344,7 +344,7 @@ async function mapSource(
     tick: (message: string) => void;
   },
 ): Promise<RawClaim[]> {
-  const chunks = chunkLines(s.lines, c.budget);
+  const chunks = chunkSource(s, c.budget);
   const out: RawClaim[] = [];
   for (const [i, lines] of chunks.entries()) {
     c.tick(`Reading ${s.summary.title} (part ${i + 1} of ${chunks.length})`);

@@ -3,9 +3,9 @@
  *
  * A recording is every HTTP exchange one real run made, in order, with the
  * time it happened relative to the start. Replay serves them in the same
- * order (checking URL and model match) and moves the Date clock to each
- * exchange's offset, so the core chain's rung cooldowns (for example after a
- * recorded 429) expire exactly as they did live.
+ * order (checking URL and model match) and moves the Date clock, after each
+ * answer, to the offset of the next request, so the core chain's rung
+ * cooldowns (for example after a recorded 429) expire exactly as they did live.
  */
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -69,7 +69,11 @@ export function replayRecording(rec: Recording, start = Date.UTC(2026, 10, 14, 1
             `recording ${rec.scenario}: exchange ${i} was ${ex.url} (${ex.model}), the run asked ${call.url} (${model})`,
           );
         }
-        vi.setSystemTime(start + ex.atMs);
+        // The run picks its next rung (and checks cooldowns) once this answer is
+        // back, just before the next request starts, so the clock moves to that
+        // moment. Moving it only to this request's start would replay a slow
+        // answer as instant and keep a cooldown alive that had expired live.
+        vi.setSystemTime(start + (rec.exchanges[i]?.atMs ?? ex.atMs));
         if (ex.error) throw new DOMException(ex.error.message, ex.error.name);
         return {
           status: ex.status,

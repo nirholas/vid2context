@@ -2,7 +2,7 @@
  * Text helpers shared by prompts and verification: normalization for fuzzy
  * matching, timestamp parsing, and compact timestamped transcript lines.
  */
-import { estimateTokens, type Segment } from '@vid2context/core';
+import type { Segment } from '@vid2context/core';
 
 /**
  * Lowercase, strip diacritics, drop apostrophes inside words ("you're" ->
@@ -78,23 +78,4 @@ export function topicKey(topic: string): string {
     .filter((w) => w && !STOP.has(w))
     .map((w) => (w.length > 3 && w.endsWith('s') && !w.endsWith('ss') ? w.slice(0, -1) : w))
     .join(' ');
-}
-
-/** Split lines into consecutive chunks of at most about `budget` estimated tokens, cutting only between lines. */
-export function chunkLines(lines: Line[], budget: number): Line[][] {
-  const chunks: Line[][] = [];
-  let cur: Line[] = [];
-  let used = 0;
-  for (const l of lines) {
-    const t = estimateTokens(l.text) + 4;
-    if (cur.length > 0 && used + t > budget) {
-      chunks.push(cur);
-      cur = [];
-      used = 0;
-    }
-    cur.push(l);
-    used += t;
-  }
-  if (cur.length > 0) chunks.push(cur);
-  return chunks;
 }

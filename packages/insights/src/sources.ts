@@ -3,7 +3,14 @@
  * cite them with a short, unambiguous id, and rendered as fenced untrusted
  * blocks of timestamped lines.
  */
-import { fenceUntrusted, formatTimestamp, timestampUrl, Vid2ContextError, type VideoContext } from '@vid2context/core';
+import {
+  chunkTranscript,
+  fenceUntrusted,
+  formatTimestamp,
+  timestampUrl,
+  Vid2ContextError,
+  type VideoContext,
+} from '@vid2context/core';
 import { compactLines, type Line } from './text.ts';
 import type { SourceSummary } from './types.ts';
 
@@ -103,4 +110,25 @@ export function renderSource(
   const body = `${header(s, opts.part)}\n\n${lines.map((l) => renderLine(l, opts.style)).join('\n')}`;
   const fenced = fenceUntrusted(body, 'transcript', `${s.label} ${s.summary.videoId}`);
   return { block: fenced.block, system: fenced.system };
+}
+
+/**
+ * Rendered lines carry a `[seconds] ` tag every ~10 s that the raw transcript
+ * text does not, so chunks are planned on 90 percent of the budget.
+ */
+const LINE_TAG_HEADROOM = 0.9;
+
+/**
+ * Split a source into chunks of compact lines that fit `budget` tokens, for
+ * the map step. Boundaries come from core's chunkTranscript (sentence ends and
+ * pauses first, whole segments otherwise), so a quote is rarely cut in two
+ * between chunks. Token mode fills each chunk; chapter boundaries would only
+ * add LLM calls.
+ */
+export function chunkSource(s: Source, budget: number): Line[][] {
+  const segs = s.context.transcript.segments;
+  const maxTokens = Math.max(1, Math.floor(budget * LINE_TAG_HEADROOM));
+  return chunkTranscript(s.context, { maxTokens, by: 'tokens' })
+    .map((c) => compactLines(segs.slice(c.segmentRange[0], c.segmentRange[1] + 1)))
+    .filter((lines) => lines.length > 0);
 }

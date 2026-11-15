@@ -31,7 +31,7 @@ export {
   SINGLE_SCHEMA,
 } from './prompts.ts';
 export { assertSupportedSchema, type JsonSchema, SUPPORTED_KEYWORDS, validate } from './schema.ts';
-export { sourceSet, summarizeSource } from './sources.ts';
+export { chunkSource, sourceSet, summarizeSource } from './sources.ts';
 export { CITE_SCHEMA, getTemplate, type Template, templates } from './templates/index.ts';
 export { normalize, parseSeconds, topicKey } from './text.ts';
 export type * from './types.ts';
