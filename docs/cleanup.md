@@ -89,7 +89,7 @@ Creator captions (`youtube-jNQXAC9IVRw.json`) come back unchanged from `cleanTra
 | Steps | Tokens |
 |---|---|
 | raw | 4483 |
-| default (normalize, dedupe, sentences) | 4489 |
-| default plus `fillers: true` | 4466 |
+| default (normalize, dedupe, sentences) | 4488 |
+| default plus `fillers: true` | 4465 |
 
-That track has almost no rolling overlap left after the srv3 parser, which already skips the append cues. The added periods cost a few tokens, and filler removal saves more than that.
+That track has almost no rolling overlap left after the srv3 parser, which already skips the append cues: rolling dedupe alone takes the parsed track from 4483 to 4481 tokens. The added periods cost a few tokens, and filler removal saves more than that.
