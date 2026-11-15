@@ -23,6 +23,11 @@ export const FORMAT_FILE_NAMES: Record<string, string> = {
   vtt: 'transcript.vtt',
   json: 'context.json',
   pack: 'context.md',
+  ass: 'transcript.ass',
+  ttml: 'transcript.ttml',
+  sbv: 'transcript.sbv',
+  lrc: 'transcript.lrc',
+  csv: 'transcript.csv',
 };
 
 /** Formatters tried in order for `context.md`. */

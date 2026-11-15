@@ -6,6 +6,8 @@
  * merged in from its /openapi.json by mergeOpenApi in playground.ts.
  */
 
+import { formatters } from '@vid2context/core';
+
 export type Method = 'GET' | 'POST' | 'PATCH' | 'DELETE';
 
 /** Values every default and example body is built from. */
@@ -74,7 +76,8 @@ export const GROUPS = [
 ] as const;
 
 const MODES = ['auto', 'captions', 'stt', 'video'];
-const FORMATS = ['text', 'json', 'markdown', 'srt', 'vtt', 'pack'];
+// Every registered output format, so a formatter added in core shows up here without an edit.
+const FORMATS = Object.keys(formatters);
 const TEMPLATES = ['brief', 'buyer-guide', 'comparison', 'tutorial-steps', 'summary'];
 export const SKIP_CATEGORIES = [
   'sponsor',

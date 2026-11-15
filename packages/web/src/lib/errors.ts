@@ -37,8 +37,17 @@ export function isApiErrorBody(v: unknown): v is ApiErrorBody {
   return !!e && typeof e === 'object' && typeof e.code === 'string' && typeof e.message === 'string';
 }
 
-/** Build the error for a non-2xx API response from its standard body. */
-export function fromApiBody(body: ApiErrorBody, status: number): AppError {
+/** Seconds from a Retry-After header (delta seconds or an HTTP date), or undefined when absent or unreadable. */
+export function parseRetryAfter(value: string | null | undefined, now = Date.now()): number | undefined {
+  const v = value?.trim();
+  if (!v) return undefined;
+  if (/^\d+(?:\.\d+)?$/.test(v)) return Number(v);
+  const at = Date.parse(v);
+  return Number.isNaN(at) ? undefined : Math.max(0, Math.ceil((at - now) / 1000));
+}
+
+/** Build the error for a non-2xx API response from its standard body (and its Retry-After header, when sent). */
+export function fromApiBody(body: ApiErrorBody, status: number, retryAfterSec?: number): AppError {
   const known = CODES.includes(body.error.code as ErrorCode);
   const code: ErrorCode = known ? (body.error.code as ErrorCode) : 'upstream';
   const hint =
@@ -46,7 +55,7 @@ export function fromApiBody(body: ApiErrorBody, status: number): AppError {
     (body.error.code === 'internal'
       ? 'The server hit an unexpected error. Its log (stderr) has the details. Try again, and report it if it keeps happening.'
       : undefined);
-  return withAttempts(new Vid2ContextError(code, body.error.message, { hint, status }), body.attempts ?? []);
+  return withAttempts(new Vid2ContextError(code, body.error.message, { hint, status, retryAfterSec }), body.attempts ?? []);
 }
 
 export function attemptsOfError(err: unknown): Attempt[] {

@@ -29,7 +29,19 @@ describe('text and json are unchanged', () => {
 describe('registry', () => {
   it('registers the shared formatter ids with their extensions', () => {
     const ext = Object.fromEntries(Object.values(formatters).map((f) => [f.id, f.extension]));
-    expect(ext).toEqual({ text: 'txt', json: 'json', markdown: 'md', srt: 'srt', vtt: 'vtt', pack: 'md' });
+    expect(ext).toEqual({
+      text: 'txt',
+      json: 'json',
+      markdown: 'md',
+      srt: 'srt',
+      vtt: 'vtt',
+      pack: 'md',
+      ass: 'ass',
+      ttml: 'ttml',
+      sbv: 'sbv',
+      lrc: 'lrc',
+      csv: 'csv',
+    });
     for (const [key, f] of Object.entries(formatters)) expect(f.id).toBe(key);
   });
 

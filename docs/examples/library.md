@@ -52,7 +52,7 @@ Output:
 
 <!-- output: examples/library/render-formats.ts -->
 ```text
-Formats: text, json, markdown, srt, vtt, pack
+Formats: text, json, markdown, srt, vtt, pack, ass, ttml, sbv, lrc, csv
 
 --- text
 All right, so here we are, in front of the elephants the cool thing about these guys is that they have really... really really long trunks and that's cool (baaaaaaaaaaahhh!!) and that's pretty much all there is to say
@@ -501,11 +501,11 @@ Output:
 
 <!-- output: examples/library/context-bundle.ts -->
 ```text
-20 files in g-wagon-and-zoo/, context written by "pack"
+30 files in g-wagon-and-zoo/, context written by "pack"
   videos/01-me-at-the-zoo/  Me at the zoo (creator-captions, about 548 tokens)
   videos/02-best-worst-g-wagon-years-reliability-interiors-engines/  Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked! (auto-captions, about 5626 tokens)
 
-    2928  README.md
+    3635  README.md
    24320  context.md
      699  index.md
     1061  llms.txt
@@ -515,6 +515,11 @@ Output:
      912  videos/01-me-at-the-zoo/transcript.md
      415  videos/01-me-at-the-zoo/transcript.srt
      534  videos/01-me-at-the-zoo/transcript.vtt
+    1324  videos/01-me-at-the-zoo/transcript.ass
+    1539  videos/01-me-at-the-zoo/transcript.ttml
+     367  videos/01-me-at-the-zoo/transcript.sbv
+     356  videos/01-me-at-the-zoo/transcript.lrc
+     335  videos/01-me-at-the-zoo/transcript.csv
     1374  videos/01-me-at-the-zoo/metadata.json
      254  videos/01-me-at-the-zoo/chapters.md
    22930  videos/02-best-worst-g-wagon-years-reliability-interiors-engines/context.md
@@ -523,9 +528,14 @@ Output:
    22304  videos/02-best-worst-g-wagon-years-reliability-interiors-engines/transcript.md
    37993  videos/02-best-worst-g-wagon-years-reliability-interiors-engines/transcript.srt
    36200  videos/02-best-worst-g-wagon-years-reliability-interiors-engines/transcript.vtt
+   46773  videos/02-best-worst-g-wagon-years-reliability-interiors-engines/transcript.ass
+   48535  videos/02-best-worst-g-wagon-years-reliability-interiors-engines/transcript.ttml
+   32891  videos/02-best-worst-g-wagon-years-reliability-interiors-engines/transcript.sbv
+   25213  videos/02-best-worst-g-wagon-years-reliability-interiors-engines/transcript.lrc
+   29262  videos/02-best-worst-g-wagon-years-reliability-interiors-engines/transcript.csv
     1651  videos/02-best-worst-g-wagon-years-reliability-interiors-engines/metadata.json
 
-wrote g-wagon-and-zoo.zip (85192 bytes)
+wrote g-wagon-and-zoo.zip (149829 bytes)
 ```
 
 ## Get a transcript from a URL

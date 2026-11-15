@@ -44,14 +44,14 @@ Every variable in `.env.example` works the same way. `wrangler.jsonc` sets one p
 
 ## Optional bindings
 
-All are commented out in `wrangler.jsonc`. Without them the Worker keeps the library in memory (per isolate), uses hosted and keyless rungs, and runs no background jobs. To turn one on, create the resource, uncomment its block, and uncomment the matching variable in `vars` (the storage provider reads the variable to find the binding).
+Workers AI is on by default; the rest are commented out in `wrangler.jsonc`. Without them the Worker keeps the library in memory (per isolate), uses hosted and keyless rungs, and runs no background jobs. To turn one on, create the resource, uncomment its block, and uncomment the matching variable in `vars` (the storage provider reads the variable to find the binding).
 
 | Binding | Create with | Variable | Used by |
 |---|---|---|---|
 | D1 `DB` | `npx wrangler d1 create vid2context` | `VID2CONTEXT_D1=DB` | the library: contexts, collections, search (providers/storage-cloudflare) |
 | R2 `MEDIA` | `npx wrangler r2 bucket create vid2context-media` | `VID2CONTEXT_R2=MEDIA` | large contexts and uploads |
 | KV `KV` | `npx wrangler kv namespace create vid2context` | `VID2CONTEXT_KV=KV` | KvStore: sessions, API keys, webhooks, caches |
-| Workers AI `AI` | nothing to create | none | free Whisper and LLM rungs through the binding (providers/cloudflare-ai) |
+| Workers AI `AI` (on) | nothing to create | `CLOUDFLARE_AI_BINDING=AI` | free Whisper and LLM rungs through the binding (providers/cloudflare-ai), so the public instance can transcribe uploads and media links and write briefs without a key. To turn it off, remove the `ai` block and the variable |
 | Queue `JOBS_QUEUE` | `npx wrangler queues create vid2context-jobs` | none yet | background jobs (packages/jobs); needs a `queue` handler in the Worker entry |
 | Cron trigger | nothing to create | none | watch-list refresh (prompt 41); needs a `scheduled` handler in the Worker entry |
 

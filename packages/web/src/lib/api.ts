@@ -3,7 +3,7 @@
  * VideoContext JSON; formats, the .zip and agent text are made in the browser.
  */
 import { type TranscriptMode, Vid2ContextError, type VideoContext, type VideoMetadata, type VideoRef } from '@vid2context/core';
-import { type AppError, fromApiBody, isAbort, isApiErrorBody, withAttempts } from './errors.ts';
+import { type AppError, fromApiBody, isAbort, isApiErrorBody, parseRetryAfter, withAttempts } from './errors.ts';
 
 export const API_BASE_KEY = 'v2c.apiBase';
 
@@ -124,7 +124,7 @@ export async function requestJson<T>(
     throw notAnApi(base, res.status);
   }
   if (!res.ok) {
-    if (isApiErrorBody(parsed)) throw fromApiBody(parsed, res.status);
+    if (isApiErrorBody(parsed)) throw fromApiBody(parsed, res.status, parseRetryAfter(res.headers.get('retry-after')));
     throw notAnApi(base, res.status);
   }
   return parsed as T;
@@ -256,7 +256,7 @@ export function uploadFile(
         return;
       }
       if (xhr.status >= 200 && xhr.status < 300) resolve(body as UploadResult);
-      else if (isApiErrorBody(body)) reject(fromApiBody(body, xhr.status));
+      else if (isApiErrorBody(body)) reject(fromApiBody(body, xhr.status, parseRetryAfter(xhr.getResponseHeader('retry-after'))));
       else reject(notAnApi(base, xhr.status));
     };
     signal?.addEventListener('abort', () => xhr.abort(), { once: true });

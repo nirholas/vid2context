@@ -3,6 +3,12 @@
  * progress bar, bytes, speed and time left, and offers Cancel. When done it
  * links the file straight from the API (the browser streams it to disk) and
  * plays it inline. Errors use the same panel as every other failure.
+ *
+ * A failed poll does not end the view: rate limits (the server allows 120
+ * requests a minute per IP, shared by every tab), timeouts and dropped
+ * connections are retried with backoff that honours Retry-After, and the
+ * view says it is reconnecting. Only a job that is gone, downloads turned
+ * off, a refused key, or three minutes without an answer show the error.
  */
 import { Download, RotateCcw, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
@@ -14,7 +20,10 @@ import {
   formatEta,
   formatSpeed,
   getDownloadJob,
+  isFatalPollError,
   isFinished,
+  nextPollDelay,
+  POLL_GIVE_UP_MS,
   phaseLabel,
 } from '../../lib/downloads.ts';
 import { fromApiBody } from '../../lib/errors.ts';
@@ -43,6 +52,8 @@ export function DownloadJobView({
 }) {
   const [job, setJob] = useState(initial);
   const [pollError, setPollError] = useState<unknown>();
+  /** The latest failed poll while retrying, shown as a reconnecting note. */
+  const [retrying, setRetrying] = useState<{ message: string; nextInSec: number } | undefined>();
   const [canceling, setCanceling] = useState(false);
   const callRef = useRef(call);
   callRef.current = call;
@@ -56,21 +67,47 @@ export function DownloadJobView({
     }
     let live = true;
     let timer: ReturnType<typeof setTimeout> | undefined;
+    let failures = 0;
+    let failingSince: number | undefined;
+    const hidden = () => typeof document !== 'undefined' && document.visibilityState === 'hidden';
+    const schedule = (ms: number) => {
+      clearTimeout(timer);
+      timer = setTimeout(tick, ms);
+    };
     const tick = async () => {
       try {
         const next = await getDownloadJob(initial.id, callRef.current);
         if (!live) return;
+        failures = 0;
+        failingSince = undefined;
+        setRetrying(undefined);
         setJob(next);
         if (isFinished(next)) finishedRef.current?.(next);
-        else timer = setTimeout(tick, pollMs);
+        else schedule(nextPollDelay({ pollMs, failures: 0, hidden: hidden() }));
       } catch (err) {
-        if (live) setPollError(err);
+        if (!live) return;
+        failingSince ??= Date.now();
+        if (isFatalPollError(err) || Date.now() - failingSince >= POLL_GIVE_UP_MS) {
+          setPollError(err);
+          return;
+        }
+        failures += 1;
+        const retryAfterSec = (err as { retryAfterSec?: number }).retryAfterSec;
+        const wait = nextPollDelay({ pollMs, failures, retryAfterSec, hidden: hidden() });
+        setRetrying({ message: err instanceof Error ? err.message : String(err), nextInSec: Math.ceil(wait / 1000) });
+        schedule(wait);
       }
     };
-    timer = setTimeout(tick, pollMs);
+    // Coming back to the tab: poll now instead of waiting out the slower background interval.
+    const onVisible = () => {
+      if (live && !hidden() && failures === 0) schedule(0);
+    };
+    if (typeof document !== 'undefined') document.addEventListener('visibilitychange', onVisible);
+    schedule(pollMs);
     return () => {
       live = false;
       clearTimeout(timer);
+      if (typeof document !== 'undefined') document.removeEventListener('visibilitychange', onVisible);
     };
   }, [initial, pollMs]);
 
@@ -188,6 +225,11 @@ export function DownloadJobView({
         </Button>
       </div>
       <ProgressBar value={p.phase === 'downloading' || p.phase === 'finished' ? p.percent : undefined} label={label} />
+      {retrying && (
+        <p className="text-xs text-muted" data-testid="download-reconnecting" aria-live="polite">
+          Reconnecting to the server (retry in {retrying.nextInSec} s): {retrying.message}
+        </p>
+      )}
     </div>
   );
 }

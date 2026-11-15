@@ -67,6 +67,36 @@ export function isFinished(job: DownloadJob): boolean {
   return job.status === 'done' || job.status === 'error' || job.status === 'canceled';
 }
 
+/** Longest wait between polls after failures. */
+export const POLL_MAX_MS = 10_000;
+/** Poll interval while the tab is hidden: a background tab must not spend the shared per-IP rate limit. */
+export const POLL_HIDDEN_MS = 5_000;
+/** Keep retrying a failing poll this long before showing the error. */
+export const POLL_GIVE_UP_MS = 3 * 60_000;
+
+/**
+ * Milliseconds until the next poll of a running job. After `failures`
+ * consecutive failed polls the wait doubles from `pollMs` up to POLL_MAX_MS,
+ * and never undercuts a Retry-After the server sent (a 429 from the
+ * 120-per-minute rate limit carries one).
+ */
+export function nextPollDelay(opts: { pollMs: number; failures: number; retryAfterSec?: number; hidden?: boolean }): number {
+  const base = opts.hidden ? Math.max(opts.pollMs, POLL_HIDDEN_MS) : opts.pollMs;
+  const backoff = opts.failures > 0 ? Math.min(POLL_MAX_MS, base * 2 ** Math.min(opts.failures, 10)) : base;
+  const told = opts.retryAfterSec !== undefined && opts.retryAfterSec > 0 ? opts.retryAfterSec * 1000 : 0;
+  return Math.max(backoff, told);
+}
+
+/**
+ * A poll failure retrying cannot fix: the job is gone (expired or deleted),
+ * downloads were turned off, or the key is refused. Everything else (rate
+ * limits, timeouts, a restarting server, a dropped connection) is retried.
+ */
+export function isFatalPollError(err: unknown): boolean {
+  const code = (err as { code?: string } | null)?.code;
+  return code === 'not-found' || code === 'unavailable' || code === 'auth' || code === 'bad-request';
+}
+
 /** "12.3 MB/s" */
 export function formatSpeed(bps: number | undefined): string | undefined {
   if (bps === undefined || !Number.isFinite(bps) || bps <= 0) return undefined;

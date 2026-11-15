@@ -28,7 +28,7 @@ On `SIGTERM` or `SIGINT` the server stops accepting connections, lets running re
 # Everything: metadata, timed transcript, attempts. Saved to the library.
 curl -sG "$API/context" --data-urlencode "url=https://youtu.be/jNQXAC9IVRw"
 
-# The transcript in a format (text, json, markdown, srt, vtt, pack; see /formats)
+# The transcript in a format (text, json, markdown, srt, vtt, pack, ass, ttml, sbv, lrc, csv; see /formats)
 curl -sG "$API/transcript" --data-urlencode "url=https://youtu.be/jNQXAC9IVRw" -d format=srt
 curl -sG "$API/transcript" --data-urlencode "url=jNQXAC9IVRw" -d timestamps=1 -d lang=en -d mode=captions
 

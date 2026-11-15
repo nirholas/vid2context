@@ -109,6 +109,11 @@ vid2context pack <inputs...> [--max-tokens n] [--comments [n]] [--refresh]
 
 Playlists, channels and feeds are expanded first. If an input fails, the others still go into the pack, the failure is reported on stderr, and the exit code is that failure's code.
 
+ass       ass   one     Advanced SubStation Alpha (.ass) subtitles with a readable default style, for mpv, VLC, ffmpeg burn-in and Aegisub. Bilingual subtitles show the second language in a smaller style.
+ttml      ttml  one     TTML / IMSC (.ttml) timed text XML for broadcast, streaming packagers and players that read TTML or DFXP.
+sbv       sbv   one     YouTube SubViewer (.sbv) captions, the format YouTube Studio imports and exports.
+lrc       lrc   one     LRC (.lrc) timed lyrics, one [mm:ss.xx] line per cue, for music players and karaoke apps.
+csv       csv   one     CSV (.csv) with one row per segment: start,end,speaker,text in seconds, plus secondary_text for bilingual output. For spreadsheets and data tools.
 ```
 $ vid2context pack jNQXAC9IVRw --max-tokens 2000
 # Video context pack

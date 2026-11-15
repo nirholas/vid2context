@@ -1,0 +1,23 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/downloads/065308f8-f247-4f76-8e4f-43309ccbebc4"
+  },
+  "status": 404,
+  "contentType": "application/json",
+  "body": {
+    "error": {
+      "code": "not-found",
+      "message": "No download with id 065308f8-f247-4f76-8e4f-43309ccbebc4.",
+      "hint": "Finished files expire after VID2CONTEXT_DOWNLOAD_TTL_MIN minutes, and jobs end when the server restarts. Start it again."
+    },
+    "attempts": [],
+    "recovery": [
+      {
+        "action": "fix-input",
+        "title": "Check the link",
+        "detail": "Open it in a browser to make sure it plays, then paste the address from there."
+      }
+    ]
+  }
+}

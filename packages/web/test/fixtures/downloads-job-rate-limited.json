@@ -1,0 +1,27 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/downloads/065308f8-f247-4f76-8e4f-43309ccbebc4"
+  },
+  "status": 429,
+  "contentType": "application/json",
+  "headers": {
+    "retry-after": "60"
+  },
+  "body": {
+    "error": {
+      "code": "rate-limited",
+      "message": "Too many requests: the limit is 1 per minute (bursts of 1).",
+      "hint": "Wait 60 s before retrying (see Retry-After)."
+    },
+    "attempts": [],
+    "recovery": [
+      {
+        "action": "retry",
+        "title": "Wait and try again",
+        "detail": "The limit resets on its own.",
+        "retryAfterSec": 60
+      }
+    ]
+  }
+}

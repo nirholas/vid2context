@@ -124,7 +124,7 @@ vid2context <command> [args] [flags]
   formats, completion, help
 ```
 
-Common flags: `-f, --format text|json|markdown|srt|vtt|pack`, `-t, --timestamps`, `--mode auto|captions|stt|video`, `--lang <code>`, `--policy free|local-only|quality`, `--only` and `--skip` (rung ids or services), `--json`, `-o, --out <file>`, `--verbose`. Run `vid2context help <command>` for the rest. Full reference: [docs/cli.md](docs/cli.md).
+Common flags: `-f, --format text|json|markdown|srt|vtt|pack|ass|ttml|sbv|lrc|csv`, `-t, --timestamps`, `--mode auto|captions|stt|video`, `--lang <code>`, `--policy free|local-only|quality`, `--only` and `--skip` (rung ids or services), `--json`, `-o, --out <file>`, `--verbose`. Run `vid2context help <command>` for the rest. Full reference: [docs/cli.md](docs/cli.md).
 
 Program output goes to stdout and everything else to stderr, so `vid2context URL > transcript.txt` stays clean. On failure the CLI prints the error code, a hint on how to fix it, and every attempt that was made, and exits with a code per failure kind (3 unsupported input, 4 not found, 6 no transcript, 9 rate limited, 10 auth, and so on).
 

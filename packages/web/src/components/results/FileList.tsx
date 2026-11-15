@@ -5,7 +5,7 @@ import { formatBytes } from '../../lib/format.ts';
 
 function iconFor(path: string) {
   if (path.endsWith('.json')) return Braces;
-  if (path.endsWith('.srt') || path.endsWith('.vtt')) return FileCode;
+  if (/\.(srt|vtt|ass|ttml|sbv|lrc)$/.test(path)) return FileCode;
   return FileText;
 }
 
