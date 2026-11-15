@@ -1,0 +1,23 @@
+{
+  "name": "@vid2context/provider-x",
+  "version": "0.1.0",
+  "description": "X (Twitter) videos for vid2context: post text, author and date as metadata, every MP4 quality as a direct link, and audio for speech-to-text, from X's public syndication endpoint with FxTwitter as a fallback. No key, no login, plain fetch.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "vid2context": {
+    "runtimes": [
+      "node",
+      "workers"
+    ]
+  },
+  "dependencies": {
+    "@vid2context/core": "*",
+    "@vid2context/provider-media-url": "*"
+  },
+  "devDependencies": {
+    "@vid2context/registry": "*"
+  }
+}
