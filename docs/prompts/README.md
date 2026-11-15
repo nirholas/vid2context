@@ -35,7 +35,7 @@ Numbers match `docs/ROADMAP.md` and the owner columns in `docs/contracts/`. Ever
 | 15 | [The .zip bundle and "copy for agents"](15-bundle-zip.md) | `packages/core/src/bundle/` | A. Core bones |
 | 16 | [Agent integrations: one-command setup for every client](16-agent-integrations.md) | `integrations/` | H. Surfaces |
 | 17 | [Speech-to-text: more OpenAI-compatible rungs](17-stt-openai-compatible.md) | `providers/stt-openai-compatible/` | D. Speech-to-text |
-| 18 | [Local speech-to-text with whisper.cpp](18-whisper-cpp.md) | `providers/stt-whisper-cpp/` | D. Speech-to-text |
+| 18 | [Local speech-to-text with whisper.cpp](archive/18-whisper-cpp.md) | `providers/stt-whisper-cpp/` | D. Speech-to-text |
 | 19 | [In-browser and offline AI](19-browser-offline-ai.md) | `providers/stt-transformers/`, `providers/llm-browser/` | D. Speech-to-text |
 | 20 | [Cloudflare: Workers AI rungs and D1, R2, KV storage](20-cloudflare.md) | `providers/cloudflare-ai/`, `providers/storage-cloudflare/` | D. Speech-to-text |
 | 21 | [Observability: tracing, metrics, usage and cost](21-telemetry.md) | `packages/core/src/telemetry/` | A. Core bones |
