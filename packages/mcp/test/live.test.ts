@@ -44,8 +44,10 @@ describe.skipIf(!process.env.LIVE)('live: stdio server against real YouTube', ()
     const page = await run('get_transcript', { url: GWAGON, maxTokens: 2000 });
     expect(page.isError, textOf(page)).toBeFalsy();
     expect(textOf(page)).toMatch(/next_cursor: seg:\d+/);
+    // search_transcript is @vid2context/search's tool and answers in text: hits carry the timestamp link into the video.
     const hits = await run('search_transcript', { query: 'w463' });
-    expect((hits.structuredContent as { count: number }).count).toBeGreaterThan(0);
+    expect(hits.isError, textOf(hits)).toBeFalsy();
+    expect(textOf(hits)).toContain('cCPsdFdlshc&t=');
   }, 300_000);
 
   it('lists a playlist', async () => {

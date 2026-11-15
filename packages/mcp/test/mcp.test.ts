@@ -237,12 +237,15 @@ describe('list_items', () => {
   it('expands a playlist into its videos', async () => {
     const { client } = await connect();
     const res = await call(client, 'list_items', { url: GWAGON_PLAYLIST, limit: 5 });
-    const out = res.structuredContent as { count: number; items: { id: string; kind: string; url?: string }[] };
+    type Item = { id: string; kind: string; url?: string; title?: string; durationSec?: number };
+    const out = res.structuredContent as { count: number; items: Item[] };
     expect(res.isError).toBeFalsy();
     expect(out.count).toBe(5);
     for (const item of out.items) {
       expect(item.kind).toBe('video');
       expect(item.id).toMatch(/^youtube:[\w-]{11}$/);
+      // The playlist page names each video, so an agent can pick what to read without fetching each one.
+      expect(item.title?.length).toBeGreaterThan(0);
     }
   });
 
