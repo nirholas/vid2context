@@ -1,6 +1,6 @@
 # Deploy to Vercel
 
-The same layout as Cloudflare (site at `/`, `/app/`, `/chat/`, the API at `/api/v1/*`), deployed as a prebuilt Vercel Build Output API v3 tree. Nothing builds on Vercel's side and no `vercel.json` is needed.
+The same layout as Cloudflare (site at `/`, `/app/`, `/chat/`, the API at `/api/v1/*`), deployed as a prebuilt Vercel Build Output API v3 tree. Deployed from your machine with `--prebuilt`, nothing builds on Vercel's side. The root `vercel.json` is only for the Deploy with Vercel button in the README: it makes Vercel's own build run `npm ci --ignore-scripts` and `npm run build:vercel`, which writes the same `.vercel/output/` tree (verified from a fresh clone on 2026-11-15).
 
 ## Build and deploy
 

@@ -1,0 +1,28 @@
+# DigitalOcean App Platform spec for the "Deploy to DO" button in README.md:
+# the vid2context HTTP API built from deploy/containers/Dockerfile.
+# App Platform has no persistent volumes, so /data lives in the container and
+# is reset on every deploy; use Postgres (DATABASE_URL) for a lasting library.
+# Guide: docs/deploy/one-click.md
+spec:
+  name: vid2context
+  services:
+    - name: vid2context
+      git:
+        repo_clone_url: https://github.com/nirholas/vid2context.git
+        branch: main
+      dockerfile_path: deploy/containers/Dockerfile
+      source_dir: /
+      http_port: 8787
+      # 1 vCPU / 2 GB: ffmpeg and yt-dlp want real memory.
+      instance_size_slug: apps-s-1vcpu-2gb
+      instance_count: 1
+      health_check:
+        http_path: /api/v1/health
+        initial_delay_seconds: 20
+      envs:
+        # Set this to a long random string before you create the app (for
+        # example `openssl rand -hex 24`). Without it every route is open.
+        - key: VID2CONTEXT_API_KEYS
+          scope: RUN_TIME
+          type: SECRET
+          value: ""

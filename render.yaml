@@ -1,0 +1,34 @@
+# Render Blueprint for the "Deploy to Render" button in README.md: the
+# vid2context HTTP API with a persistent disk at /data.
+#
+# It builds deploy/containers/railway/Dockerfile, the variant of the main image
+# for platforms that mount volumes owned by root: it starts as root, gives
+# /data to the node user once, then drops root before the server starts.
+# Guide: docs/deploy/one-click.md
+services:
+  - type: web
+    name: vid2context
+    runtime: docker
+    # 1 CPU / 2 GB: ffmpeg and yt-dlp want real memory. A persistent disk
+    # needs a paid plan.
+    plan: 1c-2g
+    dockerfilePath: ./deploy/containers/railway/Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/v1/health
+    # A button deploy is someone else's copy: do not redeploy it on every
+    # push to this repository.
+    autoDeployTrigger: off
+    disk:
+      name: data
+      mountPath: /data
+      sizeGB: 5
+    envVars:
+      # Required before the URL is public: clients send it as
+      # "Authorization: Bearer <key>". Render generates a random value; copy it
+      # from the service's Environment page.
+      - key: VID2CONTEXT_API_KEYS
+        generateValue: true
+      # Optional free keys, prompted once at creation. Any variable from
+      # .env.example works; add more on the Environment page.
+      - key: GROQ_API_KEY
+        sync: false

@@ -1,0 +1,29 @@
+{
+  "name": "vid2context",
+  "description": "vid2context HTTP API: transcripts, metadata and chapters of videos and podcasts for AI agents, with yt-dlp, deno and ffmpeg.",
+  "repository": "https://github.com/nirholas/vid2context",
+  "website": "https://vid2context.com",
+  "keywords": ["mcp", "transcript", "youtube", "speech-to-text", "ai-agents"],
+  "env": {
+    "VID2CONTEXT_API_KEYS": {
+      "description": "API key that clients send as 'Authorization: Bearer <key>'. A random one is generated; read it later in the Cloud Run console under the service's variables.",
+      "generator": "secret"
+    }
+  },
+  "options": {
+    "allow-unauthenticated": true,
+    "memory": "2Gi",
+    "cpu": "2",
+    "port": 8787,
+    "concurrency": 4,
+    "max-instances": 3
+  },
+  "build": {
+    "skip": true
+  },
+  "hooks": {
+    "prebuild": {
+      "commands": ["cd \"$APP_DIR\" && DOCKER_BUILDKIT=1 docker build -f deploy/containers/Dockerfile -t \"$IMAGE_URL\" ."]
+    }
+  }
+}
