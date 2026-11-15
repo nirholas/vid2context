@@ -32,7 +32,9 @@ npm run release:dry
 
 [tooling/release/release.mjs](../tooling/release/release.mjs) builds, then for each bundle writes `sbom.cdx.json` (CycloneDX, from `npm sbom --omit dev` over the source workspace's production tree, which is what esbuild inlines, renamed to the published package) and runs `npm publish --dry-run`, which prints the tarball contents. Nothing is published.
 
-It fails if npm would rewrite a generated manifest at publish time. npm does this silently, for example by dropping a `bin` entry it considers invalid, which would ship a package that npx cannot run. The SBOM is a release artifact next to the tarball, not part of it.
+It fails if npm would rewrite a generated manifest at publish time. npm does this silently, for example by dropping a `bin` entry it considers invalid, which would ship a package that npx cannot run. One rewrite is harmless and allowed: npm strips a leading `./` from a bin path and reports it as "script name ... was invalid and removed", although it keeps the entry. [tooling/release/npm-output.mjs](../tooling/release/npm-output.mjs) accepts exactly that case and fails on any other correction. The SBOM is a release artifact next to the tarball, not part of it.
+
+If the version is already on npm, npm refuses even the dry run, after printing the tarball. The dry run then reports which bundles need a version bump and still exits 0; `--publish` refuses before anything is published.
 
 ## Publishing
 

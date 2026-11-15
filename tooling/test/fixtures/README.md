@@ -10,3 +10,4 @@ These files are synthetic: they are inputs to the hygiene linters in `tooling/ch
 | `edge-unsafe.ts` | `edge-safe`: `node:` and bare built-in imports, dynamic `import()`, `require()` and `export * from` |
 | `process-env.ts` | `no-process-env`: `process.env`, bare `fetch()` and `globalThis.fetch`, next to `ctx` use, comments, strings and a Workers `fetch` handler that must pass |
 | `console-log.ts` | `no-console-log`: `console.log` and `console.info`, next to `console.error`, a comment and a template string that must pass |
+| `npm-publish-dry-run.stderr.txt` | `tooling/release/npm-output.mjs`. Unlike the files above, this one is recorded: the `npm warn` and `npm error` lines from `npm publish --dry-run` of the `vid2context@0.1.1` bundle, printed by npm 11.19.1 on 2026-11-15 when that version was already on the registry (the line with the local debug log path was removed) |

@@ -19,6 +19,7 @@ import { spawnSync } from 'node:child_process';
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { alreadyPublished, harmfulCorrections } from './npm-output.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const NPM = process.platform === 'win32' ? 'npm.cmd' : 'npm';
@@ -55,7 +56,13 @@ function run(cmd, args, { capture = false } = {}) {
  * `npm publish --dry-run` for one bundle, echoing npm's tarball listing.
  * npm silently "auto-corrects" bad manifests at publish time, for example by
  * dropping a `bin` entry it considers invalid, which would ship a package
- * that `npx` cannot run. Any auto-correction fails the release instead.
+ * that `npx` cannot run. Any correction that changes what ships fails the
+ * release; the one harmless case (a `./` prefix dropped from a bin path) is
+ * allowed, see npm-output.mjs.
+ *
+ * Returns `{ alreadyPublished }`: npm refuses a dry run of a version the
+ * registry already has. That blocks a publish, but the tarball listing has
+ * been printed by then, so a dry run reports it and moves on.
  */
 function dryRun(bundle) {
   const args = ['publish', bundle.dir, '--access', 'public', '--dry-run'];
@@ -64,16 +71,17 @@ function dryRun(bundle) {
   if (res.error) throw res.error;
   process.stderr.write(res.stderr);
   process.stdout.write(res.stdout);
-  if (res.status !== 0) throw new Error(`npm publish --dry-run exited with ${res.status}`);
-  const fixes = res.stderr
-    .split('\n')
-    .filter((l) => /^npm warn publish "/.test(l))
-    .map((l) => l.replace(/^npm warn publish /, ''));
-  if (/auto-corrected some errors/.test(res.stderr)) {
+  const harmful = harmfulCorrections(res.stderr, bundle.pkg);
+  if (harmful.length) {
     throw new Error(
-      `${bundle.pkg.name}: npm would rewrite the generated package.json at publish time (${fixes.join('; ') || 'see above'}). Fix the manifest generator (packages/discovery/src/npm.ts) and rebuild.`,
+      `${bundle.pkg.name}: npm would rewrite the generated package.json at publish time (${harmful.join('; ')}). Fix the manifest generator (packages/discovery/src/npm.ts) and rebuild.`,
     );
   }
+  if (res.status !== 0) {
+    if (alreadyPublished(res.stderr)) return { alreadyPublished: true };
+    throw new Error(`npm publish --dry-run exited with ${res.status}`);
+  }
+  return { alreadyPublished: false };
 }
 
 /** Bundle directories under `out`: each holds a generated package.json. */
@@ -134,13 +142,19 @@ function main() {
 
   // Every bundle passes the dry run before anything is published, so one bad
   // manifest cannot leave a half-published release.
+  const taken = [];
   for (const bundle of bundles) {
     const name = `${bundle.pkg.name}@${bundle.pkg.version}`;
     console.error(`\n== ${name} (${relative(ROOT, bundle.dir)})`);
     const sbomPath = join(bundle.dir, 'sbom.cdx.json');
     writeFileSync(sbomPath, `${JSON.stringify(sbomFor(bundle), null, 2)}\n`);
     console.error(`wrote ${relative(ROOT, sbomPath)}`);
-    dryRun(bundle);
+    if (dryRun(bundle).alreadyPublished) taken.push(name);
+  }
+  if (taken.length) {
+    const msg = `${taken.join(', ')} already on npm: bump the version with node tooling/release/version.mjs before publishing`;
+    if (opts.publish) throw new Error(`refusing to publish: ${msg}`);
+    console.error(`\nrelease: ${msg}`);
   }
   if (opts.publish) {
     for (const bundle of bundles) run(NPM, ['publish', bundle.dir, '--access', 'public']);

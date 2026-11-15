@@ -1,0 +1,5 @@
+npm warn publish npm auto-corrected some errors in your package.json when publishing.  Please run "npm pkg fix" to address these errors.
+npm warn publish errors corrected:
+npm warn publish "bin[vid2context]" script name dist/vid2context.mjs was invalid and removed
+npm warn publish This command requires you to be logged in to https://registry.npmjs.org/ (dry-run)
+npm error You cannot publish over the previously published versions: 0.1.1.
