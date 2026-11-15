@@ -4,6 +4,7 @@
  * renderers are found by name anywhere in the tree rather than by a fixed
  * path. Shapes verified against the responses in test/fixtures/next-*.json.
  */
+import { parseClock } from './chapters.ts';
 
 type Json = Record<string, unknown>;
 
@@ -33,9 +34,9 @@ export interface WatchInfo {
   /** As shown, for example "6.74M subscribers". */
   subscriberCountText?: string;
   membersOnly: boolean;
-  /** YouTube's parse of the description timestamps (markers map key DESCRIPTION_CHAPTERS). */
+  /** YouTube's parse of the description timestamps (player bar key DESCRIPTION_CHAPTERS, else the description-chapters panel). */
   descriptionMarkers: MarkerChapter[];
-  /** Auto-generated chapters, shown as "key moments" (markers map key AUTO_CHAPTERS). */
+  /** Auto-generated chapters, shown as "key moments" (player bar key AUTO_CHAPTERS, else the auto-chapters panel). */
   autoChapters: MarkerChapter[];
 }
 
@@ -113,7 +114,51 @@ function likeCount(primary: unknown): number | undefined {
   return undefined;
 }
 
-function markerChapters(root: unknown, key: 'DESCRIPTION_CHAPTERS' | 'AUTO_CHAPTERS'): MarkerChapter[] {
+type MarkerKey = 'DESCRIPTION_CHAPTERS' | 'AUTO_CHAPTERS';
+
+/** The engagement panel (the chapter list beside the video) that holds the same list as each player bar key. */
+const PANEL_FOR: Record<MarkerKey, string> = {
+  DESCRIPTION_CHAPTERS: 'engagement-panel-macro-markers-description-chapters',
+  AUTO_CHAPTERS: 'engagement-panel-macro-markers-auto-chapters',
+};
+
+/** Chapters from the player bar's markers map, else from the matching macro-markers engagement panel. */
+function markerChapters(root: unknown, key: MarkerKey): MarkerChapter[] {
+  const bar = barChapters(root, key);
+  return bar.length > 0 ? bar : panelChapters(root, key);
+}
+
+/**
+ * The macroMarkersListRenderer in the engagement panel for `key`. In every
+ * `next` response checked on 2026-11-15 it lists the same chapters as the
+ * player bar (test/fixtures/metadata/next-macro-*.json), so it is the
+ * fallback when YouTube serves one without the other. The start comes from
+ * the item's watchEndpoint, else from its "1:02:03" time label.
+ */
+function panelChapters(root: unknown, key: MarkerKey): MarkerChapter[] {
+  for (const panel of findAll(root, 'engagementPanelSectionListRenderer')) {
+    if (at(panel, 'panelIdentifier') !== PANEL_FOR[key]) continue;
+    const out: MarkerChapter[] = [];
+    for (const list of findAll(panel, 'macroMarkersListRenderer')) {
+      for (const item of findAll(list, 'macroMarkersListItemRenderer')) {
+        const title = textOf(at(item, 'title'))?.trim();
+        const fromTap = at(item, 'onTap', 'watchEndpoint', 'startTimeSeconds');
+        const label = textOf(at(item, 'timeDescription'))?.trim();
+        const startSec =
+          typeof fromTap === 'number' && Number.isFinite(fromTap)
+            ? fromTap
+            : label && /^\d+(?::\d{1,2}){1,2}$/.test(label)
+              ? parseClock(label)
+              : undefined;
+        if (title && startSec !== undefined) out.push({ title, startSec });
+      }
+    }
+    if (out.length > 0) return out.sort((a, b) => a.startSec - b.startSec);
+  }
+  return [];
+}
+
+function barChapters(root: unknown, key: MarkerKey): MarkerChapter[] {
   for (const bar of findAll(root, 'multiMarkersPlayerBarRenderer')) {
     const map = at(bar, 'markersMap');
     if (!Array.isArray(map)) continue;

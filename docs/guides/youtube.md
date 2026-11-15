@@ -146,8 +146,10 @@ The category, exact publish and upload timestamps, the unlisted flag, YouTube's 
 The first source that yields a list wins:
 
 1. Creator chapters parsed from the description.
-2. YouTube's chapter markers in `next` (player bar markers, key `DESCRIPTION_CHAPTERS`): YouTube's own parse of the description.
+2. YouTube's chapter markers in `next` (player bar `multiMarkersPlayerBarRenderer`, key `DESCRIPTION_CHAPTERS`): YouTube's own parse of the description.
 3. Auto-generated chapters, shown as "key moments" (key `AUTO_CHAPTERS`).
+
+For 2 and 3, when the player bar carries no list, the matching chapter panel beside the video is read instead (`macroMarkersListRenderer` in the engagement panel `engagement-panel-macro-markers-description-chapters` or `engagement-panel-macro-markers-auto-chapters`; start from its `watchEndpoint.startTimeSeconds`, else its time label). On 2026-11-15 both lists matched one for one for every video checked.
 
 Every chapter gets `endSec`: the next chapter's start, and the duration for the last one (no `endSec` for the last chapter when the duration is unknown).
 

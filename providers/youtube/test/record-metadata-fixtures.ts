@@ -3,6 +3,8 @@
  * this prompt's fetchNext, the WEB player microformat and the maxres HEAD check. Usage:
  *   npx tsx providers/youtube/test/record-metadata-fixtures.ts providers/youtube/test/fixtures/metadata [--microformat-only] <label>:<videoId> ...
  * --microformat-only records only microformat-<label>-<id>.json and keeps the other files.
+ * --macro-only records only next-macro-<label>-<id>.json: the `next` response's macro-markers
+ * engagement panels (the chapter lists beside the video) next to its player bar markers.
  * Then grep the output for your public IP and any email or phone number before committing.
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -82,6 +84,41 @@ function trimNext(n: Json): Json {
   return strip(out, NEXT_DROP) as Json;
 }
 
+/** One macro-markers list item, keeping only what parseWatch reads (onTap otherwise embeds this machine's IP). */
+function trimMacroItem(item: Json): Json {
+  const r = item.macroMarkersListItemRenderer as Json | undefined;
+  if (!r) return strip(item, NEXT_DROP) as Json;
+  const we = ((r.onTap as Json | undefined)?.watchEndpoint ?? {}) as Json;
+  return {
+    macroMarkersListItemRenderer: {
+      title: r.title,
+      timeDescription: r.timeDescription,
+      onTap: { watchEndpoint: { videoId: we.videoId, startTimeSeconds: we.startTimeSeconds } },
+    },
+  };
+}
+
+/** The engagement panels that hold a macroMarkersListRenderer, plus the player bar, from a `next` response. */
+function trimMacro(n: Json): Json {
+  const panels = ((n.engagementPanels as Json[] | undefined) ?? []).flatMap((p) => {
+    const r = p.engagementPanelSectionListRenderer as Json | undefined;
+    const list = ((r?.content as Json | undefined)?.macroMarkersListRenderer ?? undefined) as Json | undefined;
+    if (!r || !list) return [];
+    const contents = ((list.contents as Json[] | undefined) ?? []).map(trimMacroItem);
+    return [
+      {
+        engagementPanelSectionListRenderer: {
+          panelIdentifier: r.panelIdentifier,
+          targetId: r.targetId,
+          content: { macroMarkersListRenderer: { contents } },
+        },
+      },
+    ];
+  });
+  const bar = trimNext(n).playerOverlays;
+  return bar ? { engagementPanels: panels, playerOverlays: bar } : { engagementPanels: panels };
+}
+
 /** The WEB player response cut down to what parseMicroformat reads (availableCountries dropped: long and unused). */
 function trimMicroformat(p: Json): Json {
   const m = { ...(((p.microformat as Json | undefined)?.playerMicroformatRenderer as Json | undefined) ?? {}) };
@@ -95,7 +132,8 @@ function trimMicroformat(p: Json): Json {
 
 const args = process.argv.slice(2);
 const microformatOnly = args.includes('--microformat-only');
-const [outDir, ...specs] = args.filter((a) => a !== '--microformat-only');
+const macroOnly = args.includes('--macro-only');
+const [outDir, ...specs] = args.filter((a) => a !== '--microformat-only' && a !== '--macro-only');
 if (!outDir) throw new Error('usage: record-metadata-fixtures.ts <outDir> <label>:<id> ...');
 mkdirSync(outDir, { recursive: true });
 const maxresFile = join(outDir, 'maxres-status.json');
@@ -112,6 +150,12 @@ for (const spec of specs) {
       return res;
     },
   });
+  if (macroOnly) {
+    const macro = trimMacro((await fetchNext(id, ctx)) as Json);
+    writeFileSync(join(outDir, `next-macro-${label}-${id}.json`), `${JSON.stringify(macro, null, 2)}\n`);
+    console.error(`${label} ${id}: ${(macro.engagementPanels as unknown[]).length} macro-markers panel(s)`);
+    continue;
+  }
   const web = (await fetchWebPlayer(id, ctx)) as Json;
   writeFileSync(join(outDir, `microformat-${label}-${id}.json`), `${JSON.stringify(trimMicroformat(web), null, 2)}\n`);
   if (microformatOnly) {

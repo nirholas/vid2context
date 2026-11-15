@@ -207,6 +207,41 @@ describe('watch page (next) parsing', () => {
     expect(precedence.autoChapters[0]).toEqual({ title: 'Course introduction', startSec: 0 });
   });
 
+  it('falls back to the macro-markers panels when the player bar carries no chapters', () => {
+    const macro = (label: Label) => JSON.parse(read(`next-macro-${label}-${VIDEOS[label]}.json`)) as Record<string, unknown>;
+    const panelsOnly = (label: Label) => {
+      const { playerOverlays: _bar, ...rest } = macro(label);
+      return rest;
+    };
+    // Recorded together, the panel and the player bar list the same chapters.
+    for (const label of ['chapters', 'past-live', 'precedence'] as const) {
+      const both = parseWatch(macro(label));
+      const fromPanels = parseWatch(panelsOnly(label));
+      expect(fromPanels.descriptionMarkers).toEqual(both.descriptionMarkers);
+      expect(fromPanels.autoChapters).toEqual(both.autoChapters);
+    }
+    const chapters = parseWatch(panelsOnly('chapters'));
+    expect(chapters.descriptionMarkers).toHaveLength(9);
+    expect(chapters.descriptionMarkers.slice(0, 2)).toEqual([
+      { title: 'David Spade Feels...', startSec: 0 },
+      { title: 'Conan’s Pomegranate Tree', startSec: 27 },
+    ]);
+    expect(chapters.autoChapters).toEqual([]);
+    const pastLive = parseWatch(panelsOnly('past-live'));
+    expect(pastLive.descriptionMarkers).toEqual([]);
+    expect(pastLive.autoChapters[1]).toEqual({ title: 'Technical and mission review', startSec: 155.68 });
+    expect(parseWatch(panelsOnly('precedence')).autoChapters).toHaveLength(89);
+
+    // Without the watchEndpoint, the "2:35" label gives the start.
+    const noTap = JSON.parse(JSON.stringify(panelsOnly('past-live'), (k, v) => (k === 'onTap' ? undefined : v)));
+    expect(parseWatch(noTap).autoChapters[1]).toEqual({ title: 'Technical and mission review', startSec: 155 });
+
+    // Through precedence: no creator timestamps in this description, so the panel's key moments win.
+    const picked = pickChapters(player('past-live').videoDetails?.shortDescription, 2770, parseWatch(panelsOnly('past-live')));
+    expect(picked.source).toBe('key-moments');
+    expect(picked.chapters.at(-1)?.endSec).toBe(2770);
+  });
+
   it('parses the date line forms YouTube uses', () => {
     expect(parseDateText('Apr 23, 2005')).toBe('2005-04-23');
     expect(parseDateText('Premiered Feb 24, 2026')).toBe('2026-02-24');

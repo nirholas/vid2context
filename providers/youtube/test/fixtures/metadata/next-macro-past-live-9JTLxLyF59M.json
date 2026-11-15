@@ -1,0 +1,375 @@
+{
+  "engagementPanels": [
+    {
+      "engagementPanelSectionListRenderer": {
+        "panelIdentifier": "engagement-panel-macro-markers-auto-chapters",
+        "targetId": "engagement-panel-macro-markers-auto-chapters",
+        "content": {
+          "macroMarkersListRenderer": {
+            "contents": [
+              {
+                "macroMarkersInfoItemRenderer": {
+                  "infoText": {
+                    "runs": [
+                      {
+                        "text": "These chapters are auto-generated"
+                      }
+                    ]
+                  },
+                  "menu": {
+                    "menuRenderer": {
+                      "items": [
+                        {
+                          "menuNavigationItemRenderer": {
+                            "text": {
+                              "runs": [
+                                {
+                                  "text": "Learn more"
+                                }
+                              ]
+                            },
+                            "navigationEndpoint": {
+                              "urlEndpoint": {
+                                "url": "https://support.google.com/youtube/answer/9884579",
+                                "target": "TARGET_NEW_WINDOW"
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Artemis 2 mission update"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "0 seconds"
+                      }
+                    },
+                    "simpleText": "0:00"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "9JTLxLyF59M",
+                      "startTimeSeconds": 0
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Technical and mission review"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "2 minutes, 35 seconds"
+                      }
+                    },
+                    "simpleText": "2:35"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "9JTLxLyF59M",
+                      "startTimeSeconds": 155.68
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Infrastructure and operations"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "7 minutes, 27 seconds"
+                      }
+                    },
+                    "simpleText": "7:27"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "9JTLxLyF59M",
+                      "startTimeSeconds": 447.68
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Defining mission success"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "11 minutes, 3 seconds"
+                      }
+                    },
+                    "simpleText": "11:03"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "9JTLxLyF59M",
+                      "startTimeSeconds": 663.92
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Countdown and safety protocol"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "15 minutes, 19 seconds"
+                      }
+                    },
+                    "simpleText": "15:19"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "9JTLxLyF59M",
+                      "startTimeSeconds": 919.199
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Future lunar exploration"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "19 minutes, 46 seconds"
+                      }
+                    },
+                    "simpleText": "19:46"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "9JTLxLyF59M",
+                      "startTimeSeconds": 1186.24
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Scientific mission objectives"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "26 minutes, 13 seconds"
+                      }
+                    },
+                    "simpleText": "26:13"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "9JTLxLyF59M",
+                      "startTimeSeconds": 1573.76
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Public impact and conclusion"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "34 minutes, 2 seconds"
+                      }
+                    },
+                    "simpleText": "34:02"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "9JTLxLyF59M",
+                      "startTimeSeconds": 2042.48
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "C-SPAN programming"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "42 minutes, 14 seconds"
+                      }
+                    },
+                    "simpleText": "42:14"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "9JTLxLyF59M",
+                      "startTimeSeconds": 2534.56
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "playerOverlays": {
+    "playerOverlayRenderer": {
+      "decoratedPlayerBarRenderer": {
+        "decoratedPlayerBarRenderer": {
+          "playerBar": {
+            "multiMarkersPlayerBarRenderer": {
+              "visibleOnLoad": {
+                "key": "AUTO_CHAPTERS"
+              },
+              "markersMap": [
+                {
+                  "key": "AUTO_CHAPTERS",
+                  "value": {
+                    "chapters": [
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Artemis 2 mission update"
+                          },
+                          "timeRangeStartMillis": 0
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Technical and mission review"
+                          },
+                          "timeRangeStartMillis": 155680
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Infrastructure and operations"
+                          },
+                          "timeRangeStartMillis": 447680
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Defining mission success"
+                          },
+                          "timeRangeStartMillis": 663920
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Countdown and safety protocol"
+                          },
+                          "timeRangeStartMillis": 919199
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Future lunar exploration"
+                          },
+                          "timeRangeStartMillis": 1186240
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Scientific mission objectives"
+                          },
+                          "timeRangeStartMillis": 1573760
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Public impact and conclusion"
+                          },
+                          "timeRangeStartMillis": 2042480
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "C-SPAN programming"
+                          },
+                          "timeRangeStartMillis": 2534560
+                        }
+                      }
+                    ],
+                    "onChapterRepeat": {
+                      "openPopupAction": {
+                        "popup": {
+                          "notificationActionRenderer": {
+                            "responseText": {
+                              "runs": [
+                                {
+                                  "text": "Chapter repeat is on"
+                                }
+                              ]
+                            },
+                            "actionButton": {
+                              "buttonRenderer": {
+                                "style": "STYLE_BLUE_TEXT",
+                                "text": {
+                                  "runs": [
+                                    {
+                                      "text": "Turn off"
+                                    }
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "popupType": "TOAST"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "playerBarActionButton": {
+            "buttonRenderer": {
+              "text": {
+                "runs": [
+                  {
+                    "text": "View Chapters"
+                  }
+                ]
+              }
+            }
+          },
+          "buttonType": "DECORATED_PLAYER_BAR_BUTTON_TYPE_CHAPTERS"
+        }
+      }
+    }
+  }
+}

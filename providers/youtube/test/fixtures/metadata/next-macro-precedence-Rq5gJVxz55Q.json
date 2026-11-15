@@ -1,0 +1,2708 @@
+{
+  "engagementPanels": [
+    {
+      "engagementPanelSectionListRenderer": {
+        "panelIdentifier": "engagement-panel-macro-markers-auto-chapters",
+        "targetId": "engagement-panel-macro-markers-auto-chapters",
+        "content": {
+          "macroMarkersListRenderer": {
+            "contents": [
+              {
+                "macroMarkersInfoItemRenderer": {
+                  "infoText": {
+                    "runs": [
+                      {
+                        "text": "These chapters are auto-generated"
+                      }
+                    ]
+                  },
+                  "menu": {
+                    "menuRenderer": {
+                      "items": [
+                        {
+                          "menuNavigationItemRenderer": {
+                            "text": {
+                              "runs": [
+                                {
+                                  "text": "Learn more"
+                                }
+                              ]
+                            },
+                            "navigationEndpoint": {
+                              "urlEndpoint": {
+                                "url": "https://support.google.com/youtube/answer/9884579",
+                                "target": "TARGET_NEW_WINDOW"
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Course introduction"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "0 seconds"
+                      }
+                    },
+                    "simpleText": "0:00"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 0
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Course roadmap"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "2 minutes, 29 seconds"
+                      }
+                    },
+                    "simpleText": "2:29"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 149.1
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "What is Python?"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "5 minutes, 49 seconds"
+                      }
+                    },
+                    "simpleText": "5:49"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 349.947
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "How Python works"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "8 minutes, 12 seconds"
+                      }
+                    },
+                    "simpleText": "8:12"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 492.405
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Why learn Python?"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "10 minutes, 31 seconds"
+                      }
+                    },
+                    "simpleText": "10:31"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 631.34
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Setup environment"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "12 minutes, 51 seconds"
+                      }
+                    },
+                    "simpleText": "12:51"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 771.301
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Code editor vs IDE"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "14 minutes, 12 seconds"
+                      }
+                    },
+                    "simpleText": "14:12"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 852.765
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "VS Code setup"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "15 minutes, 26 seconds"
+                      }
+                    },
+                    "simpleText": "15:26"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 926.737
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "First Python script"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "17 minutes, 25 seconds"
+                      }
+                    },
+                    "simpleText": "17:25"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 1045.333
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Keyboard shortcuts"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "19 minutes, 25 seconds"
+                      }
+                    },
+                    "simpleText": "19:25"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 1165.6
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Bonus upgrades"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "20 minutes, 45 seconds"
+                      }
+                    },
+                    "simpleText": "20:45"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 1245.533
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Python roadmap template"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "22 minutes, 45 seconds"
+                      }
+                    },
+                    "simpleText": "22:45"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 1365.12
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Comments"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "24 minutes, 50 seconds"
+                      }
+                    },
+                    "simpleText": "24:50"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 1490.5
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Comments practice"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "29 minutes, 7 seconds"
+                      }
+                    },
+                    "simpleText": "29:07"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 1747.12
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Print function"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "31 minutes, 17 seconds"
+                      }
+                    },
+                    "simpleText": "31:17"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 1877.233
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Function sources"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "32 minutes, 20 seconds"
+                      }
+                    },
+                    "simpleText": "32:20"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 1940.1
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Print function details"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "34 minutes, 1 second"
+                      }
+                    },
+                    "simpleText": "34:01"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 2041.366
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Special characters"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "36 minutes, 3 seconds"
+                      }
+                    },
+                    "simpleText": "36:03"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 2163.566
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Escape characters practice"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "37 minutes, 5 seconds"
+                      }
+                    },
+                    "simpleText": "37:05"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 2225.466
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Triple quotes"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "39 minutes, 29 seconds"
+                      }
+                    },
+                    "simpleText": "39:29"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 2369.033
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Print function use cases"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "42 minutes, 16 seconds"
+                      }
+                    },
+                    "simpleText": "42:16"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 2536.033
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Challenge 1"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "45 minutes, 37 seconds"
+                      }
+                    },
+                    "simpleText": "45:37"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 2737.433
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Variables"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "45 minutes, 37 seconds"
+                      }
+                    },
+                    "simpleText": "45:37"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 2737.766
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Input function"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "46 minutes, 5 seconds"
+                      }
+                    },
+                    "simpleText": "46:05"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 2765.4
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Variables practice"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "49 minutes, 22 seconds"
+                      }
+                    },
+                    "simpleText": "49:22"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 2962.133
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Data Types Intro"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "51 minutes, 26 seconds"
+                      }
+                    },
+                    "simpleText": "51:26"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 3086.566
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Numeric data types"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "51 minutes, 30 seconds"
+                      }
+                    },
+                    "simpleText": "51:30"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 3090
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Boolean data type"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "51 minutes, 48 seconds"
+                      }
+                    },
+                    "simpleText": "51:48"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 3108.633
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "None data type"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "52 minutes, 1 second"
+                      }
+                    },
+                    "simpleText": "52:01"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 3121.866
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Data types practice"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "52 minutes, 5 seconds"
+                      }
+                    },
+                    "simpleText": "52:05"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 3125.3
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "String data type"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "52 minutes, 12 seconds"
+                      }
+                    },
+                    "simpleText": "52:12"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 3132.633
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "String indexing"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "52 minutes, 20 seconds"
+                      }
+                    },
+                    "simpleText": "52:20"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 3140
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "String slicing"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "52 minutes, 40 seconds"
+                      }
+                    },
+                    "simpleText": "52:40"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 3160
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "String methods"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "52 minutes, 56 seconds"
+                      }
+                    },
+                    "simpleText": "52:56"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 3176.533
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "String validation"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "56 minutes, 33 seconds"
+                      }
+                    },
+                    "simpleText": "56:33"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 3393.933
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "String formatting"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "56 minutes, 35 seconds"
+                      }
+                    },
+                    "simpleText": "56:35"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 3395.366
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "String practice"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "56 minutes, 38 seconds"
+                      }
+                    },
+                    "simpleText": "56:38"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 3398.566
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Numeric types"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "56 minutes, 52 seconds"
+                      }
+                    },
+                    "simpleText": "56:52"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 3412.333
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Number conversion"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "56 minutes, 54 seconds"
+                      }
+                    },
+                    "simpleText": "56:54"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 3414.3
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Math operators"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "56 minutes, 56 seconds"
+                      }
+                    },
+                    "simpleText": "56:56"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 3416.233
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Rounding functions"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "56 minutes, 57 seconds"
+                      }
+                    },
+                    "simpleText": "56:57"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 3417.8
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Random module"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "57 minutes, 14 seconds"
+                      }
+                    },
+                    "simpleText": "57:14"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 3434.9
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Math module"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "57 minutes, 16 seconds"
+                      }
+                    },
+                    "simpleText": "57:16"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 3436.433
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Number validation"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "57 minutes, 20 seconds"
+                      }
+                    },
+                    "simpleText": "57:20"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 3440.333
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Number practice"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "57 minutes, 25 seconds"
+                      }
+                    },
+                    "simpleText": "57:25"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 3445.966
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Logic and Operators"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "57 minutes, 33 seconds"
+                      }
+                    },
+                    "simpleText": "57:33"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 3453.7
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Logical operators"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "57 minutes, 39 seconds"
+                      }
+                    },
+                    "simpleText": "57:39"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 3459.266
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Comparison operators"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "1 hour, 13 seconds"
+                      }
+                    },
+                    "simpleText": "1:00:13"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 3613.6
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Operator practice"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "1 hour, 47 seconds"
+                      }
+                    },
+                    "simpleText": "1:00:47"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 3647.6
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Membership operators"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "1 hour, 3 minutes, 31 seconds"
+                      }
+                    },
+                    "simpleText": "1:03:31"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 3811.92
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Identity operators"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "1 hour, 3 minutes, 48 seconds"
+                      }
+                    },
+                    "simpleText": "1:03:48"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 3828
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Logical operators practice"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "1 hour, 5 minutes, 43 seconds"
+                      }
+                    },
+                    "simpleText": "1:05:43"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 3943.4
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Conditional statements"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "1 hour, 7 minutes, 21 seconds"
+                      }
+                    },
+                    "simpleText": "1:07:21"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 4041.6
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Nested if statements"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "1 hour, 10 minutes, 2 seconds"
+                      }
+                    },
+                    "simpleText": "1:10:02"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 4202.399
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Inline if statement"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "1 hour, 11 minutes, 50 seconds"
+                      }
+                    },
+                    "simpleText": "1:11:50"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 4310.56
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Match case"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "1 hour, 14 minutes, 5 seconds"
+                      }
+                    },
+                    "simpleText": "1:14:05"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 4445.44
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Conditional practice"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "1 hour, 15 minutes, 43 seconds"
+                      }
+                    },
+                    "simpleText": "1:15:43"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 4543.119
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "For loops"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "1 hour, 18 minutes, 24 seconds"
+                      }
+                    },
+                    "simpleText": "1:18:24"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 4704.159
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Nested loops"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "1 hour, 20 minutes, 33 seconds"
+                      }
+                    },
+                    "simpleText": "1:20:33"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 4833.279
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Loop statements"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "1 hour, 21 minutes, 54 seconds"
+                      }
+                    },
+                    "simpleText": "1:21:54"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 4914.159
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "While loops"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "1 hour, 24 minutes"
+                      }
+                    },
+                    "simpleText": "1:24:00"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 5040.159
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Loop practice"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "1 hour, 25 minutes, 52 seconds"
+                      }
+                    },
+                    "simpleText": "1:25:52"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 5152.32
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "List basics"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "1 hour, 27 minutes, 42 seconds"
+                      }
+                    },
+                    "simpleText": "1:27:42"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 5262.718
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "List manipulation"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "1 hour, 29 minutes, 14 seconds"
+                      }
+                    },
+                    "simpleText": "1:29:14"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 5354.958
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "List sorting"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "1 hour, 31 minutes, 2 seconds"
+                      }
+                    },
+                    "simpleText": "1:31:02"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 5462.558
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "List copying"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "1 hour, 32 minutes, 35 seconds"
+                      }
+                    },
+                    "simpleText": "1:32:35"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 5555.12
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "List combination"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "1 hour, 34 minutes, 24 seconds"
+                      }
+                    },
+                    "simpleText": "1:34:24"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 5664
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "List comprehensions"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "1 hour, 35 minutes, 57 seconds"
+                      }
+                    },
+                    "simpleText": "1:35:57"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 5757.12
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Advanced list techniques"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "1 hour, 37 minutes, 11 seconds"
+                      }
+                    },
+                    "simpleText": "1:37:11"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 5831.92
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "List practice"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "1 hour, 38 minutes, 32 seconds"
+                      }
+                    },
+                    "simpleText": "1:38:32"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 5912.32
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Tuples"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "1 hour, 40 minutes, 10 seconds"
+                      }
+                    },
+                    "simpleText": "1:40:10"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 6010
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Sets"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "1 hour, 41 minutes, 19 seconds"
+                      }
+                    },
+                    "simpleText": "1:41:19"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 6079.116
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Set operations"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "1 hour, 42 minutes, 18 seconds"
+                      }
+                    },
+                    "simpleText": "1:42:18"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 6138.8
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Data structure practice"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "1 hour, 43 minutes, 22 seconds"
+                      }
+                    },
+                    "simpleText": "1:43:22"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 6202.4
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Dictionaries basics"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "1 hour, 45 minutes, 6 seconds"
+                      }
+                    },
+                    "simpleText": "1:45:06"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 6306
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Dictionary methods"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "1 hour, 46 minutes, 40 seconds"
+                      }
+                    },
+                    "simpleText": "1:46:40"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 6400
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Dictionary iteration"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "1 hour, 48 minutes, 22 seconds"
+                      }
+                    },
+                    "simpleText": "1:48:22"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 6502.72
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Dictionary practice"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "1 hour, 49 minutes, 23 seconds"
+                      }
+                    },
+                    "simpleText": "1:49:23"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 6563.6
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Functions"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "1 hour, 52 minutes, 53 seconds"
+                      }
+                    },
+                    "simpleText": "1:52:53"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 6773.2
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Functions parameters"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "1 hour, 54 minutes, 23 seconds"
+                      }
+                    },
+                    "simpleText": "1:54:23"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 6863.6
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Return statement"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "1 hour, 56 minutes, 5 seconds"
+                      }
+                    },
+                    "simpleText": "1:56:05"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 6965.6
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Function practice"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "1 hour, 57 minutes, 56 seconds"
+                      }
+                    },
+                    "simpleText": "1:57:56"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 7076.638
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Function types"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "1 hour, 59 minutes, 44 seconds"
+                      }
+                    },
+                    "simpleText": "1:59:44"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 7184
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Function best practices"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "2 hours, 55 seconds"
+                      }
+                    },
+                    "simpleText": "2:00:55"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 7255.84
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Advanced functions"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "2 hours, 2 minutes, 32 seconds"
+                      }
+                    },
+                    "simpleText": "2:02:32"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 7352.32
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Variable scope"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "2 hours, 3 minutes, 53 seconds"
+                      }
+                    },
+                    "simpleText": "2:03:53"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 7433.596
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Arguments in functions"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "2 hours, 6 minutes, 18 seconds"
+                      }
+                    },
+                    "simpleText": "2:06:18"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 7578.08
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Functions advanced practice"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "2 hours, 7 minutes, 42 seconds"
+                      }
+                    },
+                    "simpleText": "2:07:42"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 7662.4
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Course conclusion"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "2 hours, 8 minutes, 33 seconds"
+                      }
+                    },
+                    "simpleText": "2:08:33"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "Rq5gJVxz55Q",
+                      "startTimeSeconds": 7713
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "playerOverlays": {
+    "playerOverlayRenderer": {
+      "decoratedPlayerBarRenderer": {
+        "decoratedPlayerBarRenderer": {
+          "playerBar": {
+            "multiMarkersPlayerBarRenderer": {
+              "visibleOnLoad": {
+                "key": "AUTO_CHAPTERS"
+              },
+              "markersMap": [
+                {
+                  "key": "AUTO_CHAPTERS",
+                  "value": {
+                    "chapters": [
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Course introduction"
+                          },
+                          "timeRangeStartMillis": 0
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Course roadmap"
+                          },
+                          "timeRangeStartMillis": 149100
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "What is Python?"
+                          },
+                          "timeRangeStartMillis": 349947
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "How Python works"
+                          },
+                          "timeRangeStartMillis": 492405
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Why learn Python?"
+                          },
+                          "timeRangeStartMillis": 631340
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Setup environment"
+                          },
+                          "timeRangeStartMillis": 771301
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Code editor vs IDE"
+                          },
+                          "timeRangeStartMillis": 852765
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "VS Code setup"
+                          },
+                          "timeRangeStartMillis": 926737
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "First Python script"
+                          },
+                          "timeRangeStartMillis": 1045333
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Keyboard shortcuts"
+                          },
+                          "timeRangeStartMillis": 1165600
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Bonus upgrades"
+                          },
+                          "timeRangeStartMillis": 1245533
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Python roadmap template"
+                          },
+                          "timeRangeStartMillis": 1365120
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Comments"
+                          },
+                          "timeRangeStartMillis": 1490500
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Comments practice"
+                          },
+                          "timeRangeStartMillis": 1747120
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Print function"
+                          },
+                          "timeRangeStartMillis": 1877233
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Function sources"
+                          },
+                          "timeRangeStartMillis": 1940100
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Print function details"
+                          },
+                          "timeRangeStartMillis": 2041366
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Special characters"
+                          },
+                          "timeRangeStartMillis": 2163566
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Escape characters practice"
+                          },
+                          "timeRangeStartMillis": 2225466
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Triple quotes"
+                          },
+                          "timeRangeStartMillis": 2369033
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Print function use cases"
+                          },
+                          "timeRangeStartMillis": 2536033
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Challenge 1"
+                          },
+                          "timeRangeStartMillis": 2737433
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Variables"
+                          },
+                          "timeRangeStartMillis": 2737766
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Input function"
+                          },
+                          "timeRangeStartMillis": 2765400
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Variables practice"
+                          },
+                          "timeRangeStartMillis": 2962133
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Data Types Intro"
+                          },
+                          "timeRangeStartMillis": 3086566
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Numeric data types"
+                          },
+                          "timeRangeStartMillis": 3090000
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Boolean data type"
+                          },
+                          "timeRangeStartMillis": 3108633
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "None data type"
+                          },
+                          "timeRangeStartMillis": 3121866
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Data types practice"
+                          },
+                          "timeRangeStartMillis": 3125300
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "String data type"
+                          },
+                          "timeRangeStartMillis": 3132633
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "String indexing"
+                          },
+                          "timeRangeStartMillis": 3140000
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "String slicing"
+                          },
+                          "timeRangeStartMillis": 3160000
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "String methods"
+                          },
+                          "timeRangeStartMillis": 3176533
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "String validation"
+                          },
+                          "timeRangeStartMillis": 3393933
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "String formatting"
+                          },
+                          "timeRangeStartMillis": 3395366
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "String practice"
+                          },
+                          "timeRangeStartMillis": 3398566
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Numeric types"
+                          },
+                          "timeRangeStartMillis": 3412333
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Number conversion"
+                          },
+                          "timeRangeStartMillis": 3414300
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Math operators"
+                          },
+                          "timeRangeStartMillis": 3416233
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Rounding functions"
+                          },
+                          "timeRangeStartMillis": 3417800
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Random module"
+                          },
+                          "timeRangeStartMillis": 3434900
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Math module"
+                          },
+                          "timeRangeStartMillis": 3436433
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Number validation"
+                          },
+                          "timeRangeStartMillis": 3440333
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Number practice"
+                          },
+                          "timeRangeStartMillis": 3445966
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Logic and Operators"
+                          },
+                          "timeRangeStartMillis": 3453700
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Logical operators"
+                          },
+                          "timeRangeStartMillis": 3459266
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Comparison operators"
+                          },
+                          "timeRangeStartMillis": 3613600
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Operator practice"
+                          },
+                          "timeRangeStartMillis": 3647600
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Membership operators"
+                          },
+                          "timeRangeStartMillis": 3811920
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Identity operators"
+                          },
+                          "timeRangeStartMillis": 3828000
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Logical operators practice"
+                          },
+                          "timeRangeStartMillis": 3943400
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Conditional statements"
+                          },
+                          "timeRangeStartMillis": 4041600
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Nested if statements"
+                          },
+                          "timeRangeStartMillis": 4202399
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Inline if statement"
+                          },
+                          "timeRangeStartMillis": 4310560
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Match case"
+                          },
+                          "timeRangeStartMillis": 4445440
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Conditional practice"
+                          },
+                          "timeRangeStartMillis": 4543119
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "For loops"
+                          },
+                          "timeRangeStartMillis": 4704159
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Nested loops"
+                          },
+                          "timeRangeStartMillis": 4833279
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Loop statements"
+                          },
+                          "timeRangeStartMillis": 4914159
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "While loops"
+                          },
+                          "timeRangeStartMillis": 5040159
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Loop practice"
+                          },
+                          "timeRangeStartMillis": 5152320
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "List basics"
+                          },
+                          "timeRangeStartMillis": 5262718
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "List manipulation"
+                          },
+                          "timeRangeStartMillis": 5354958
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "List sorting"
+                          },
+                          "timeRangeStartMillis": 5462558
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "List copying"
+                          },
+                          "timeRangeStartMillis": 5555120
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "List combination"
+                          },
+                          "timeRangeStartMillis": 5664000
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "List comprehensions"
+                          },
+                          "timeRangeStartMillis": 5757120
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Advanced list techniques"
+                          },
+                          "timeRangeStartMillis": 5831920
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "List practice"
+                          },
+                          "timeRangeStartMillis": 5912320
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Tuples"
+                          },
+                          "timeRangeStartMillis": 6010000
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Sets"
+                          },
+                          "timeRangeStartMillis": 6079116
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Set operations"
+                          },
+                          "timeRangeStartMillis": 6138800
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Data structure practice"
+                          },
+                          "timeRangeStartMillis": 6202400
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Dictionaries basics"
+                          },
+                          "timeRangeStartMillis": 6306000
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Dictionary methods"
+                          },
+                          "timeRangeStartMillis": 6400000
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Dictionary iteration"
+                          },
+                          "timeRangeStartMillis": 6502720
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Dictionary practice"
+                          },
+                          "timeRangeStartMillis": 6563600
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Functions"
+                          },
+                          "timeRangeStartMillis": 6773200
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Functions parameters"
+                          },
+                          "timeRangeStartMillis": 6863600
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Return statement"
+                          },
+                          "timeRangeStartMillis": 6965600
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Function practice"
+                          },
+                          "timeRangeStartMillis": 7076638
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Function types"
+                          },
+                          "timeRangeStartMillis": 7184000
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Function best practices"
+                          },
+                          "timeRangeStartMillis": 7255840
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Advanced functions"
+                          },
+                          "timeRangeStartMillis": 7352320
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Variable scope"
+                          },
+                          "timeRangeStartMillis": 7433596
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Arguments in functions"
+                          },
+                          "timeRangeStartMillis": 7578080
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Functions advanced practice"
+                          },
+                          "timeRangeStartMillis": 7662400
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Course conclusion"
+                          },
+                          "timeRangeStartMillis": 7713000
+                        }
+                      }
+                    ],
+                    "onChapterRepeat": {
+                      "openPopupAction": {
+                        "popup": {
+                          "notificationActionRenderer": {
+                            "responseText": {
+                              "runs": [
+                                {
+                                  "text": "Chapter repeat is on"
+                                }
+                              ]
+                            },
+                            "actionButton": {
+                              "buttonRenderer": {
+                                "style": "STYLE_BLUE_TEXT",
+                                "text": {
+                                  "runs": [
+                                    {
+                                      "text": "Turn off"
+                                    }
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "popupType": "TOAST"
+                      }
+                    }
+                  }
+                },
+                {
+                  "key": "ANIMATION_ANNOTATION_MARKERS",
+                  "value": {
+                    "markers": [
+                      {
+                        "markerRenderer": {
+                          "title": {},
+                          "timeRangeStartMillis": 46951916
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "playerBarActionButton": {
+            "buttonRenderer": {
+              "text": {
+                "runs": [
+                  {
+                    "text": "View Chapters"
+                  }
+                ]
+              }
+            }
+          },
+          "buttonType": "DECORATED_PLAYER_BAR_BUTTON_TYPE_CHAPTERS"
+        }
+      }
+    }
+  }
+}

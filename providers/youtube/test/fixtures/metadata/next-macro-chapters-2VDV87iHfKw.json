@@ -1,0 +1,341 @@
+{
+  "engagementPanels": [
+    {
+      "engagementPanelSectionListRenderer": {
+        "panelIdentifier": "engagement-panel-macro-markers-description-chapters",
+        "targetId": "engagement-panel-macro-markers-description-chapters",
+        "content": {
+          "macroMarkersListRenderer": {
+            "contents": [
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "David Spade Feels..."
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "0 seconds"
+                      }
+                    },
+                    "simpleText": "0:00"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "2VDV87iHfKw",
+                      "startTimeSeconds": 0
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Conan’s Pomegranate Tree"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "27 seconds"
+                      }
+                    },
+                    "simpleText": "0:27"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "2VDV87iHfKw",
+                      "startTimeSeconds": 27
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Interview Start"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "10 minutes, 30 seconds"
+                      }
+                    },
+                    "simpleText": "10:30"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "2VDV87iHfKw",
+                      "startTimeSeconds": 630
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Stolen Car"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "13 minutes, 9 seconds"
+                      }
+                    },
+                    "simpleText": "13:09"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "2VDV87iHfKw",
+                      "startTimeSeconds": 789
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "SNL"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "19 minutes, 32 seconds"
+                      }
+                    },
+                    "simpleText": "19:32"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "2VDV87iHfKw",
+                      "startTimeSeconds": 1172
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Chris Farley"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "31 minutes, 40 seconds"
+                      }
+                    },
+                    "simpleText": "31:40"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "2VDV87iHfKw",
+                      "startTimeSeconds": 1900
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Norm Macdonald"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "38 minutes, 31 seconds"
+                      }
+                    },
+                    "simpleText": "38:31"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "2VDV87iHfKw",
+                      "startTimeSeconds": 2311
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "SNL 50th"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "56 minutes, 40 seconds"
+                      }
+                    },
+                    "simpleText": "56:40"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "2VDV87iHfKw",
+                      "startTimeSeconds": 3400
+                    }
+                  }
+                }
+              },
+              {
+                "macroMarkersListItemRenderer": {
+                  "title": {
+                    "simpleText": "Mark Twain Prize"
+                  },
+                  "timeDescription": {
+                    "accessibility": {
+                      "accessibilityData": {
+                        "label": "1 hour, 1 minute, 50 seconds"
+                      }
+                    },
+                    "simpleText": "1:01:50"
+                  },
+                  "onTap": {
+                    "watchEndpoint": {
+                      "videoId": "2VDV87iHfKw",
+                      "startTimeSeconds": 3710
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "playerOverlays": {
+    "playerOverlayRenderer": {
+      "decoratedPlayerBarRenderer": {
+        "decoratedPlayerBarRenderer": {
+          "playerBar": {
+            "multiMarkersPlayerBarRenderer": {
+              "visibleOnLoad": {
+                "key": "DESCRIPTION_CHAPTERS"
+              },
+              "markersMap": [
+                {
+                  "key": "DESCRIPTION_CHAPTERS",
+                  "value": {
+                    "chapters": [
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "David Spade Feels..."
+                          },
+                          "timeRangeStartMillis": 0
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Conan’s Pomegranate Tree"
+                          },
+                          "timeRangeStartMillis": 27000
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Interview Start"
+                          },
+                          "timeRangeStartMillis": 630000
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Stolen Car"
+                          },
+                          "timeRangeStartMillis": 789000
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "SNL"
+                          },
+                          "timeRangeStartMillis": 1172000
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Chris Farley"
+                          },
+                          "timeRangeStartMillis": 1900000
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Norm Macdonald"
+                          },
+                          "timeRangeStartMillis": 2311000
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "SNL 50th"
+                          },
+                          "timeRangeStartMillis": 3400000
+                        }
+                      },
+                      {
+                        "chapterRenderer": {
+                          "title": {
+                            "simpleText": "Mark Twain Prize"
+                          },
+                          "timeRangeStartMillis": 3710000
+                        }
+                      }
+                    ],
+                    "onChapterRepeat": {
+                      "openPopupAction": {
+                        "popup": {
+                          "notificationActionRenderer": {
+                            "responseText": {
+                              "runs": [
+                                {
+                                  "text": "Chapter repeat is on"
+                                }
+                              ]
+                            },
+                            "actionButton": {
+                              "buttonRenderer": {
+                                "style": "STYLE_BLUE_TEXT",
+                                "text": {
+                                  "runs": [
+                                    {
+                                      "text": "Turn off"
+                                    }
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "popupType": "TOAST"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "playerBarActionButton": {
+            "buttonRenderer": {
+              "text": {
+                "runs": [
+                  {
+                    "text": "View Chapters"
+                  }
+                ]
+              }
+            }
+          },
+          "buttonType": "DECORATED_PLAYER_BAR_BUTTON_TYPE_CHAPTERS"
+        }
+      }
+    }
+  }
+}
