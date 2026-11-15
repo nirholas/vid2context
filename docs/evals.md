@@ -192,3 +192,7 @@ Reading these numbers:
 - OVH is about four times faster than whisper.cpp small on this CPU but was rate-limited (HTTP 429) several times during the run; `transcribeLong` waited those out, so the latency columns include no waits but the wall time did.
 
 A three-item run (`LIVE=1 npm run eval -- --suite stt --limit 3`, black hole, Recientemente, Apollo) gives the same per-item numbers.
+
+### Not yet measured: captions and cleanup
+
+Both need a video's YouTube auto-caption track next to its creator track. On 2026-11-15 the cleanup suite ran end to end on this VM, but YouTube answered every auto-track download with HTTP 429 (the YouTube provider's timedtext breaker and yt-dlp both), so all six items failed with `blocked` and no table was produced. The scoring itself is unit-tested offline on a real pair ("Me at the zoo" creator captions against the unpunctuated auto-captions of a reupload of the same audio, `test/cleanup.test.ts`). Rerun `LIVE=1 npm run eval -- --suite cleanup --record` from an IP YouTube does not rate-limit; `--record` commits the auto tracks for the NASA and TED entries.
