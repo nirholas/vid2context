@@ -55,6 +55,10 @@ export function captionsFieldsFromFlags(c: CommandContext): Omit<RawCaptionsRequ
     allowTranslated: !bool(c.values, 'no-translate'),
     timestamps: bool(c.values, 'timestamps'),
     zip: bool(c.values, 'zip'),
+    offset: str(c.values, 'offset'),
+    maxLineChars: str(c.values, 'max-line-chars'),
+    maxLines: str(c.values, 'max-lines'),
+    secondary: str(c.values, 'secondary'),
   };
 }
 
@@ -115,7 +119,9 @@ export async function captionsCommand(c: CommandContext): Promise<number> {
       });
       c.progress.stop();
       c.out.text(c.json ? `${JSON.stringify({ dir, file }, null, 2)}\n` : `${file.path}\n`);
-      const via = file.tracks?.map((t) => `${t.language} (${t.origin}, ${t.via})`).join(', ');
+      const via = file.tracks
+        ?.map((t) => `${t.language}${t.secondary ? ` + ${t.secondary}` : ''} (${t.origin}, ${t.via})`)
+        .join(', ');
       c.note(`saved ${file.filename} (${mb(file.bytes)})${via ? `: ${via}` : ''}`);
       for (const w of file.warnings) c.note(`note: ${w}`);
       return 0;

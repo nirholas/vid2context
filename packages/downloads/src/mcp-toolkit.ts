@@ -8,7 +8,7 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { RequestHandlerExtra } from '@modelcontextprotocol/sdk/shared/protocol.js';
 import type { ServerNotification, ServerRequest } from '@modelcontextprotocol/sdk/types.js';
-import { attemptsOf, type Ctx, Vid2ContextError } from '@vid2context/core';
+import { attemptsOf, type Ctx, LINE_CHARS_RANGE, LINES_RANGE, Vid2ContextError } from '@vid2context/core';
 import { z } from 'zod';
 import type { BatchItem } from './batch.ts';
 import { CAPTION_FORMATS, CAPTION_MODES, CAPTION_VIA, type CaptionTracks } from './captions.ts';
@@ -178,7 +178,8 @@ export function registerToolkitTools(server: McpServer, deps: ToolkitToolDeps): 
     {
       title: 'Download captions or subtitles',
       description:
-        'Save the captions of a video as srt (default), vtt, txt, json (timed segments), markdown, or the original file the site serves, to a folder on this machine; returns the path. ' +
+        `Save the captions of a video as ${CAPTION_FORMATS.filter((f) => f !== 'original').join(', ')} or the original file the site serves, to a folder on this machine; returns the path. ` +
+        'offsetSec retimes the cues, maxLineChars and maxLines reflow them, and secondary adds a second language under each caption. ' +
         'Works for every source vid2context reads, through its transcript pipeline (no yt-dlp needed), with yt-dlp as a second path; ' +
         'for a video without captions, mode auto (default) transcribes the audio with speech-to-text. ' +
         'languages: one or several codes, or ["all"] for every track; several files come as one .zip. ' +
@@ -189,7 +190,20 @@ export function registerToolkitTools(server: McpServer, deps: ToolkitToolDeps): 
           .array(z.string())
           .optional()
           .describe('Language codes, e.g. ["en","de"], or ["all"]. Default: the spoken language'),
-        format: z.enum(CAPTION_FORMATS).optional().describe('srt (default), vtt, txt, json, markdown or original'),
+        format: z
+          .enum(CAPTION_FORMATS as [string, ...string[]])
+          .optional()
+          .describe(`${CAPTION_FORMATS.join(', ')} (default srt; original keeps the site's file)`),
+        offsetSec: z.number().optional().describe('Shift every cue by this many seconds (negative: earlier); timed formats only'),
+        maxLineChars: z
+          .number()
+          .int()
+          .min(LINE_CHARS_RANGE.min)
+          .max(LINE_CHARS_RANGE.max)
+          .optional()
+          .describe('Longest caption line in characters (cue formats, default 42)'),
+        maxLines: z.number().int().min(LINES_RANGE.min).max(LINES_RANGE.max).optional().describe('Most lines per cue (default 2)'),
+        secondary: z.string().optional().describe('A second language shown under each caption, e.g. "de" (bilingual formats)'),
         mode: z
           .enum(CAPTION_MODES)
           .optional()

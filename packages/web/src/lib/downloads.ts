@@ -4,10 +4,10 @@
  * progress and saves the finished file straight from the API (a plain link,
  * so large files stream to disk instead of being held in memory).
  */
-import type { DownloadJob, MediaOptions, RawDownloadRequest } from '@vid2context/downloads';
+import type { CaptionTracks, DownloadJob, MediaOptions, RawDownloadRequest, TaskJob } from '@vid2context/downloads';
 import { apiBase, apiUrl, type CallOptions, requestJson } from './api.ts';
 
-export type { AudioChoice, DownloadJob, MediaOptions, VideoChoice } from '@vid2context/downloads';
+export type { AudioChoice, CaptionTracks, DownloadJob, MediaOptions, TaskJob, VideoChoice } from '@vid2context/downloads';
 export {
   AUDIO_FORMATS,
   type AudioFormat,
@@ -27,7 +27,67 @@ export interface DownloadStatus {
   formats: { video: { id: string; label: string }[]; audio: { id: string; label: string }[] };
   qualities: { video: string[]; audio: string[] };
   sponsorCategories: string[];
+  /** Image formats GET /downloads/thumbnail can return. */
+  thumbnailFormats?: string[];
   ytdlp?: string;
+}
+
+/** A download (video or audio) or a toolkit task (captions, frames, clip, batch): one job API serves both. */
+export type AnyJob = DownloadJob | TaskJob;
+
+/** GET /downloads/toolkit: what the media toolkit offers here, with its defaults and limits. */
+export interface ToolkitInfo {
+  enabled: boolean;
+  reason?: string;
+  captions: {
+    formats: { id: string; label: string }[];
+    modes: string[];
+    via: string[];
+    defaults: { format: string; mode: string };
+    maxTracks: number;
+  };
+  frames: { formats: string[]; defaults: { format: string; quality: string }; maxFrames: number };
+  clips: {
+    formats: string[];
+    defaults: { format: string; fps: number; width: number; lengthSec: number };
+    maxSec: number;
+    maxWidth: number;
+    maxFps: number;
+  };
+  batch: { kinds: string[]; maxItems: number };
+}
+
+/** GET /downloads/toolkit. Older servers without the toolkit answer 404, which callers treat as "off". */
+export function getToolkit(call: CallOptions = {}): Promise<ToolkitInfo> {
+  return requestJson<ToolkitInfo>('GET', '/downloads/toolkit', {}, undefined, call);
+}
+
+/** GET /downloads/captions/tracks: every caption track of one video, its translation targets and the output formats. */
+export function getCaptionTracks(url: string, call: CallOptions = {}): Promise<CaptionTracks> {
+  return requestJson<CaptionTracks>('GET', '/downloads/captions/tracks', { url }, undefined, call);
+}
+
+/** The toolkit routes, by what they make. */
+export type TaskRoute = 'captions' | 'frames' | 'clips' | 'batch';
+
+/** POST /downloads/{captions,frames,clips,batch}: start a task; the server answers 202 with it. */
+export function startTask(route: TaskRoute, body: Record<string, unknown>, call: CallOptions = {}): Promise<TaskJob> {
+  return requestJson<TaskJob>('POST', `/downloads/${route}`, {}, body, call);
+}
+
+/** The video's thumbnail as an image file (GET /downloads/thumbnail), saved by the browser from a plain link. */
+export function thumbnailUrl(url: string, format = 'jpg', inline = false, base = apiBase()): string {
+  return apiUrl('/downloads/thumbnail', { url, format, ...(inline ? { inline: '1' } : {}) }, base);
+}
+
+/** One chapter file of a download split by chapters (`?part=N`, 0-based). */
+export function downloadPartUrl(id: string, part: number, base = apiBase()): string {
+  return apiUrl(`/downloads/${encodeURIComponent(id)}/file`, { part: String(part) }, base);
+}
+
+/** Item `n` (0-based) of a batch saved without a .zip. */
+export function downloadItemUrl(id: string, n: number, inline = false, base = apiBase()): string {
+  return apiUrl(`/downloads/${encodeURIComponent(id)}/items/${n}/file`, inline ? { inline: '1' } : {}, base);
 }
 
 /** GET /downloads/status: whether this server downloads media, and its limits. */
@@ -49,8 +109,8 @@ export function startDownload(body: DownloadBody, call: CallOptions = {}): Promi
 }
 
 /** GET /downloads/:id: the job with its progress. */
-export function getDownloadJob(id: string, call: CallOptions = {}): Promise<DownloadJob> {
-  return requestJson<DownloadJob>('GET', `/downloads/${encodeURIComponent(id)}`, {}, undefined, call);
+export function getDownloadJob(id: string, call: CallOptions = {}): Promise<AnyJob> {
+  return requestJson<AnyJob>('GET', `/downloads/${encodeURIComponent(id)}`, {}, undefined, call);
 }
 
 /** DELETE /downloads/:id: cancel a running job or delete a finished file. */
@@ -63,7 +123,7 @@ export function downloadFileUrl(id: string, inline = false, base = apiBase()): s
   return apiUrl(`/downloads/${encodeURIComponent(id)}/file`, inline ? { inline: '1' } : {}, base);
 }
 
-export function isFinished(job: DownloadJob): boolean {
+export function isFinished(job: Pick<AnyJob, 'status'>): boolean {
   return job.status === 'done' || job.status === 'error' || job.status === 'canceled';
 }
 
@@ -128,17 +188,37 @@ const STEPS: Record<string, string> = {
   Trim: 'Trimming',
   Convert: 'Converting',
   Remux: 'Remuxing',
+  'Burn subtitles': 'Burning in subtitles',
+  Listing: 'Listing the videos',
+  Frames: 'Grabbing frames',
+  GIF: 'Making the GIF',
+  WebP: 'Making the WebP',
+  Zip: 'Packing the .zip',
 };
 
-/** One line describing where a job is: "Downloading 38%", "Merging video and audio". */
-export function phaseLabel(job: DownloadJob): string {
+/** A readable processing step: "Merging video and audio", "Captions (de)", "Item 2 of 5: Converting audio". */
+export function stepLabel(step: string): string {
+  const batch = /^(\d+)\/(\d+)(?:\s+(.+))?$/.exec(step);
+  if (batch) return `Item ${batch[1]} of ${batch[2]}${batch[3] ? `: ${stepLabel(batch[3])}` : ''}`;
+  const captions = /^Captions\s+(\S+)(?:\s+\((.+)\))?$/.exec(step);
+  if (captions) {
+    const lang = captions[1] === 'default' ? 'spoken language' : captions[1];
+    return `Captions (${lang}${captions[2] ? `, ${captions[2]}` : ''})`;
+  }
+  return STEPS[step] ?? step;
+}
+
+/** One line describing where a job is: "Downloading 38%", "Merging video and audio 40%". */
+export function phaseLabel(job: Pick<AnyJob, 'status' | 'progress'>): string {
   const p = job.progress;
   if (job.status === 'queued') return 'Waiting for a free slot';
   if (job.status === 'canceled') return 'Canceled';
   if (job.status === 'error') return 'Failed';
   if (job.status === 'done') return 'Ready';
-  if (p.phase === 'processing') return p.step ? (STEPS[p.step] ?? p.step) : 'Processing';
-  if (p.phase === 'downloading') return p.percent !== undefined ? `Downloading ${Math.round(p.percent)}%` : 'Downloading';
+  // The percentage is the current step's own progress, and absent while unknown.
+  const pct = p.percent !== undefined ? ` ${Math.round(p.percent)}%` : '';
+  if (p.phase === 'processing') return `${p.step ? stepLabel(p.step) : 'Processing'}${pct}`;
+  if (p.phase === 'downloading') return `Downloading${pct}`;
   return 'Preparing';
 }
 
@@ -157,6 +237,10 @@ export interface DownloadSettings {
   embedChapters: boolean;
   /** One subtitle language to embed in a video, or '' for none. */
   subtitles: string;
+  /** One subtitle language to burn into the picture (always visible, re-encodes), or '' for none. */
+  burnSubtitles: string;
+  /** Also save one file per chapter. */
+  splitChapters: boolean;
   removeSponsors: boolean;
 }
 
@@ -172,6 +256,8 @@ export const DEFAULT_SETTINGS: DownloadSettings = {
   embedMetadata: true,
   embedChapters: true,
   subtitles: '',
+  burnSubtitles: '',
+  splitChapters: false,
   removeSponsors: false,
 };
 
@@ -194,7 +280,7 @@ export function withKind(s: DownloadSettings, kind: 'video' | 'audio', options?:
   if (s.kind === kind) return s;
   return kind === 'video'
     ? { ...s, kind, format: 'mp4', quality: fitQuality(options, 'video', '1080') }
-    : { ...s, kind, format: 'mp3', quality: 'best', subtitles: '' };
+    : { ...s, kind, format: 'mp3', quality: 'best', subtitles: '', burnSubtitles: '' };
 }
 
 /** The POST /downloads body for these settings. */
@@ -215,6 +301,9 @@ export function buildBody(url: string, s: DownloadSettings): DownloadBody {
   }
   if (s.part === 'chapter') body.chapter = s.chapter;
   if (s.kind === 'video' && s.subtitles) body.subtitles = [s.subtitles];
+  if (s.kind === 'video' && s.burnSubtitles) body.burnSubtitles = s.burnSubtitles;
+  // A chapter split needs the whole video: the chapter times would not fit a trimmed part.
+  if (s.splitChapters && s.part === 'all') body.splitChapters = true;
   if (s.removeSponsors) body.removeSegments = [...SPONSOR_SWITCH];
   return body;
 }

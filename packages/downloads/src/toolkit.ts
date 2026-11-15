@@ -38,7 +38,15 @@ export interface ToolkitFile {
   /** For a .zip: the files inside it. */
   entries?: { name: string; bytes: number }[];
   /** Captions: one entry per language written, with where its text came from. */
-  tracks?: { language: string; origin: string; producer: string; via: 'pipeline' | 'ytdlp' | 'file'; translated?: boolean }[];
+  tracks?: {
+    language: string;
+    origin: string;
+    producer: string;
+    via: 'pipeline' | 'ytdlp' | 'file';
+    translated?: boolean;
+    /** Bilingual output: the second language shown under each caption. */
+    secondary?: string;
+  }[];
   warnings: string[];
 }
 

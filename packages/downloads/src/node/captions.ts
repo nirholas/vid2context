@@ -44,8 +44,8 @@ import {
 } from '@vid2context/provider-ytdlp';
 import { fetchYouTubePlayer, readTranslationLanguages } from '@vid2context/research';
 import {
-  CAPTION_FORMAT_LABELS,
-  CAPTION_FORMATS,
+  type CaptionRenderOptions,
+  captionFormatList,
   type CaptionsRequest,
   type CaptionTrack,
   type CaptionTracks,
@@ -190,7 +190,7 @@ export function createCaptionsEngine({ registry }: CaptionsEngineDeps) {
       tracks,
       translationTargets,
       speechToText,
-      formats: CAPTION_FORMATS.map((id) => ({ id, label: CAPTION_FORMAT_LABELS[id] })),
+      formats: captionFormatList(),
       notes,
     };
   }
@@ -384,6 +384,37 @@ export function createCaptionsEngine({ registry }: CaptionsEngineDeps) {
     return { data: res.stdout, ext: p.ext, language: lang };
   }
 
+  /** The second language's transcript for bilingual output: the pipeline (captions only), then yt-dlp. */
+  async function secondaryTranscript(
+    req: CaptionsRequest,
+    target: Resolved,
+    language: string,
+    ctx: Ctx,
+    opts: TaskOptions,
+  ): Promise<Transcript> {
+    const order = req.via === 'pipeline' ? ['pipeline'] : req.via === 'ytdlp' ? ['ytdlp'] : ['pipeline', 'ytdlp'];
+    const asCaptions: CaptionsRequest = { ...req, mode: 'captions', format: 'vtt' };
+    let firstError: unknown;
+    for (const path of order) {
+      try {
+        if (path === 'pipeline') {
+          const c = await viaPipeline(asCaptions, language, false, ctx, opts);
+          if (c) return c.transcript;
+        } else {
+          const got = await viaYtdlp(asCaptions, target, language, ctx);
+          if (got && got.context.transcript.segments.length > 0) return got.context.transcript;
+        }
+      } catch (err) {
+        if (ctx.signal?.aborted) throw err;
+        firstError ??= err;
+      }
+    }
+    if (firstError) throw firstError;
+    throw new Vid2ContextError('no-transcript', `No ${language} captions for ${target.ref.id}.`, {
+      hint: 'Pick a language from the track list or its translation targets.',
+    });
+  }
+
   /** The languages to write: as asked, every listed track, or the default (undefined). */
   async function languagesFor(req: CaptionsRequest, ctx: Ctx, warnings: string[]): Promise<(string | undefined)[]> {
     const max = toolkitLimits(ctx.env).maxCaptionTracks;
@@ -419,6 +450,26 @@ export function createCaptionsEngine({ registry }: CaptionsEngineDeps) {
     const failures: { language: string; error: unknown }[] = [];
     let title = target.file ? basename(target.file).replace(/\.[^.]+$/, '') : undefined;
     const id = target.file ? undefined : target.ref.nativeId;
+
+    // Bilingual output: the second language is fetched once, by the same paths as the primary (no speech-to-text:
+    // it is meant to be another language than the spoken one).
+    let second: Transcript | undefined;
+    if (req.secondary) {
+      report?.({ phase: 'downloading', downloadedBytes: 0, percent: 0, step: `Captions ${req.secondary} (second language)` });
+      second = await secondaryTranscript(req, target, req.secondary, ctx, opts).catch((err: unknown) => {
+        if (ctx.signal?.aborted) throw err;
+        warnings.push(`The second language (${req.secondary}) could not be fetched, so the files have one language: ${message(err)}`);
+        return undefined;
+      });
+    }
+    const render: CaptionRenderOptions = {
+      timestamps: req.timestamps,
+      ...(req.offsetSec !== undefined ? { offsetSec: req.offsetSec } : {}),
+      ...(req.maxLineChars !== undefined ? { maxLineChars: req.maxLineChars } : {}),
+      ...(req.maxLines !== undefined ? { maxLines: req.maxLines } : {}),
+      ...(second ? { secondary: second } : {}),
+    };
+    const pairSuffix = second ? `+${second.language}` : '';
 
     for (const [i, language] of languages.entries()) {
       report?.({
@@ -463,9 +514,9 @@ export function createCaptionsEngine({ registry }: CaptionsEngineDeps) {
               });
             } else {
               if (got.context.transcript.segments.length === 0) continue;
-              const r = renderCaptions(got.context, req.format, { timestamps: req.timestamps });
+              const r = renderCaptions(got.context, req.format, render);
               pieces.push({
-                name: outputName({ title, ...(id ? { id } : {}), ext: `${got.language}.${r.ext}` }),
+                name: outputName({ title, ...(id ? { id } : {}), ext: `${got.language}${pairSuffix}.${r.ext}` }),
                 data: new TextEncoder().encode(r.text),
                 mimeType: r.mimeType,
               });
@@ -476,6 +527,7 @@ export function createCaptionsEngine({ registry }: CaptionsEngineDeps) {
               producer: 'ytdlp-captions',
               via: 'ytdlp',
               ...(got.translated ? { translated: true } : {}),
+              ...(second && req.format !== 'original' ? { secondary: second.language } : {}),
             });
             done = true;
           } else if (path === 'pipeline') {
@@ -488,9 +540,9 @@ export function createCaptionsEngine({ registry }: CaptionsEngineDeps) {
                 `No original file for ${c.transcript.language}; saved WebVTT made from the ${c.transcript.origin} transcript instead.`,
               );
             }
-            const r = renderCaptions(c, format, { timestamps: req.timestamps });
+            const r = renderCaptions(c, format, render);
             pieces.push({
-              name: outputName({ title, ...(id ? { id } : {}), ext: `${c.transcript.language}.${r.ext}` }),
+              name: outputName({ title, ...(id ? { id } : {}), ext: `${c.transcript.language}${pairSuffix}.${r.ext}` }),
               data: new TextEncoder().encode(r.text),
               mimeType: r.mimeType,
             });
@@ -500,6 +552,7 @@ export function createCaptionsEngine({ registry }: CaptionsEngineDeps) {
               producer: c.transcript.producer,
               via: 'pipeline',
               ...(c.transcript.translated ? { translated: true } : {}),
+              ...(second ? { secondary: second.language } : {}),
             });
             done = true;
           }

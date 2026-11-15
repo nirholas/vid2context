@@ -3,7 +3,7 @@
  * all generated from it, so they cannot drift apart. Formatter ids come from
  * the `formatters` map at runtime, never from a list written here.
  */
-import { formatters } from '@vid2context/core';
+import { formatters, LINE_CHARS_RANGE, LINES_RANGE } from '@vid2context/core';
 import {
   AUDIO_FORMATS,
   AUDIO_QUALITIES,
@@ -248,6 +248,30 @@ export const FLAGS: Record<string, FlagSpec> = {
   },
   'no-auto': { name: 'no-auto', type: 'boolean', description: "Never use the platform's automatic captions" },
   'no-translate': { name: 'no-translate', type: 'boolean', description: "Never use the platform's machine translation" },
+  offset: {
+    name: 'offset',
+    type: 'string',
+    arg: '<sec>',
+    description: 'Shift every caption by this many seconds (negative: earlier), e.g. 2.5 or -1',
+  },
+  'max-line-chars': {
+    name: 'max-line-chars',
+    type: 'string',
+    arg: '<n>',
+    description: `Longest caption line, ${LINE_CHARS_RANGE.min} to ${LINE_CHARS_RANGE.max} characters (default 42)`,
+  },
+  'max-lines': {
+    name: 'max-lines',
+    type: 'string',
+    arg: '<n>',
+    description: `Most lines per caption, ${LINES_RANGE.min} to ${LINES_RANGE.max} (default 2)`,
+  },
+  secondary: {
+    name: 'secondary',
+    type: 'string',
+    arg: '<lang>',
+    description: 'Show a second language under each caption (bilingual srt, vtt, ass, ...)',
+  },
 };
 
 export const GLOBAL_FLAGS = [
@@ -281,6 +305,7 @@ const DOWNLOAD_NOTES = [
 
 const CAPTIONS_NOTES = [
   `-f picks the format: ${CAPTION_FORMATS.join(', ')} (default srt). txt takes --timestamps.`,
+  '--offset retimes every caption; --max-line-chars and --max-lines reflow the cue formats; --secondary <lang> adds a second language under each caption, fetched like the first.',
   '--lang takes one or several codes (en,de) or all; without it you get the spoken language. Several files come as one .zip (--zip forces one).',
   'Text comes from the transcript pipeline first (any source, no yt-dlp needed), then from yt-dlp. -f original keeps the file the site serves (or the local sidecar or embedded stream).',
   '--mode auto (default) transcribes the audio with speech-to-text when a video has no captions; --mode captions never does; --mode stt always does.',
@@ -411,7 +436,20 @@ export const COMMANDS: CommandSpec[] = [
     name: 'captions',
     args: '<inputs...>',
     summary: 'Save captions or subtitles only: srt, vtt, txt, json, markdown or the original file',
-    flags: ['list', 'via', 'no-auto', 'no-translate', 'zip', 'dir', 'limit', 'playlist'],
+    flags: [
+      'list',
+      'via',
+      'no-auto',
+      'no-translate',
+      'offset',
+      'max-line-chars',
+      'max-lines',
+      'secondary',
+      'zip',
+      'dir',
+      'limit',
+      'playlist',
+    ],
     completesFiles: true,
     notes: CAPTIONS_NOTES,
     examples: [
@@ -420,6 +458,7 @@ export const COMMANDS: CommandSpec[] = [
       'vid2context captions jNQXAC9IVRw --lang en,de -f vtt   # two files, as one .zip',
       'vid2context captions jNQXAC9IVRw --lang all -f original',
       'vid2context captions ./lecture.mkv -f txt --timestamps',
+      'vid2context captions jNQXAC9IVRw --lang en --secondary de -f ass --offset -0.5',
       'vid2context captions <podcast-or-video-without-captions> --mode auto  # speech-to-text',
       'vid2context captions <playlist-url> --limit 20 --zip',
     ],

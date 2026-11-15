@@ -17,7 +17,8 @@
  */
 import { type Ctx, enforceInputPolicy, Vid2ContextError } from '@vid2context/core';
 import { type Context, Hono } from 'hono';
-import { CAPTION_FORMAT_LABELS, CAPTION_FORMATS, CAPTION_MODES, CAPTION_VIA } from './captions.ts';
+import { LINE_CHARS_RANGE, LINES_RANGE } from '@vid2context/core';
+import { CAPTION_MODES, CAPTION_VIA, captionFormatList } from './captions.ts';
 import { ANIMATION_FORMATS, DEFAULT_CLIP_FPS, DEFAULT_CLIP_WIDTH, FRAME_FORMATS } from './clips.ts';
 import { contentDisposition, type DownloadsRouteDeps, parseRange } from './http.ts';
 import { toolkitLimits } from './limits.ts';
@@ -86,11 +87,13 @@ export function toolkitRoutes(deps: DownloadsRouteDeps): Hono {
       enabled: available,
       ...(!policy.enabled && policy.reason ? { reason: policy.reason } : {}),
       captions: {
-        formats: CAPTION_FORMATS.map((id) => ({ id, label: CAPTION_FORMAT_LABELS[id] })),
+        formats: captionFormatList(),
         modes: CAPTION_MODES,
         via: CAPTION_VIA,
         defaults: { format: 'srt', mode: 'auto', via: 'auto', allowAuto: true, allowTranslated: true },
         maxTracks: limits.maxCaptionTracks,
+        // Options of POST /downloads/captions beyond the format: offsetSec (any number), the cue layout, and secondary (a language).
+        layout: { maxLineChars: LINE_CHARS_RANGE, maxLines: LINES_RANGE },
       },
       frames: { formats: FRAME_FORMATS, defaults: { format: 'png', quality: '1080' }, maxFrames: limits.maxFrames },
       clips: {
