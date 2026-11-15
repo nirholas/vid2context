@@ -6,6 +6,14 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ### Added
 
+- Playlist view in the web app: rows show each video's title and length from the list page (new optional `VideoRef.title` and `durationSec` listing hints, read by the YouTube lister; also in `GET /items` and MCP `list_items`). Repeated entries are left out. A video waiting on a retry shows a live countdown and "Retry now", which cancels that job and starts it again. Stop and Retry now cancel the server job (`DELETE /jobs/:id`) instead of leaving it to retry for nobody.
+- Job `progress` events carry `retryAt` while a failed attempt waits to be retried.
+
+### Fixed
+
+- Web playlist view: the progress line no longer counts failures as done ("1 of 3 done, 1 failed"), and long status messages wrap instead of being cut off.
+- The no-transcript hint follows what was tried: it suggests installing yt-dlp only when no source could download the audio, and otherwise says whether the download was blocked or speech-to-text failed.
+
 - Web app Captions page (`?view=captions`, in the sidebar and linked from every result): list every caption track of a video, preview one, save it as SRT, WebVTT, text or JSON, save all tracks as one .zip (tracks the platform refuses are listed, not fatal), or translate into a language the video has no track for. A playlist or channel saves every video's captions in one .zip. Captions only: no media is downloaded or transcribed.
 - Web app: in-browser Whisper runs in a Web Worker, so transcribing a long file no longer freezes the page and Cancel really stops it. The worker reads the app's 16 kHz WAV without Web Audio, which workers lack.
 - Stall protection in the rung chain: a hosted rung that does not answer within `VID2CONTEXT_RUNG_TIMEOUT_MS` (default 3 minutes) is abandoned, recorded as `timeout`, skipped for a minute, and the next rung gets its turn. Rate-limit cooldowns are capped at 10 minutes, so one huge `Retry-After` cannot disable a provider for a day.

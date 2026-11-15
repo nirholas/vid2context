@@ -31,6 +31,8 @@ console.log(brief.markdown);
 5. Reduce. Claims are grouped by normalized topic (lowercase, stop words and simple plurals folded) and packed into batches; an LLM merges topics that mean the same thing and groups claims into points with `support`, `oppose` and a `counter` sentence. By default the reduce step uses policy `quality` (unless you set a policy), so it prefers the strongest rung you have.
 6. Classify, in code, never by the model: a point is `consensus` when its supporting claims come from two or more distinct videos and nothing opposes it, `disagreement` when claims sit on both sides, `single-source` otherwise. Verified claims that no point mentions become single-source points, so nothing verified is lost.
 
+A model answer that is not a JSON object is retried on the next rung, up to three rungs (`JSON_ATTEMPTS`). Free rungs often stop at their output limit in the middle of a long answer; when no rung returns a whole object, the longest cut-off answer is used for the claims it finished (`salvageTruncatedJson`), and `notes` says so. If nothing usable comes back, the single pass fails with `all-rungs-failed` and the attempts, instead of returning an empty brief.
+
 Calls run one at a time, so keyless lanes stay under their per-minute limits. When every rung is rate-limited, the call waits about a minute (a little over the chain's cooldown) and retries, up to `rateLimitRetries` times (default 3). The result records which rung served each step (`rungs`) and every attempt (`attempts`). Steps that failed without sinking the whole run are listed in `notes` and in the Markdown.
 
 ## Citation verification
@@ -41,6 +43,7 @@ Calls run one at a time, so keyless lanes stay under their per-minute limits. Wh
 - A quote needs at least 4 words (`MIN_QUOTE_TOKENS`); shorter ones match almost anywhere and prove nothing.
 - The window is every segment overlapping `startSec` plus or minus 30 s (`WINDOW_SEC`), extended by the quote's own length.
 - Score: a span of `ceil(1.25 x quote words)` transcript words slides over the window; the score is the best count of quote words found in the span (order ignored) divided by the quote's word count. A claim passes at 0.8 (`THRESHOLD`) or more. An exact quote scores 1.0; a quote with about one word in five changed or misheard still passes; a paraphrase in different words fails.
+- Quotes longer than 40 words (`MAX_QUOTE_WORDS`) are cut to their first 40 words before the check, and the cut quote is what the citation keeps. Free models sometimes copy minutes of transcript as one "quote"; a citation should point at one moment.
 - On a pass, `startSec` is snapped to the start of the segment holding the first matched word, and `endSec` to the end of the segment holding the last. The link comes from core `timestampUrl`.
 - On a fail, the whole transcript is searched. A quote found at another time is rejected as `quote-at-other-time` (with `foundAtSec`), because the model mixed up its sources; otherwise `quote-not-found`. Other reasons: `unknown-video`, `no-quote`, `quote-too-short`, `bad-timestamp`.
 
@@ -56,7 +59,7 @@ Unverified claims never appear as cited. They are listed in `unverified` and in 
 | `comparison` | Columns (criteria), rows (options) with cited cells, and a cited verdict |
 | `summary` | One paragraph and cited key points (the `extract` default) |
 
-Each template is a TypeScript module in `packages/insights/src/templates/` holding its Markdown prompt text (`instructions`), its preferred topics and its JSON Schema. They are modules rather than `.md` files read at runtime so the package runs unchanged on Workers and in the browser.
+Each template's prompt text is a Markdown file, `packages/insights/src/templates/<id>.md`; its id, title, preferred topics and JSON Schema live in `<id>.ts` next to it. The package never reads files at runtime (it must run unchanged on Workers and in the browser), so `scripts/embed-templates.mjs` embeds the `.md` files into `src/templates/prompts.generated.ts`, the same pattern as the Postgres migrations. After editing a prompt, run `node packages/insights/scripts/embed-templates.mjs`; `test/templates.test.ts` fails while the generated module and the `.md` files differ.
 
 In template results, each item has `sources`: a list of `{ videoId, startSec, quote }`. After verification each one becomes a full citation (`videoId`, `title`, snapped `startSec`, `endSec`, `url`, `quote`); failed ones are removed and listed in `unverified` with their JSON pointer, and an item whose citations all failed is removed with them.
 
@@ -101,3 +104,21 @@ What happened, from `rungs` and `attempts`: the single pass runs on the reduce c
 Two things to notice. Every link opens the video where the quoted words are spoken: the model said 0:55 for the M113 quote, and verification moved it to 1:09, where the words start. And the claim about the G55 is in the appendix, not the brief, because the model's quote was only 78 percent the transcript's words.
 
 The run also shows the limits of the keyless fallback. With 10 claims and no claim made by two videos, the brief has no consensus points, and Llama filed fuel economy under "Prices". A local model or a free-tier key (`docs/providers.md`) gives the single pass a stronger first rung; agent-side synthesis with `briefPrompt` uses whatever model the agent runs.
+
+## Live run and hand spot-check (2026-11-15)
+
+`npx tsx packages/insights/examples/brief.ts` over the same four videos, keyless chain only (the Cloudflare token in this VM's `.env` was rejected that day, so no free-tier rung took part). From `rungs` and `attempts`: Kilo's Nemotron Ultra and Nemotron Lightning answers both stopped mid-JSON at their output limit, gpt-oss-120b on OVH spent its budget on reasoning, and the third JSON attempt, Llama 3.3 70B on OVH, answered. 20 claims were proposed: 13 passed verification, 7 did not (5 quotes matched 31 to 57 percent of the transcript words near their time, 2 quotes were one or two words long). An earlier run the same day, before quotes were capped at 40 words, kept the finished claims of a cut-off Nemotron answer (15 verified, with quotes up to 710 words; that is why the cap exists).
+
+Five citations from that run, checked by hand: each link was opened as a reader would (the video id from `v`, the second from `t`; both videos answer YouTube's oEmbed with 200, so the links resolve) and the transcript read from that second on.
+
+| Claim | Link | Transcript from that second |
+|---|---|---|
+| The 2000 G500 has the legendary M113 V8 engine | [cCPsdFdlshc @ 1:09](https://www.youtube.com/watch?v=cCPsdFdlshc&t=69s) | [69.36] "to this one has what we know the" [71.12] "legendary m113 V8 this was Mercedes big". Quote: "this one has what we know the legendary m113 V8". Match. |
+| The G55 AMG drinks a little oil as it ages | [cCPsdFdlshc @ 5:02](https://www.youtube.com/watch?v=cCPsdFdlshc&t=302s) | [302.24] "little oil they drink a little oil as" [303.64] "they age one thing you will note on". Quote: "they drink a little oil as they age". Match. |
+| The 2018 G550 gets 14.2 miles per gallon | [1Xx1fmHIsiA @ 2:34](https://www.youtube.com/watch?v=1Xx1fmHIsiA&t=154s) | [154.20] "The last 14,000 miles that we've driven, averaging 14.2 miles a gallon." Quote: "averaging 14.2 miles a gallon". Match. |
+| The tailgate can close on its own in high winds | [1Xx1fmHIsiA @ 10:38](https://www.youtube.com/watch?v=1Xx1fmHIsiA&t=638s) | [638.04] "thing that is a little annoying is if in real high wind, this will close on you." Quote: "This will close on you". Match. |
+| The trunk space is massive | [1Xx1fmHIsiA @ 10:42](https://www.youtube.com/watch?v=1Xx1fmHIsiA&t=642s) | [642.96] "So but what I will say, these trunks are massive, like absolutely massive." Quote: "these trunks are massive, like absolutely massive". Match. |
+
+All five open on the quoted words. What verification does not check is whether the claim says what the quote says: in the same run, "The 2015 G550 has a 4.0L twin-turbo V8 engine" carries the verified quote "this is the m278 dual overhead cam naturally aspirated V8" (at 9:40), which contradicts it. The quote and link are honest, the model's summary of them is not. Read the quote, not only the claim.
+
+The same check runs automatically in `packages/insights/test/live.test.ts` (`LIVE=1`): a buyer guide over parts 1 and 3 on the keyless chain, then every citation link is resolved independently of `verify.ts` (video by `v`, transcript from `t` for a minute) and must contain at least 80 percent of the quote's words.

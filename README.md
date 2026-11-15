@@ -230,6 +230,18 @@ Every model id can be overridden with `<PROVIDER>_MODEL` (a comma-separated list
 | `VID2CONTEXT_SKIP=svc1,svc2` | Skip named services, e.g. `pollinations,ovh`                                                                                                  |
 | `VID2CONTEXT_LOG_LEVEL`      | Log verbosity on stderr, e.g. `info`                                                                                                          |
 
+## Deploy your own
+
+Run your own vid2context server in one click. Each button creates a copy in your account and asks for (or generates) `VID2CONTEXT_API_KEYS`, which keeps the API private. Cloud Run, Render, DigitalOcean and Koyeb run the full image with yt-dlp, deno and ffmpeg. Vercel runs the site, web app and API without those binaries.
+
+[![Run on Google Cloud](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run?git_repo=https://github.com/nirholas/vid2context&revision=main)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/nirholas/vid2context)
+[![Deploy to DO](https://www.deploytodo.com/do-btn-blue.svg)](https://cloud.digitalocean.com/apps/new?repo=https://github.com/nirholas/vid2context/tree/main)
+[![Deploy to Koyeb](https://www.koyeb.com/static/images/deploy/button.svg)](https://app.koyeb.com/deploy?type=git&name=vid2context&repository=github.com/nirholas/vid2context&branch=main&builder=dockerfile&dockerfile=deploy/containers/Dockerfile&ports=8787;http;/&env%5BVID2CONTEXT_API_KEYS%5D=)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fnirholas%2Fvid2context&project-name=vid2context&repository-name=vid2context&env=VID2CONTEXT_API_KEYS&envDescription=API%20key%20clients%20send%20as%20Authorization%3A%20Bearer%20%3Ckey%3E)
+
+Guides for the rest: [Railway](docs/deploy/railway.md), [Alibaba Cloud](docs/deploy/alibaba.md), [Cloudflare Workers](docs/deploy/cloudflare.md), [Docker](docs/deploy/docker.md) and the [full Cloud Run setup](docs/deploy/cloud-run.md). What each button builds, and why Railway, Alibaba and Cloudflare have no button yet: [docs/deploy/one-click.md](docs/deploy/one-click.md). On any datacenter host, YouTube may refuse captions or downloads at times; the robust setup is a home machine behind a [Cloudflare Tunnel](docs/guides/cloudflare-tunnel.md).
+
 ## Architecture
 
 TypeScript, ESM and npm workspaces, so the same code runs on Node, Cloudflare Workers, Vercel and in the browser.
