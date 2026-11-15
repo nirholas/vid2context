@@ -4,7 +4,9 @@
 
 **Turn any video into context for AI agents.** An MCP server, CLI, HTTP API and library that gives Claude, ChatGPT, Cursor, VS Code Copilot and any other agent the transcript, metadata and chapters of a video, playlist, podcast or media file, with timestamps it can cite.
 
-[![The vid2context.com landing page: paste a video or podcast link and get context for AI agents](docs/images/landing.png)](https://vid2context.com)
+[![The vid2context web app: a YouTube link goes in, and the transcript, SRT captions, chapters and a context pack for agents come out](docs/demo/web-app.gif)](https://vid2context.com)
+
+The web app on an 18 minute YouTube video: paste the link, then copy or download the transcript, captions, chapters or a context pack sized for an agent. Recorded live against the local API, shown at 2x speed. [MP4 version](docs/demo/web-app.mp4).
 
 Paste a video link or drop in a media file. vid2context returns the transcript, metadata and chapters in a form your agent can read and cite: plain text with `[m:ss]` timestamps, JSON, Markdown, SRT, VTT, or one Markdown context pack for many videos that you can upload to ChatGPT Projects, Claude Projects or a custom GPT.
 
@@ -17,10 +19,6 @@ $ vid2context https://www.youtube.com/watch?v=jNQXAC9IVRw --timestamps
 [0:07] really really long trunks
 [0:12] and that's cool
 ```
-
-![The vid2context web app: a YouTube link goes in, and the transcript, SRT captions, chapters and a context pack for agents come out](docs/demo/web-app.gif)
-
-The web app on an 18 minute YouTube video: paste the link, then copy or download the transcript, captions, chapters or a context pack sized for an agent. Recorded live against the local API, shown at 2x speed. [MP4 version](docs/demo/web-app.mp4).
 
 ## Why
 
