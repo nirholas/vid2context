@@ -21,6 +21,7 @@ import { registerAppsTools } from '@vid2context/mcp-apps/mcp';
 import { registerResearchTools } from '@vid2context/research/mcp';
 import { registerSearchTools } from '@vid2context/search/mcp';
 import { registerSkipsTools } from '@vid2context/skips/mcp';
+import { registerTranslateTools } from '@vid2context/translate/mcp';
 
 export interface PackageToolDeps {
   registry: Registry;
@@ -46,6 +47,8 @@ export function registerPackageTools(server: McpServer, deps: PackageToolDeps): 
   registerResearchTools(server, { registry, ctx, storage });
   // get_skip_segments (item 53)
   registerSkipsTools(server, { registry, ctx, storage });
+  // translate_transcript (item 35)
+  registerTranslateTools(server, { registry, ctx, storage });
   // export_obsidian (Node only), export_notion (item 57)
   registerExporterTools(server, { registry, ctx, storage });
   // find_duplicates (item 62)

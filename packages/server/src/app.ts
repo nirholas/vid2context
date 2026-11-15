@@ -25,6 +25,7 @@ import { type McpHttpApp, mcpHttpRoutes } from '@vid2context/mcp-http';
 import { researchRoutes } from '@vid2context/research/http';
 import { searchRoutes } from '@vid2context/search/http';
 import { skipsRoutes } from '@vid2context/skips/http';
+import { translateRoutes } from '@vid2context/translate/http';
 import { webhookRoutes } from '@vid2context/webhooks/http';
 import { type Context, Hono } from 'hono';
 import { concurrencyLimit } from './concurrency.ts';
@@ -107,6 +108,7 @@ export const MOUNTED_SUB_APPS = [
   '@vid2context/ask',
   '@vid2context/insights',
   '@vid2context/chapters',
+  '@vid2context/translate',
   '@vid2context/jobs',
   '@vid2context/mcp-http',
   '@vid2context/skips',
@@ -148,6 +150,7 @@ function subApps(
       routes: insightsRoutes({ ...deps, ...(opts.jobs ? { queue: opts.jobs.queue } : {}) }),
     },
     { name: '@vid2context/chapters', prefix: '/api/v1', routes: chaptersRoutes(deps) },
+    { name: '@vid2context/translate', prefix: '/api/v1', routes: translateRoutes(deps) },
     ...(opts.jobs ? [{ name: '@vid2context/jobs', prefix: '/api/v1', routes: jobsRoutes({ ...deps, ...opts.jobs }) }] : []),
     { name: '@vid2context/skips', prefix: '/api/v1', routes: skipsRoutes(deps) },
     { name: '@vid2context/research', prefix: '/api/v1', routes: researchRoutes(deps) },
