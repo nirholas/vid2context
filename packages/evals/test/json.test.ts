@@ -52,6 +52,17 @@ describe('formatJson', () => {
     expect(biomeFormat(out)).toBe(out);
   });
 
+  it('fills long number arrays line by line, as Biome does', () => {
+    // Real chapter starts: the uniform baseline for the 2 h 8 min Lex Fridman podcast (26 chapters over 7705 s).
+    const starts = Array.from({ length: 26 }, (_, i) => Math.round(((i * 7705) / 26) * 10) / 10);
+    const out = formatJson({ items: [{ chapters: { starts } }] });
+    expect(out).toContain('"starts": [\n          0, 296.3, 592.7,');
+    expect(biomeFormat(out)).toBe(out);
+    const wide = formatJson({ starts: Array.from({ length: 400 }, (_, i) => i * 1.5) });
+    expect(wide.split('\n').length).toBeGreaterThan(5);
+    expect(biomeFormat(wide)).toBe(wide);
+  });
+
   it('counts wide characters as two columns', () => {
     expect(displayWidth('abc')).toBe(3);
     expect(displayWidth('日本語')).toBe(6);

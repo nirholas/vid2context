@@ -8,7 +8,8 @@
  * - a non-empty object always breaks onto one member per line;
  * - an array without objects in it collapses onto one line, `[a, b]`, when
  *   that line (indent, key and trailing comma included) fits the width;
- *   otherwise it breaks with one element per line;
+ *   otherwise an array of numbers fills each line with as many numbers as
+ *   fit, and any other array breaks with one element per line;
  * - empty objects and arrays print as `{}` and `[]`.
  */
 
@@ -59,6 +60,20 @@ function format(value: Json, depth: number, prefix: string, suffix: string): str
     if (!hasObject(value)) {
       const line = flat(value);
       if (displayWidth(prefix) + displayWidth(line) + suffix.length <= JSON_LINE_WIDTH) return line;
+    }
+    if (value.every((v) => typeof v === 'number')) {
+      const lines: string[] = [];
+      let line = '';
+      value.forEach((item, i) => {
+        const piece = `${JSON.stringify(item)}${i < value.length - 1 ? ',' : ''}`;
+        if (line && displayWidth(line) + 1 + displayWidth(piece) <= JSON_LINE_WIDTH) line += ` ${piece}`;
+        else {
+          if (line) lines.push(line);
+          line = `${inner}${piece}`;
+        }
+      });
+      lines.push(line);
+      return `[\n${lines.join('\n')}\n${pad}]`;
     }
     const rows = value.map((item, i) => {
       const comma = i < value.length - 1 ? ',' : '';
