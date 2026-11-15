@@ -51,7 +51,7 @@ Numbers match `docs/ROADMAP.md` and the owner columns in `docs/contracts/`. Ever
 | 31 | [On-screen text and slides: frames, OCR, vision](archive/31-visual-notes.md) | `providers/visual-frames/` | F. Intelligence |
 | 32 | [Cited briefs and structured extraction](32-briefs-extraction.md) | `packages/insights/` | F. Intelligence |
 | 33 | [Evaluation harness: accuracy, citations, latency, cost](33-evals.md) | `packages/evals/` | I. Deploy and quality |
-| 34 | [Ask and chat: answers with timestamp citations](34-ask.md) | `packages/ask/` | F. Intelligence |
+| 34 | [Ask and chat: answers with timestamp citations](archive/34-ask.md) | `packages/ask/` | F. Intelligence |
 | 35 | [Translation and auto-chapters](35-translate-chapters.md) | `packages/translate/`, `packages/chapters/` | F. Intelligence |
 | 36 | [Landing site](36-landing-site.md) | `site/` | H. Surfaces |
 | 37 | [SQLite library with full-text search](archive/37-storage-sqlite.md) | `providers/storage-sqlite/` | G. Library and search |
