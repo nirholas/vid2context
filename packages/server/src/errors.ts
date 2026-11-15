@@ -38,8 +38,8 @@ export const STATUS_BY_CODE: Record<ErrorCode, ContentfulStatusCode> = {
 /** nginx's "client closed request": the caller went away before the answer was ready. */
 const CLIENT_CLOSED_REQUEST = 499 as ContentfulStatusCode;
 
-/** Codes the server itself raises about the caller's credentials. */
-export type ServerErrorCode = 'unauthorized' | 'forbidden';
+/** Codes the server itself raises about the caller's credentials, and `busy` when it sheds load (503 with Retry-After). */
+export type ServerErrorCode = 'unauthorized' | 'forbidden' | 'busy';
 
 /** An error about the HTTP request itself (credentials, scopes), not about a video or a provider. */
 export class HttpError extends Error {

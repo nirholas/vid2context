@@ -27,6 +27,7 @@ import { searchRoutes } from '@vid2context/search/http';
 import { skipsRoutes } from '@vid2context/skips/http';
 import { webhookRoutes } from '@vid2context/webhooks/http';
 import { type Context, Hono } from 'hono';
+import { concurrencyLimit } from './concurrency.ts';
 import { renderError } from './errors.ts';
 import { type AccessLogEntry, auth, bodyLimit, cors, rateLimit, requestContext, requestKeys, timeout } from './middleware.ts';
 import { buildOpenApi, json, type PathsObject, RouteDocs } from './openapi.ts';
@@ -249,6 +250,10 @@ export function createApp(opts: AppOptions): ServerApp {
   app.use('/api/*', rateLimit(services, clientIp));
   app.use('/api/*', bodyLimit(services));
   app.use('/api/*', requestKeys(services));
+  // Expensive routes and MCP tool calls: VID2CONTEXT_MAX_CONCURRENT at once, then a bounded wait, then 503 busy.
+  const heavy = concurrencyLimit((req) => services.ctxFor(req).env);
+  app.use('/api/*', heavy);
+  app.use('/mcp', heavy);
 
   docs.add({
     method: 'get',

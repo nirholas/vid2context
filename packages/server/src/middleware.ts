@@ -9,6 +9,7 @@
  *   rateLimit       token bucket per key, or per client IP in open mode (off in hosted mode)
  *   bodyLimit       VID2CONTEXT_MAX_BODY_KB, or the upload cap on POST /uploads
  *   requestKeys     rejects a malformed X-Vid2Context-Keys header (keys are merged in services.ctxFor)
+ *   concurrency     VID2CONTEXT_MAX_CONCURRENT expensive requests at once, then 503 busy (src/concurrency.ts)
  *
  * Settings are read from the request's env on every request.
  */

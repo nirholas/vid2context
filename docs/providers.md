@@ -280,6 +280,9 @@ Read by `@vid2context/server` (`npm run start:server`, the Worker, containers). 
 | `VID2CONTEXT_MAX_UPLOAD_MB` | largest `POST /uploads` file. The HTTP API's default is `100` (the Workers free-plan request limit) when this is unset |
 | `VID2CONTEXT_UPLOAD_TTL_MIN` | minutes an upload stays available; default `60`. Kept in R2 (`VID2CONTEXT_R2`) when the Cloudflare storage has a bucket, else in memory |
 | `VID2CONTEXT_REQUEST_TIMEOUT_MS` | longest a request may run before it is answered with `timeout` (504); default `300000` |
+| `VID2CONTEXT_MAX_CONCURRENT` | expensive requests (context, transcript, pack, bundle, ask, briefs, uploads, `POST /mcp` and the like) running at once per process; default `16`, `0` no cap. See [guides/reliability.md](guides/reliability.md) |
+| `VID2CONTEXT_MAX_WAITING` | expensive requests allowed to wait for a slot; one more is answered `503` `busy` with `Retry-After: 5`; default `64` |
+| `VID2CONTEXT_QUEUE_WAIT_MS` | longest a request waits for a slot before it is answered `busy`; default `30000` |
 | `VID2CONTEXT_ACCESS_LOG` | `0` turns off the JSON access log line per request on stderr |
 | `VID2CONTEXT_REQUEST_KEYS` | `0` stops accepting provider keys sent per request in `X-Vid2Context-Keys`. On by default: a caller whose run failed for lack of a key can retry with its own, used for that request only and never stored. Only credential names registered providers declare are accepted (see [contracts/http-api.md](contracts/http-api.md#provider-keys-per-request)) |
 | `VID2CONTEXT_SHUTDOWN_TIMEOUT_MS` | Node: how long in-flight requests may finish after `SIGTERM` or `SIGINT`; default `10000` |
