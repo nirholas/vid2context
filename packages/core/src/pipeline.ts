@@ -217,12 +217,17 @@ export async function transcribe(
     }
     return true;
   });
+  // Speaker labels need a rung that can diarize; without this the chain would answer from Whisper with no speakers.
+  const diarize = opts.stt?.diarize === true;
+  const sttChain: ChainOptions = diarize
+    ? { ...opts.chain, needs: [...(opts.chain?.needs ?? []), 'diarization'] }
+    : (opts.chain ?? {});
   try {
     const res = await runChain<SttRung, Awaited<ReturnType<SttRung['transcribe']>>>(
       'stt',
       rungs,
       (rung) => rung.transcribe(audio, opts.stt ?? {}, ctx),
-      opts.chain ?? {},
+      sttChain,
       ctx,
     );
     const transcript: Transcript = {
@@ -250,6 +255,16 @@ export async function transcribe(
     return { transcript, attempts };
   } catch (err) {
     const tried = [...pre, ...attemptsOf(err)];
+    if (diarize && err instanceof Vid2ContextError && err.code === 'no-provider') {
+      throw Object.assign(
+        new Vid2ContextError('no-provider', 'Speaker labels were requested, but no enabled speech-to-text rung can diarize.', {
+          stage: 'stt',
+          hint: 'Set CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN (free) to enable stt/cloudflare/@cf/deepgram/nova-3, or turn speaker labels off.',
+          cause: err,
+        }),
+        { attempts: tried },
+      );
+    }
     if (audio.kind !== 'bytes' || !everyRungTooLarge(tried)) throw Object.assign(err as object, { attempts: tried });
     try {
       const long = await transcribeLong(registry, ref, audio, { ...opts, maxPieceSec: durationLimitFrom(tried) }, ctx);
