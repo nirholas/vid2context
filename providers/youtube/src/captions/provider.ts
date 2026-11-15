@@ -43,7 +43,8 @@ export const youtubeCaptions: CaptionsProvider = defineProvider({
       language: picked.translateTo ?? picked.track.languageCode,
       origin: picked.origin,
       producer: 'youtube-captions',
-      ...(picked.translateTo ? { translated: true } : {}),
+      // A YouTube machine translation keeps the language it was translated from, so a caller can fetch the raw track too.
+      ...(picked.translateTo ? { translated: true, extra: { sourceLanguage: picked.track.languageCode } } : {}),
       segments,
       createdAt: new Date().toISOString(),
     };

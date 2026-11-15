@@ -10,7 +10,7 @@ With a language (`--lang de`, `language: 'de'`):
 
 1. a creator track in that language,
 2. an auto-generated (asr) track in that language, unless `allowAuto` is false,
-3. YouTube's machine translation (`tlang`) of the best translatable track, unless `allowTranslated` is false. The transcript is marked `translated: true`. When the player lists translation targets, only a listed language is used, with YouTube's own code for it (`pt-BR` becomes `pt`).
+3. YouTube's machine translation (`tlang`) of the best translatable track, unless `allowTranslated` is false. The transcript is marked `translated: true` and keeps the language it was translated from in `extra.sourceLanguage`. When the player lists translation targets, only a listed language is used, with YouTube's own code for it (`pt-BR` becomes `pt`).
 
 Without a language: a creator track in the spoken language (an asr track's language reveals it), then any creator track (the video's default first), then the asr track in the spoken language.
 

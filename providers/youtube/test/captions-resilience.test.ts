@@ -7,7 +7,7 @@ import { detectFormat, parseJson3, parseSrv3, parseTimedText, parseVtt } from '.
 import { youtubeCaptions } from '../src/captions/provider.ts';
 import { chooseTrack } from '../src/captions/tracks.ts';
 import { youtubeSource } from '../src/index.ts';
-import { backoffDelayMs, isRetryable, MAX_RETRIES } from '../src/resilience/backoff.ts';
+import { backoffDelayMs, isRetryable, MAX_RETRIES, withRetry } from '../src/resilience/backoff.ts';
 import { breakerRemainingSec, resetBreaker } from '../src/resilience/breaker.ts';
 import { CLIENTS, resolveClients } from '../src/resilience/clients.ts';
 import { BLOCKED_HINT, classifyPlayability, playabilityError, youtubeHttpError } from '../src/resilience/errors.ts';
@@ -335,6 +335,95 @@ describe('backoff', () => {
   });
 });
 
+describe('backoff timing (fake timers)', () => {
+  it('waits the jittered delay, then Retry-After, and returns the real player answer on the third try', async () => {
+    vi.useFakeTimers();
+    vi.spyOn(Math, 'random').mockReturnValue(0.5);
+    const ok = player('player-jNQXAC9IVRw.json');
+    const failures = [
+      new Vid2ContextError('upstream', 'YouTube player: HTTP 503', { status: 503 }),
+      new Vid2ContextError('rate-limited', 'YouTube player: HTTP 429', { status: 429, retryAfterSec: 4 }),
+    ];
+    let calls = 0;
+    const run = withRetry(testContext(), 'player', async () => {
+      calls++;
+      const f = failures.shift();
+      if (f) throw f;
+      return ok;
+    });
+    await vi.advanceTimersByTimeAsync(0);
+    expect(calls).toBe(1);
+    // Retry 1: full jitter, 0.5 * min(8000, 1000 * 2^0) = 500 ms.
+    await vi.advanceTimersByTimeAsync(499);
+    expect(calls).toBe(1);
+    await vi.advanceTimersByTimeAsync(1);
+    expect(calls).toBe(2);
+    // Retry 2: Retry-After: 4 wins over jitter.
+    await vi.advanceTimersByTimeAsync(3999);
+    expect(calls).toBe(2);
+    await vi.advanceTimersByTimeAsync(1);
+    await expect(run).resolves.toBe(ok);
+    expect(calls).toBe(3);
+    vi.restoreAllMocks();
+  });
+
+  it('gives up after three retries', async () => {
+    vi.useFakeTimers();
+    let calls = 0;
+    const run = withRetry(testContext(), 'player', async () => {
+      calls++;
+      throw new Vid2ContextError('upstream', 'YouTube player: HTTP 503', { status: 503 });
+    });
+    const settled = expect(run).rejects.toMatchObject({ status: 503 });
+    await vi.advanceTimersByTimeAsync(60_000);
+    await settled;
+    expect(calls).toBe(1 + MAX_RETRIES);
+  });
+
+  it('never waits on the real block page or the real HTTP 400', async () => {
+    vi.useFakeTimers();
+    for (const [body, status] of [
+      [fixture('timedtext-429-blocked.html'), 429],
+      [fixture('player-android-old-version-400.json'), 400],
+    ] as const) {
+      const fetch = replayFetch([{ url: /youtube\.com/, response: { status, body } }]);
+      const ctx = testContext({ fetch });
+      const run = withRetry(ctx, 'player', async () => {
+        const res = await ctx.fetch('https://www.youtube.com/youtubei/v1/player');
+        throw await youtubeHttpError(res, 'player');
+      });
+      await expect(run).rejects.toMatchObject({ code: status === 429 ? 'blocked' : 'upstream' });
+      expect(fetch.calls).toHaveLength(1);
+      expect(vi.getTimerCount()).toBe(0);
+    }
+  });
+});
+
+describe('translated tracks', () => {
+  it('asks for tlang on the creator en track and names the translation in the error trail', async () => {
+    const fetch = replayFetch([
+      byClient({ ANDROID: json('player-jNQXAC9IVRw.json') }),
+      { url: /timedtext\?.*tlang=fr/, response: { status: 429, body: fixture('timedtext-429-blocked.html') } },
+    ]);
+    await expect(youtubeCaptions.getCaptions(ref(ZOO), { language: 'fr' }, testContext({ fetch }))).rejects.toMatchObject({
+      code: 'blocked',
+      message: expect.stringContaining('en->fr'),
+    });
+    const tt = new URL(fetch.calls.find((c) => c.url.includes('timedtext'))?.url ?? '');
+    expect(tt.searchParams.get('tlang')).toBe('fr');
+    expect(tt.searchParams.get('lang')).toBe('en');
+    expect(tt.searchParams.get('kind')).toBeNull();
+  });
+
+  it('never translates when allowTranslated is false', async () => {
+    const fetch = replayFetch([byClient({ ANDROID: json('player-jNQXAC9IVRw.json') })]);
+    await expect(
+      youtubeCaptions.getCaptions(ref(ZOO), { language: 'fr', allowTranslated: false }, testContext({ fetch })),
+    ).resolves.toBeNull();
+    expect(fetch.calls.some((c) => c.url.includes('timedtext'))).toBe(false);
+  });
+});
+
 describe('caption formats (real payloads)', () => {
   // The same en track of jNQXAC9IVRw fetched as srv3, json3 and WebVTT: every parser must agree.
   const srv3 = fixture('timedtext-jNQXAC9IVRw-en.srv3.xml');
@@ -456,7 +545,7 @@ describe.skipIf(!process.env.LIVE)('youtube captions (live)', () => {
 
   it('reads a YouTube translation marked translated', async () => {
     const fr = await youtubeCaptions.getCaptions(ref(ZOO), { language: 'fr' }, ctx());
-    expect(fr).toMatchObject({ language: 'fr', translated: true });
+    expect(fr).toMatchObject({ language: 'fr', translated: true, extra: { sourceLanguage: 'en' } });
     expect(fr?.segments.length).toBeGreaterThan(0);
   });
 
