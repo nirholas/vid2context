@@ -25,7 +25,7 @@ The checks behind them are exported too, for your own assertions: `refProblems`,
 | `readRecorded(dir, { name? })` | the parsed exchanges |
 | `Scrubber` | the scrubbing rules on their own (`url`, `headers`, `body`, `text`, `report`) |
 
-CLI: `npm run record -- --out <dir> [--name <n>] -- <input> [--mode ...] [--lang xx] [--no-auto]`.
+CLI: `npm run record -- --out <dir> [--name <n>] [--allow-subprocess] -- <input> [--mode ...] [--lang xx] [--no-auto]`. Providers that spawn processes are left out unless `--allow-subprocess` is passed, so the replay check is honest.
 
 ## Invariants
 

@@ -45,7 +45,7 @@ npm run record -- --out /tmp/rec -- <input> --mode stt --lang en
 
 It runs `getVideoContext` with the node registry and a fetch that records every exchange to `<out>/<name>-001.json`, `-002.json`, and so on. Then it prints the files and what was scrubbed, writes the live result to `<name>.context.json`, and replays the files in a fresh process (so circuit breakers and caches start clean). It exits 0 only when the replay gives the same transcript. Pipeline options after `--`: `--mode auto|captions|stt|video`, `--lang xx`, `--no-auto`.
 
-Requests a provider makes outside `ctx.fetch` cannot be recorded. For example, `yt-dlp` downloads audio in a subprocess, so a replay of an STT run still runs that subprocess.
+Requests a provider makes outside `ctx.fetch` cannot be recorded. So the recorder leaves out every provider whose node entry reaches `child_process` (today `ytdlp`, `ytdlp-captions`, `stt-whisper-cpp`, `stt-transformers`) and says so; otherwise a replay would quietly run `yt-dlp` for real and pass. Pass `--allow-subprocess` to keep them: the run is recorded, but the replay check is skipped. A run that recorded nothing exits 1, because the transcript came from somewhere a recording cannot capture.
 
 ### From a test or script
 

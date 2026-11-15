@@ -3,7 +3,7 @@
  * Record a real vid2context run into scrubbed fixture files, then replay them
  * to prove the fixtures reproduce the same transcript.
  *
- *   npm run record -- --out <dir> [--name <n>] -- <input> [--mode auto|captions|stt|video] [--lang xx] [--no-auto]
+ *   npm run record -- --out <dir> [--name <n>] [--allow-subprocess] -- <input> [--mode auto|captions|stt|video] [--lang xx] [--no-auto]
  *
  * stdout: what was recorded and the scrub report. stderr: logs.
  */
