@@ -28,6 +28,7 @@ Node 22 or newer. Keys are read from the environment and `./.env` (or `VID2CONTE
 | `pack <inputs...>` | One context pack (Markdown for an AI model) from one or many videos |
 | `bundle <inputs...> -o file.zip` | A .zip with every format, the pack, a manifest and a README for agents |
 | `download <inputs...>` | Save videos as mp4, webm or mkv, or their audio as mp3, m4a, opus, flac or wav |
+| `captions <inputs...>` | Save captions or subtitles only, in any subtitle format or the original file |
 | `search <query>` | Keyword search over transcripts saved in the library |
 | `library ls`, `show <id>`, `rm <id>` | Saved video contexts |
 | `collection create`, `add`, `ls`, `show`, `refresh`, `rm` | Named groups of videos in the library |
@@ -158,7 +159,9 @@ wrote /home/user/zoo.zip (7380 bytes)
 ```
 vid2context download <inputs...> [--video [mp4|webm|mkv] | --audio [mp3|m4a|opus|flac|wav]] [--quality q]
   [--from t --to t | --chapter n|title] [--exact-cuts] [--subs langs] [--sponsorblock [cats]]
-  [--no-thumbnail] [--no-metadata] [--no-chapters] [-d folder] [--limit n] [--info] [--force]
+  [--no-thumbnail] [--no-metadata] [--no-chapters] [--burn-subs lang] [--split-chapters]
+  [--thumbnail [jpg|png|webp] | --frames times [--frame-format png|jpg] | --gif | --webp] [--fps n] [--width px]
+  [--zip] [-d folder] [--limit n] [--playlist] [--info] [--force]
 ```
 
 Saves files to `--dir`, else `VID2CONTEXT_DOWNLOAD_DIR`, else the current directory, and prints one saved path per line on stdout (`--json`: `{ dir, files, failed }`). Progress, notes and warnings go to stderr. With neither `--video` nor `--audio` it saves an mp4 up to 1080p. Playlists and channels download every video up to `--limit`. Existing files get a ` (2)` suffix unless `--force`. `--info` prints the qualities, formats and estimated sizes and downloads nothing. Local files are converted with ffmpeg. Full guide: [guides/downloads.md](guides/downloads.md).
@@ -171,7 +174,84 @@ saved Me at the zoo [jNQXAC9IVRw].m4a (0.3 MB, 0:19)
 
 The first line is stdout, the second stderr.
 
+Beyond whole files:
+
+| Flag | What it saves |
+|---|---|
+| `--burn-subs <lang>` | The video with one subtitle language burned into the picture (re-encodes) |
+| `--split-chapters` | One extra file per chapter, next to the full file |
+| `--thumbnail [jpg\|png\|webp]` | Only the thumbnail image (default jpg) |
+| `--frames <times>` | Still frames at these times, e.g. `0:10,1:30`; several come as a .zip. `--frame-format png\|jpg` (default png), `--width <px>` (default: source) |
+| `--gif`, `--webp` | `--from` to `--to` as an animated GIF or WebP; `--fps <n>` (default 10), `--width <px>` (default 480). Long ranges are refused past `VID2CONTEXT_MAX_CLIP_SEC` |
+| `--zip` | Every saved file packed into one .zip |
+
+```
+$ vid2context download apollo11-first-steps.mp4 --frames 0:05 --frame-format jpg
+/home/user/apollo11-first-steps 0m05s.jpg
+saved apollo11-first-steps 0m05s.jpg (0.0 MB)
+
+$ vid2context download apollo11-first-steps.mp4 --gif --from 0:02 --to 0:04 --width 320
+/home/user/apollo11-first-steps (0m02s-0m04s).gif
+saved apollo11-first-steps (0m02s-0m04s).gif (0.3 MB, 0:02)
+```
+
 Only download media you have the rights to.
+
+### captions
+
+```
+vid2context captions <inputs...> [-f srt|vtt|ass|ttml|sbv|lrc|csv|txt|json|markdown|original] [--lang codes|all]
+  [--list] [--via auto|pipeline|ytdlp] [--no-auto] [--no-translate] [--offset sec]
+  [--max-line-chars n] [--max-lines n] [--secondary lang] [--mode auto|captions|stt]
+  [--zip] [-d folder] [--limit n] [--playlist] [--force]
+```
+
+Saves captions or subtitles only, without the video. Text comes from the transcript pipeline first (any source, no yt-dlp needed), then from yt-dlp (`--via` picks one). `-f` defaults to `srt`; `txt` takes `--timestamps`; `-f original` keeps the file the site serves, or a local file's sidecar or embedded stream. Without `--lang` you get the spoken language; `--lang en,de` or `--lang all` saves several files as one .zip (`--zip` forces one for a single file).
+
+| Flag | Meaning |
+|---|---|
+| `--list` | List the caption tracks and translation languages; save nothing |
+| `--via <path>` | `auto` (default: pipeline, then yt-dlp), `pipeline` or `ytdlp` |
+| `--no-auto` | Never use the platform's automatic captions |
+| `--no-translate` | Never use the platform's machine translation |
+| `--offset <sec>` | Shift every caption, e.g. `2.5` or `-1` (negative: earlier) |
+| `--max-line-chars <n>` | Longest caption line, 10 to 200 characters (default 42) |
+| `--max-lines <n>` | Most lines per caption, 1 to 4 (default 2) |
+| `--secondary <lang>` | A second language under each caption (bilingual srt, vtt, ass and so on) |
+
+`--mode auto` (the default) transcribes the audio with speech-to-text when a video has no captions, `--mode captions` never does, `--mode stt` always does. Several inputs, playlists and channels run as a batch: failed items are listed on stderr and the rest are saved. stdout gets one saved path per line (JSON with `--json`).
+
+```
+$ vid2context captions apollo11-first-steps-subs.mkv --list
+apollo11-first-steps-subs
+en       creator  stream 2 (subrip)  [media-file-captions]
+Speech-to-text fallback: available
+
+$ vid2context captions apollo11-first-steps-subs.mkv
+/home/user/apollo11-first-steps-subs.en.srt
+saved apollo11-first-steps-subs.en.srt (0.0 MB): en (creator-captions, pipeline)
+
+$ head -4 apollo11-first-steps-subs.en.srt
+1
+00:00:00,500 --> 00:00:03,260
+I'm at the foot of the ladder.
+
+$ vid2context captions apollo11-first-steps-subs.mkv -f txt --timestamps
+/home/user/apollo11-first-steps-subs.en.txt
+saved apollo11-first-steps-subs.en.txt (0.0 MB): en (creator-captions, pipeline)
+```
+
+For a YouTube video, `--list` shows creator and automatic tracks with the providers that can fetch each:
+
+```
+$ vid2context captions jNQXAC9IVRw --list
+Me at the zoo
+en       creator  English  (translatable)  [youtube-captions, ytdlp-captions, ytdlp]
+de       creator  German  (translatable)  [youtube-captions, ytdlp-captions, ytdlp]
+en       auto     en  [ytdlp-captions, ytdlp]
+de       auto     de  [ytdlp-captions, ytdlp]
+Speech-to-text fallback: available
+```
 
 ### search, library, collection
 
@@ -321,7 +401,7 @@ Storage backend: storage-sqlite
 | `--verbose` | Progress logs and the attempts list on stderr |
 | `-o, --out <file>` | Write program output to a file |
 | `--force` | Overwrite the `--out` file |
-| `-h, --help`, `-v, --version` | Help, version |
+| `-h, --help`, `-v, --version` | Help, version (`vid2context help <command>` is the same as `<command> --help`) |
 
 Command flags (`--limit`, `--max-tokens`, `--kind` and so on) are accepted only by their command. An unknown flag fails with a hint naming the closest valid one:
 
