@@ -8,7 +8,7 @@ One Worker serves all of vid2context.com:
 | `/app/` | the web app (`packages/web`), when it builds |
 | `/chat/` | the chat app (`packages/chat`), when it builds |
 | `/api/v1/*` | the HTTP API (`packages/server`) |
-| `/mcp` | remote MCP, once `packages/server/src/workers.ts` routes it (prompt 46) |
+| `/mcp` | remote MCP over Streamable HTTP (`packages/mcp-http`), with its OAuth and `/.well-known/*` discovery paths |
 | `/llms.txt`, `/llms-full.txt` | the repo's LLM-readable docs |
 
 The config is the root `wrangler.jsonc`; the Worker entry is `packages/server/src/workers.ts`; static files come from `dist/assets/`, built by `npm run build:assets`.
@@ -17,14 +17,16 @@ The config is the root `wrangler.jsonc`; the Worker entry is `packages/server/sr
 
 ```sh
 npm run build:assets            # assemble dist/assets (site, apps that build, llms.txt)
-npm run dev:worker              # build assets, then wrangler dev on http://localhost:8787
+npm run dev:worker              # build assets, then wrangler dev --local on http://localhost:8787
 npm run deploy                  # build assets, then wrangler deploy (needs CLOUDFLARE_API_TOKEN)
 npx wrangler deploy --dry-run --outdir dist/worker   # bundle and validate without uploading
 ```
 
-`build:assets` skips an app that is missing or does not build, and says why. Add `-- --strict` to make that an error (do this for production once `packages/web` and `packages/chat` exist): `npm run build:assets -- --strict && npx wrangler deploy`.
+`build:assets` skips an app that is missing or does not build, and says why. Add `-- --strict` to make that an error (do this for production deploys): `npm run build:assets -- --strict && npx wrangler deploy`.
 
-A dry run on 2026-11-14 bundled the Worker to 120 KiB (33 KiB gzipped); the free plan allows 3 MiB compressed. No `nodejs_compat` flag is needed: the Workers registry contains only fetch-based providers.
+`dev:worker` runs in local mode, so it needs no Cloudflare login. The Workers AI binding always runs remotely, so it is off in local mode and those rungs fail over to the next one. To use it in development, log in (`npx wrangler login`, or a valid `CLOUDFLARE_API_TOKEN`) and run `npx wrangler dev` without `--local`.
+
+A dry run on 2026-11-15 bundled the Worker, with every mounted sub-app (search, library, ask, jobs, mcp-http and the rest), to 3,665 KiB (834 KiB gzipped). The free plan allows 3 MiB compressed. No `nodejs_compat` flag is needed: the Workers registry contains only fetch-based providers.
 
 ## Credentials
 
@@ -38,7 +40,10 @@ Provider keys and API keys are Worker secrets, set once per key:
 npx wrangler secret put GROQ_API_KEY
 npx wrangler secret put GEMINI_API_KEY
 npx wrangler secret put VID2CONTEXT_API_KEYS     # comma-separated keys for /api/v1 when the API should not be open
+npx wrangler secret put VID2CONTEXT_MCP_TOKENS   # bearer tokens for /mcp (or VID2CONTEXT_OWNER_PASSWORD_HASH for OAuth connectors)
 ```
+
+Without one of the two MCP secrets, `/mcp` answers 401 to every request.
 
 Every variable in `.env.example` works the same way. `wrangler.jsonc` sets one plain variable, `VID2CONTEXT_PUBLIC=1`, which marks this deployment as the public, internet-facing instance.
 
@@ -85,7 +90,7 @@ Workers static assets reject any file above 25 MiB, and `npm run build:assets` f
 
 ## SPA routing for the apps
 
-`/app/*` and `/chat/*` deep links must serve each app's `index.html`. Workers static assets cannot do this per path: `not_found_handling` is global, and `_redirects` rewrites apply even when a file exists, so `/app/* /app/index.html 200` would also rewrite the app's own JavaScript. The Worker does it instead with `fetchAssetWithSpaFallback` from `deploy/serverless/cloudflare/spa-fallback.ts`: assets first, and only on a 404 for a non-file path under an app mount, that app's index. It is verified in the Workers runtime by `deploy/serverless/test/worker.test.ts` (`WRANGLER_TEST=1`). Wiring it into `packages/server/src/workers.ts` is one line, listed for prompt 46.
+`/app/*` and `/chat/*` deep links must serve each app's `index.html`. Workers static assets cannot do this per path: `not_found_handling` is global, and `_redirects` rewrites apply even when a file exists, so `/app/* /app/index.html 200` would also rewrite the app's own JavaScript. The Worker does it instead with `fetchAssetWithSpaFallback` from `deploy/serverless/cloudflare/spa-fallback.ts`: assets first, and only on a 404 for a non-file path under an app mount, that app's index. `packages/server/src/workers.ts` passes every site request through it. It is verified in the Workers runtime by `deploy/serverless/test/worker.test.ts` (`WRANGLER_TEST=1`).
 
 ## Verify a deploy
 

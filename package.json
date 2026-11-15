@@ -31,7 +31,7 @@
     "build:site": "node site/scripts/build.mjs",
     "dev:site": "npm --prefix site run dev",
     "test:site": "npm --prefix site test && npm --prefix site run test:e2e",
-    "dev:worker": "npm run gen && npm run build:site && npm run build:assets && wrangler dev",
+    "dev:worker": "npm run gen && npm run build:site && npm run build:assets && wrangler dev --local",
     "deploy": "npm run gen && npm run build:site && npm run build:assets && wrangler deploy",
     "discovery:gen": "tsx packages/discovery/src/cli.ts gen",
     "discovery:logo": "tsx packages/discovery/src/cli.ts logo",

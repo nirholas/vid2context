@@ -1,9 +1,10 @@
 // Cloudflare Worker for vid2context.com: one Worker serves the landing site (/),
-// the web app (/app/), the chat app (/chat/), the HTTP API (/api/v1/*) and,
-// once prompt 46 routes it, remote MCP (/mcp).
+// the web app (/app/), the chat app (/chat/), the HTTP API (/api/v1/*) and
+// remote MCP (/mcp, with OAuth under /oauth/* and /.well-known/*).
 //
 //   npm run build:assets   assemble dist/assets (site, apps, llms.txt)
-//   npm run dev:worker     build assets and run locally with wrangler dev
+//   npm run dev:worker     build assets and run wrangler dev --local (no Cloudflare login;
+//                          Workers AI is off locally, `npx wrangler dev` uses it remotely)
 //   npm run deploy         build assets and deploy (needs CLOUDFLARE_API_TOKEN)
 //
 // Secrets (provider keys, VID2CONTEXT_API_KEYS) are set with
@@ -52,7 +53,7 @@
 
   // Workers AI: free Whisper and LLM rungs through the binding (providers/cloudflare-ai).
   // Nothing to create; on. Remove this and CLOUDFLARE_AI_BINDING above to turn it off.
-  "ai": { "binding": "AI" },
+  "ai": { "binding": "AI", "remote": true },
 
   // Workers rate limiting: 60 requests per 60 s per API key or client IP, shared by
   // every isolate in a location. Nothing to create; namespace_id is any integer
@@ -83,7 +84,6 @@
   // "kv_namespaces": [
   //   { "binding": "KV", "id": "<from wrangler kv namespace create>" }
   // ],
-
 
   // Queue for background jobs (packages/jobs, prompt 42), producer and consumer.
   //   npx wrangler queues create vid2context-jobs
