@@ -347,7 +347,7 @@ describe('feed parsing', () => {
     );
     const channel = root?.children[0];
     expect(channel?.children[0]).toMatchObject({ name: 'podcast:transcript', attrs: { url: 'a&b' } });
-    expect(channel?.children[1]?.text).toBe('A & B – C');
+    expect(channel?.children[1]?.text).toBe('A & B \u2013 C');
   });
 
   it('parses durations', () => {
@@ -633,7 +633,7 @@ describe('Spotify (replayed oEmbed, embed page, iTunes Search)', () => {
   });
 
   it('normalizes titles for comparison', () => {
-    expect(normTitle('#504 – Russia-Ukraine War')).toBe(normTitle('#504 - Russia Ukraine war'));
+    expect(normTitle('#504 \u2013 Russia-Ukraine War')).toBe(normTitle('#504 - Russia Ukraine war'));
     expect(normTitle('News & Politics')).toBe('news and politics');
   });
 });
