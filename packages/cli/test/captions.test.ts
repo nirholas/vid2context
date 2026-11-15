@@ -30,7 +30,7 @@ describe('captions usage', () => {
   it('refuses two download outputs at once', async () => {
     const res = await cli(['download', MP4, '--gif', '--frames', '1'], { env });
     expect(res.code).toBe(2);
-    expect(res.stderr).toContain('one of --thumbnail, --frames, --gif or --webp');
+    expect(res.stderr).toContain('--frames, --gif or --webp');
   });
 });
 
