@@ -9,8 +9,10 @@
  * and keeps only a bounded tail of stderr for error messages.
  */
 import { spawn } from 'node:child_process';
+import { availableParallelism } from 'node:os';
 import { resolve } from 'node:path';
-import { type Ctx, Vid2ContextError } from '@vid2context/core';
+import { type Ctx, type Env, Vid2ContextError } from '@vid2context/core';
+import { Semaphore } from './semaphore.ts';
 
 /** The parts of a Ctx this package uses. Every field is optional. */
 export type FfCtx = Partial<Pick<Ctx, 'env' | 'signal' | 'log' | 'fetch'>>;
@@ -33,6 +35,8 @@ export interface RunOptions {
   onSpawn?: (pid: number) => void;
   /** The input is a URL, so a crash may be the build's networking (better hint). */
   network?: boolean;
+  /** Env for FFMPEG_CONCURRENCY (pass ctx.env). Default: process.env (this package is Node only). */
+  env?: Env;
 }
 
 export interface RunResult {
@@ -111,8 +115,31 @@ function failure(
   });
 }
 
-/** Run a binary with an argument array. Rejects with a Vid2ContextError on failure, timeout or abort. */
+/**
+ * How many processes runProcess runs at once: FFMPEG_CONCURRENCY, default half
+ * the CPUs (at least 1). ffmpeg already uses several threads per process, so
+ * more parallel runs only add memory pressure and slow each other down.
+ */
+export function ffmpegConcurrency(env: Env): number {
+  const n = Number(env.FFMPEG_CONCURRENCY);
+  if (env.FFMPEG_CONCURRENCY?.trim() && Number.isInteger(n) && n > 0) return n;
+  return Math.max(1, Math.floor(availableParallelism() / 2));
+}
+
+/** Process-wide slots shared by every runProcess call. */
+const slots = new Semaphore();
+
+/**
+ * Run a binary with an argument array. Rejects with a Vid2ContextError on
+ * failure, timeout or abort. Waits for one of the FFMPEG_CONCURRENCY slots
+ * first; a caller that aborts while waiting leaves the queue without spawning.
+ * The timeout starts once the process is spawned.
+ */
 export function runProcess(bin: string, args: string[], opts: RunOptions): Promise<RunResult> {
+  return slots.run(ffmpegConcurrency(opts.env ?? process.env), opts.signal, () => spawnProcess(bin, args, opts));
+}
+
+function spawnProcess(bin: string, args: string[], opts: RunOptions): Promise<RunResult> {
   const { label, signal } = opts;
   const timeoutMs = opts.timeoutMs ?? 10 * 60_000;
   const maxStdout = opts.maxStdoutBytes ?? 64 * 1024 * 1024;
