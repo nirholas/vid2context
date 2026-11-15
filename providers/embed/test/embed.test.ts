@@ -8,6 +8,7 @@ import {
   embedRungs,
   LANES,
   l2normalize,
+  makeEmbedRung,
   type RetrievalEmbedRung,
   retrievalPrefixes,
   splitBatches,
@@ -236,6 +237,62 @@ describe('OVH keyless embeddings (recorded)', () => {
     ]);
     await rung.embed(['wherever you can always get parts for it'], testContext({ fetch, env }));
     expect(rung.dimensions).toBe(1024);
+  });
+});
+
+describe('retry on server errors', () => {
+  // No 5xx has been observed from a real service, so these tests drive makeEmbedRung's
+  // batch hook directly: it raises the error client.ts builds for a 5xx, then answers
+  // with the vectors OVH really returned for the same sentences.
+  const recorded = vectorsOf('ovh-bge-m3.json');
+  const serverError = (status: number) =>
+    new Vid2ContextError('upstream', `test embeddings: HTTP ${status}`, { status, hint: 'Try again later.' });
+
+  function flakyRung(failures: Vid2ContextError[]) {
+    const calls: string[][] = [];
+    const rung = makeEmbedRung({
+      id: 'embed/test/bge-m3',
+      provider: 'embed',
+      service: 'test',
+      model: 'bge-m3',
+      tier: 'keyless',
+      priority: 1,
+      quality: 4,
+      requires: [],
+      enabled: true,
+      dimensions: 1024,
+      maxInputTokens: 8192,
+      maxBatch: 3,
+      embedBatch: async (texts) => {
+        calls.push(texts);
+        const fail = failures.shift();
+        if (fail) throw fail;
+        return texts.map((t) => recorded[SENTENCES.indexOf(t)] as number[]);
+      },
+    });
+    return { rung, calls };
+  }
+
+  it('retries a batch once after a 5xx and keeps every vector in order', async () => {
+    const { rung, calls } = flakyRung([serverError(503)]);
+    const out = await rung.embed(SENTENCES, testContext({}));
+    // Batches of 3, 3, 2; the first one is sent twice.
+    expect(calls.map((c) => c.length)).toEqual([3, 3, 3, 2]);
+    expect(calls[0]).toEqual(calls[1]);
+    expect(out).toHaveLength(SENTENCES.length);
+    for (const [i, v] of out.entries()) expect(cosine(v, recorded[i] as number[])).toBeCloseTo(1, 6);
+  });
+
+  it('gives up after the second 5xx on the same batch', async () => {
+    const { rung, calls } = flakyRung([serverError(502), serverError(502)]);
+    await expect(rung.embed(SENTENCES, testContext({}))).rejects.toMatchObject({ code: 'upstream', status: 502 });
+    expect(calls).toHaveLength(2);
+  });
+
+  it('does not retry client errors', async () => {
+    const { rung, calls } = flakyRung([serverError(400)]);
+    await expect(rung.embed(SENTENCES, testContext({}))).rejects.toMatchObject({ status: 400 });
+    expect(calls).toHaveLength(1);
   });
 });
 
