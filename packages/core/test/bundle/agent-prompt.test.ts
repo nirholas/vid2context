@@ -32,6 +32,18 @@ describe('agentPrompt', () => {
     }
   });
 
+  it('stays within a budget smaller than the instruction header (markdown path)', () => {
+    for (const maxTokens of [0, 5, 20, 60]) {
+      const out = without(['pack'], () => agentPrompt([zoo(), gwagon()], { maxTokens }));
+      expect(estimateTokens(out)).toBeLessThanOrEqual(maxTokens);
+      if (out) expect(out.startsWith('# Video context\n')).toBe(true);
+    }
+  });
+
+  it.skipIf(!formatters.pack)('lets the pack formatter refuse a budget too small for its headers', () => {
+    expect(() => agentPrompt([zoo(), gwagon()], { maxTokens: 20 })).toThrow(expect.objectContaining({ code: 'bad-request' }));
+  });
+
   it('marks a cut at a paragraph boundary and names what was cut (markdown path)', () => {
     const out = without(['pack'], () => agentPrompt([gwagon()], { maxTokens: 1500 }));
     expect(estimateTokens(out)).toBeLessThanOrEqual(1500);

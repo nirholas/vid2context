@@ -131,6 +131,18 @@ export function agentPrompt(contexts: VideoContext[], opts: AgentPromptOptions =
     const out = `${header}${join([...kept, { text: marker(contexts, kept, blocks.slice(n), maxTokens) }])}\n`;
     if (estimateTokens(out) <= maxTokens) return out;
   }
-  // The header alone does not fit: return as much of it as the budget allows.
-  return header.slice(0, Math.max(0, maxTokens * 4));
+  // The header alone does not fit: return as many of its whole lines as the budget allows.
+  return fitLines(header, maxTokens);
+}
+
+/** The longest prefix of whole lines of `text` whose estimate stays within `maxTokens`. */
+function fitLines(text: string, maxTokens: number): string {
+  const lines = text.split('\n');
+  let out = '';
+  for (const line of lines) {
+    const next = `${out}${line}\n`;
+    if (estimateTokens(next) > maxTokens) break;
+    out = next;
+  }
+  return out;
 }
