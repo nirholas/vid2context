@@ -307,7 +307,7 @@ Read by `@vid2context/server` (`npm run start:server`, the Worker, containers). 
 
 | Env var | Used by | Notes |
 |---|---|---|
-| `NOTION_TOKEN` | `@vid2context/exporters` (`export_notion`, `POST /exports/notion`) | secret of an internal integration (free) from https://www.notion.so/profile/integrations; share the parent page with it (page menu, Connections). Requests are paced to about 3 per second and use `Notion-Version: 2026-03-11` |
+| `NOTION_TOKEN` | `@vid2context/exporters` (`export_notion`, `POST /exports/notion`) | secret of an internal integration (free) from https://www.notion.so/profile/integrations; share the parent page with it (page menu, Connections). Requests are paced under 180 a minute (Notion's smallest per-connection budget) and use `Notion-Version: 2026-03-11` |
 | `NOTION_PARENT_PAGE_ID` | `@vid2context/exporters` | id or link of the Notion page the video pages go under; a per-call `parentPageId` wins |
 
 Obsidian exports need no variable: they are local files.

@@ -10,8 +10,9 @@
  * Limits honoured (checked 2026-11-14 at developers.notion.com/reference/request-limits):
  * 2000 characters per rich text `content` and per link URL, 100 blocks per
  * `children` array and per rich text array, 1000 block elements and 500 KB per
- * request, and about 3 requests per second per integration. Requests are paced
- * and 429 or 529 answers are retried after `Retry-After`.
+ * request, and 180 requests per minute per connection (600 on Business and
+ * Enterprise plans). Requests are paced to stay under the smaller budget and
+ * 429 or 529 answers are retried after `Retry-After`.
  *
  * Idempotency: pages under a page have only a title property, so the id lives
  * in the first block, a gray paragraph reading
@@ -83,7 +84,7 @@ export interface NotionExportOptions extends NotionPlanOptions {
   parentPageId?: string;
   /** Integration token. Default: `NOTION_TOKEN` from ctx.env. */
   token?: string;
-  /** Minimum gap between requests. Default 350 ms (under Notion's 3 requests per second). */
+  /** Minimum gap between requests. Default 350 ms, about 171 a minute, under the 180 per minute of every Notion plan. */
   minIntervalMs?: number;
   /** Retries for 429 and 529 answers. Default 5. */
   maxRetries?: number;
@@ -302,8 +303,14 @@ export function notionId(input: string): string | undefined {
   return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
 }
 
+/**
+ * A link to open a page. Used only when Notion's response has no `url` (an
+ * unchanged page is never fetched). Notion moved its links from
+ * www.notion.so/{id} to app.notion.com/p/{id} in June 2026
+ * (developers.notion.com/reference/versioning, checked 2026-11-15).
+ */
 export function notionUrl(pageId: string): string {
-  return `https://www.notion.so/${pageId.replace(/-/g, '')}`;
+  return `https://app.notion.com/p/${pageId.replace(/-/g, '')}`;
 }
 
 // ---------------------------------------------------------------- the API client
@@ -327,10 +334,28 @@ const HINTS: Partial<Record<Vid2ContextError['code'], string>> = {
   auth: 'Check NOTION_TOKEN (an internal integration secret from https://www.notion.so/profile/integrations) and share the parent page with that integration (page menu, Connections).',
   'not-found': 'Share the parent page with your integration (page menu, Connections) and check NOTION_PARENT_PAGE_ID.',
   'rate-limited':
-    'Notion allows about 3 requests per second per integration. Wait a minute and run the export again; finished pages are skipped.',
+    'Notion allows 180 requests a minute per connection (600 on Business plans) and a shared budget per workspace. Wait a minute and run the export again; finished pages are skipped.',
   upstream:
     'Notion rejected the request; the message carries its reason. Run the export again to retry; finished pages are skipped.',
 };
+
+/**
+ * Answers that retrying cannot fix, recognised by the error code Notion puts
+ * in the body (developers.notion.com/reference/request-limits and
+ * /workspace-block-limits, checked 2026-11-15): a Free workspace with more than
+ * one member that used its 1,000 lifetime blocks (403 `restricted_resource`),
+ * and a connection whose API access Notion restricted (429
+ * `public_api_request_blocked`). Returns the hint, or undefined.
+ */
+function blockedReason(err: Vid2ContextError): string | undefined {
+  if (err.status === 403 && err.message.includes('restricted_resource')) {
+    return 'The Notion workspace has used its free blocks (1,000 lifetime blocks on a Free workspace with more than one member; deleting blocks does not restore them). Upgrade the workspace, or export into a single-member or paid workspace.';
+  }
+  if (err.status === 429 && err.message.includes('public_api_request_blocked')) {
+    return "Notion has restricted this integration's API access; retrying will not help. Check the integration's Health tab and contact Notion support.";
+  }
+  return undefined;
+}
 
 interface ChildPage {
   id: string;
@@ -374,7 +399,11 @@ class NotionClient {
       );
       if (res.ok) return (await res.json()) as T;
       const err = await errorFromResponse(res, `Notion ${method} ${path.split('?')[0]}`);
-      const retryable = (err.status === 429 && !err.message.includes('public_api_request_blocked')) || err.status === 529;
+      const blocked = blockedReason(err);
+      if (blocked) {
+        throw new Vid2ContextError('blocked', err.message, { hint: blocked, status: err.status, cause: err });
+      }
+      const retryable = err.status === 429 || err.status === 529;
       if (retryable && attempt < this.maxRetries) {
         const delay = err.retryAfterSec ? err.retryAfterSec * 1000 : Math.min(30_000, 1000 * 2 ** attempt) + Math.random() * 250;
         this.ctx.log.warn('Notion asked to slow down, retrying', { status: err.status, delayMs: Math.round(delay) });

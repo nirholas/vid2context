@@ -45,7 +45,7 @@ Setup: create an internal integration at https://www.notion.so/profile/integrati
 
 Each page has a gray marker paragraph, the facts (channel, duration, published date, transcript origin), a bookmark to the video, a summary callout when a brief exists, the description in a toggle, a `heading_2` per chapter starting with its timestamp link, transcript paragraphs whose first word is a timestamp link, and the comments as a bulleted list.
 
-How the API limits are handled (values checked on 2026-11-14 against developers.notion.com):
+How the API limits are handled (values checked on 2026-11-15 against developers.notion.com):
 
 | Limit | Handling |
 |---|---|
@@ -53,7 +53,10 @@ How the API limits are handled (values checked on 2026-11-14 against developers.
 | 2000 characters per rich text item and per link URL | text is split at whitespace into several items; longer links are dropped |
 | 100 blocks per `children` array, 100 rich text items per block | the page is created with the first 100 blocks, the rest appended in order, 100 at a time |
 | 1000 block elements and 500 KB per request | batches also close on element count and on a 400 KB budget |
-| about 3 requests per second | requests are spaced 350 ms apart; 429 and 529 answers wait for `Retry-After` (or back off) and retry up to 5 times |
+| 180 requests per minute per connection (600 on Business and Enterprise), plus a shared per-workspace budget | requests are spaced 350 ms apart (about 171 a minute); 429 and 529 answers wait for `Retry-After` (up to 60 seconds, longer for the workspace budget) or back off, and retry up to 5 times |
+| Free workspaces with more than one member: 1,000 lifetime blocks | a 403 `restricted_resource` stops the export with code `blocked` and a hint, without retrying; a 429 `public_api_request_blocked` does the same. Every paragraph is a block, so one long video can use several hundred |
+
+Returned `url`s are the ones Notion sends back. A page reported `unchanged` is not fetched, so its link is built as `https://app.notion.com/p/<id>`, the format Notion has used since June 2026.
 
 Idempotency: pages under a page only have a title property, so the first block of every exported page is a gray paragraph:
 

@@ -200,7 +200,8 @@ describe('configuration', () => {
     expect(notionId(DOCS_PAGE_ID.replace(/-/g, ''))).toBe(DOCS_PAGE_ID);
     expect(notionId(`https://www.notion.so/workspace/Research-${DOCS_PAGE_ID.replace(/-/g, '')}?pvs=4`)).toBe(DOCS_PAGE_ID);
     expect(notionId('Research')).toBeUndefined();
-    expect(notionUrl(DOCS_PAGE_ID)).toBe(`https://www.notion.so/${DOCS_PAGE_ID.replace(/-/g, '')}`);
+    expect(notionId(`https://app.notion.com/p/${DOCS_PAGE_ID.replace(/-/g, '')}`)).toBe(DOCS_PAGE_ID);
+    expect(notionUrl(DOCS_PAGE_ID)).toBe(`https://app.notion.com/p/${DOCS_PAGE_ID.replace(/-/g, '')}`);
   });
 
   it('reads the token and parent page from ctx.env, never process.env', () => {
