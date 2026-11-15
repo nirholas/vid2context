@@ -24,6 +24,8 @@ The first run downloads the model from huggingface.co into `.vid2context/models/
 
 The browser entry (the package's `browser` export condition) decodes audio with Web Audio (`OfflineAudioContext` resamples to 16 kHz) and runs on WebGPU when the browser hands out an adapter, WASM otherwise. Models are cached in the browser's Cache Storage, so the second visit works offline. ONNX Runtime's WASM files load from cdn.jsdelivr.net (pinned to the bundled version) unless `TRANSFORMERS_WASM_PATH` points at a self-hosted copy of `onnxruntime-web/dist/`.
 
+In the web app, in-browser transcription runs in a Web Worker (`packages/web/src/audio/transcribe.worker.ts`), so a long file never freezes the page, and Cancel terminates the worker, which really stops Whisper. One worker is kept for the page, so the model loads once. Workers have no Web Audio, so the app builds the Whisper rung with `createTransformersProvider` from the package's `./shared` entry and hooks that read its own 16 kHz PCM WAV directly; Web Audio is used only where it exists. If a module worker cannot start (an old browser or a strict CSP), the same code runs on the page.
+
 The web app can show download progress with the exported hook:
 
 ```ts

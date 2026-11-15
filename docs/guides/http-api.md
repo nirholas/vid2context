@@ -41,6 +41,8 @@ curl -sG "$API/transcript" --data-urlencode "url=https://www.youtube.com/watch?v
 curl -sG "$API/metadata" --data-urlencode "url=jNQXAC9IVRw"          # no transcript fetched
 curl -s  "$API/formats"
 curl -sG "$API/items" --data-urlencode "url=https://www.youtube.com/playlist?list=PL..." -d limit=20
+# A video link inside a playlist: the video plus `list`; playlist=1 lists the playlist instead
+curl -sG "$API/items" --data-urlencode "url=https://www.youtube.com/watch?v=PzJL3aBRas8&list=PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b" -d playlist=1
 
 # What a video contains and what each part costs in tokens, then one part
 curl -sG "$API/outline" --data-urlencode "url=jNQXAC9IVRw"

@@ -1,6 +1,6 @@
 # vid2context
 
-[![npm](https://img.shields.io/npm/v/vid2context-mcp?label=vid2context-mcp)](https://www.npmjs.com/package/vid2context-mcp) [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE) [![Node 22+](https://img.shields.io/badge/node-%3E%3D22-339933?logo=nodedotjs&logoColor=white)](https://nodejs.org) [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/nirholas/vid2context)
+[![npm](https://img.shields.io/npm/v/vid2context-mcp?label=vid2context-mcp)](https://www.npmjs.com/package/vid2context-mcp) [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE) [![Node 22+](https://img.shields.io/badge/node-%3E%3D22-339933?logo=nodedotjs&logoColor=white)](https://nodejs.org)
 
 **Turn any video into context for AI agents.** An MCP server, CLI, HTTP API and library that gives Claude, ChatGPT, Cursor, VS Code Copilot and any other agent the transcript, metadata and chapters of a video, playlist, podcast or media file, with timestamps it can cite.
 
@@ -20,7 +20,7 @@ $ vid2context https://www.youtube.com/watch?v=jNQXAC9IVRw --timestamps
 
 ![The vid2context web app: a YouTube link goes in, and the transcript, SRT captions, chapters and a context pack for agents come out](docs/demo/web-app.gif)
 
-The web app on an 18 minute YouTube video: paste the link, then copy or download the transcript, captions, chapters or a context pack sized for an agent. Recorded live against the local API. [MP4 version](docs/demo/web-app.mp4).
+The web app on an 18 minute YouTube video: paste the link, then copy or download the transcript, captions, chapters or a context pack sized for an agent. Recorded live against the local API, shown at 2x speed. [MP4 version](docs/demo/web-app.mp4).
 
 ## Why
 

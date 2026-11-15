@@ -73,10 +73,20 @@ Attempts:
 ### list
 
 ```
-vid2context list <input> [--limit n] [--json]
+vid2context list <input> [--limit n] [--playlist] [--json]
 ```
 
 One video URL (or id, when there is no URL) per line; the count goes to stderr. `--json` prints the `VideoRef` array. A single video lists as itself.
+
+A video link that also names a playlist (`watch?v=...&list=...`) lists just that video, with a note on stderr. `--playlist` lists the playlist instead; `pack`, `bundle` and `download` take the same flag:
+
+```
+$ vid2context list "https://www.youtube.com/watch?v=PzJL3aBRas8&list=PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b" --playlist --limit 3
+https://www.youtube.com/watch?v=PzJL3aBRas8
+https://www.youtube.com/watch?v=1Xx1fmHIsiA
+https://www.youtube.com/watch?v=AS6LYBzFtEU
+3 items
+```
 
 ```
 $ vid2context list "https://www.youtube.com/playlist?list=PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b" --limit 3
@@ -99,6 +109,11 @@ markdown  md    one     Markdown transcript: title and metadata, chapters as hea
 srt       srt   one     SubRip (.srt) captions: at most 2 lines of 42 characters per cue, no overlaps, for players and editors.
 vtt       vtt   one     WebVTT (.vtt) captions for the HTML <track> element, with speaker voice tags when known.
 pack      md    many    Context pack: one Markdown file for one or many videos, written for an AI model to read, with citation instructions. Options: maxTokens, includeComments, includeVisual, linkTimestamps.
+ass       ass   one     Advanced SubStation Alpha (.ass) subtitles with a readable default style, for mpv, VLC, ffmpeg burn-in and Aegisub. Bilingual subtitles show the second language in a smaller style.
+ttml      ttml  one     TTML / IMSC (.ttml) timed text XML for broadcast, streaming packagers and players that read TTML or DFXP.
+sbv       sbv   one     YouTube SubViewer (.sbv) captions, the format YouTube Studio imports and exports.
+lrc       lrc   one     LRC (.lrc) timed lyrics, one [mm:ss.xx] line per cue, for music players and karaoke apps.
+csv       csv   one     CSV (.csv) with one row per segment: start,end,speaker,text in seconds, plus secondary_text for bilingual output. For spreadsheets and data tools.
 ```
 
 ### pack
@@ -109,11 +124,6 @@ vid2context pack <inputs...> [--max-tokens n] [--comments [n]] [--refresh]
 
 Playlists, channels and feeds are expanded first. If an input fails, the others still go into the pack, the failure is reported on stderr, and the exit code is that failure's code.
 
-ass       ass   one     Advanced SubStation Alpha (.ass) subtitles with a readable default style, for mpv, VLC, ffmpeg burn-in and Aegisub. Bilingual subtitles show the second language in a smaller style.
-ttml      ttml  one     TTML / IMSC (.ttml) timed text XML for broadcast, streaming packagers and players that read TTML or DFXP.
-sbv       sbv   one     YouTube SubViewer (.sbv) captions, the format YouTube Studio imports and exports.
-lrc       lrc   one     LRC (.lrc) timed lyrics, one [mm:ss.xx] line per cue, for music players and karaoke apps.
-csv       csv   one     CSV (.csv) with one row per segment: start,end,speaker,text in seconds, plus secondary_text for bilingual output. For spreadsheets and data tools.
 ```
 $ vid2context pack jNQXAC9IVRw --max-tokens 2000
 # Video context pack

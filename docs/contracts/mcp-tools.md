@@ -82,6 +82,14 @@ Long operations over many videos (`export_context_pack` with list `urls`) send `
 
 The rows for these tools in the tables below describe their inputs and outputs. `ask` returns `[n] Title @ m:ss <timestamp URL>` source lines after the answer, and its error body nests the code as `{ error: { code, message, hint }, attempts }`.
 
+### `translate_transcript` (`@vid2context/translate`)
+
+Exported by `registerTranslateTools(server, { registry, ctx, storage })` from `@vid2context/translate/mcp`; `packages/mcp/src/wire.ts` wires it with one line.
+
+| Tool | Input | Returns |
+|---|---|---|
+| `translate_transcript` | `{ url, language, format?, timestamps?, mode?, llm? }`; `language` is the target (BCP-47), `format` any id in the core `formatters` map (default `text`), `mode` how the source transcript is fetched, `llm: false` allows only the platform's tracks | The transcript in `language`, every segment and timestamp kept, built by `translateContext`: the source as is when already in the language, else the platform's own track or machine translation (YouTube `tlang`), else LLM translation on the rung chain. The source transcript is read from and saved to storage unchanged. `text`: a header (title, channel, URL, duration, transcript, a `Translation: en to de (German) via ...` line) plus the text. `json`: `{ videoId, title, url?, language, via: source \| platform \| llm, producer, rungs, model?, glossary, report: { chunks, retried, failed, untranslatedSegments }, notes, source: { language, origin, producer, segments }, attempts, context, sourceTranscript }`. Other formats: the rendered transcript, then a second text block with the same object minus `context` and `sourceTranscript`. Errors: `bad-request` (language code, format), `no-transcript` (no platform track and `llm: false`), `all-rungs-failed` (no rung translated), plus the usual loading errors |
+
 ## Adding a tool from another package
 
 The Owner column names the work item (see `docs/ROADMAP.md`) that implements the tool.

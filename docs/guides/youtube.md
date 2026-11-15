@@ -211,7 +211,15 @@ Hosts: only `youtube.com`, `www.`, `m.`, `music.youtube.com`, `youtube-nocookie.
 
 Rejected with `unsupported-input`: mixes (`list=RD...`, personalized and endless), `ytsearch:` without a query, and a count outside 1 to 200.
 
-A watch URL with both `v=` and `list=` stays a single video. To list the playlist, pass the `/playlist?list=` form.
+A watch URL with both `v=` and `list=` (what YouTube's share button gives inside a playlist) stays a single video, and the playlist is reported next to it: `Registry.resolve` returns it as `list` (from `matchYouTubeList`), so every surface can offer it without guessing. To use the playlist:
+
+- web app: the result (and the Download page) shows "This video is part of a playlist: <title> (N videos)" with a link that opens all of them;
+- CLI: add `--playlist` to `list`, `pack`, `bundle` or `download`; `get` and the others print a note with that command;
+- HTTP API: `GET /items?url=...&playlist=1` (without it, the answer carries `list`);
+- MCP: `list_items` with `playlist: true` (without it, the result carries `list`);
+- library: `expandInput(registry, url, ctx, { list: true })`.
+
+Passing the `/playlist?list=` form works everywhere too. Mixes (`list=RD...`) are never offered.
 
 ### Limits and order
 

@@ -109,6 +109,12 @@ curl -OJ localhost:8787/api/v1/downloads/<id>/file # the file once status is "do
 
 The web app shows a Download section on every result page, and a Download page in the sidebar, whenever the API it talks to has downloads enabled.
 
+### Captions only
+
+The web app's Captions page (sidebar, or `/app/?view=captions&url=<link>`, also linked from every result) saves a video's subtitles without the rest of the context and without downloading any media. It lists every caption track (`GET /caption-languages`), one row per language, labelled with the track a download returns (creator captions before auto-captions). Each track can be previewed and saved as SRT, WebVTT, plain text (optionally with timestamps) or JSON, along with any other subtitle format the server's formatters offer. "Save all" puts every track in one .zip, and a track that the platform refuses (YouTube often rate-limits caption requests from servers) is listed rather than failing the whole archive. "Translate" saves captions in a language the video has no track for: the platform's own translation first, then an LLM on the server that keeps every timestamp. A playlist or channel link saves one language (or each video's own) for up to 100 videos in one .zip, fetched one at a time.
+
+Every request is `GET /transcript?mode=captions`, so a video without captions is reported, never transcribed. The page links to the run page for that, where the audio can be transcribed on the server, in the browser, or from a file.
+
 ### Public servers
 
 With `VID2CONTEXT_PUBLIC=1`, downloads are **off** unless the operator sets `VID2CONTEXT_DOWNLOADS=1`. A public server that serves media spends a lot of bandwidth, invites abuse, and takes on the terms-of-service question for every user. When on, a public server also defaults to at most 1024 MB per file (`VID2CONTEXT_MAX_DOWNLOAD_MB`) and 120 minutes per kept part (`VID2CONTEXT_MAX_DOWNLOAD_MIN`), and it never reads local paths. Workers deployments cannot run yt-dlp, so there `/downloads/status` says why downloads are unavailable.

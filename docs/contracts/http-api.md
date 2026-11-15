@@ -95,12 +95,14 @@ Responses never contain env var values. Health output names the variables a rung
 
 Returns the full `VideoContext`: `metadata`, `transcript` (timed `segments`), optional `visual` and `comments`, and `attempts`.
 
-### `GET /api/v1/transcript?url=&format=&timestamps=&mode=&lang=&skip=&translate=`
+### `GET /api/v1/transcript?url=&format=&timestamps=&mode=&lang=&skip=&translate=&auto=&translated=&download=`
 
 Returns the transcript rendered by the chosen formatter (default `text`) with that formatter's `mimeType` as `Content-Type`.
 
 - `skip=sponsor,selfpromo` (or `skip=1` for the default categories) removes SponsorBlock segments from a copy of the transcript through `@vid2context/skips`; the stored transcript stays whole, and the response carries `X-Data-Attribution`.
 - `translate=1` (needs `lang`, else `bad-request`) loads the source transcript as usual (saved to the library unchanged), then calls `translateContext` from `@vid2context/translate`: the transcript as is when it is already in `lang`, else the platform's own track or machine translation, else LLM translation on the rung chain that keeps every segment and timestamp. The translation is returned, never stored over the source. `X-Translated-Via` says which step answered: `source`, `platform` or `llm`.
+- `auto=0` refuses platform auto-captions (creator captions only); `translated=0` refuses the platform's machine translation into `lang`. Both default to allowed and apply to the transcript loaded without `translate=1`. With `mode=captions` and nothing left, the answer is `no-transcript` (422).
+- `download=1` adds `Content-Disposition: attachment; filename="<title>.<lang>.<extension>"`, where `lang` is the language of the transcript sent and `extension` the formatter's. Path separators, control characters and characters Windows forbids are removed from the title (cut at 120 characters). A title outside ASCII gets an ASCII `filename` plus `filename*=UTF-8''...` (RFC 5987). Example: `/api/v1/transcript?url=<video>&mode=captions&lang=de&format=srt&download=1`.
 
 ### Routes implemented by item 46
 
@@ -188,6 +190,14 @@ When the server cannot read a video's captions (YouTube blocks many cloud IPs), 
 | Method and path | Request | Response |
 |---|---|---|
 | `POST /imports` | JSON, at most 5 MB: `{ url, text? \| segments?: { startSec, endSec?, text }[], language?, filename?, via?: paste \| file \| browser, captionKind?, metadata? }`, exactly one of `text` and `segments` | `201 { context, format, saved }`: `transcript.origin` is `imported`; `format` is the detected text format (`vtt`, `srt`, `youtube-transcript`, `srv1`, `srv3`, `json3`, `plain`) or `segments`; `saved` is false in hosted mode, where imports are never written to storage. `bad-request` when nothing could be read, `unsupported-input` for lists, `too-large` (413) |
+
+### Translation (`@vid2context/translate`)
+
+`translateRoutes({ registry, makeCtx, storage })` from `@vid2context/translate/http`, mounted at `/api/v1`. The same logic as `/transcript?translate=1`, as its own route with a JSON report.
+
+| Method and path | Request | Response |
+|---|---|---|
+| `GET /translate?url=&lang=&format=&timestamps=&mode=&refresh=&llm=` | `url` (or `input`) and `lang` (target, BCP-47) are required; `format` any formatter id (default `text`); `llm=0` allows only the platform's tracks | The translation rendered by the formatter with its `mimeType`; `format=json` returns `{ videoId, title, url?, language, via, producer, rungs, model?, glossary, report, notes, source: { language, origin, producer, segments }, attempts, context, sourceTranscript }`. Headers `X-Translated-Via` (`source`, `platform` or `llm`), `X-Translation-Producer`, `X-Source-Language`. The source transcript is saved to the library unchanged, the translation never. Errors: `bad-request` (missing `url` or `lang`, bad language code, format, mode or flag), `no-transcript` with `llm=0`, `all-rungs-failed` |
 
 Not mounted, because the package exports no route factory yet: bots (56), live (61) and duplicates (62).
 

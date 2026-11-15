@@ -86,7 +86,7 @@ Arguments shown as JSON. A video input is always `url` (a URL, a YouTube id or a
 | `list_formats` | `{}` | `text`, `json`, `markdown`, `srt`, `vtt`, `pack`, ... with descriptions |
 | `get_outline` | `{ "url": "https://www.youtube.com/watch?v=cCPsdFdlshc" }` | Chapters or 5-minute sections with `start`, `tokens` and `url`, plus `totalTokens` |
 | `get_section` | `{ "url": "...", "chapter": 1 }`, `{ "url": "...", "chapter": "engines" }`, `{ "url": "...", "from": "12:00", "to": "17:30" }` | That part of the transcript with the header |
-| `list_items` | `{ "url": "https://www.youtube.com/playlist?list=PL...", "limit": 20 }` | The videos in a playlist, channel, feed or page |
+| `list_items` | `{ "url": "https://www.youtube.com/playlist?list=PL...", "limit": 20 }` | The videos in a playlist, channel, feed or page. A video link inside a playlist returns the video and `list`; `"playlist": true` lists the playlist |
 | `get_comments` | `{ "url": "...", "limit": 20 }` | Top comments; pinned and creator comments flagged |
 | `export_context_pack` | `{ "collection": "g-wagon", "maxTokens": 60000 }` | One Markdown document for all the videos, trimmed to the budget |
 | `list_models` | `{ "kind": "llm" }` | Rungs with tier, quality, capabilities, enabled, and the env var names that enable them (never values) |
