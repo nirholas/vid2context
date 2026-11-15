@@ -189,6 +189,16 @@ describe.skipIf(!hasFfmpeg)('ffmpeg decoding (local, no network)', () => {
     expect(Math.max(...samples.subarray(16000 * 5, 16000 * 10))).toBeGreaterThan(0.01);
   });
 
+  it('stops ffmpeg and throws a timeout instead of waiting forever', async () => {
+    const data = new Uint8Array(readFileSync(apolloPath));
+    const err = await decodeWithFfmpeg({ kind: 'bytes', data, mimeType: 'audio/mpeg', filename: 'a.mp3' }, testContext(), {
+      timeoutMs: 1,
+    }).catch((e) => e);
+    expect(err).toBeInstanceOf(Vid2ContextError);
+    expect(err.code).toBe('timeout');
+    expect(err.hint).toBeTruthy();
+  });
+
   it('reports a missing ffmpeg with a hint', async () => {
     const ctx = testContext({ env: { FFMPEG_PATH: '/nonexistent/ffmpeg' } });
     const err = await decodeWithFfmpeg(

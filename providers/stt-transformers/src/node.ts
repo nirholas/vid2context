@@ -7,7 +7,7 @@ import { spawn } from 'node:child_process';
 import { mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
-import { type AudioInput, type Ctx, errorFromResponse, Vid2ContextError } from '@vid2context/core';
+import { type AudioInput, type Ctx, errorFromResponse, fetchWithTimeout, Vid2ContextError } from '@vid2context/core';
 import { createTransformersProvider, type RuntimeHooks, SAMPLE_RATE } from './index.ts';
 
 export * from './index.ts';
@@ -18,9 +18,16 @@ export function modelCacheDir(env: Ctx['env'], cwd: string = process.cwd()): str
   return resolve(home, 'models', 'transformers');
 }
 
-async function audioBytes(audio: AudioInput, ctx: Ctx): Promise<Uint8Array> {
+/**
+ * The longest one audio download or one ffmpeg decode may take. The CLI and
+ * the MCP server often run without a request signal, so without this a stalled
+ * download or a hung ffmpeg would block the transcription forever.
+ */
+export const DECODE_TIMEOUT_MS = 10 * 60_000;
+
+async function audioBytes(audio: AudioInput, ctx: Ctx, timeoutMs: number): Promise<Uint8Array> {
   if (audio.kind === 'bytes') return audio.data;
-  const res = await ctx.fetch(audio.url, { signal: ctx.signal });
+  const res = await fetchWithTimeout(ctx, audio.url, {}, timeoutMs);
   if (!res.ok) throw await errorFromResponse(res, 'transformers: audio download');
   return new Uint8Array(await res.arrayBuffer());
 }
@@ -30,18 +37,19 @@ async function audioBytes(audio: AudioInput, ctx: Ctx): Promise<Uint8Array> {
  * The input goes through a temp file, not stdin: MP4 and M4A files often keep
  * their index (moov atom) at the end, which ffmpeg cannot seek to in a pipe.
  */
-export async function decodeWithFfmpeg(audio: AudioInput, ctx: Ctx): Promise<Float32Array> {
+export async function decodeWithFfmpeg(audio: AudioInput, ctx: Ctx, opts: { timeoutMs?: number } = {}): Promise<Float32Array> {
+  const timeoutMs = opts.timeoutMs ?? DECODE_TIMEOUT_MS;
   const dir = await mkdtemp(join(tmpdir(), 'v2c-transformers-'));
   try {
     const file = join(dir, 'input');
-    await writeFile(file, await audioBytes(audio, ctx));
-    return await runFfmpeg(file, ctx);
+    await writeFile(file, await audioBytes(audio, ctx, timeoutMs));
+    return await runFfmpeg(file, ctx, timeoutMs);
   } finally {
     await rm(dir, { recursive: true, force: true });
   }
 }
 
-function runFfmpeg(file: string, ctx: Ctx): Promise<Float32Array> {
+function runFfmpeg(file: string, ctx: Ctx, timeoutMs: number): Promise<Float32Array> {
   const bin = ctx.env.FFMPEG_PATH?.trim() || 'ffmpeg';
   const args = [
     '-hide_banner',
@@ -58,8 +66,33 @@ function runFfmpeg(file: string, ctx: Ctx): Promise<Float32Array> {
     'f32le',
     'pipe:1',
   ];
-  return new Promise<Float32Array>((ok, fail) => {
+  return new Promise<Float32Array>((resolveSamples, rejectSamples) => {
     const child = spawn(bin, args, { stdio: ['ignore', 'pipe', 'pipe'], signal: ctx.signal });
+    let settled = false;
+    const timer = setTimeout(() => {
+      fail(
+        new Vid2ContextError(
+          'timeout',
+          `transformers: ffmpeg took longer than ${Math.round(timeoutMs / 1000)} s and was stopped.`,
+          {
+            hint: 'The file may be damaged or very long. Convert it to mp3 or wav first, or split it.',
+          },
+        ),
+      );
+      if (child.exitCode === null && child.signalCode === null) child.kill('SIGKILL');
+    }, timeoutMs);
+    function ok(samples: Float32Array) {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolveSamples(samples);
+    }
+    function fail(err: unknown) {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      rejectSamples(err);
+    }
     const out: Buffer[] = [];
     let err = '';
     child.stdout.on('data', (b: Buffer) => out.push(b));
