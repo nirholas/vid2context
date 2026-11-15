@@ -70,7 +70,7 @@ Tables: `videos` (one row per saved context, with the context JSON or an R2 key)
 - Listing is newest first with an opaque cursor.
 - Deleting a context also deletes its segments, search rows, collection memberships and R2 object. Deletes of unknown ids do nothing, as in `MemoryStorage`; collection updates on unknown ids throw `not-found`.
 - KV TTLs: Workers KV rejects `expirationTtl` below 60 seconds, so shorter TTLs are raised to 60. The D1 fallback table honours any TTL.
-- Not included: a Vectorize-backed `VectorStore`. Miniflare has no local Vectorize engine, so it could not be verified without creating a real index; until then the storage does not claim `VectorStore`, and callers fall back to `MemoryVectors`.
+- Not included: a Vectorize-backed `VectorStore`. Miniflare has no local Vectorize engine, so it can only be verified against a real index, and on 2026-11-15 the available API token was rejected by Cloudflare (`Invalid API Token`), so no index could be created. Until it is verified live with a token that has Vectorize edit permission, the storage does not claim `VectorStore`, and callers fall back to `MemoryVectors`.
 
 ## Binding versus REST
 
@@ -79,6 +79,8 @@ Tables: `videos` (one row per saved context, with the context JSON or an R2 key)
 | Speech-to-text | `stt/cloudflare-binding/<model>` | `stt/cloudflare/<model>` with `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN` |
 | LLM | `llm/cloudflare-binding/<model>` (with streaming) | `llm/cloudflare/...` in `providers/llm-free-catalog` |
 | Embeddings | `embed/cloudflare-binding/@cf/baai/bge-m3` | `embed/cloudflare/...` in `providers/embed` |
+
+Speaker labels: `stt/cloudflare/@cf/deepgram/nova-3` is Deepgram nova-3 hosted on Workers AI, REST only (the binding input for it is not verified). It is the one Cloudflare speech-to-text model that diarizes (capabilities `segments`, `language-detect`, `diarization`), so it runs first when a request needs speaker labels. For ordinary transcription it sits after every Whisper rung, because it costs about 8 neurons per second of audio (about 480 per minute, against about 47 for Whisper large-v3-turbo). Override the list with `CLOUDFLARE_DIARIZE_MODEL` (default `@cf/deepgram/nova-3`). See [diarization.md](diarization.md).
 
 Binding rungs need no token and skip a network hop. On Node, local rungs still come first under the default `free` policy; the REST rungs sit in the free tier with the other hosted free options.
 
