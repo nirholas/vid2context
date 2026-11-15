@@ -44,6 +44,13 @@ describe('redact: strings', () => {
     expect(out).not.toContain('plainvalue123');
   });
 
+  it('replaces only the credential in a header line, keeping what follows', () => {
+    const out = redact('authorization: Bearer abc.def-123456789 {"status":401} x-api-key: plainvalue123, next');
+    expect(out).toBe('authorization: [redacted] {"status":401} x-api-key: [redacted], next');
+    const cookie = redact('cookie: session=abcdef123456; theme=dark\nok');
+    expect(cookie).toBe('cookie: [redacted]\nok');
+  });
+
   it('redacts secret query parameters and keeps the rest of the URL', () => {
     const out = redact('GET https://www.googleapis.com/youtube/v3/videos?part=snippet&key=SECRETVALUE1234&id=jNQXAC9IVRw');
     expect(out).toBe(`GET https://www.googleapis.com/youtube/v3/videos?part=snippet&key=${REDACTED}&id=jNQXAC9IVRw`);

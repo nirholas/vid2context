@@ -35,9 +35,15 @@ const KEY_SHAPES: RegExp[] = [
 /** `Bearer xxx` and `Basic xxx` anywhere in text. */
 const AUTH_SCHEME = /\b(Bearer|Basic|Token)\s+[A-Za-z0-9._~+/=-]{8,}/gi;
 
-/** `Authorization: value`, `"x-api-key": "value"`, `cookie=value` in text (headers dumped into a message). */
+/**
+ * `Authorization: Bearer value`, `"x-api-key": "value"` in text (headers dumped into a message). Only the
+ * optional scheme word and the one credential token are replaced, so the rest of the line stays readable.
+ */
 const HEADER_IN_TEXT =
-  /(["']?\b(?:authorization|proxy-authorization|cookie|set-cookie|x-api-key|api-key|x-goog-api-key)["']?\s*[:=]\s*["']?)([^"'\r\n]+)/gi;
+  /(["']?\b(?:authorization|proxy-authorization|x-api-key|api-key|x-goog-api-key)["']?\s*[:=]\s*["']?)((?:(?:Bearer|Basic|Token|Digest)\s+)?[^\s"',;{}]+)/gi;
+
+/** `Cookie: a=1; b=2` in text: every cookie is a potential session, so the value is replaced up to the end of the line or quote. */
+const COOKIE_IN_TEXT = /(["']?\b(?:cookie|set-cookie)["']?\s*[:=]\s*["']?)([^"'\r\n]+)/gi;
 
 /** Secret query parameters in URLs. */
 const SECRET_QUERY =
@@ -77,6 +83,7 @@ function redactString(s: string, env: Env | undefined): string {
   let out = s;
   const m = envMatcher(env);
   if (m) out = out.replace(m, REDACTED);
+  out = out.replace(COOKIE_IN_TEXT, `$1${REDACTED}`);
   out = out.replace(HEADER_IN_TEXT, `$1${REDACTED}`);
   out = out.replace(AUTH_SCHEME, `$1 ${REDACTED}`);
   out = out.replace(SECRET_QUERY, `$1${REDACTED}`);
