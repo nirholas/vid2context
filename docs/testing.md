@@ -68,7 +68,7 @@ Each file holds `{ recordedAt, request: { method, url, headers, body }, response
 - JSON fields named like secrets (`api_key`, `token`, `access_token`, `secret`, `password`, `authorization`, ...), in request and response bodies. A bare `key` field counts only when its value looks like a credential (20+ characters, no spaces), so `{key, value}` pairs survive.
 - The literal value of every env var named `*_KEY`, `*_KEYS` (each comma-separated value), `*_TOKEN`, `*_SECRET`, `*_PASSWORD` or `*_ACCOUNT_ID`, wherever it appears.
 - Known key shapes anywhere: `sk-`, `sk-ant-`, `gsk_`, `AIza`, `ghp_`, `github_pat_`, `hf_`.
-- IP-bearing parameters in media stream URLs (`googlevideo.com`: `ip`, `ipbits`, `sig`, `lsig`, `signature`, `n`, `/ip/<addr>/`), and any query parameter whose value is an IP address. These print a warning.
+- IP-bearing parameters in media stream URLs (`googlevideo.com`: `ip`, `ipbits`, `sig`, `lsig`, `signature`, `n`, `/ip/<addr>/`), and any query parameter whose value is an IP address: in the request URL always, and in URLs inside bodies (YouTube caption URLs, for one) when the address is routable (`0.0.0.0`, loopback and private ranges stay, so placeholders still match). These print a warning.
 
 Still grep a new fixture for your public IP, emails and phone numbers before committing; the scrubber cannot know every personal detail.
 
@@ -189,8 +189,8 @@ Checks: id, description, `mimeType` and `extension` are set. Every context fixtu
 | `rung-contract` | every rung passes the rung checks above, built from an empty env and from an env with every key set. A free or paid rung built from an empty env must be disabled. |
 | `unique-rung-id` | no two rungs share an id in the same env |
 | `rungs-deterministic`, `rungs-offline` | building rungs twice from one env gives the same ids, with no network |
-| `portable-source:*` | providers registered for workers or browser have no `node:` imports, no `child_process`/`fs` imports, no `process.env`, and no global `fetch(` anywhere under `src/` (comments are ignored; call `ctx.fetch` by that name) |
-| `model-override` | for each rung built from an empty env, some `*_MODEL` variable documented in `docs/providers.md` or `.env.example` changes its model when set |
+| `portable-source:*` | providers registered for workers or browser have no `node:` imports, no `child_process`/`fs` imports, no `process.env`, and no global `fetch(` in any `src/` file that runtime loads (comments are ignored; call `ctx.fetch` by that name). The entry comes from `package.json` `exports` conditions (workers: `workerd`, `worker`, `edge-light`, `browser`, `import`, `default`; browser: `browser`, `import`, `default`), and files reachable from it through relative static or dynamic imports count. Node-only files the runtime never loads (a `node` entry, a CLI script) are listed under "Not checked" instead of failing. |
+| `model-override` | for each rung built from an empty env, some `*_MODEL` variable documented in `docs/providers.md` or `.env.example` changes its model when set. The provider may normalise the value (an org prefix, for one). Documented `*_BASE_URL`, `*_URL` and `*_HOST` variables that share the prefix are set alongside, to an address never contacted, so rungs that need their server configured still appear. |
 | `health-no-secrets` | `registry.health(env)` with key-shaped values for every secret variable never contains those values |
 | `storage-is-enabled` | storage providers decide `isEnabled` synchronously from a frozen env |
 

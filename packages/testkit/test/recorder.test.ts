@@ -15,7 +15,7 @@ import { llmRungs } from '@vid2context/provider-llm-openai-compatible';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { keyShapedValue } from '../src/invariants.ts';
 import { fixtureRoutes, readRecorded, recordingFetch } from '../src/recorder.ts';
-import { isIp, Scrubber } from '../src/scrub.ts';
+import { isIp, isRoutableIp, Scrubber } from '../src/scrub.ts';
 
 let server: Server;
 let base: string;
@@ -189,6 +189,21 @@ describe('Scrubber', () => {
     const out = JSON.parse(s.body(body, 'response.body')) as { params: { key: string }[]; auth: { key: string } };
     expect(out.params[0]?.key).toBe('cver');
     expect(out.auth.key).toBe('[redacted]');
+  });
+
+  it('scrubs a routable IP from any URL in a body and keeps the 0.0.0.0 placeholder', () => {
+    // The caption URL shape from a real player response (recorded 2026-11-15), with a TEST-NET-3 address put in.
+    const url = (ip: string) =>
+      `https://www.youtube.com/api/timedtext?v=jNQXAC9IVRw\\u0026hl=en\\u0026ip=${ip}\\u0026ipbits=0\\u0026lang=en`;
+    const s = new Scrubber();
+    const out = s.body(`{"baseUrl":"${url('203.0.113.7')}","other":"${url('0.0.0.0')}"}`, 'response.body');
+    expect(out).not.toContain('203.0.113.7');
+    expect(out).toContain('ip=REDACTED');
+    expect(out).toContain('ip=0.0.0.0');
+    expect(isRoutableIp('192.168.1.4')).toBe(false);
+    expect(isRoutableIp('::1')).toBe(false);
+    expect(isRoutableIp('2001:db8::1')).toBe(true);
+    expect(s.report().findings.map((f) => f.what)).toContain('url-ip');
   });
 
   it('recognises IP addresses but not clock times or versions', () => {

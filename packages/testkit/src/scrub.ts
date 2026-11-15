@@ -129,7 +129,7 @@ export class Scrubber {
 
   /** Strip IP-bearing params from media stream URLs embedded in a body (JSON escapes `&` as &). */
   private streamUrlsInText(input: string, where: string): string {
-    return input.replace(/https?:\/\/[^\s"'<>]*googlevideo\.com\/[^\s"'<>]*/g, (url) => {
+    const withStreams = input.replace(/https?:\/\/[^\s"'<>]*googlevideo\.com\/[^\s"'<>]*/g, (url) => {
       let changed = false;
       let out = url.replace(/([?&]|\\u0026|&amp;)([a-z_]+)=([^&"'\\\s]*)/gi, (m, sep: string, name: string, value: string) => {
         if (!STREAM_PARAMS.includes(name.toLowerCase()) && !isIp(decodeSafe(value))) return m;
@@ -145,6 +145,28 @@ export class Scrubber {
         this.warn(
           `A media stream URL in ${where} embedded an IP address or signature; it was scrubbed. Grep the fixture for your public IP before committing.`,
         );
+      }
+      return out;
+    });
+    return this.ipParamsInText(withStreams, where);
+  }
+
+  /**
+   * Any other URL in a body (YouTube timedtext URLs, for one) may carry the
+   * requester's address in a query param. Routable IPs are scrubbed; the
+   * placeholder 0.0.0.0, loopback and private ranges identify nobody and stay.
+   */
+  private ipParamsInText(input: string, where: string): string {
+    return input.replace(/https?:\/\/[^\s"'<>]+/g, (url) => {
+      let changed = false;
+      const out = url.replace(/([?&]|\\u0026|&amp;)([a-z_]+)=([^&"'\\\s]*)/gi, (m, sep: string, name: string, value: string) => {
+        if (!isRoutableIp(decodeSafe(value))) return m;
+        changed = true;
+        return `${sep}${name}=${REDACTED_URL}`;
+      });
+      if (changed) {
+        this.note(where, 'url-ip');
+        this.warn(`A URL in ${where} carried an IP address in its query; it was scrubbed.`);
       }
       return out;
     });
@@ -252,6 +274,25 @@ export function isIp(value: string): boolean {
   // IPv6: at least three colons and either a '::' or the full eight groups, so clock times like 12:30:00 are not mistaken for one.
   const colons = value.replace(/[^:]/g, '').length;
   return IPV6.test(value) && colons >= 3 && (value.includes('::') || colons === 7);
+}
+
+/** An IP that could identify a machine: not 0.0.0.0, loopback, link-local or a private range. */
+export function isRoutableIp(value: string): boolean {
+  if (!isIp(value)) return false;
+  const m = IPV4.exec(value);
+  if (m) {
+    const [a, b] = [Number(m[1]), Number(m[2])];
+    return !(
+      a === 0 ||
+      a === 10 ||
+      a === 127 ||
+      (a === 169 && b === 254) ||
+      (a === 172 && b >= 16 && b <= 31) ||
+      (a === 192 && b === 168)
+    );
+  }
+  const v = value.toLowerCase();
+  return !(v === '::' || v === '::1' || v.startsWith('fe80:') || v.startsWith('fc') || v.startsWith('fd'));
 }
 
 /** Merge several reports into one, summing counts. */
