@@ -11,13 +11,23 @@
  * throwing, so the parent app's onError never rewrites them.
  */
 
-import { type Ctx, hasKv, type KvStore, MemoryKv, MemoryStorage, type Registry, type Storage } from '@vid2context/core';
+import {
+  type Ctx,
+  hasKv,
+  type KvStore,
+  MemoryKv,
+  MemoryStorage,
+  type Registry,
+  type Storage,
+  Vid2ContextError,
+} from '@vid2context/core';
 import type { ServerOptions } from '@vid2context/mcp';
 import { type Context, Hono } from 'hono';
+import { bodyLimit } from 'hono/body-limit';
 import { authenticate, oauthEnabled } from './auth.ts';
 import { type McpHttpConfig, type McpHttpMode, readConfig } from './config.ts';
 import { aiCatalog, cachedJson, SERVER_CARD_TYPE, serverCard } from './discovery.ts';
-import { rateLimited } from './errors.ts';
+import { errorResponse, rateLimited } from './errors.ts';
 import { checkHost, checkOrigin, corsHeaders, PUBLIC_CORS, withHeaders } from './guard.ts';
 import { mountOAuth, type RequestState } from './oauth.ts';
 import { takeToken } from './ratelimit.ts';
@@ -158,6 +168,31 @@ export function mcpHttpRoutes(deps: McpHttpDeps): McpHttpApp {
         await next();
       });
     }
+  }
+
+  // Bodies are read whole by the MCP SDK and the OAuth form parser: cap them before either sees a byte
+  // past VID2CONTEXT_MCP_MAX_BODY_KB (Content-Length is checked up front, chunked bodies while streaming).
+  for (const p of [MCP_PATH, '/oauth/register', '/oauth/authorize', '/oauth/token', '/oauth/revoke']) {
+    app.use(p, async (c, next) => {
+      if (c.req.method !== 'POST' && c.req.method !== 'PUT' && c.req.method !== 'PATCH') return next();
+      const s = await getState(c);
+      const before = c.req.raw;
+      return bodyLimit({
+        maxSize: s.cfg.maxBodyBytes,
+        onError: () =>
+          errorResponse(
+            new Vid2ContextError('too-large', `The request body is larger than ${Math.round(s.cfg.maxBodyBytes / 1024)} KB.`, {
+              hint: 'Send a smaller request, or raise VID2CONTEXT_MCP_MAX_BODY_KB on the server.',
+            }),
+            413,
+            corsHeaders(before, s.cfg),
+          ),
+      })(c, async () => {
+        // The limiter re-wraps chunked bodies in a new Request; keep this request's state for it.
+        if (c.req.raw !== before) stateCache.set(c.req.raw, stateCache.get(before) as Promise<State>);
+        await next();
+      });
+    });
   }
 
   // ---------------------------------------------------------------- discovery (public)

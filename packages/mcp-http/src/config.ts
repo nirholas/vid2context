@@ -29,6 +29,8 @@ export interface McpHttpConfig {
   refreshTtlSec: number;
   /** Redirect URI prefixes clients may register or declare, from VID2CONTEXT_OAUTH_ALLOWED_REDIRECTS. Empty means any https or loopback URI. */
   allowedRedirects: string[];
+  /** Largest request body on /mcp and the OAuth endpoints, in bytes, from VID2CONTEXT_MCP_MAX_BODY_KB (default 1024). */
+  maxBodyBytes: number;
 }
 
 const list = (v: string | undefined): string[] =>
@@ -82,5 +84,6 @@ async function parse(env: Env): Promise<McpHttpConfig> {
     accessTtlSec: int(env.VID2CONTEXT_OAUTH_ACCESS_TTL_SEC, 3600, 60, 86_400),
     refreshTtlSec: int(env.VID2CONTEXT_OAUTH_REFRESH_TTL_SEC, 30 * 86_400, 3600, 365 * 86_400),
     allowedRedirects: list(env.VID2CONTEXT_OAUTH_ALLOWED_REDIRECTS),
+    maxBodyBytes: int(env.VID2CONTEXT_MCP_MAX_BODY_KB, 1024, 1, 1024 * 1024) * 1024,
   };
 }

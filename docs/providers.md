@@ -400,6 +400,7 @@ The MCP tools over Streamable HTTP at `/mcp`, for ChatGPT and Claude.ai connecto
 | `VID2CONTEXT_MCP_ALLOWED_HOSTS` | `@vid2context/mcp-http` | extra Host values for the DNS-rebinding check the bin applies when it listens on loopback (loopback names and the public host always pass) |
 | `VID2CONTEXT_MCP_RATE_LIMIT` | `@vid2context/mcp-http` | requests per minute per token, default `120`, `0` off. Answers 429 with `Retry-After` |
 | `VID2CONTEXT_MCP_MODE`, `VID2CONTEXT_MCP_SESSION_IDLE_SEC` | `@vid2context/mcp-http` | `session` (default on Node) or `stateless` (default on Workers). Idle sessions close after 1800 s by default |
+| `VID2CONTEXT_MCP_MAX_BODY_KB` | `@vid2context/mcp-http` | largest request body on `/mcp` and the OAuth endpoints, checked before the SDK or form parser reads it (chunked bodies while streaming); default `1024`, larger ones get `413` `too-large` |
 | `VID2CONTEXT_OAUTH_ACCESS_TTL_SEC`, `VID2CONTEXT_OAUTH_REFRESH_TTL_SEC` | `@vid2context/mcp-http` | token lifetimes, default 3600 and 2592000 (30 days) |
 | `VID2CONTEXT_OAUTH_ALLOWED_REDIRECTS` | `@vid2context/mcp-http` | redirect URI prefixes clients may use. Unset: any https URI, or http on localhost |
 | `VID2CONTEXT_OPENAI_APPS_CHALLENGE` | `@vid2context/mcp-http` | OpenAI app directory domain verification token, served at `/.well-known/openai-apps-challenge` |
