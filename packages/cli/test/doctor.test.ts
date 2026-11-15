@@ -13,7 +13,9 @@ import {
   checkNode,
   checkTool,
   checkYouTube,
+  checkYtDlpAge,
   parseFfVersion,
+  staleDays,
   TOOLS,
 } from '../src/doctor/checks.ts';
 import { dataDir, findBinary, keyNames, probeKeyless, probeLocalServers, probeYouTube, renderChecks } from '../src/doctor/run.ts';
@@ -37,6 +39,20 @@ describe('pure checks on captured outputs', () => {
   it('reads the real yt-dlp --version output', () => {
     const res = checkTool(TOOLS.ytdlp, { path: '/x/yt-dlp', output: fixture('ytdlp-version.txt') });
     expect(res.detail).toBe('2026.10.26 at /x/yt-dlp');
+  });
+
+  it('warns when the real yt-dlp version is older than YTDLP_STALE_DAYS', () => {
+    const ok = checkTool(TOOLS.ytdlp, { path: '/x/yt-dlp', output: fixture('ytdlp-version.txt') });
+    const fresh = checkYtDlpAge(ok, Date.UTC(2026, 10, 15));
+    expect(fresh).toMatchObject({ status: 'ok', detail: '2026.10.26 at /x/yt-dlp (20 days old)' });
+    const stale = checkYtDlpAge(ok, Date.UTC(2027, 1, 1));
+    expect(stale.status).toBe('warn');
+    expect(stale.detail).toContain('98 days old');
+    expect(stale.fix).toContain('yt-dlp -U');
+    expect(checkYtDlpAge(ok, Date.UTC(2026, 10, 15), staleDays('10')).status).toBe('warn');
+    expect(staleDays(undefined)).toBe(60);
+    expect(staleDays('abc')).toBe(60);
+    expect(checkYtDlpAge(checkTool(TOOLS.ytdlp, {}), Date.UTC(2027, 1, 1)).status).toBe('warn');
   });
 
   it('warns for a missing tool, fails for a broken configured path or version command', () => {

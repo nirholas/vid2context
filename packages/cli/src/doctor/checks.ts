@@ -125,6 +125,35 @@ export const TOOLS: Record<
   },
 };
 
+/** Default age in days after which yt-dlp counts as stale (YTDLP_STALE_DAYS). */
+export const YTDLP_STALE_DAYS = 60;
+
+/**
+ * Turn an ok yt-dlp check into a warning when the binary is older than
+ * `staleDays`. yt-dlp versions are release dates ("2026.10.26"), and sites
+ * such as YouTube change often enough that a two-month-old release is likely
+ * to fail on some of them.
+ */
+export function checkYtDlpAge(check: Check, now: number = Date.now(), staleDays: number = YTDLP_STALE_DAYS): Check {
+  if (check.status !== 'ok') return check;
+  const m = /^(\d{4})\.(\d{1,2})\.(\d{1,2})/.exec(check.detail);
+  if (!m) return check;
+  const days = Math.floor((now - Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3]))) / 86_400_000);
+  if (!Number.isFinite(days) || days <= staleDays) return { ...check, detail: `${check.detail} (${Math.max(0, days)} days old)` };
+  return {
+    ...check,
+    status: 'warn',
+    detail: `${check.detail} is ${days} days old (stale after ${staleDays}, YTDLP_STALE_DAYS)`,
+    fix: 'Sites change and old yt-dlp releases stop working on them. The managed copy updates itself weekly and on extraction failures; for your own binary run `yt-dlp -U` or `python3 -m pip install -U yt-dlp`.',
+  };
+}
+
+/** YTDLP_STALE_DAYS, else 60. */
+export function staleDays(raw: string | undefined): number {
+  const n = Number(raw?.trim());
+  return raw?.trim() && Number.isFinite(n) && n > 0 ? n : YTDLP_STALE_DAYS;
+}
+
 /** `nvidia-smi --query-gpu=name,memory.total,driver_version --format=csv,noheader`: one line per GPU, or null when missing. */
 export function checkGpu(output: string | null): Check {
   const base = { id: 'gpu', label: 'NVIDIA GPU' };
