@@ -8,7 +8,8 @@
  *   paid     DeepInfra whisper-large-v3-turbo, Together whisper-large-v3, OpenAI whisper-1,
  *            cheapest first
  *
- * Every model id can be overridden with <PROVIDER>_STT_MODEL.
+ * Every model id can be overridden with <PROVIDER>_STT_MODEL, and every keyed
+ * service's endpoint with <PROVIDER>_BASE_URL (for a proxy or gateway).
  */
 import { defineProvider, type Env, keyPool, pooledService, type SttProvider, type SttRung, type Tier } from '@vid2context/core';
 import { type Dialect, type Endpoint, transcribeWith } from './client.ts';
@@ -137,7 +138,7 @@ export function sttRungs(env: Env): SttRung[] {
       quality: 4,
       model: env.GROQ_STT_MODEL || 'whisper-large-v3-turbo',
       modelVar: 'GROQ_STT_MODEL',
-      baseUrl: GROQ_BASE_URL,
+      baseUrl: env.GROQ_BASE_URL || GROQ_BASE_URL,
       maxBytes: 25 * MB,
       words: true,
     }),
@@ -149,11 +150,12 @@ export function sttRungs(env: Env): SttRung[] {
       quality: 4,
       model: env.MISTRAL_STT_MODEL || 'voxtral-mini-transcribe-3',
       modelVar: 'MISTRAL_STT_MODEL',
-      baseUrl: MISTRAL_BASE_URL,
+      baseUrl: env.MISTRAL_BASE_URL || MISTRAL_BASE_URL,
       dialect: 'mistral',
       promptMaxChars: 2000,
     }),
     // Keyless: about 2 requests per minute per IP (x-ratelimit-limit-minute: 2), so a 429 cools down at least 30 s.
+    // Uploads above 10 MB answer 413 "max size allowed for unauthenticated users is 10MB" (recorded 2026-11-15).
     rung({
       service: 'ovh',
       tier: 'keyless',
@@ -164,6 +166,7 @@ export function sttRungs(env: Env): SttRung[] {
       baseUrl: OVH_BASE_URL,
       requires: [],
       enabled: true,
+      maxBytes: 10 * MB,
       words: true,
       minRetryAfterSec: 30,
     }),

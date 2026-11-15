@@ -99,6 +99,24 @@ describe('rungs from env', () => {
     ]);
   });
 
+  it('honours base URL overrides for every keyed hosted service', async () => {
+    const env = {
+      GROQ_API_KEY: 'g',
+      GROQ_BASE_URL: 'https://gateway.example.org/groq/openai/v1/',
+      MISTRAL_API_KEY: 'm',
+      MISTRAL_BASE_URL: 'https://gateway.example.org/mistral/v1',
+    };
+    for (const [service, url] of [
+      ['groq', 'https://gateway.example.org/groq/openai/v1/audio/transcriptions'],
+      ['mistral', 'https://gateway.example.org/mistral/v1/audio/transcriptions'],
+    ] as const) {
+      const fetch = replayFetch([{ url, response: recorded('ovh-json.response.json') }]);
+      const res = await find(service, env).transcribe(audio, {}, testContext({ fetch }));
+      expect(fetch.calls[0]?.url).toBe(url);
+      expect(res.segments[0]?.text).toMatch(/small step/);
+    }
+  });
+
   it('declares words only where the service returns them', () => {
     const caps = Object.fromEntries(sttRungs({}).map((r) => [r.service, r.capabilities.includes('words')]));
     expect(caps).toEqual({ local: false, groq: true, mistral: false, ovh: true, deepinfra: true, together: true, openai: true });
@@ -243,6 +261,24 @@ describe('OVH transcription (recorded responses)', () => {
     expect(big.calls).toHaveLength(1);
   });
 
+  it('maps the recorded 413 for an upload over the keyless 10 MB limit to too-large', async () => {
+    const fetch = replayFetch([{ url: OVH_URL, response: recorded('ovh-413-too-large.response.json') }]);
+    await expect(ovhRung().transcribe(audio, {}, testContext({ fetch }))).rejects.toMatchObject({
+      code: 'too-large',
+      status: 413,
+      message: expect.stringContaining('10MB'),
+      hint: expect.stringMatching(/Split the audio/),
+    });
+  });
+
+  it('declares the keyless 10 MB limit on OVH and refuses bigger audio without uploading', async () => {
+    expect(ovhRung().maxBytes).toBe(10 * 1024 * 1024);
+    const fetch = replayFetch([]);
+    const big = { ...audio, data: new Uint8Array(11 * 1024 * 1024) };
+    await expect(ovhRung().transcribe(big, {}, testContext({ fetch }))).rejects.toMatchObject({ code: 'too-large' });
+    expect(fetch.calls).toHaveLength(0);
+  });
+
   it('refuses bytes above the rung upload limit before uploading', async () => {
     const groq = find('groq', { GROQ_API_KEY: 'gsk_a' });
     const big = { ...audio, data: new Uint8Array(26 * 1024 * 1024) };
@@ -352,6 +388,8 @@ describe('helpers', () => {
     expect(parseDuration('soon')).toBeUndefined();
     expect(retryAfterFromHeaders(new Headers(recorded('ovh-429-headers.response.json').headers))).toBe(56);
     expect(retryAfterFromHeaders(new Headers({ 'x-ratelimit-remaining-minute': '0' }))).toBe(60);
+    expect(retryAfterFromHeaders(new Headers(recorded('ovh-413-too-large.response.json').headers))).toBe(55);
+    expect(retryAfterFromHeaders(new Headers({ 'ratelimit-remaining': '1', 'ratelimit-reset': '55' }))).toBeUndefined();
     expect(
       retryAfterFromHeaders(new Headers({ 'x-ratelimit-remaining-requests': '0', 'x-ratelimit-reset-requests': '2m59.56s' })),
     ).toBe(180);

@@ -1,0 +1,12 @@
+{
+  "status": 413,
+  "headers": {
+    "content-type": "application/json",
+    "ratelimit-limit": "2",
+    "ratelimit-remaining": "0",
+    "ratelimit-reset": "55",
+    "x-ratelimit-limit-minute": "2",
+    "x-ratelimit-remaining-minute": "0"
+  },
+  "body": "{\"message\":\"Payload too large (19MB), max size allowed for unauthenticated users is 10MB\"}"
+}

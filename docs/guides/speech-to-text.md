@@ -13,7 +13,7 @@ When a video has no usable captions, vid2context sends its audio through a chain
 | Mistral Voxtral | `stt/mistral/voxtral-mini-transcribe-3` | sent to Mistral; the free Experiment plan may train on your data | free tier | fast | not published | no (segments only) | this page |
 | Cloudflare Workers AI | `stt/cloudflare/...` | sent to Cloudflare | free daily allocation | fast | see guide | see guide | [cloudflare.md](cloudflare.md) |
 | Deepgram nova-3 on Cloudflare (speaker labels) | `stt/cloudflare/@cf/deepgram/nova-3` | sent to Cloudflare | free daily allocation, about 20 minutes of audio a day | fast | see guide | no (segments with confidence) | [diarization.md](diarization.md) |
-| OVH AI Endpoints | `stt/ovh/whisper-large-v3-turbo` | sent to OVH without an account | free, no key | moderate, about 2 requests per minute per IP | not published | yes | this page |
+| OVH AI Endpoints | `stt/ovh/whisper-large-v3-turbo` | sent to OVH without an account | free, no key | moderate, about 2 requests per minute per IP | 10 MB without an account | yes | this page |
 | DeepInfra | `stt/deepinfra/openai/whisper-large-v3-turbo` | sent to DeepInfra | paid, about $0.0002 per audio minute | fast | not published | yes | this page |
 | Together | `stt/together/openai/whisper-large-v3` | sent to Together | paid | fast | 80 MB | yes | this page |
 | OpenAI | `stt/openai/whisper-1` | sent to OpenAI | paid, the last backstop | moderate | 25 MB | yes | this page |

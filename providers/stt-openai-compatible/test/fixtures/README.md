@@ -15,6 +15,7 @@ Real responses recorded on 2026-11-14 for `tests/fixtures/media/apollo11-small-s
 | `ovh-404-model.response.json` | `model=whisper-nope` | 404 `model_not_found` |
 | `ovh-429.json` | third request inside one minute (body only) | 429 with headers `retry-after: 31`, `x-ratelimit-limit-minute: 2` |
 | `ovh-429-headers.response.json` | third request in a burst | 429 with `retry-after: 56`, `x-ratelimit-remaining-minute: 0` |
+| `ovh-413-too-large.response.json` | 2026-11-15: a valid 20,002,364-byte mp3 (pink noise from ffmpeg `anoisesrc`, 16 kHz mono) | 413 `Payload too large (19MB), max size allowed for unauthenticated users is 10MB`, with the `ratelimit-*` and `x-ratelimit-*` headers |
 | `ovh-429-short.response.json` | a request 35 s after two others | 429 with `retry-after: 11`. Copied from the recording script's console log (status, kept headers and full body as printed), because the file it wrote was overwritten by a later retry |
 
 The keyless tier allows about 2 requests per minute per IP. Space live test runs accordingly.

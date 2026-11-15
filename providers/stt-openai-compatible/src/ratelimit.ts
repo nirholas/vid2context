@@ -5,6 +5,8 @@
  *   retry-after                      seconds or an HTTP date (RFC 9110)
  *   x-ratelimit-remaining-requests   with x-ratelimit-reset-requests ("2m59.56s", "6ms"): Groq, OpenAI, Together
  *   x-ratelimit-remaining-minute     with x-ratelimit-limit-minute: OVH and other Kong gateways (a one-minute window)
+ *   ratelimit-remaining              with ratelimit-reset (seconds until the window resets): IETF RateLimit
+ *                                    header fields, also sent by OVH's Kong gateway
  *   x-ratelimit-reset                seconds, or a Unix timestamp
  */
 
@@ -38,6 +40,10 @@ export function retryAfterFromHeaders(headers: Headers, nowMs: number = Date.now
   }
   if (headers.get('x-ratelimit-remaining-requests')?.trim() === '0') {
     const r = positive(parseDuration(headers.get('x-ratelimit-reset-requests')));
+    if (r) return r;
+  }
+  if (headers.get('ratelimit-remaining')?.trim() === '0') {
+    const r = positive(Number(headers.get('ratelimit-reset')));
     if (r) return r;
   }
   if (headers.get('x-ratelimit-remaining-minute')?.trim() === '0') return 60;
