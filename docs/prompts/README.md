@@ -48,7 +48,7 @@ Numbers match `docs/ROADMAP.md` and the owner columns in `docs/contracts/`. Ever
 | 28 | [Chat workspace with a model picker](archive/28-chat.md) | `packages/chat/` | H. Surfaces |
 | 29 | [Embedding rungs, free first](archive/29-embeddings.md) | `providers/embed/`, `providers/embed-transformers/` | E. LLM and embeddings |
 | 30 | [Gemini: video understanding and audio transcription](30-gemini-video.md) | `providers/video-gemini/` | F. Intelligence |
-| 31 | [On-screen text and slides: frames, OCR, vision](31-visual-notes.md) | `providers/visual-frames/` | F. Intelligence |
+| 31 | [On-screen text and slides: frames, OCR, vision](archive/31-visual-notes.md) | `providers/visual-frames/` | F. Intelligence |
 | 32 | [Cited briefs and structured extraction](32-briefs-extraction.md) | `packages/insights/` | F. Intelligence |
 | 33 | [Evaluation harness: accuracy, citations, latency, cost](33-evals.md) | `packages/evals/` | I. Deploy and quality |
 | 34 | [Ask and chat: answers with timestamp citations](34-ask.md) | `packages/ask/` | F. Intelligence |
