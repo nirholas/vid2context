@@ -4,7 +4,7 @@
  */
 import { type Chapter, formatTimestamp, type Segment, timestampUrl, type VideoContext } from '@vid2context/core';
 import { ChevronDown, ChevronUp, Search } from 'lucide-react';
-import { type ReactNode, useDeferredValue, useEffect, useId, useMemo, useRef, useState } from 'react';
+import { memo, type ReactNode, useDeferredValue, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Button } from '../ui.tsx';
 
 function escapeRegExp(s: string): string {
@@ -56,6 +56,50 @@ export function segmentForChapter(segments: Segment[], ch: Chapter): number {
   return i < 0 ? segments.length - 1 : i;
 }
 
+interface RowProps {
+  index: number;
+  segment: Segment;
+  ts: string;
+  url: string | undefined;
+  ranges: [number, number][] | undefined;
+  /** The current match key, only when it is in this row, so other rows skip re-rendering. */
+  current: string | undefined;
+}
+
+/**
+ * One transcript line. Memoized so a search keystroke re-renders only the rows whose highlights
+ * changed, and `content-visibility: auto` lets the browser skip layout and paint for rows off
+ * screen. Rows stay in the DOM, so chapter jumps, scroll-to-match and the browser's find work on a
+ * 3-hour transcript as on a short one.
+ */
+const TranscriptRow = memo(function TranscriptRow({ index, segment, ts, url, ranges, current }: RowProps) {
+  return (
+    <li
+      data-seg={index}
+      style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 2rem' }}
+      className="grid grid-cols-[4.5rem_1fr] gap-3 rounded-v2c-sm px-2 py-1 text-sm leading-relaxed hover:bg-surface-2"
+    >
+      {url ? (
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-mono text-xs leading-6 text-accent underline-offset-4 hover:underline"
+          aria-label={`${ts}, open the video at this moment`}
+        >
+          {ts}
+        </a>
+      ) : (
+        <span className="font-mono text-xs leading-6 text-muted">{ts}</span>
+      )}
+      <span className="text-fg">
+        {segment.speaker && <span className="mr-1 font-semibold">{segment.speaker}:</span>}
+        {highlight(segment.text, ranges, current, index)}
+      </span>
+    </li>
+  );
+});
+
 export function TranscriptTab({ context }: { context: VideoContext }) {
   const segs = context.transcript.segments;
   const ref = context.metadata.ref;
@@ -69,6 +113,12 @@ export function TranscriptTab({ context }: { context: VideoContext }) {
   const listRef = useRef<HTMLOListElement>(null);
   const searchId = useId();
   const currentKey = keys.length ? keys[Math.min(cursor, keys.length - 1)] : undefined;
+  const currentRow = currentKey === undefined ? -1 : Number(currentKey.split(':')[0]);
+  // Timestamps and links depend only on the transcript, not on the search.
+  const rows = useMemo(
+    () => segs.map((s) => ({ ts: formatTimestamp(s.startSec, long), url: timestampUrl(ref, s.startSec) })),
+    [segs, long, ref],
+  );
 
   useEffect(() => {
     if (!currentKey) return;
@@ -149,37 +199,19 @@ export function TranscriptTab({ context }: { context: VideoContext }) {
       )}
 
       <ol ref={listRef} className="max-h-[40rem] space-y-1 overflow-y-auto pr-1" aria-label="Transcript" data-testid="transcript">
-        {segs.map((s, i) => {
-          const ts = formatTimestamp(s.startSec, long);
-          const url = timestampUrl(ref, s.startSec);
-          return (
-            <li
-              // Segments have no id; their order is fixed.
-              // biome-ignore lint/suspicious/noArrayIndexKey: the list is never reordered
-              key={i}
-              data-seg={i}
-              className="grid grid-cols-[4.5rem_1fr] gap-3 rounded-v2c-sm px-2 py-1 text-sm leading-relaxed hover:bg-surface-2"
-            >
-              {url ? (
-                <a
-                  href={url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-mono text-xs leading-6 text-accent underline-offset-4 hover:underline"
-                  aria-label={`${ts}, open the video at this moment`}
-                >
-                  {ts}
-                </a>
-              ) : (
-                <span className="font-mono text-xs leading-6 text-muted">{ts}</span>
-              )}
-              <span className="text-fg">
-                {s.speaker && <span className="mr-1 font-semibold">{s.speaker}:</span>}
-                {highlight(s.text, matches.get(i), currentKey, i)}
-              </span>
-            </li>
-          );
-        })}
+        {segs.map((s, i) => (
+          <TranscriptRow
+            // Segments have no id; their order is fixed.
+            // biome-ignore lint/suspicious/noArrayIndexKey: the list is never reordered
+            key={i}
+            index={i}
+            segment={s}
+            ts={rows[i]?.ts ?? ''}
+            url={rows[i]?.url}
+            ranges={matches.get(i)}
+            current={i === currentRow ? currentKey : undefined}
+          />
+        ))}
       </ol>
     </div>
   );
