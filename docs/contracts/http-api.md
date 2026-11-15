@@ -175,12 +175,13 @@ Save a video as mp4, webm or mkv, or its audio as mp3, m4a, opus, flac or wav. O
 
 | Method and path | Request | Response |
 |---|---|---|
-| `GET /downloads/status` | | `{ enabled, reason?, notice, limits: { maxBytes, maxDurationSec, ttlMin }, formats: { video[], audio[] }, qualities, sponsorCategories, ytdlp? }`. Open even when downloads are off, so a client can say why |
+| `GET /downloads/status` | | `{ enabled, reason?, notice, limits: { maxBytes, maxDurationSec, ttlMin }, formats: { video[], audio[] }, qualities, sponsorCategories, thumbnailFormats, ytdlp? }`. Open even when downloads are off, so a client can say why |
 | `GET /downloads/options?url=` | | `MediaOptions`: `title`, `durationSec`, `chapters`, `video: [{ quality, label, height, fps?, sizes: { mp4, webm, mkv }, codecs }]`, `audio: [{ format, quality, label, sizeBytes?, kbps?, method }]`, `subtitles`, `canRemoveSegments`, `isLive`. Sizes are estimates (exact when the site reports them) |
-| `POST /downloads` | JSON `{ url, kind?, format?, quality?, from?, to?, chapter?, exactCuts?, embedMetadata?, embedThumbnail?, embedChapters?, subtitles?, removeSegments? }` | `202` `DownloadJob` with a `Location` header. Defaults: video mp4 1080, audio mp3 best. `from`/`to` take seconds, `m:ss` or `1m30s`; `chapter` an index or a title. Too many jobs: `rate-limited` (429) |
+| `POST /downloads` | JSON `{ url, kind?, format?, quality?, from?, to?, chapter?, exactCuts?, embedMetadata?, embedThumbnail?, embedChapters?, subtitles?, removeSegments?, burnSubtitles?, splitChapters? }` | `202` `DownloadJob` with a `Location` header. Defaults: video mp4 1080, audio mp3 best. `from`/`to` take seconds, `m:ss` or `1m30s`; `chapter` an index or a title. `burnSubtitles` (a language) draws subtitles into the picture (video only, re-encodes); `splitChapters` also writes one file per chapter (not with `from`/`to`/`chapter`). Too many jobs: `rate-limited` (429) |
 | `GET /downloads` | | `{ jobs: DownloadJob[] }`, newest first |
-| `GET /downloads/:id` | | `DownloadJob { id, status: queued \| running \| done \| error \| canceled, request, progress: { phase, percent?, downloadedBytes, totalBytes?, speedBps?, etaSec?, step? }, file?: { filename, bytes, mimeType, title, durationSec?, section?, warnings }, error?, expiresAt? }` |
-| `GET /downloads/:id/file?inline=` | `Range: bytes=` (one range) | the file, `Content-Disposition: attachment` (or `inline` with `inline=1`), `206` for a range, `416` when unsatisfiable, `400` while not done |
+| `GET /downloads/:id` | | `DownloadJob { id, status: queued \| running \| done \| error \| canceled, request, progress: { phase, percent?, downloadedBytes, totalBytes?, speedBps?, etaSec?, step? }, file?: { filename, bytes, mimeType, title, durationSec?, section?, warnings, parts?: [{ filename, bytes, index, title, fromSec, toSec }] }, error?, expiresAt? }` |
+| `GET /downloads/thumbnail?url=&format=&inline=` | | the thumbnail image (`jpg` default, `png`, `webp`) with `X-Thumbnail-Origin: site \| cover \| frame` and, when known, `X-Thumbnail-Width`/`-Height`. Not a job: images are small and returned at once |
+| `GET /downloads/:id/file?inline=&part=` | `Range: bytes=` (one range) | the file (with `part=N`, chapter N of a `splitChapters` download, `400` for a part that does not exist), `Content-Disposition: attachment` (or `inline` with `inline=1`), `206` for a range, `416` when unsatisfiable, `400` while not done |
 | `DELETE /downloads/:id` | | `{ deleted: true, id }`; cancels a running job or deletes the file |
 
 ### Transcript import (`@vid2context/imports`)
@@ -301,7 +302,7 @@ Long work (collection ingest, briefs, long audio) runs as a job. Owner: 42.
 |---|---|---|
 | `POST /jobs` | `{ kind, input, options? }` | `202 Job` |
 | `GET /jobs/:id` | | `Job` |
-| `GET /jobs/:id/events` | | `text/event-stream` with events `progress` `{ done, total, message? }`, `item` `{ id, outcome }`, `done` `{ result }`, `error` `{ code, message, hint? }` |
+| `GET /jobs/:id/events` | | `text/event-stream` with events `progress` `{ done, total, message?, retryAt? }` (`retryAt`: when a failed attempt is retried, ISO 8601), `item` `{ id, outcome }`, `done` `{ result }`, `error` `{ code, message, hint? }` |
 | `DELETE /jobs/:id` | | `202 Job` (cancel requested) |
 | `POST /jobs/:id/run` | `{ jobId }` with `Authorization: Bearer <Google OIDC token>` | `200 { outcome, job }`; only when the Cloud Tasks adapter is configured (otherwise `404`); `401` with the standard error body (`code: auth`) when the token fails verification |
 
@@ -318,7 +319,7 @@ interface Job {
   id: string;
   kind: string; // 'ingest', 'refresh', 'brief', 'extract', 'transcribe-long', ...
   status: 'queued' | 'running' | 'succeeded' | 'failed' | 'canceled';
-  progress?: { done: number; total?: number; message?: string };
+  progress?: { done: number; total?: number; message?: string; retryAt?: string };
   result?: unknown;
   error?: { code: string; message: string; hint?: string };
   createdAt: string; // ISO 8601

@@ -8,6 +8,8 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { attemptsOf, type Ctx, expandInput, limits, type Registry, Vid2ContextError } from '@vid2context/core';
 import { z } from 'zod';
+import { normalizeThumbnailRequest, THUMBNAIL_FORMATS } from './extras.ts';
+import { registerToolkitTools } from './mcp-toolkit.ts';
 import {
   AUDIO_FORMATS,
   AUDIO_QUALITIES,
@@ -17,7 +19,6 @@ import {
   VIDEO_CONTAINERS,
   VIDEO_QUALITIES,
 } from './options.ts';
-import { registerToolkitTools } from './mcp-toolkit.ts';
 import { downloadPolicy, NOTICE } from './policy.ts';
 import { mb, optionsSummary } from './summary.ts';
 import type { DownloadedFile, Downloader } from './types.ts';
@@ -118,6 +119,14 @@ export function registerDownloadTools(server: McpServer, deps: DownloadToolDeps)
           .optional()
           .describe('Re-encode at the cut points so a trimmed video starts exactly at from (slower)'),
         subtitles: z.array(z.string()).optional().describe('Subtitle languages to embed in a video, e.g. ["en"]'),
+        burnSubtitles: z
+          .string()
+          .optional()
+          .describe('Burn one language\'s subtitles into the picture, e.g. "en" (video only; re-encodes, so slower)'),
+        splitChapters: z
+          .boolean()
+          .optional()
+          .describe('Also save one file per chapter, in a folder next to the full file. Not with from/to/chapter'),
         removeSegments: z.array(z.enum(SPONSOR_CATEGORIES)).optional().describe('SponsorBlock categories to cut out (YouTube)'),
         embedThumbnail: z.boolean().optional().describe('Cover art. Default true'),
         embedMetadata: z.boolean().optional().describe('Title, channel and date tags. Default true'),
@@ -189,13 +198,56 @@ export function registerDownloadTools(server: McpServer, deps: DownloadToolDeps)
         }
         const lines = saved.map(
           (f) =>
-            `Saved ${f.path} (${mb(f.bytes)}${f.durationSec ? `, ${clock(f.durationSec)}` : ''})${f.warnings.length ? `\n  Note: ${f.warnings.join(' ')}` : ''}`,
+            `Saved ${f.path} (${mb(f.bytes)}${f.durationSec ? `, ${clock(f.durationSec)}` : ''})` +
+            (f.parts?.length
+              ? `\n  ${f.parts.length} chapter files:\n${f.parts.map((p) => `    ${p.path} (${clock(p.fromSec)}-${clock(p.toSec)})`).join('\n')}`
+              : '') +
+            (f.warnings.length ? `\n  Note: ${f.warnings.join(' ')}` : ''),
         );
         for (const f of failed) lines.push(`Failed ${f.input}: ${f.error}${f.hint ? ` (${f.hint})` : ''}`);
         return {
           content: [{ type: 'text', text: lines.join('\n') }],
           structuredContent: { dir, files: saved, failed },
           ...(saved.length === 0 ? { isError: true } : {}),
+        };
+      } catch (err) {
+        return toolError(err);
+      }
+    },
+  );
+
+  server.registerTool(
+    'download_thumbnail',
+    {
+      title: 'Save a video thumbnail',
+      description:
+        "Save a video's thumbnail (cover image) as jpg, png or webp to a folder on this machine; returns the path. " +
+        'For YouTube and other sites it takes the largest image the site lists; for a local file, its cover art, else a frame from the first tenth of the video. ' +
+        `Files go to dir, else VID2CONTEXT_DOWNLOAD_DIR, else ~/Downloads/vid2context.`,
+      inputSchema: {
+        url: z.string().min(1).describe('Video URL, YouTube id or local file path'),
+        format: z.enum(THUMBNAIL_FORMATS).optional().describe('jpg (default), png or webp'),
+        dir: z.string().optional().describe('Folder to save to: absolute, ~/..., or relative to the default folder'),
+      },
+      annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true },
+    },
+    async (args, extra) => {
+      const ctx: Ctx = { ...deps.ctx, signal: extra.signal ?? deps.ctx.signal };
+      try {
+        enabled(ctx);
+        if (!downloader.thumbnail)
+          throw new Vid2ContextError('no-provider', 'This downloader cannot save thumbnails.', { hint: 'Update vid2context.' });
+        const req = normalizeThumbnailRequest({ url: args.url, format: args.format });
+        const saved = await downloader.thumbnail(req, ctx, { dir: downloader.outputDir(ctx, args.dir) });
+        const size = saved.width && saved.height ? `, ${saved.width}x${saved.height}` : '';
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `Saved ${saved.path} (${mb(saved.bytes)}${size}, from the ${saved.origin === 'site' ? 'site' : saved.origin === 'cover' ? "file's cover art" : 'video'})`,
+            },
+          ],
+          structuredContent: saved as unknown as Record<string, unknown>,
         };
       } catch (err) {
         return toolError(err);

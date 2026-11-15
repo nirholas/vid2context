@@ -3,6 +3,7 @@
  * (CLI, HTTP, MCP, web) uses to validate it. Runtime-neutral: no `node:*`.
  */
 import { Vid2ContextError } from '@vid2context/core';
+import { normalizeExtras } from './extras.ts';
 
 export type MediaKind = 'video' | 'audio';
 
@@ -65,6 +66,10 @@ export interface DownloadRequest {
   subtitles: string[];
   /** SponsorBlock categories to cut out (YouTube only). */
   removeSegments: SponsorCategory[];
+  /** Burn this language's subtitles into the picture (video only, re-encodes). See extras.ts. */
+  burnSubtitles?: string;
+  /** Also write one file per chapter next to the full download. See extras.ts. */
+  splitChapters?: boolean;
 }
 
 export const MIME_TYPES: Record<MediaFormat, string> = {
@@ -173,6 +178,8 @@ export interface RawDownloadRequest {
   embedChapters?: unknown;
   subtitles?: unknown;
   removeSegments?: unknown;
+  burnSubtitles?: unknown;
+  splitChapters?: unknown;
 }
 
 /**
@@ -266,6 +273,7 @@ export function normalizeRequest(raw: RawDownloadRequest): DownloadRequest {
     embedChapters: bool(raw.embedChapters, true, 'embedChapters'),
     subtitles,
     removeSegments: removeSegments as SponsorCategory[],
+    ...normalizeExtras(raw, { kind, trimmed: fromSec !== undefined || toSec !== undefined || chapter !== undefined }),
   };
 }
 

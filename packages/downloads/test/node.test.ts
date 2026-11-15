@@ -274,6 +274,7 @@ describe.skipIf(!hasFfmpeg)('MCP tools', () => {
         'download_batch',
         'download_captions',
         'download_media',
+        'download_thumbnail',
         'export_clip',
         'get_caption_options',
         'get_media_options',

@@ -4,6 +4,7 @@
  * their entry point, so they never import `node:*` themselves.
  */
 import type { Ctx } from '@vid2context/core';
+import type { ThumbnailFormat, ThumbnailRequest } from './extras.ts';
 import type { MediaOptions } from './formats.ts';
 import type { DownloadRequest, MediaFormat, MediaKind } from './options.ts';
 import type { DownloadProgress } from './progress.ts';
@@ -25,6 +26,42 @@ export interface DownloadedFile {
   section?: { fromSec: number; toSec?: number; chapter?: string };
   /** Things that did not go as asked but did not stop the download (a subtitle track that failed, a trim done locally). */
   warnings: string[];
+  /** One file per chapter, when the request asked for splitChapters. Paths sit in a folder next to `path`. */
+  parts?: DownloadedPart[];
+}
+
+/** One chapter written as its own file by a chapter split. */
+export interface DownloadedPart {
+  path: string;
+  /** Relative to the download directory, e.g. "Title [id]/01 - Intro.mp4". */
+  filename: string;
+  bytes: number;
+  /** 0-based chapter number. */
+  index: number;
+  title: string;
+  fromSec: number;
+  toSec: number;
+}
+
+export interface ThumbnailOptions {
+  /** Directory the image is written to. Created when missing. */
+  dir: string;
+  overwrite?: boolean;
+}
+
+/** A saved thumbnail (cover image). */
+export interface SavedThumbnail {
+  path: string;
+  filename: string;
+  bytes: number;
+  mimeType: string;
+  format: ThumbnailFormat;
+  width?: number;
+  height?: number;
+  /** Where the image came from: the thumbnail URL, the file's cover art, or a frame at a time. */
+  origin: 'site' | 'cover' | 'frame';
+  title: string;
+  source: string;
 }
 
 export interface DownloadOptions {
@@ -50,6 +87,8 @@ export interface Downloader {
   probe(input: string, ctx: Ctx): Promise<MediaOptions>;
   download(req: DownloadRequest, ctx: Ctx, opts: DownloadOptions): Promise<DownloadedFile>;
   status(ctx: Ctx): Promise<DownloaderStatus>;
+  /** Save the video's thumbnail: the site's largest one, else a local file's cover art or a frame from it. */
+  thumbnail?(req: ThumbnailRequest, ctx: Ctx, opts: ThumbnailOptions): Promise<SavedThumbnail>;
   /**
    * The directory files are saved to: `dir` with `~` expanded and relative
    * paths taken from the default, or the default itself
@@ -70,7 +109,7 @@ export interface DownloadJob {
   updatedAt: string;
   /** When the finished file is deleted. */
   expiresAt?: string;
-  file?: Omit<DownloadedFile, 'path'>;
+  file?: Omit<DownloadedFile, 'path' | 'parts'> & { parts?: Omit<DownloadedPart, 'path'>[] };
   error?: { code: string; message: string; hint?: string };
 }
 
@@ -89,7 +128,16 @@ export interface DownloadManager {
   list(): DownloadJob[];
   /** Cancel a queued or running job, or delete a finished one and its file. False when unknown. */
   remove(id: string): Promise<boolean>;
-  /** The finished file, or a byte range of it. Undefined when the job is unknown or not done. */
-  open(id: string, range?: { start: number; end: number }): Promise<JobFile | undefined>;
+  /**
+   * The finished file, or a byte range of it. `part` picks one chapter file of
+   * a chapter split (its 0-based index). Undefined when the job is unknown, not
+   * done, or has no such part.
+   */
+  open(id: string, range?: { start: number; end: number }, part?: number): Promise<JobFile | undefined>;
+  /** Fetch a thumbnail into memory (no job: images are small) and delete the temp file. */
+  thumbnail?(
+    req: ThumbnailRequest,
+    ctx: Ctx,
+  ): Promise<JobFile & { width?: number; height?: number; origin: SavedThumbnail['origin'] }>;
   close(): Promise<void>;
 }

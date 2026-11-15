@@ -34,11 +34,20 @@ import { downloadArgs } from '../args.ts';
 import { estimateBytes } from '../estimate.ts';
 import { type MediaInfo, type MediaOptions, mediaOptions } from '../formats.ts';
 import { toolkitLimits } from '../limits.ts';
-import { clock, type DownloadRequest, findChapter, isTrimmed, MIME_TYPES } from '../options.ts';
+import { clock, type DownloadRequest, findChapter, isTrimmed, isVideoContainer, MIME_TYPES } from '../options.ts';
 import { downloadPolicy } from '../policy.ts';
 import { type DownloadProgress, ProgressTracker, parseLine } from '../progress.ts';
 import type { DownloadedFile, Downloader, DownloaderStatus, DownloadOptions } from '../types.ts';
 import { preflightDisk } from './disk.ts';
+import {
+  applyBurn,
+  localSubtitleText,
+  pipelineSubtitleText,
+  saveFileThumbnail,
+  saveSiteThumbnail,
+  siteSubtitleText,
+  splitOrWarn,
+} from './extras.ts';
 import { moveInto, outputName } from './files.ts';
 import { convertPlan, hasVideo, probeFile, runFfmpeg, trimArgs } from './local.ts';
 import { Watchdog } from './watchdog.ts';
@@ -373,6 +382,49 @@ export function createDownloader(options: DownloaderOptions = {}): Downloader {
         file = trimmed;
       }
 
+      const duration = typeof info.duration === 'number' ? info.duration : undefined;
+      const keptDuration = section ? (section.toSec ?? duration ?? 0) - section.fromSec : duration;
+      if (req.burnSubtitles) {
+        const lang = req.burnSubtitles;
+        let text: string | undefined;
+        try {
+          text = await siteSubtitleText({ bin: bin.path, common: commonArgs(cfg, target.url), infoJson, lang, work, ctx });
+        } catch (err) {
+          if (ctx.signal?.aborted) throw err;
+          ctx.log.info('downloads: yt-dlp subtitles failed; trying the transcript pipeline', {
+            error: err instanceof Error ? err.message : String(err),
+          });
+        }
+        if (text === undefined && registry) {
+          try {
+            const fromPipeline = await pipelineSubtitleText({ registry, url: target.url, lang, ctx });
+            if (fromPipeline) {
+              text = fromPipeline.text;
+              if (fromPipeline.note) warnings.push(fromPipeline.note);
+            }
+          } catch (err) {
+            if (ctx.signal?.aborted) throw err;
+            warnings.push(`The ${lang} subtitles could not be fetched: ${err instanceof Error ? err.message : String(err)}`);
+          }
+        }
+        const got = extname(file).slice(1).toLowerCase();
+        file = await applyBurn({
+          subs: text !== undefined ? { text } : undefined,
+          lang,
+          file,
+          format: isVideoContainer(got) ? got : (req.format as 'mp4'),
+          tools: await locateFfmpeg(ctx, { download: true }),
+          ...(section ? { section } : {}),
+          ...(keptDuration ? { durationSec: keptDuration } : {}),
+          ctx,
+          timeoutMs: policy.timeoutSec * 1000,
+          report,
+          warnings,
+        });
+        // Cue times follow the original video; SponsorBlock cuts remove time from it, so later lines would run early.
+        if (req.removeSegments.length > 0) warnings.push('Burned subtitles may drift after the SponsorBlock cuts.');
+      }
+
       const ext = extname(file).slice(1).toLowerCase() || req.format;
       if (ext !== req.format) warnings.push(`The file was saved as .${ext}; .${req.format} could not hold these streams.`);
       const title = info.title || info.fulltitle || 'video';
@@ -389,9 +441,22 @@ export function createDownloader(options: DownloaderOptions = {}): Downloader {
           },
         );
       }
+      const parts = req.splitChapters
+        ? await splitOrWarn({
+            tools: await locateFfmpeg(ctx, { download: true }),
+            file: finalPath,
+            dir: opts.dir,
+            req,
+            ctx,
+            timeoutMs: policy.timeoutSec * 1000,
+            ...(opts.overwrite !== undefined ? { overwrite: opts.overwrite } : {}),
+            report,
+            fallbackChapters: info.chapters,
+            ...(duration !== undefined ? { durationSec: duration } : {}),
+            warnings,
+          })
+        : undefined;
       report(tracker.finish(bytes));
-      const duration = typeof info.duration === 'number' ? info.duration : undefined;
-      const keptDuration = section ? (section.toSec ?? duration ?? 0) - section.fromSec : duration;
       return {
         path: finalPath,
         filename: finalPath.slice(opts.dir.replace(/[/\\]+$/, '').length + 1),
@@ -404,6 +469,7 @@ export function createDownloader(options: DownloaderOptions = {}): Downloader {
         ...(keptDuration !== undefined && keptDuration > 0 ? { durationSec: keptDuration } : {}),
         ...(section ? { section } : {}),
         warnings,
+        ...(parts ? { parts } : {}),
       };
     } finally {
       await rm(work, { recursive: true, force: true });
@@ -462,11 +528,52 @@ export function createDownloader(options: DownloaderOptions = {}): Downloader {
         onPercent: (percent) =>
           report({ phase: 'processing', step: plan.reencodes ? 'Convert' : 'Remux', downloadedBytes: 0, percent }),
       });
+      const warnings =
+        req.removeSegments.length > 0
+          ? ['SponsorBlock segments apply to YouTube videos only; nothing was cut from the local file.']
+          : [];
+      let produced = out;
+      if (req.burnSubtitles) {
+        const lang = req.burnSubtitles;
+        const subs = await localSubtitleText(path, lang, source, ctx).catch((err: unknown) => {
+          if (ctx.signal?.aborted) throw err;
+          warnings.push(`The ${lang} subtitles could not be read: ${err instanceof Error ? err.message : String(err)}`);
+          return undefined;
+        });
+        produced = await applyBurn({
+          subs,
+          lang,
+          file: out,
+          format: req.format as 'mp4',
+          tools,
+          ...(section ? { section } : {}),
+          ...(duration ? { durationSec: duration } : {}),
+          ctx,
+          timeoutMs: policy.timeoutSec * 1000,
+          report,
+          warnings,
+        });
+      }
       const base = path.replace(/^.*[/\\]/, '').replace(/\.[^.]+$/, '');
       const title = source.tags.title?.trim() || base;
       const name = outputName({ title: base, ext: req.format, ...(section ? { section } : {}) });
-      const finalPath = await moveInto(out, opts.dir, name, opts.overwrite);
+      const finalPath = await moveInto(produced, opts.dir, name, opts.overwrite);
       const bytes = (await stat(finalPath)).size;
+      const parts = req.splitChapters
+        ? await splitOrWarn({
+            tools,
+            file: finalPath,
+            dir: opts.dir,
+            req,
+            ctx,
+            timeoutMs: policy.timeoutSec * 1000,
+            ...(opts.overwrite !== undefined ? { overwrite: opts.overwrite } : {}),
+            report,
+            fallbackChapters: info.chapters,
+            ...(source.durationSec !== undefined ? { durationSec: source.durationSec } : {}),
+            warnings,
+          })
+        : undefined;
       report({ phase: 'finished', percent: 100, downloadedBytes: bytes, totalBytes: bytes });
       return {
         path: finalPath,
@@ -479,10 +586,8 @@ export function createDownloader(options: DownloaderOptions = {}): Downloader {
         source: path,
         ...(duration ? { durationSec: duration } : {}),
         ...(section ? { section } : {}),
-        warnings:
-          req.removeSegments.length > 0
-            ? ['SponsorBlock segments apply to YouTube videos only; nothing was cut from the local file.']
-            : [],
+        warnings,
+        ...(parts ? { parts } : {}),
       };
     } finally {
       await rm(work, { recursive: true, force: true });
@@ -539,6 +644,33 @@ export function createDownloader(options: DownloaderOptions = {}): Downloader {
     async download(req, ctx, opts) {
       const target = resolveTarget(req.input, ctx, registry);
       return target.type === 'file' ? convertFile(req, target.path, ctx, opts) : downloadUrl(req, target, ctx, opts);
+    },
+
+    async thumbnail(req, ctx, opts) {
+      const target = resolveTarget(req.input, ctx, registry);
+      if (target.type === 'file') {
+        const tools = await locateFfmpeg(ctx, { download: true });
+        const source = await probeFile(tools, target.path, ctx);
+        return saveFileThumbnail({
+          path: target.path,
+          source,
+          tools,
+          format: req.format,
+          dir: opts.dir,
+          ctx,
+          ...(opts.overwrite !== undefined ? { overwrite: opts.overwrite } : {}),
+        });
+      }
+      const info = (await ytdlpInfo(target, ctx)) as MediaInfo & Parameters<typeof saveSiteThumbnail>[0]['info'];
+      return saveSiteThumbnail({
+        info,
+        pageUrl: target.url,
+        format: req.format,
+        dir: opts.dir,
+        ...(opts.overwrite !== undefined ? { overwrite: opts.overwrite } : {}),
+        tools: () => locateFfmpeg(ctx, { download: true }),
+        ctx,
+      });
     },
 
     async status(ctx): Promise<DownloaderStatus> {

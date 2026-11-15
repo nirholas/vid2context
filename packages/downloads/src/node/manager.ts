@@ -10,7 +10,7 @@
  * cannot guess another's job.
  */
 import { createReadStream } from 'node:fs';
-import { mkdir, mkdtemp, rm, stat } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, rm, stat } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { Readable } from 'node:stream';
@@ -33,6 +33,8 @@ interface Entry {
   abort: AbortController;
   dir?: string;
   path?: string;
+  /** Chapter files of a chapter split, by index. */
+  partPaths?: string[];
   ttlMin: number;
   /** Settles when the job's work (and its child processes) has ended. */
   running?: Promise<void>;
@@ -134,7 +136,10 @@ export function createDownloadManager(options: ManagerOptions): DownloadManager 
         return;
       }
       e.path = file.path;
-      const { path: _path, ...publicFile } = file;
+      if (file.parts) e.partPaths = file.parts.map((p) => p.path);
+      const { path: _path, parts, ...rest } = file;
+      // Paths stay on the server: callers fetch parts with GET /downloads/:id/file?part=N.
+      const publicFile = parts ? { ...rest, parts: parts.map(({ path: _p, ...pub }) => pub) } : rest;
       touch(e, {
         status: 'done',
         file: publicFile,
@@ -214,21 +219,48 @@ export function createDownloadManager(options: ManagerOptions): DownloadManager 
       return true;
     },
 
-    async open(id, range): Promise<JobFile | undefined> {
+    async thumbnail(req, ctx) {
+      if (!downloader.thumbnail) {
+        throw new Vid2ContextError('no-provider', 'This downloader cannot save thumbnails.', { hint: 'Update vid2context.' });
+      }
+      const dir = await mkdtemp(join(await rootDir(), 'thumb-'));
+      try {
+        const saved = await downloader.thumbnail(req, ctx, { dir });
+        const bytes = await readFile(saved.path);
+        return {
+          stream: new Blob([bytes]).stream(),
+          bytes: bytes.byteLength,
+          filename: saved.filename,
+          mimeType: saved.mimeType,
+          origin: saved.origin,
+          ...(saved.width ? { width: saved.width } : {}),
+          ...(saved.height ? { height: saved.height } : {}),
+        };
+      } finally {
+        await rm(dir, { recursive: true, force: true });
+      }
+    },
+
+    async open(id, range, part): Promise<JobFile | undefined> {
       const e = entries.get(id);
       if (e?.job.status !== 'done' || !e.path || !e.job.file) return undefined;
+      // A chapter part: its own path, named by its place in the split ("01 - Intro.mp4").
+      const path = part === undefined ? e.path : e.partPaths?.[part];
+      if (!path) return undefined;
       let bytes: number;
       try {
-        bytes = (await stat(e.path)).size;
+        bytes = (await stat(path)).size;
       } catch {
         return undefined;
       }
       const opts = range ? { start: range.start, end: Math.min(range.end, bytes - 1) } : {};
-      const node = createReadStream(e.path, opts);
+      const node = createReadStream(path, opts);
+      const filename =
+        part === undefined ? e.job.file.filename : (e.job.file.parts?.[part]?.filename.replace(/^.*\//, '') ?? 'part');
       return {
         stream: Readable.toWeb(node) as unknown as ReadableStream<Uint8Array>,
         bytes,
-        filename: e.job.file.filename,
+        filename,
         mimeType: e.job.file.mimeType,
       };
     },

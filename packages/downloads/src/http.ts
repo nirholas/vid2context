@@ -10,11 +10,14 @@
  *   POST   /downloads               start a download, 202 with the job
  *   GET    /downloads               jobs on this server, newest first
  *   GET    /downloads/:id           one job with its progress
- *   GET    /downloads/:id/file      the finished file (Range supported; ?inline=1 to play it)
+ *   GET    /downloads/thumbnail?url=&format=jpg|png|webp   the video's thumbnail image
+ *   GET    /downloads/:id/file      the finished file (Range supported; ?inline=1 to play it; ?part=N for chapter N of a split)
  *   DELETE /downloads/:id           cancel, or delete the finished file
  */
 import { type Ctx, enforceInputPolicy, Vid2ContextError } from '@vid2context/core';
 import { Hono } from 'hono';
+import { normalizeThumbnailRequest, THUMBNAIL_FORMATS } from './extras.ts';
+import { toolkitRoutes } from './http-toolkit.ts';
 import {
   AUDIO_FORMATS,
   AUDIO_QUALITIES,
@@ -25,7 +28,6 @@ import {
   VIDEO_CONTAINERS,
   VIDEO_QUALITIES,
 } from './options.ts';
-import { toolkitRoutes } from './http-toolkit.ts';
 import { downloadPolicy, NOTICE } from './policy.ts';
 import type { DownloadManager } from './types.ts';
 
@@ -109,6 +111,7 @@ export function downloadsRoutes(deps: DownloadsRouteDeps): Hono {
       },
       qualities: { video: VIDEO_QUALITIES, audio: AUDIO_QUALITIES },
       sponsorCategories: SPONSOR_CATEGORIES,
+      thumbnailFormats: THUMBNAIL_FORMATS,
       ...(tools?.ytdlp ? { ytdlp: tools.ytdlp.version } : {}),
     });
   });
@@ -121,6 +124,27 @@ export function downloadsRoutes(deps: DownloadsRouteDeps): Hono {
       throw new Vid2ContextError('bad-request', 'Missing the url query parameter.', { hint: 'Pass ?url=<video URL or id>.' });
     await enforceInputPolicy(url, ctx);
     return c.json(await manager.downloader.probe(url, ctx));
+  });
+
+  // Registered before /downloads/:id so "thumbnail" is not taken for a job id.
+  app.get('/downloads/thumbnail', async (c) => {
+    const ctx = deps.makeCtx(c.req.raw);
+    const manager = ready(ctx);
+    const req = normalizeThumbnailRequest({ url: c.req.query('url') ?? c.req.query('input'), format: c.req.query('format') });
+    await enforceInputPolicy(req.input, ctx);
+    if (!manager.thumbnail) throw unavailable('This server cannot save thumbnails.');
+    const img = await manager.thumbnail(req, ctx);
+    const inline = ['1', 'true', 'yes'].includes(c.req.query('inline') ?? '');
+    return c.body(img.stream, 200, {
+      'content-type': img.mimeType,
+      'content-length': String(img.bytes),
+      'content-disposition': contentDisposition(img.filename, inline),
+      'cache-control': 'private, no-store',
+      'x-content-type-options': 'nosniff',
+      'x-thumbnail-origin': img.origin,
+      ...(img.width ? { 'x-thumbnail-width': String(img.width) } : {}),
+      ...(img.height ? { 'x-thumbnail-height': String(img.height) } : {}),
+    });
   });
 
   app.post('/downloads', async (c) => {
@@ -172,7 +196,18 @@ export function downloadsRoutes(deps: DownloadsRouteDeps): Hono {
         hint: job.status === 'error' ? (job.error?.hint ?? 'Start it again.') : 'Poll GET /downloads/:id until status is done.',
       });
     }
-    const whole = await manager.open(id);
+    const partRaw = c.req.query('part');
+    let part: number | undefined;
+    if (partRaw !== undefined && partRaw !== '') {
+      part = Number(partRaw);
+      const count = job.file?.parts?.length ?? 0;
+      if (!Number.isInteger(part) || part < 0 || part >= count) {
+        throw new Vid2ContextError('bad-request', `No part ${partRaw.slice(0, 10)} in this download.`, {
+          hint: count > 0 ? `Parts go from 0 to ${count - 1}.` : 'This download was not split by chapters (splitChapters).',
+        });
+      }
+    }
+    const whole = await manager.open(id, undefined, part);
     if (!whole)
       throw new Vid2ContextError('not-found', 'The file is gone (expired or deleted).', { hint: 'Start the download again.' });
     const inline = ['1', 'true', 'yes'].includes(c.req.query('inline') ?? '');
@@ -190,10 +225,10 @@ export function downloadsRoutes(deps: DownloadsRouteDeps): Hono {
     }
     if (range) {
       await whole.stream.cancel();
-      const part = await manager.open(id, range);
-      if (!part)
+      const slice = await manager.open(id, range, part);
+      if (!slice)
         throw new Vid2ContextError('not-found', 'The file is gone (expired or deleted).', { hint: 'Start the download again.' });
-      return c.body(part.stream, 206, {
+      return c.body(slice.stream, 206, {
         ...headers,
         'content-range': `bytes ${range.start}-${range.end}/${whole.bytes}`,
         'content-length': String(range.end - range.start + 1),

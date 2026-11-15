@@ -67,6 +67,19 @@ vid2context download <url> --sponsorblock sponsor,intro,outro
 
 This uses the community [SponsorBlock](https://sponsor.ajay.app) database. The categories are sponsor, selfpromo, interaction, intro, outro, preview, filler and music_offtopic.
 
+## Thumbnails, burned-in subtitles and chapter files
+
+- **Thumbnail:** the largest image the site lists, saved as jpg, png or webp. For a local file, its cover art, else a frame a tenth of the way in (at most 30 s).
+- **Burned-in subtitles** (`burnSubtitles: "en"`): the text is drawn into the picture, for players and sites that ignore subtitle tracks. The video is re-encoded, so it is slower than a plain download. Subtitles come from the site through yt-dlp; when that fails (YouTube often answers 429) the transcript pipeline is used instead (captions through several clients, then speech-to-text), so a video without captions still gets subtitles. Local files use a sidecar `name.en.srt` or `name.srt` (or `.vtt`), else a text subtitle stream in the file. A trimmed download gets the cue times moved to match. When no subtitles are found, the video is saved without them and a warning says so.
+- **One file per chapter** (`splitChapters: true`): the full download plus a folder named after it with `01 - Intro.mp4`, `02 - ...` and so on. Chapter times are read from the finished file (yt-dlp writes ones adjusted for SponsorBlock cuts), else taken from the site. It cannot be combined with `from`, `to` or `chapter`. A video without chapters is saved whole, with a warning.
+
+```sh
+curl -o cover.jpg "http://127.0.0.1:8787/api/v1/downloads/thumbnail?url=jNQXAC9IVRw&format=jpg"
+curl -X POST http://127.0.0.1:8787/api/v1/downloads -H 'content-type: application/json' \
+  -d '{"url":"jNQXAC9IVRw","format":"mp4","quality":"360","burnSubtitles":"en","splitChapters":true}'
+# when done: GET /downloads/:id/file is the full video, GET /downloads/:id/file?part=0 the first chapter
+```
+
 ## Playlists and channels
 
 A playlist, channel or feed URL downloads every video, up to `--limit` (default `VID2CONTEXT_MAX_PLAYLIST_ITEMS`, 500). One failed video does not stop the rest. Failures are listed on stderr, and the exit code is non-zero.
@@ -86,10 +99,11 @@ Streams the target container can hold are copied, so most conversions are a fast
 
 ## MCP
 
-The local stdio server (`npx vid2context-mcp`) adds two tools:
+The local stdio server (`npx vid2context-mcp`) adds three tools:
 
 - `get_media_options { url }`: qualities, formats, sizes, chapters and subtitle languages.
-- `download_media { url, kind?, format?, quality?, from?, to?, chapter?, subtitles?, removeSegments?, dir?, limit?, ... }`: saves the files and returns their paths. Default folder: `VID2CONTEXT_DOWNLOAD_DIR`, else `~/Downloads/vid2context`. It reports progress to clients that ask for it.
+- `download_media { url, kind?, format?, quality?, from?, to?, chapter?, subtitles?, burnSubtitles?, splitChapters?, removeSegments?, dir?, limit?, ... }`: saves the files and returns their paths (and each chapter file's path with `splitChapters`). Default folder: `VID2CONTEXT_DOWNLOAD_DIR`, else `~/Downloads/vid2context`. It reports progress to clients that ask for it.
+- `download_thumbnail { url, format?, dir? }`: saves the thumbnail as jpg (default), png or webp and returns its path.
 
 The remote MCP server (Streamable HTTP, for ChatGPT and Claude.ai) does not offer them, because they write files on the machine the server runs on.
 
