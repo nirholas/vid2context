@@ -89,14 +89,14 @@ function retryable(err: unknown): boolean {
   return err.code === 'upstream' || err.code === 'rate-limited' || err.code === 'timeout';
 }
 
-async function fetchSegment(url: string, ctx: Ctx): Promise<Uint8Array> {
+async function fetchSegment(url: string, ctx: Ctx, stop: AbortSignal): Promise<Uint8Array> {
   for (let attempt = 1; ; attempt++) {
     try {
-      const res = await fetchWithTimeout(ctx, url, {}, SEGMENT_TIMEOUT_MS);
+      const res = await fetchWithTimeout(ctx, url, { signal: stop }, SEGMENT_TIMEOUT_MS);
       if (!res.ok) throw await errorFromResponse(res, 'X HLS segment');
       return new Uint8Array(await res.arrayBuffer());
     } catch (err) {
-      if (attempt >= SEGMENT_ATTEMPTS || ctx.signal?.aborted || !retryable(err)) throw err;
+      if (attempt >= SEGMENT_ATTEMPTS || ctx.signal?.aborted || stop.aborted || !retryable(err)) throw err;
       ctx.log.debug('x HLS segment failed, retrying', { attempt, error: String(err) });
     }
   }
@@ -105,24 +105,24 @@ async function fetchSegment(url: string, ctx: Ctx): Promise<Uint8Array> {
 /**
  * Download segments a few at a time and join them in order. Stops as soon as
  * the total passes the cap, a segment fails twice, or ctx.signal aborts; the
- * other workers stop at their next segment instead of downloading the rest.
+ * requests other workers have in flight are cancelled at once.
  */
 export async function downloadSegments(urls: string[], ctx: Ctx, cap: number, what: string): Promise<Uint8Array> {
   const parts: Uint8Array[] = new Array(urls.length);
   let total = 0;
   let next = 0;
-  let failed = false;
+  const stop = new AbortController();
   const worker = async () => {
-    while (next < urls.length && !failed) {
+    while (next < urls.length && !stop.signal.aborted) {
       if (ctx.signal?.aborted) throw new Vid2ContextError('timeout', `Stopped downloading ${what}: the request was cancelled.`);
       const i = next++;
       try {
-        const data = await fetchSegment(urls[i] as string, ctx);
+        const data = await fetchSegment(urls[i] as string, ctx, stop.signal);
         total += data.byteLength;
         if (total > cap) throw tooLarge(what, total, cap);
         parts[i] = data;
       } catch (err) {
-        failed = true;
+        stop.abort();
         throw err;
       }
     }

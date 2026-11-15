@@ -27,6 +27,8 @@ const json = { 'content-type': 'application/json; charset=utf-8' };
 const ROMAN = '2094024294988701975'; // NASA, "Liftoff! @NASARoman ...", 33 s video, six MP4 renditions, a reply to NASA
 const GIF = '1882872996031066248'; // NASA, Blue Ghost lander, one animated GIF
 const TEXT = '20'; // "just setting up my twttr", no media
+const QUOTING = '2121759522851115109'; // elonmusk, no media, quotes QUOTED
+const QUOTED = '2121725076919717899'; // WalterIsaacson, text only
 const MISSING = '1263569466313105408'; // 404 on both services
 const SMALLEST = 'https://video.twimg.com/amplify_video/2094024240437547008/vid/avc1/480x270/UazEpdmCJehe4HMQ.mp4';
 
@@ -236,6 +238,29 @@ describe('xSource metadata', () => {
     const ctx = testContext({ fetch, env: { X_FXTWITTER_BASE_URL: 'https://fx.example.org/' } });
     const meta = await xSource.getMetadata(ref(`https://x.com/i/status/${ROMAN}`), ctx);
     expect(meta.extra).toMatchObject({ via: 'fxtwitter' });
+  });
+
+  it('follows a quote to the quoted post, and says so when neither has a video', async () => {
+    // A real post that quotes another; neither holds media (recorded 2026-11-15).
+    const fetch = replayFetch([syn(QUOTING), syn(QUOTED)]);
+    const err = await rejection(xSource.getMetadata(ref(`https://x.com/elonmusk/status/${QUOTING}`), testContext({ fetch })));
+    expect(err.code).toBe('unavailable');
+    expect(err.message).toBe(`Neither X post ${QUOTING} nor the post it quotes (${QUOTED}) has a video.`);
+    expect(fetch.calls.map((c) => c.url)).toEqual([syndicationUrl(QUOTING), syndicationUrl(QUOTED)]);
+  });
+
+  it('does not follow a quote when the link names a media position', async () => {
+    const fetch = replayFetch([syn(QUOTING)]);
+    const err = await rejection(
+      xSource.getMetadata(ref(`https://x.com/elonmusk/status/${QUOTING}/video/2`), testContext({ fetch })),
+    );
+    expect(err.code).toBe('not-found');
+    expect(fetch.calls).toHaveLength(1);
+  });
+
+  it('reads the quoted post id from both services', () => {
+    expect(fromSyndication(JSON.parse(text(`syndication-${QUOTING}.json`))).quotedId).toBe(QUOTED);
+    expect(fromSyndication(JSON.parse(text(`syndication-${ROMAN}.json`))).quotedId).toBeUndefined();
   });
 
   it('refuses a text-only post with a hint', async () => {

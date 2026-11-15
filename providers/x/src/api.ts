@@ -97,6 +97,41 @@ export function getPost(postId: string, ctx: Ctx): Promise<XPost> {
   return pending;
 }
 
+export interface ResolvedVideo {
+  /** The post that holds the video: the linked post, or the post it quotes. */
+  post: XPost;
+  media: XMedia;
+  position: number;
+  /** The linked post, when the video came from the post it quotes. */
+  quotedBy?: XPost;
+}
+
+/**
+ * The video a target means. When the linked post has no video of its own
+ * and quotes another post, the quoted post's video is used (one level: a
+ * quote of a quote is not followed further).
+ */
+export async function resolveVideo(target: XTarget, ctx: Ctx): Promise<ResolvedVideo> {
+  const post = await getPost(target.postId, ctx);
+  try {
+    return { post, ...pickMedia(post, target) };
+  } catch (err) {
+    const noVideo = err instanceof Vid2ContextError && err.code === 'unavailable' && !target.media;
+    if (!noVideo || !post.quotedId) throw err;
+    const quoted = await getPost(post.quotedId, ctx).catch((qErr: unknown) => {
+      ctx.log.debug('x quoted post lookup failed', { postId: post.quotedId, error: String(qErr) });
+      throw err;
+    });
+    try {
+      return { post: quoted, ...pickMedia(quoted, { postId: quoted.id }), quotedBy: post };
+    } catch {
+      throw new Vid2ContextError('unavailable', `Neither X post ${post.id} nor the post it quotes (${quoted.id}) has a video.`, {
+        hint: 'Link the post that holds the video itself.',
+      });
+    }
+  }
+}
+
 /** The media item a target names: its explicit position, else the post's first video or GIF. */
 export function pickMedia(post: XPost, target: XTarget): { media: XMedia; position: number } {
   if (target.media) {

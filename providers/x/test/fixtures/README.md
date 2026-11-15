@@ -14,3 +14,15 @@ Real responses recorded from this repo's VM (a US datacenter IP) on 2026-11-15 w
 | `mp4-480x270-head.mp4` | `GET https://video.twimg.com/amplify_video/2094024240437547008/vid/avc1/480x270/UazEpdmCJehe4HMQ.mp4` with `Range: bytes=0-4095`, no Referer: HTTP 206, `content-type: video/mp4`, `content-range: bytes 0-4095/558676`, the 4,096 bytes returned. The test replays status, these three headers and the bytes. |
 
 Nothing was trimmed: the responses hold only public post data (text, public account names and ids, counts, media URLs). X media URLs carry no requesting IP or signature; the files were grepped for IPv4 addresses before committing.
+
+Added later the same day:
+
+| File | Request |
+|---|---|
+| `syndication-2121759522851115109.json` | Same endpoint for elonmusk, "The epic day has arrived...": no media, `quoted_tweet.id_str` 2121725076919717899 (the quoted post's media is not included) |
+| `syndication-2121725076919717899.json` | Same for the quoted post, WalterIsaacson: text only |
+| `hls/master.m3u8` | `GET` of the NASA video's HLS master playlist (the `application/x-mpegURL` variant): three audio-only renditions (32, 64, 128 kbps) and four video renditions |
+| `hls/mp4a-32000.m3u8` | `GET` of the 32 kbps audio playlist: one init segment (`EXT-X-MAP`) and eleven fragments, 32.944 s |
+| `hls/5upmBTnQXx3UBWed.mp4`, `hls/*.m4s` | The init segment and the eleven fragments it lists (140,530 bytes together; joined in order they are a valid 32.9 s AAC .m4a, checked with ffprobe) |
+
+X's video host answers a missing file with HTTP 404 and an empty body (checked with a made-up segment name); the fallback test replays exactly that.
