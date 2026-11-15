@@ -32,6 +32,18 @@ It listens on `127.0.0.1:8790` and loads `.env` from the working directory. With
 
 Until you configure credentials, `/mcp` refuses every request.
 
+Other settings, all optional (full list in [docs/providers.md](../providers.md)):
+
+| Variable | Default | What it does |
+|---|---|---|
+| `VID2CONTEXT_MCP_PUBLIC_URL` | none | Public URL of the server, for example `https://mcp.vid2context.com`. Sets the OAuth resource and issuer and the allowed Host |
+| `VID2CONTEXT_MCP_MODE` | `session` on Node, `stateless` elsewhere | `session` keeps an `Mcp-Session-Id` per client in memory; `stateless` builds a server per request (GET and DELETE answer 405) |
+| `VID2CONTEXT_MCP_SESSION_IDLE_SEC` | `1800` | Session mode: close a session after this many idle seconds |
+| `VID2CONTEXT_MCP_RATE_LIMIT` | `120` | Requests per minute per token; `0` turns the limit off |
+| `VID2CONTEXT_MCP_MAX_BODY_KB` | `1024` | Largest request body on `/mcp` and `/oauth/*`; larger bodies get 413 |
+| `VID2CONTEXT_MCP_ALLOWED_HOSTS` | none | Extra Host header values the DNS-rebinding check accepts |
+| `VID2CONTEXT_CORS_ORIGINS` | none | Browser origins allowed to call `/mcp` |
+
 ## Option 1: static tokens
 
 This is the simplest option. Use it for Claude Code, the MCP Inspector, scripts and Claude.ai's request-header option.
@@ -157,7 +169,7 @@ Claude connects from `160.79.104.0/21`. If you filter by IP, allow that range fo
 
 - `GET /mcp/server-card` is the MCP Server Card (SEP-2127, `application/mcp-server-card+json`). It is built from `serverJson()` in `@vid2context/discovery`, so its name, version and description match the MCP Registry.
 - `GET /.well-known/ai-catalog.json` is an AI Catalog entry that points to the card.
-- Once `https://vid2context.com/mcp` is public, a `remotes` entry belongs in `serverJson()` (`packages/discovery/src/manifests.ts`), followed by `npm run discovery:gen`. It was not added on 2026-11-14 because the endpoint was not reachable yet.
+- `server.json` (the MCP Registry entry, from `serverJson()` in `packages/discovery/src/manifests.ts`) lists `https://vid2context.com/mcp` under `remotes` as `streamable-http`. It was added on 2026-11-15, once the endpoint answered from outside (server card 200, `/mcp` 401 with `WWW-Authenticate`).
 
 ## Troubleshooting
 

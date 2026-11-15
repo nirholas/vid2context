@@ -66,6 +66,8 @@ export function serverJson() {
         })),
       },
     ],
+    // The remote server (packages/mcp-http), public at this URL since 2026-11-15.
+    remotes: [{ type: 'streamable-http', url: `${SITE_URL}/mcp` }],
   };
 }
 

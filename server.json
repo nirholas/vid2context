@@ -63,5 +63,11 @@
         }
       ]
     }
+  ],
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://vid2context.com/mcp"
+    }
   ]
 }
