@@ -22,7 +22,7 @@ LIVE=1 npm run eval -- --suite captions --check
 | `--out <dir>` | where results go (default `packages/evals/results/`) |
 | `--json` | print the result JSON instead of the Markdown report |
 | `--check` | exit 1 when a rung breaks `packages/evals/thresholds.json` |
-| `--record` | save creator captions fetched during the run into `datasets/refs/` instead of the cache |
+| `--record` | save references fetched during the run into `datasets/refs/` (only for entries marked `storeReference`, that is public domain or CC); others go to the cache |
 | `--live` | same as `LIVE=1` |
 
 The runner refuses to start without `LIVE=1` or `--live`: it calls real services, uses your free quotas and needs the network, and it should never look like it produced numbers when it did not. The metric code is unit-tested offline with `npx vitest run packages/evals`.
@@ -41,9 +41,22 @@ For each video in `datasets/stt.json`: get the creator-caption reference, downlo
 
 Per rung it reports WER and CER (pooled: total errors over total reference words or characters), substitutions, deletions and insertions, the median word start-time difference against the reference, p50 and p90 latency (the sum of `attempts[].ms` of the successful speech-to-text calls), the real-time factor (latency over audio length) and cost.
 
-### captions and cleanup
+### captions
 
-For each video in `datasets/captions.json`, YouTube's auto-captions are scored against the creator captions of the same video: WER, CER, timing, and punctuation and capitalization F1. The `cleanup` suite adds a second row per video with core's `cleanTranscript` (the rule-based steps, no LLM) applied to the auto-captions, so the effect of cleanup on every metric is visible side by side. The raw track is never replaced.
+For each video in `datasets/captions.json`, YouTube's auto-captions are scored against the creator captions of the same video: WER, CER, timing, and punctuation and capitalization F1. The creator track comes through the pipeline; the auto track is read straight from the player's track list (`autoReference` in `src/suites/common.ts`, through the YouTube provider's exported `getPlayer` and `fetchTrack`), because the pipeline always prefers a creator track when one exists.
+
+### cleanup
+
+Its own suite (`src/suites/cleanup.ts`), on the same videos (`captions.json` by default). Every variant starts from the same raw auto-captions and is scored against the creator captions:
+
+| Variant | What runs |
+|---|---|
+| `raw` | the auto-caption track as served (baseline) |
+| `clean:rules` | core `cleanTranscript` rule-based steps: caption normalization, rolling-duplicate folding, sentence restoration |
+| `clean:fillers` | the same plus filler removal |
+| `clean:llm` | the rule-based steps plus the LLM punctuation pass (`punctuateWithLlm`) on the default free-first chain; with `--rungs`, one `clean:llm:<rung id>` row per named LLM rung, each pinned with `only` |
+
+Per variant: WER and CER (cleanup must not change what was said, so these should stay at the raw level), punctuation and capitalization F1 (what cleanup is for), the change against `raw` in percentage points, timing, and for the LLM pass its latency and how many chunks were applied, rejected (the model changed words, so the original text was kept) or failed. The raw track is never replaced.
 
 ### citations
 
@@ -96,13 +109,16 @@ Local, free-tier and keyless rungs cost 0. Paid rungs are priced from the table 
 
 ## References
 
-A reference is a real caption track downloaded once and stored as JSON (`RecordedRef` in `src/refs.ts`): `<platform>-<id>.<origin>.<language>.json`.
+A reference is a real human transcript downloaded once and stored as JSON (`RecordedRef` in `src/refs.ts`): `<platform>-<id>.<origin>.<language>.json`. `packages/evals/datasets/refs/README.md` lists every committed file and where it came from. The stt suite looks for a reference in this order:
 
-- Creator captions are fetched through the pipeline (`getVideoContext` with `mode: 'captions'` and `allowAuto: false`), so a translated or auto track can never be mistaken for a reference.
-- Only public-domain (NASA) and CC-licensed (TED, TEDx) references are committed in `datasets/refs/`. Videos under the standard YouTube license are listed in the datasets too, but their captions are fetched at run time and cached locally, not redistributed in this repository.
-- Auto-caption references (for `captions` and `cleanup`) must be recorded: no captions provider lets a caller ask for the auto track when a creator track exists. Adding an `origin` option to `CaptionOptions` would let `--record` capture them too.
+1. `referenceFile` named in the dataset entry (used for the local Apollo 11 clip, whose resolved id depends on file timestamps).
+2. A committed file in `datasets/refs/`, then the local cache (`.vid2context/cache/evals/refs/`).
+3. `referenceUrl`: a subtitle file the publisher hosts. The 14 NASA items point at the SRT NASA publishes next to each video in its Image and Video Library (`images-assets.nasa.gov`); the audio comes from the same library. Neither depends on YouTube.
+4. YouTube creator captions through the pipeline (`getVideoContext` with `mode: 'captions'` and `allowAuto: false`), so a translated or auto track can never be mistaken for a reference.
 
-When YouTube rate-limits caption downloads from your IP (HTTP 429), references that are not committed or cached cannot be fetched. The report names the cause per item (`captions-blocked`).
+Only public-domain (NASA) and CC-licensed (TED, TEDx) references are committed: entries marked `storeReference: true`, which `--record` writes into `datasets/refs/`. Videos under the standard YouTube license are listed too, but their captions are fetched at run time and cached locally, never redistributed in this repository.
+
+When YouTube rate-limits caption downloads from your IP (HTTP 429), references for YouTube items that are not committed or cached cannot be fetched; the report names the cause per item (`captions-blocked`). The NASA library items and the Apollo clip are not affected, which is why they come first in `stt.json`.
 
 ## Adding a dataset entry
 
@@ -123,7 +139,9 @@ Add an object to the suite's file in `packages/evals/datasets/`:
 }
 ```
 
-Check that the video has a creator track in `language` (the YouTube captions provider's `listTracks` shows `creator-captions` versus `auto-captions`), keep it between 1 and 6 minutes, say in `why` what it adds, and record the license honestly. For a public-domain or CC video, run with `--record` once and commit the new file in `datasets/refs/` with a line in its README. The loader rejects malformed entries with a message naming the field.
+Check that the video has a creator track in `language` (the YouTube captions provider's `listTracks` shows `creator-captions` versus `auto-captions`), keep it between 1 and 6 minutes, say in `why` what it adds, and record the license honestly. For a public-domain or CC video add `"storeReference": true`, run with `--record` once and commit the new file in `datasets/refs/` with a line in its README. The loader rejects malformed entries with a message naming the field.
+
+For media outside YouTube, point `url` at the media file and `referenceUrl` at the publisher's own SRT or WebVTT file (https only), as the NASA library entries do. For a published human transcript that is not a subtitle file, set `"reference": "human-transcript"` and `referenceFile` to a file you write in `datasets/refs/` (with its `source` URL and a README line).
 
 ## Regression checks
 
