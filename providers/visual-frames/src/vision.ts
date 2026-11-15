@@ -202,6 +202,12 @@ interface Lane {
   /** Env var holding a comma-separated model list. */
   modelVar: string;
   defaultModels: string[];
+  /**
+   * For lanes with no default model that the user opts into by setting
+   * `modelVar`: the model named in the disabled rung's id until then, so the
+   * id stays a valid `visual/<service>/<model>` and points at a sensible pick.
+   */
+  optInModel?: string;
   /** Env var with the key; each pooled key becomes its own rung. */
   keyVar?: string;
   /** Env var overriding the request spacing in seconds. */
@@ -222,7 +228,9 @@ export const LANES: Lane[] = [
     quality: 3,
     url: (env) => `${(env.OLLAMA_BASE_URL || 'http://localhost:11434/v1').replace(/\/+$/, '')}/chat/completions`,
     modelVar: 'OLLAMA_VISION_MODEL',
+    // Off until OLLAMA_VISION_MODEL is set: only the user knows which models they pulled.
     defaultModels: [],
+    optInModel: 'qwen2.5vl',
     defaultIntervalSec: 0,
     jsonMode: true,
     // Vision models on a CPU can take minutes per frame.
@@ -276,8 +284,8 @@ export function visionRungs(env: Env): VisualRung[] {
   for (const lane of LANES) {
     const override = list(env[lane.modelVar]);
     const models = override.length > 0 ? override : lane.defaultModels;
-    // Local lanes have no default model: they appear (disabled, empty model) until the model var is set.
-    const shown = models.length > 0 ? models : [''];
+    // Opt-in lanes have no default model: they appear disabled, named after optInModel, until the model var is set.
+    const shown = models.length > 0 ? models : lane.optInModel ? [lane.optInModel] : [];
     const keys = lane.keyVar ? keyPool(env, lane.keyVar) : [];
     const slots = lane.keyVar ? (keys.length > 0 ? keys : [undefined]) : [undefined];
     for (const [mi, model] of shown.entries()) {
