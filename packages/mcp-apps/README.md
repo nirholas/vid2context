@@ -46,7 +46,9 @@ Verified:
 - The ext-apps `AppBridge` host implementation, in `test/bridge.test.ts` and `test/host.test.ts` (the built HTML in an iframe, driven over postMessage).
 - Headless Chromium (Playwright) with the built HTML in a `sandbox="allow-scripts"` iframe under the spec's default CSP, driven by `AppBridge` as host: the handshake, tool result, search, a timestamp click arriving as `ui/open-link`, "Send to chat" arriving as `ui/message`, size reports, and light and dark themes at 360 px and 900 px wide, with no console errors. This was a one-off check on 2026-11-14, not a committed test.
 
-Not verified live: ChatGPT (developer mode), Claude, VS Code, Goose and the ext-apps `basic-host` all render MCP Apps per their docs, but none was reachable from the build machine. See "Trying it in a real host" below.
+- The ext-apps `basic-host` reference host (tag v1.7.5) in headless Chromium, on 2026-11-15, end to end: `createServer()` served by `packages/mcp-http` with a bearer token, `basic-host` connected over Streamable HTTP, `open_transcript_viewer` called on `https://www.youtube.com/watch?v=cCPsdFdlshc` through the real pipeline. The host read the resource, loaded it through its sandbox proxy with `clipboard-write` granted, and the viewer showed the header, 9 chapters and the windowed transcript (17 line elements for 347 lines). Search highlighted hits, a timestamp click arrived as `ui/open-link` and the host opened `...&t=302s`, checking two line boxes selected the range between them, "Send to chat" arrived as `ui/message` (with `message` added to the host's declared capabilities, which stock `basic-host` leaves out, so the viewer correctly hides the button there), the host theme toggle switched the viewer to dark, and at 360 px nothing scrolled sideways. No page errors. Not a committed test: it needs the network and a browser.
+
+Not verified live: ChatGPT (developer mode), Claude, VS Code and Goose render MCP Apps per their docs, but none was reachable from the build machine. See "Trying it in a real host" below.
 
 ## How item 44 mounts it
 
@@ -72,4 +74,4 @@ Nothing extra is needed beyond serving `createServer()` over Streamable HTTP at 
 1. Wire `registerAppsTools` into `createServer` (item 44).
 2. Claude Desktop or VS Code: add the stdio server (`npm run mcp`) and ask for `open_transcript_viewer` on a YouTube URL.
 3. ChatGPT: run the Streamable HTTP server (item 45), expose it with a tunnel (for example `cloudflared tunnel --url http://127.0.0.1:<port>`), add it as a connector in developer mode and call the tool.
-4. ext-apps `basic-host`: clone `modelcontextprotocol/ext-apps`, `npm install && npm start`, and point it at the HTTP server.
+4. ext-apps `basic-host`: clone `modelcontextprotocol/ext-apps`, build `examples/basic-host`, and start `serve.ts` with `SERVERS='["http://localhost:<port>/mcp"]'`. Start the HTTP server with `VID2CONTEXT_MCP_TOKENS=<token>` and `VID2CONTEXT_CORS_ORIGINS=http://localhost:<host port>` (the host calls `/mcp` from the browser), and pass the token to the host's `StreamableHTTPClientTransport` through `requestInit.headers`, since `basic-host` sends no auth header of its own. Its sandbox proxy URL is fixed to port 8081 in `src/implementation.ts`; change it there if you use another `SANDBOX_PORT`.
