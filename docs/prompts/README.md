@@ -39,7 +39,7 @@ Numbers match `docs/ROADMAP.md` and the owner columns in `docs/contracts/`. Ever
 | 19 | [In-browser and offline AI](19-browser-offline-ai.md) | `providers/stt-transformers/`, `providers/llm-browser/` | D. Speech-to-text |
 | 20 | [Cloudflare: Workers AI rungs and D1, R2, KV storage](archive/20-cloudflare.md) | `providers/cloudflare-ai/`, `providers/storage-cloudflare/` | D. Speech-to-text |
 | 21 | [Observability: tracing, metrics, usage and cost](21-telemetry.md) | `packages/core/src/telemetry/` | A. Core bones |
-| 22 | [Hosted diarization and speaker naming](22-diarization.md) | `providers/stt-deepgram-assemblyai/`, `packages/speakers/` | D. Speech-to-text |
+| 22 | [Hosted diarization and speaker naming](archive/22-diarization.md) | `providers/stt-deepgram-assemblyai/`, `packages/speakers/` | D. Speech-to-text |
 | 23 | [Provider conformance kit and fixture recorder](23-testkit.md) | `packages/testkit/` | A. Core bones |
 | 24 | [LLM free catalog, OpenRouter free picker, check:llm](24-llm-free-catalog.md) | `providers/llm-free-catalog/`, `providers/llm-openrouter/`, `scripts/check-llm.ts` | E. LLM and embeddings |
 | 25 | [LLM streaming, model catalog and model choice](archive/25-llm-streaming-models.md) | `packages/core/src/llm/` | E. LLM and embeddings |
@@ -54,13 +54,13 @@ Numbers match `docs/ROADMAP.md` and the owner columns in `docs/contracts/`. Ever
 | 34 | [Ask and chat: answers with timestamp citations](34-ask.md) | `packages/ask/` | F. Intelligence |
 | 35 | [Translation and auto-chapters](35-translate-chapters.md) | `packages/translate/`, `packages/chapters/` | F. Intelligence |
 | 36 | [Landing site](36-landing-site.md) | `site/` | H. Surfaces |
-| 37 | [SQLite library with full-text search](37-storage-sqlite.md) | `providers/storage-sqlite/` | G. Library and search |
+| 37 | [SQLite library with full-text search](archive/37-storage-sqlite.md) | `providers/storage-sqlite/` | G. Library and search |
 | 38 | [Local CI, Cloud Build and release engineering](38-ci-release.md) | `tooling/` | I. Deploy and quality |
-| 39 | [Postgres and pgvector storage](39-storage-postgres.md) | `providers/storage-postgres/` | G. Library and search |
+| 39 | [Postgres and pgvector storage](archive/39-storage-postgres.md) | `providers/storage-postgres/` | G. Library and search |
 | 40 | [Hybrid search engine](40-search.md) | `packages/search/` | G. Library and search |
 | 41 | [Collections and watch lists](41-library-watch.md) | `packages/library/` | G. Library and search |
 | 42 | [Jobs, queues and live progress](42-jobs.md) | `packages/jobs/` | G. Library and search |
-| 43 | [The full CLI](43-cli.md) | `packages/cli/` | H. Surfaces |
+| 43 | [The full CLI](archive/43-cli.md) | `packages/cli/` | H. Surfaces |
 | 44 | [MCP server: tools, resources and prompts](44-mcp-tools.md) | `packages/mcp/` | H. Surfaces |
 | 45 | [Remote MCP over HTTPS with OAuth](45-remote-mcp.md) | `packages/mcp-http/` | H. Surfaces |
 | 46 | [The full HTTP API](46-http-api.md) | `packages/server/` | H. Surfaces |
