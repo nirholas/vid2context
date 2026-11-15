@@ -30,7 +30,7 @@ Numbers match `docs/ROADMAP.md` and the owner columns in `docs/contracts/`. Ever
 | 10 | [Security hardening and threat model](archive/10-security.md) | `packages/core/src/security/` | A. Core bones |
 | 11 | [yt-dlp universal source with a self-managed binary](11-ytdlp.md) | `providers/ytdlp/` | C. Other sources |
 | 12 | [Local files, direct media URLs and ffmpeg tooling](12-media-files-ffmpeg.md) | `packages/ffmpeg/`, `providers/media-file/`, `providers/media-url/` | C. Other sources |
-| 13 | [Podcasts: RSS, podcast:transcript, Apple and Spotify](13-podcasts.md) | `providers/podcast/` | C. Other sources |
+| 13 | [Podcasts: RSS, podcast:transcript, Apple and Spotify](archive/13-podcasts.md) | `providers/podcast/` | C. Other sources |
 | 14 | [Web pages with embedded video; Vimeo, Loom, Wistia transcripts](archive/14-web-pages-native-transcripts.md) | `providers/web-page/`, `providers/native-transcripts/` | C. Other sources |
 | 15 | [The .zip bundle and "copy for agents"](archive/15-bundle-zip.md) | `packages/core/src/bundle/` | A. Core bones |
 | 16 | [Agent integrations: one-command setup for every client](archive/16-agent-integrations.md) | `integrations/` | H. Surfaces |
