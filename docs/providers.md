@@ -234,8 +234,8 @@ The library (saved contexts, collections, search, key-value state, vectors) uses
 | Priority | Backend | Runtime | Enabled when |
 |---|---|---|---|
 | 10 | Postgres + pgvector (`storage-postgres`), tsvector search, HNSW vector search, tenants | node; workers with Neon | `VID2CONTEXT_DATABASE_URL` or `DATABASE_URL` is set, unless `VID2CONTEXT_STORAGE` names another backend. See [guides/library-postgres.md](guides/library-postgres.md) |
-| 50 | SQLite (`storage-sqlite`), FTS5 search, one local file | node (22.13+) | by default, unless `VID2CONTEXT_STORAGE` names another backend |
 | 20 | Cloudflare D1 (`storage-cloudflare`), FTS5 search, R2 for large contexts, KV for state | workers | `VID2CONTEXT_D1` names a D1 binding, unless `VID2CONTEXT_STORAGE` names another backend. See [guides/cloudflare.md](guides/cloudflare.md) |
+| 50 | SQLite (`storage-sqlite`), FTS5 search, one local file | node (22.13+) | by default, unless `VID2CONTEXT_STORAGE` names another backend |
 | none | in-process `MemoryStorage`, lost on exit | any | no backend is enabled, or `VID2CONTEXT_STORAGE=memory` |
 
 | Env var | Used by | Notes |
