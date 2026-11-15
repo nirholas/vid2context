@@ -13,7 +13,7 @@
 export { buildBrief, classify, type InsightsDeps } from './brief.ts';
 export { type ExtractOptions, extract, verifyExtraction } from './extract.ts';
 export { BRIEF_JOB, briefJob, EXTRACT_JOB, extractJob, registerInsightsJobs } from './jobs.ts';
-export { MAX_CHUNK_TOKENS, parseJsonObject, sourceBudget } from './llm.ts';
+export { MAX_CHUNK_TOKENS, parseJsonObject, salvageTruncatedJson, sourceBudget } from './llm.ts';
 export { type LoadDeps, type LoadRequest, loadContexts, MAX_VIDEOS, type StorageSource } from './load.ts';
 export { citeMd, escapeMd, renderBrief } from './markdown.ts';
 export { type BriefRequest, type ExtractRequest, parseBriefRequest, parseExtractRequest } from './parse.ts';

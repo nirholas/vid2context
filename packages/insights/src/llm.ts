@@ -78,6 +78,51 @@ export function parseJsonObject(text: string): Record<string, unknown> | null {
   return null;
 }
 
+/**
+ * Recover the complete part of a JSON object that was cut off mid-answer
+ * (free rungs often stop at their output limit). Cuts after the last
+ * complete object or array value and closes the brackets still open, so
+ * every claim kept is one the model finished writing. Returns null when
+ * nothing complete is left or the text is not a truncated object.
+ */
+export function salvageTruncatedJson(text: string): Record<string, unknown> | null {
+  const start = text.indexOf('{');
+  if (start < 0) return null;
+  const stack: string[] = [];
+  let inString = false;
+  let escaped = false;
+  let cut = -1;
+  let cutStack: string[] = [];
+  for (let i = start; i < text.length; i++) {
+    const ch = text[i];
+    if (inString) {
+      if (escaped) escaped = false;
+      else if (ch === '\\') escaped = true;
+      else if (ch === '"') inString = false;
+      continue;
+    }
+    if (ch === '"') inString = true;
+    else if (ch === '{' || ch === '[') stack.push(ch);
+    else if (ch === '}' || ch === ']') {
+      stack.pop();
+      if (stack.length === 0) return null; // complete object: not truncated, parseJsonObject handles it
+      cut = i + 1;
+      cutStack = [...stack];
+    }
+  }
+  if (cut < 0 || stack.length === 0) return null;
+  const closing = cutStack
+    .reverse()
+    .map((b) => (b === '{' ? '}' : ']'))
+    .join('');
+  try {
+    const v = JSON.parse(text.slice(start, cut) + closing) as unknown;
+    return v && typeof v === 'object' && !Array.isArray(v) ? (v as Record<string, unknown>) : null;
+  } catch {
+    return null;
+  }
+}
+
 /** Wait after every rung was rate-limited: a little over the core chain's 60 s rate-limit cooldown. */
 export const RATE_LIMIT_WAIT_MS = 62_000;
 export const DEFAULT_RATE_LIMIT_RETRIES = 3;
@@ -157,6 +202,7 @@ export async function chatJson(registry: Registry, call: JsonCall, ledger: Ledge
   const chain = withJson(call.chain);
   let skip = chain.skip ?? [];
   let last: JsonAnswer | null = null;
+  let salvaged: JsonAnswer | null = null;
   for (let attempt = 0; attempt < JSON_ATTEMPTS; attempt++) {
     let res: Awaited<ReturnType<typeof chat>> | undefined;
     for (let wait = 0; !res; wait++) {
@@ -179,7 +225,7 @@ export async function chatJson(registry: Registry, call: JsonCall, ledger: Ledge
           await ledger.sleep(RATE_LIMIT_WAIT_MS, ctx.signal);
           continue;
         }
-        if (last) return last;
+        if (last) return salvageOr(last, salvaged, call, ledger);
         throw err;
       }
     }
@@ -196,7 +242,23 @@ export async function chatJson(registry: Registry, call: JsonCall, ledger: Ledge
     if (value) return last;
     ledger.attempts.push({ id: res.rung, stage: 'llm', outcome: 'error', reason: 'bad-json', detail: res.text.slice(0, 200) });
     ctx.log.warn('LLM answer was not a JSON object, trying the next rung', { rung: res.rung, step: call.step });
+    const partial = salvageTruncatedJson(res.text);
+    if (partial && (!salvaged || res.text.length > salvaged.text.length))
+      salvaged = { value: partial, text: res.text, rung: res.rung };
     skip = [...skip, res.rung];
   }
-  return last as JsonAnswer;
+  return salvageOr(last as JsonAnswer, salvaged, call, ledger);
+}
+
+/**
+ * When no rung returned a whole JSON object, fall back to the longest answer
+ * whose complete part could be recovered (cut off at an output limit), and
+ * say so in the notes. Claims from it still go through verification.
+ */
+function salvageOr(last: JsonAnswer, salvaged: JsonAnswer | null, call: JsonCall, ledger: Ledger): JsonAnswer {
+  if (last.value || !salvaged) return last;
+  ledger.notes.push(
+    `The ${call.step} answer from ${salvaged.rung} was cut off before its end; only the items it finished were kept.`,
+  );
+  return salvaged;
 }
