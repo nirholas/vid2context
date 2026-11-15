@@ -83,6 +83,7 @@ Retries never help with a block and tend to extend it. So a `blocked` result is 
 - SOCKS is not supported. Workers and the browser build cannot use it (Workers have no outbound proxy support): use a relay or the import routes there.
 - The value can hold a password, so it is never logged, and errors name the proxy host only.
 - Verified with a local CONNECT proxy in `packages/registry/test/proxy.test.ts` (routing, credentials, a new tunnel per request, rotation). Not verified with a commercial residential proxy (none was available on 2026-11-14).
+- To proxy every outbound request instead (YouTube and all other services alike), Node 24 has this built in with no vid2context setting: start the process with `NODE_USE_ENV_PROXY=1` and `HTTPS_PROXY=http://host:port` (plus `NO_PROXY` for hosts that should stay direct). The YouTube provider has no proxy code of its own; it uses whatever `fetch` the surface hands it.
 
 #### What still works while the player is blocked
 
