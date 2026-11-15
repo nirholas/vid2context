@@ -45,7 +45,7 @@ Numbers match `docs/ROADMAP.md` and the owner columns in `docs/contracts/`. Ever
 | 25 | [LLM streaming, model catalog and model choice](archive/25-llm-streaming-models.md) | `packages/core/src/llm/` | E. LLM and embeddings |
 | 26 | [Native Anthropic and Gemini providers, with Vertex AI](archive/26-llm-native.md) | `providers/llm-native/` | E. LLM and embeddings |
 | 27 | [Local LLM servers with auto-detection](27-local-llm.md) | `providers/llm-local/` | E. LLM and embeddings |
-| 28 | [Chat workspace with a model picker](28-chat.md) | `packages/chat/` | H. Surfaces |
+| 28 | [Chat workspace with a model picker](archive/28-chat.md) | `packages/chat/` | H. Surfaces |
 | 29 | [Embedding rungs, free first](archive/29-embeddings.md) | `providers/embed/`, `providers/embed-transformers/` | E. LLM and embeddings |
 | 30 | [Gemini: video understanding and audio transcription](30-gemini-video.md) | `providers/video-gemini/` | F. Intelligence |
 | 31 | [On-screen text and slides: frames, OCR, vision](31-visual-notes.md) | `providers/visual-frames/` | F. Intelligence |
