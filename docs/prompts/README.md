@@ -19,11 +19,11 @@ Numbers match `docs/ROADMAP.md` and the owner columns in `docs/contracts/`. Ever
 | # | Prompt | Owns | Track |
 |---|---|---|---|
 | 01 | [Output formats: Markdown, SRT, WebVTT, context pack](archive/01-output-formats.md) | `packages/core/src/format/` | A. Core bones |
-| 02 | [Caption and transcript cleanup](02-caption-cleanup.md) | `packages/core/src/clean/` | A. Core bones |
-| 03 | [Token estimates, chunking and sections](03-chunking-sections.md) | `packages/core/src/chunk/` | A. Core bones |
-| 04 | [Long audio: split, transcribe in parallel, stitch, resume](04-long-audio.md) | `packages/core/src/longform/` | A. Core bones |
+| 02 | [Caption and transcript cleanup](archive/02-caption-cleanup.md) | `packages/core/src/clean/` | A. Core bones |
+| 03 | [Token estimates, chunking and sections](archive/03-chunking-sections.md) | `packages/core/src/chunk/` | A. Core bones |
+| 04 | [Long audio: split, transcribe in parallel, stitch, resume](archive/04-long-audio.md) | `packages/core/src/longform/` | A. Core bones |
 | 05 | [Config files, profiles and provider policy](05-config-profiles.md) | `packages/config/` | A. Core bones |
-| 06 | [YouTube: player clients, caption formats, IP-block resilience](06-youtube-captions-resilience.md) | `providers/youtube/src/captions/`, `src/resilience/` | B. YouTube |
+| 06 | [YouTube: player clients, caption formats, IP-block resilience](archive/06-youtube-captions-resilience.md) | `providers/youtube/src/captions/`, `src/resilience/` | B. YouTube |
 | 07 | [YouTube: metadata, chapters and video states](07-youtube-metadata-chapters.md) | `providers/youtube/src/metadata/` | B. YouTube |
 | 08 | [YouTube: playlists, channels and search](08-youtube-playlists-channels-search.md) | `providers/youtube/src/browse/` | B. YouTube |
 | 09 | [YouTube comments](09-youtube-comments.md) | `providers/youtube/src/comments/` | B. YouTube |
