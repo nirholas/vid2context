@@ -14,11 +14,28 @@ Labels are `Speaker 0`, `Speaker 1`, ... (or `Speaker A`, `Speaker B` for servic
 
 ## What is available today
 
+- **Hosted diarization on Cloudflare Workers AI**: `stt/cloudflare/@cf/deepgram/nova-3`, Deepgram's nova-3 model run by Cloudflare. It needs only `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN` (a free account; see [cloudflare.md](cloudflare.md)), and labels speakers when you pass `stt: { diarize: true }`. It sends the audio to Cloudflare as raw bytes with Deepgram's flags (`diarize`, `smart_format`, `punctuate`, `utterances`, `paragraphs`, and `detect_language` or `language`) and maps Deepgram's utterances to segments with `speaker` and `confidence`. REST only: the Workers AI binding input for this model has not been verified.
 - **Speaker naming** (`@vid2context/speakers`) works on any transcript that has speaker labels, whatever produced them.
-- **No installed speech-to-text rung produces speaker labels yet.** `stt.diarize` is passed to rungs, but the current ones (OpenAI-compatible Whisper hosts, Transformers.js) ignore it. Hosted diarization through Deepgram and AssemblyAI was planned for this item but is not included: neither key was available, and the project ships only rungs verified against real recorded responses. Adding those rungs, and making the pipeline route `diarize: true` only to rungs with the `diarization` capability, needs a `DEEPGRAM_API_KEY` or `ASSEMBLYAI_API_KEY` to record fixtures.
+- **Not included: direct Deepgram and AssemblyAI rungs.** Their APIs give sign-up credits and strong diarization, but neither `DEEPGRAM_API_KEY` nor `ASSEMBLYAI_API_KEY` was available to record real responses, and the project ships only rungs verified against real recordings. They can be added once a key exists.
 - **Local diarization** (sherpa-onnx, roadmap item 23) is deferred. It needs native or WASM speaker-embedding models and a clustering step, which is a separate piece of work from hosted diarization. Until then there is no fully local or keyless way to get speaker labels.
 
-The speaker-naming fixtures were recorded from Deepgram nova-3 running on Cloudflare Workers AI (`@cf/deepgram/nova-3` with `diarize=true`), which shows the label format a hosted diarizer returns.
+### Routing
+
+The nova-3 rung has the `diarization` capability and runs after the Whisper rungs, so ordinary transcription does not spend neurons on it. The pipeline does not yet add `diarization` to the chain's required capabilities when `stt.diarize` is set, so a diarized request still tries the earlier Whisper rungs first, and they return no speakers. Until that lands, require the capability yourself; the chain then skips every rung without it:
+
+```ts
+const ctx = await getVideoContext(url, { mode: 'stt', stt: { diarize: true }, chain: { needs: ['diarization'] } });
+```
+
+`chain: { only: ['stt/cloudflare/@cf/deepgram/nova-3'] }` pins the rung instead. In `getVideoContext`, `chain` applies to the speech-to-text and video stages only, so it does not restrict the LLM stages.
+
+### Cost and limits
+
+Workers AI's free allocation is 10,000 neurons a day (resets at 00:00 UTC). nova-3 used about 8 neurons per second of audio in the recordings (190 for a 24 s clip, 1,600 for a 202 s call), so a free account diarizes roughly 20 minutes of audio a day. When the allocation runs out the rung reports `rate-limited` until midnight UTC. `CLOUDFLARE_DIARIZE_MODEL` replaces the model list (comma-separated).
+
+### Quality notes from the recordings
+
+On the 1969 Nixon to Apollo 11 call (three voices over a noisy radio link) nova-3 separated Houston, Nixon and Armstrong into speakers 0, 2 and 1, but missed part of Armstrong's reply (121 to 149 s) and misheard some words. On clean modern audio expect better; on old or degraded audio, Whisper's text is often more accurate, and speaker labels are the reason to choose nova-3.
 
 ## Speaker naming
 

@@ -179,13 +179,14 @@ Workers AI gives every Cloudflare account 10,000 neurons per day free, on the Fr
 | `stt/cloudflare-binding/@cf/openai/whisper` | free | `CLOUDFLARE_AI_BINDING` | older and much less accurate; no language detection. Live |
 | `stt/cloudflare/@cf/openai/whisper-large-v3-turbo` | free | `CLOUDFLARE_ACCOUNT_ID` + `CLOUDFLARE_API_TOKEN` | REST, Node, Workers and browser. Live |
 | `stt/cloudflare/@cf/openai/whisper` | free | `CLOUDFLARE_ACCOUNT_ID` + `CLOUDFLARE_API_TOKEN` | REST, raw audio bytes. Live |
+| `stt/cloudflare/@cf/deepgram/nova-3` | free | `CLOUDFLARE_ACCOUNT_ID` + `CLOUDFLARE_API_TOKEN` | Deepgram on Workers AI, REST only. Speaker labels (`diarization`) when `stt.diarize` is set, segments with confidence, language detection. About 8 neurons per audio second (about 20 minutes of audio per free day). Runs after the Whisper rungs. Recorded 2026-11-14 |
 | `llm/cloudflare-binding/@cf/meta/llama-3.3-70b-instruct-fp8-fast` | free | `CLOUDFLARE_AI_BINDING` | 24k-token context; JSON mode; streaming. Live |
 | `llm/cloudflare-binding/@cf/openai/gpt-oss-120b` | free | `CLOUDFLARE_AI_BINDING` | 128k context, reasoning model (reasoning is dropped from the answer); JSON mode; streaming. Live |
 | `llm/cloudflare-binding/@cf/meta/llama-4-scout-17b-16e-instruct` | free | `CLOUDFLARE_AI_BINDING` | 131k context; JSON mode; streaming. Recorded |
 | `llm/cloudflare-binding/@cf/mistralai/mistral-small-3.1-24b-instruct` | free | `CLOUDFLARE_AI_BINDING` | 128k context; streaming; JSON mode not claimed (not in its schema). Recorded |
 | `embed/cloudflare-binding/@cf/baai/bge-m3` | free | `CLOUDFLARE_AI_BINDING` | 1024 dimensions, 100 texts per call. Live |
 
-- Models: `CLOUDFLARE_STT_MODEL` (speech-to-text list, binding and REST), `CLOUDFLARE_BINDING_MODEL` (binding LLM list), comma-separated, in order. `CLOUDFLARE_EMBED_MODEL` is shared with `embed/cloudflare/...` above; for a model whose size is not built in (bge-m3, bge-large, bge-base, bge-small are), also set `CLOUDFLARE_EMBED_DIMENSIONS`.
+- Models: `CLOUDFLARE_STT_MODEL` (speech-to-text list, binding and REST), `CLOUDFLARE_DIARIZE_MODEL` (diarizing speech-to-text list, REST only, default `@cf/deepgram/nova-3`), `CLOUDFLARE_BINDING_MODEL` (binding LLM list), comma-separated, in order. `CLOUDFLARE_EMBED_MODEL` is shared with `embed/cloudflare/...` above; for a model whose size is not built in (bge-m3, bge-large, bge-base, bge-small are), also set `CLOUDFLARE_EMBED_DIMENSIONS`.
 - The REST LLM and REST embedding rungs are `llm/cloudflare/...` (free catalog) and `embed/cloudflare/...` (embeddings), not duplicated here.
 - Errors: the daily allocation running out (code 3036) is `rate-limited` until 00:00 UTC; unknown or retired models are `not-found`; a rejected token is `auth`.
 - Upload size: no published limit for the speech-to-text models, so no `maxBytes` is set; a request that is too large fails with `too-large` (code 3006) and the next rung is tried.
@@ -421,5 +422,5 @@ OAuth clients, codes and tokens are kept in the storage backend when it implemen
 
 | Kind | Provider | Tier | Enabled by | Known limits |
 |---|---|---|---|---|
-| stt | whisper.cpp, Transformers.js, Gemini, Deepgram, AssemblyAI | local / free | per prompt | |
-| video | Gemini video understanding | free | `GEMINI_API_KEY` | |
+| stt | Gemini audio, Deepgram direct API, AssemblyAI | free (sign-up credits) | `GEMINI_API_KEY`, `DEEPGRAM_API_KEY`, `ASSEMBLYAI_API_KEY` | not built: no key to record real responses (2026-11-15) |
+| video | Gemini video understanding | free | `GEMINI_API_KEY` | not built: no key to record real responses (2026-11-15) |

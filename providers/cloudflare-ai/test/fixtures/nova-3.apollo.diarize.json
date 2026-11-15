@@ -1,0 +1,459 @@
+{
+  "result": {
+    "results": {
+      "channels": [
+        {
+          "alternatives": [
+            {
+              "transcript": "I'm gonna step off the land now. That's one small step per van. One biathlete per van.",
+              "confidence": 0.9091797,
+              "languages": [
+                "en"
+              ],
+              "words": [
+                {
+                  "word": "i'm",
+                  "start": 4.48,
+                  "end": 4.88,
+                  "confidence": 0.9445801,
+                  "speaker": 0,
+                  "speaker_confidence": 0.7601302,
+                  "punctuated_word": "I'm",
+                  "language": "en"
+                },
+                {
+                  "word": "gonna",
+                  "start": 4.88,
+                  "end": 5.04,
+                  "confidence": 0.96972656,
+                  "speaker": 0,
+                  "speaker_confidence": 0.7601302,
+                  "punctuated_word": "gonna",
+                  "language": "en"
+                },
+                {
+                  "word": "step",
+                  "start": 5.04,
+                  "end": 5.3599997,
+                  "confidence": 0.9970703,
+                  "speaker": 0,
+                  "speaker_confidence": 0.7601302,
+                  "punctuated_word": "step",
+                  "language": "en"
+                },
+                {
+                  "word": "off",
+                  "start": 5.3599997,
+                  "end": 5.44,
+                  "confidence": 0.9243164,
+                  "speaker": 0,
+                  "speaker_confidence": 0.7601302,
+                  "punctuated_word": "off",
+                  "language": "en"
+                },
+                {
+                  "word": "the",
+                  "start": 5.44,
+                  "end": 5.68,
+                  "confidence": 0.98828125,
+                  "speaker": 0,
+                  "speaker_confidence": 0.7601302,
+                  "punctuated_word": "the",
+                  "language": "en"
+                },
+                {
+                  "word": "land",
+                  "start": 5.68,
+                  "end": 6,
+                  "confidence": 0.8964844,
+                  "speaker": 0,
+                  "speaker_confidence": 0.7601302,
+                  "punctuated_word": "land",
+                  "language": "en"
+                },
+                {
+                  "word": "now",
+                  "start": 6,
+                  "end": 6.4,
+                  "confidence": 0.6837158,
+                  "speaker": 0,
+                  "speaker_confidence": 0.7601302,
+                  "punctuated_word": "now.",
+                  "language": "en"
+                },
+                {
+                  "word": "that's",
+                  "start": 16.16,
+                  "end": 17.76,
+                  "confidence": 0.87646484,
+                  "speaker": 0,
+                  "speaker_confidence": 0.7566499,
+                  "punctuated_word": "That's",
+                  "language": "en"
+                },
+                {
+                  "word": "one",
+                  "start": 16.485,
+                  "end": 17.125,
+                  "confidence": 0.9970703,
+                  "speaker": 0,
+                  "speaker_confidence": 0.7566499,
+                  "punctuated_word": "one",
+                  "language": "en"
+                },
+                {
+                  "word": "small",
+                  "start": 17.125,
+                  "end": 17.605,
+                  "confidence": 0.9614258,
+                  "speaker": 0,
+                  "speaker_confidence": 0.7566499,
+                  "punctuated_word": "small",
+                  "language": "en"
+                },
+                {
+                  "word": "step",
+                  "start": 17.605,
+                  "end": 18.005001,
+                  "confidence": 0.87353516,
+                  "speaker": 0,
+                  "speaker_confidence": 0.7566499,
+                  "punctuated_word": "step",
+                  "language": "en"
+                },
+                {
+                  "word": "per",
+                  "start": 18.005001,
+                  "end": 18.325,
+                  "confidence": 0.49609375,
+                  "speaker": 0,
+                  "speaker_confidence": 0.7566499,
+                  "punctuated_word": "per",
+                  "language": "en"
+                },
+                {
+                  "word": "van",
+                  "start": 18.325,
+                  "end": 19.045,
+                  "confidence": 0.7529297,
+                  "speaker": 0,
+                  "speaker_confidence": 0.7566499,
+                  "punctuated_word": "van.",
+                  "language": "en"
+                },
+                {
+                  "word": "one",
+                  "start": 21.525,
+                  "end": 22.165,
+                  "confidence": 0.99121094,
+                  "speaker": 0,
+                  "speaker_confidence": 0.78614354,
+                  "punctuated_word": "One",
+                  "language": "en"
+                },
+                {
+                  "word": "biathlete",
+                  "start": 22.645,
+                  "end": 23.445,
+                  "confidence": 0.45812988,
+                  "speaker": 0,
+                  "speaker_confidence": 0.78614354,
+                  "punctuated_word": "biathlete",
+                  "language": "en"
+                },
+                {
+                  "word": "per",
+                  "start": 23.445,
+                  "end": 23.605,
+                  "confidence": 0.9091797,
+                  "speaker": 0,
+                  "speaker_confidence": 0.78614354,
+                  "punctuated_word": "per",
+                  "language": "en"
+                },
+                {
+                  "word": "van",
+                  "start": 23.605,
+                  "end": 23.845001,
+                  "confidence": 0.8154297,
+                  "speaker": 0,
+                  "speaker_confidence": 0.5467793,
+                  "punctuated_word": "van.",
+                  "language": "en"
+                }
+              ],
+              "paragraphs": {
+                "transcript": "\nSpeaker 0: I'm gonna step off the land now. That's one small step per van. One biathlete per van.",
+                "paragraphs": [
+                  {
+                    "sentences": [
+                      {
+                        "text": "I'm gonna step off the land now.",
+                        "start": 4.48,
+                        "end": 6.4
+                      },
+                      {
+                        "text": "That's one small step per van.",
+                        "start": 16.16,
+                        "end": 19.045
+                      },
+                      {
+                        "text": "One biathlete per van.",
+                        "start": 21.525,
+                        "end": 23.845001
+                      }
+                    ],
+                    "speaker": 0,
+                    "num_words": 17,
+                    "start": 4.48,
+                    "end": 23.845001
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "utterances": [
+        {
+          "start": 4.48,
+          "end": 6.4,
+          "confidence": 0.9148821,
+          "channel": 0,
+          "transcript": "I'm gonna step off the land now.",
+          "languages": [
+            "en"
+          ],
+          "words": [
+            {
+              "word": "i'm",
+              "start": 4.48,
+              "end": 4.88,
+              "confidence": 0.9445801,
+              "speaker": 0,
+              "speaker_confidence": 0.7601302,
+              "punctuated_word": "I'm",
+              "language": "en"
+            },
+            {
+              "word": "gonna",
+              "start": 4.88,
+              "end": 5.04,
+              "confidence": 0.96972656,
+              "speaker": 0,
+              "speaker_confidence": 0.7601302,
+              "punctuated_word": "gonna",
+              "language": "en"
+            },
+            {
+              "word": "step",
+              "start": 5.04,
+              "end": 5.3599997,
+              "confidence": 0.9970703,
+              "speaker": 0,
+              "speaker_confidence": 0.7601302,
+              "punctuated_word": "step",
+              "language": "en"
+            },
+            {
+              "word": "off",
+              "start": 5.3599997,
+              "end": 5.44,
+              "confidence": 0.9243164,
+              "speaker": 0,
+              "speaker_confidence": 0.7601302,
+              "punctuated_word": "off",
+              "language": "en"
+            },
+            {
+              "word": "the",
+              "start": 5.44,
+              "end": 5.68,
+              "confidence": 0.98828125,
+              "speaker": 0,
+              "speaker_confidence": 0.7601302,
+              "punctuated_word": "the",
+              "language": "en"
+            },
+            {
+              "word": "land",
+              "start": 5.68,
+              "end": 6,
+              "confidence": 0.8964844,
+              "speaker": 0,
+              "speaker_confidence": 0.7601302,
+              "punctuated_word": "land",
+              "language": "en"
+            },
+            {
+              "word": "now",
+              "start": 6,
+              "end": 6.4,
+              "confidence": 0.6837158,
+              "speaker": 0,
+              "speaker_confidence": 0.7601302,
+              "punctuated_word": "now.",
+              "language": "en"
+            }
+          ],
+          "speaker": 0,
+          "id": "be29799f-5993-431a-8186-b84648ab09e7"
+        },
+        {
+          "start": 16.16,
+          "end": 19.045,
+          "confidence": 0.82625324,
+          "channel": 0,
+          "transcript": "That's one small step per van.",
+          "languages": [
+            "en"
+          ],
+          "words": [
+            {
+              "word": "that's",
+              "start": 16.16,
+              "end": 17.76,
+              "confidence": 0.87646484,
+              "speaker": 0,
+              "speaker_confidence": 0.7566499,
+              "punctuated_word": "That's",
+              "language": "en"
+            },
+            {
+              "word": "one",
+              "start": 16.485,
+              "end": 17.125,
+              "confidence": 0.9970703,
+              "speaker": 0,
+              "speaker_confidence": 0.7566499,
+              "punctuated_word": "one",
+              "language": "en"
+            },
+            {
+              "word": "small",
+              "start": 17.125,
+              "end": 17.605,
+              "confidence": 0.9614258,
+              "speaker": 0,
+              "speaker_confidence": 0.7566499,
+              "punctuated_word": "small",
+              "language": "en"
+            },
+            {
+              "word": "step",
+              "start": 17.605,
+              "end": 18.005001,
+              "confidence": 0.87353516,
+              "speaker": 0,
+              "speaker_confidence": 0.7566499,
+              "punctuated_word": "step",
+              "language": "en"
+            },
+            {
+              "word": "per",
+              "start": 18.005001,
+              "end": 18.325,
+              "confidence": 0.49609375,
+              "speaker": 0,
+              "speaker_confidence": 0.7566499,
+              "punctuated_word": "per",
+              "language": "en"
+            },
+            {
+              "word": "van",
+              "start": 18.325,
+              "end": 19.045,
+              "confidence": 0.7529297,
+              "speaker": 0,
+              "speaker_confidence": 0.7566499,
+              "punctuated_word": "van.",
+              "language": "en"
+            }
+          ],
+          "speaker": 0,
+          "id": "e1482dbf-3672-4331-914e-994b058c3073"
+        },
+        {
+          "start": 21.525,
+          "end": 22.165,
+          "confidence": 0.99121094,
+          "channel": 0,
+          "transcript": "One",
+          "languages": [
+            "en"
+          ],
+          "words": [
+            {
+              "word": "one",
+              "start": 21.525,
+              "end": 22.165,
+              "confidence": 0.99121094,
+              "speaker": 0,
+              "speaker_confidence": 0.78614354,
+              "punctuated_word": "One",
+              "language": "en"
+            }
+          ],
+          "speaker": 0,
+          "id": "65fe8b60-1b2d-4f63-b1ab-f4a6f9cb8c89"
+        },
+        {
+          "start": 22.645,
+          "end": 23.845001,
+          "confidence": 0.7275798,
+          "channel": 0,
+          "transcript": "biathlete per van.",
+          "languages": [
+            "en"
+          ],
+          "words": [
+            {
+              "word": "biathlete",
+              "start": 22.645,
+              "end": 23.445,
+              "confidence": 0.45812988,
+              "speaker": 0,
+              "speaker_confidence": 0.78614354,
+              "punctuated_word": "biathlete",
+              "language": "en"
+            },
+            {
+              "word": "per",
+              "start": 23.445,
+              "end": 23.605,
+              "confidence": 0.9091797,
+              "speaker": 0,
+              "speaker_confidence": 0.78614354,
+              "punctuated_word": "per",
+              "language": "en"
+            },
+            {
+              "word": "van",
+              "start": 23.605,
+              "end": 23.845001,
+              "confidence": 0.8154297,
+              "speaker": 0,
+              "speaker_confidence": 0.5467793,
+              "punctuated_word": "van.",
+              "language": "en"
+            }
+          ],
+          "speaker": 0,
+          "id": "d24cfecd-a817-41b6-8a81-1d865fd86808"
+        }
+      ]
+    },
+    "usage": {
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "neurons": 190.60474
+    }
+  },
+  "success": true,
+  "errors": [],
+  "messages": []
+}

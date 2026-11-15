@@ -9,7 +9,11 @@
  *            The REST LLM and embedding rungs live in providers/llm-free-catalog and providers/embed
  *            (Cloudflare's OpenAI-compatible routes), so they are not duplicated here.
  *
- * Model lists: CLOUDFLARE_STT_MODEL, CLOUDFLARE_EMBED_MODEL, CLOUDFLARE_BINDING_MODEL (comma-separated, in order).
+ *   diarize  stt/cloudflare/@cf/deepgram/nova-3 over REST: speaker labels when stt.diarize is set.
+ *            Last among the Cloudflare speech-to-text rungs, so ordinary transcription uses Whisper.
+ *
+ * Model lists: CLOUDFLARE_STT_MODEL, CLOUDFLARE_DIARIZE_MODEL, CLOUDFLARE_EMBED_MODEL,
+ * CLOUDFLARE_BINDING_MODEL (comma-separated, in order).
  */
 import {
   type ChatStreamEvent,
@@ -25,12 +29,20 @@ import {
 } from '@vid2context/core';
 import { EMBED_DIMENSIONS, embedTexts } from './embed.ts';
 import { chat, streamChat } from './llm.ts';
-import { LEGACY_WHISPER, transcribe } from './stt.ts';
+import { isDeepgramModel, LEGACY_WHISPER, transcribe } from './stt.ts';
 import { REST_BASE_URL, type Transport } from './transport.ts';
 
 export { EMBED_DIMENSIONS, embedTexts } from './embed.ts';
 export { answerText, buildChatInput, chat, parseSse, streamChat } from './llm.ts';
-export { parseLegacy, parseTurbo, segmentsFromWords, transcribe } from './stt.ts';
+export {
+  deepgramQuery,
+  isDeepgramModel,
+  parseDeepgram,
+  parseLegacy,
+  parseTurbo,
+  segmentsFromWords,
+  transcribe,
+} from './stt.ts';
 export {
   type AiBinding,
   errorFromBinding,
@@ -45,6 +57,8 @@ export const BINDING_SERVICE = 'cloudflare-binding';
 export const REST_SERVICE = 'cloudflare';
 
 export const DEFAULT_STT_MODELS = ['@cf/openai/whisper-large-v3-turbo', '@cf/openai/whisper'];
+/** Diarizing speech-to-text (REST only). */
+export const DEFAULT_DIARIZE_MODELS = ['@cf/deepgram/nova-3'];
 export const DEFAULT_EMBED_MODEL = '@cf/baai/bge-m3';
 export const DEFAULT_BINDING_MODELS = [
   '@cf/meta/llama-3.3-70b-instruct-fp8-fast',
@@ -93,28 +107,51 @@ const REST_REQUIRES = ['CLOUDFLARE_ACCOUNT_ID', 'CLOUDFLARE_API_TOKEN'];
 const restEnabled = (env: Env) => Boolean(env.CLOUDFLARE_ACCOUNT_ID && env.CLOUDFLARE_API_TOKEN);
 const bindingEnabled = (env: Env) => Boolean(env.CLOUDFLARE_AI_BINDING);
 
+const DEEPGRAM_CAPABILITIES = ['segments', 'language-detect', 'diarization'];
+
 export function sttRungs(env: Env): SttRung[] {
   const models = list(env.CLOUDFLARE_STT_MODEL, DEFAULT_STT_MODELS);
-  const make = (service: string, t: Transport, basePriority: number, requires: string[], enabled: boolean) =>
-    models.map((model, i): SttRung => {
-      const legacy = LEGACY_WHISPER.has(model);
-      return {
-        id: `stt/${service}/${model}`,
-        provider: 'cloudflare-ai-stt',
-        service,
-        model,
-        tier: 'free',
-        priority: basePriority + i * 10,
-        quality: legacy ? 2 : 4,
-        capabilities: legacy ? ['segments', 'words'] : ['segments', 'words', 'language-detect', 'prompt'],
-        requires,
-        isEnabled: () => enabled,
-        transcribe: (audio, opts, ctx) => transcribe(t, model, audio, opts, ctx, `${service} ${model}`),
-      };
-    });
+  const rung = (
+    service: string,
+    t: Transport,
+    model: string,
+    priority: number,
+    requires: string[],
+    enabled: boolean,
+  ): SttRung => {
+    const legacy = LEGACY_WHISPER.has(model);
+    const deepgram = isDeepgramModel(model);
+    return {
+      id: `stt/${service}/${model}`,
+      provider: 'cloudflare-ai-stt',
+      service,
+      model,
+      tier: 'free',
+      priority,
+      quality: legacy ? 2 : deepgram ? 3 : 4,
+      capabilities: deepgram
+        ? DEEPGRAM_CAPABILITIES
+        : legacy
+          ? ['segments', 'words']
+          : ['segments', 'words', 'language-detect', 'prompt'],
+      requires,
+      isEnabled: () => enabled,
+      transcribe: (audio, opts, ctx) => transcribe(t, model, audio, opts, ctx, `${service} ${model}`),
+    };
+  };
+  // Deepgram models run over REST only: the binding input for them has not been verified.
+  const bindingModels = models.filter((m) => !isDeepgramModel(m));
+  const diarize = list(env.CLOUDFLARE_DIARIZE_MODEL, DEFAULT_DIARIZE_MODELS).filter((m) => !models.includes(m));
+  const binding = bindingTransport(env);
+  const rest = restTransport(env);
   return [
-    ...make(BINDING_SERVICE, bindingTransport(env), 20, ['CLOUDFLARE_AI_BINDING'], bindingEnabled(env)),
-    ...make(REST_SERVICE, restTransport(env), 40, REST_REQUIRES, restEnabled(env)),
+    ...bindingModels.map((m, i) =>
+      rung(BINDING_SERVICE, binding, m, 20 + i * 10, ['CLOUDFLARE_AI_BINDING'], bindingEnabled(env)),
+    ),
+    ...models.map((m, i) => rung(REST_SERVICE, rest, m, 40 + i * 10, REST_REQUIRES, restEnabled(env))),
+    // After every Whisper rung: nova-3 costs about 8 neurons per audio second, so it runs for
+    // ordinary transcription only when the others failed, and first when diarization is required.
+    ...diarize.map((m, i) => rung(REST_SERVICE, rest, m, 40 + (models.length + i) * 10, REST_REQUIRES, restEnabled(env))),
   ];
 }
 

@@ -2,7 +2,7 @@
  * LIVE=1 checks against real Workers AI. Needs CLOUDFLARE_ACCOUNT_ID and
  * CLOUDFLARE_API_TOKEN in the environment (for example `set -a; . ./.env`).
  *
- *   REST     Whisper on the Apollo clip and bge-m3 embeddings, straight from Node.
+ *   REST     Whisper and Deepgram nova-3 (diarizing) on the Apollo clip and bge-m3 embeddings, straight from Node.
  *   binding  The same models through env.AI in the test Worker (test/worker), run
  *            with `wrangler dev`, which always sends AI calls to Cloudflare.
  */
@@ -28,6 +28,18 @@ describe.skipIf(!live)('Workers AI over REST (live)', () => {
     );
     expect(res?.language).toBe('en');
     expect(res?.segments.map((s) => s.text).join(' ')).toMatch(/small step for man/i);
+  });
+
+  it('labels speakers with Deepgram nova-3 when diarizing', async () => {
+    const rung = sttRungs(process.env).find((r) => r.id === 'stt/cloudflare/@cf/deepgram/nova-3');
+    const res = await rung?.transcribe(
+      { kind: 'bytes', data: apollo, mimeType: 'audio/mpeg', filename: 'apollo.mp3' },
+      { diarize: true },
+      ctx(),
+    );
+    expect(res?.language).toBe('en');
+    expect(res?.segments.length).toBeGreaterThan(0);
+    expect(res?.segments.every((s) => s.speaker === 'Speaker 0')).toBe(true);
   });
 
   it('embeds with bge-m3', async () => {

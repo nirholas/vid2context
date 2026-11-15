@@ -68,6 +68,7 @@ describe('rung lists', () => {
       'stt/cloudflare-binding/@cf/openai/whisper',
       'stt/cloudflare/@cf/openai/whisper-large-v3-turbo',
       'stt/cloudflare/@cf/openai/whisper',
+      'stt/cloudflare/@cf/deepgram/nova-3',
       'llm/cloudflare-binding/@cf/meta/llama-3.3-70b-instruct-fp8-fast',
       'llm/cloudflare-binding/@cf/openai/gpt-oss-120b',
       'llm/cloudflare-binding/@cf/meta/llama-4-scout-17b-16e-instruct',
@@ -107,6 +108,7 @@ describe('rung lists', () => {
     expect(sttRungs(env).map((r) => r.id)).toEqual([
       'stt/cloudflare-binding/@cf/openai/whisper',
       'stt/cloudflare/@cf/openai/whisper',
+      'stt/cloudflare/@cf/deepgram/nova-3',
     ]);
     const llm = llmRungs(env);
     expect(llm.map((r) => r.model)).toEqual(['@cf/qwen/qwen3.8-27b', '@cf/openai/gpt-oss-20b']);

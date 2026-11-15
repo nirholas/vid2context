@@ -5,6 +5,9 @@
  *   @cf/openai/whisper                 legacy model: raw bytes over REST, { audio: number[] } through the binding.
  *                                      Returns words and a VTT whose first cue has no start time, so segments
  *                                      are rebuilt from the words. Reports no language.
+ *   @cf/deepgram/nova-3                Deepgram hosted by Cloudflare: raw bytes over REST with Deepgram's feature
+ *                                      flags as URL parameters. With diarize=true it labels speakers, which no
+ *                                      Whisper model does. REST only: the binding input for it is not verified.
  *
  * Input formats verified against the live models on 2026-11-14 (see test/fixtures/README.md).
  */
@@ -93,6 +96,95 @@ export function parseLegacy(out: LegacyOutput, fallbackLanguage?: string): { lan
   return { language: primaryLanguage(fallbackLanguage) ?? 'und', segments };
 }
 
+/** Deepgram models served by Workers AI (raw audio body, flags in the query string). */
+export function isDeepgramModel(model: string): boolean {
+  return model.startsWith('@cf/deepgram/');
+}
+
+interface DeepgramUtterance {
+  start: number;
+  end: number;
+  transcript: string;
+  confidence?: number;
+  speaker?: number;
+  languages?: string[];
+}
+
+interface DeepgramSentence {
+  text: string;
+  start: number;
+  end: number;
+}
+
+interface DeepgramOutput {
+  results?: {
+    utterances?: DeepgramUtterance[];
+    channels?: {
+      detected_language?: string;
+      alternatives?: {
+        transcript?: string;
+        confidence?: number;
+        languages?: string[];
+        paragraphs?: { paragraphs?: { speaker?: number; sentences?: DeepgramSentence[] }[] };
+      }[];
+    }[];
+  };
+}
+
+/**
+ * Deepgram's feature flags. Speaker labels only when asked for; language
+ * detection unless the caller names the language.
+ */
+export function deepgramQuery(opts: SttOptions): Record<string, string> {
+  const q: Record<string, string> = {
+    diarize: opts.diarize ? 'true' : 'false',
+    smart_format: 'true',
+    punctuate: 'true',
+    utterances: 'true',
+    paragraphs: 'true',
+  };
+  const language = primaryLanguage(opts.language);
+  if (language) q.language = language;
+  else q.detect_language = 'true';
+  return q;
+}
+
+/**
+ * Utterances become segments (with `Speaker N` when diarizing); paragraph
+ * sentences, then the whole transcript, are the fallbacks.
+ */
+export function parseDeepgram(
+  out: DeepgramOutput,
+  diarize: boolean,
+  fallbackLanguage?: string,
+): { language: string; segments: Segment[] } {
+  const channel = out.results?.channels?.[0];
+  const alt = channel?.alternatives?.[0];
+  const utterances = out.results?.utterances ?? [];
+  const label = (n: number | undefined) => (diarize && typeof n === 'number' ? { speaker: `Speaker ${n}` } : {});
+  let segments: Segment[] = utterances
+    .map((u) => ({
+      startSec: u.start,
+      endSec: u.end,
+      text: u.transcript.trim(),
+      ...label(u.speaker),
+      ...(typeof u.confidence === 'number' ? { confidence: u.confidence } : {}),
+    }))
+    .filter((s) => s.text.length > 0);
+  if (segments.length === 0) {
+    segments = (alt?.paragraphs?.paragraphs ?? []).flatMap((p) =>
+      (p.sentences ?? [])
+        .map((s) => ({ startSec: s.start, endSec: s.end, text: s.text.trim(), ...label(p.speaker) }))
+        .filter((s) => s.text.length > 0),
+    );
+  }
+  const text = alt?.transcript?.trim();
+  if (segments.length === 0 && text) segments.push({ startSec: 0, endSec: 0, text });
+  const detected =
+    channel?.detected_language ?? alt?.languages?.[0] ?? utterances.find((u) => u.languages?.length)?.languages?.[0];
+  return { language: primaryLanguage(detected) ?? primaryLanguage(fallbackLanguage) ?? 'und', segments };
+}
+
 async function toBytes(audio: AudioInput, ctx: Ctx, label: string): Promise<BytesAudio> {
   if (audio.kind === 'bytes') return audio;
   const res = await fetchWithTimeout(ctx, audio.url, {}, 600_000);
@@ -116,6 +208,21 @@ export async function transcribe(
 ): Promise<SttResult> {
   const audio = await toBytes(input, ctx, label);
   if (audio.data.byteLength === 0) throw new Vid2ContextError('bad-request', `${label}: the audio is empty.`);
+  if (isDeepgramModel(model)) {
+    if (t.kind !== 'rest') {
+      throw new Vid2ContextError('bad-request', `${label}: Deepgram models run over REST only.`, {
+        hint: 'Set CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN and use the stt/cloudflare/... rung.',
+      });
+    }
+    const result = (await runModel(
+      ctx,
+      t,
+      model,
+      { bytes: audio.data, contentType: audio.mimeType || 'audio/mpeg', json: {}, query: deepgramQuery(opts) },
+      { label, timeoutMs: 600_000 },
+    )) as DeepgramOutput;
+    return { ...parseDeepgram(result, Boolean(opts.diarize), opts.language), model };
+  }
   if (LEGACY_WHISPER.has(model)) {
     const result = (await runModel(
       ctx,

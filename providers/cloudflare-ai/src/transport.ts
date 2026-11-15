@@ -23,10 +23,13 @@ export type Transport =
 
 export const REST_BASE_URL = 'https://api.cloudflare.com/client/v4';
 
-/** What to send: a JSON body, or raw bytes with a content type (legacy whisper over REST). */
+/**
+ * What to send: a JSON body, or raw bytes with a content type (legacy whisper and
+ * Deepgram over REST). `query` adds URL parameters (Deepgram's feature flags).
+ */
 export type RunInput =
   | { json: Record<string, unknown> }
-  | { bytes: Uint8Array; contentType: string; json: Record<string, unknown> };
+  | { bytes: Uint8Array; contentType: string; json: Record<string, unknown>; query?: Record<string, string> };
 
 interface CfError {
   code?: number;
@@ -129,8 +132,9 @@ async function runRest(
   input: RunInput,
   timeoutMs: number,
 ): Promise<Response> {
-  const url = `${t.baseUrl}/accounts/${encodeURIComponent(t.accountId)}/ai/run/${model}`;
   const raw = 'bytes' in input;
+  const query = raw && input.query ? `?${new URLSearchParams(input.query).toString()}` : '';
+  const url = `${t.baseUrl}/accounts/${encodeURIComponent(t.accountId)}/ai/run/${model}${query}`;
   return fetchWithTimeout(
     ctx,
     url,
