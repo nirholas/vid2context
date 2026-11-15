@@ -120,6 +120,17 @@ describe('mediaUrl.getAudio', () => {
     expect(err.message).toBe('The media is 196.6 MB, over the 150 MB limit.');
   });
 
+  it('defaults to a 64 MB cap on Workers, whose isolates have 128 MB in all', async () => {
+    // The same real 196.6 MB HEAD headers: fine for Node's default, refused on Workers before any body is read.
+    expect(maxMediaBytes({}, 'workers')).toBe(64 * 1024 * 1024);
+    expect(maxMediaBytes({ VID2CONTEXT_MAX_MEDIA_MB: '100' }, 'workers')).toBe(100 * 1024 * 1024);
+    const fetch = replayFetch([{ method: 'GET', url: BIG_HEAD.url, response: asResponse(BIG_HEAD) }]);
+    const ctx = testContext({ fetch, runtime: 'workers' });
+    const err = await mediaUrl.getAudio?.(ref(BIG_HEAD.url), ctx).catch((e) => e);
+    expect(err).toMatchObject({ code: 'too-large' });
+    expect(err.message).toBe('The media is 196.6 MB, over the 64 MB limit.');
+  });
+
   it('enforces a lower cap from env while streaming', async () => {
     const fetch = replayFetch([{ method: 'GET', url: URL_MP3, response: asResponse(HEAD, MP3) }]);
     const ctx = testContext({ fetch, env: { VID2CONTEXT_MAX_MEDIA_MB: '0.1' } });

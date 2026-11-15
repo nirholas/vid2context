@@ -2,7 +2,7 @@
  * Central size and time limits. Every package reads these instead of
  * inventing its own, so one env var tightens a public deployment everywhere.
  */
-import type { Env } from '../types.ts';
+import type { Env, Runtime } from '../types.ts';
 
 export interface Limits {
   /** Longest accepted input string (URL, path or id). VID2CONTEXT_MAX_INPUT_CHARS, default 2048. */
@@ -12,7 +12,11 @@ export interface Limits {
   /** Largest upload accepted by the HTTP API and web app, in MB. VID2CONTEXT_MAX_UPLOAD_MB, default 200. */
   maxUploadMb: number;
   maxUploadBytes: number;
-  /** Largest audio download or file read for speech-to-text, in MB. VID2CONTEXT_MAX_AUDIO_MB, default 1024. */
+  /**
+   * Largest audio download or file read for speech-to-text, in MB. VID2CONTEXT_MAX_AUDIO_MB. The audio is held in
+   * memory, so the default depends on the runtime: 512 on Node (about 9 hours of 128 kbps MP3), 64 on Workers
+   * (whose isolates have 128 MB in all) and 256 in the browser.
+   */
   maxAudioMb: number;
   maxAudioBytes: number;
   /** Most transcript segments kept from one source. VID2CONTEXT_MAX_SEGMENTS, default 200000. */
@@ -29,10 +33,16 @@ function positiveInt(value: string | undefined, fallback: number): number {
 
 const MB = 1024 * 1024;
 
-/** Limits with env overrides. Invalid or non-positive values fall back to the default. */
-export function limits(env: Env = {}): Limits {
+/** Default VID2CONTEXT_MAX_AUDIO_MB per runtime: audio is buffered in memory, and a Worker isolate has 128 MB. */
+export const DEFAULT_MAX_AUDIO_MB: Record<Runtime, number> = { node: 512, workers: 64, browser: 256 };
+
+/**
+ * Limits with env overrides. Invalid or non-positive values fall back to the default. Pass the runtime
+ * (`ctx.runtime`) so memory-bound defaults fit it; without one the Node defaults apply.
+ */
+export function limits(env: Env = {}, runtime: Runtime = 'node'): Limits {
   const maxUploadMb = positiveInt(env.VID2CONTEXT_MAX_UPLOAD_MB, 200);
-  const maxAudioMb = positiveInt(env.VID2CONTEXT_MAX_AUDIO_MB, 1024);
+  const maxAudioMb = positiveInt(env.VID2CONTEXT_MAX_AUDIO_MB, DEFAULT_MAX_AUDIO_MB[runtime]);
   return {
     maxInputChars: positiveInt(env.VID2CONTEXT_MAX_INPUT_CHARS, 2048),
     maxPlaylistItems: positiveInt(env.VID2CONTEXT_MAX_PLAYLIST_ITEMS, 500),

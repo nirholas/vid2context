@@ -14,7 +14,7 @@ const { transcript, attempts, chunks, seams } = await transcribeLong(registry, r
 1. The audio is bytes and larger than the `maxBytes` of every rung the chain would use. With no keys set, the keyless OVH rung declares no byte limit, so this case only arises when every enabled rung declares one (for example Groq alone).
 2. The single-pass request failed and every rung refused it as too large (HTTP 413). This is how a file longer than 60 s reaches the orchestrator on the keyless lane. The duration limit stated in the 413 message ("max duration allowed ... is 60 seconds") is passed on, so no second request is spent rediscovering it.
 
-Audio given as a URL is downloaded with `ctx.fetch`, capped by `VID2CONTEXT_MAX_AUDIO_MB` (default 1024), before splitting.
+Audio given as a URL is downloaded with `ctx.fetch`, capped by `VID2CONTEXT_MAX_AUDIO_MB` (default 512 on Node, 64 on Workers), before splitting.
 
 ## Splitters
 

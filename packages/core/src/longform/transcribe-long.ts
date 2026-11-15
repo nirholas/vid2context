@@ -25,6 +25,7 @@ import { fetchWithTimeout } from '../context.ts';
 import { errorFromResponse, Vid2ContextError } from '../errors.ts';
 import type { ChainOptions, SttOptions, SttResult, SttRung } from '../provider.ts';
 import type { Registry } from '../registry.ts';
+import { limits } from '../security/limits.ts';
 import type { Storage } from '../storage.ts';
 import { hasKv, type KvStore, MemoryKv } from '../storage-ext.ts';
 import type { Attempt, AudioInput, Ctx, Segment, Transcript, VideoRef } from '../types.ts';
@@ -118,13 +119,11 @@ export function durationLimitFrom(attempts: Attempt[]): number | undefined {
 
 const MAX_DEPTH = 4;
 
-const MB = 1024 * 1024;
 const CHECKPOINT_TTL_SEC = 7 * 24 * 3600;
 const RETRY_STEP_MS = 10_000;
 
 function maxAudioBytes(ctx: Ctx): number {
-  const mb = Number(ctx.env.VID2CONTEXT_MAX_AUDIO_MB);
-  return (Number.isFinite(mb) && mb > 0 ? mb : 1024) * MB;
+  return limits(ctx.env, ctx.runtime).maxAudioBytes;
 }
 
 /** Download a URL input into bytes, refusing anything over VID2CONTEXT_MAX_AUDIO_MB. */

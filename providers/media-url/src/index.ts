@@ -5,7 +5,8 @@
  *
  * Metadata comes from a HEAD request (a ranged GET of one byte when HEAD is
  * refused). Audio is downloaded through `ctx.fetch` with a size cap
- * (VID2CONTEXT_MAX_MEDIA_MB, default 200) and handed to speech-to-text as is.
+ * (VID2CONTEXT_MAX_MEDIA_MB, default 200, or 64 on Workers whose isolates have
+ * 128 MB in all) and handed to speech-to-text as is.
  *
  * Video URLs: on Node, `media-stream` (in @vid2context/provider-media-file)
  * extracts the audio with ffmpeg, so this provider leaves them to it. On
@@ -19,6 +20,7 @@ import {
   type Env,
   errorFromResponse,
   fetchWithTimeout,
+  type Runtime,
   type SourceProvider,
   Vid2ContextError,
   type VideoMetadata,
@@ -50,6 +52,8 @@ export const VIDEO_EXTENSIONS: Record<string, string> = {
 export const AUDIO_SIZED_BYTES = 25 * 1024 * 1024;
 
 const DEFAULT_MAX_MB = 200;
+/** The download is held in memory; a Worker isolate has 128 MB for everything. */
+const WORKERS_DEFAULT_MAX_MB = 64;
 
 /** Lowercase extension of a URL's path ('.mp3'), ignoring query and fragment, or ''. */
 export function urlExtension(url: string): string {
@@ -94,10 +98,11 @@ export function matchMediaUrl(raw: string): VideoRef | null {
   }
 }
 
-/** VID2CONTEXT_MAX_MEDIA_MB in bytes (default 200 MB). */
-export function maxMediaBytes(env: Env): number {
+/** VID2CONTEXT_MAX_MEDIA_MB in bytes (default 200 MB, 64 MB on Workers). */
+export function maxMediaBytes(env: Env, runtime: Runtime = 'node'): number {
   const mb = Number(env.VID2CONTEXT_MAX_MEDIA_MB);
-  return Math.round((Number.isFinite(mb) && mb > 0 ? mb : DEFAULT_MAX_MB) * 1024 * 1024);
+  const fallback = runtime === 'workers' ? WORKERS_DEFAULT_MAX_MB : DEFAULT_MAX_MB;
+  return Math.round((Number.isFinite(mb) && mb > 0 ? mb : fallback) * 1024 * 1024);
 }
 
 /** Decoded file name of a URL ('Discovery_-_Nice_to_be_in_orbit.mp3'), or 'media'. */
@@ -292,7 +297,7 @@ export const mediaUrl: SourceProvider = defineProvider({
     !(ctx.runtime === 'node' && isVideoUrl(ref.url ?? '')),
   async getAudio(ref, ctx) {
     const url = urlOf(ref);
-    const cap = maxMediaBytes(ctx.env);
+    const cap = maxMediaBytes(ctx.env, ctx.runtime);
     if (isVideoUrl(url)) {
       const limit = Math.min(cap, AUDIO_SIZED_BYTES);
       const hint =

@@ -115,11 +115,18 @@ describe('limits', () => {
       maxPlaylistItems: 500,
       maxUploadMb: 200,
       maxUploadBytes: 200 * 1024 * 1024,
-      maxAudioMb: 1024,
-      maxAudioBytes: 1024 * 1024 * 1024,
+      maxAudioMb: 512,
+      maxAudioBytes: 512 * 1024 * 1024,
       maxSegments: 200_000,
       fetchTimeoutMs: 30_000,
     });
+  });
+
+  it('sizes the in-memory audio cap to the runtime, and env still wins', () => {
+    expect(limits({}, 'node').maxAudioMb).toBe(512);
+    expect(limits({}, 'workers').maxAudioMb).toBe(64);
+    expect(limits({}, 'browser').maxAudioMb).toBe(256);
+    expect(limits({ VID2CONTEXT_MAX_AUDIO_MB: '100' }, 'workers').maxAudioBytes).toBe(100 * 1024 * 1024);
   });
 
   it('reads env overrides and ignores invalid values', () => {
