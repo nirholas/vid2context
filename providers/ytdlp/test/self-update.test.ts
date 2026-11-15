@@ -112,7 +112,7 @@ describe.skipIf(!process.env.LIVE)('self-update against GitHub and YouTube (live
     const old = process.env.YTDLP_OLD_BINARY;
     if (!old) throw new Error('Set YTDLP_OLD_BINARY to a yt-dlp 2023.03.04 yt-dlp_linux binary for this test.');
     const dir = await home();
-    const env = { ...(process.env as Record<string, string>), VID2CONTEXT_HOME: dir };
+    const env: Record<string, string> = { ...(process.env as Record<string, string>), VID2CONTEXT_HOME: dir };
     delete env.YTDLP_PATH;
     const ctx = createContext({ runtime: 'node', env, fetch: globalThis.fetch.bind(globalThis) });
     const bin = managedPath(env);
