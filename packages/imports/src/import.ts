@@ -30,7 +30,14 @@ import {
   type RawSegment,
 } from './parse.ts';
 
-export type ImportVia = 'paste' | 'file' | 'browser';
+/**
+ * Where the transcript came from: pasted text, a subtitle file, captions the
+ * extension read in the user's browser, or speech-to-text run on the video's
+ * own audio somewhere other than the server's normal chain (a media file the
+ * user picked, or audio the server downloaded, transcribed in the browser or
+ * through an upload).
+ */
+export type ImportVia = 'paste' | 'file' | 'browser' | 'media';
 export type CaptionKind = 'creator-captions' | 'auto-captions';
 
 export interface ImportRequest {
@@ -47,6 +54,8 @@ export interface ImportRequest {
   via?: ImportVia;
   /** For via=browser: the kind of YouTube track the extension read. Recorded, not trusted. */
   captionKind?: CaptionKind;
+  /** For via=media: the speech-to-text rung that made the segments, such as `stt/transformers/onnx-community/whisper-base`. Recorded, not trusted. */
+  transcriber?: string;
   /** What the extension knew about the video. Only fills gaps when the source gives no metadata; not trusted over it. */
   metadata?: KnownMetadata;
 }
@@ -83,7 +92,9 @@ export interface ImportOptions {
 /** The largest `text` accepted, in characters (the route caps the body at 5 MB too). */
 export const MAX_TEXT_CHARS = 5 * 1024 * 1024;
 
-const VIAS: ImportVia[] = ['paste', 'file', 'browser'];
+const VIAS: ImportVia[] = ['paste', 'file', 'browser', 'media'];
+/** Longest `transcriber` kept. */
+const MAX_TRANSCRIBER_CHARS = 200;
 const KINDS: CaptionKind[] = ['creator-captions', 'auto-captions'];
 
 function bad(message: string, hint: string): Vid2ContextError {
@@ -167,6 +178,14 @@ export function validateImportRequest(body: unknown): ImportRequest {
       throw bad(`captionKind must be one of ${KINDS.join(', ')}.`, 'Leave captionKind out when unknown.');
     out.captionKind = kind as CaptionKind;
   }
+  const transcriber = optionalString(
+    b,
+    'transcriber',
+    'Send the speech-to-text rung id, such as "stt/transformers/whisper-base".',
+  )
+    ?.replace(/\s+/g, ' ')
+    .trim();
+  if (transcriber) out.transcriber = transcriber.slice(0, MAX_TRANSCRIBER_CHARS);
   if (b.metadata !== undefined && b.metadata !== null) out.metadata = checkMetadata(b.metadata);
   return out;
 }
@@ -280,7 +299,7 @@ export async function importTranscript(
     id: 'import',
     stage: 'captions',
     outcome: 'ok',
-    detail: [via, format, req.captionKind].filter(Boolean).join(', '),
+    detail: [via, format, req.captionKind, req.transcriber].filter(Boolean).join(', '),
   });
   const context: VideoContext = {
     metadata,

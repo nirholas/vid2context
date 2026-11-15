@@ -13,8 +13,8 @@
 import { accountsRoutes, hostedMiddleware } from '@vid2context/accounts/http';
 import { askRoutes } from '@vid2context/ask/http';
 import { chaptersRoutes } from '@vid2context/chapters/http';
-import { type Ctx, formatters, type Registry, type Storage } from '@vid2context/core';
-import type { DownloadManager } from '@vid2context/downloads';
+import { type Ctx, formatters, type RecoveryContext, type Registry, type Storage } from '@vid2context/core';
+import { type DownloadManager, downloadPolicy } from '@vid2context/downloads';
 import { downloadsRoutes } from '@vid2context/downloads/http';
 import { exporterRoutes } from '@vid2context/exporters/http';
 import { importRoutes } from '@vid2context/imports/http';
@@ -28,7 +28,7 @@ import { skipsRoutes } from '@vid2context/skips/http';
 import { webhookRoutes } from '@vid2context/webhooks/http';
 import { type Context, Hono } from 'hono';
 import { renderError } from './errors.ts';
-import { type AccessLogEntry, auth, bodyLimit, cors, rateLimit, requestContext, timeout } from './middleware.ts';
+import { type AccessLogEntry, auth, bodyLimit, cors, rateLimit, requestContext, requestKeys, timeout } from './middleware.ts';
 import { buildOpenApi, json, type PathsObject, RouteDocs } from './openapi.ts';
 import { bundleRoutes } from './routes/bundle.ts';
 import { libraryRoutes } from './routes/library.ts';
@@ -172,6 +172,8 @@ function forwardedIp(c: Context): string | undefined {
   return xff || c.req.header('x-real-ip')?.trim() || undefined;
 }
 
+const LOOPBACK_HOSTS = new Set(['localhost', '127.0.0.1', '[::1]', '::1']);
+
 export function createApp(opts: AppOptions): ServerApp {
   const version = opts.version ?? '0.1.0';
   const services = createServices(opts.registry, opts.makeCtx, opts.storage);
@@ -188,8 +190,35 @@ export function createApp(opts: AppOptions): ServerApp {
     return services.ctxFor(c.req.raw).runtime === 'workers' ? c.req.header('cf-connecting-ip') || undefined : undefined;
   };
 
+  /** What this server can offer a caller whose request failed (core recovery.ts). */
+  const recoveryFor = (c: Context<AppEnv>): RecoveryContext => {
+    const ctx = services.ctxFor(c.req.raw);
+    const input = c.req.query('url') || undefined;
+    let platform: string | undefined;
+    if (input) {
+      try {
+        platform = opts.registry.resolve(input).ref.platform;
+      } catch {
+        platform = undefined;
+      }
+    }
+    const mode = c.req.query('mode');
+    const host = new URL(c.req.url).hostname;
+    return {
+      surface: 'api',
+      input,
+      platform,
+      ...(mode === 'auto' || mode === 'captions' || mode === 'stt' || mode === 'video' ? { mode } : {}),
+      downloads: !!opts.downloads && downloadPolicy(ctx.env).enabled,
+      keys: services.requestKeyNames(c.req.raw).length > 0 ? 'request' : 'env',
+      keyNames: services.requestKeyNames(c.req.raw),
+      imports: true,
+      remote: ctx.runtime === 'workers' || !LOOPBACK_HOSTS.has(host),
+    };
+  };
+
   app.onError((err, c) => {
-    const r = renderError(err);
+    const r = renderError(err, recoveryFor(c));
     if (r.unexpected) {
       services.ctxFor(c.req.raw).log.error('unhandled error', {
         message: err instanceof Error ? err.message : String(err),
@@ -219,6 +248,7 @@ export function createApp(opts: AppOptions): ServerApp {
   app.use('/api/*', auth(services));
   app.use('/api/*', rateLimit(services, clientIp));
   app.use('/api/*', bodyLimit(services));
+  app.use('/api/*', requestKeys(services));
 
   docs.add({
     method: 'get',
@@ -244,6 +274,8 @@ export function createApp(opts: AppOptions): ServerApp {
       formats: Object.values(formatters).map((f) => ({ id: f.id, description: f.description, mimeType: f.mimeType })),
       // Names of env vars only; values are never returned.
       providers: opts.registry.health(ctx.env),
+      // Provider keys a caller may send per request in X-Vid2Context-Keys (names only).
+      requestKeys: { accepted: services.requestKeyNames(c.req.raw).length > 0, names: services.requestKeyNames(c.req.raw) },
     });
   });
 

@@ -11,6 +11,7 @@ import {
   attemptsOf,
   type Ctx,
   checkInput,
+  type Env,
   enforceInputPolicy,
   expandInput,
   getVideoContext,
@@ -27,6 +28,7 @@ import {
   type VideoMetadata,
 } from '@vid2context/core';
 import { type ServerConfig, serverConfig } from './config.ts';
+import { parseRequestKeys, REQUEST_KEYS_HEADER, requestKeyNames } from './request-keys.ts';
 import {
   isUploadInput,
   type UploadBackend,
@@ -58,8 +60,18 @@ const BATCH_CONCURRENCY = 4;
 export interface Services {
   registry: Registry;
   uploads: UploadStore;
-  /** The Ctx for a request, created once and reused by every middleware, route and sub-app. */
+  /**
+   * The Ctx for a request, created once and reused by every middleware, route
+   * and sub-app. Provider keys sent in X-Vid2Context-Keys (when accepted) are
+   * merged into its env for this request only.
+   */
   ctxFor(req: Request): Ctx;
+  /** Provider key names this server accepts per request; empty when VID2CONTEXT_REQUEST_KEYS=0. */
+  requestKeyNames(req: Request): string[];
+  /** Names of the keys this request brought (never the values). */
+  userKeys(ctx: Ctx): string[];
+  /** The error for a malformed X-Vid2Context-Keys header, if this request sent one. */
+  requestKeysError(req: Request): Vid2ContextError | undefined;
   /** Make `next` share the Ctx and config of `prev` (for middleware that re-wraps the Request). */
   alias(next: Request, prev: Request): void;
   config(req: Request): ServerConfig;
@@ -97,13 +109,26 @@ export function createServices(
   const uploads = new UploadStore();
   const inflight = new Map<string, Promise<VideoContext>>();
   const hostedFor = new WeakMap<Ctx, HostedRequest>();
+  /** The server's own env for a request's Ctx, without keys the request brought. */
+  const baseEnvOf = new WeakMap<Ctx, Env>();
+  const userKeysOf = new WeakMap<Ctx, string[]>();
+  const keysErrorFor = new WeakMap<Request, Vid2ContextError>();
+  let acceptedNames: { list: string[]; set: Set<string> } | undefined;
+  const accepted = () => {
+    if (!acceptedNames) {
+      const list = requestKeyNames(registry);
+      acceptedNames = { list, set: new Set(list) };
+    }
+    return acceptedNames;
+  };
   /** The registry for this request: metered against the caller's plan in hosted mode. */
   const registryFor = (ctx: Ctx): Registry => hostedFor.get(ctx)?.registry(registry) ?? registry;
 
   const config = (req: Request): ServerConfig => {
     let cfg = configCache.get(req);
     if (!cfg) {
-      cfg = serverConfig(ctxFor(req).env);
+      // Settings come from the server's own env, never from keys a request brought.
+      cfg = serverConfig(baseEnv(ctxFor(req)));
       configCache.set(req, cfg);
     }
     return cfg;
@@ -113,16 +138,36 @@ export function createServices(
     let ctx = ctxCache.get(req);
     if (ctx) return ctx;
     const base = makeCtx(req);
-    const timeoutMs = serverConfig(base.env).requestTimeoutMs;
-    const signals = [AbortSignal.timeout(timeoutMs), base.signal].filter((s): s is AbortSignal => Boolean(s));
-    ctx = { ...base, signal: AbortSignal.any(signals) };
+    const cfg = serverConfig(base.env);
+    const signals = [AbortSignal.timeout(cfg.requestTimeoutMs), base.signal].filter((s): s is AbortSignal => Boolean(s));
+    let env = base.env;
+    let names: string[] = [];
+    const header = cfg.requestKeys ? req.headers.get(REQUEST_KEYS_HEADER) : null;
+    if (header) {
+      // Never throw here: ctxFor also runs in onError. The requestKeys middleware reports a bad header.
+      try {
+        const keys = parseRequestKeys(header, accepted().set);
+        names = Object.keys(keys).sort();
+        if (names.length > 0) env = { ...base.env, ...keys };
+      } catch (err) {
+        if (err instanceof Vid2ContextError) keysErrorFor.set(req, err);
+        else throw err;
+      }
+    }
+    ctx = { ...base, env, signal: AbortSignal.any(signals) };
+    baseEnvOf.set(ctx, base.env);
+    userKeysOf.set(ctx, names);
     ctxCache.set(req, ctx);
     return ctx;
   };
 
+  const baseEnv = (ctx: Ctx): Env => baseEnvOf.get(ctx) ?? ctx.env;
+  const userKeys = (ctx: Ctx): string[] => userKeysOf.get(ctx) ?? [];
+
   const storage = (ctx: Ctx): Promise<Storage> => {
-    // Opened once with this request's env and fetch, but not its signal: the storage outlives the request.
-    const base: Ctx = { ...ctx, signal: undefined };
+    // Opened once with the server's env and this request's fetch, but not its signal or any keys
+    // the request brought: the storage outlives the request and is shared by every caller.
+    const base: Ctx = { ...ctx, env: baseEnv(ctx), signal: undefined };
     storagePromise ??= (openStorage ? openStorage(base) : registry.openStorage(base)).then(
       (s) => s ?? memory,
       (err) => {
@@ -137,6 +182,13 @@ export function createServices(
     const s = await storage(ctx);
     return hasKv(s) ? s : memoryKv;
   };
+
+  /**
+   * Requests that brought their own keys never join (or are joined by) a run
+   * that used other credentials: each gets a run of its own.
+   */
+  let ownKeysRun = 0;
+  const keysTag = (ctx: Ctx): string => (userKeys(ctx).length > 0 ? `own-keys-${++ownKeysRun}` : '');
 
   const check = (input: string, ctx: Ctx): void => {
     const refused = checkInput(input, ctx.env);
@@ -185,7 +237,7 @@ export function createServices(
     const cached = await uploads.getContext(entry, langKey, backend);
     if (cached) return cached;
     const who = hostedFor.get(ctx)?.principal ?? '';
-    return shared(`upload\u0000${entry.sha256}\u0000${langKey}\u0000${who}`, ctx, async (runCtx) => {
+    return shared(`upload\u0000${entry.sha256}\u0000${langKey}\u0000${who}\u0000${keysTag(ctx)}`, ctx, async (runCtx) => {
       const ref = uploadRef(entry);
       const attempts: Attempt[] = [{ id: 'uploads', stage: 'resolve', outcome: 'ok', detail: ref.id }];
       try {
@@ -226,6 +278,7 @@ export function createServices(
       opts.comments ?? false,
       opts.refresh ?? false,
       hosted?.principal ?? '',
+      keysTag(ctx),
     ]);
     return shared(key, ctx, (runCtx) =>
       getVideoContext(
@@ -298,12 +351,17 @@ export function createServices(
   const alias = (next: Request, prev: Request): void => {
     ctxCache.set(next, ctxFor(prev));
     configCache.set(next, config(prev));
+    const keysError = keysErrorFor.get(prev);
+    if (keysError) keysErrorFor.set(next, keysError);
   };
 
   return {
     registry,
     uploads,
     ctxFor,
+    requestKeyNames: (req) => (config(req).requestKeys ? accepted().list : []),
+    userKeys,
+    requestKeysError: (req) => keysErrorFor.get(req),
     alias,
     config,
     storage,

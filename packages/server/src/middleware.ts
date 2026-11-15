@@ -8,6 +8,7 @@
  *   auth            VID2CONTEXT_API_KEYS, Bearer keys with scopes (off in hosted mode)
  *   rateLimit       token bucket per key, or per client IP in open mode (off in hosted mode)
  *   bodyLimit       VID2CONTEXT_MAX_BODY_KB, or the upload cap on POST /uploads
+ *   requestKeys     rejects a malformed X-Vid2Context-Keys header (keys are merged in services.ctxFor)
  *
  * Settings are read from the request's env on every request.
  */
@@ -70,7 +71,7 @@ export function requestContext(
   };
 }
 
-const ALLOW_HEADERS = ['Authorization', 'Content-Type', 'X-Request-Id', 'If-None-Match'];
+const ALLOW_HEADERS = ['Authorization', 'Content-Type', 'X-Request-Id', 'If-None-Match', 'X-Vid2Context-Keys'];
 const EXPOSE_HEADERS = [
   'X-Request-Id',
   'Retry-After',
@@ -94,6 +95,16 @@ export function cors(services: Services): MiddlewareHandler<AppEnv> {
       exposeHeaders: EXPOSE_HEADERS,
       maxAge: 600,
     })(c, next);
+  };
+}
+
+/** Answer bad-request when X-Vid2Context-Keys is present but malformed (request-keys.ts). */
+export function requestKeys(services: Services): MiddlewareHandler<AppEnv> {
+  return async (c, next) => {
+    services.ctxFor(c.req.raw);
+    const err = services.requestKeysError(c.req.raw);
+    if (err) throw err;
+    await next();
   };
 }
 

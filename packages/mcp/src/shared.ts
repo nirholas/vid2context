@@ -10,8 +10,10 @@ import {
   type Ctx,
   formatTimestamp,
   MemoryStorage,
+  type RecoveryContext,
   type Registry,
   type Storage,
+  suggestRecoveries,
   Vid2ContextError,
   type VideoContext,
 } from '@vid2context/core';
@@ -34,14 +36,19 @@ export function structured(value: object, prefix = ''): ToolResult {
   };
 }
 
-/** The contract's error body: `{ error, message, hint?, attempts }` as a tool result with isError. */
-export function toolError(err: unknown): ToolResult {
+/**
+ * The contract's error body: `{ error, message, hint?, attempts, recovery }`
+ * as a tool result with isError. `recovery` lists, best first, what the
+ * agent can do next (core recovery.ts), so a failed call is never a dead end.
+ */
+export function toolError(err: unknown, recovery: RecoveryContext = { surface: 'mcp' }): ToolResult {
   const e = err instanceof Vid2ContextError ? err : undefined;
   const payload = {
     error: e?.code ?? 'error',
     message: err instanceof Error ? err.message : String(err),
     ...(e?.hint ? { hint: e.hint } : {}),
     attempts: attemptsOf(err),
+    recovery: suggestRecoveries(err, recovery, attemptsOf(err)),
   };
   return { content: [{ type: 'text', text: JSON.stringify(payload, null, 2) }], isError: true };
 }

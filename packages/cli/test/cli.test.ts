@@ -48,6 +48,8 @@ describe('get', () => {
     const res = await cli([APOLLO, '--skip', 'ovh', '--verbose']);
     expect(res.code).toBe(6);
     expect(res.stderr).toContain('error (no-transcript)');
+    expect(res.stderr).toContain('Ways to get it anyway:\n  1. Add a speech-to-text key');
+    expect(res.stderr).toContain('GROQ_API_KEY: fast Whisper speech-to-text');
     expect(res.fetch.calls.some((c) => c.url.includes('audio/transcriptions'))).toBe(false);
   });
 
@@ -75,6 +77,8 @@ describe('get', () => {
     expect(res.stdout).toBe('');
     expect(res.stderr).toContain('error (not-found)');
     expect(res.stderr).toContain('hint: ');
+    expect(res.stderr).toContain('Ways to get it anyway:\n  1. Check the link');
+    expect(res.stderr).toContain('$ yt-dlp -x --audio-format mp3 -o audio.mp3 xxxxxxxxxxx');
     expect(res.stderr).not.toContain('Attempts:');
     const verbose = await cli(['xxxxxxxxxxx', '--verbose']);
     expect(verbose.stderr).toMatch(/metadata error +youtube/);
@@ -85,6 +89,7 @@ describe('get', () => {
     expect(res.stdout).toBe('');
     const { error } = JSON.parse(res.stderr);
     expect(error).toMatchObject({ code: 'not-found', exitCode: 4 });
+    expect(error.recovery[0]).toMatchObject({ action: 'fix-input' });
     expect(error.attempts.map((a: { stage: string }) => a.stage)).toContain('metadata');
   });
 });

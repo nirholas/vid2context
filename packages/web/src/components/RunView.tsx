@@ -1,20 +1,24 @@
 /**
  * /app/?url=...: reopen the result from this browser's history when it is
  * there, otherwise fetch it from the API. Lists (playlists, channels, feeds)
- * go to the batch view; failures show the error panel.
+ * go to the batch view; failures show the recovery panel (ways to still get
+ * the result, best first), never a bare error.
  */
 import { type Bundle, Vid2ContextError, type VideoContext } from '@vid2context/core';
-import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { getComments, getContext, isListError } from '../lib/api.ts';
 import { isClientOnly, useApiStatus } from '../lib/api-status.tsx';
 import { type AppError, isAbort, toAppError } from '../lib/errors.ts';
 import { getEntry, putEntry, runKey, summarize } from '../lib/history.ts';
-import { canImportAfter, type ImportResponse, youtubeVideoId } from '../lib/imports.ts';
+import { type ImportResponse, isImportableInput } from '../lib/imports.ts';
+import { acceptedKeyNames } from '../lib/recovery.ts';
 import { navigate, type RunParams } from '../lib/route.ts';
+import { keysForServer } from '../lib/settings.ts';
 import { ClientOnlyNotice } from './ClientOnlyNotice.tsx';
 import { ErrorPanel } from './ErrorPanel.tsx';
 import { ImportedNotice } from './import/ImportedNotice.tsx';
 import { ImportPanel } from './import/ImportPanel.tsx';
+import { RecoveryPanel } from './recovery/RecoveryPanel.tsx';
 import { Button, Card, Spinner } from './ui.tsx';
 
 const ResultView = lazy(() => import('./results/ResultView.tsx'));
@@ -74,10 +78,18 @@ function Fetching({ url, startedAt }: { url: string; startedAt: number }) {
   );
 }
 
+/** Only the entries the server accepts. */
+function onlyNames(keys: Record<string, string>, names: readonly string[]): Record<string, string> {
+  const allowed = new Set(names);
+  return Object.fromEntries(Object.entries(keys).filter(([k]) => allowed.has(k)));
+}
+
 export function RunView({ params }: { params: RunParams }) {
   const { state: api } = useApiStatus();
   const [state, setState] = useState<State>({ kind: 'loading', startedAt: Date.now() });
   const [refresh, setRefresh] = useState(0);
+  /** Keys entered in the recovery panel this visit; sent even when this browser cannot store them. */
+  const retryKeys = useRef<Record<string, string>>({});
   const key = runKey(params.url, params.mode, params.lang);
 
   useEffect(() => {
@@ -102,7 +114,15 @@ export function RunView({ params }: { params: RunParams }) {
       }
       setState({ kind: 'loading', startedAt: Date.now() });
       try {
-        let context = await getContext(params.url, { mode: params.mode, lang: params.lang || undefined }, { signal: ac.signal });
+        // Keys the user chose to send (Settings, or the recovery panel) go with the request when the server accepts them.
+        const names = acceptedKeyNames(api);
+        const keys = { ...(await keysForServer(names)), ...onlyNames(retryKeys.current, names) };
+        if (ac.signal.aborted) return;
+        let context = await getContext(
+          params.url,
+          { mode: params.mode, lang: params.lang || undefined },
+          { signal: ac.signal, keys },
+        );
         let notice: AppError | undefined;
         if (params.comments && !context.comments) {
           try {
@@ -128,6 +148,11 @@ export function RunView({ params }: { params: RunParams }) {
     [api],
   );
 
+  const retry = useCallback((keys?: Record<string, string>) => {
+    if (keys) retryKeys.current = { ...retryKeys.current, ...keys };
+    setRefresh((n) => n + 1);
+  }, []);
+
   const fresh = state.kind === 'result' && state.cachedAt === undefined ? state.context : undefined;
   const onBundle = useCallback(
     (bundle: Bundle) => {
@@ -149,7 +174,7 @@ export function RunView({ params }: { params: RunParams }) {
         <Fetching url={params.url} startedAt={state.startedAt} />
       );
     case 'needs-api':
-      return youtubeVideoId(params.url) ? (
+      return isImportableInput(params.url) ? (
         <div className="space-y-4">
           <ClientOnlyNotice api={api} input={params.url} />
           <ImportPanel url={params.url} lang={params.lang} clientOnly onImported={onImported} />
@@ -169,18 +194,7 @@ export function RunView({ params }: { params: RunParams }) {
         />
       );
     case 'error':
-      return (
-        <ErrorPanel
-          title="Could not get context for this link"
-          error={state.error}
-          onRetry={() => setRefresh((n) => n + 1)}
-          showSettings
-        >
-          {canImportAfter(params.url, state.error) && (
-            <ImportPanel url={params.url} lang={params.lang} clientOnly={false} onImported={onImported} />
-          )}
-        </ErrorPanel>
-      );
+      return <RecoveryPanel params={params} error={state.error} onRetry={retry} onImported={onImported} />;
     case 'list':
       return (
         <Suspense fallback={<Loading label="Loading" />}>

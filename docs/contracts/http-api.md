@@ -13,11 +13,24 @@ Every error response has this body:
 ```json
 {
   "error": { "code": "not-found", "message": "YouTube xxxxxxxxxxx: ERROR (This video is unavailable)", "hint": "Check the video id or URL; the video may have been removed." },
-  "attempts": [{ "id": "youtube", "stage": "metadata", "outcome": "error", "reason": "not-found", "detail": "..." }]
+  "attempts": [{ "id": "youtube", "stage": "metadata", "outcome": "error", "reason": "not-found", "detail": "..." }],
+  "recovery": [{ "action": "fix-input", "title": "Check the link", "detail": "Open it in a browser to make sure it plays, then paste the address from there." }]
 }
 ```
 
 `code` is a core `ErrorCode`, `internal` for unexpected errors (status 500, no detail leaked), or one of the server's own codes about the caller's credentials: `unauthorized` (401, missing or wrong API key, with `WWW-Authenticate: Bearer`) and `forbidden` (403, the key lacks the scope). `hint` is present when there is a recovery step. `attempts` lists every provider and rung tried (empty when none ran). `rate-limited` responses carry `Retry-After` in seconds.
+
+`recovery` lists, best first, ways to still get the result (core `suggestRecoveries` in `packages/core/src/recovery.ts`, the same list the web app, CLI and MCP tools show). It is empty only for credential errors, where `hint` is the fix. Each entry has `action`, `title` and `detail`, and when they apply `keys` (env names with `service`, `unlocks`, `free` and `signupUrl`), `mode`, `retryAfterSec` and `command`. Actions: `download-media`, `local-file`, `from-browser` (web app only), `import-transcript`, `add-key`, `retry`, `switch-mode`, `run-locally`, `install`, `fix-input`. Suggestions this server cannot carry out (downloads without yt-dlp, keys it does not accept per request) are left out.
+
+### Provider keys per request
+
+A caller can bring its own provider keys for one request instead of asking the operator to add them:
+
+```
+X-Vid2Context-Keys: {"GROQ_API_KEY":"gsk_...","SUPADATA_API_KEY":"sd_..."}
+```
+
+The keys are merged into that request's env only. They are never stored, never logged (attempt details are redacted against the env), never shared with other requests (identical concurrent requests with keys do not join a shared run), and never reach the library storage. Cooldowns are keyed by credential, so a rejected user key does not cool a rung down for anyone else. Only provider credential names the registry declares are accepted (names ending in `_API_KEY`, `_API_TOKEN`, `_TOKEN`, `_KEY` or `_ACCOUNT_ID` that a free-tier or paid rung or a captions provider `requires`); server settings (`VID2CONTEXT_*`), base URLs, model ids and bindings can never be set this way, and other names are ignored. A header that is not a JSON object of printable strings is answered with `400 bad-request`. `GET /health` lists the accepted names under `requestKeys: { accepted, names }`. The operator turns this off with `VID2CONTEXT_REQUEST_KEYS=0`. Queued jobs run later with the server's own keys.
 
 | Code | Status | | Code | Status |
 |---|---|---|---|---|

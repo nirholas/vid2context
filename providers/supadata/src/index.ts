@@ -37,6 +37,7 @@ export const supadataCaptions: CaptionsProvider = defineProvider({
   runtimes: ['node', 'workers'],
   order: SUPADATA_ORDER,
   isEnabled: (env: Env) => Boolean(settings(env).key),
+  requires: ['SUPADATA_API_KEY'],
   supports: (ref) => ref.platform === 'youtube' && ref.kind === 'video',
   async getCaptions(ref, opts, ctx): Promise<Transcript | null> {
     // The pipeline does not filter by isEnabled yet, so check the key here too.

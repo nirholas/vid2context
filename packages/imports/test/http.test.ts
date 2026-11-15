@@ -15,6 +15,12 @@ const YT = 'providers/youtube/test/fixtures';
 const copied = readFileSync(new URL('./fixtures/youtube-transcript-jNQXAC9IVRw.txt', import.meta.url), 'utf8');
 const srv3 = repo(`${YT}/timedtext-jNQXAC9IVRw-en.srv3.xml`);
 const vtt = repo('providers/native-transcripts/test/fixtures/vimeo-1133654544-de.vtt');
+// Real Transformers.js Whisper output for the public-domain Apollo 11 clip (providers/stt-transformers/test/fixtures/README.md).
+const whisper = JSON.parse(repo('providers/stt-transformers/test/fixtures/whisper-base.apollo.json')) as {
+  model: string;
+  detectedLanguage: string;
+  output: { chunks: { timestamp: [number, number]; text: string }[] };
+};
 const maxres = JSON.parse(repo(`${META}/maxres-status.json`)) as Record<string, number>;
 
 const ZOO = 'https://www.youtube.com/watch?v=jNQXAC9IVRw';
@@ -120,6 +126,33 @@ describe('POST /imports', () => {
     });
   });
 
+  it('takes segments transcribed from the media with via media and records the transcriber', async () => {
+    // The browser's Whisper rung, run on audio the user picked or the server downloaded. The words are the Apollo clip's,
+    // posted for the zoo video only to exercise the contract: the import trusts the segments as given.
+    const segments = whisper.output.chunks.map((c) => ({ startSec: c.timestamp[0], endSec: c.timestamp[1], text: c.text }));
+    const { root, storage } = app();
+    const res = await post(root, {
+      url: ZOO,
+      segments,
+      language: whisper.detectedLanguage,
+      via: 'media',
+      transcriber: `  stt/transformers/${whisper.model}\n`,
+    });
+    expect(res.status).toBe(201);
+    const body = (await res.json()) as ImportResponse;
+    expect(body.saved).toBe(true);
+    expect(body.context.metadata.title).toBe('Me at the zoo');
+    expect(body.context.transcript).toMatchObject({ origin: 'imported', producer: 'import/media', language: 'en' });
+    expect(body.context.transcript.segments.map((s) => s.text)).toEqual(segments.map((s) => s.text.trim()));
+    expect(body.context.attempts.at(-1)).toEqual({
+      id: 'import',
+      stage: 'captions',
+      outcome: 'ok',
+      detail: 'media, segments, stt/transformers/onnx-community/whisper-base',
+    });
+    expect((await storage.getContext('youtube:jNQXAC9IVRw'))?.transcript.producer).toBe('import/media');
+  });
+
   it('reads an uploaded file, taking the language from its WebVTT header or filename', async () => {
     const { root } = app();
     const res = await post(root, { url: ZOO, text: vtt, filename: '/home/someone/subs/reframe.de.vtt', via: 'file' });
@@ -181,7 +214,7 @@ describe('POST /imports', () => {
         'segments[0].startSec must be a finite number of seconds, 0 or more.',
       ],
       [{ url: ZOO, segments: [{ startSec: 1, text: '  ' }] }, 'segments[0].text is empty.'],
-      [{ url: ZOO, text: copied, via: 'email' }, 'via must be one of paste, file, browser.'],
+      [{ url: ZOO, text: copied, via: 'email' }, 'via must be one of paste, file, browser, media.'],
       [{ url: ZOO, text: copied, language: 'not a language' }, '"not a language" is not a language code.'],
       [{ url: ZOO, text: copied, metadata: { durationSec: -3 } }, 'metadata.durationSec must be a positive number of seconds.'],
       ['{"url":', 'The body must be JSON.'],

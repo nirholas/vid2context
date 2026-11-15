@@ -73,14 +73,18 @@ test('everything on home is reachable by keyboard', async ({ page }) => {
   await expect(page.getByTestId('drop-zone')).toBeFocused();
 });
 
-test('an input no source understands shows the message, the hint and a retry', async ({ page }) => {
+test('an input no source understands shows a way forward, with the message and hint under technical details', async ({
+  page,
+}) => {
   await page.goto(`/app/?url=${encodeURIComponent('not a video')}`);
-  const alert = page.getByRole('alert');
-  await expect(alert).toContainText('Could not get context for this link');
-  await expect(alert.getByTestId('error-message')).toHaveText('No source understands "not a video".');
-  await expect(alert.getByTestId('error-hint')).toContainText('Pass a video URL');
-  await expect(alert).toContainText('Error code unsupported-input');
-  await expect(alert.getByRole('button', { name: 'Try again' })).toBeVisible();
+  const panel = page.getByTestId('recovery-panel');
+  await expect(panel.getByRole('heading', { name: "Let's get this another way" })).toBeVisible();
+  await expect(panel.getByTestId('recovery-fix-input')).toContainText('Use a link to one video');
+  await expect(panel.getByRole('link', { name: 'Paste another link' })).toBeVisible();
+  await panel.getByText('Technical details').click();
+  await expect(panel.getByTestId('error-message')).toHaveText('No source understands "not a video".');
+  await expect(panel.getByTestId('error-hint')).toContainText('Pass a video URL');
+  await expect(panel).toContainText('Error code unsupported-input');
   await expectAccessible(page);
 });
 
@@ -188,11 +192,15 @@ test.describe('live', () => {
     await expect(page.getByRole('button', { name: 'Copy', exact: true })).toBeVisible();
   });
 
-  test('a missing video shows the error, its hint and what was tried', async ({ page }) => {
+  test('a missing video suggests checking the link, with the error, its hint and what was tried under details', async ({
+    page,
+  }) => {
     await page.goto(`/app/?url=${encodeURIComponent('https://www.youtube.com/watch?v=xxxxxxxxxxx')}`);
-    const alert = page.getByRole('alert');
-    await expect(alert.getByTestId('error-message')).toContainText('This video is unavailable', { timeout: 60_000 });
-    await expect(alert.getByTestId('error-hint')).toBeVisible();
-    await expect(alert.getByText(/What was tried \(\d+\)/)).toBeVisible();
+    const panel = page.getByTestId('recovery-panel');
+    await expect(panel.getByTestId('recovery-fix-input')).toContainText('Check the link', { timeout: 60_000 });
+    await panel.getByText('Technical details').click();
+    await expect(panel.getByTestId('error-message')).toContainText('This video is unavailable');
+    await expect(panel.getByTestId('error-hint')).toBeVisible();
+    await expect(panel.getByText(/What was tried \(\d+\)/)).toBeVisible();
   });
 });

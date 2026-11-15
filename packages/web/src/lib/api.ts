@@ -77,6 +77,19 @@ export interface CallOptions {
   signal?: AbortSignal;
   base?: string;
   fetch?: typeof fetch;
+  /**
+   * Provider keys sent with this request in X-Vid2Context-Keys, used by the
+   * server for this request only (see lib/settings.ts keysForServer).
+   */
+  keys?: Record<string, string>;
+}
+
+/** Request headers for a call, with the keys header when the call carries keys. */
+function callHeaders(call: CallOptions, json: boolean): Record<string, string> {
+  const h: Record<string, string> = { accept: 'application/json' };
+  if (json) h['content-type'] = 'application/json';
+  if (call.keys && Object.keys(call.keys).length > 0) h['x-vid2context-keys'] = JSON.stringify(call.keys);
+  return h;
 }
 
 /**
@@ -97,8 +110,7 @@ export async function requestJson<T>(
     res = await doFetch(apiUrl(path, params, base), {
       method,
       signal: call.signal,
-      headers:
-        body === undefined ? { accept: 'application/json' } : { accept: 'application/json', 'content-type': 'application/json' },
+      headers: callHeaders(call, body !== undefined),
       ...(body === undefined ? {} : { body: JSON.stringify(body) }),
     });
   } catch (err) {
@@ -154,6 +166,8 @@ export interface Health {
   version: string;
   runtime: string;
   formats: { id: string; description: string; mimeType: string }[];
+  /** Provider keys this server accepts per request (names only). Absent on servers older than this field. */
+  requestKeys?: { accepted: boolean; names: string[] };
 }
 
 /** GET /health. Throws unless the answer really comes from a vid2context server. */

@@ -111,6 +111,39 @@ describe('runChain', () => {
     expect(second.attempts[0]).toMatchObject({ id: 'free/limited', outcome: 'skipped', reason: 'cooldown' });
   });
 
+  it('keys cooldowns by credential, so a rejected key does not cool the rung down for a different key', async () => {
+    const used: string[] = [];
+    const keyed = rung('free/keyed', 'free', { requires: ['SOME_API_KEY'] });
+    const call = (ctx: ReturnType<typeof testContext>) => async () => {
+      used.push(ctx.env.SOME_API_KEY ?? '');
+      if (ctx.env.SOME_API_KEY === 'rejected') throw new Vid2ContextError('auth', 'invalid key', { status: 401 });
+      return 'ok';
+    };
+    const bad = testContext({ env: { SOME_API_KEY: 'rejected' } });
+    await expect(runChain('stt', [{ ...keyed, run: call(bad) }], (r) => r.run(), {}, bad)).rejects.toMatchObject({
+      code: 'all-rungs-failed',
+    });
+    const good = testContext({ env: { SOME_API_KEY: 'accepted' } });
+    const res = await runChain('stt', [{ ...keyed, run: call(good) }], (r) => r.run(), {}, good);
+    expect(res.value).toBe('ok');
+    const again = await runChain('stt', [{ ...keyed, run: call(bad) }], (r) => r.run(), {}, bad).catch((e: unknown) => e);
+    expect(attemptsOf(again)[0]).toMatchObject({ id: 'free/keyed', outcome: 'skipped', reason: 'cooldown' });
+    expect(used).toEqual(['rejected', 'accepted']);
+  });
+
+  it('names the failed stage on no-provider and all-rungs-failed', async () => {
+    await expect(runChain('stt', [], async () => 'x', {}, testContext())).rejects.toMatchObject({ stage: 'stt' });
+    const failing = rung('free/a', 'free', {
+      run: async () => {
+        throw new Error('network down');
+      },
+    });
+    await expect(runChain('llm', [failing], (r) => r.run(), {}, testContext())).rejects.toMatchObject({
+      code: 'all-rungs-failed',
+      stage: 'llm',
+    });
+  });
+
   it('throws no-provider when nothing is enabled and all-rungs-failed with attempts otherwise', async () => {
     await expect(runChain('stt', [], async () => 'x', {}, testContext())).rejects.toMatchObject({ code: 'no-provider' });
     const failing = rung('free/a', 'free', {

@@ -5,7 +5,14 @@
 import { existsSync } from 'node:fs';
 import { writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import { type Attempt, attemptsOf, Vid2ContextError } from '@vid2context/core';
+import {
+  type Attempt,
+  attemptsOf,
+  type Recovery,
+  type RecoveryContext,
+  suggestRecoveries,
+  Vid2ContextError,
+} from '@vid2context/core';
 import { exitCodeFor, UsageError } from './exit-codes.ts';
 
 export interface Io {
@@ -24,17 +31,37 @@ export function formatAttempts(attempts: Attempt[]): string {
   return `Attempts:\n${rows.join('\n')}\n`;
 }
 
-/** Message and hint always; the attempts list with `withAttempts`. */
-export function formatError(err: unknown, withAttempts = false): string {
-  const attempts = withAttempts ? formatAttempts(attemptsOf(err)) : '';
-  if (err instanceof Vid2ContextError) {
-    return `error (${err.code}): ${err.message}\n${err.hint ? `hint: ${err.hint}\n` : ''}${attempts}`;
-  }
-  if (err instanceof UsageError) return `error: ${err.message}\n${err.hint ? `hint: ${err.hint}\n` : ''}`;
-  return `error: ${err instanceof Error ? err.message : String(err)}\n${attempts}`;
+/** Numbered ways to still get the result, each with its command when there is one. */
+export function formatRecoveries(recoveries: Recovery[]): string {
+  if (recoveries.length === 0) return '';
+  const rows = recoveries.map((r, i) => {
+    const lines = [`  ${i + 1}. ${r.title}`, `     ${r.detail}`];
+    if (r.keys) for (const k of r.keys) lines.push(`     ${k.name}: ${k.unlocks}${k.free ? ` (${k.free})` : ''}, ${k.signupUrl}`);
+    if (r.retryAfterSec) lines.push(`     wait ${r.retryAfterSec} s`);
+    if (r.command) lines.push(`     $ ${r.command}`);
+    return lines.join('\n');
+  });
+  return `Ways to get it anyway:\n${rows.join('\n')}\n`;
 }
 
-export function errorJson(err: unknown): string {
+/** Recoveries for a CLI failure; none for usage errors, whose hint is the fix. */
+export function cliRecoveries(err: unknown, recovery: RecoveryContext | undefined): Recovery[] {
+  if (!recovery || err instanceof UsageError) return [];
+  return suggestRecoveries(err, recovery, attemptsOf(err));
+}
+
+/** Message and hint always, then the ways to still get the result; the attempts list with `withAttempts`. */
+export function formatError(err: unknown, withAttempts = false, recovery?: RecoveryContext): string {
+  const attempts = withAttempts ? formatAttempts(attemptsOf(err)) : '';
+  const ways = formatRecoveries(cliRecoveries(err, recovery));
+  if (err instanceof Vid2ContextError) {
+    return `error (${err.code}): ${err.message}\n${err.hint ? `hint: ${err.hint}\n` : ''}${ways}${attempts}`;
+  }
+  if (err instanceof UsageError) return `error: ${err.message}\n${err.hint ? `hint: ${err.hint}\n` : ''}`;
+  return `error: ${err instanceof Error ? err.message : String(err)}\n${ways}${attempts}`;
+}
+
+export function errorJson(err: unknown, recovery?: RecoveryContext): string {
   const code = err instanceof Vid2ContextError ? err.code : err instanceof UsageError ? 'usage' : 'error';
   const hint = err instanceof Vid2ContextError || err instanceof UsageError ? err.hint : undefined;
   return `${JSON.stringify({
@@ -44,6 +71,7 @@ export function errorJson(err: unknown): string {
       hint,
       exitCode: exitCodeFor(err),
       attempts: attemptsOf(err),
+      recovery: cliRecoveries(err, recovery),
     },
   })}\n`;
 }

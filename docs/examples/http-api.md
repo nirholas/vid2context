@@ -118,7 +118,14 @@ GET /api/v1/transcript (no url) -> 400
     "message": "Missing the url query parameter.",
     "hint": "Pass ?url=<video URL>."
   },
-  "attempts": []
+  "attempts": [],
+  "recovery": [
+    {
+      "action": "fix-input",
+      "title": "Change the request",
+      "detail": "The hint above says which field to fix."
+    }
+  ]
 }
 ```
 

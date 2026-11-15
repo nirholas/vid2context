@@ -4,6 +4,7 @@ import {
   type AudioInput,
   type AudioSplitter,
   clearCooldowns,
+  everyRungTooLarge,
   type LongformProgress,
   MemoryKv,
   mp3FramesSplitter,
@@ -222,6 +223,27 @@ describe('transcribeLong on recorded OVH keyless responses', () => {
     expect((err as Vid2ContextError).code).toBe('too-large');
     expect((err as Vid2ContextError).hint).toMatch(/yt-dlp and ffmpeg providers/);
     expect((err as Vid2ContextError).hint).toMatch(/ffmpeg splitter/);
+  });
+});
+
+describe('everyRungTooLarge', () => {
+  it('ignores rungs that failed on auth, so a bad key does not stop splitting for the rest', () => {
+    expect(
+      everyRungTooLarge([
+        { id: 'stt/cloudflare', stage: 'stt', outcome: 'error', reason: 'auth-401' },
+        { id: 'stt/ovh', stage: 'stt', outcome: 'error', reason: 'too-large-413' },
+      ]),
+    ).toBe(true);
+  });
+
+  it('needs at least one too-large refusal, and no other kind of failure', () => {
+    expect(everyRungTooLarge([{ id: 'a', stage: 'stt', outcome: 'error', reason: 'auth-401' }])).toBe(false);
+    expect(
+      everyRungTooLarge([
+        { id: 'a', stage: 'stt', outcome: 'error', reason: 'too-large-413' },
+        { id: 'b', stage: 'stt', outcome: 'error', reason: 'upstream-500' },
+      ]),
+    ).toBe(false);
   });
 });
 

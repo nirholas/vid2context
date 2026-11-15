@@ -1,13 +1,15 @@
 /**
  * Settings: API base (localStorage v2c.apiBase), theme (v2c.theme) and
- * provider keys for client-only mode (IndexedDB v2c-settings / kv / providerKeys).
+ * provider keys (IndexedDB v2c-settings / kv / providerKeys), with whether
+ * they may go to the server per request (kv / shareKeysWithServer).
  */
 import { CircleCheck, Monitor, Moon, Plus, Sun, X } from 'lucide-react';
 import { type FormEvent, useEffect, useId, useState } from 'react';
 import { apiBase, DEFAULT_API_BASE, getHealth, normalizeApiBase, setApiBase } from '../lib/api.ts';
 import { useApiStatus } from '../lib/api-status.tsx';
+import { acceptedKeyNames } from '../lib/recovery.ts';
 import { appHref, onAppLinkClick } from '../lib/route.ts';
-import { cleanKeys, KEY_NAME, loadProviderKeys, saveProviderKeys } from '../lib/settings.ts';
+import { cleanKeys, KEY_NAME, loadProviderKeys, loadShareKeys, saveProviderKeys, saveShareKeys } from '../lib/settings.ts';
 import { saveTheme, type Theme, useTheme } from '../lib/theme.ts';
 import { ErrorPanel } from './ErrorPanel.tsx';
 import { Button, Card, Spinner } from './ui.tsx';
@@ -160,6 +162,57 @@ interface KeyRow {
   value: string;
 }
 
+/** Whether saved keys go with requests to the connected server (X-Vid2Context-Keys), for that request only. */
+function ShareKeysToggle() {
+  const { state } = useApiStatus();
+  const names = acceptedKeyNames(state);
+  const [on, setOn] = useState<boolean>();
+  const [failed, setFailed] = useState(false);
+  const id = useId();
+  useEffect(() => {
+    loadShareKeys().then(setOn, () => {
+      setOn(false);
+      setFailed(true);
+    });
+  }, []);
+  if (on === undefined) return null;
+  const toggle = async (next: boolean) => {
+    setOn(next);
+    try {
+      await saveShareKeys(next);
+    } catch {
+      setFailed(true);
+    }
+  };
+  return (
+    <div className="rounded-v2c border border-border bg-surface-2 p-3">
+      <div className="flex items-start gap-2">
+        <input
+          id={id}
+          type="checkbox"
+          checked={on}
+          disabled={failed}
+          onChange={(e) => void toggle(e.target.checked)}
+          className="mt-0.5 size-4 accent-accent"
+          data-testid="share-keys"
+        />
+        <label htmlFor={id} className="space-y-1 text-sm">
+          <span className="block text-fg">Send my keys with requests to the vid2context server</span>
+          <span className="block text-muted">
+            When the server cannot finish a request with its own setup, it can use your key for that request only. It never stores
+            or logs it.{' '}
+            {state.status === 'online'
+              ? names.length > 0
+                ? `This server accepts: ${names.join(', ')}.`
+                : 'This server does not accept keys per request, so nothing is sent.'
+              : 'Nothing is sent while no server is connected.'}
+          </span>
+        </label>
+      </div>
+    </div>
+  );
+}
+
 function KeysSection() {
   const [rows, setRows] = useState<KeyRow[]>();
   const [status, setStatus] = useState<{ kind: 'idle' | 'saved' | 'error'; text?: string }>({ kind: 'idle' });
@@ -218,13 +271,14 @@ function KeysSection() {
   return (
     <Card className="space-y-4 p-5">
       <div className="space-y-2">
-        <h2 className="text-base font-semibold text-fg">Provider keys for client-only mode</h2>
+        <h2 className="text-base font-semibold text-fg">Provider keys</h2>
         <p className="text-sm text-fg">
-          Keys are stored in this browser's IndexedDB (database <code className="font-mono">v2c-settings</code>) and never leave
-          this device except in requests to the provider each key belongs to. They are never sent to the vid2context server.
+          Keys are stored in this browser's IndexedDB (database <code className="font-mono">v2c-settings</code>). They go to the
+          provider each key belongs to when this browser does the work, and to the vid2context server only if you allow it below.
         </p>
+        <ShareKeysToggle />
         <p className="text-sm text-muted">
-          They are used only when this app transcribes a file in your browser. No key is needed: Whisper runs locally by default.
+          In this browser they are used when the app transcribes a file here. No key is needed: Whisper runs locally by default.
           Use env-style names, such as <code className="font-mono">GROQ_API_KEY</code>, or{' '}
           <code className="font-mono">TRANSFORMERS_STT_MODEL</code> to pick another Whisper model.
         </p>

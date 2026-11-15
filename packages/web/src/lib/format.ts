@@ -67,7 +67,9 @@ function importedTitle(producer: string): string {
       ? 'read by the vid2context extension in your browser'
       : via === 'file'
         ? 'from an uploaded subtitle file'
-        : 'pasted in';
+        : via === 'media'
+          ? "made by speech-to-text from the video's audio (a file you picked or audio the server downloaded)"
+          : 'pasted in';
   return `A transcript ${from}, not fetched by vid2context, so it was not verified.`;
 }
 

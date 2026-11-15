@@ -1,19 +1,20 @@
 /**
- * "Get the transcript another way": shown when the server could not read a
- * YouTube video's captions (YouTube blocks many cloud IPs) and in
- * client-only mode. Three ways, all ending in the same import
+ * "Get the transcript another way": shown when the server could not get a
+ * video's transcript (YouTube blocks many cloud IPs, or no speech-to-text
+ * rung worked) and in client-only mode. Every way ends in the same import
  * (docs/contracts/transcript-import.md):
  *
- *   From my browser  the vid2context extension fetches the captions from the user's own IP address
+ *   From my browser  the vid2context extension fetches the captions from the user's own IP address (YouTube only)
+ *   Video or audio   a media file from the user's device, transcribed in this browser or on the server
+ *   Server download  the server downloads the audio with yt-dlp; save it, or transcribe it in this browser
  *   Paste            the text copied from YouTube's "Show transcript" panel, or any subtitle text
- *   Upload           a .vtt, .srt, .txt, .xml or .json subtitle file
+ *   Subtitle file    a .vtt, .srt, .txt, .xml or .json subtitle file
  *
  * The result is handed to `onImported` and shown like any other run.
  */
 import { Vid2ContextError } from '@vid2context/core';
-import { AlertTriangle, ClipboardPaste, ExternalLink, FileUp, Puzzle, RefreshCw } from 'lucide-react';
+import { ClipboardPaste, ExternalLink, FileUp, Puzzle, RefreshCw } from 'lucide-react';
 import { type ChangeEvent, useCallback, useEffect, useId, useRef, useState } from 'react';
-import { toAppError } from '../../lib/errors.ts';
 import {
   type BridgeProgress,
   detectExtension,
@@ -21,9 +22,13 @@ import {
   requestYouTubeTranscript,
 } from '../../lib/extension-bridge.ts';
 import { formatBytes } from '../../lib/format.ts';
-import { type ImportRequest, type ImportResponse, type KnownMetadata, runImport, youtubeVideoId } from '../../lib/imports.ts';
-import { Tabs } from '../Tabs.tsx';
+import { youtubeVideoId } from '../../lib/imports.ts';
+import { type TabDef, Tabs } from '../Tabs.tsx';
 import { Button, buttonClass, Spinner } from '../ui.tsx';
+import { MediaFile, ServerDownload } from './MediaWays.tsx';
+import { Busy, type ImportPanelProps, type ImportState, InlineError, useImport } from './shared.tsx';
+
+export type { ImportPanelProps };
 
 /** Same cap as POST /imports. */
 const MAX_FILE_BYTES = 5 * 1024 * 1024;
@@ -32,85 +37,7 @@ const EXTENSION_DOCS = 'https://github.com/nirholas/vid2context/tree/main/packag
 /** Origins the extension's bridge runs on without any setup (match patterns ignore ports). */
 const BUILT_IN_HOSTS = /^(localhost|127\.0\.0\.1|vid2context\.com|.+\.vid2context\.com)$/;
 
-export interface ImportPanelProps {
-  /** The video link the run was for. */
-  url: string;
-  /** The language the run asked for, if any. */
-  lang?: string;
-  /** No API: build the context in this browser. */
-  clientOnly: boolean;
-  onImported: (result: ImportResponse) => void;
-}
-
-function InlineError({ error }: { error: unknown }) {
-  const e = toAppError(error);
-  return (
-    <div
-      role="alert"
-      data-testid="import-error"
-      className="flex items-start gap-2 rounded-v2c border border-danger/60 bg-surface px-3 py-2 text-sm"
-    >
-      <AlertTriangle className="mt-0.5 size-4 shrink-0 text-danger" aria-hidden />
-      <div className="min-w-0 space-y-1">
-        <p className="break-words text-fg">{e.message}</p>
-        {e.hint && <p className="text-muted">{e.hint}</p>}
-      </div>
-    </div>
-  );
-}
-
-/** Shared state for the three ways: one import at a time, its error, and cancel. */
-function useImport(props: ImportPanelProps) {
-  const [busy, setBusy] = useState('');
-  const [error, setError] = useState<unknown>();
-  const abort = useRef<AbortController | null>(null);
-  useEffect(() => () => abort.current?.abort(), []);
-
-  const run = useCallback(
-    async (label: string, work: (signal: AbortSignal) => Promise<{ body: ImportRequest; metadata?: KnownMetadata }>) => {
-      abort.current?.abort();
-      const ac = new AbortController();
-      abort.current = ac;
-      setError(undefined);
-      setBusy(label);
-      try {
-        const { body, metadata } = await work(ac.signal);
-        if (ac.signal.aborted) return;
-        setBusy('Importing the transcript');
-        const result = await runImport(body, { clientOnly: props.clientOnly, metadata, signal: ac.signal });
-        if (!ac.signal.aborted) props.onImported(result);
-      } catch (err) {
-        if (!ac.signal.aborted) setError(err);
-      } finally {
-        if (abort.current === ac) {
-          abort.current = null;
-          setBusy('');
-        }
-      }
-    },
-    [props],
-  );
-  const cancel = () => {
-    abort.current?.abort();
-    abort.current = null;
-    setBusy('');
-  };
-  return { busy, error, run, cancel, setError };
-}
-
-function Busy({ label, onCancel }: { label: string; onCancel: () => void }) {
-  return (
-    <div className="flex flex-wrap items-center gap-3" role="status" data-testid="import-busy">
-      <Spinner />
-      <span className="text-sm text-fg">{label}</span>
-      <Button variant="ghost" onClick={onCancel}>
-        Cancel
-      </Button>
-    </div>
-  );
-}
-
-function FromBrowser({ props, state }: { props: ImportPanelProps; state: ReturnType<typeof useImport> }) {
+function FromBrowser({ props, state }: { props: ImportPanelProps; state: ImportState }) {
   const videoId = youtubeVideoId(props.url);
   const [ext, setExt] = useState<ExtensionInfo | null | 'checking'>('checking');
   const [progress, setProgress] = useState<BridgeProgress>();
@@ -197,7 +124,7 @@ function FromBrowser({ props, state }: { props: ImportPanelProps; state: ReturnT
       </p>
       {state.busy ? (
         <div className="space-y-2">
-          <Busy label={state.busy} onCancel={state.cancel} />
+          <Busy state={state} />
           {progress && (
             <p className="text-xs text-muted" data-testid="extension-progress">
               {progress.message}
@@ -213,7 +140,7 @@ function FromBrowser({ props, state }: { props: ImportPanelProps; state: ReturnT
   );
 }
 
-function Paste({ props, state }: { props: ImportPanelProps; state: ReturnType<typeof useImport> }) {
+function Paste({ props, state }: { props: ImportPanelProps; state: ImportState }) {
   const id = useId();
   const [text, setText] = useState('');
   const submit = () => {
@@ -251,7 +178,7 @@ function Paste({ props, state }: { props: ImportPanelProps; state: ReturnType<ty
         disabled={!!state.busy}
       />
       {state.busy ? (
-        <Busy label={state.busy} onCancel={state.cancel} />
+        <Busy state={state} />
       ) : (
         <Button variant="accent" onClick={submit} disabled={!text.trim()} data-testid="import-paste">
           <ClipboardPaste className="size-4" aria-hidden /> Use this transcript
@@ -261,7 +188,7 @@ function Paste({ props, state }: { props: ImportPanelProps; state: ReturnType<ty
   );
 }
 
-function Upload({ props, state }: { props: ImportPanelProps; state: ReturnType<typeof useImport> }) {
+function Upload({ props, state }: { props: ImportPanelProps; state: ImportState }) {
   const input = useRef<HTMLInputElement>(null);
   const [name, setName] = useState('');
   const onFile = (e: ChangeEvent<HTMLInputElement>) => {
@@ -299,11 +226,12 @@ function Upload({ props, state }: { props: ImportPanelProps; state: ReturnType<t
         accept={ACCEPT}
         className="sr-only"
         onChange={onFile}
+        aria-label="Subtitle file"
         data-testid="import-file-input"
         tabIndex={-1}
       />
       {state.busy ? (
-        <Busy label={state.busy} onCancel={state.cancel} />
+        <Busy state={state} />
       ) : (
         <div className="flex flex-wrap items-center gap-3">
           <Button variant="accent" onClick={() => input.current?.click()} data-testid="import-file">
@@ -318,8 +246,20 @@ function Upload({ props, state }: { props: ImportPanelProps; state: ReturnType<t
 
 export function ImportPanel(props: ImportPanelProps) {
   const headingId = useId();
-  const [tab, setTab] = useState('browser');
+  const isYouTube = youtubeVideoId(props.url) !== null;
+  const [tab, setTab] = useState(props.initialTab ?? (isYouTube ? 'browser' : 'media'));
   const state = useImport(props);
+  const tabs: TabDef[] = [
+    ...(isYouTube
+      ? [{ id: 'browser', label: 'From my browser', render: () => <FromBrowser props={props} state={state} /> }]
+      : []),
+    { id: 'media', label: 'Video or audio file', render: () => <MediaFile props={props} state={state} /> },
+    ...(props.clientOnly
+      ? []
+      : [{ id: 'download', label: 'Server download', render: () => <ServerDownload props={props} state={state} /> }]),
+    { id: 'paste', label: 'Paste', render: () => <Paste props={props} state={state} /> },
+    { id: 'file', label: 'Subtitle file', render: () => <Upload props={props} state={state} /> },
+  ];
   return (
     <section
       aria-labelledby={headingId}
@@ -331,8 +271,10 @@ export function ImportPanel(props: ImportPanelProps) {
           Get the transcript another way
         </h3>
         <p className="mt-1 text-sm text-muted">
-          YouTube often refuses servers but not your own browser. Get the captions with the extension, paste them, or upload a
-          subtitle file, and the result opens here like any other.
+          {isYouTube ? 'YouTube often refuses servers but not your own browser. ' : ''}
+          Get the captions with the extension, transcribe the video itself from a file on your device or audio the server
+          downloads, paste the transcript, or upload a subtitle file. The result opens here like any other, with the video's title
+          and details.
         </p>
       </div>
       <Tabs
@@ -343,11 +285,7 @@ export function ImportPanel(props: ImportPanelProps) {
           state.setError(undefined);
           setTab(t);
         }}
-        tabs={[
-          { id: 'browser', label: 'From my browser', render: () => <FromBrowser props={props} state={state} /> },
-          { id: 'paste', label: 'Paste', render: () => <Paste props={props} state={state} /> },
-          { id: 'file', label: 'Upload a file', render: () => <Upload props={props} state={state} /> },
-        ]}
+        tabs={tabs}
       />
       {state.error !== undefined && <InlineError error={state.error} />}
     </section>

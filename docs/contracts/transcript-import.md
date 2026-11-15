@@ -1,6 +1,6 @@
 # Transcript import and the extension bridge
 
-When the server cannot read a video's captions (YouTube blocks many cloud IPs), the transcript can still come from somewhere else: the user's own browser through the vid2context extension, text the user pastes, or a subtitle file the user uploads. All three end in one HTTP route, `POST /api/v1/imports`, which turns the transcript into a normal `VideoContext`.
+When the server cannot read a video's captions (YouTube blocks many cloud IPs), the transcript can still come from somewhere else: the user's own browser through the vid2context extension, text the user pastes, a subtitle file the user uploads, or speech-to-text run on the video's own audio (a media file from the user's device, or audio the server downloaded with yt-dlp, transcribed in the browser or through `POST /uploads`). All of them end in one HTTP route, `POST /api/v1/imports`, which turns the transcript into a normal `VideoContext` for the video's link, with the video's real metadata.
 
 Owners: `@vid2context/imports` (parser, `importTranscript`, the route factory), `packages/web` (the UI), `packages/extension` (the bridge). The server only mounts `importRoutes`.
 
@@ -20,9 +20,11 @@ interface ImportRequest {
   /** Helps format detection (`talk.en.srt`); never stored as a path. */
   filename?: string;
   /** Where the transcript came from. Default `paste` for text, `browser` for segments. */
-  via?: 'paste' | 'file' | 'browser';
+  via?: 'paste' | 'file' | 'browser' | 'media';
   /** For via=browser: the kind of YouTube track the extension read. Recorded, not trusted. */
   captionKind?: 'creator-captions' | 'auto-captions';
+  /** For via=media: the speech-to-text rung that made the segments (`stt/transformers/onnx-community/whisper-base`). Whitespace collapsed, at most 200 characters. Recorded, not trusted. */
+  transcriber?: string;
   /** For via=browser: the metadata the extension sent. Only fills gaps when the source gives no metadata (title, channel, duration); never overrides it. */
   metadata?: { title?: string; channel?: string; durationSec?: number };
 }
@@ -56,11 +58,20 @@ The context:
 
 - `metadata` from `source.getMetadata(ref, ctx)`. If that fails, minimal metadata (`title` is the url) and an `error` attempt; the import still succeeds.
 - `transcript.origin` is `'imported'`, `transcript.producer` is `import/<via>`. Raw text is kept as given (trimmed, entities decoded); no LLM pass.
-- `attempts` has the metadata attempt and `{ id: 'import', stage: 'captions', outcome: 'ok', detail: '<via>, <format>[, <captionKind>]' }`.
+- `attempts` has the metadata attempt and `{ id: 'import', stage: 'captions', outcome: 'ok', detail: '<via>, <format>[, <captionKind>][, <transcriber>]' }`.
 
 Saving: written with `storage.putContext` when the server has storage, except in hosted mode (`VID2CONTEXT_HOSTED=1`). There, instance storage is shared by users, and an imported transcript is not verified, so it is returned and never saved; the web app keeps it in the browser. Imported contexts are never written to the shared cache.
 
 Errors: `bad-request` (no `url`, both or neither of `text` and `segments`, nothing parsed, invalid segments), `unsupported-input` (the url is a playlist, channel or page), `too-large`.
+
+## Media in the web app (via=media)
+
+The web app's "Get the transcript another way" panel offers two ways that work from the video itself:
+
+- **Video or audio file**: the user picks a file on their device. The browser decodes it to 16 kHz mono (`packages/web/src/audio/prepare.ts`), then either transcribes it in the browser with the Whisper rung from `@vid2context/provider-stt-transformers` (plus any hosted rung whose key is saved in Settings), or uploads it (`POST /uploads`) and reads the transcript with `GET /context?url=upload:<sha256>`.
+- **Server download**: `POST /downloads` with `{ kind: 'audio', format: 'm4a' }`. yt-dlp often still gets the audio when YouTube refuses the caption requests. When the job is done the user can save the file (`GET /downloads/:id/file`) or have the browser fetch it and transcribe it as above.
+
+Either way the segments go to `POST /imports` with `via: 'media'`, the language the model detected and `transcriber`, the rung id from the speech-to-text attempt. In client-only mode only the in-browser transcription is offered.
 
 ## Extension bridge
 

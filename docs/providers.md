@@ -279,6 +279,7 @@ Read by `@vid2context/server` (`npm run start:server`, the Worker, containers). 
 | `VID2CONTEXT_UPLOAD_TTL_MIN` | minutes an upload stays available; default `60`. Kept in R2 (`VID2CONTEXT_R2`) when the Cloudflare storage has a bucket, else in memory |
 | `VID2CONTEXT_REQUEST_TIMEOUT_MS` | longest a request may run before it is answered with `timeout` (504); default `300000` |
 | `VID2CONTEXT_ACCESS_LOG` | `0` turns off the JSON access log line per request on stderr |
+| `VID2CONTEXT_REQUEST_KEYS` | `0` stops accepting provider keys sent per request in `X-Vid2Context-Keys`. On by default: a caller whose run failed for lack of a key can retry with its own, used for that request only and never stored. Only credential names registered providers declare are accepted (see [contracts/http-api.md](contracts/http-api.md#provider-keys-per-request)) |
 | `VID2CONTEXT_SHUTDOWN_TIMEOUT_MS` | Node: how long in-flight requests may finish after `SIGTERM` or `SIGINT`; default `10000` |
 
 ## Exports

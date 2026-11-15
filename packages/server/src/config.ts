@@ -34,6 +34,11 @@ export interface ServerConfig {
   publicMode: boolean;
   /** Write one JSON access log line per request to stderr. */
   accessLog: boolean;
+  /**
+   * Accept provider keys sent with a request (X-Vid2Context-Keys) and use them
+   * for that request only. VID2CONTEXT_REQUEST_KEYS=0 turns it off.
+   */
+  requestKeys: boolean;
 }
 
 function num(value: string | undefined, fallback: number, opts: { allowZero?: boolean } = {}): number {
@@ -76,5 +81,6 @@ export function serverConfig(env: Env): ServerConfig {
     trustProxy: flag(env.VID2CONTEXT_TRUST_PROXY, false),
     publicMode: isPublicMode(env),
     accessLog: flag(env.VID2CONTEXT_ACCESS_LOG, true),
+    requestKeys: flag(env.VID2CONTEXT_REQUEST_KEYS, true),
   };
 }

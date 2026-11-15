@@ -13,6 +13,7 @@ import {
   getVideoContext,
   outlineForApi,
   parseTimeArg,
+  type RecoveryContext,
   type Registry,
   render,
   type SectionInfo,
@@ -30,6 +31,18 @@ export interface ToolDeps {
   registry: Registry;
   ctx: Ctx;
   storage: Storage;
+  /** What this server can offer when a video tool fails (core recovery.ts); input and mode come from the call. */
+  recovery?: Omit<RecoveryContext, 'input' | 'mode'>;
+}
+
+/** The recovery context for one failed call. */
+function recoveryFor(deps: ToolDeps, args: { url?: string }): RecoveryContext {
+  const mode = (args as { mode?: unknown }).mode;
+  return {
+    ...(deps.recovery ?? { surface: 'mcp', keys: 'env' }),
+    ...(args.url ? { input: args.url } : {}),
+    ...(typeof mode === 'string' && (MODES as readonly string[]).includes(mode) ? { mode: mode as RecoveryContext['mode'] } : {}),
+  };
 }
 
 const MODES = ['auto', 'captions', 'stt', 'video'] as const;
@@ -231,7 +244,7 @@ export function registerVideoTools(server: McpServer, deps: ToolDeps): void {
           }),
         );
       } catch (err) {
-        return toolError(err);
+        return toolError(err, recoveryFor(deps, args));
       }
     },
   );
@@ -252,7 +265,7 @@ export function registerVideoTools(server: McpServer, deps: ToolDeps): void {
         const metadata = await source.getMetadata(ref, callCtx(deps.ctx, extra.signal));
         return text(JSON.stringify(metadata, null, 2));
       } catch (err) {
-        return toolError(err);
+        return toolError(err, recoveryFor(deps, args));
       }
     },
   );
@@ -331,7 +344,7 @@ export function registerVideoTools(server: McpServer, deps: ToolDeps): void {
               : 'Small enough to read whole with get_transcript, or read chapters with get_section { url, chapter }.',
         });
       } catch (err) {
-        return toolError(err);
+        return toolError(err, recoveryFor(deps, args));
       }
     },
   );
@@ -378,7 +391,7 @@ export function registerVideoTools(server: McpServer, deps: ToolDeps): void {
         const info = section.metadata.extra?.section as SectionInfo;
         return text(contextHeader(section) + sectionLabel(info, estimateTokens(body)) + '\n' + body);
       } catch (err) {
-        return toolError(err);
+        return toolError(err, recoveryFor(deps, args));
       }
     },
   );
@@ -435,7 +448,7 @@ export function registerVideoTools(server: McpServer, deps: ToolDeps): void {
           comments: comments.map((c) => commentOut(c)),
         });
       } catch (err) {
-        return toolError(err);
+        return toolError(err, recoveryFor(deps, args));
       }
     },
   );

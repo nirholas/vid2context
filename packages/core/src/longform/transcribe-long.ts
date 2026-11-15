@@ -96,9 +96,14 @@ function maxDurationOf(r: SttRung): number | undefined {
   return typeof d === 'number' && d > 0 ? d : undefined;
 }
 
-/** Every rung tried refused the audio as too large (413 or a declared limit); nothing else went wrong. */
+/**
+ * Splitting the audio would help: at least one rung refused it as too large
+ * (413 or a declared limit), and every other failure was an auth error. A
+ * rung with a bad or missing key fails on any piece size and the chain puts it
+ * on cooldown, so it must not stop the rungs that would take smaller pieces.
+ */
 export function everyRungTooLarge(attempts: Attempt[]): boolean {
-  const errors = attempts.filter((a) => a.outcome === 'error');
+  const errors = attempts.filter((a) => a.outcome === 'error' && !a.reason?.startsWith('auth'));
   return errors.length > 0 && errors.every((a) => a.reason?.startsWith('too-large'));
 }
 

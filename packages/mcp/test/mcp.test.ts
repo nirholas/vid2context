@@ -136,7 +136,7 @@ describe('get_transcript', () => {
     expect(jsonOf(res)).toMatchObject({ error: 'bad-request', hint: expect.stringContaining('seg:') });
   });
 
-  it('returns failures as tool errors with code, hint and attempts', async () => {
+  it('returns failures as tool errors with code, hint, attempts and what to do next', async () => {
     const { client } = await connect();
     const bad = await call(client, 'get_transcript', { url: 'xxxxxxxxxxx' });
     expect(bad.isError).toBe(true);
@@ -144,6 +144,8 @@ describe('get_transcript', () => {
       error: 'not-found',
       hint: expect.stringContaining('removed'),
       attempts: expect.any(Array),
+      // No downloader: this is the remote server, so a local file path is not suggested.
+      recovery: [expect.objectContaining({ action: 'fix-input', title: 'Check the link' })],
     });
   });
 });

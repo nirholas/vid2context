@@ -17,6 +17,9 @@ export type ErrorCode =
   | 'upstream'
   | 'bad-request';
 
+/** Same values as `Attempt['stage']` (types.ts), repeated here so this file stays dependency-free. */
+export type ErrorStage = 'resolve' | 'metadata' | 'captions' | 'audio' | 'stt' | 'video' | 'llm' | 'embed' | 'visual';
+
 export class Vid2ContextError extends Error {
   readonly code: ErrorCode;
   readonly hint?: string;
@@ -24,11 +27,16 @@ export class Vid2ContextError extends Error {
   readonly status?: number;
   /** Seconds to wait before retrying, from Retry-After or the provider's own signal. */
   readonly retryAfterSec?: number;
+  /**
+   * The pipeline stage that failed, when one stage is to blame ('stt', 'llm', ...).
+   * Recovery suggestions use it to name the right kind of key (see recovery.ts).
+   */
+  readonly stage?: ErrorStage;
 
   constructor(
     code: ErrorCode,
     message: string,
-    opts: { hint?: string; status?: number; retryAfterSec?: number; cause?: unknown } = {},
+    opts: { hint?: string; status?: number; retryAfterSec?: number; stage?: ErrorStage; cause?: unknown } = {},
   ) {
     super(message, opts.cause === undefined ? undefined : { cause: opts.cause });
     this.name = 'Vid2ContextError';
@@ -36,6 +44,7 @@ export class Vid2ContextError extends Error {
     this.hint = opts.hint;
     this.status = opts.status;
     this.retryAfterSec = opts.retryAfterSec;
+    if (opts.stage) this.stage = opts.stage;
   }
 }
 

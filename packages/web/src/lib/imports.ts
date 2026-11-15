@@ -17,11 +17,28 @@ export function youtubeVideoId(input: string): string | null {
   return ref && ref.kind === 'video' ? ref.nativeId : null;
 }
 
-/** Errors where the transcript can still come from the user: YouTube blocked the server, or had no captions for it. */
-const IMPORTABLE = new Set(['blocked', 'no-transcript', 'upstream', 'rate-limited', 'all-rungs-failed']);
+/**
+ * Errors where the transcript can still come from the user: the platform
+ * blocked the server, it had no captions, or no speech-to-text rung worked
+ * on the server (missing keys, free-tier limits, a slow service).
+ */
+const IMPORTABLE = new Set([
+  'blocked',
+  'no-transcript',
+  'upstream',
+  'rate-limited',
+  'all-rungs-failed',
+  'no-provider',
+  'timeout',
+]);
+
+/** A single YouTube video, or any other web link (the server resolves it; lists answer a different error). */
+export function isImportableInput(input: string): boolean {
+  return youtubeVideoId(input) !== null || /^https?:\/\/\S+$/i.test(input.trim());
+}
 
 export function canImportAfter(input: string, error: unknown): boolean {
-  return youtubeVideoId(input) !== null && error instanceof Vid2ContextError && IMPORTABLE.has(error.code);
+  return isImportableInput(input) && error instanceof Vid2ContextError && IMPORTABLE.has(error.code);
 }
 
 /** POST /imports. Throws an AppError with the server's code and hint. */

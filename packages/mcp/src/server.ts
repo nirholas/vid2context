@@ -51,7 +51,13 @@ export interface ServerOptions {
 export function createServer(registry: Registry, ctx: Ctx, version = '0.1.0', opts: ServerOptions = {}): McpServer {
   const server = new McpServer({ name: SERVER_NAME, version }, { instructions: SERVER_INSTRUCTIONS });
   const storage = opts.storage ?? new LazyStorage(registry, ctx);
-  const deps = { registry, ctx, storage };
+  const deps = {
+    registry,
+    ctx,
+    storage,
+    // With a downloader this runs on the user's machine (bin.ts); without one it is the remote HTTP server.
+    recovery: { surface: 'mcp', downloads: !!opts.downloader, keys: 'env', remote: !opts.downloader } as const,
+  };
   registerVideoTools(server, deps);
   registerListTools(server, deps);
   registerModelTools(server, deps);

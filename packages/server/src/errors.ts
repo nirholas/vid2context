@@ -3,8 +3,19 @@
  * status through STATUS_BY_CODE. The server adds a few codes of its own that
  * describe the caller's request rather than a video (`unauthorized`,
  * `forbidden`), and `internal` for anything unexpected (no detail leaked).
+ *
+ * Every body carries `recovery`: ranked ways to still get the result
+ * (core recovery.ts), so a failure is never a dead end for the caller.
  */
-import { type Attempt, attemptsOf, type ErrorCode, Vid2ContextError } from '@vid2context/core';
+import {
+  type Attempt,
+  attemptsOf,
+  type ErrorCode,
+  type Recovery,
+  type RecoveryContext,
+  suggestRecoveries,
+  Vid2ContextError,
+} from '@vid2context/core';
 import type { ContentfulStatusCode } from 'hono/utils/http-status';
 
 /** HTTP status for each error code. Upstream failures are 502/503, never 500. */
@@ -52,6 +63,8 @@ export class HttpError extends Error {
 export interface ErrorBody {
   error: { code: string; message: string; hint?: string };
   attempts: Attempt[];
+  /** Ways to still get the result, best first. Empty when only the hint applies (credentials). */
+  recovery: Recovery[];
 }
 
 export interface RenderedError {
@@ -62,12 +75,20 @@ export interface RenderedError {
   unexpected: boolean;
 }
 
-/** The standard error body, status and headers for any thrown value. */
-export function renderError(err: unknown): RenderedError {
+/**
+ * The standard error body, status and headers for any thrown value.
+ * `recovery` says what the caller's surface can do; without it, only
+ * suggestions that need no capability (retry, fix the input) are given.
+ */
+export function renderError(err: unknown, recovery: RecoveryContext = { surface: 'api' }): RenderedError {
   if (err instanceof HttpError) {
     return {
       status: err.status,
-      body: { error: { code: err.code, message: err.message, ...(err.hint ? { hint: err.hint } : {}) }, attempts: [] },
+      body: {
+        error: { code: err.code, message: err.message, ...(err.hint ? { hint: err.hint } : {}) },
+        attempts: [],
+        recovery: [],
+      },
       headers: err.headers,
       unexpected: false,
     };
@@ -82,6 +103,7 @@ export function renderError(err: unknown): RenderedError {
       body: {
         error: { code: err.code, message: err.message, ...(err.hint ? { hint: err.hint } : {}) },
         attempts: attemptsOf(err),
+        recovery: suggestRecoveries(err, recovery, attemptsOf(err)),
       },
       headers,
       unexpected: false,
@@ -89,7 +111,11 @@ export function renderError(err: unknown): RenderedError {
   }
   return {
     status: 500,
-    body: { error: { code: 'internal', message: 'Internal error' }, attempts: attemptsOf(err) },
+    body: {
+      error: { code: 'internal', message: 'Internal error' },
+      attempts: attemptsOf(err),
+      recovery: suggestRecoveries(err, recovery, attemptsOf(err)),
+    },
     headers: {},
     unexpected: true,
   };

@@ -72,11 +72,42 @@ export function rankRungs<R extends Rung>(rungs: R[], opts: ChainOptions, env: E
   });
 }
 
-/** Per-process cooldowns keyed by rung id. */
+/**
+ * Per-process cooldowns keyed by rung id plus a fingerprint of the credentials
+ * the rung uses (its `requires` values). With the server's own keys the
+ * fingerprint never changes, so this is a cooldown per rung. A key a caller
+ * sent with one request gets its own entry: a rejected or exhausted user key
+ * never cools the rung down for everyone else, and the reverse.
+ */
 const cooldowns = new Map<string, number>();
+/** Expired entries are dropped once the map holds this many (user keys add entries). */
+const COOLDOWN_PRUNE_AT = 2000;
 
 export function clearCooldowns(): void {
   cooldowns.clear();
+}
+
+/** FNV-1a, 32 bit, as 8 hex digits. Only an in-memory map key: never stored, logged or sent. */
+function fingerprint(text: string): string {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < text.length; i++) {
+    h ^= text.charCodeAt(i);
+    h = Math.imul(h, 0x01000193);
+  }
+  return (h >>> 0).toString(16).padStart(8, '0');
+}
+
+function cooldownKey(rung: Rung, env: Env): string {
+  if (rung.requires.length === 0) return rung.id;
+  return `${rung.id}@${fingerprint(rung.requires.map((v) => env[v] ?? '').join('\u0000'))}`;
+}
+
+function setCooldown(key: string, until: number): void {
+  if (cooldowns.size >= COOLDOWN_PRUNE_AT) {
+    const now = Date.now();
+    for (const [k, t] of cooldowns) if (t <= now) cooldowns.delete(k);
+  }
+  cooldowns.set(key, until);
 }
 
 function cooldownFor(err: unknown): number {
@@ -123,6 +154,7 @@ export async function runChain<R extends Rung, T>(
   if (ranked.length === 0) {
     throw Object.assign(
       new Vid2ContextError('no-provider', `No ${stage} rung is enabled.`, {
+        stage,
         hint: `Configure a ${stage} provider (see docs/providers.md). Keyless lanes need VID2CONTEXT_KEYLESS unset; local-only policy needs a local rung.`,
       }),
       { attempts },
@@ -143,7 +175,8 @@ export async function runChain<R extends Rung, T>(
       recordRungSkip(tel, stage, rung, 'budget');
       continue;
     }
-    const until = cooldowns.get(rung.id);
+    const cdKey = cooldownKey(rung, ctx.env);
+    const until = cooldowns.get(cdKey);
     if (until && until > Date.now()) {
       attempts.push({ id: rung.id, stage, outcome: 'skipped', reason: 'cooldown' });
       if (tel) recordRungSkip(tel, stage, rung, 'cooldown');
@@ -159,7 +192,7 @@ export async function runChain<R extends Rung, T>(
     } catch (err) {
       if (isInputError(err)) throw err;
       const cd = cooldownFor(err);
-      if (cd > 0) cooldowns.set(rung.id, Date.now() + cd);
+      if (cd > 0) setCooldown(cdKey, Date.now() + cd);
       attempts.push({
         id: rung.id,
         stage,
@@ -173,6 +206,7 @@ export async function runChain<R extends Rung, T>(
   }
   throw Object.assign(
     new Vid2ContextError('all-rungs-failed', `Every ${stage} rung failed (${attempts.length} tried).`, {
+      stage,
       hint: 'See `attempts` for each failure. Adding a free key (docs/providers.md) adds more rungs.',
     }),
     { attempts },

@@ -20,6 +20,8 @@ export interface ProviderHealth {
   name: string;
   rungs?: { id: string; service: string; model: string; tier: string; enabled: boolean; requires: string[] }[];
   enabled?: boolean;
+  /** Env vars a non-rung provider needs (captions providers that declare them). */
+  requires?: string[];
 }
 
 /** Holds the providers available in one runtime. Built from @vid2context/registry. */
@@ -111,7 +113,15 @@ export class Registry {
         };
       }
       if (p.kind === 'storage') return { id: p.id, kind: p.kind, name: p.name, enabled: p.isEnabled(env) };
-      if (p.kind === 'captions' && p.isEnabled) return { id: p.id, kind: p.kind, name: p.name, enabled: p.isEnabled(env) };
+      if (p.kind === 'captions' && p.isEnabled) {
+        return {
+          id: p.id,
+          kind: p.kind,
+          name: p.name,
+          enabled: p.isEnabled(env),
+          ...(p.requires && p.requires.length > 0 ? { requires: p.requires } : {}),
+        };
+      }
       return { id: p.id, kind: p.kind, name: p.name, enabled: true };
     });
   }

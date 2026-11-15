@@ -4,7 +4,8 @@
  * `vid2context URL > transcript.txt` is clean. Every command is a function of
  * injected dependencies (RunDeps), so tests run them in-process.
  */
-import { bool, parseCli } from './args.ts';
+import type { RecoveryContext } from '@vid2context/core';
+import { bool, type ParsedArgs, parseCli, str } from './args.ts';
 import { configCommand } from './commands/config.ts';
 import { downloadCommand } from './commands/download.ts';
 import { collectionCommand, libraryCommand, searchCommand } from './commands/library.ts';
@@ -45,17 +46,39 @@ const HANDLERS: Record<string, Command> = {
   help: helpCommand,
 };
 
+/** Commands that read a video, so a failure can suggest other ways to read it. */
+const VIDEO_COMMANDS = new Set(['get', 'pack', 'bundle', 'download']);
+const MODES = new Set(['auto', 'captions', 'stt', 'video']);
+
+/**
+ * What the CLI can offer when a video command fails: yt-dlp (found on PATH
+ * or fetched once by the ytdlp provider), keys from .env, local file paths.
+ */
+function recoveryContext(args: ParsedArgs): RecoveryContext | undefined {
+  if (!VIDEO_COMMANDS.has(args.command.name) || args.positionals.length !== 1) return undefined;
+  const mode = str(args.values, 'mode');
+  return {
+    surface: 'cli',
+    input: args.positionals[0],
+    ...(mode && MODES.has(mode) ? { mode: mode as RecoveryContext['mode'] } : {}),
+    downloads: args.command.name !== 'download',
+    keys: 'env',
+  };
+}
+
 /** Run the CLI. Returns the process exit code (see exit-codes.ts). */
 export async function run(argv: string[], deps: RunDeps, version: string): Promise<number> {
   const { io } = deps;
   const wantsJson = argv.includes('--json');
   const verbose = argv.includes('--verbose');
+  // Set once the arguments parse: what the CLI can offer when a run fails (core recovery.ts).
+  let recovery: RecoveryContext | undefined;
   const fail = (err: unknown): number => {
     if (deps.ctx.signal?.aborted) {
       io.stderr('interrupted\n');
       return EXIT_INTERRUPTED;
     }
-    io.stderr(wantsJson ? errorJson(err) : formatError(err, verbose));
+    io.stderr(wantsJson ? errorJson(err, recovery) : formatError(err, verbose, recovery));
     return exitCodeFor(err);
   };
 
@@ -74,6 +97,7 @@ export async function run(argv: string[], deps: RunDeps, version: string): Promi
       io.stderr(`${mainHelp()}\nerror: pass a video URL or file path, or a command.\n`);
       return EXIT_USAGE;
     }
+    recovery = recoveryContext(args);
     ctx = makeContext(deps, args, version);
     ctx.out.precheck();
   } catch (err) {

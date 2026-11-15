@@ -88,6 +88,8 @@ export interface CaptionsProvider extends ProviderBase {
   order?: number;
   /** Synchronous check from env only (no network). Default: always enabled. `Registry.captions(env)` leaves disabled providers out. */
   isEnabled?(env: Env): boolean;
+  /** Env vars holding the credentials this provider needs (for health output and per-request keys). Empty or absent for keyless providers. */
+  requires?: string[];
   supports(ref: VideoRef): boolean;
   listTracks?(ref: VideoRef, ctx: Ctx): Promise<CaptionTrackInfo[]>;
   /** Resolve the best track for the options, or null when the video has none. Throw only on real failures. */
