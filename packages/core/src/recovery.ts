@@ -293,11 +293,8 @@ export function suggestRecoveries(err: unknown, rc: RecoveryContext, attempts: A
       break;
 
     case 'not-found':
+      // The video does not exist (removed, or a mistyped id): there is nothing to paste or download, only the link to fix.
       add(b.fixInput('Check the link', 'Open it in a browser to make sure it plays, then paste the address from there.'));
-      if (isVideoLink) {
-        add(b.importTranscript());
-        add(b.localFile('Use your own copy of the video'));
-      }
       break;
 
     case 'unsupported-input':

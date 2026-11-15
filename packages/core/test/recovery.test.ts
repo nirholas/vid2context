@@ -94,6 +94,12 @@ describe('suggestRecoveries', () => {
     expect(suggestRecoveries(err, { surface: 'api' })[0]).toMatchObject({ action: 'retry', retryAfterSec: 13 });
   });
 
+  it('only suggests fixing the link for a video that does not exist', () => {
+    const err = new Vid2ContextError('not-found', 'YouTube xxxxxxxxxxx: ERROR (This video is unavailable)');
+    const rc = { surface: 'web', input: URL, downloads: true, keys: 'request', imports: true, remote: true } as const;
+    expect(actions(suggestRecoveries(err, rc))).toEqual(['fix-input']);
+  });
+
   it('does not treat free text as a video link', () => {
     const err = new Vid2ContextError('unsupported-input', 'No source understands "not a video".');
     const rs = suggestRecoveries(err, { surface: 'cli', input: 'not a video', downloads: true, keys: 'env' });

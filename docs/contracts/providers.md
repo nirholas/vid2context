@@ -53,6 +53,7 @@ providers/<name>/
 - `id` is `${platform}:${nativeId}` and is the storage and cache key. Lists use `${platform}:${kind}:${nativeId}`, for example `youtube:playlist:PL...`.
 - `platform` is a short slug: `youtube`, `vimeo`, `file`, `podcast`, `web`.
 - `url` is canonical when one exists. `timestampUrl` in core turns it into deep links.
+- `title` and `durationSec` are optional listing hints: `listItems` sets them when the list page shows them, so clients can display a list before fetching anything. They are never part of the id; `VideoMetadata` is the authority once a video is loaded.
 
 ## Captions providers (`kind: 'captions'`)
 

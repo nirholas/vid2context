@@ -28,6 +28,14 @@ export interface VideoRef {
   nativeId: string;
   /** Canonical URL when one exists. */
   url?: string;
+  /**
+   * Listing hints: the title and length a playlist, channel or feed page
+   * showed for this video, so a list can be displayed before anything is
+   * fetched. Optional, never part of the id, and VideoMetadata is the
+   * authority once the video is loaded.
+   */
+  title?: string;
+  durationSec?: number;
 }
 
 export interface Chapter {

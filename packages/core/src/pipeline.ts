@@ -132,6 +132,28 @@ async function fetchCaptions(
   return null;
 }
 
+/**
+ * What to do next when no rung produced a transcript, read from what was
+ * actually tried, so the hint never suggests installing something that ran.
+ */
+export function noTranscriptHint(attempts: Attempt[]): string {
+  const audio = attempts.filter((a) => a.stage === 'audio');
+  const stt = attempts.filter((a) => a.stage === 'stt');
+  if (audio.some((a) => a.reason === 'no-audio-provider')) {
+    return 'No installed source could download the audio to transcribe. Install the yt-dlp provider (it covers most sites) and enable a speech-to-text rung.';
+  }
+  if (audio.length > 0 && !audio.some((a) => a.outcome === 'ok')) {
+    const why = [...new Set(audio.map((a) => a.reason).filter(Boolean))].join(', ');
+    return `The audio could not be downloaded${why ? ` (${why})` : ''}, so there was nothing to transcribe. See \`attempts\`; a block usually clears within the hour, or run it on your own machine.`;
+  }
+  if (audio.some((a) => a.outcome === 'ok') && !stt.some((a) => a.outcome === 'ok')) {
+    return stt.length === 0
+      ? 'The audio was downloaded but no speech-to-text rung is enabled. Add a free key (GROQ_API_KEY) or run whisper.cpp locally.'
+      : 'The audio was downloaded but every speech-to-text rung failed. See `attempts` for each one; adding a free key (GROQ_API_KEY) or a local whisper.cpp adds rungs.';
+  }
+  return 'Check `attempts` for why each step failed.';
+}
+
 async function fetchAudio(
   registry: Registry,
   source: SourceProvider,
@@ -423,7 +445,7 @@ async function buildVideoContext(registry: Registry, input: string, opts: GetCon
             ? opts.allowAuto === false || opts.allowTranslated === false
               ? 'No captions match: auto-captions or platform translations were refused. Allow them, or retry with mode "auto" or "stt" to transcribe the audio.'
               : 'This video has no captions. Retry with mode "auto" or "stt" to transcribe the audio.'
-            : 'Check `attempts` for why each step failed. Installing the yt-dlp provider and enabling a speech-to-text rung covers most videos.',
+            : noTranscriptHint(attempts),
       }),
       { attempts },
     );
