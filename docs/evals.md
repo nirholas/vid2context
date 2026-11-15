@@ -15,7 +15,7 @@ LIVE=1 npm run eval -- --suite captions --check
 
 | Flag | Meaning |
 |---|---|
-| `--suite <name>` | `stt`, `captions`, `cleanup`, `citations`, `search`, or `all` (default `stt`) |
+| `--suite <name>` | `stt`, `captions`, `cleanup`, `citations`, `search`, `chapters`, or `all` (default `stt`) |
 | `--rungs <ids>` | rung ids, services or providers to score, each pinned on its own with the chain option `only`. Paid rungs run only when named here and their key is set. |
 | `--limit <n>` | only the first n dataset items (datasets are ordered so the first three are varied and short) |
 | `--dataset <file>` | a different dataset file (a name in `packages/evals/datasets/` or a path) |
@@ -68,9 +68,26 @@ The questions and their quotes were labeled by reading the recorded G-Wagon tran
 
 The collection is indexed in memory with `@vid2context/search`, and every query in `datasets/search.json` runs in keyword mode (BM25) and, when an embedding rung is enabled, hybrid mode (BM25 fused with vectors). Per mode: precision@5, recall@5, MRR and the engine's total time per query. Precision@5 is capped by the number of labeled ranges: a query with one labeled range scores at most 20%.
 
-### Chapters
+### chapters
 
-`boundaryAgreement` scores predicted chapter starts against reference starts within plus or minus N seconds (precision, recall, F1, one-to-one matching, the boundary at 0 ignored). It is ready for auto-chapters (prompt 35) once that package exists.
+Scores auto-chapters from `@vid2context/chapters` against chapters the video already has on YouTube. Each item in `datasets/chapters.json` points at a recorded `VideoContext` (transcript plus metadata). The suite hides the chapters and the description, so a producer sees only the transcript, then compares the predicted chapter starts with the hidden ones using `boundaryAgreement`. That metric matches starts one to one within plus or minus `toleranceSec` (30 s in this dataset) and ignores the start at 0 on both sides. Precision, recall and F1 are pooled over items.
+
+There are two kinds of reference, and the report gives an F1 for each:
+
+- `creator-chapters`: timestamps the creator wrote in the description. These are human ground truth.
+- `key-moments`: YouTube's own machine-generated chapters. They are not human ground truth. Use them as a second, model-made opinion, and read that F1 as agreement with YouTube.
+
+The dataset loader checks each item's `reference` against `metadata.extra.chapterSource` in the recorded context, so the two kinds cannot get mixed up.
+
+Rows:
+
+| Producer | What runs |
+|---|---|
+| `baseline/uniform` | the same number of chapters as `chapters/texttiling`, evenly spaced: what segmentation has to beat |
+| `chapters/texttiling` | the offline TextTiling segmenter (no model, no network, deterministic) |
+| `chapters/llm` | offline boundaries, then titled and possibly moved within 45 s by the default free-first LLM chain; with `--rungs`, one `chapters/llm:<rung id>` row per named LLM rung, each pinned with `only` |
+
+The transcripts are fixed recordings, so the scores reflect segmentation only, not speech-to-text quality. The suite does not need YouTube, which keeps it runnable when caption downloads are blocked.
 
 ## Metrics
 
@@ -141,11 +158,13 @@ Add an object to the suite's file in `packages/evals/datasets/`:
 
 Check that the video has a creator track in `language` (the YouTube captions provider's `listTracks` shows `creator-captions` versus `auto-captions`), keep it between 1 and 6 minutes, say in `why` what it adds, and record the license honestly. For a public-domain or CC video add `"storeReference": true`, run with `--record` once and commit the new file in `datasets/refs/` with a line in its README. The loader rejects malformed entries with a message naming the field.
 
+For `chapters.json`, an entry has `id`, `url`, `title`, `channel`, `language`, `durationSec`, `why`, `license`, `reference` (`creator-chapters` or `key-moments`) and `context`: the path, from the repository root, of a recorded `VideoContext` JSON whose `metadata.chapters` holds the reference and whose `metadata.extra.chapterSource` says where the chapters came from (`description` or `markers` for creator chapters, `key-moments` for YouTube's). Record a context with `npm run cli -- <url> --format json > file.json`, remove anything personal from the description, and add a README line in the folder it lives in. Prefer videos with creator chapters: they are the only human reference.
+
 For media outside YouTube, point `url` at the media file and `referenceUrl` at the publisher's own SRT or WebVTT file (https only), as the NASA library entries do. For a published human transcript that is not a subtitle file, set `"reference": "human-transcript"` and `referenceFile` to a file you write in `datasets/refs/` (with its `source` URL and a README line).
 
 ## Regression checks
 
-`packages/evals/thresholds.json` holds per-suite, per-rung limits (`maxWer`, `maxCer`, `maxP90LatencyMs`, `maxTimingMedianSec`, `minPunctuationF1`). `--check` exits 1 when a scored rung breaks one. Rungs with no successful items are not checked, so a missing key or an outage is not a regression. Local CI (prompt 38) decides whether to run it.
+`packages/evals/thresholds.json` holds per-suite, per-rung limits (`maxWer`, `maxCer`, `maxP90LatencyMs`, `maxTimingMedianSec`, `minPunctuationF1`, `minBoundaryF1`). `--check` exits 1 when a scored rung breaks one. Rungs with no successful items are not checked, so a missing key or an outage is not a regression. Local CI (prompt 38) decides whether to run it.
 
 ## Results
 
@@ -192,6 +211,25 @@ Reading these numbers:
 - OVH is about four times faster than whisper.cpp small on this CPU but was rate-limited (HTTP 429) several times during the run; `transcribeLong` waited those out, so the latency columns include no waits but the wall time did.
 
 A three-item run (`LIVE=1 npm run eval -- --suite stt --limit 3`, black hole, Recientemente, Apollo) gives the same per-item numbers.
+
+### 2026-11-15: chapters (boundary agreement)
+
+Run on this repository's VM with `LIVE=1 npm run eval -- --suite chapters` (free and keyless rungs only). Raw results are in `packages/evals/results/2026-11-15-chapters.json`, with the report next to it. Dataset: `datasets/chapters.json`, 4 videos (5 min to 2 h 8 min, about 3 hours in total) and 33 reference boundaries after 0. One video, Lex Fridman Podcast #118 (19 boundaries), has creator chapters. The other three have YouTube key moments (14 boundaries). Tolerance: plus or minus 30 s. The LLM rows were answered by the keyless Kilo rung `llm/kilo/nvidia/nemotron-3.5-lightning:free` (the Cloudflare free-tier rung was tried first and rejected the VM's token with HTTP 401).
+
+| Producer | Items | Boundary precision | Boundary recall | Boundary F1 | F1 vs creator | F1 vs key moments | p50 latency |
+|---|---|---|---|---|---|---|---|
+| `baseline/uniform` | 4 | 19.4% | 18.2% | 18.8% | 27.3% | 0.0% | n/a |
+| `chapters/texttiling` | 4 | 35.5% | 33.3% | 34.4% | 40.9% | 20.0% | 17 ms |
+| `chapters/llm` | 4 | 35.5% | 33.3% | 34.4% | 40.9% | 20.0% | 2.4 s |
+
+What the numbers show:
+
+- TextTiling roughly doubles the F1 of evenly spaced chapters (34.4% against 18.8%). On the podcast it matches 9 of the 19 creator boundaries within 30 s, against 6 for the uniform split.
+- The LLM step answered on all 4 videos but moved no boundary. In the first run of the day it also answered on 3 of 4 and moved none. On this set the LLM only adds titles. Its 45 s window never changed where a chapter starts. This is a finding for the chapters owner (prompt 35), not fixed here.
+- Short videos: the Feynman clip (4 min 49 s, 4 key moments under a minute apart) gets a single chapter. The chapter rules (at least 60 s per chapter, one chapter per 3 to 8 minutes) cap it at 2, so recall is 0 by design.
+- Over-segmentation: on the podcast, TextTiling proposes 25 chapters for 19 creator ones, which caps precision. On the 30-minute inspection video it proposes 4 boundaries where YouTube has 3, and none fall within 30 s.
+
+Four items is a small set. The F1 against creator chapters rests on one video. Add videos with creator chapters (see "Adding a dataset entry") before treating these numbers as more than a baseline. `thresholds.json` sets `minBoundaryF1` 0.3 for `chapters/texttiling`, which is deterministic, so `--check` catches a segmentation regression.
 
 ### Not yet measured: captions and cleanup
 
