@@ -149,6 +149,27 @@ describe('runChain', () => {
     expect(hungCalls).toBe(1);
   });
 
+  it('caps a huge Retry-After so one answer cannot take a rung out for a day', async () => {
+    let calls = 0;
+    const limited = rung('free/limited', 'free', {
+      run: async () => {
+        calls++;
+        throw new Vid2ContextError('rate-limited', 'slow down', { status: 429, retryAfterSec: 86_400 });
+      },
+    });
+    const backup = rung('keyless/a', 'keyless');
+    const realNow = Date.now;
+    try {
+      await runChain('llm', [limited, backup], (r) => r.run(), {}, testContext());
+      // Eleven minutes later the rung is tried again, not a day later.
+      Date.now = () => realNow() + 11 * 60 * 1000;
+      await runChain('llm', [limited, backup], (r) => r.run(), {}, testContext());
+    } finally {
+      Date.now = realNow;
+    }
+    expect(calls).toBe(2);
+  });
+
   it('never times out a local rung, and reads the limit from env', async () => {
     const slowLocal = rung('local/slow', 'local', { run: () => new Promise((r) => setTimeout(() => r('local done'), 60)) });
     const res = await runChain('stt', [slowLocal], (r) => r.run(), { rungTimeoutMs: 10 }, testContext());
@@ -156,9 +177,13 @@ describe('runChain', () => {
     const slowFree = rung('free/slow', 'free', { run: () => new Promise((r) => setTimeout(() => r('late'), 60)) });
     const off = await runChain('stt', [slowFree], (r) => r.run(), {}, testContext({ env: { VID2CONTEXT_RUNG_TIMEOUT_MS: '0' } }));
     expect(off.value).toBe('late');
-    const err = await runChain('stt', [slowFree], (r) => r.run(), {}, testContext({ env: { VID2CONTEXT_RUNG_TIMEOUT_MS: '10' } })).catch(
-      (e: unknown) => e,
-    );
+    const err = await runChain(
+      'stt',
+      [slowFree],
+      (r) => r.run(),
+      {},
+      testContext({ env: { VID2CONTEXT_RUNG_TIMEOUT_MS: '10' } }),
+    ).catch((e: unknown) => e);
     expect(attemptsOf(err)[0]).toMatchObject({ reason: 'timeout' });
   });
 

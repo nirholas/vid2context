@@ -143,9 +143,13 @@ function setCooldown(key: string, until: number): void {
   cooldowns.set(key, until);
 }
 
+/** Longest cooldown a Retry-After can ask for: 10 minutes. */
+const MAX_RATE_LIMIT_COOLDOWN_SEC = 600;
+
 function cooldownFor(err: unknown): number {
   if (!(err instanceof Vid2ContextError)) return 0;
-  if (err.code === 'rate-limited') return Math.max(err.retryAfterSec ?? 60, 5) * 1000;
+  // Clamped: one provider answering "Retry-After: 86400" must not take its rung out for a day.
+  if (err.code === 'rate-limited') return Math.min(Math.max(err.retryAfterSec ?? 60, 5), MAX_RATE_LIMIT_COOLDOWN_SEC) * 1000;
   if (err.code === 'auth') return 10 * 60 * 1000;
   if (err.code === 'not-found' && err.status !== undefined) return 30 * 60 * 1000;
   if (err.code === 'upstream' && (err.status ?? 0) >= 500) return 30 * 1000;
