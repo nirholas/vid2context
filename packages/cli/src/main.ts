@@ -6,8 +6,8 @@
  */
 import type { RecoveryContext } from '@vid2context/core';
 import { bool, type ParsedArgs, parseCli, str } from './args.ts';
-import { configCommand } from './commands/config.ts';
 import { captionsCommand } from './commands/captions.ts';
+import { configCommand } from './commands/config.ts';
 import { downloadCommand } from './commands/download.ts';
 import { collectionCommand, libraryCommand, searchCommand } from './commands/library.ts';
 import { completionCommand, doctorCommand, helpCommand } from './commands/misc.ts';

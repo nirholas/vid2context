@@ -9,6 +9,8 @@ import { join } from 'node:path';
 import { probe } from '@vid2context/ffmpeg';
 import { createNodeContext, createRegistry } from '@vid2context/registry/node';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { normalizeCaptionsRequest } from '../src/captions.ts';
+import { normalizeAnimationRequest, normalizeFramesRequest } from '../src/clips.ts';
 import { createDownloader } from '../src/node.ts';
 import { normalizeRequest } from '../src/options.ts';
 
@@ -66,4 +68,43 @@ describe.skipIf(!process.env.LIVE)('live downloads', () => {
     expect(o.video[0]?.label).toBe('2160p60');
     expect(o.video.find((v) => v.quality === '1080')?.codecs.mp4).toBe('h264 + aac');
   });
+
+  it('saves captions for a YouTube video through the pipeline, transcribing when YouTube refuses the captions (429)', async () => {
+    let file: Awaited<ReturnType<NonNullable<typeof downloader.toolkit>['captions']>> | undefined;
+    try {
+      file = await downloader.toolkit?.captions(normalizeCaptionsRequest({ url: 'jNQXAC9IVRw' }), ctx, { dir });
+    } catch (err) {
+      // From a cloud IP, YouTube (captions) and the keyless speech-to-text tier can both answer 429 at once.
+      // That is the outside world, not this code: the error must say so, with a hint.
+      const code = (err as { code?: string }).code;
+      expect(['blocked', 'rate-limited', 'all-rungs-failed']).toContain(code);
+      expect((err as { hint?: string }).hint).toBeTruthy();
+      return;
+    }
+    expect(file?.filename).toMatch(/^Me at the zoo \[jNQXAC9IVRw\]\.en\.srt$/);
+    expect(file?.tracks?.[0]?.via).toBe('pipeline');
+  }, 300_000);
+
+  it('lists caption tracks from the providers and yt-dlp', async () => {
+    const t = await downloader.toolkit?.captionTracks('jNQXAC9IVRw', ctx);
+    expect(t?.tracks.some((x) => x.language === 'en' && !x.auto)).toBe(true);
+  });
+
+  it('grabs frames and exports a GIF from a part of Big Buck Bunny', async () => {
+    const frames = await downloader.toolkit?.frames(
+      normalizeFramesRequest({ url: 'aqz-KE-bpKQ', times: '1:00', quality: '360' }),
+      ctx,
+      {
+        dir,
+      },
+    );
+    expect(frames?.mimeType).toBe('image/png');
+    const gif = await downloader.toolkit?.animation(
+      normalizeAnimationRequest({ url: 'aqz-KE-bpKQ', from: '1:00', to: '1:02', width: 240 }),
+      ctx,
+      { dir },
+    );
+    const p = await probe(gif?.path as string, ctx);
+    expect(p.streams[0]).toMatchObject({ width: 240 });
+  }, 600_000);
 });

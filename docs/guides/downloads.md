@@ -74,11 +74,54 @@ This uses the community [SponsorBlock](https://sponsor.ajay.app) database. The c
 - **One file per chapter** (`splitChapters: true`): the full download plus a folder named after it with `01 - Intro.mp4`, `02 - ...` and so on. Chapter times are read from the finished file (yt-dlp writes ones adjusted for SponsorBlock cuts), else taken from the site. It cannot be combined with `from`, `to` or `chapter`. A video without chapters is saved whole, with a warning.
 
 ```sh
+vid2context download jNQXAC9IVRw --thumbnail png              # the thumbnail only (jpg by default)
+vid2context download jNQXAC9IVRw --burn-subs en --quality 360 # subtitles drawn into the picture
+vid2context download <talk-url> --split-chapters              # the full file plus one file per chapter
 curl -o cover.jpg "http://127.0.0.1:8787/api/v1/downloads/thumbnail?url=jNQXAC9IVRw&format=jpg"
 curl -X POST http://127.0.0.1:8787/api/v1/downloads -H 'content-type: application/json' \
   -d '{"url":"jNQXAC9IVRw","format":"mp4","quality":"360","burnSubtitles":"en","splitChapters":true}'
 # when done: GET /downloads/:id/file is the full video, GET /downloads/:id/file?part=0 the first chapter
 ```
+
+## Captions and subtitles only
+
+```sh
+vid2context captions jNQXAC9IVRw                         # SubRip in the spoken language
+vid2context captions jNQXAC9IVRw --list                  # every track, creator or automatic, and translation languages
+vid2context captions jNQXAC9IVRw --lang en,de -f vtt     # two WebVTT files in one .zip
+vid2context captions jNQXAC9IVRw --lang all -f original  # every track as the site serves it
+vid2context captions ./lecture.mkv -f txt --timestamps   # an embedded subtitle stream as text
+vid2context captions <video-without-captions>            # transcribed with speech-to-text
+```
+
+Formats (`-f`): `srt` (default), `vtt`, `txt` (plain, `--timestamps` for `[m:ss]` lines), `json` (timed segments with language and origin), `markdown` (the readable transcript document) and `original` (the file the site serves, such as YouTube's srv3 or a site's TTML; for a local file, its sidecar file or embedded stream as it is).
+
+Where the text comes from, per language:
+
+1. **The transcript pipeline**, the same one `vid2context get` uses. It works without yt-dlp and on every source vid2context reads: YouTube through several clients, other sites, podcasts, local files with sidecar (`talk.en.srt`) or embedded text subtitles. With `--mode auto` (default) a video without captions, or one whose captions are refused (YouTube often answers 429 from servers), is transcribed with the speech-to-text chain. That fallback runs only when one language (or none) is asked for, because it hears the spoken language. `--mode captions` never transcribes; `--mode stt` always does.
+2. **yt-dlp's subtitle download**, second (or first for `-f original`, which needs the site's file). `--via pipeline` or `--via ytdlp` pins one path.
+
+`--lang` takes codes, `all` (every creator track, plus automatic tracks for languages the creator did not cover), or a language from the translation list (the platform machine-translates; `--no-translate` refuses that, `--no-auto` refuses automatic captions). Several files come as one `.zip`, and a language that has no track is listed in a note instead of failing the rest. Files are named `Title [id].en.srt`. At most `VID2CONTEXT_MAX_CAPTION_TRACKS` tracks per download.
+
+## Frame grabs and animated clips
+
+```sh
+vid2context download aqz-KE-bpKQ --frames 0:30,1:00,2:15 --frame-format jpg   # three stills in a .zip
+vid2context download aqz-KE-bpKQ --frames 1:00 --width 640                    # one png
+vid2context download aqz-KE-bpKQ --gif --from 1:00 --to 1:04 --width 320 --fps 12
+vid2context download aqz-KE-bpKQ --webp --from 1:00 --to 1:04
+```
+
+ffmpeg always reads a local copy: a web video is downloaded first through the normal downloader (with its recoveries and stall protection), only the part needed when the times are within five minutes of each other. Frames are png (default) or jpg at the source size (or `--width`). GIFs get their own 256-colour palette built from the clip, so they look far better than ffmpeg's default; WebP is lossy animated WebP. Both loop. Clip length, width and frame rate are capped by `VID2CONTEXT_MAX_CLIP_SEC` (60 s), `VID2CONTEXT_MAX_CLIP_WIDTH` (1280) and `VID2CONTEXT_MAX_CLIP_FPS` (30); public servers default to 15 s, 640 and 15. For a clip with sound, download a video with `--from` and `--to`.
+
+## Batches and one .zip
+
+```sh
+vid2context download <url1> <url2> <playlist-url> --audio --zip --limit 30
+vid2context captions <playlist-url> --lang en --zip
+```
+
+Several inputs, playlists and channels run one video after another. Each video gets its own status; a failed one is reported (on stderr, in the job's `items`, or in the tool result) and the rest are saved. `--zip` packs every saved file into one `vid2context batch <date>.zip`, streamed from disk so a batch of videos never sits in memory. A batch holds at most `VID2CONTEXT_MAX_PLAYLIST_ITEMS` videos; public servers default to 25.
 
 ## Playlists and channels
 
@@ -99,11 +142,16 @@ Streams the target container can hold are copied, so most conversions are a fast
 
 ## MCP
 
-The local stdio server (`npx vid2context-mcp`) adds three tools:
+The local stdio server (`npx vid2context-mcp`) adds these tools:
 
 - `get_media_options { url }`: qualities, formats, sizes, chapters and subtitle languages.
 - `download_media { url, kind?, format?, quality?, from?, to?, chapter?, subtitles?, burnSubtitles?, splitChapters?, removeSegments?, dir?, limit?, ... }`: saves the files and returns their paths (and each chapter file's path with `splitChapters`). Default folder: `VID2CONTEXT_DOWNLOAD_DIR`, else `~/Downloads/vid2context`. It reports progress to clients that ask for it.
 - `download_thumbnail { url, format?, dir? }`: saves the thumbnail as jpg (default), png or webp and returns its path.
+- `get_caption_options { url }`: every caption track (creator or automatic, which provider lists it), the translation languages, and whether speech-to-text can fill in.
+- `download_captions { url, languages?, format?, mode?, via?, allowAuto?, allowTranslated?, timestamps?, zip?, dir? }`: captions only, as above.
+- `grab_frames { url, times, format?, width?, quality?, zip?, dir? }`: still images at the given times.
+- `export_clip { url, from?, to?, format?, fps?, width?, loop?, dir? }`: an animated GIF or WebP.
+- `download_batch { urls, kind?, format?, quality?, languages?, mode?, limit?, playlist?, zip?, dir? }`: many videos, audio files or caption files, with a status per item.
 
 The remote MCP server (Streamable HTTP, for ChatGPT and Claude.ai) does not offer them, because they write files on the machine the server runs on.
 
@@ -118,6 +166,19 @@ curl -X POST localhost:8787/api/v1/downloads -H 'content-type: application/json'
 curl localhost:8787/api/v1/downloads/<id>          # progress: phase, percent, speed, ETA
 curl -OJ localhost:8787/api/v1/downloads/<id>/file # the file once status is "done"
 ```
+
+Captions, frames, clips and batches run as jobs too, on the same list and the same `GET /downloads/:id`, `GET /downloads/:id/file` and `DELETE /downloads/:id`:
+
+```sh
+curl "localhost:8787/api/v1/downloads/captions/tracks?url=jNQXAC9IVRw"
+curl -X POST localhost:8787/api/v1/downloads/captions -H 'content-type: application/json' -d '{"url":"jNQXAC9IVRw","languages":["en","de"],"format":"vtt"}'
+curl -X POST localhost:8787/api/v1/downloads/frames -H 'content-type: application/json' -d '{"url":"aqz-KE-bpKQ","times":["1:00","2:00"]}'
+curl -X POST localhost:8787/api/v1/downloads/clips -H 'content-type: application/json' -d '{"url":"aqz-KE-bpKQ","from":"1:00","to":"1:04","format":"gif"}'
+curl -X POST localhost:8787/api/v1/downloads/batch -H 'content-type: application/json' -d '{"urls":["jNQXAC9IVRw","aqz-KE-bpKQ"],"kind":"audio","format":"m4a","zip":true}'
+curl -OJ localhost:8787/api/v1/downloads/<id>/items/0/file   # one item of a batch saved without zip
+```
+
+The request and response shapes are in [packages/downloads/README.md](../../packages/downloads/README.md#api-for-the-web-app). A video that does not exist answers 404 (and a playlist sent where one video is expected 400) before any job is queued.
 
 `GET /downloads/:id/file` supports `Range` requests, and `?inline=1` lets a browser play the file. Finished files are deleted after `VID2CONTEXT_DOWNLOAD_TTL_MIN` (30) minutes, or when the server restarts. Every route is listed in [contracts/http-api.md](../contracts/http-api.md#downloads-vid2contextdownloads).
 
@@ -148,6 +209,12 @@ With `VID2CONTEXT_PUBLIC=1`, downloads are **off** unless the operator sets `VID
 | `VID2CONTEXT_DOWNLOAD_STALL_SEC` | 120; 60 when public | seconds without progress before yt-dlp or ffmpeg is killed and restarted |
 | `VID2CONTEXT_DOWNLOAD_STALL_RETRIES` | 2 | restarts after a stall |
 | `VID2CONTEXT_DOWNLOAD_MIN_FREE_MB` | 256; 1024 when public | disk that must stay free after the estimated download |
+| `VID2CONTEXT_MAX_CAPTION_TRACKS` | 50; 10 when public | caption tracks in one captions download |
+| `VID2CONTEXT_MAX_FRAMES` | 100; 20 when public | frame grabs in one request |
+| `VID2CONTEXT_MAX_CLIP_SEC` | 60; 15 when public | longest GIF or WebP clip |
+| `VID2CONTEXT_MAX_CLIP_WIDTH` | 1280; 640 when public | widest GIF or WebP clip |
+| `VID2CONTEXT_MAX_CLIP_FPS` | 30; 15 when public | highest GIF or WebP frame rate |
+| `VID2CONTEXT_MAX_PLAYLIST_ITEMS` | 500; 25 for batches when public and unset | videos in one batch |
 
 The yt-dlp settings (`YTDLP_COOKIES_FILE`, `YTDLP_COOKIES_FROM_BROWSER`, `YTDLP_PATH`, ...) apply to downloads too. Cookies are how you download videos that need a signed-in account.
 
@@ -165,7 +232,7 @@ Other errors carry a code and a hint, for example `unsupported-input` for a live
 
 Every yt-dlp and ffmpeg process runs under a watchdog:
 
-- **No progress.** A process that prints no progress for `VID2CONTEXT_DOWNLOAD_STALL_SEC` seconds (a hung connection, a stuck muxer) is killed, with its whole process group, and restarted up to `VID2CONTEXT_DOWNLOAD_STALL_RETRIES` times. Each restart is noted on the result.
+- **No progress.** A process that prints no progress and whose output stops growing for `VID2CONTEXT_DOWNLOAD_STALL_SEC` seconds (a hung connection, a stuck muxer) is killed, with its whole process group, and restarted up to `VID2CONTEXT_DOWNLOAD_STALL_RETRIES` times. Each restart is noted on the result.
 - **One deadline.** `VID2CONTEXT_DOWNLOAD_TIMEOUT_SEC` is the budget for the whole download. Retries and the local trim share it, so a bad source can no longer run for several times the limit.
 - **Disk space.** Before a download starts, the estimated size (from the quality list) is checked against the free space of the temp folder (about twice the size for a video, which is merged from two streams) and of the download folder, plus `VID2CONTEXT_DOWNLOAD_MIN_FREE_MB`. A download that would not fit is refused with `too-large`.
 - **Size caps while streaming.** With `VID2CONTEXT_MAX_DOWNLOAD_MB` set, a download whose estimate is clearly over the limit is refused up front, and one that grows past it while running (bytes reported by yt-dlp or ffmpeg, or the work folder polled every second) is stopped at once instead of after it finished.

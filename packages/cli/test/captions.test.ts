@@ -75,7 +75,9 @@ describe.skipIf(!hasFfmpeg)('download --frames, --gif, --webp and --zip', () => 
     const frame = await cli(['download', MP4, '--frames', '0:12', '--frame-format', 'jpg', '-d', tmp], { env });
     expect(frame.code).toBe(0);
     expect(frame.stdout.trim().endsWith('apollo11-first-steps 0m12s.jpg')).toBe(true);
-    const gif = await cli(['download', MP4, '--gif', '--from', '5', '--to', '6', '--fps', '5', '--width', '96', '-d', tmp], { env });
+    const gif = await cli(['download', MP4, '--gif', '--from', '5', '--to', '6', '--fps', '5', '--width', '96', '-d', tmp], {
+      env,
+    });
     expect(gif.code).toBe(0);
     expect(readFileSync(gif.stdout.trim()).subarray(0, 6).toString('latin1')).toBe('GIF89a');
     const webp = await cli(['download', MP4, '--webp', '--from', '5', '--to', '6', '-d', tmp], { env });
