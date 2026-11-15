@@ -1,0 +1,31 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/downloads"
+  },
+  "status": 202,
+  "contentType": "application/json",
+  "body": {
+    "id": "73fd30c2-58b6-4f78-af54-f0ad2c56cdfa",
+    "status": "running",
+    "request": {
+      "input": "packages/ffmpeg/test/fixtures/apollo11-first-steps-chapters.m4a",
+      "kind": "audio",
+      "format": "m4a",
+      "quality": "best",
+      "exactCuts": false,
+      "embedMetadata": true,
+      "embedThumbnail": true,
+      "embedChapters": true,
+      "subtitles": [],
+      "removeSegments": [],
+      "splitChapters": true
+    },
+    "progress": {
+      "phase": "preparing",
+      "downloadedBytes": 0
+    },
+    "createdAt": "2026-11-15T15:49:04.855Z",
+    "updatedAt": "2026-11-15T15:49:04.855Z"
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/downloads/9f15698c-ad47-4655-9d63-26952c3e8358"
+  },
+  "status": 200,
+  "contentType": "application/json",
+  "body": {
+    "id": "9f15698c-ad47-4655-9d63-26952c3e8358",
+    "status": "done",
+    "request": {
+      "kind": "batch",
+      "inputs": [
+        "packages/ffmpeg/test/fixtures/apollo11-first-steps-chapters.m4a",
+        "packages/ffmpeg/test/fixtures/apollo11-first-steps-subs.mkv"
+      ],
+      "item": {
+        "kind": "audio",
+        "format": "mp3",
+        "quality": "best",
+        "exactCuts": false,
+        "embedMetadata": true,
+        "embedThumbnail": true,
+        "embedChapters": true,
+        "subtitles": [],
+        "removeSegments": []
+      },
+      "limit": 500,
+      "playlist": false,
+      "zip": false
+    },
+    "progress": {
+      "phase": "finished",
+      "percent": 100,
+      "downloadedBytes": 0
+    },
+    "createdAt": "2026-11-15T15:49:04.248Z",
+    "updatedAt": "2026-11-15T15:49:04.845Z",
+    "items": [
+      {
+        "index": 0,
+        "input": "packages/ffmpeg/test/fixtures/apollo11-first-steps-chapters.m4a",
+        "status": "done",
+        "file": {
+          "filename": "apollo11-first-steps-chapters.mp3",
+          "bytes": 930592,
+          "mimeType": "audio/mpeg",
+          "title": "Apollo 11 Landing - first steps on the moon",
+          "warnings": []
+        }
+      },
+      {
+        "index": 1,
+        "input": "packages/ffmpeg/test/fixtures/apollo11-first-steps-subs.mkv",
+        "status": "done",
+        "file": {
+          "filename": "apollo11-first-steps-subs.mp3",
+          "bytes": 1023267,
+          "mimeType": "audio/mpeg",
+          "title": "Apollo 11 Landing - first steps on the moon",
+          "warnings": []
+        }
+      }
+    ],
+    "expiresAt": "2026-11-15T16:19:04.845Z"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/downloads/captions/tracks?url=packages%2Fffmpeg%2Ftest%2Ffixtures%2Fapollo11-first-steps-subs.mkv"
+  },
+  "status": 200,
+  "contentType": "application/json",
+  "body": {
+    "input": "packages/ffmpeg/test/fixtures/apollo11-first-steps-subs.mkv",
+    "id": "file:5ca92cae91eb7c120be28c1675cc1256",
+    "title": "apollo11-first-steps-subs",
+    "url": "file://packages/ffmpeg/test/fixtures/apollo11-first-steps-subs.mkv",
+    "tracks": [
+      {
+        "language": "en",
+        "name": "stream 2 (subrip)",
+        "auto": false,
+        "origin": "creator-captions",
+        "sources": [
+          "media-file-captions"
+        ]
+      }
+    ],
+    "translationTargets": [],
+    "speechToText": true,
+    "formats": [
+      {
+        "id": "srt",
+        "label": "SubRip (.srt)"
+      },
+      {
+        "id": "vtt",
+        "label": "WebVTT (.vtt)"
+      },
+      {
+        "id": "txt",
+        "label": "Plain text (.txt)"
+      },
+      {
+        "id": "json",
+        "label": "JSON segments (.json)"
+      },
+      {
+        "id": "markdown",
+        "label": "Markdown transcript (.md)"
+      },
+      {
+        "id": "original",
+        "label": "Original file as the site serves it"
+      }
+    ],
+    "notes": []
+  }
+}

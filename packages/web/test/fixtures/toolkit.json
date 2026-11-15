@@ -1,0 +1,96 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/downloads/toolkit"
+  },
+  "status": 200,
+  "contentType": "application/json",
+  "body": {
+    "enabled": true,
+    "captions": {
+      "formats": [
+        {
+          "id": "srt",
+          "label": "SubRip (.srt)"
+        },
+        {
+          "id": "vtt",
+          "label": "WebVTT (.vtt)"
+        },
+        {
+          "id": "txt",
+          "label": "Plain text (.txt)"
+        },
+        {
+          "id": "json",
+          "label": "JSON segments (.json)"
+        },
+        {
+          "id": "markdown",
+          "label": "Markdown transcript (.md)"
+        },
+        {
+          "id": "original",
+          "label": "Original file as the site serves it"
+        }
+      ],
+      "modes": [
+        "auto",
+        "captions",
+        "stt"
+      ],
+      "via": [
+        "auto",
+        "pipeline",
+        "ytdlp"
+      ],
+      "defaults": {
+        "format": "srt",
+        "mode": "auto",
+        "via": "auto",
+        "allowAuto": true,
+        "allowTranslated": true
+      },
+      "maxTracks": 50
+    },
+    "frames": {
+      "formats": [
+        "png",
+        "jpg"
+      ],
+      "defaults": {
+        "format": "png",
+        "quality": "1080"
+      },
+      "maxFrames": 100
+    },
+    "clips": {
+      "formats": [
+        "gif",
+        "webp"
+      ],
+      "defaults": {
+        "format": "gif",
+        "fps": 10,
+        "width": 480,
+        "lengthSec": 5
+      },
+      "maxSec": 60,
+      "maxWidth": 1280,
+      "maxFps": 30
+    },
+    "batch": {
+      "kinds": [
+        "video",
+        "audio",
+        "captions"
+      ],
+      "maxItems": 500
+    },
+    "watchdog": {
+      "stallSec": 120,
+      "stallRetries": 2,
+      "minFreeMb": 256
+    }
+  }
+}

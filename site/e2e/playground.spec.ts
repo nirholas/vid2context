@@ -28,7 +28,9 @@ test('picking a fixture renders it with core', async ({ page }) => {
   await open(page);
   const big = fixture('youtube-cCPsdFdlshc');
   await pg(page).getByLabel('Fixture', { exact: true }).selectOption('youtube-cCPsdFdlshc');
-  await expect(page.locator('[data-pg-summary]')).toContainText(`${big.metadata.title}: ${big.transcript.segments.length} segments`);
+  await expect(page.locator('[data-pg-summary]')).toContainText(
+    `${big.metadata.title}: ${big.transcript.segments.length} segments`,
+  );
   await pg(page).getByLabel('Format', { exact: true }).selectOption('json');
   await expect(page.locator('[data-pg-call]')).toHaveText("return core.render(context, 'json');");
   await expect(opOut(page)).toContainText(`"title": ${JSON.stringify(big.metadata.title)}`);
@@ -52,12 +54,12 @@ test('changing a format option updates the output and the code', async ({ page }
   await expect(pg(page).getByLabel('Offset (seconds)')).toBeHidden();
   await pg(page).getByLabel('Timestamps', { exact: true }).check();
   await expect(pg(page).getByLabel('Offset (seconds)')).toBeVisible();
-  await expect(opOut(page)).toContainText('[0:00]');
+  await expect(opOut(page)).toContainText('[0:01] All right, so here we are');
 });
 
 test('the code box runs a snippet in a worker, away from the page', async ({ page }) => {
   await open(page);
-  const code = pg(page).getByLabel('Your code');
+  const code = pg(page).getByRole('textbox', { name: 'Your code' });
   await code.fill('console.log(typeof document);\nreturn Object.keys(core.formatters);');
   await pg(page).getByRole('button', { name: 'Run' }).click();
   await expect(snipStatus(page)).toHaveText(/^Result \(JSON\): /);
@@ -76,7 +78,7 @@ test('the code box runs a snippet in a worker, away from the page', async ({ pag
 
 test('a thrown error is shown with its code and hint', async ({ page }) => {
   await open(page);
-  const code = pg(page).getByLabel('Your code');
+  const code = pg(page).getByRole('textbox', { name: 'Your code' });
   await code.fill("throw new Error('boom');");
   await code.press('Control+Enter');
   await expect(snipStatus(page)).toHaveText('Error: Error');
@@ -97,10 +99,10 @@ test('a thrown error is shown with its code and hint', async ({ page }) => {
 
 test('a snippet that never ends is stopped', async ({ page }) => {
   await open(page);
-  await pg(page).getByLabel('Your code').fill('while (true) {}');
+  await pg(page).getByRole('textbox', { name: 'Your code' }).fill('while (true) {}');
   await pg(page).getByRole('button', { name: 'Run' }).click();
   await expect(snipOut(page)).toContainText('Stopped after 5 seconds', { timeout: 10_000 });
-  await pg(page).getByLabel('Your code').fill('return 1 + 1;');
+  await pg(page).getByRole('textbox', { name: 'Your code' }).fill('return 1 + 1;');
   await pg(page).getByRole('button', { name: 'Run' }).click();
   await expect(snipOut(page)).toHaveText('2');
 });
@@ -110,7 +112,7 @@ test('the hash round-trips the options and the code', async ({ page, context }) 
   await pg(page).getByLabel('Format', { exact: true }).selectOption('vtt');
   await pg(page).getByLabel('Lines per cue').fill('1');
   await pg(page).getByLabel('Chapter').selectOption('1');
-  await pg(page).getByLabel('Your code').fill('return context.metadata.title.toUpperCase();');
+  await pg(page).getByRole('textbox', { name: 'Your code' }).fill('return context.metadata.title.toUpperCase();');
   await expect(page).toHaveURL(/#pg:.*format=vtt/);
   const url = page.url();
   expect(url).toContain('maxLines=1');

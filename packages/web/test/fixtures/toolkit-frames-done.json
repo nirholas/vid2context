@@ -1,0 +1,52 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/downloads/bfe79c2d-7ea2-4f26-9537-268782e0cb5a"
+  },
+  "status": 200,
+  "contentType": "application/json",
+  "body": {
+    "id": "bfe79c2d-7ea2-4f26-9537-268782e0cb5a",
+    "status": "done",
+    "request": {
+      "kind": "frames",
+      "input": "packages/ffmpeg/test/fixtures/apollo11-first-steps.mp4",
+      "times": [
+        5,
+        30
+      ],
+      "format": "png",
+      "quality": "1080",
+      "zip": false
+    },
+    "progress": {
+      "phase": "finished",
+      "percent": 100,
+      "downloadedBytes": 42918,
+      "totalBytes": 42918
+    },
+    "createdAt": "2026-11-15T15:49:03.880Z",
+    "updatedAt": "2026-11-15T15:49:04.021Z",
+    "expiresAt": "2026-11-15T16:19:04.021Z",
+    "file": {
+      "filename": "apollo11-first-steps frames.zip",
+      "bytes": 42918,
+      "mimeType": "application/zip",
+      "format": "zip",
+      "entries": [
+        {
+          "name": "apollo11-first-steps 0m05s.png",
+          "bytes": 20818
+        },
+        {
+          "name": "apollo11-first-steps 0m30s.png",
+          "bytes": 21806
+        }
+      ],
+      "kind": "frames",
+      "title": "apollo11-first-steps",
+      "source": "packages/ffmpeg/test/fixtures/apollo11-first-steps.mp4",
+      "warnings": []
+    }
+  }
+}

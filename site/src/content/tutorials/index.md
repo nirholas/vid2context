@@ -35,3 +35,8 @@ Each block also shows the same request as curl, JavaScript, Python and, where on
 ## Before you start
 
 No account and no key are needed. Captions come straight from the platform; when a video has none, speech-to-text runs on free and keyless Whisper rungs, and answers and briefs run on the free LLM chain. Keys you add to a server only add more rungs, tried before the keyless ones. The [Examples](/docs/examples/) section has every request on its own, grouped by what it does.
+
+## More to try
+
+- [Library playground](/docs/examples/playground/): run the vid2context library in your browser on real contexts, with live formats, chunking and a code box.
+- [Embed vid2context](/docs/embed/): put a searchable transcript, chapters, a quote or a video card on any page, and build the embed live in the page.

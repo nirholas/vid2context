@@ -1,0 +1,79 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/downloads/73fd30c2-58b6-4f78-af54-f0ad2c56cdfa"
+  },
+  "status": 200,
+  "contentType": "application/json",
+  "body": {
+    "id": "73fd30c2-58b6-4f78-af54-f0ad2c56cdfa",
+    "status": "done",
+    "request": {
+      "input": "packages/ffmpeg/test/fixtures/apollo11-first-steps-chapters.m4a",
+      "kind": "audio",
+      "format": "m4a",
+      "quality": "best",
+      "exactCuts": false,
+      "embedMetadata": true,
+      "embedThumbnail": true,
+      "embedChapters": true,
+      "subtitles": [],
+      "removeSegments": [],
+      "splitChapters": true
+    },
+    "progress": {
+      "phase": "finished",
+      "percent": 100,
+      "downloadedBytes": 254646,
+      "totalBytes": 254646
+    },
+    "createdAt": "2026-11-15T15:49:04.855Z",
+    "updatedAt": "2026-11-15T15:49:04.933Z",
+    "file": {
+      "filename": "apollo11-first-steps-chapters.m4a",
+      "bytes": 254646,
+      "mimeType": "audio/mp4",
+      "kind": "audio",
+      "format": "m4a",
+      "title": "Apollo 11 Landing - first steps on the moon",
+      "source": "packages/ffmpeg/test/fixtures/apollo11-first-steps-chapters.m4a",
+      "durationSec": 61.518005,
+      "warnings": [],
+      "parts": [
+        {
+          "filename": "apollo11-first-steps-chapters/01 - At the foot of the ladder.m4a",
+          "bytes": 14529,
+          "index": 0,
+          "title": "At the foot of the ladder",
+          "fromSec": 0,
+          "toSec": 3.26
+        },
+        {
+          "filename": "apollo11-first-steps-chapters/02 - Describing the surface.m4a",
+          "bytes": 138468,
+          "index": 1,
+          "title": "Describing the surface",
+          "fromSec": 3.26,
+          "toSec": 36.746
+        },
+        {
+          "filename": "apollo11-first-steps-chapters/03 - Stepping off the LEM.m4a",
+          "bytes": 46378,
+          "index": 2,
+          "title": "Stepping off the LEM",
+          "fromSec": 36.746,
+          "toSec": 47.772
+        },
+        {
+          "filename": "apollo11-first-steps-chapters/04 - One small step.m4a",
+          "bytes": 57492,
+          "index": 3,
+          "title": "One small step",
+          "fromSec": 47.772,
+          "toSec": 61.518
+        }
+      ]
+    },
+    "expiresAt": "2026-11-15T16:19:04.933Z"
+  }
+}

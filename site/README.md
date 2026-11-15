@@ -44,7 +44,7 @@ Nothing on the site is typed in by hand when the repo knows it. `scripts/gen-dat
 - `/docs/...`: `src/pages/docs/[...slug].astro`. Pages come from `src/lib/docs.ts`:
   - the repo's Markdown, read at build time and never copied: `README.md`, `docs/ARCHITECTURE.md`, `docs/providers.md`, `docs/contracts/*.md`, and every `docs/guides/*.md` and `docs/deploy/*.md`. Relative links become site URLs (or GitHub links for files that are not pages);
   - one page per agent client, generated from `src/data/agents.ts`;
-  - the site's own pages in `src/content/tutorials/`, `src/content/examples/`, `src/content/how-to/` and `src/content/compare/` (an `index.md` is the section's landing page, `/docs/tutorials/`);
+  - the site's own pages in `src/content/tutorials/`, `src/content/examples/`, `src/content/embed/`, `src/content/how-to/` and `src/content/compare/` (an `index.md` is the section's landing page, `/docs/tutorials/`);
   - the runnable scripts' pages in `docs/examples/` (its `README.md` is `/docs/examples/scripts/`), listed under Examples after the site's own pages.
 - Every page has a Markdown twin: `/` is `/index.md`, `/docs/x/` is `/docs/x.md`. Pages link it with `<link rel="alternate" type="text/markdown">`.
 - `robots.txt`, `sitemap.xml`, `llms.txt` (the repo copy plus every docs twin under `## Docs`), `llms-full.txt`, `favicon.svg`, `apple-touch-icon.png` and one Open Graph image per page (`/og/...png`, satori and sharp) are endpoints in `src/pages/`.
@@ -85,6 +85,21 @@ Tutorials and examples pages hold runnable HTTP API requests. In a site page, a 
 Add an example: add a spec to `src/data/runnables.ts`, start a server (`npm run start:server` at the root), record it with `npm --prefix site run record -- <id>`, and put a `run <id>` block on a page. `test/runnables.test.ts` fails until every block has a spec, every spec a recording made with its current default request, and no recording holds an email, a stream URL with an IP or a key. `test/fixtures/README.md` describes the recordings.
 
 To try blocks against a local server while developing, start it with `VID2CONTEXT_CORS_ORIGINS=http://localhost:4321 npm run start:server` and pick **Local server** on any block.
+
+## Widgets
+
+A fenced block whose info string is `widget <id>` (and no body) puts an interactive widget in a site page. `src/lib/widgets.ts` is the registry: each widget renders its markup at build time and gives the Markdown twin plain text. Docs.astro loads a widget's script only on pages that use it. The widgets are `embed-builder`, `embed-gallery`, `embed-component` (src/lib/embed-render.ts) and `playground` (src/lib/playground-render.ts).
+
+## Embedding
+
+Other sites can embed vid2context. The docs are in `/docs/embed/` (`src/content/embed/`).
+
+- `/embed/` (`src/pages/embed/index.astro`, `src/scripts/embed-widget.ts`) is the widget: a page made for iframes. It is noindex and has no site chrome. It reads its options from the query string, loads a VideoContext from the API on its own origin (or from `api`, a `src` JSON file, or a `sample`), and talks to its parent with postMessage.
+- `/embed.js` (`src/pages/embed.js.ts` bundles `src/scripts/embed-loader.ts` with esbuild) defines `<vid2context-embed>` and `Vid2Context.embed()`.
+- `/embed/samples/<id>.json` serves the recorded contexts in `tests/fixtures/contexts/` without their descriptions, so the builder and the tests need no network.
+- `src/lib/embed.ts` is the contract that the widget, the loader, the builder and the docs tables (`{{embed.params}}`, `{{embed.events}}`, `{{embed.commands}}`, `{{embed.samples}}`) all read. To add a parameter, add it there.
+
+`test/embed.test.ts` checks the contract and the built files. `e2e/embed.spec.ts` drives the widget, the loader, the builder and the demos in Chromium.
 
 ## Rules the tests enforce
 

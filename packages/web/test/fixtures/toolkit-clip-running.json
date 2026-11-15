@@ -1,0 +1,28 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/downloads/a0ec437a-600b-40b9-9241-9fe82747113a"
+  },
+  "status": 200,
+  "contentType": "application/json",
+  "body": {
+    "id": "a0ec437a-600b-40b9-9241-9fe82747113a",
+    "status": "running",
+    "request": {
+      "kind": "animation",
+      "input": "packages/ffmpeg/test/fixtures/apollo11-first-steps.mp4",
+      "format": "gif",
+      "fromSec": 10,
+      "toSec": 13,
+      "fps": 10,
+      "width": 480,
+      "loop": true
+    },
+    "progress": {
+      "phase": "preparing",
+      "downloadedBytes": 0
+    },
+    "createdAt": "2026-11-15T15:49:04.030Z",
+    "updatedAt": "2026-11-15T15:49:04.030Z"
+  }
+}

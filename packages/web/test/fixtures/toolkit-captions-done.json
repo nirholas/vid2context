@@ -1,0 +1,52 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/downloads/b6554e76-9e0d-462b-aad0-54a8a7318d61"
+  },
+  "status": 200,
+  "contentType": "application/json",
+  "body": {
+    "id": "b6554e76-9e0d-462b-aad0-54a8a7318d61",
+    "status": "done",
+    "request": {
+      "kind": "captions",
+      "input": "packages/ffmpeg/test/fixtures/apollo11-first-steps-subs.mkv",
+      "languages": [],
+      "allLanguages": false,
+      "format": "srt",
+      "mode": "auto",
+      "via": "auto",
+      "allowAuto": true,
+      "allowTranslated": true,
+      "timestamps": false,
+      "zip": false
+    },
+    "progress": {
+      "phase": "finished",
+      "percent": 100,
+      "downloadedBytes": 577,
+      "totalBytes": 577
+    },
+    "createdAt": "2026-11-15T15:49:03.816Z",
+    "updatedAt": "2026-11-15T15:49:03.869Z",
+    "expiresAt": "2026-11-15T16:19:03.869Z",
+    "file": {
+      "filename": "apollo11-first-steps-subs.en.srt",
+      "bytes": 577,
+      "mimeType": "application/x-subrip; charset=utf-8",
+      "format": "srt",
+      "kind": "captions",
+      "title": "apollo11-first-steps-subs",
+      "source": "packages/ffmpeg/test/fixtures/apollo11-first-steps-subs.mkv",
+      "tracks": [
+        {
+          "language": "en",
+          "origin": "creator-captions",
+          "producer": "media-file-captions",
+          "via": "pipeline"
+        }
+      ],
+      "warnings": []
+    }
+  }
+}

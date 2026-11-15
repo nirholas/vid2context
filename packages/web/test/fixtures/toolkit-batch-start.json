@@ -1,0 +1,39 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/downloads/batch"
+  },
+  "status": 202,
+  "contentType": "application/json",
+  "body": {
+    "id": "9f15698c-ad47-4655-9d63-26952c3e8358",
+    "status": "running",
+    "request": {
+      "kind": "batch",
+      "inputs": [
+        "packages/ffmpeg/test/fixtures/apollo11-first-steps-chapters.m4a",
+        "packages/ffmpeg/test/fixtures/apollo11-first-steps-subs.mkv"
+      ],
+      "item": {
+        "kind": "audio",
+        "format": "mp3",
+        "quality": "best",
+        "exactCuts": false,
+        "embedMetadata": true,
+        "embedThumbnail": true,
+        "embedChapters": true,
+        "subtitles": [],
+        "removeSegments": []
+      },
+      "limit": 500,
+      "playlist": false,
+      "zip": false
+    },
+    "progress": {
+      "phase": "preparing",
+      "downloadedBytes": 0
+    },
+    "createdAt": "2026-11-15T15:49:04.248Z",
+    "updatedAt": "2026-11-15T15:49:04.248Z"
+  }
+}

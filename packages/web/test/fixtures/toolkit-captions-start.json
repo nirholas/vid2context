@@ -1,0 +1,31 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/downloads/captions"
+  },
+  "status": 202,
+  "contentType": "application/json",
+  "body": {
+    "id": "b6554e76-9e0d-462b-aad0-54a8a7318d61",
+    "status": "running",
+    "request": {
+      "kind": "captions",
+      "input": "packages/ffmpeg/test/fixtures/apollo11-first-steps-subs.mkv",
+      "languages": [],
+      "allLanguages": false,
+      "format": "srt",
+      "mode": "auto",
+      "via": "auto",
+      "allowAuto": true,
+      "allowTranslated": true,
+      "timestamps": false,
+      "zip": false
+    },
+    "progress": {
+      "phase": "preparing",
+      "downloadedBytes": 0
+    },
+    "createdAt": "2026-11-15T15:49:03.816Z",
+    "updatedAt": "2026-11-15T15:49:03.818Z"
+  }
+}
