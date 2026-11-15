@@ -137,7 +137,7 @@ function tabOf(segment: string | undefined): ChannelTab | undefined {
  * - videos: watch, youtu.be, shorts, live, embed, /v/, m., music. and nocookie
  *   URLs, and bare 11-character video ids;
  * - playlists: any URL with list= and no v= (a watch URL that carries both
- *   resolves to the video; pass /playlist?list=... to list the playlist).
+ *   resolves to the video; `matchYouTubeList` returns its playlist).
  *   Mixes (list=RD...) throw `unsupported-input`;
  * - channels: /@handle, /channel/UC..., /c/name, /user/name, optionally
  *   followed by a tab (videos, shorts, streams, playlists, featured);
@@ -189,4 +189,17 @@ export function matchYouTube(raw: string): VideoRef | null {
     return channelRef(input, `${first}:${second}`, `${first}/${second}`, tabOf(third));
   }
   return null;
+}
+
+/**
+ * The playlist a video URL sits in: a watch, youtu.be, shorts or embed URL
+ * that carries both a video and list=. Null for every other input, and for
+ * mixes (list=RD...), which are personalized and endless. No network.
+ */
+export function matchYouTubeList(raw: string): VideoRef | null {
+  const input = raw.trim();
+  if (matchYouTube(input)?.kind !== 'video') return null;
+  const list = parseUrl(input)?.searchParams.get('list');
+  if (!list || !LIST_ID.test(list) || list.startsWith('RD')) return null;
+  return playlistRef(input, list);
 }

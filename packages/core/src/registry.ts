@@ -73,13 +73,19 @@ export class Registry {
     return this.ofKind('storage');
   }
 
-  /** First source provider that understands the input. Platform-specific sources are tried before catch-all ones. */
-  resolve(input: string): { source: SourceProvider; ref: VideoRef } {
+  /**
+   * First source provider that understands the input. Platform-specific
+   * sources are tried before catch-all ones. `list` is set when the input is a
+   * video that also names a list it sits in (see `SourceProvider.matchList`).
+   */
+  resolve(input: string): { source: SourceProvider; ref: VideoRef; list?: VideoRef } {
     const trimmed = input.trim();
     const sources = [...this.sources()].sort((a, b) => Number(a.catchAll ?? false) - Number(b.catchAll ?? false));
     for (const source of sources) {
       const ref = source.match(trimmed);
-      if (ref) return { source, ref };
+      if (!ref) continue;
+      const list = ref.kind === 'video' ? source.matchList?.(trimmed) : null;
+      return list ? { source, ref, list } : { source, ref };
     }
     throw new Vid2ContextError('unsupported-input', `No source understands "${trimmed.slice(0, 200)}".`, {
       hint: 'Pass a video URL (YouTube, or any site yt-dlp supports when that provider is installed), a podcast feed, or a local media file path.',

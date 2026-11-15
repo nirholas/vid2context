@@ -10,7 +10,7 @@ import { listMetadata, listYouTube } from './browse/index.ts';
 import { youtubeCaptions } from './captions/provider.ts';
 import { getYouTubeComments } from './comments/index.ts';
 import { getYouTubeMetadata } from './metadata/index.ts';
-import { matchYouTube } from './url.ts';
+import { matchYouTube, matchYouTubeList } from './url.ts';
 
 export { listMetadata, listYouTube } from './browse/index.ts';
 export { fetchTrack } from './captions/fetch.ts';
@@ -44,7 +44,7 @@ export { CLIENTS, type ClientSpec, resolveClients } from './resilience/clients.t
 export { BLOCKED_HINT, classifyPlayability, playabilityError, youtubeHttpError } from './resilience/errors.ts';
 export { clearPlayerCache, fetchPlayer, getPlayer, type PlayerResponse, type RawCaptionTrack } from './resilience/player.ts';
 export { innertubeRequest } from './resilience/transport.ts';
-export { matchYouTube } from './url.ts';
+export { matchYouTube, matchYouTubeList } from './url.ts';
 
 const RUNTIMES: SourceProvider['runtimes'] = ['node', 'workers', 'browser'];
 
@@ -54,6 +54,7 @@ export const youtubeSource: SourceProvider = defineProvider({
   name: 'YouTube',
   runtimes: RUNTIMES,
   match: matchYouTube,
+  matchList: matchYouTubeList,
   async getMetadata(ref, ctx) {
     if (ref.kind !== 'video') return listMetadata(ref, ctx);
     return getYouTubeMetadata(ref, ctx);

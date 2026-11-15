@@ -155,12 +155,22 @@ export function videoRoutes({ services, docs }: RouteDeps): Hono<AppEnv> {
     method: 'get',
     path: `${V}/items`,
     summary: 'Expand a playlist, channel, feed or page into video refs. A single video returns itself.',
+    description:
+      'A video link that also names a playlist (a YouTube watch URL with list=) returns the video, plus `list`: the playlist ref, so a client can offer it. playlist=1 expands that playlist instead.',
     tags: ['videos'],
-    params: [P.url, P.limit('Most items to return. Default and maximum: VID2CONTEXT_MAX_PLAYLIST_ITEMS (500).')],
+    params: [
+      P.url,
+      P.limit('Most items to return. Default and maximum: VID2CONTEXT_MAX_PLAYLIST_ITEMS (500).'),
+      { name: 'playlist', description: '1 to expand the playlist a video link sits in (list=) instead of returning the video.' },
+    ],
     responses: {
       '200': {
-        description: 'Video refs.',
-        content: json({ type: 'object', properties: { items: { type: 'array', items: ref('VideoRef') } }, required: ['items'] }),
+        description: 'Video refs, and the playlist a video link sits in when it names one.',
+        content: json({
+          type: 'object',
+          properties: { items: { type: 'array', items: ref('VideoRef') }, list: ref('VideoRef') },
+          required: ['items'],
+        }),
       },
     },
   });
@@ -169,9 +179,12 @@ export function videoRoutes({ services, docs }: RouteDeps): Hono<AppEnv> {
     const input = readUrl(c.req.query('url'));
     const max = limits(ctx.env).maxPlaylistItems;
     const limit = readInt('limit', c.req.query('limit'), { max }) ?? max;
+    const playlist = readFlag(c.req.query('playlist'));
     services.checkInput(input, ctx);
     if (isUploadInput(input)) return c.json({ items: [(await services.loadMetadata(input, ctx)).ref] });
-    return c.json({ items: await expandInput(services.registry, input, ctx, { limit }) });
+    const items = await expandInput(services.registry, input, ctx, { limit, list: playlist });
+    const list = playlist ? undefined : services.registry.resolve(input).list;
+    return c.json(list ? { items, list } : { items });
   });
 
   docs.add({

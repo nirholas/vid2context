@@ -51,6 +51,13 @@ export interface SourceProvider extends ProviderBase {
   catchAll?: boolean;
   /** Return a ref when this provider understands the input, else null. Must be synchronous and cheap (no network). */
   match(input: string): VideoRef | null;
+  /**
+   * Optional. When `match` returned a video and the input also names a list
+   * the video sits in (a YouTube watch URL with list=), return that list's
+   * ref, else null. Same rules as `match`: synchronous, no network. The video
+   * stays the default; callers opt into the list (see `expandInput`).
+   */
+  matchList?(input: string): VideoRef | null;
   getMetadata(ref: VideoRef, ctx: Ctx): Promise<VideoMetadata>;
   /** Expand a playlist/channel/feed/page ref into video refs. */
   listItems?(ref: VideoRef, ctx: Ctx, opts?: { limit?: number }): AsyncIterable<VideoRef>;

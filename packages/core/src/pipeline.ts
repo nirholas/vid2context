@@ -63,15 +63,22 @@ function cacheUsable(cached: VideoContext, opts: GetContextOptions): boolean {
   return true;
 }
 
+export interface ExpandOptions {
+  limit?: number;
+  /**
+   * When the input is a video inside a list (a YouTube watch URL with list=),
+   * expand the list instead of returning the video. Inputs without a list are
+   * unaffected.
+   */
+  list?: boolean;
+}
+
 /** Resolve an input and expand playlists/channels/feeds into video refs. */
-export async function expandInput(
-  registry: Registry,
-  input: string,
-  ctx: Ctx,
-  opts: { limit?: number } = {},
-): Promise<VideoRef[]> {
+export async function expandInput(registry: Registry, input: string, ctx: Ctx, opts: ExpandOptions = {}): Promise<VideoRef[]> {
   await enforceInputPolicy(input, ctx);
-  const { source, ref } = registry.resolve(input);
+  const resolved = registry.resolve(input);
+  const { source } = resolved;
+  const ref = opts.list && resolved.list ? resolved.list : resolved.ref;
   if (ref.kind === 'video') return [ref];
   if (!source.listItems) {
     throw new Vid2ContextError('unsupported-input', `${source.name} cannot list the items of a ${ref.kind} yet.`, {
@@ -79,7 +86,7 @@ export async function expandInput(
     });
   }
   const out: VideoRef[] = [];
-  for await (const item of source.listItems(ref, ctx, opts)) {
+  for await (const item of source.listItems(ref, ctx, { limit: opts.limit })) {
     out.push(item);
     if (opts.limit && out.length >= opts.limit) break;
   }

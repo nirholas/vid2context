@@ -41,6 +41,7 @@ providers/<name>/
 | Member | Contract |
 |---|---|
 | `match(input)` | Synchronous, cheap, no network. Return a `VideoRef` or `null`. Filesystem `stat` is acceptable for local paths. |
+| `matchList(input)` | Optional. Synchronous, no network. When `match` returned a video and the input also names a list it sits in (a YouTube `watch?v=...&list=...`), return the list's ref, else `null`. `Registry.resolve` returns it as `list`; the video stays the default and callers opt in (`expandInput(..., { list: true })`). |
 | `catchAll` | `true` for providers that accept almost any URL (yt-dlp, web page discovery). The registry tries specific sources first. |
 | `getMetadata(ref, ctx)` | Return `VideoMetadata`; `chapters` is always an array (empty when none). Throw `not-found`, `unavailable` or `blocked` when the video itself cannot be had; the pipeline stops on those. Other errors make the pipeline fall back to minimal metadata. |
 | `listItems(ref, ctx, {limit})` | Async iterable of video refs for playlist, channel, feed and page refs. Stream; do not buffer the whole list. |

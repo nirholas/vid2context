@@ -110,7 +110,7 @@ Shapes are those in the planned tables below; these notes add what the tables le
 |---|---|
 | `GET /metadata?url=` | the source's metadata only; no captions or audio are fetched |
 | `GET /formats` | every formatter in the core map |
-| `GET /items?url=&limit=` | `limit` 1 to `VID2CONTEXT_MAX_PLAYLIST_ITEMS` (default 500, also the default); a single video returns itself |
+| `GET /items?url=&limit=&playlist=` | `limit` 1 to `VID2CONTEXT_MAX_PLAYLIST_ITEMS` (default 500, also the default); a single video returns itself. A video link that names a playlist (`watch?v=...&list=...`) also returns `list`, the playlist ref; `playlist=1` expands that playlist instead |
 | `GET /section?url=&from=&to=&chapter=&format=&timestamps=` | at least one of `from`, `to`, `chapter`. `chapter` is an outline index (0-based, digits) or a title (exact, prefix, then substring). Built on core `getSection` |
 | `GET /outline?url=` | core `outlineForApi`: videos without chapters get five-minute sections |
 | `GET /comments?url=&limit=` | `limit` 1 to 1000; `no-provider` (503) when the source cannot fetch comments; uploads have none |
@@ -213,7 +213,7 @@ Item 46 mounts every sub-app that exists when it runs (`app.route('/api/v1', lib
 |---|---|---|---|
 | `GET /metadata?url=` | 46, implemented | | `VideoMetadata` |
 | `GET /formats` | 46, implemented | | `{ formats: { id, description, mimeType, extension }[] }` |
-| `GET /items?url=&limit=` | 46 (uses 08, 13, 15), implemented | | `{ items: VideoRef[] }`: a playlist, channel, feed or page expanded to videos |
+| `GET /items?url=&limit=&playlist=` | 46 (uses 08, 13, 15), implemented | | `{ items: VideoRef[], list?: VideoRef }`: a playlist, channel, feed or page expanded to videos; `list` is the playlist a video link sits in |
 | `GET /section?url=&from=&to=&chapter=&format=` | 46 (uses 03), implemented | `from`/`to` in seconds or `m:ss`, or a chapter index | the rendered slice; `Content-Type` from the formatter |
 | `GET /outline?url=` | 46 (uses 03), implemented | | `{ metadata, chapters: (Chapter & { tokens: number })[], totalTokens }` |
 | `GET /comments?url=&limit=` | 46 (uses 09), implemented | | `{ comments: Comment[] }` |
