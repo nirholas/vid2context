@@ -1,5 +1,5 @@
 /**
- * The parts of the Cloudflare D1, R2, KV and Vectorize binding APIs this
+ * The parts of the Cloudflare D1, R2 and KV binding APIs this
  * backend uses, typed structurally so the repo needs no global Workers types.
  */
 import { type Ctx, Vid2ContextError } from '@vid2context/core';
@@ -44,29 +44,14 @@ export interface KVNamespace {
   }>;
 }
 
-export interface VectorizeMatch {
-  id: string;
-  score: number;
-}
-
-export interface VectorizeIndex {
-  upsert(vectors: { id: string; values: number[]; metadata?: Record<string, string | number> }[]): Promise<unknown>;
-  query(
-    vector: number[],
-    options: { topK?: number; filter?: Record<string, unknown>; returnValues?: boolean; returnMetadata?: boolean | string },
-  ): Promise<{ matches: VectorizeMatch[] }>;
-  deleteByIds(ids: string[]): Promise<unknown>;
-}
-
 const SNIPPETS: Record<string, (name: string) => string> = {
   d1: (n) => `"d1_databases": [{ "binding": "${n}", "database_name": "vid2context", "database_id": "<id>" }]`,
   r2: (n) => `"r2_buckets": [{ "binding": "${n}", "bucket_name": "vid2context" }]`,
   kv: (n) => `"kv_namespaces": [{ "binding": "${n}", "id": "<id>" }]`,
-  vectorize: (n) => `"vectorize": [{ "binding": "${n}", "index_name": "vid2context-bge-m3" }]`,
 };
 
 /** Read a binding by name from ctx.bindings and check its shape, or throw with the wrangler.jsonc entry that creates it. */
-export function binding<T>(ctx: Ctx, kind: 'd1' | 'r2' | 'kv' | 'vectorize', name: string, method: string, envVar: string): T {
+export function binding<T>(ctx: Ctx, kind: 'd1' | 'r2' | 'kv', name: string, method: string, envVar: string): T {
   const b = ctx.bindings?.[name] as Record<string, unknown> | undefined;
   if (!b || typeof b[method] !== 'function') {
     throw new Vid2ContextError(
