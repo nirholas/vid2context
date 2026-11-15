@@ -122,11 +122,15 @@ export function toolkitRoutes(deps: DownloadsRouteDeps): Hono {
 
   const start = (kind: ToolkitKind) => async (c: Context) => {
     const ctx = deps.makeCtx(c.req.raw);
-    toolkit(ctx);
+    const tk = toolkit(ctx);
     const body = await readBody(c);
     const req = normalizeToolkitRequest(body, kind, ctx.env);
     const inputs = req.kind === 'batch' ? req.inputs : [req.input];
-    for (const input of inputs) await enforceInputPolicy(input, ctx);
+    for (const input of inputs) {
+      await enforceInputPolicy(input, ctx);
+      // A batch takes playlists and channels; a single task needs one video that exists.
+      await tk.check(input, ctx, { single: req.kind !== 'batch' });
+    }
     const job = (tasks() as TaskQueue).create(req, ctx);
     const base = new URL(c.req.url).pathname.replace(/\/(captions|frames|clips|batch)\/?$/, '');
     return c.json(job, 202, { location: `${base}/${job.id}` });
@@ -135,6 +139,21 @@ export function toolkitRoutes(deps: DownloadsRouteDeps): Hono {
   app.post('/downloads/frames', start('frames'));
   app.post('/downloads/clips', start('animation'));
   app.post('/downloads/batch', start('batch'));
+
+  // Before POST /downloads queues a job: a bad or missing video answers 400 or 404 now, not as a failed job.
+  // Invalid bodies are left to the download route, which explains them.
+  app.post('/downloads', async (c, next) => {
+    const ctx = deps.makeCtx(c.req.raw);
+    const tk = toolkitOf(deps.manager?.downloader);
+    if (!tk || !downloadPolicy(ctx.env).enabled) return next();
+    const body = (await c.req.json().catch(() => undefined)) as Record<string, unknown> | undefined;
+    const input = typeof body?.url === 'string' ? body.url.trim() : typeof body?.input === 'string' ? body.input.trim() : '';
+    if (input) {
+      await enforceInputPolicy(input, ctx);
+      await tk.check(input, ctx, { single: true });
+    }
+    return next();
+  });
 
   // The list: download jobs from the routes after this one, plus toolkit tasks.
   app.get('/downloads', async (c, next) => {

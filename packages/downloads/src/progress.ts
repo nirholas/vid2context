@@ -10,7 +10,11 @@ export type DownloadPhase = 'queued' | 'preparing' | 'downloading' | 'processing
 
 export interface DownloadProgress {
   phase: DownloadPhase;
-  /** 0 to 100 across all streams, when the total size is known. */
+  /**
+   * downloading: 0 to 100 across all streams, when the total size is known.
+   * processing: 0 to 100 of the current step (from ffmpeg's progress, or the
+   * output size against the estimate), absent while unknown.
+   */
   percent?: number;
   downloadedBytes: number;
   /** Total bytes of every stream, exact or estimated. */
@@ -128,14 +132,26 @@ export class ProgressTracker {
       }
       case 'postprocess': {
         if (QUIET_STEPS.has(event.step) || event.status !== 'started') return false;
-        const { speedBps: _s, etaSec: _e, ...rest } = this.state;
-        this.state = { ...rest, phase: 'processing', step: event.step, ...this.totals(true) };
+        // The download is complete; `percent` now belongs to the step, which yt-dlp does not report.
+        // The engine fills it in from the size of the output being written (see `processing`).
+        const { speedBps: _s, etaSec: _e, percent: _p, ...rest } = this.state;
+        const { percent: _done, ...totals } = this.totals(true);
+        this.state = { ...rest, phase: 'processing', step: event.step, ...totals };
         return true;
       }
       case 'file':
         this.files.push(event.path);
         return false;
     }
+  }
+
+  /** Progress of the running post-processing step, from the bytes it has written against the expected size. */
+  processing(writtenBytes: number, expectedBytes: number): boolean {
+    if (this.state.phase !== 'processing' || !(expectedBytes > 0)) return false;
+    const percent = Math.min(99, Math.round((Math.max(0, writtenBytes) / expectedBytes) * 1000) / 10);
+    if (percent === this.state.percent) return false;
+    this.state = { ...this.state, percent };
+    return true;
   }
 
   /** Mark the download finished. */

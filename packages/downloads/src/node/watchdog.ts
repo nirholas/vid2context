@@ -34,6 +34,11 @@ export interface WatchdogOptions {
   parent?: AbortSignal;
   /** Poll interval in ms. Default 1000. */
   pollMs?: number;
+  /**
+   * Called with the polled folder size. A growing folder counts as progress, so a long
+   * step that prints nothing (yt-dlp's ffmpeg post-processing) is never taken for a stall.
+   */
+  onPoll?: (bytes: number) => void;
 }
 
 /** Total size of the files under a folder. Missing files (moved mid-walk) count as 0. */
@@ -65,6 +70,7 @@ export class Watchdog {
   private lastProgress = Date.now();
   private timer?: ReturnType<typeof setInterval>;
   private polling = false;
+  private lastBytes = -1;
   private onParentAbort?: () => void;
   tripped?: TripReason;
 
@@ -140,19 +146,25 @@ export class Watchdog {
 
   private async check(): Promise<void> {
     if (this.tripped || this.polling) return;
-    const now = Date.now();
     const o = this.opts;
-    if (o.deadlineAt !== undefined && now >= o.deadlineAt) return this.trip('deadline');
-    if (o.stallMs > 0 && now - this.lastProgress >= o.stallMs) return this.trip('stall');
+    if (o.deadlineAt !== undefined && Date.now() >= o.deadlineAt) return this.trip('deadline');
     const cap = o.maxBytesOnDisk ?? (o.maxBytes ? o.maxBytes * 2 : 0);
-    if (o.dir && cap > 0) {
+    if (o.dir) {
       this.polling = true;
       try {
-        if ((await folderBytes(o.dir)) > cap) this.trip('too-large');
+        const bytes = await folderBytes(o.dir);
+        if (bytes !== this.lastBytes) {
+          this.lastBytes = bytes;
+          this.touch();
+        }
+        o.onPoll?.(bytes);
+        if (cap > 0 && bytes > cap) return this.trip('too-large');
       } finally {
         this.polling = false;
       }
     }
+    if (this.tripped) return;
+    if (o.stallMs > 0 && Date.now() - this.lastProgress >= o.stallMs) this.trip('stall');
   }
 }
 

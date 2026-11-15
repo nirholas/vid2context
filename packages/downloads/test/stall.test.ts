@@ -21,6 +21,8 @@ import { freeBytes, preflightDisk } from '../src/node/disk.ts';
 import { runFfmpeg } from '../src/node/local.ts';
 import { folderBytes, Watchdog } from '../src/node/watchdog.ts';
 import { normalizeRequest } from '../src/options.ts';
+import { downloadPolicy } from '../src/policy.ts';
+import { ProgressTracker } from '../src/progress.ts';
 
 const APOLLO = new URL('../../../tests/fixtures/media/apollo11-small-step.mp3', import.meta.url).pathname;
 const env = { PATH: process.env.PATH, HOME: process.env.HOME };
@@ -33,6 +35,31 @@ beforeAll(async () => {
 });
 afterAll(async () => {
   await rm(dir, { recursive: true, force: true });
+});
+
+describe('processing progress', () => {
+  it('reports the step from the bytes written, never 100 before the end', () => {
+    const t = new ProgressTracker();
+    t.apply({ type: 'download', status: 'finished', downloadedBytes: 1000, totalBytes: 1000, formatId: '140' });
+    t.apply({ type: 'postprocess', status: 'started', step: 'ExtractAudio' });
+    expect(t.progress).toMatchObject({ phase: 'processing', step: 'ExtractAudio', downloadedBytes: 1000 });
+    expect(t.progress.percent).toBeUndefined();
+    expect(t.processing(250, 500)).toBe(true);
+    expect(t.progress.percent).toBe(50);
+    t.processing(900, 500);
+    expect(t.progress.percent).toBe(99);
+  });
+});
+
+describe('download policy on public servers', () => {
+  it('defaults to 1024 MB and 120 minutes there, and no limit locally', () => {
+    expect(downloadPolicy({ VID2CONTEXT_PUBLIC: '1', VID2CONTEXT_DOWNLOADS: '1' })).toMatchObject({
+      enabled: true,
+      maxBytes: 1024 * 1024 * 1024,
+      maxDurationSec: 120 * 60,
+    });
+    expect(downloadPolicy({})).toMatchObject({ enabled: true, maxBytes: 0, maxDurationSec: 0 });
+  });
 });
 
 describe('limits', () => {
@@ -91,6 +118,19 @@ describe('watchdog on real processes', () => {
     expect(dog.tripped).toBe('too-large');
     expect((err as Vid2ContextError).code).toBe('too-large');
     expect(await folderBytes(out)).toBeGreaterThan(200_000);
+  });
+
+  it('counts a growing work folder as progress, so a quiet but busy step is not killed', async () => {
+    const out = join(dir, 'quiet');
+    const sizes: number[] = [];
+    const dog = new Watchdog({ label: 'quiet', stallMs: 400, dir: out, pollMs: 50, onPoll: (b) => sizes.push(b) });
+    // Prints nothing for 1.5 s (more than three stall periods) while its output grows, like yt-dlp's ffmpeg post-processing.
+    const script = `const fs = require('fs'); fs.mkdirSync(${JSON.stringify(out)}, { recursive: true }); const f = fs.openSync(${JSON.stringify(join(out, 'out.mp3'))}, 'w'); let n = 0; const t = setInterval(() => { fs.writeSync(f, Buffer.alloc(4096)); if (++n === 15) { clearInterval(t); } }, 100);`;
+    const res = await run(node, ['-e', script], testContext({ env, signal: dog.signal }), { label: 'quiet', timeoutMs: 20_000 });
+    dog.stop();
+    expect(res.code).toBe(0);
+    expect(dog.tripped).toBeUndefined();
+    expect(Math.max(...sizes)).toBeGreaterThan(10 * 4096);
   });
 
   it('stops at the shared deadline with a hint naming the download timeout', async () => {

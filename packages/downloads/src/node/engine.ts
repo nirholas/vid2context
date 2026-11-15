@@ -168,7 +168,13 @@ export function createDownloader(options: DownloaderOptions = {}): Downloader {
   const { registry } = options;
 
   async function ytdlpInfo(target: Extract<Target, { type: 'url' }>, ctx: Ctx): Promise<MediaInfo> {
-    const { info } = await fetchInfo(target.ref, ctx);
+    const { info } = await fetchInfo(target.ref, ctx).catch((err: unknown) => {
+      // A private video is a fact about the video, as the YouTube provider (and so /context) reports it: not-found, not unavailable.
+      if (err instanceof Vid2ContextError && err.code === 'unavailable' && /private video/i.test(err.message)) {
+        throw new Vid2ContextError('not-found', err.message, { ...(err.hint ? { hint: err.hint } : {}), cause: err });
+      }
+      throw err;
+    });
     const media = infoOf(info);
     if (media._type === 'playlist') {
       throw new Vid2ContextError('unsupported-input', 'This URL is a playlist, not a single video.', {
@@ -252,6 +258,11 @@ export function createDownloader(options: DownloaderOptions = {}): Downloader {
           ...(policy.maxBytes > 0 ? { maxBytes: Math.round(policy.maxBytes * 1.1) } : {}),
           dir: attemptDir,
           ...(ctx.signal ? { parent: ctx.signal } : {}),
+          // yt-dlp prints nothing while its ffmpeg post-processes (ExtractAudio on a long video takes minutes):
+          // the output file growing is the progress, measured against the estimated size.
+          onPoll: (bytes) => {
+            if (estimate !== undefined && t.processing(bytes - t.progress.downloadedBytes, estimate)) report(t.progress);
+          },
         });
         const runCtx: Ctx = { ...ctx, signal: dog.signal };
         const onLine = (line: string) => {
@@ -343,7 +354,8 @@ export function createDownloader(options: DownloaderOptions = {}): Downloader {
         const tools = await locateFfmpeg(ctx, { download: true });
         const source = await probeFile(tools, file, ctx);
         const trimmed = join(work, `trimmed.${req.format}`);
-        report({ phase: 'processing', step: 'Trim', downloadedBytes: tracker.progress.downloadedBytes, percent: 100 });
+        const downloaded = tracker.progress.downloadedBytes;
+        report({ phase: 'processing', step: 'Trim', downloadedBytes: downloaded, percent: 0 });
         await runFfmpeg({
           tools,
           input: file,
@@ -354,7 +366,9 @@ export function createDownloader(options: DownloaderOptions = {}): Downloader {
           ctx,
           timeoutMs: Math.max(1000, deadlineAt - Date.now()),
           watchdog: { stallMs: tk.stallSec * 1000, deadlineAt, maxBytes: policy.maxBytes },
+          accurate: req.kind === 'audio' || req.exactCuts,
           ...(section.toSec !== undefined ? { durationSec: section.toSec - section.fromSec } : {}),
+          onPercent: (percent) => report({ phase: 'processing', step: 'Trim', downloadedBytes: downloaded, percent }),
         });
         file = trimmed;
       }
@@ -443,6 +457,8 @@ export function createDownloader(options: DownloaderOptions = {}): Downloader {
         ctx,
         timeoutMs: policy.timeoutSec * 1000,
         watchdog: { stallMs: tk.stallSec * 1000, deadlineAt, maxBytes: policy.maxBytes },
+        // Audio, and exact video cuts, start at `from` even where streams are copied.
+        accurate: req.kind === 'audio' || req.exactCuts,
         onPercent: (percent) =>
           report({ phase: 'processing', step: plan.reencodes ? 'Convert' : 'Remux', downloadedBytes: 0, percent }),
       });

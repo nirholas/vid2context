@@ -293,6 +293,15 @@ describe.skipIf(!hasFfmpeg)('HTTP routes for the toolkit', () => {
     expect((await call(`/downloads/${job.id}/items/7/file`)).status).toBe(404);
   });
 
+  it('answers 404 before queueing when the video does not exist', async () => {
+    const missing = join(FIX, 'no-such-clip.mp4');
+    const dl = await post('/downloads', { url: missing, format: 'mp3' });
+    expect(dl.status).toBe(404);
+    expect((await post('/downloads/captions', { url: missing })).status).toBe(404);
+    const list = (await (await call('/downloads')).json()) as { jobs: { request: { input?: string } }[] };
+    expect(list.jobs.some((j) => j.request.input === missing)).toBe(false);
+  });
+
   it('validates bodies and honours the public policy', async () => {
     expect((await post('/downloads/clips', { url: MP4, format: 'avi' })).status).toBe(400);
     expect((await post('/downloads/batch', {})).status).toBe(400);
@@ -321,7 +330,7 @@ describe.skipIf(!hasFfmpeg)('MCP toolkit tools', () => {
     await Promise.all([server.connect(a), client.connect(b)]);
     return client;
   }
-  const textOf = (r: unknown) => ((r as { content: { text: string }[] }).content[0]?.text ?? '');
+  const textOf = (r: unknown) => (r as { content: { text: string }[] }).content[0]?.text ?? '';
 
   it('lists caption tracks and saves captions, frames, a clip and a batch where asked', async () => {
     const client = await connect();

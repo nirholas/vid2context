@@ -97,6 +97,13 @@ export interface Toolkit {
   frames(req: FramesRequest, ctx: Ctx, opts: TaskOptions): Promise<ToolkitFile>;
   animation(req: AnimationRequest, ctx: Ctx, opts: TaskOptions): Promise<ToolkitFile>;
   batch(req: BatchRequest, ctx: Ctx, opts: TaskOptions): Promise<TaskResult>;
+  /**
+   * Cheap check before a job is queued, so a bad input fails the request (400, 404)
+   * instead of a job: the input resolves, is a single video when `single` is set, a local
+   * file exists, and a video with a dedicated source provider (YouTube and the like)
+   * exists by its metadata call. Sites read only by the yt-dlp catch-all are not fetched.
+   */
+  check(input: string, ctx: Ctx, opts?: { single?: boolean }): Promise<void>;
   /** Server-side task queue, created on first use. */
   readonly jobs: TaskQueue;
   /** Run any toolkit request. */

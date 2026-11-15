@@ -151,15 +151,35 @@ export interface RunFfmpegOptions {
   ctx: Ctx;
   timeoutMs: number;
   onPercent?: (percent: number) => void;
+  /**
+   * Cut exactly at `section.fromSec` even for copied streams. An input seek lands on the
+   * keyframe before the start, and copied streams (audio included) keep everything from
+   * there; with this set the input seek stops a margin early and an output seek drops
+   * the packets before the start. Copied video then starts at its first keyframe after it.
+   */
+  accurate?: boolean;
   /** Stall protection: kill ffmpeg when it reports no progress for `stallMs`, passes `deadlineAt`, or writes more than `maxBytes` (0: no cap). */
   watchdog?: { stallMs: number; deadlineAt?: number; maxBytes?: number };
 }
 
+/** Seconds the input seek stops before an accurate cut; the output seek reads them and drops them. */
+const SEEK_MARGIN_SEC = 15;
+
 /** Run ffmpeg with -progress on stderr and report the percentage done. */
 export async function runFfmpeg(o: RunFfmpegOptions): Promise<void> {
   const input: string[] = [];
-  if (o.section?.fromSec !== undefined) input.push('-ss', String(o.section.fromSec));
-  if (o.section?.toSec !== undefined) input.push('-to', String(o.section.toSec));
+  const output: string[] = [];
+  const from = o.section?.fromSec;
+  const to = o.section?.toSec;
+  if (o.accurate && from !== undefined && from > 0) {
+    const pre = Math.max(0, from - SEEK_MARGIN_SEC);
+    if (pre > 0) input.push('-ss', String(pre));
+    output.push('-ss', String(from - pre));
+    if (to !== undefined) output.push('-t', String(to - from));
+  } else {
+    if (from !== undefined) input.push('-ss', String(from));
+    if (to !== undefined) input.push('-to', String(to));
+  }
   const args = [
     '-hide_banner',
     '-nostdin',
@@ -172,6 +192,7 @@ export async function runFfmpeg(o: RunFfmpegOptions): Promise<void> {
     ...input,
     '-i',
     o.input,
+    ...output,
     ...o.args,
     '-f',
     MUXER[o.format],
