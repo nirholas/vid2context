@@ -13,7 +13,13 @@ import type { AudioSplitter } from './audio-split.ts';
 import { attemptsOf, runChain } from './chain.ts';
 import { guardRepetition } from './clean/repetition.ts';
 import { Vid2ContextError } from './errors.ts';
-import { durationLimitFrom, everyRungTooLarge, exceedsEveryRung, transcribeLong } from './longform/transcribe-long.ts';
+import {
+  durationLimitFrom,
+  everyRungTooLarge,
+  exceedsEveryRung,
+  fetchAudioBytes,
+  transcribeLong,
+} from './longform/transcribe-long.ts';
 import type { ChainOptions, ChatRequest, ChatResult, LlmRung, SourceProvider, SttOptions, SttRung } from './provider.ts';
 import type { Registry } from './registry.ts';
 import { enforceInputPolicy } from './security/input.ts';
@@ -29,6 +35,8 @@ export interface GetContextOptions {
   language?: string;
   /** Allow platform auto-captions. Default true. */
   allowAuto?: boolean;
+  /** Allow a platform machine translation into `language` (YouTube's translated tracks). Default true. */
+  allowTranslated?: boolean;
   /** Rung chain options for the stt/video stages. */
   chain?: ChainOptions;
   stt?: SttOptions;
@@ -60,6 +68,7 @@ function cacheUsable(cached: VideoContext, opts: GetContextOptions): boolean {
   if (opts.mode === 'video' && origin !== 'video-model') return false;
   if (opts.mode === 'captions' && (origin === 'stt' || origin === 'video-model')) return false;
   if (opts.allowAuto === false && origin === 'auto-captions') return false;
+  if (opts.allowTranslated === false && cached.transcript.translated) return false;
   return true;
 }
 
@@ -104,7 +113,11 @@ async function fetchCaptions(
   for (const provider of registry.captions(ctx.env).filter((p) => p.supports(ref))) {
     const started = Date.now();
     try {
-      const t = await provider.getCaptions(ref, { language: opts.language, allowAuto: opts.allowAuto ?? true }, ctx);
+      const t = await provider.getCaptions(
+        ref,
+        { language: opts.language, allowAuto: opts.allowAuto ?? true, allowTranslated: opts.allowTranslated ?? true },
+        ctx,
+      );
       if (t && t.segments.length > 0) {
         attempts.push({ id: provider.id, stage: 'captions', outcome: 'ok', detail: t.origin, ms: Date.now() - started });
         return t;
@@ -155,16 +168,42 @@ async function fetchAudio(
 }
 
 /**
+ * Every speech-to-text rung turns URL audio into bytes itself, so a chain that
+ * falls through N rungs would download the same audio N times, each with its
+ * own long timeout. Download it once here instead (capped by
+ * VID2CONTEXT_MAX_AUDIO_MB). Having bytes also lets rungs whose upload limit is
+ * too small be skipped up front, and lets refused-as-too-large audio go to the
+ * long-audio orchestrator, both of which only work on bytes.
+ */
+async function downloadOnce(registry: Registry, audio: AudioInput, ctx: Ctx): Promise<AudioInput> {
+  if (audio.kind !== 'url' || registry.sttRungs(ctx.env).length === 0) return audio;
+  const started = Date.now();
+  try {
+    return await fetchAudioBytes(audio, ctx);
+  } catch (err) {
+    const attempt: Attempt = {
+      id: 'stt/audio-download',
+      stage: 'audio',
+      outcome: 'error',
+      ...errInfo(err),
+      ms: Date.now() - started,
+    };
+    throw Object.assign(err as object, { attempts: [...attemptsOf(err), attempt] });
+  }
+}
+
+/**
  * Run the speech-to-text rung chain on audio. Rungs whose upload limit is below the audio size are skipped.
  * Audio larger than every rung accepts, or refused as too large by every rung, goes to the long-audio orchestrator.
  */
 export async function transcribe(
   registry: Registry,
   ref: VideoRef,
-  audio: AudioInput,
+  input: AudioInput,
   opts: { stt?: SttOptions; chain?: ChainOptions; splitters?: AudioSplitter[]; storage?: Storage | null },
   ctx: Ctx,
 ): Promise<{ transcript: Transcript; attempts: Attempt[] }> {
+  const audio = await downloadOnce(registry, input, ctx);
   if (exceedsEveryRung(registry, audio, opts.chain, ctx)) {
     const long = await transcribeLong(registry, ref, audio, opts, ctx);
     return { transcript: long.transcript, attempts: long.attempts };
@@ -366,7 +405,9 @@ async function buildVideoContext(registry: Registry, input: string, opts: GetCon
       new Vid2ContextError('no-transcript', `Could not get a transcript for ${ref.id} (mode: ${mode}).`, {
         hint:
           mode === 'captions'
-            ? 'This video has no captions. Retry with mode "auto" or "stt" to transcribe the audio.'
+            ? opts.allowAuto === false || opts.allowTranslated === false
+              ? 'No captions match: auto-captions or platform translations were refused. Allow them, or retry with mode "auto" or "stt" to transcribe the audio.'
+              : 'This video has no captions. Retry with mode "auto" or "stt" to transcribe the audio.'
             : 'Check `attempts` for why each step failed. Installing the yt-dlp provider and enabling a speech-to-text rung covers most videos.',
       }),
       { attempts },
