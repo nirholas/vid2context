@@ -67,7 +67,7 @@ The host check reads the hostname only. It cannot see a public name that resolve
 
 ## Vimeo, Loom and Wistia
 
-Status verified live on 2026-11-14, keyless, from a Google Cloud VM.
+Status verified live on 2026-11-14, keyless, from a Google Cloud VM, and re-verified on 2026-11-15 with the LIVE tests in `providers/native-transcripts/test/live.test.ts` and `providers/web-page/test/live.test.ts` (all passing).
 
 | Platform | Shipped | Metadata | Transcript |
 |---|---|---|---|
