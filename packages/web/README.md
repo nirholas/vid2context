@@ -18,7 +18,7 @@ npm run build -w packages/web   # static files in packages/web/dist/, base /app/
 npm run preview -w packages/web # serve dist/ with the same /api proxy
 ```
 
-`dist/` can be served by anything that serves a folder. `npm run build:assets` (deploy/serverless) copies it to `/app/` for the Cloudflare Worker, Vercel and GitHub Pages builds, and the Worker serves `/app/index.html` for deep links under `/app/`. The initial JS chunk is about 120 KB gzipped (measured 2026-11-15); the result viewer, uploads, in-browser transcription, settings, the API page and the download and captions pages load on demand.
+`dist/` can be served by anything that serves a folder. `npm run build:assets` (deploy/serverless) copies it to `/app/` for the Cloudflare Worker, Vercel and GitHub Pages builds, and the Worker serves `/app/index.html` for deep links under `/app/`. The initial JS (the entry chunk plus the chunks it preloads) is about 146 KB gzipped, measured 2026-11-15; the result viewer, uploads, in-browser transcription, settings, the API page and the download and captions pages load on demand.
 
 ## Environment variables
 
