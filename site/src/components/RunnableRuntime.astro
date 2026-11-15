@@ -13,8 +13,8 @@ import { CLI_PREFIX } from '../lib/runnable-render.ts';
     <label for="rx-server-url">Server URL</label>
     <input id="rx-server-url" name="server-url" type="url" inputmode="url" placeholder="Empty: this site" spellcheck="false" autocomplete="off" aria-describedby="rx-server-help" />
     <p id="rx-server-help" class="rx-help">
-      Any vid2context server: your own deployment, or one started from a clone of the repo with
-      <code>VID2CONTEXT_CORS_ORIGINS=<span data-rx-origin>this origin</span> npm run start:server</code>
+      Any vid2context server: your own deployment, or one started from a clone of the repo with{' '}
+      <code>VID2CONTEXT_CORS_ORIGINS=<span data-rx-origin>this origin</span> npm run start:server</code>{' '}
       (it listens on <code>http://127.0.0.1:8787</code>). The CORS variable lets this page read its responses.
     </p>
     <label for="rx-api-key">API key (optional)</label>
@@ -328,8 +328,9 @@ import { CLI_PREFIX } from '../lib/runnable-render.ts';
     color: var(--v2c-text);
     text-decoration: none;
   }
-  .rx-status {
+  .code-label.rx-status {
     white-space: normal;
+    overflow: visible;
   }
   .rx-meta {
     display: flex;
@@ -397,6 +398,7 @@ import { CLI_PREFIX } from '../lib/runnable-render.ts';
   .tk-var { color: var(--tk-var); }
 
   .rx-dialog {
+    margin: auto;
     width: min(34rem, calc(100vw - 2rem));
     padding: 1.25rem;
     border: 1px solid var(--v2c-border-strong);

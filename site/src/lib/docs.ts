@@ -75,7 +75,11 @@ function repoDocs(): RepoDoc[] {
     { path: 'docs/providers.md', slug: 'providers', section: 'start', label: 'Providers and rungs', order: 2 },
   ];
   // `readme` gives a directory's README.md its own slug and label; `offset` orders the pages after others in the section.
-  const fromDir = (dir: string, section: Section, opts: { offset?: number; readme?: { slug: string; label: string } } = {}): RepoDoc[] =>
+  const fromDir = (
+    dir: string,
+    section: Section,
+    opts: { offset?: number; readme?: { slug: string; label: string } } = {},
+  ): RepoDoc[] =>
     data.docSources
       .filter((p) => posix.dirname(p) === dir)
       .sort((a, b) => Number(posix.basename(b) === 'README.md') - Number(posix.basename(a) === 'README.md') || a.localeCompare(b))

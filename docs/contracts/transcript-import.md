@@ -15,7 +15,7 @@ interface ImportRequest {
   /** Exactly one of text or segments. */
   text?: string;
   segments?: { startSec: number; endSec?: number; text: string }[];
-  /** BCP 47 code. Falls back to a language found in the text (WebVTT `Language:` header), then the video's spoken language, then `und`. */
+  /** BCP 47 code. Falls back to a language found in the text (WebVTT `Language:` header), then a language tag in `filename` (`talk.en.srt`), then the video's spoken language, then `und`. */
   language?: string;
   /** Helps format detection (`talk.en.srt`); never stored as a path. */
   filename?: string;
@@ -23,6 +23,8 @@ interface ImportRequest {
   via?: 'paste' | 'file' | 'browser';
   /** For via=browser: the kind of YouTube track the extension read. Recorded, not trusted. */
   captionKind?: 'creator-captions' | 'auto-captions';
+  /** For via=browser: the metadata the extension sent. Only fills gaps when the source gives no metadata (title, channel, duration); never overrides it. */
+  metadata?: { title?: string; channel?: string; durationSec?: number };
 }
 ```
 
@@ -32,11 +34,11 @@ interface ImportRequest {
 |---|---|
 | WebVTT | `WEBVTT` header |
 | SRT | numbered cues with `00:00:01,000 --> 00:00:04,000` |
-| YouTube "Show transcript" copy | timestamp lines (`0:00`, `1:02:03`) alone or at the start of a line, text after or on the next lines; also the variant with spoken-length labels such as `2 seconds` and `1 minute, 5 seconds` |
+| YouTube "Show transcript" copy | timestamp lines (`0:00`, `1:02:03`) alone or at the start of a line, text after or on the next lines; also the variant with spoken-length labels such as `2 seconds` and `1 minute, 5 seconds`. The 2026 panel copies timestamp, label and text run together on one line (`0:011 secondAll right`) with chapter headings on their own lines; the headings are dropped |
 | YouTube timedtext | srv1, srv3 or json3 bodies (parsed with `parseTimedText` from `@vid2context/provider-youtube`) |
-| plain text | anything else: one segment per paragraph, all at `startSec` 0, `endSec` the video duration when known |
+| plain text | anything else: one segment per paragraph, all at `startSec` 0, `endSec` the video duration when known. JSON or markup that is not YouTube timedtext is not plain text: nothing is parsed |
 
-Validation: every segment needs a finite `startSec >= 0` and non-empty text after trimming. Segments are sorted by `startSec`; a missing `endSec` becomes the next segment's start (the last one gets the duration, or `startSec + 5`). At most 50,000 segments. Nothing parsed is a `bad-request` with a hint that lists the accepted formats.
+Validation: every segment needs a finite `startSec >= 0` and non-empty text after trimming. Segments are sorted by `startSec`; a missing `endSec` becomes the next segment's start (the last one gets the duration, or `startSec + 5`). At most 50,000 segments (`too-large` beyond). Nothing parsed is a `bad-request` with a hint that lists the accepted formats, answered before any network call.
 
 Response `201`:
 
@@ -115,4 +117,4 @@ How the extension gets the captions, in order:
 1. From the background: the innertube player and timedtext requests of `@vid2context/provider-youtube`, sent from the extension with the user's IP address and cookies.
 2. If that is refused or comes back empty (YouTube wants a proof-of-origin token): a YouTube watch tab opened in the background, not focused. The existing main-world script captures the player's own caption request, and the tab is closed as soon as the captions arrive or after 45 seconds.
 
-The web app then sends the result to `POST /api/v1/imports` with `segments`, `language`, `via: 'browser'` and `captionKind`. Without an API (client-only mode) it builds the context in the browser with `importTranscript` from `@vid2context/imports` and keeps it locally.
+The web app then sends the result to `POST /api/v1/imports` with `segments`, `language`, `via: 'browser'`, `captionKind` and the result's `metadata`. Without an API (client-only mode) it builds the context in the browser with `importTranscript` from `@vid2context/imports` (option `fetchMetadata: false`, since the browser cannot reach YouTube's metadata; the metadata attempt is `skipped`) and keeps it locally.

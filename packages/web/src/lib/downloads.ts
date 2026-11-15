@@ -155,8 +155,8 @@ export function fitQuality(options: MediaOptions | undefined, kind: 'video' | 'a
   if (list.length === 0 || list.some((v) => v.quality === wanted)) return wanted;
   if (wanted === 'best') return 'best';
   const limit = Number(wanted);
-  const below = list.filter((v) => v.quality !== 'best' && Number(v.quality) <= limit);
-  return below[0]?.quality ?? 'best';
+  // The list runs best first, and `best` is a real stream too (240p for an old video), so compare picture sizes.
+  return list.find((v) => v.height <= limit)?.quality ?? list.at(-1)?.quality ?? 'best';
 }
 
 /** Switch between video and audio, keeping sensible formats and qualities. */

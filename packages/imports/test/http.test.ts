@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { MemoryStorage, Registry, Vid2ContextError, type VideoContext } from '@vid2context/core';
-import { replayFetch, testContext } from '@vid2context/core/testing';
+import { type ReplayFetch, replayFetch, testContext } from '@vid2context/core/testing';
 import youtube, { parseSrv3 } from '@vid2context/provider-youtube';
 import { Hono } from 'hono';
 import { describe, expect, it } from 'vitest';
@@ -44,7 +44,7 @@ function zooFetch() {
 const registry = new Registry(youtube, 'node');
 
 /** Mounted the way packages/server mounts sub-apps, with the same error body and statuses. */
-function app(opts: { env?: Record<string, string>; fetch?: typeof fetch; storage?: MemoryStorage; hosted?: boolean } = {}) {
+function app(opts: { env?: Record<string, string>; fetch?: ReplayFetch; storage?: MemoryStorage; hosted?: boolean } = {}) {
   const fetch = opts.fetch ?? zooFetch();
   const storage = opts.storage ?? new MemoryStorage();
   const root = new Hono();
@@ -195,8 +195,8 @@ describe('POST /imports', () => {
     expect(fetch.calls).toHaveLength(0);
   });
 
-  it('says which formats it accepts when nothing could be read', async () => {
-    const { root } = app();
+  it('says which formats it accepts when nothing could be read, before any network call', async () => {
+    const { root, fetch } = app();
     const res = await post(root, {
       url: ZOO,
       text: repo(`${YT}/timedtext-429-blocked.html`),
@@ -207,6 +207,7 @@ describe('POST /imports', () => {
     const body = (await res.json()) as { error: { message: string; hint: string } };
     expect(body.error.message).toBe('Nothing could be read from this srv3 text.');
     expect(body.error.hint).toContain('WebVTT (.vtt), SRT (.srt)');
+    expect(fetch.calls).toHaveLength(0);
   });
 
   it('refuses playlists and inputs no source understands', async () => {

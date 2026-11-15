@@ -31,7 +31,7 @@ MCP: `search_transcript { query, collection?, urls?, limit?, rerank? }`, registe
 | `oil -cooler` | No hit may contain "cooler" (or "coolers") |
 | `-"oil cooler"` | No hit may contain the phrase |
 
-Filters are separate fields, not syntax: `collectionId`, `videoIds`, `channel` (name or id), `publishedAfter` and `publishedBefore` (videos without a publish date are excluded when a date filter is set), `origin` (`creator-captions`, `auto-captions`, `native-transcript`, `stt`, `video-model`).
+Filters are separate fields, not syntax: `collectionId`, `videoIds`, `channel` (name or id), `publishedAfter` and `publishedBefore` (videos without a publish date are excluded when a date filter is set), `origin` (`creator-captions`, `auto-captions`, `native-transcript`, `stt`, `video-model`, `imported`).
 
 ## How indexing works
 

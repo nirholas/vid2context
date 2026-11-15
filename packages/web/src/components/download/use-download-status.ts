@@ -4,7 +4,7 @@
  */
 import { useEffect, useRef, useState } from 'react';
 import type { CallOptions } from '../../lib/api.ts';
-import { isClientOnly, useApiStatus } from '../../lib/api-status.tsx';
+import { type ApiState, isClientOnly, useOptionalApiStatus } from '../../lib/api-status.tsx';
 import { type DownloadStatus, getDownloadStatus } from '../../lib/downloads.ts';
 
 export type DownloadAvailability =
@@ -21,11 +21,12 @@ export function clearDownloadStatusCache(): void {
 
 /** `call` lets tests pass a fetch that replays recorded responses. */
 export function useDownloadStatus(call: CallOptions = {}): DownloadAvailability {
-  const { state } = useApiStatus();
+  // Outside the app shell there is no API status: treat it like client-only, so nothing is fetched.
+  const state: ApiState | undefined = useOptionalApiStatus()?.state;
   const [result, setResult] = useState<DownloadAvailability>({ state: 'checking' });
-  const base = state.base;
-  const online = state.status === 'online';
-  const clientOnly = isClientOnly(state);
+  const base = state?.base ?? '';
+  const online = state?.status === 'online';
+  const clientOnly = !state || isClientOnly(state);
   const fetchRef = useRef(call.fetch);
   fetchRef.current = call.fetch;
 

@@ -38,7 +38,7 @@ VideoContext {
 }
 ```
 
-`TranscriptOrigin` says how trustworthy the text is: `creator-captions`, `auto-captions`, `native-transcript`, `stt`, `video-model`.
+`TranscriptOrigin` says how trustworthy the text is: `creator-captions`, `auto-captions`, `native-transcript`, `stt`, `video-model`, and `imported` (pasted, uploaded or read by the browser extension; see [contracts/transcript-import.md](contracts/transcript-import.md)).
 
 Design rule: raw transcripts are always kept. Summaries, briefs, extractions and translations are layers stored next to them, never replacements.
 

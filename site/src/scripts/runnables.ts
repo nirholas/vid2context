@@ -15,11 +15,11 @@ import {
   presentSse,
   presentText,
   presentZip,
-  requestUrl,
   type RunnableSpec,
+  requestUrl,
   SHOWN_HEADERS,
-  STATUS_TEXT,
   type SnippetOptions,
+  STATUS_TEXT,
   snippets,
   type Values,
 } from '../lib/runnable.ts';
@@ -177,7 +177,12 @@ if (dialog) {
         return;
       }
       const clean = `${parsed.origin}${parsed.pathname.replace(/\/+$/, '')}`;
-      next = clean === LOCAL ? { mode: 'local', custom: settings.custom } : clean === location.origin ? next : { mode: 'custom', custom: clean };
+      next =
+        clean === LOCAL
+          ? { mode: 'local', custom: settings.custom }
+          : clean === location.origin
+            ? next
+            : { mode: 'custom', custom: clean };
     }
     if (error) error.hidden = true;
     apiKey = keyInput?.value.trim() ?? '';
@@ -224,7 +229,9 @@ function presentError(status: number, text: string): string {
   if (body.attempts?.length) {
     lines.push('', 'Attempts:');
     for (const a of body.attempts) {
-      lines.push(`  ${a.stage.padEnd(9)}${a.outcome.padEnd(8)}${a.id}${a.reason ? `  ${a.reason}` : ''}${a.detail ? `  ${a.detail}` : ''}`);
+      lines.push(
+        `  ${a.stage.padEnd(9)}${a.outcome.padEnd(8)}${a.id}${a.reason ? `  ${a.reason}` : ''}${a.detail ? `  ${a.detail}` : ''}`,
+      );
     }
   }
   lines.push('', JSON.stringify(body, null, 2));
@@ -278,7 +285,7 @@ class Block {
       body: this.bodyEl.innerHTML,
       meta: this.metaEl.innerHTML,
       clip: this.clipEl.textContent ?? '',
-      clipHidden: this.clipEl.hidden,
+      clipHidden: this.clipEl.hidden === true,
       error: this.bodyEl.classList.contains('rx-error'),
     };
     this.wire();
@@ -435,11 +442,13 @@ class Block {
   syncServer(): void {
     this.server.value = settings.mode;
     const customOpt = this.server.querySelector<HTMLOptionElement>('option[value="custom"]');
-    if (customOpt) customOpt.textContent = settings.custom ? `Custom: ${settings.custom.replace(/^https?:\/\//, '')}` : 'Custom URL';
+    if (customOpt)
+      customOpt.textContent = settings.custom ? `Custom: ${settings.custom.replace(/^https?:\/\//, '')}` : 'Custom URL';
     const siteOpt = this.server.querySelector<HTMLOptionElement>('option[value="site"]');
     if (siteOpt) siteOpt.textContent = `This site (${location.host})`;
-    this.healthEl.dataset.state = health.state;
-    this.healthEl.textContent = health.state === 'checking' ? 'checking' : health.state === 'idle' ? '' : health.text;
+    const h = health;
+    this.healthEl.dataset.state = h.state;
+    this.healthEl.textContent = 'text' in h ? h.text : h.state === 'checking' ? 'checking' : '';
   }
 
   /** Rebuild the snippets for the current values. */
@@ -486,7 +495,13 @@ class Block {
     this.downloadLink.hidden = which !== 'live' || !this.downloadUrl;
   }
 
-  private setLive(status: string, text: string, lang: 'json' | 'text' | 'bash' | 'js' | 'python', meta: string, error = false): void {
+  private setLive(
+    status: string,
+    text: string,
+    lang: 'json' | 'text' | 'bash' | 'js' | 'python',
+    meta: string,
+    error = false,
+  ): void {
     this.live = { status, body: `<code>${highlightCode(text, lang)}</code>`, meta, error };
     this.show('live');
   }
@@ -531,7 +546,8 @@ class Block {
         this.statusEl.textContent = this.live.status;
       }
     }, 100);
-    const done = (res: Response | null) => `${res ? `${res.status} ${STATUS_TEXT[res.status] ?? ''}`.trim() : 'Failed'}, ${fmtSec(performance.now() - started)}, ${serverLabel()}`;
+    const done = (res: Response | null) =>
+      `${res ? `${res.status} ${STATUS_TEXT[res.status] ?? ''}`.trim() : 'Failed'}, ${fmtSec(performance.now() - started)}, ${serverLabel()}`;
 
     try {
       const init: RequestInit = { method: req.method, headers: authHeaders(), signal: controller.signal };
@@ -562,7 +578,12 @@ class Block {
           const { value, done: end } = await reader.read();
           if (end) break;
           text += value;
-          this.live = { status: this.live?.status ?? '', body: `<code>${highlightCode(presentSse(text), 'text')}</code>`, meta, error: false };
+          this.live = {
+            status: this.live?.status ?? '',
+            body: `<code>${highlightCode(presentSse(text), 'text')}</code>`,
+            meta,
+            error: false,
+          };
           this.bodyEl.innerHTML = this.live.body;
         }
         this.setLive(`Your run: ${done(res)}`, presentSse(text), 'text', meta);
@@ -586,7 +607,8 @@ class Block {
       if (this.spec.provides) this.provide(text);
     } catch (err) {
       const e = err as Error;
-      if (e.name === 'AbortError') this.setLive(`Canceled after ${fmtSec(performance.now() - started)}`, 'The request was canceled.', 'text', '', true);
+      if (e.name === 'AbortError')
+        this.setLive(`Canceled after ${fmtSec(performance.now() - started)}`, 'The request was canceled.', 'text', '', true);
       else if (err instanceof InputError) this.setLive('Not sent', e.message, 'text', '', true);
       else this.setLive(`Your run: ${done(null)}`, unreachableHelp(err instanceof NoApi ? err.status : null), 'text', '', true);
     } finally {
@@ -602,7 +624,7 @@ class Block {
   private async followJob(first: Job, base: string, signal: AbortSignal, started: number, meta: string): Promise<void> {
     let job = first;
     while (job.status === 'queued' || job.status === 'running') {
-      const progress = job.progress ? ` ${JSON.stringify(job.progress)}` : '';
+      const progress = progressText(job.progress);
       if (this.live) {
         this.live.status = `Job ${job.status}${progress}: ${fmtSec(performance.now() - started)}`;
         this.live.body = `<code>${highlightCode(JSON.stringify(job, null, 2), 'json')}</code>`;
@@ -631,7 +653,12 @@ class Block {
     const p = this.spec.provides;
     if (!p) return;
     try {
-      const value = p.path.split('.').reduce<unknown>((o, k) => (o && typeof o === 'object' ? (o as Record<string, unknown>)[k] : undefined), JSON.parse(text));
+      const value = p.path
+        .split('.')
+        .reduce<unknown>(
+          (o, k) => (o && typeof o === 'object' ? (o as Record<string, unknown>)[k] : undefined),
+          JSON.parse(text),
+        );
       if (typeof value !== 'string') return;
       provided.set(p.name, value);
       document.dispatchEvent(new CustomEvent('rx:provide', { detail: { name: p.name, value } }));
@@ -639,6 +666,14 @@ class Block {
       // A body that is not JSON provides nothing.
     }
   }
+}
+
+/** ": Extracting (0 of 1)" from a Job's progress, '' without one. */
+function progressText(progress: unknown): string {
+  if (!progress || typeof progress !== 'object') return '';
+  const p = progress as { done?: number; total?: number; message?: string };
+  const count = typeof p.done === 'number' && typeof p.total === 'number' ? ` (${p.done} of ${p.total})` : '';
+  return p.message || count ? `, ${p.message ?? 'working'}${count}` : '';
 }
 
 interface Job {
@@ -659,7 +694,9 @@ function unreachableHelp(status: number | null): string {
   const base = baseUrl();
   if (settings.mode === 'site') {
     return [
-      status ? `${location.origin} answered HTTP ${status} with a web page, not the API.` : `No API answered at ${location.origin}.`,
+      status
+        ? `${location.origin} answered HTTP ${status} with a web page, not the API.`
+        : `No API answered at ${location.origin}.`,
       '',
       'This copy of the docs is served without the HTTP API (for example by astro dev or a static host).',
       'Choose "Local server" and start one from a clone of the repo:',

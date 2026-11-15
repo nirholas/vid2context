@@ -148,6 +148,7 @@ Mounted by `createApp` (`packages/server/src/app.ts`, `MOUNTED_SUB_APPS`). They 
 | `@vid2context/research` (54) | `researchRoutes` | `/api/v1` | |
 | `@vid2context/exporters` (57) | `exporterRoutes` | `/api/v1` | |
 | `@vid2context/webhooks` (59) | `webhookRoutes` | `/api/v1` | |
+| `@vid2context/imports` | `importRoutes` | `/api/v1` | `POST /imports`, see below. Gets `hosted` from the server config; caps its own body at 5 MB, so the server's JSON body limit skips this path |
 | `@vid2context/downloads` | `downloadsRoutes` | `/api/v1` | `/downloads/*`, see below. `createApp({ downloads })` takes the Node entry's `createDownloadManager`; without one (Workers) every route but `/downloads/status` answers `no-provider` |
 | `@vid2context/mcp-http` (45) | `mcpHttpRoutes` | `/` | `/mcp`, `/oauth/*`, `/.well-known/*`; answers its own errors and keeps its own auth and CORS rules |
 
@@ -166,6 +167,14 @@ Save a video as mp4, webm or mkv, or its audio as mp3, m4a, opus, flac or wav. O
 | `GET /downloads/:id` | | `DownloadJob { id, status: queued \| running \| done \| error \| canceled, request, progress: { phase, percent?, downloadedBytes, totalBytes?, speedBps?, etaSec?, step? }, file?: { filename, bytes, mimeType, title, durationSec?, section?, warnings }, error?, expiresAt? }` |
 | `GET /downloads/:id/file?inline=` | `Range: bytes=` (one range) | the file, `Content-Disposition: attachment` (or `inline` with `inline=1`), `206` for a range, `416` when unsatisfiable, `400` while not done |
 | `DELETE /downloads/:id` | | `{ deleted: true, id }`; cancels a running job or deletes the file |
+
+### Transcript import (`@vid2context/imports`)
+
+When the server cannot read a video's captions (YouTube blocks many cloud IPs), the transcript comes from the user: pasted text, a subtitle file, or segments the browser extension fetched. Contract: [transcript-import.md](transcript-import.md).
+
+| Method and path | Request | Response |
+|---|---|---|
+| `POST /imports` | JSON, at most 5 MB: `{ url, text? \| segments?: { startSec, endSec?, text }[], language?, filename?, via?: paste \| file \| browser, captionKind?, metadata? }`, exactly one of `text` and `segments` | `201 { context, format, saved }`: `transcript.origin` is `imported`; `format` is the detected text format (`vtt`, `srt`, `youtube-transcript`, `srv1`, `srv3`, `json3`, `plain`) or `segments`; `saved` is false in hosted mode, where imports are never written to storage. `bad-request` when nothing could be read, `unsupported-input` for lists, `too-large` (413) |
 
 Not mounted, because the package exports no route factory yet: bots (56), live (61) and duplicates (62).
 

@@ -29,7 +29,9 @@ const key = process.env.VID2CONTEXT_API_KEY;
 const authHeaders: Record<string, string> = key ? { Authorization: `Bearer ${key}` } : {};
 
 function at(obj: unknown, path: string): unknown {
-  return path.split('.').reduce<unknown>((o, k) => (o && typeof o === 'object' ? (o as Record<string, unknown>)[k] : undefined), obj);
+  return path
+    .split('.')
+    .reduce<unknown>((o, k) => (o && typeof o === 'object' ? (o as Record<string, unknown>)[k] : undefined), obj);
 }
 
 async function main(): Promise<void> {
@@ -43,7 +45,10 @@ async function main(): Promise<void> {
   for (const spec of runnables) {
     const selected = only.size === 0 || only.has(spec.id);
     // Providers run even when not selected, so a later example gets its chained value.
-    if (!selected && !(spec.provides && runnables.some((r) => only.has(r.id) && r.fields.some((f) => f.from === spec.provides?.name))))
+    if (
+      !selected &&
+      !(spec.provides && runnables.some((r) => only.has(r.id) && r.fields.some((f) => f.from === spec.provides?.name)))
+    )
       continue;
     const values = defaults(spec);
     for (const f of spec.fields) if (f.from && provided[f.from]) values[f.name] = provided[f.from] as string;
@@ -68,7 +73,13 @@ async function main(): Promise<void> {
       id: spec.id,
       recordedAt: new Date().toISOString().slice(0, 10),
       server: { name: health.name, version: health.version, runtime: health.runtime },
-      request: { method: req.method, path: req.path, query: req.query, ...(req.json ? { json: req.json } : {}), ...(req.file ? { file: req.file } : {}) },
+      request: {
+        method: req.method,
+        path: req.path,
+        query: req.query,
+        ...(req.json ? { json: req.json } : {}),
+        ...(req.file ? { file: req.file } : {}),
+      },
       status: res.status,
       ms: 0,
       headers,
@@ -82,7 +93,9 @@ async function main(): Promise<void> {
       while (job.status === 'queued' || job.status === 'running') {
         await new Promise((r) => setTimeout(r, 1500));
         polls++;
-        job = (await (await fetch(`${base}/api/v1/jobs/${encodeURIComponent(job.id)}`, { headers: authHeaders })).json()) as typeof job;
+        job = (await (
+          await fetch(`${base}/api/v1/jobs/${encodeURIComponent(job.id)}`, { headers: authHeaders })
+        ).json()) as typeof job;
       }
       rec.job = { polls, final: job };
     }

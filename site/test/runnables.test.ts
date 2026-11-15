@@ -167,7 +167,17 @@ describe('requests', () => {
 
   it('leaves out a field at the server default but keeps other values', () => {
     const s = spec({
-      fields: [{ name: 'mode', label: 'Mode', type: 'select', in: 'query', default: 'auto', serverDefault: 'auto', options: ['auto', 'stt'] }],
+      fields: [
+        {
+          name: 'mode',
+          label: 'Mode',
+          type: 'select',
+          in: 'query',
+          default: 'auto',
+          serverDefault: 'auto',
+          options: ['auto', 'stt'],
+        },
+      ],
     });
     expect(buildRequest(s, { mode: 'auto' }).query).toEqual([]);
     expect(buildRequest(s, { mode: 'stt' }).query).toEqual([['mode', 'stt']]);

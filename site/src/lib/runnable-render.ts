@@ -22,9 +22,9 @@ import {
   presentRecording,
   type Recording,
   type RunnableSpec,
-  STATUS_TEXT,
   type Snippet,
   type SnippetOptions,
+  STATUS_TEXT,
   snippets,
 } from './runnable.ts';
 
@@ -72,7 +72,9 @@ function fieldHtml(spec: RunnableSpec, f: Field, uid: string, sourceTitle: strin
       return `<label class="rx-field rx-check" for="${id}"><input id="${id}" type="checkbox" ${name}${f.default === 'true' ? ' checked' : ''}${describedBy}> <span>${esc(f.label)}</span>${help}</label>`;
     case 'select':
       control = `<select id="${id}" ${name}${describedBy}>${(f.options ?? [])
-        .map((o) => `<option value="${esc(o)}"${o === (f.default ?? '') ? ' selected' : ''}>${o === '' ? 'any' : esc(o)}</option>`)
+        .map(
+          (o) => `<option value="${esc(o)}"${o === (f.default ?? '') ? ' selected' : ''}>${o === '' ? 'any' : esc(o)}</option>`,
+        )
         .join('')}</select>`;
       break;
     case 'list':
@@ -141,7 +143,10 @@ function renderBlock(spec: RunnableSpec, uid: string): string {
   const headers = Object.entries(rec.headers)
     .map(([k, v]) => `<span><b>${esc(k)}</b> ${esc(v)}</span>`)
     .join('');
-  const recordedLabel = `Recorded response: ${statusLine(rec)}, ${formatDuration(rec.ms)}, ${rec.recordedAt}`;
+  const job = rec.job ? (rec.job.final as { status?: string }) : undefined;
+  const recordedLabel = job
+    ? `Recorded response: ${statusLine(rec)}, then the job ${job.status} after ${formatDuration(rec.ms)}, ${rec.recordedAt}`
+    : `Recorded response: ${statusLine(rec)}, ${formatDuration(rec.ms)}, ${rec.recordedAt}`;
   const out = `<div class="rx-out" data-rx-out><div class="code"><div class="code-bar"><span class="code-label rx-status" data-rx-status>${esc(recordedLabel)}</span><span class="rx-out-actions"><button type="button" class="copy-btn" data-rx-toggle hidden>Show recorded</button><a class="copy-btn" data-rx-download hidden>Download</a><button type="button" class="copy-btn" data-copy-btn>Copy</button></span></div><div class="rx-meta" data-rx-meta>${headers}</div><pre tabindex="0" data-rx-body class="${rec.status >= 400 ? 'rx-error' : ''}"><code>${highlightCode(clip.text, shown.lang)}</code></pre></div><p class="rx-clip" data-rx-clip${clip.clipped > 0 ? '' : ' hidden'}>${clip.clipped > 0 ? `${clip.clipped} more lines not shown. Run it to see the whole response.` : ''}</p></div>`;
 
   const fields = spec.fields.map((f) => fieldHtml(spec, f, uid, f.from ? fromTitle : undefined)).join('');

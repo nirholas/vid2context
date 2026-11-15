@@ -6,8 +6,8 @@
  *
  * The videos are real and public: "Me at the zoo" (0:19, three chapters), a
  * G-Wagon buyer video (18 min, nine chapters) and its playlist, and
- * Kurzgesagt's "Optimistic Nihilism" (SponsorBlock segments), and a 15-minute
- * G-Wagon ownership video from the playlist that has no chapters. Responses that would carry an email address (the G-Wagon
+ * Kurzgesagt's "Optimistic Nihilism" (7:26, no chapters, SponsorBlock
+ * segments), and an 11-minute video from the playlist with six chapters. Responses that would carry an email address (the G-Wagon
  * description has one) are refused by the recorder, so no example shows that
  * video's metadata.
  */
@@ -18,8 +18,8 @@ export const ZOO = 'https://www.youtube.com/watch?v=jNQXAC9IVRw';
 export const GWAGON = 'https://www.youtube.com/watch?v=cCPsdFdlshc';
 export const GWAGON_PLAYLIST = 'https://www.youtube.com/playlist?list=PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b';
 export const NIHILISM = 'https://www.youtube.com/watch?v=MBRqu0YOH14';
-/** From the G-Wagon playlist: 15:06 with no chapters, for five-minute sections and generated chapters. */
-export const OWNING = 'https://www.youtube.com/watch?v=1Xx1fmHIsiA';
+/** From the G-Wagon playlist: 11:37 with six creator chapters, to compare generated chapters against. */
+export const SELLING = 'https://www.youtube.com/watch?v=PzJL3aBRas8';
 /** A well-formed YouTube id that does not exist, for the error example. */
 export const MISSING = 'https://www.youtube.com/watch?v=xxxxxxxxxxx';
 
@@ -245,10 +245,10 @@ export const runnables: RunnableSpec[] = [
     title: 'Outline of a video without chapters',
     method: 'GET',
     path: '/api/v1/outline',
-    fields: [url(OWNING, { cli: undefined }), lang(), mode()],
+    fields: [url(NIHILISM, { cli: undefined }), lang(), mode()],
     response: 'json',
     mcp: { tool: 'get_outline' },
-    note: 'No chapters, so the outline is five-minute sections.',
+    note: 'No chapters, so the outline is sections of about five minutes, cut where the speech pauses.',
   },
   {
     id: 'section-chapter',
@@ -339,11 +339,19 @@ export const runnables: RunnableSpec[] = [
     method: 'POST',
     path: '/api/v1/chapters',
     fields: [
-      url(OWNING, { in: 'body', cli: undefined, mcp: undefined }),
+      url(SELLING, { in: 'body', cli: undefined, mcp: undefined }),
+      {
+        name: 'force',
+        label: 'Force',
+        type: 'checkbox',
+        in: 'body',
+        default: 'true',
+        help: 'Propose chapters even when the video has its own',
+      },
       { name: 'summaries', label: 'Summaries', type: 'checkbox', in: 'body', default: '' },
     ],
     response: 'json',
-    note: 'For videos without chapters: an LLM on the free chain picks chapter titles from the transcript.',
+    note: 'An LLM on the free chain proposes chapters from the transcript. This video has six of its own; force asks for new ones to compare.',
   },
   {
     id: 'key-moments',
@@ -455,7 +463,15 @@ export const runnables: RunnableSpec[] = [
     fields: [
       inputs([GWAGON], { name: 'urls', cli: undefined }),
       { name: 'query', label: 'Query', type: 'text', in: 'body', default: 'reliability', mcp: { arg: 'query' } },
-      { name: 'maxExcerpts', label: 'Max excerpts', type: 'number', in: 'body', default: '3', optional: true, mcp: { arg: 'maxExcerpts' } },
+      {
+        name: 'maxExcerpts',
+        label: 'Max excerpts',
+        type: 'number',
+        in: 'body',
+        default: '3',
+        optional: true,
+        mcp: { arg: 'maxExcerpts' },
+      },
     ],
     response: 'json',
     mcp: { tool: 'research_videos' },
@@ -467,7 +483,15 @@ export const runnables: RunnableSpec[] = [
     method: 'GET',
     path: '/api/v1/search',
     fields: [
-      { name: 'q', label: 'Query', type: 'text', in: 'query', default: 'elephants', cli: { positional: true }, mcp: { arg: 'query' } },
+      {
+        name: 'q',
+        label: 'Query',
+        type: 'text',
+        in: 'query',
+        default: 'elephants',
+        cli: { positional: true },
+        mcp: { arg: 'query' },
+      },
       {
         name: 'limit',
         label: 'Limit',

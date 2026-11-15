@@ -1,1 +1,17 @@
-{"error":{"code":"blocked","message":"YouTube requests are paused for 172s more: YouTube blocked this server's IP address 7 min ago, so this request was not sent. The blocked request: YouTube captions en: YouTube answered HTTP 429 (automated-traffic block).","hint":"YouTube is refusing requests from this IP address, which is common on cloud servers. Fixes, best first: run vid2context on your own machine; route the server through your home network (docs/guides/cloudflare-tunnel.md); set YOUTUBE_COOKIE to a signed-in Cookie header (ties requests to your account); or install the yt-dlp provider. Then wait for the block to clear (YOUTUBE_BLOCK_COOLDOWN_SEC)."},"attempts":[{"id":"youtube","stage":"resolve","outcome":"ok","detail":"youtube:xAcTmDO6NTI"},{"id":"youtube","stage":"metadata","outcome":"error","reason":"blocked","detail":"YouTube requests are paused for 172s more: YouTube blocked this server's IP address 7 min ago, so this request was not sent. The blocked request: YouTube captions en: YouTube answered HTTP 429 (automated-traffic block)."}]}
+{
+  "error": {
+    "code": "blocked",
+    "message": "YouTube requests are paused for 172s more: YouTube blocked this server's IP address 7 min ago, so this request was not sent. The blocked request: YouTube captions en: YouTube answered HTTP 429 (automated-traffic block).",
+    "hint": "YouTube is refusing requests from this IP address, which is common on cloud servers. Fixes, best first: run vid2context on your own machine; route the server through your home network (docs/guides/cloudflare-tunnel.md); set YOUTUBE_COOKIE to a signed-in Cookie header (ties requests to your account); or install the yt-dlp provider. Then wait for the block to clear (YOUTUBE_BLOCK_COOLDOWN_SEC)."
+  },
+  "attempts": [
+    { "id": "youtube", "stage": "resolve", "outcome": "ok", "detail": "youtube:xAcTmDO6NTI" },
+    {
+      "id": "youtube",
+      "stage": "metadata",
+      "outcome": "error",
+      "reason": "blocked",
+      "detail": "YouTube requests are paused for 172s more: YouTube blocked this server's IP address 7 min ago, so this request was not sent. The blocked request: YouTube captions en: YouTube answered HTTP 429 (automated-traffic block)."
+    }
+  ]
+}

@@ -11,13 +11,14 @@
     "path": "/api/v1/chapters",
     "query": [],
     "json": {
-      "url": "https://www.youtube.com/watch?v=1Xx1fmHIsiA"
+      "url": "https://www.youtube.com/watch?v=PzJL3aBRas8",
+      "force": true
     }
   },
-  "status": 422,
-  "ms": 19804,
+  "status": 200,
+  "ms": 1864,
   "headers": {
     "content-type": "application/json"
   },
-  "body": "{\"error\":{\"code\":\"no-transcript\",\"message\":\"Could not get a transcript for youtube:1Xx1fmHIsiA (mode: auto).\",\"hint\":\"Check `attempts` for why each step failed. Installing the yt-dlp provider and enabling a speech-to-text rung covers most videos.\"},\"attempts\":[{\"id\":\"youtube\",\"stage\":\"resolve\",\"outcome\":\"ok\",\"detail\":\"youtube:1Xx1fmHIsiA\"},{\"id\":\"youtube\",\"stage\":\"metadata\",\"outcome\":\"ok\",\"ms\":13},{\"id\":\"youtube-captions\",\"stage\":\"captions\",\"outcome\":\"error\",\"reason\":\"blocked\",\"detail\":\"YouTube requests are paused for 579s more: YouTube blocked this server's IP address 22s ago, so this request was not sent. The blocked request: YouTube captions en: YouTube answered HTTP 429 (automated-traffic block).\",\"ms\":0},{\"id\":\"ytdlp-captions\",\"stage\":\"captions\",\"outcome\":\"error\",\"reason\":\"rate-limited\",\"detail\":\"yt-dlp captions: Unable to download video subtitles for 'en-orig': HTTP Error 429: Too Many Requests\",\"ms\":7946},{\"id\":\"ytdlp\",\"stage\":\"audio\",\"outcome\":\"ok\",\"ms\":11835},{\"id\":\"stt/cloudflare/@cf/openai/whisper-large-v3-turbo\",\"stage\":\"stt\",\"outcome\":\"skipped\",\"reason\":\"cooldown\"},{\"id\":\"stt/cloudflare/@cf/openai/whisper\",\"stage\":\"stt\",\"outcome\":\"skipped\",\"reason\":\"cooldown\"},{\"id\":\"stt/ovh/whisper-large-v3-turbo\",\"stage\":\"stt\",\"outcome\":\"skipped\",\"reason\":\"cooldown\"}]}"
+  "body": "{\"videoId\":\"youtube:PzJL3aBRas8\",\"chapters\":[{\"title\":\"Finding and building the dream 2015 G-Wagon\",\"startSec\":0,\"endSec\":316.96000000000004},{\"title\":\"Why I'm selling for a Ford F-150 Raptor\",\"startSec\":316.96000000000004,\"endSec\":697}],\"producer\":\"llm/kilo/nvidia/nemotron-3-ultra-550b-a55b:free\",\"rung\":\"llm/kilo/nvidia/nemotron-3-ultra-550b-a55b:free\",\"model\":\"nvidia/nemotron-3-ultra-550b-a55b:free\",\"source\":\"auto\",\"method\":\"texttiling+llm\",\"durationSec\":697,\"notes\":[\"Kept the start of chapter 2 at 317 s: the model moved it to 369.84 s, outside its window.\"],\"attempts\":[{\"id\":\"llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast\",\"stage\":\"llm\",\"outcome\":\"error\",\"reason\":\"auth-401\",\"detail\":\"cloudflare chat: HTTP 401 {\\\"result\\\":null,\\\"success\\\":false,\\\"errors\\\":[{\\\"code\\\":10000,\\\"message\\\":\\\"Authentication error\\\"}],\\\"messages\\\":[]}\",\"ms\":73},{\"id\":\"llm/kilo/nvidia/nemotron-3-ultra-550b-a55b:free\",\"stage\":\"llm\",\"outcome\":\"ok\",\"ms\":1766}]}"
 }

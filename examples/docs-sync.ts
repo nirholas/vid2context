@@ -104,7 +104,13 @@ export function runExample(
   const cwd = opts.cwd ?? mkdtempSync(join(tmpdir(), 'vid2context-example-'));
   const env = opts.env ?? { PATH: process.env.PATH, HOME: process.env.HOME };
   return new Promise((resolve, reject) => {
-    const child = spawn(command, [...args, ...(opts.args ?? [])], { cwd, env, stdio: ['ignore', 'pipe', 'pipe'] });
+    // Its own process group, so a timeout also stops what a shell script started (tsx, node, curl).
+    const child = spawn(command, [...args, ...(opts.args ?? [])], {
+      cwd,
+      env,
+      stdio: ['ignore', 'pipe', 'pipe'],
+      detached: true,
+    });
     let stdout = '';
     let stderr = '';
     child.stdout.on('data', (d: Buffer) => {
@@ -113,7 +119,15 @@ export function runExample(
     child.stderr.on('data', (d: Buffer) => {
       stderr += d.toString();
     });
-    const timer = setTimeout(() => child.kill('SIGTERM'), opts.timeoutMs ?? 120_000);
+    const timeoutMs = opts.timeoutMs ?? 120_000;
+    const timer = setTimeout(() => {
+      stderr += `\n[examples] stopped after ${timeoutMs / 1000} s\n`;
+      try {
+        if (child.pid) process.kill(-child.pid, 'SIGTERM');
+      } catch {
+        child.kill('SIGTERM');
+      }
+    }, timeoutMs);
     child.on('error', reject);
     child.on('close', (code) => {
       clearTimeout(timer);

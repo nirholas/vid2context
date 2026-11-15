@@ -1,9 +1,9 @@
 ---
+import RunnableRuntime from '../components/RunnableRuntime.astro';
 import { withBase } from '../lib/base.ts';
 /** Docs pages: sidebar, article, in-page table of contents. */
 import { type DocPage, docPages, SECTIONS, sectionLabel } from '../lib/docs.ts';
 import { breadcrumbNode } from '../lib/seo.ts';
-import RunnableRuntime from '../components/RunnableRuntime.astro';
 import Base from './Base.astro';
 
 interface Props {

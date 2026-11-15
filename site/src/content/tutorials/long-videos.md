@@ -18,7 +18,7 @@ The MCP server gives agents the same steps as tools (`get_outline`, then `get_se
 
 ## 2. Videos without chapters
 
-When a video has no chapters, the outline splits it into sections of about five minutes, so the same next step works on any video.
+When a video has no chapters, the outline splits it into sections of about five minutes, cut where the speech pauses, so the same next step works on any video. Up to about seven minutes of speech stays one section, as in this 7:26 video; a longer one gets one entry per five minutes or so.
 
 ```run outline-sections
 ```

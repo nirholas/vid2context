@@ -27,6 +27,7 @@ Node 22 or newer. Keys are read from the environment and `./.env` (or `VID2CONTE
 | `formats` | The output formats, read from the formatter map at runtime |
 | `pack <inputs...>` | One context pack (Markdown for an AI model) from one or many videos |
 | `bundle <inputs...> -o file.zip` | A .zip with every format, the pack, a manifest and a README for agents |
+| `download <inputs...>` | Save videos as mp4, webm or mkv, or their audio as mp3, m4a, opus, flac or wav |
 | `search <query>` | Keyword search over transcripts saved in the library |
 | `library ls`, `show <id>`, `rm <id>` | Saved video contexts |
 | `collection create`, `add`, `ls`, `show`, `refresh`, `rm` | Named groups of videos in the library |
@@ -136,6 +137,26 @@ $ vid2context bundle jNQXAC9IVRw -o zoo.zip
 10 files for 1 video in me-at-the-zoo/
 wrote /home/user/zoo.zip (7380 bytes)
 ```
+
+### download
+
+```
+vid2context download <inputs...> [--video [mp4|webm|mkv] | --audio [mp3|m4a|opus|flac|wav]] [--quality q]
+  [--from t --to t | --chapter n|title] [--exact-cuts] [--subs langs] [--sponsorblock [cats]]
+  [--no-thumbnail] [--no-metadata] [--no-chapters] [-d folder] [--limit n] [--info] [--force]
+```
+
+Saves files to `--dir`, else `VID2CONTEXT_DOWNLOAD_DIR`, else the current directory, and prints one saved path per line on stdout (`--json`: `{ dir, files, failed }`). Progress, notes and warnings go to stderr. With neither `--video` nor `--audio` it saves an mp4 up to 1080p. Playlists and channels download every video up to `--limit`. Existing files get a ` (2)` suffix unless `--force`. `--info` prints the qualities, formats and estimated sizes and downloads nothing. Local files are converted with ffmpeg. Full guide: [guides/downloads.md](guides/downloads.md).
+
+```
+$ vid2context download jNQXAC9IVRw --audio m4a
+/home/user/Me at the zoo [jNQXAC9IVRw].m4a
+saved Me at the zoo [jNQXAC9IVRw].m4a (0.3 MB, 0:19)
+```
+
+The first line is stdout, the second stderr.
+
+Only download media you have the rights to.
 
 ### search, library, collection
 

@@ -149,7 +149,8 @@ export function buildRequest(spec: RunnableSpec, values: Values, fileName?: stri
     }
     const raw = values[f.name] ?? '';
     const empty = isEmpty(f, raw);
-    if (empty && !f.optional && f.serverDefault === undefined && f.type !== 'checkbox') throw new InputError(`${f.label} is required.`);
+    if (empty && !f.optional && f.serverDefault === undefined && f.type !== 'checkbox')
+      throw new InputError(`${f.label} is required.`);
     if (f.in === 'path') {
       path = path.replace(`{${wire(f)}}`, encodeURIComponent(raw.trim()));
       continue;
@@ -250,7 +251,11 @@ function jsLiteral(v: unknown, indent = ''): string {
 export function fetchSnippet(spec: RunnableSpec, req: BuiltRequest, o: SnippetOptions): string {
   const out: string[] = [];
   const zip = spec.response === 'zip';
-  if (zip || req.file) out.push(`import { ${[req.file ? 'readFile' : '', zip ? 'writeFile' : ''].filter(Boolean).join(', ')} } from 'node:fs/promises';`, '');
+  if (zip || req.file)
+    out.push(
+      `import { ${[req.file ? 'readFile' : '', zip ? 'writeFile' : ''].filter(Boolean).join(', ')} } from 'node:fs/promises';`,
+      '',
+    );
   out.push(`const BASE = ${jsString(o.base)};`);
   const headers: string[] = [];
   if (o.auth) headers.push(`Authorization: \`Bearer \${process.env.${KEY_ENV}}\``);
@@ -273,10 +278,13 @@ export function fetchSnippet(spec: RunnableSpec, req: BuiltRequest, o: SnippetOp
     init.push('body: JSON.stringify(body)');
   }
   if (headers.length) init.unshift(`headers: { ${headers.join(', ')} }`);
-  out.push(init.length ? `const res = await fetch(${target}, {\n  ${init.join(',\n  ')},\n});` : `const res = await fetch(${target});`);
+  out.push(
+    init.length ? `const res = await fetch(${target}, {\n  ${init.join(',\n  ')},\n});` : `const res = await fetch(${target});`,
+  );
   out.push(
     'if (!res.ok) {',
     '  const { error } = await res.json();',
+    // biome-ignore lint/suspicious/noTemplateCurlyInString: this line is generated JavaScript; the template belongs to the snippet
     "  throw new Error(`${error.code}: ${error.message} ${error.hint ?? ''}`);",
     '}',
   );
@@ -306,7 +314,7 @@ export function fetchSnippet(spec: RunnableSpec, req: BuiltRequest, o: SnippetOp
       '  const { value, done } = await reader.read();',
       '  if (done) break;',
       '  buffer += value;',
-      '  let end = buffer.indexOf(\'\\n\\n\');',
+      "  let end = buffer.indexOf('\\n\\n');",
       '  while (end >= 0) {',
       '    const block = buffer.slice(0, end);',
       '    buffer = buffer.slice(end + 2);',
@@ -314,7 +322,7 @@ export function fetchSnippet(spec: RunnableSpec, req: BuiltRequest, o: SnippetOp
       '    const data = /^data: (.*)$/m.exec(block)?.[1];',
       "    if (event === 'delta') process.stdout.write(JSON.parse(data).text);",
       "    if (event === 'error') throw new Error(JSON.parse(data).message);",
-      '    end = buffer.indexOf(\'\\n\\n\');',
+      "    end = buffer.indexOf('\\n\\n');",
       '  }',
       '}',
     );
@@ -348,11 +356,7 @@ export function pythonSnippet(spec: RunnableSpec, req: BuiltRequest, o: SnippetO
   if (o.auth) imports.add('os');
   if (spec.job) imports.add('time');
   if (req.file) imports.add('uuid');
-  const out: string[] = [
-    ...[...imports].sort().map((m) => `import ${m}`),
-    '',
-    `BASE = ${pyString(o.base)}`,
-  ];
+  const out: string[] = [...[...imports].sort().map((m) => `import ${m}`), '', `BASE = ${pyString(o.base)}`];
   const headers: string[] = [];
   if (o.auth) headers.push(`"Authorization": f"Bearer {os.environ['${KEY_ENV}']}"`);
   let url = `f"{BASE}${req.path}"`;
@@ -499,8 +503,7 @@ interface Rule {
 
 const JS_KW =
   /^(?:const|let|var|await|async|new|if|else|for|while|break|continue|of|in|throw|return|import|from|function|try|catch|true|false|null|undefined)$/;
-const PY_KW =
-  /^(?:import|from|as|with|try|except|raise|if|elif|else|while|for|in|not|and|or|def|return|True|False|None|print)$/;
+const PY_KW = /^(?:import|from|as|with|try|except|raise|if|elif|else|while|for|in|not|and|or|def|return|True|False|None|print)$/;
 
 const RULES: Record<SnippetLang, Rule[]> = {
   bash: [
@@ -719,7 +722,8 @@ export function presentRecording(rec: Recording): { text: string; lang: SnippetL
 export function clipOutput(text: string, maxLines: number, maxChars: number): { text: string; clipped: number } {
   const lines = text.split('\n');
   let kept = lines.slice(0, maxLines).join('\n');
-  if (kept.length > maxChars) kept = kept.slice(0, kept.lastIndexOf('\n', maxChars) > 0 ? kept.lastIndexOf('\n', maxChars) : maxChars);
+  if (kept.length > maxChars)
+    kept = kept.slice(0, kept.lastIndexOf('\n', maxChars) > 0 ? kept.lastIndexOf('\n', maxChars) : maxChars);
   const keptLines = kept.split('\n').length;
   return { text: kept, clipped: lines.length - keptLines };
 }

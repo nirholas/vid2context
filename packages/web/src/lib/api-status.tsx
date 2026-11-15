@@ -59,3 +59,8 @@ export function useApiStatus(): ApiStatus {
   if (!v) throw new Error('useApiStatus needs an ApiStatusProvider');
   return v;
 }
+
+/** The API status, or null outside an ApiStatusProvider (components rendered on their own, as in tests). */
+export function useOptionalApiStatus(): ApiStatus | null {
+  return useContext(Ctx);
+}

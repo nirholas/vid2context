@@ -232,6 +232,21 @@ export async function importTranscript(
     });
   }
 
+  // Parse before any network call, so unreadable text fails fast.
+  let parsed = req.text !== undefined ? parseTranscriptText(req.text, { filename: req.filename }) : undefined;
+  const format: ImportFormat = parsed?.format ?? 'segments';
+  if (parsed && parsed.segments.length === 0) {
+    throw bad(
+      format === 'plain' ? 'No transcript text was found.' : `Nothing could be read from this ${format} text.`,
+      NOTHING_HINT,
+    );
+  }
+  if (parsed && parsed.segments.length > MAX_SEGMENTS) {
+    throw new Vid2ContextError('too-large', `${parsed.segments.length} segments; the limit is ${MAX_SEGMENTS}.`, {
+      hint: 'Import a shorter transcript, or split it.',
+    });
+  }
+
   const attempts: Attempt[] = [];
   let metadata: VideoMetadata = { ref, title: ref.url ?? ref.input, chapters: [] };
   if (opts.fetchMetadata === false) {
@@ -249,31 +264,16 @@ export async function importTranscript(
   }
   metadata = withKnown(metadata, { ...req.metadata, ...opts.metadata });
 
-  let segments: Segment[];
-  let format: ImportFormat;
-  let textLanguage: string | undefined;
-  if (req.text !== undefined) {
-    const parsed = parseTranscriptText(req.text, { filename: req.filename, durationSec: metadata.durationSec });
-    segments = parsed.segments;
-    format = parsed.format;
-    textLanguage = parsed.language;
-  } else {
-    segments = normalizeSegments(req.segments ?? [], metadata.durationSec);
-    format = 'segments';
+  // Plain text and the panel copy have no end for their last segment: the video's duration gives it.
+  if (
+    req.text !== undefined &&
+    parsed &&
+    metadata.durationSec !== undefined &&
+    (format === 'plain' || format === 'youtube-transcript')
+  ) {
+    parsed = parseTranscriptText(req.text, { filename: req.filename, durationSec: metadata.durationSec });
   }
-  if (segments.length === 0) {
-    throw bad(
-      format === 'plain' || format === 'segments'
-        ? 'No transcript text was found.'
-        : `Nothing could be read from this ${format} text.`,
-      NOTHING_HINT,
-    );
-  }
-  if (segments.length > MAX_SEGMENTS) {
-    throw new Vid2ContextError('too-large', `${segments.length} segments; the limit is ${MAX_SEGMENTS}.`, {
-      hint: 'Import a shorter transcript, or split it.',
-    });
-  }
+  const segments: Segment[] = parsed ? parsed.segments : normalizeSegments(req.segments ?? [], metadata.durationSec);
 
   const via: ImportVia = req.via ?? (req.text !== undefined ? 'paste' : 'browser');
   attempts.push({
@@ -286,7 +286,7 @@ export async function importTranscript(
     metadata,
     transcript: {
       ref,
-      language: req.language ?? textLanguage ?? metadata.language ?? 'und',
+      language: req.language ?? parsed?.language ?? metadata.language ?? 'und',
       origin: 'imported',
       producer: `import/${via}`,
       segments,

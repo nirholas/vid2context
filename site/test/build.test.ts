@@ -318,3 +318,53 @@ describe('copy rules', () => {
     expect(offenders).toEqual([]);
   });
 });
+
+describe('runnable examples', () => {
+  const withBlocks = pages.filter((f) => read(f).includes('data-rx '));
+
+  it('the tutorials and examples pages have runnable blocks', () => {
+    const paths = withBlocks.map(pathOf);
+    expect(paths).toContain('/docs/tutorials/first-transcript/');
+    expect(paths).toContain('/docs/examples/transcripts/');
+  });
+
+  it('every page with blocks loads the runtime and the settings dialog; no other page does', () => {
+    for (const f of pages) {
+      const html = read(f);
+      const has = html.includes('data-rx ');
+      expect(/RunnableRuntime[^"]*\.js/.test(html), pathOf(f)).toBe(has);
+      expect(html.includes('id="rx-settings"'), pathOf(f)).toBe(has);
+    }
+  });
+
+  it('every block carries a spec that parses, a recorded response and all five snippet slots', () => {
+    for (const f of withBlocks) {
+      const html = read(f);
+      const blocks = html.split('<section class="rx"').slice(1);
+      for (const b of blocks) {
+        const spec = b.match(/<script type="application\/json" data-rx-spec>([\s\S]*?)<\/script>/)?.[1];
+        expect(spec, pathOf(f)).toBeDefined();
+        const parsed = JSON.parse(spec ?? '{}') as { id: string; method: string };
+        expect(parsed.method, `${pathOf(f)} ${parsed.id}`).toMatch(/^(GET|POST)$/);
+        expect(b, parsed.id).toMatch(/data-rx-status>Recorded response: \d{3}/);
+        for (const slot of ['curl', 'fetch', 'python', 'cli', 'mcp'])
+          expect(b, `${parsed.id} ${slot}`).toContain(`data-rx-panel="${slot}"`);
+      }
+    }
+  });
+
+  it('twins replace each block with the curl request and the recorded response', () => {
+    for (const f of withBlocks) {
+      const twin = read(join(DIST, `${pathOf(f).replace(/\/$/, '')}.md`));
+      expect(twin, pathOf(f)).not.toMatch(/^```run /m);
+      expect(twin, pathOf(f)).toContain('Response recorded on ');
+      expect(twin, pathOf(f)).toContain('curl ');
+    }
+  });
+
+  it('serves the Apollo 11 sample byte for byte from the repo fixture', () => {
+    const served = readFileSync(join(DIST, 'samples/apollo11-small-step.mp3'));
+    const fixture = readFileSync(join(SITE, '..', 'tests/fixtures/media/apollo11-small-step.mp3'));
+    expect(served.equals(fixture)).toBe(true);
+  });
+});

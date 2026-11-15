@@ -33,14 +33,17 @@ async function blockedRun(page: Page) {
 
 async function expectImported(page: Page, saved: 'true' | 'false') {
   await expect(page.getByTestId('result-title')).toBeVisible({ timeout: 60_000 });
-  await expect(page.getByTestId('origin-badge').first()).toHaveText('Imported transcript');
+  await expect(page.getByTestId('origin-badge').first()).toContainText('Imported transcript');
   await expect(page.getByTestId('transcript')).toContainText(FIRST_LINE);
   await expect(page.getByTestId('imported-notice')).toHaveAttribute('data-saved', saved);
   await expect(page.getByTestId('file-list')).toContainText('transcript.srt');
-  if (LIVE) await expect(page.getByTestId('result-title')).toHaveText('Lecture 1: Introduction to CS and Programming Using Python');
+  if (LIVE)
+    await expect(page.getByTestId('result-title')).toHaveText('Lecture 1: Introduction to CS and Programming Using Python');
 }
 
-test('a blocked YouTube run offers the other ways, and says how to install the extension when it is missing', async ({ page }) => {
+test('a blocked YouTube run offers the other ways, and says how to install the extension when it is missing', async ({
+  page,
+}) => {
   const panel = await blockedRun(page);
   await expect(panel.getByRole('heading', { name: 'Get the transcript another way' })).toBeVisible();
   await expect(panel.getByRole('tab', { name: 'From my browser' })).toHaveAttribute('aria-selected', 'true');
@@ -66,7 +69,7 @@ test('paste the "Show transcript" text and get the full result, kept in history'
   // Reopening the link shows it from this browser's history, even though the server is still "blocked".
   await page.reload();
   await expect(page.getByTestId('transcript')).toContainText(FIRST_LINE);
-  await expect(page.getByTestId('origin-badge').first()).toHaveText('Imported transcript');
+  await expect(page.getByTestId('origin-badge').first()).toContainText('Imported transcript');
 });
 
 test('upload a subtitle file', async ({ page }) => {

@@ -57,7 +57,7 @@ Sponsor reads, self-promotion, intros, outros and reminders, with their times an
 
 ## Generate chapters
 
-For a video without chapters, an LLM on the free chain proposes chapter titles from the transcript. A video that already has chapters answers `bad-request` unless you send `force: true`.
+An LLM on the free chain proposes chapters from the transcript. A video that already has chapters answers `bad-request` unless you send `force: true`, as this example does, so you can compare the proposal with the creator's chapters. Untick **Force** to see that error.
 
 ```run chapters-auto
 ```
