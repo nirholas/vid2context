@@ -524,14 +524,31 @@ describe.skipIf(!process.env.LIVE)('live', () => {
       expect(audio.durationSec).toBeCloseTo(19, 0);
     }
 
-    const context = await getVideoContext(
-      new Registry([ytdlpSource, ytdlpCaptions, ...[stt].flat()], 'node'),
-      'https://www.youtube.com/watch?v=jNQXAC9IVRw',
-      { mode: 'stt' },
-      ctx,
-    );
+    // The keyless hosts are shared and answer 429 now and then. When every hosted rung was only
+    // rate limited (or refused a bad key), wait out the 60 s rung cooldown and try again, at most twice.
+    const registry = new Registry([ytdlpSource, ytdlpCaptions, ...[stt].flat()], 'node');
+    const onlyThrottled = (err: unknown): boolean => {
+      const attempts = (err as { attempts?: { stage: string; outcome: string; reason?: string }[] }).attempts ?? [];
+      const stt = attempts.filter((a) => a.stage === 'stt' && a.outcome !== 'skipped');
+      return (
+        err instanceof Vid2ContextError &&
+        err.code === 'no-transcript' &&
+        attempts.some((a) => a.stage === 'audio' && a.outcome === 'ok') &&
+        stt.length > 0 &&
+        stt.every((a) => /^(rate-limited|auth|cooldown)/.test(a.reason ?? ''))
+      );
+    };
+    let context: Awaited<ReturnType<typeof getVideoContext>> | undefined;
+    for (let attempt = 1; !context; attempt++) {
+      try {
+        context = await getVideoContext(registry, 'https://www.youtube.com/watch?v=jNQXAC9IVRw', { mode: 'stt' }, ctx);
+      } catch (err) {
+        if (attempt >= 3 || !onlyThrottled(err)) throw err;
+        await new Promise((r) => setTimeout(r, 65_000));
+      }
+    }
     expect(context.transcript.origin).toBe('stt');
     expect(context.attempts.find((a) => a.stage === 'audio' && a.outcome === 'ok')?.id).toBe('ytdlp');
     expect(context.transcript.segments.map((s) => s.text).join(' ')).toMatch(/elephant/i);
-  }, 300_000);
+  }, 600_000);
 });

@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { createContext, Vid2ContextError } from '@vid2context/core';
 import { replayFetch, testContext } from '@vid2context/core/testing';
 import { afterEach, describe, expect, it } from 'vitest';
-import { managedPath, readVersion, selfUpdate, versionAgeDays } from '../src/binary.ts';
+import { installManaged, managedPath, readVersion, selfUpdate, versionAgeDays } from '../src/binary.ts';
 import { errorFromStderr, suggestsUpdate } from '../src/errors.ts';
 import { ytdlp } from '../src/run.ts';
 
@@ -107,16 +107,20 @@ describe('selfUpdate', () => {
 // Live: an outdated managed yt-dlp (2023.03.04, which fails on YouTube today with
 // "No video formats found!; please report this issue ... yt-dlp -U") updates itself
 // on the first failure and the same call then succeeds or fails for another reason.
+const OLD_TAG = '2023.03.04';
+
 describe.skipIf(!process.env.LIVE)('self-update against GitHub and YouTube (live)', () => {
   it('replaces an outdated managed binary and retries the call', { timeout: 600_000 }, async () => {
-    const old = process.env.YTDLP_OLD_BINARY;
-    if (!old) throw new Error('Set YTDLP_OLD_BINARY to a yt-dlp 2023.03.04 yt-dlp_linux binary for this test.');
     const dir = await home();
     const env: Record<string, string> = { ...(process.env as Record<string, string>), VID2CONTEXT_HOME: dir };
     delete env.YTDLP_PATH;
     const ctx = createContext({ runtime: 'node', env, fetch: globalThis.fetch.bind(globalThis) });
     const bin = managedPath(env);
-    await copyFile(old, bin);
+    // YTDLP_OLD_BINARY saves the download; otherwise the old official release is installed,
+    // checksum verified against its own SHA2-256SUMS, through the same code path as any install.
+    const old = process.env.YTDLP_OLD_BINARY;
+    if (old) await copyFile(old, bin);
+    else await installManaged(ctx, OLD_TAG);
     const before = await readVersion(bin, ctx);
     await writeFile(join(dir, 'bin', 'yt-dlp.json'), JSON.stringify({ ...META, version: before }));
     const args = ['-J', '--no-download', '--no-playlist', '--no-warnings', '--', 'https://www.youtube.com/watch?v=jNQXAC9IVRw'];
