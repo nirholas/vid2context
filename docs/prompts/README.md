@@ -83,7 +83,7 @@ A review of wave 1 against popular open-source projects (`docs/prior-art.md`) fo
 | 55 | [Client libraries: Python, LangChain and LlamaIndex](55-client-libraries.md) | `clients/python/`, `packages/langchain/` | L. Reach |
 | 56 | [Chat bots: Telegram, Discord and Slack](archive/56-chat-bots.md) | `packages/bots/` | L. Reach |
 | 57 | [Note exports: Obsidian vaults and Notion pages](archive/57-note-exports.md) | `packages/exporters/` | L. Reach |
-| 58 | [Hosted mode: accounts, quotas, shared cache, abuse protection](58-hosted-accounts.md) | `packages/accounts/` | M. Hosting |
+| 58 | [Hosted mode: accounts, quotas, shared cache, abuse protection](archive/58-hosted-accounts.md) | `packages/accounts/` | M. Hosting |
 | 59 | [Outbound webhooks and an n8n node](archive/59-webhooks-n8n.md) | `packages/webhooks/`, `packages/n8n-nodes/` | L. Reach |
 | 60 | [More sources: cloud share links and Bilibili](60-share-links-bilibili.md) | `providers/share-links/`, `providers/bilibili/` | N. Sources |
 | 61 | [Live streams: transcribe while the stream runs](61-live-streams.md) | `packages/live/` | N. Sources |
