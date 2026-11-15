@@ -137,7 +137,7 @@ npx tsx integrations/install/src/bin.ts gemini-cli --scope project    # .gemini/
 
 ## Windsurf
 
-Not supported by the installer. Windsurf's official MCP page (docs.windsurf.com/windsurf/cascade/mcp) now redirects to the Devin Desktop docs, which no longer define the Windsurf config format (checked 2026-11-14). Without a current official reference the installer does not guess. Windsurf users can paste the same `mcpServers` entry shown for Claude Desktop above into their Windsurf MCP config by hand.
+Not supported by the installer. Windsurf's official MCP page (docs.windsurf.com/windsurf/cascade/mcp) now redirects to the Devin Desktop docs (docs.devin.ai/desktop/cascade/mcp). Those define only Devin's own paths (`.devin/mcp_config.json` and `~/.config/devin/mcp_config.json`, per docs.devin.ai/cli/extensibility/mcp/configuration) and never mention `~/.codeium/windsurf/mcp_config.json` (checked 2026-11-14 and again 2026-11-15). Without a current official reference the installer does not guess. Windsurf users can paste the same `mcpServers` entry shown for Claude Desktop above into their Windsurf MCP config by hand.
 
 ## ChatGPT
 
@@ -145,7 +145,7 @@ Three ways in, from least to most setup:
 
 1. **Projects, zero setup.** Build `context.md` with the CLI or web app and upload it to a ChatGPT or Claude Project. See [integrations/chatgpt/projects.md](../../integrations/chatgpt/projects.md) for the steps and the instruction text to paste.
 2. **Custom GPT with an Action.** Generate the OpenAPI schema for your server with `npx tsx integrations/chatgpt/src/action.ts --server https://your-host`, then follow [integrations/chatgpt/custom-gpt-instructions.md](../../integrations/chatgpt/custom-gpt-instructions.md) for the instructions, conversation starters and Bearer auth.
-3. **Remote MCP connector.** Deploy the server with its Streamable HTTP endpoint at `/mcp` (`packages/mcp-http`) and add that URL as a connector in ChatGPT (developer mode) or Claude.ai (custom connectors). Sign in with OAuth, or use a bearer token where the client lets you set headers. The model gets the same tools as the local server.
+3. **Remote MCP connector.** Deploy the server with its Streamable HTTP endpoint at `/mcp` (`packages/mcp-http`) and add that URL as a connector in ChatGPT (developer mode) or Claude.ai (custom connectors). Sign in with OAuth, or use a bearer token where the client lets you set headers. The model gets the same tools as the local server. Deployment, tokens, OAuth and the per-client connector steps are in [remote-mcp.md](remote-mcp.md).
 
 The server behind options 2 and 3 must reach YouTube. Many cloud IPs are blocked, so run it on a home connection or behind a Cloudflare Tunnel to one (see [youtube.md](youtube.md)).
 
