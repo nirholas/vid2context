@@ -16,6 +16,8 @@ const out = new URL('../test/fixtures/', import.meta.url);
 const VIDEO = 'https://www.youtube.com/watch?v=jNQXAC9IVRw';
 const MISSING = 'https://www.youtube.com/watch?v=xxxxxxxxxxx';
 const PLAYLIST = 'https://www.youtube.com/playlist?list=PLrAXtmErZgOeiKm4sgNOknGvNjby9efdf';
+const WATCH_IN_PLAYLIST = 'https://www.youtube.com/watch?v=PzJL3aBRas8&list=PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b';
+const GWAGON_PLAYLIST = 'https://www.youtube.com/playlist?list=PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b';
 
 /** Fields removed before saving: health's provider list shows which keys this machine has set. */
 const STRIP: Record<string, string[]> = { 'health.json': ['providers'] };
@@ -41,6 +43,9 @@ await record('context-jNQXAC9IVRw.json', 'GET', `/context?url=${q(VIDEO)}`);
 await record('context-not-found.json', 'GET', `/context?url=${q(MISSING)}`);
 await record('context-playlist.json', 'GET', `/context?url=${q(PLAYLIST)}`);
 await record('items-playlist.json', 'GET', `/items?url=${q(PLAYLIST)}&limit=3`);
+// A video link that also names a playlist: /items names the playlist, /metadata on it gives its title and size.
+await record('items-watch-in-playlist.json', 'GET', `/items?url=${q(WATCH_IN_PLAYLIST)}&limit=1`);
+await record('metadata-playlist-gwagon.json', 'GET', `/metadata?url=${q(GWAGON_PLAYLIST)}`);
 const job = (await record('job-context.json', 'POST', '/jobs', {
   headers: { 'content-type': 'application/json' },
   body: JSON.stringify({ kind: 'context', input: VIDEO, options: {} }),

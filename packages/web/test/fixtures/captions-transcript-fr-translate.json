@@ -1,0 +1,9 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/transcript?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DjNQXAC9IVRw&lang=fr&format=srt&mode=captions&translate=1"
+  },
+  "status": 200,
+  "contentType": "application/x-subrip; charset=utf-8",
+  "body": "1\n00:00:00,000 --> 00:00:05,067\nAlors nous voici devant les éléphants.\n\n2\n00:00:05,067 --> 00:00:12,467\nLe truc cool avec ces types, c'est qu'ils\nont des trompes très, très, très longues.\n\n3\n00:00:12,467 --> 00:00:14,267\nEt c'est cool.\n\n4\n00:00:17,067 --> 00:00:21,000\nSinon, il n'y a pas\nvraiment grand-chose à dire.\n"
+}

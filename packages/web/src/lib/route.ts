@@ -6,6 +6,7 @@
  *   /app/?view=settings                     settings
  *   /app/?view=api&endpoint=<id>&video=<url>  the API page, with an endpoint and a video picked
  *   /app/?view=download&url=<input>         download a video or its audio (a playlist lists its items)
+ *   /app/?view=captions&url=<input>         save only the captions, in any language and format (a playlist saves all)
  */
 
 import type { TranscriptMode } from '@vid2context/core';
@@ -38,7 +39,8 @@ export type Route =
   | { view: 'settings' }
   | ({ view: 'api' } & ApiParams)
   | ({ view: 'run' } & RunParams)
-  | { view: 'download'; url?: string };
+  | { view: 'download'; url?: string }
+  | { view: 'captions'; url?: string };
 
 const ON = ['1', 'true', 'yes'];
 
@@ -50,6 +52,7 @@ export function parseRoute(search: string): Route {
   const q = new URLSearchParams(search);
   if (q.get('view') === 'settings') return { view: 'settings' };
   if (q.get('view') === 'download') return { view: 'download', url: q.get('url')?.trim() || undefined };
+  if (q.get('view') === 'captions') return { view: 'captions', url: q.get('url')?.trim() || undefined };
   if (q.get('view') === 'api') {
     return { view: 'api', endpoint: q.get('endpoint')?.trim() || undefined, video: q.get('video')?.trim() || undefined };
   }
@@ -78,6 +81,12 @@ export function runSearch(p: Partial<RunParams> & { url: string }): string {
 
 export function downloadSearch(url?: string): string {
   const q = new URLSearchParams({ view: 'download' });
+  if (url) q.set('url', url);
+  return `?${q.toString()}`;
+}
+
+export function captionsSearch(url?: string): string {
+  const q = new URLSearchParams({ view: 'captions' });
   if (url) q.set('url', url);
   return `?${q.toString()}`;
 }

@@ -1,32 +1,24 @@
 /**
- * Client-only transcription: runs the browser registry's speech-to-text
- * chain on the decoded audio, with the user's own keys from Settings as env.
- * The Transformers.js Whisper rung (local tier) runs first; it downloads its
- * model from huggingface.co once and caches it in the browser. Rungs for
- * hosted services join the chain only when their key is saved in Settings.
+ * Client-only transcription, as the upload view and the import panel call
+ * it. The run itself (transcribe-core.ts) happens in a Web Worker
+ * (transcribe.worker.ts), so decoding a long file's speech never freezes the
+ * page, and aborting terminates the worker, which really stops Whisper. One
+ * worker is kept between runs so the model loads once per page. When a
+ * module worker cannot start (an old browser, a strict CSP), the same code
+ * runs on the page instead.
  *
  * Loaded on demand, so none of this is in the initial bundle.
  */
-import { type Attempt, transcribe, type VideoContext, type VideoRef } from '@vid2context/core';
-import { DEFAULT_MODEL, onProgress, type ProgressEvent } from '@vid2context/provider-stt-transformers';
-import { createBrowserContext, createRegistry } from '@vid2context/registry/browser';
+import type { VideoContext, VideoRef } from '@vid2context/core';
+import { localRefOf } from './local-ref.ts';
 import type { Prepared } from './prepare.ts';
+import type { LocalAudio, LocalOptions, ModelProgress } from './transcribe-core.ts';
+import { deserializeError, type WorkerRequest, type WorkerResponse } from './worker-protocol.ts';
 
-export interface ModelProgress {
-  /** 0..100 when known. */
-  percent?: number;
-  status: string;
-  file?: string;
-}
+export type { ModelProgress };
 
 export function localRef(prepared: Pick<Prepared, 'sha256' | 'file'>): VideoRef {
-  return {
-    input: prepared.file.name,
-    platform: 'file',
-    kind: 'video',
-    id: `file:${prepared.sha256}`,
-    nativeId: prepared.sha256,
-  };
+  return localRefOf({ sha256: prepared.sha256, name: prepared.file.name });
 }
 
 /** The input string a client-only result is stored and reopened under. */
@@ -34,52 +26,119 @@ export function localInput(sha256: string): string {
   return `file:${sha256}`;
 }
 
+let worker: Worker | null = null;
+/** False once a worker failed to start here; later runs go straight to the page thread. */
+let workersWork = typeof Worker !== 'undefined';
+let nextId = 1;
+
+function startWorker(): Worker {
+  worker ??= new Worker(new URL('./transcribe.worker.ts', import.meta.url), { type: 'module', name: 'vid2context-stt' });
+  return worker;
+}
+
+function stopWorker(): void {
+  worker?.terminate();
+  worker = null;
+}
+
+class WorkerUnavailable extends Error {}
+
+function inWorker(
+  audio: LocalAudio,
+  opts: LocalOptions,
+  onModel: ((p: ModelProgress) => void) | undefined,
+  signal: AbortSignal | undefined,
+): Promise<VideoContext> {
+  return new Promise((resolve, reject) => {
+    if (signal?.aborted) {
+      reject(signal.reason ?? new DOMException('Aborted', 'AbortError'));
+      return;
+    }
+    let w: Worker;
+    try {
+      w = startWorker();
+    } catch (err) {
+      reject(new WorkerUnavailable(String(err)));
+      return;
+    }
+    const id = nextId++;
+    let heard = false;
+    const cleanup = () => {
+      w.removeEventListener('message', onMessage);
+      w.removeEventListener('error', onError);
+      signal?.removeEventListener('abort', onAbort);
+    };
+    const onMessage = (e: MessageEvent<WorkerResponse>) => {
+      const m = e.data;
+      if (m?.id !== id) return;
+      heard = true;
+      if (m.type === 'model') onModel?.(m.progress);
+      else if (m.type === 'done') {
+        cleanup();
+        resolve(m.context as VideoContext);
+      } else if (m.type === 'error') {
+        cleanup();
+        reject(deserializeError(m.error));
+      }
+    };
+    const onError = (e: ErrorEvent) => {
+      cleanup();
+      stopWorker();
+      e.preventDefault();
+      // Before any message: the worker script never ran, so the page thread takes over.
+      reject(
+        heard
+          ? new Error(`The speech-to-text worker stopped: ${e.message || 'unknown error'}`)
+          : new WorkerUnavailable(e.message),
+      );
+    };
+    const onAbort = () => {
+      cleanup();
+      // Terminating is the only way to stop a running Whisper inference; the next run starts a fresh worker.
+      stopWorker();
+      reject(signal?.reason ?? new DOMException('Aborted', 'AbortError'));
+    };
+    w.addEventListener('message', onMessage);
+    w.addEventListener('error', onError);
+    signal?.addEventListener('abort', onAbort, { once: true });
+    // A copy is transferred, so the caller keeps its WAV (the upload view still shows its size).
+    const wav = audio.wav.slice();
+    const msg: WorkerRequest = { type: 'run', id, audio: { ...audio, wav }, opts };
+    w.postMessage(msg, [wav.buffer]);
+  });
+}
+
+async function onPage(
+  audio: LocalAudio,
+  opts: LocalOptions,
+  onModel: ((p: ModelProgress) => void) | undefined,
+  signal: AbortSignal | undefined,
+): Promise<VideoContext> {
+  const { transcribeLocal } = await import('./transcribe-core.ts');
+  return transcribeLocal(audio, { ...opts, onModel }, signal);
+}
+
 export async function transcribeInBrowser(
   prepared: Prepared,
   opts: { lang?: string; keys: Record<string, string>; decodeMs: number; onModel?: (p: ModelProgress) => void },
   signal?: AbortSignal,
 ): Promise<VideoContext> {
-  const env = { TRANSFORMERS_STT_MODEL: DEFAULT_MODEL, ...opts.keys };
-  const ctx = createBrowserContext(env, signal);
-  const registry = createRegistry();
-  const ref = localRef(prepared);
-  const off = onProgress((e: ProgressEvent) => {
-    if (e.status === 'progress_total' || e.status === 'progress') {
-      opts.onModel?.({ status: 'downloading', percent: typeof e.progress === 'number' ? e.progress : undefined, file: e.file });
-    } else if (e.status === 'ready') {
-      opts.onModel?.({ status: 'ready' });
-    }
-  });
-  const decodeAttempt: Attempt = {
-    id: 'web/decode',
-    stage: 'audio',
-    outcome: 'ok',
-    detail: `decoded in the browser to ${prepared.sampleRate} Hz mono, ${prepared.durationSec.toFixed(1)} s`,
-    ms: opts.decodeMs,
+  const audio: LocalAudio = {
+    sha256: prepared.sha256,
+    name: prepared.file.name,
+    sampleRate: prepared.sampleRate,
+    durationSec: prepared.durationSec,
+    wav: prepared.wav,
   };
-  try {
-    const { transcript, attempts } = await transcribe(
-      registry,
-      ref,
-      {
-        kind: 'bytes',
-        data: prepared.wav,
-        mimeType: 'audio/wav',
-        filename: `${prepared.sha256}.wav`,
-        durationSec: prepared.durationSec,
-      },
-      { stt: opts.lang ? { language: opts.lang } : {} },
-      ctx,
-    );
-    return {
-      metadata: { ref, title: prepared.file.name, durationSec: prepared.durationSec, chapters: [] },
-      transcript,
-      attempts: [decodeAttempt, ...attempts],
-    };
-  } catch (err) {
-    const tried = (err as { attempts?: Attempt[] }).attempts ?? [];
-    throw Object.assign(err as object, { attempts: [decodeAttempt, ...tried] });
-  } finally {
-    off();
+  const run: LocalOptions = { ...(opts.lang ? { lang: opts.lang } : {}), keys: opts.keys, decodeMs: opts.decodeMs };
+  if (workersWork) {
+    try {
+      return await inWorker(audio, run, opts.onModel, signal);
+    } catch (err) {
+      if (!(err instanceof WorkerUnavailable)) throw err;
+      workersWork = false;
+      console.error('[vid2context] the speech-to-text worker could not start; transcribing on the page instead', err.message);
+    }
   }
+  return onPage(audio, run, opts.onModel, signal);
 }

@@ -1,0 +1,28 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/items?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DPzJL3aBRas8%26list%3DPLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b&limit=1"
+  },
+  "status": 200,
+  "contentType": "application/json",
+  "body": {
+    "items": [
+      {
+        "input": "https://www.youtube.com/watch?v=PzJL3aBRas8&list=PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b",
+        "platform": "youtube",
+        "kind": "video",
+        "id": "youtube:PzJL3aBRas8",
+        "nativeId": "PzJL3aBRas8",
+        "url": "https://www.youtube.com/watch?v=PzJL3aBRas8"
+      }
+    ],
+    "list": {
+      "input": "https://www.youtube.com/watch?v=PzJL3aBRas8&list=PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b",
+      "platform": "youtube",
+      "kind": "playlist",
+      "id": "youtube:playlist:PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b",
+      "nativeId": "PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b",
+      "url": "https://www.youtube.com/playlist?list=PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b"
+    }
+  }
+}

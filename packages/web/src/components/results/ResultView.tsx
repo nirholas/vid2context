@@ -5,13 +5,13 @@
  * Loaded on demand, so the formatters and zip code stay out of the initial JS.
  */
 import { agentPrompt, type Bundle, estimateTokens, type VideoContext } from '@vid2context/core';
-import { Bot, Clock, FileArchive, MessageSquare, RefreshCw } from 'lucide-react';
+import { Bot, Captions, Clock, FileArchive, MessageSquare, RefreshCw } from 'lucide-react';
 import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { resultBundle, type ViewFile, viewFiles } from '../../lib/bundle.ts';
 import { saveBlob, streamToBlob } from '../../lib/download.ts';
 import { timeAgo } from '../../lib/format.ts';
 import { chatHref } from '../../lib/links.ts';
-import type { RunParams } from '../../lib/route.ts';
+import { appHref, captionsSearch, onAppLinkClick, type RunParams } from '../../lib/route.ts';
 import { AttemptsTimeline } from '../AttemptsTimeline.tsx';
 import { ResultDownloads } from '../download/ResultDownloads.tsx';
 import { Tabs } from '../Tabs.tsx';
@@ -151,6 +151,20 @@ export function ResultView({ context, params, cachedAt, onRefresh, onBundle, not
 
       {/* Only for inputs the server can fetch again; renders nothing unless the server offers downloads. */}
       {shareable && <ResultDownloads url={shareable} />}
+      {shareable && (
+        <p className="text-sm text-muted">
+          <Captions className="mr-1 inline size-4 align-text-bottom" aria-hidden />
+          Need only the subtitles, in another language or format?{' '}
+          <a
+            href={appHref(captionsSearch(shareable))}
+            onClick={(e) => onAppLinkClick(e, captionsSearch(shareable))}
+            className="text-fg underline underline-offset-2"
+            data-testid="result-captions-link"
+          >
+            Every caption track for this video
+          </a>
+        </p>
+      )}
 
       <section aria-label="Details">
         <Tabs

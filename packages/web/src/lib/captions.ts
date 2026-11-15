@@ -89,7 +89,8 @@ export function mergeTracks(raw: RawCaptionTrack[]): CaptionTrack[] {
     if (!seen.providers.includes(t.provider)) seen.providers.push(t.provider);
   }
   return [...byLang.values()].sort(
-    (a, b) => ORIGIN_RANK[a.origin] - ORIGIN_RANK[b.origin] || a.name.localeCompare(b.name) || a.language.localeCompare(b.language),
+    (a, b) =>
+      ORIGIN_RANK[a.origin] - ORIGIN_RANK[b.origin] || a.name.localeCompare(b.name) || a.language.localeCompare(b.language),
   );
 }
 
@@ -119,14 +120,23 @@ export interface FormatInfo {
   extension: string;
 }
 
-/** The formats that make sense for captions alone, in the order offered. Others the server has (pack, markdown) are context formats. */
-export const CAPTION_FORMAT_IDS = ['srt', 'vtt', 'text', 'json'] as const;
+/**
+ * The formats that make sense for captions alone, in the order offered. Only
+ * those the server lists are shown, so subtitle formats added to core later
+ * appear once the server has them; context formats (pack, markdown) never do.
+ */
+export const CAPTION_FORMAT_IDS = ['srt', 'vtt', 'ass', 'ttml', 'sbv', 'lrc', 'text', 'json', 'csv'] as const;
 
 export const FORMAT_LABELS: Record<string, string> = {
   srt: 'SubRip (.srt)',
   vtt: 'WebVTT (.vtt)',
+  ass: 'Advanced SubStation (.ass)',
+  ttml: 'TTML (.ttml)',
+  sbv: 'YouTube SBV (.sbv)',
+  lrc: 'Lyrics LRC (.lrc)',
   text: 'Plain text (.txt)',
   json: 'JSON with timings (.json)',
+  csv: 'Spreadsheet CSV (.csv)',
 };
 
 /** GET /formats, keeping the caption formats this server has, in CAPTION_FORMAT_IDS order. */
@@ -137,7 +147,8 @@ export async function getCaptionFormats(call: CallOptions = {}): Promise<FormatI
 
 export interface CaptionRequest {
   url: string;
-  language: string;
+  /** BCP 47. Left out: the video's default track (its spoken language when the platform says, else the first). */
+  language?: string;
   format: string;
   /** Translate into `language` when no track is in it: the platform's translation first, then an LLM. */
   translate?: boolean;
@@ -151,7 +162,7 @@ export function captionUrl(req: CaptionRequest, base = apiBase()): string {
     '/transcript',
     {
       url: req.url,
-      lang: req.language,
+      lang: req.language || undefined,
       format: req.format,
       mode: 'captions',
       translate: req.translate ? '1' : undefined,
@@ -190,23 +201,26 @@ export async function fetchCaption(req: CaptionRequest, call: CallOptions = {}):
 }
 
 /** "Me at the zoo.de.auto.srt": the title (safe on every filesystem), the language, auto when it is auto-captions, the extension. */
-export function captionFileName(title: string, language: string, extension: string, opts: { auto?: boolean; translated?: boolean } = {}): string {
+export function captionFileName(
+  title: string,
+  language: string | undefined,
+  extension: string,
+  opts: { auto?: boolean; translated?: boolean } = {},
+): string {
   const safe =
     title
-      .replace(/[\\/:*?"<>|\u0000-\u001f]/g, ' ')
+      .replace(/[\\/:*?"<>|]/g, ' ')
+      .replace(/\p{Cc}/gu, ' ')
       .replace(/\s+/g, ' ')
       .trim()
       .replace(/[. ]+$/, '')
       .slice(0, 120) || 'captions';
-  const tags = [language, opts.auto ? 'auto' : '', opts.translated ? 'translated' : ''].filter(Boolean).join('.');
-  return `${safe}.${tags}.${extension}`;
+  const tags = [language ?? '', opts.auto ? 'auto' : '', opts.translated ? 'translated' : ''].filter(Boolean).join('.');
+  return tags ? `${safe}.${tags}.${extension}` : `${safe}.${extension}`;
 }
 
 /** Every file in one .zip, named as given. */
 export function zipCaptions(files: { name: string; text: string }[]): Promise<Blob> {
   const encoder = new TextEncoder();
-  return streamToBlob(
-    zipStream(files.map((f) => ({ path: f.name, data: encoder.encode(f.text) }))),
-    'application/zip',
-  );
+  return streamToBlob(zipStream(files.map((f) => ({ path: f.name, data: encoder.encode(f.text) }))), 'application/zip');
 }

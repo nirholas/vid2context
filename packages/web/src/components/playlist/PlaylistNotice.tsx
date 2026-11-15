@@ -12,9 +12,13 @@ import { isAbort } from '../../lib/errors.ts';
 import { appHref, onAppLinkClick } from '../../lib/route.ts';
 import { buttonClass } from '../ui.tsx';
 
-/** Only links that carry list= can name a playlist; others skip the request. */
+/**
+ * Only links that carry list= can name a playlist, and a playlist's own page
+ * (/playlist?list=) is the playlist, not a video inside one. Others skip the
+ * request; the server decides for the rest.
+ */
 export function mayNamePlaylist(input: string): boolean {
-  return /[?&]list=/.test(input);
+  return /[?&]list=/.test(input) && !/\/playlist\?/.test(input);
 }
 
 export function PlaylistNotice({

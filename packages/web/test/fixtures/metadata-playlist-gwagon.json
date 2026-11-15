@@ -1,0 +1,31 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/metadata?url=https%3A%2F%2Fwww.youtube.com%2Fplaylist%3Flist%3DPLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b"
+  },
+  "status": 200,
+  "contentType": "application/json",
+  "body": {
+    "ref": {
+      "input": "https://www.youtube.com/playlist?list=PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b",
+      "platform": "youtube",
+      "kind": "playlist",
+      "id": "youtube:playlist:PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b",
+      "nativeId": "PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b",
+      "url": "https://www.youtube.com/playlist?list=PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b"
+    },
+    "title": "G-Wagon Buyer's Guide",
+    "channel": {
+      "name": "Alliance Motorworks",
+      "id": "UCdEjP_BjQ5audhxLKKzZl2A",
+      "url": "https://www.youtube.com/@alliancemotorworks"
+    },
+    "description": "The Ultimate G Wagon's Buyers & Build Guide. We cover the best vs worst G Wagon years, interiors, and engine options. We also discuss G Wagon reliability, rust, and known issues. \n\nThanks to Joe, the G Wagon Expert at Alliance Auto Care in Loveland, CO, for helping prepare our Buyer's Guide (link below) and for helping me on this series. Have a dream G Wagon build? \n\nCONTACT JOE: \nhttps://allianceautocare.com/ \n[email redacted] \n[phone redacted]",
+    "thumbnailUrl": "https://i.ytimg.com/vi/PzJL3aBRas8/hqdefault.jpg?sqp=-oaymwEXCOADEI4CSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLCMQTVmQEVpapEqpV2JC_bsHYTG7A&days_since_epoch=20772",
+    "chapters": [],
+    "extra": {
+      "kind": "playlist",
+      "itemCount": 9
+    }
+  }
+}

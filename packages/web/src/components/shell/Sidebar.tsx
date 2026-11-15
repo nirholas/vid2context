@@ -5,6 +5,7 @@
  */
 import {
   Braces,
+  Captions,
   ChevronDown,
   CircleHelp,
   Download,
@@ -119,6 +120,13 @@ export function Sidebar({
           active={route.view === 'download'}
         >
           Download
+        </NavLink>
+        <NavLink
+          search="?view=captions"
+          icon={<Captions className={ICON} strokeWidth={1.75} aria-hidden />}
+          active={route.view === 'captions'}
+        >
+          Captions
         </NavLink>
         <NavLink
           search="?view=api"

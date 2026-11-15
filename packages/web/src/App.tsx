@@ -16,6 +16,7 @@ import { appHref, onAppLinkClick, type Route, useRoute } from './lib/route.ts';
 const Settings = lazy(() => import('./components/Settings.tsx'));
 const ApiPlayground = lazy(() => import('./components/api/ApiPlayground.tsx'));
 const DownloadPage = lazy(() => import('./components/download/DownloadPage.tsx'));
+const CaptionsPage = lazy(() => import('./components/captions/CaptionsPage.tsx'));
 
 const TITLES: Record<Route['view'], string> = {
   home: 'vid2context: any video as context for AI agents',
@@ -23,6 +24,7 @@ const TITLES: Record<Route['view'], string> = {
   settings: 'Settings | vid2context',
   api: 'API | vid2context',
   download: 'Download video or audio | vid2context',
+  captions: 'Captions and subtitles | vid2context',
 };
 
 /** localStorage key for the collapsed sidebar on wide screens. */
@@ -86,7 +88,9 @@ function Shell() {
       ? `${route.url}|${route.mode}|${route.lang}|${route.comments}|${route.timestamps}`
       : route.view === 'download'
         ? `download|${route.url ?? ''}`
-        : route.view;
+        : route.view === 'captions'
+          ? `captions|${route.url ?? ''}`
+          : route.view;
 
   // New view: set the title, close the drawer and start the panel at the top.
   // biome-ignore lint/correctness/useExhaustiveDependencies: runKey is the trigger: a new run in the same view also starts at the top.
@@ -186,6 +190,11 @@ function Shell() {
               {route.view === 'download' && (
                 <Suspense fallback={<Loading label="Loading the download page" />}>
                   <DownloadPage url={route.url} />
+                </Suspense>
+              )}
+              {route.view === 'captions' && (
+                <Suspense fallback={<Loading label="Loading the captions page" />}>
+                  <CaptionsPage url={route.url} />
                 </Suspense>
               )}
               {route.view === 'api' && (

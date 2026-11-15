@@ -56,6 +56,9 @@ test('a blocked YouTube run offers the other ways, and says how to install the e
 }) => {
   const panel = await blockedRun(page);
   await expect(panel.getByRole('heading', { name: 'Get the transcript another way' })).toBeVisible();
+  // This server downloads media, so the recovery panel opens the import panel on its top suggestion: Server download.
+  await expect(panel.getByRole('tab', { name: 'Server download' })).toHaveAttribute('aria-selected', 'true');
+  await panel.getByRole('tab', { name: 'From my browser' }).click();
   await expect(panel.getByRole('tab', { name: 'From my browser' })).toHaveAttribute('aria-selected', 'true');
   await expect(panel.getByRole('tab')).toHaveText([
     'From my browser',
@@ -167,7 +170,18 @@ test.describe('live media', () => {
     const posted = page.waitForRequest((r) => r.url().endsWith('/api/v1/imports') && r.method() === 'POST', {
       timeout: 170_000,
     });
+    const worker = page.waitForEvent('worker', { timeout: 60_000 });
     await panel.getByTestId('media-file-input').setInputFiles(APOLLO);
+    // Whisper runs in a Web Worker, so the page keeps answering while it transcribes.
+    expect((await worker).url()).toContain('transcribe.worker');
+    const lagMs = await page.evaluate(
+      () =>
+        new Promise<number>((r) => {
+          const t = performance.now();
+          setTimeout(() => r(performance.now() - t), 0);
+        }),
+    );
+    expect(lagMs).toBeLessThan(500);
     const body = (await posted).postDataJSON() as { url: string; via: string; transcriber: string; segments: unknown[] };
     expect(body).toMatchObject({ url: VIDEO, via: 'media', transcriber: expect.stringMatching(/^stt\/transformers\//) });
     await expect(page.getByTestId('transcript')).toContainText(/small step/i, { timeout: 60_000 });
