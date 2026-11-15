@@ -21,3 +21,6 @@ site/llms-full.txt
 
 # Bundles written by the library example (docs/examples/library.md) land in the repo root.
 /*.zip
+
+# Playwright run output (results, traces, screenshots); regenerated on every e2e run.
+test-results/
