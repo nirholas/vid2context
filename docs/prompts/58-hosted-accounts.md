@@ -15,7 +15,7 @@ vid2context turns any video into context for AI agents. Wave 1 builds a server f
 1. `CLAUDE.md` and `AGENTS.md` (note the rule: never publish or store email addresses or personal details), then `docs/ARCHITECTURE.md`.
 2. `packages/core/src/types.ts`, `storage.ts`, `pipeline.ts` (where caching happens), `errors.ts`, `testing.ts`; `packages/server/src/app.ts`.
 3. `docs/contracts/http-api.md`: conventions, "Auth and limits", and "Wave 2 routes" (`/auth/*`, `/me*`, hosted mode).
-4. `docs/prompts/SHARED-CONTRACTS.md` sections 1 (`storage-ext.ts`: `KvStore`, `hasKv`), 3 and 8; `docs/prompts/10-security.md` and `45-remote-mcp.md` to align with their auth and SSRF work instead of duplicating it.
+4. `docs/prompts/SHARED-CONTRACTS.md` sections 1 (`storage-ext.ts`: `KvStore`, `hasKv`), 3 and 8; `docs/prompts/archive/10-security.md` and `45-remote-mcp.md` to align with their auth and SSRF work instead of duplicating it.
 5. GitHub OAuth web flow docs; Cloudflare Turnstile server-side validation docs. Verify current endpoints.
 
 ## Goal

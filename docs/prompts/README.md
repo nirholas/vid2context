@@ -6,7 +6,7 @@ Fifty self-contained prompts (plus twelve in wave 2, below) that take vid2contex
 
 1. Start from a green foundation: `npm install && npm run check`.
 2. Open one chat per prompt in VS Code and paste one line, changing the file name:
-   `Read docs/prompts/10-security.md and do everything it says.`
+   `Read docs/prompts/11-ytdlp.md and do everything it says.`
 3. Each chat works only in the directories its prompt owns, commits its own paths, and does not push. Every chat ends with a report: what it built, what it verified live, what it could not verify, and what the integration pass needs.
 4. When the wave settles: `npm install && npm run check`, read the reports, then run the integration pass (below).
 
@@ -27,11 +27,11 @@ Numbers match `docs/ROADMAP.md` and the owner columns in `docs/contracts/`. Ever
 | 07 | [YouTube: metadata, chapters and video states](07-youtube-metadata-chapters.md) | `providers/youtube/src/metadata/` | B. YouTube |
 | 08 | [YouTube: playlists, channels and search](archive/08-youtube-playlists-channels-search.md) | `providers/youtube/src/browse/` | B. YouTube |
 | 09 | [YouTube comments](09-youtube-comments.md) | `providers/youtube/src/comments/` | B. YouTube |
-| 10 | [Security hardening and threat model](10-security.md) | `packages/core/src/security/` | A. Core bones |
+| 10 | [Security hardening and threat model](archive/10-security.md) | `packages/core/src/security/` | A. Core bones |
 | 11 | [yt-dlp universal source with a self-managed binary](11-ytdlp.md) | `providers/ytdlp/` | C. Other sources |
 | 12 | [Local files, direct media URLs and ffmpeg tooling](12-media-files-ffmpeg.md) | `packages/ffmpeg/`, `providers/media-file/`, `providers/media-url/` | C. Other sources |
 | 13 | [Podcasts: RSS, podcast:transcript, Apple and Spotify](13-podcasts.md) | `providers/podcast/` | C. Other sources |
-| 14 | [Web pages with embedded video; Vimeo, Loom, Wistia transcripts](14-web-pages-native-transcripts.md) | `providers/web-page/`, `providers/native-transcripts/` | C. Other sources |
+| 14 | [Web pages with embedded video; Vimeo, Loom, Wistia transcripts](archive/14-web-pages-native-transcripts.md) | `providers/web-page/`, `providers/native-transcripts/` | C. Other sources |
 | 15 | [The .zip bundle and "copy for agents"](15-bundle-zip.md) | `packages/core/src/bundle/` | A. Core bones |
 | 16 | [Agent integrations: one-command setup for every client](16-agent-integrations.md) | `integrations/` | H. Surfaces |
 | 17 | [Speech-to-text: more OpenAI-compatible rungs](17-stt-openai-compatible.md) | `providers/stt-openai-compatible/` | D. Speech-to-text |
