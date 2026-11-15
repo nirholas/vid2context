@@ -29,13 +29,20 @@ export {
   safeUrl,
   subtitleArgs,
 } from './args.ts';
-export { ensureYtDlp, type JsRuntime, type YtDlpInfo as YtDlpBinary } from './binary.ts';
+export {
+  ensureYtDlp,
+  type JsRuntime,
+  type SelfUpdateResult,
+  selfUpdate,
+  versionAgeDays,
+  type YtDlpInfo as YtDlpBinary,
+} from './binary.ts';
 export { chooseSubtitle } from './captions.ts';
-export { errorFromStderr, lastError } from './errors.ts';
+export { errorFromStderr, lastError, suggestsUpdate } from './errors.ts';
 export { toComments, toMetadata, type YtDlpInfo } from './info.ts';
 export { type RunOptions, type RunResult, run } from './process.ts';
 export { matchUrl } from './refs.ts';
-export { fetchInfo, type InfoResult, type Prepared, prepare, timeoutMs, withFallbackUrl } from './run.ts';
+export { fetchInfo, type InfoResult, type Prepared, prepare, timeoutMs, withFallbackUrl, withHint } from './run.ts';
 export { parseVtt } from './vtt.ts';
 
 const DEFAULT_COMMENTS = 100;

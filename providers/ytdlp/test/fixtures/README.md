@@ -18,5 +18,7 @@ All recorded on 2026-11-14 from a GCP VM with the official yt-dlp 2026.10.26 `yt
 | `stderr-vimeo-login.txt` | `yt-dlp -J --no-download --no-playlist --no-warnings -- https://vimeo.com/76979871` | stderr: the vimeo.com page wants a login from this IP (the player URL works) |
 | `SHA2-256SUMS-2026.10.26.txt` | `curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/SHA2-256SUMS` | release 2026.10.26 checksums, unchanged |
 | `releases-latest-head.txt` | `curl -sI https://github.com/yt-dlp/yt-dlp/releases/latest`, status and `location` lines only | the redirect that reveals the latest tag |
+| `stderr-outdated-youtube-no-formats.txt` | `yt-dlp -J --no-download --no-playlist --no-warnings -- https://www.youtube.com/watch?v=jNQXAC9IVRw` with the outdated official release 2023.03.04 (`yt-dlp_linux`), recorded 2026-11-15 | stderr, exit 1: "No video formats found!; please report this issue ... Confirm you are on the latest version using yt-dlp -U". Drives the self-update path |
+| `stderr-outdated-vimeo-406.txt` | same binary, `https://vimeo.com/76979871`, recorded 2026-11-15 | stderr, exit 1: HTTP 406 from an old extractor, with the same "latest version" request |
 
 Not recorded: an automatic-caption WebVTT with rolling duplicates. YouTube answered every subtitle download from this VM with HTTP 429 (`stderr-subtitles-429.txt`), so the rolling-cue collapsing in `src/vtt.ts` is covered only by the live test path, not by a fixture.

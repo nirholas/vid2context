@@ -68,6 +68,20 @@ const RULES: Rule[] = [
   },
 ];
 
+/**
+ * Messages yt-dlp prints when an extractor broke, usually because the site
+ * changed: it asks for a bug report and to "Confirm you are on the latest
+ * version using yt-dlp -U" (recorded in test/fixtures/stderr-outdated-*.txt).
+ */
+const OUTDATED =
+  /confirm you are on the latest version|yt-dlp -U\b|please report this issue|nsig extraction failed|signature extraction failed|unable to extract|no video formats found/i;
+
+/** True when the failure is one a newer yt-dlp release may fix (and no more specific rule explains it). */
+export function suggestsUpdate(stderr: string, err?: Vid2ContextError): boolean {
+  if (err && err.code !== 'upstream' && err.code !== 'unavailable') return false;
+  return OUTDATED.test(lastError(stderr)) || OUTDATED.test(stderr.slice(-4000));
+}
+
 /** The last "ERROR:" line, else the last non-empty line, trimmed and bounded. */
 export function lastError(stderr: string): string {
   const lines = stderr

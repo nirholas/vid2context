@@ -6,8 +6,8 @@
  */
 import { type Ctx, type Env, Vid2ContextError, type VideoRef } from '@vid2context/core';
 import { configFrom, metadataArgs, type RunConfig } from './args.ts';
-import { type YtDlpInfo as BinaryInfo, ensureYtDlp } from './binary.ts';
-import { errorFromStderr } from './errors.ts';
+import { type YtDlpInfo as BinaryInfo, ensureYtDlp, selfUpdate } from './binary.ts';
+import { errorFromStderr, suggestsUpdate } from './errors.ts';
 import type { YtDlpInfo } from './info.ts';
 import { run } from './process.ts';
 import { vimeoPlayerUrl } from './refs.ts';
@@ -32,12 +32,36 @@ export async function prepare(ctx: Ctx): Promise<Prepared> {
   return { bin, cfg: configFrom(ctx.env, bin.jsRuntime, bin.ffmpeg) };
 }
 
-/** Run yt-dlp; a non-zero exit becomes a mapped Vid2ContextError. Returns stdout. */
+/**
+ * Run yt-dlp; a non-zero exit becomes a mapped Vid2ContextError. Returns stdout.
+ * When the failure is one yt-dlp says a newer release may fix, the managed
+ * binary is updated (rate-limited, see selfUpdate) and the call retried once;
+ * otherwise the error's hint says what was done and what to do.
+ */
 export async function ytdlp(ctx: Ctx, bin: string, args: string[], step: Step, cwd?: string): Promise<string> {
   const label = `yt-dlp ${step}`;
-  const res = await run(bin, args, ctx, { timeoutMs: timeoutMs(ctx.env, step), label, cwd });
-  if (res.code !== 0) throw errorFromStderr(res.stderr, label, res.code);
-  return res.stdout;
+  const once = () => run(bin, args, ctx, { timeoutMs: timeoutMs(ctx.env, step), label, cwd });
+  let res = await once();
+  if (res.code === 0) return res.stdout;
+  let err = errorFromStderr(res.stderr, label, res.code);
+  if (!suggestsUpdate(res.stderr, err) || ctx.signal?.aborted) throw err;
+  const update = await selfUpdate(ctx, bin);
+  if (update.outcome === 'updated') {
+    res = await once();
+    if (res.code === 0) return res.stdout;
+    err = errorFromStderr(res.stderr, label, res.code);
+  }
+  throw withHint(err, update.hint);
+}
+
+/** The same error with the update outcome in front of its hint. */
+export function withHint(err: Vid2ContextError, lead: string): Vid2ContextError {
+  return new Vid2ContextError(err.code, err.message, {
+    hint: err.hint ? `${lead} ${err.hint}` : lead,
+    ...(err.status !== undefined ? { status: err.status } : {}),
+    ...(err.retryAfterSec !== undefined ? { retryAfterSec: err.retryAfterSec } : {}),
+    cause: err,
+  });
 }
 
 /** The URL yt-dlp should fetch for a ref. */

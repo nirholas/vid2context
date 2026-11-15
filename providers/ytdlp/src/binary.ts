@@ -44,6 +44,8 @@ export interface ManagedMeta {
   sha256: string;
   installedAt: string;
   checkedAt: string;
+  /** Last update attempt triggered by an extraction failure (see selfUpdate). */
+  selfUpdateAt?: string;
 }
 
 /** Local data directory: VID2CONTEXT_HOME, else ./.vid2context. */
@@ -292,6 +294,112 @@ export async function installManaged(ctx: Ctx, tag?: string): Promise<ManagedMet
   }
 }
 
+/** Default minimum gap between failure-triggered updates: 6 hours. */
+export const SELF_UPDATE_MIN_SEC = 6 * 3600;
+
+function selfUpdateGapMs(env: Env): number {
+  const raw = env.YTDLP_SELF_UPDATE_MIN_SEC?.trim();
+  const n = Number(raw);
+  return (raw && Number.isFinite(n) && n >= 0 ? n : SELF_UPDATE_MIN_SEC) * 1000;
+}
+
+export interface SelfUpdateResult {
+  /** What happened: a new binary is in place, it was already the latest, or nothing was tried (and why). */
+  outcome: 'updated' | 'latest' | 'not-managed' | 'disabled' | 'too-soon' | 'failed';
+  from?: string;
+  to?: string;
+  /** One sentence for an error hint. */
+  hint: string;
+}
+
+const selfUpdating = new Map<string, Promise<SelfUpdateResult>>();
+
+/**
+ * Update the managed yt-dlp right now because an extraction failed in a way
+ * yt-dlp says a newer release may fix (sites change, yt-dlp follows within
+ * days). Runs at most once per YTDLP_SELF_UPDATE_MIN_SEC (default 6 h) across
+ * processes sharing the data directory, never touches a binary the user
+ * supplied, and honours YTDLP_AUTO_UPDATE=0. Never throws.
+ */
+export function selfUpdate(ctx: Ctx, binPath: string): Promise<SelfUpdateResult> {
+  const key = dataHome(ctx.env);
+  const running = selfUpdating.get(key);
+  if (running) return running;
+  const p = doSelfUpdate(ctx, binPath).finally(() => selfUpdating.delete(key));
+  selfUpdating.set(key, p);
+  return p;
+}
+
+async function doSelfUpdate(ctx: Ctx, binPath: string): Promise<SelfUpdateResult> {
+  const env = ctx.env;
+  if (binPath !== managedPath(env)) {
+    return {
+      outcome: 'not-managed',
+      hint: `This yt-dlp (${binPath}) is not managed by vid2context, so it was not updated: run \`yt-dlp -U\` or \`python3 -m pip install -U yt-dlp\`, or unset YTDLP_PATH and remove it from PATH to let vid2context install and update its own copy.`,
+    };
+  }
+  if (env.YTDLP_AUTO_UPDATE === '0') {
+    return { outcome: 'disabled', hint: 'yt-dlp may be out of date; automatic updates are off (YTDLP_AUTO_UPDATE=0).' };
+  }
+  const gap = selfUpdateGapMs(env);
+  const tooSoon = (m: ManagedMeta | null) => !!m?.selfUpdateAt && Date.now() - Date.parse(m.selfUpdateAt) < gap;
+  const waitHint = (m: ManagedMeta | null) =>
+    `yt-dlp was already checked for an update at ${m?.selfUpdateAt}; the next check is allowed ${Math.round(gap / 1000)} s after that (YTDLP_SELF_UPDATE_MIN_SEC). If the site changed recently, a fixed yt-dlp release may not exist yet: retry later.`;
+  const before = await readMeta(env);
+  if (tooSoon(before)) return { outcome: 'too-soon', hint: waitHint(before) };
+  try {
+    return await withLock(
+      lockPath(env),
+      async () => {
+        const meta = await readMeta(env);
+        if (tooSoon(meta)) return { outcome: 'too-soon', hint: waitHint(meta) } as SelfUpdateResult;
+        const version = meta?.version ?? (await readVersion(managedPath(env), ctx));
+        const now = new Date().toISOString();
+        const base: ManagedMeta = meta ?? { version, asset: assetName() ?? '', sha256: '', installedAt: now, checkedAt: now };
+        // Record the attempt first, so a failing download is not retried by every request.
+        await writeMeta(env, { ...base, selfUpdateAt: now });
+        const tag = await latestTag(ctx);
+        if (tag === version) {
+          await writeMeta(env, { ...base, checkedAt: now, selfUpdateAt: now });
+          return {
+            outcome: 'latest',
+            from: version,
+            to: tag,
+            hint: `yt-dlp ${version} is already the latest release, so the site probably changed after it: a fix usually ships within days (vid2context updates by itself), or pass cookies if the site wants a login.`,
+          } as SelfUpdateResult;
+        }
+        ctx.log.warn('yt-dlp: extraction failed in a way a newer release may fix; updating now', { from: version, to: tag });
+        const installed = await installManaged(ctx, tag);
+        await writeMeta(env, { ...installed, selfUpdateAt: now });
+        forgetResolved();
+        return {
+          outcome: 'updated',
+          from: version,
+          to: installed.version,
+          hint: `yt-dlp was updated from ${version} to ${installed.version} and the call retried once.`,
+        } as SelfUpdateResult;
+      },
+      ctx,
+      { waitMs: 5 * 60_000 },
+    );
+  } catch (err) {
+    ctx.log.warn('yt-dlp: self-update failed; keeping the installed version', { error: String(err) });
+    return {
+      outcome: 'failed',
+      hint: `yt-dlp may be out of date and updating it failed (${err instanceof Error ? err.message : String(err)}). Retry later, or install a current yt-dlp and set YTDLP_PATH.`,
+    };
+  }
+}
+
+/** Age in days of a yt-dlp version string ("2026.10.26" or "2026.10.26.123456"), or undefined when it is not a date. */
+export function versionAgeDays(version: string, now: number = Date.now()): number | undefined {
+  const m = /^(\d{4})\.(\d{1,2})\.(\d{1,2})/.exec(version.trim());
+  if (!m) return undefined;
+  const at = Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+  if (!Number.isFinite(at)) return undefined;
+  return Math.max(0, Math.floor((now - at) / 86_400_000));
+}
+
 /** Weekly update check for the managed copy. Failures are logged and the current binary kept. */
 async function maybeUpdate(ctx: Ctx, meta: ManagedMeta | null): Promise<void> {
   if (ctx.env.YTDLP_AUTO_UPDATE === '0') return;
@@ -340,6 +448,11 @@ export function findFfmpeg(env: Env): string | undefined {
 /** How long a resolved binary is trusted before resolving again (which also reruns the weekly update check). */
 const RESOLVE_TTL_MS = 24 * 3600 * 1000;
 const resolved = new Map<string, { at: number; info: Promise<YtDlpInfo> }>();
+
+/** Drop memoized binaries so the next call reads the new version. */
+function forgetResolved(): void {
+  resolved.clear();
+}
 
 async function resolveBinary(ctx: Ctx): Promise<YtDlpInfo> {
   const env = ctx.env;
