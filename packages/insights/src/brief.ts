@@ -254,8 +254,16 @@ export async function buildBrief(contexts: VideoContext[], opts: BriefOptions, d
       ledger,
       deps.ctx,
     );
-    raw = asRawClaims(res.value?.claims);
-    topics = asTopics(res.value?.topics);
+    if (!res.value) {
+      throw Object.assign(
+        new Vid2ContextError('all-rungs-failed', 'No LLM rung returned a JSON brief, so there are no claims to build it from.', {
+          hint: 'See `attempts` for each answer (bad-json means the output was cut off or not JSON). Retry later, add a free key (docs/providers.md), or use briefPrompt for agent-side synthesis.',
+        }),
+        { attempts: ledger.attempts },
+      );
+    }
+    raw = asRawClaims(res.value.claims);
+    topics = asTopics(res.value.topics);
   } else {
     strategy = 'map-reduce';
     const plan = set.sources.map((s) => chunkLines(s.lines, budget).length);

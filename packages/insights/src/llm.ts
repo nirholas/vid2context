@@ -144,16 +144,20 @@ export interface JsonAnswer {
   rung: string;
 }
 
+/** Rungs one JSON call may try when answers are not JSON objects (cut off by an output limit, prose, reasoning only). */
+export const JSON_ATTEMPTS = 3;
+
 /**
  * One JSON call through the chain. An answer that is not a JSON object is
- * retried once on the next rung (skipping the one that produced it). Returns
- * value null when the retry is unparseable too, so callers decide.
+ * retried on the next rung (skipping the ones that produced bad answers), up
+ * to JSON_ATTEMPTS rungs in all. Returns value null when every answer was
+ * unparseable, so callers decide.
  */
 export async function chatJson(registry: Registry, call: JsonCall, ledger: Ledger, ctx: Ctx): Promise<JsonAnswer> {
   const chain = withJson(call.chain);
   let skip = chain.skip ?? [];
   let last: JsonAnswer | null = null;
-  for (let attempt = 0; attempt < 2; attempt++) {
+  for (let attempt = 0; attempt < JSON_ATTEMPTS; attempt++) {
     let res: Awaited<ReturnType<typeof chat>> | undefined;
     for (let wait = 0; !res; wait++) {
       try {

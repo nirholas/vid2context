@@ -1,6 +1,8 @@
 /**
  * A real buyer-guide brief over the G-Wagon series fixtures, LIVE, with the
- * keyless LLM chain (no keys: OVH AI Endpoints, then Pollinations).
+ * keyless LLM chain (no keys needed: Kilo Code's free gateway, OVH AI
+ * Endpoints, Pollinations; free-tier lanes such as Cloudflare Workers AI join
+ * when their keys are in the environment).
  *
  *   npx tsx packages/insights/examples/brief.ts [out.json]
  *
@@ -11,13 +13,14 @@
  */
 import { writeFileSync } from 'node:fs';
 import { createContext, Registry, stderrLogger } from '@vid2context/core';
+import freeCatalog from '@vid2context/provider-llm-free-catalog';
 import llm from '@vid2context/provider-llm-openai-compatible';
 import { buildBrief } from '../src/index.ts';
 import { gwagonContexts } from '../test/gwagon.ts';
 import { QUESTION } from '../test/scenarios.ts';
 
-const registry = new Registry([llm], 'node');
-const ctx = createContext({ runtime: 'node', env: {}, log: stderrLogger('info') });
+const registry = new Registry([freeCatalog, llm], 'node');
+const ctx = createContext({ runtime: 'node', env: process.env, log: stderrLogger('info') });
 
 const brief = await buildBrief(
   gwagonContexts(),
