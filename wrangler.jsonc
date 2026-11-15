@@ -33,16 +33,26 @@
 
   "vars": {
     // Marks this as the public instance (shared, internet-facing).
-    "VID2CONTEXT_PUBLIC": "1"
+    "VID2CONTEXT_PUBLIC": "1",
+    // Workers AI through the "ai" binding below: free Whisper speech-to-text and
+    // LLM rungs, so the public instance can transcribe uploads and direct media
+    // links and write briefs without any key. Capped by the daily free neurons;
+    // when they run out, the rung fails over to the next one.
+    "CLOUDFLARE_AI_BINDING": "AI"
     // Storage on Cloudflare (providers/storage-cloudflare): each variable names
-    // a binding declared below. Uncomment together with that binding.
+    // a binding declared below. Uncomment together with that binding (add a
+    // comma after the line before it).
     // "VID2CONTEXT_D1": "DB",
     // "VID2CONTEXT_R2": "MEDIA",
     // "VID2CONTEXT_KV": "KV"
-  }
+  },
+
+  // Workers AI: free Whisper and LLM rungs through the binding (providers/cloudflare-ai).
+  // Nothing to create; on. Remove this and CLOUDFLARE_AI_BINDING above to turn it off.
+  "ai": { "binding": "AI" }
 
   // ---------------------------------------------------------------- optional bindings
-  // Uncomment what you use, and add a comma after the closing brace of "vars".
+  // Uncomment what you use, and add a comma after the "ai" line above.
   // Every binding is optional: without them the Worker uses in-memory storage,
   // hosted and keyless rungs, and no background jobs.
 
@@ -65,8 +75,6 @@
   //   { "binding": "KV", "id": "<from wrangler kv namespace create>" }
   // ],
 
-  // Workers AI: free Whisper and LLM rungs through the binding (providers/cloudflare-ai).
-  // "ai": { "binding": "AI" },
 
   // Queue for background jobs (packages/jobs, prompt 42), producer and consumer.
   //   npx wrangler queues create vid2context-jobs

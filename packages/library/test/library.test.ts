@@ -6,7 +6,7 @@ import { browseCalls, GWAGON, PLAYLIST, PLAYLIST_SIZE, setup, ZOO } from './help
 // Real recorded responses (test/fixtures/README.md): the G-Wagon playlist has
 // 9 videos. Captions for "Best & Worst G-Wagon Years" were recorded while
 // YouTube served them; the other 8 caption downloads were answered with
-// YouTube's real HTTP 429 datacenter block, so they fail as no-transcript.
+// YouTube's real HTTP 429 datacenter block, so they fail as blocked.
 
 async function rejects(p: Promise<unknown>): Promise<Vid2ContextError> {
   try {
@@ -57,9 +57,9 @@ describe('refresh', () => {
     expect(s.remaining).toBe(0);
     expect(s.failed).toHaveLength(PLAYLIST_SIZE - 1);
     for (const f of s.failed) {
-      expect(f.code).toBe('no-transcript');
+      expect(f.code).toBe('blocked');
       expect(f.hint).toBeTruthy();
-      expect(f.cause).toMatch(/blocked/);
+      expect(f.cause ?? f.message).toMatch(/429|blocked/i);
       expect(f.input).toMatch(/^https:\/\/www\.youtube\.com\/watch\?v=/);
     }
     expect((await storage.getCollection(c.id))?.videoIds).toEqual([GWAGON]);

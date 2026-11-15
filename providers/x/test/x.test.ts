@@ -306,6 +306,38 @@ describe('xSource audio', () => {
     expect(fetch.calls.map((c) => c.url)).toEqual([SMALLEST]);
   });
 
+  it('retries a segment once after a network error', async () => {
+    const flaky = `https://video.twimg.com/amplify_video/2094024240437547008/aud/mp4a/3000/6000/32000/xpHXlxFjmk2qbjOL.m4s`;
+    let failures = 0;
+    const fetch = replayFetch([
+      {
+        url: flaky,
+        response: () => {
+          if (failures++ === 0) throw new TypeError('fetch failed');
+          return { body: new Uint8Array(fixture('hls/xpHXlxFjmk2qbjOL.m4s')) };
+        },
+      },
+      syn(ROMAN),
+      ...hls,
+    ]);
+    const audio = await xSource.getAudio?.(ref(`https://x.com/NASA/status/${ROMAN}`), testContext({ fetch }));
+    expect(audio).toMatchObject({ mimeType: 'audio/mp4' });
+    expect(audio?.kind === 'bytes' && audio.data.byteLength).toBe(140530);
+    expect(failures).toBe(2);
+  });
+
+  it('falls back to the MP4 when a segment is gone, without fetching the rest', async () => {
+    const gone = `https://video.twimg.com/amplify_video/2094024240437547008/aud/mp4a/0/3000/32000/JFYRlS0wgDdrqWTi.m4s`;
+    // X's video host answers a missing file with an empty 404 (recorded 2026-11-15).
+    const fetch = replayFetch([{ url: gone, response: { status: 404, body: '' } }, syn(ROMAN), ...hls, mp4Head]);
+    const audio = await xSource.getAudio?.(ref(`https://x.com/NASA/status/${ROMAN}`), testContext({ fetch }));
+    expect(audio).toMatchObject({ mimeType: 'video/mp4', filename: `${ROMAN}.mp4` });
+    const urls = fetch.calls.map((c) => c.url);
+    expect(urls.filter((u) => u === gone)).toHaveLength(1);
+    expect(urls.filter((u) => u.endsWith('.m4s')).length).toBeLessThan(SEGMENTS.length - 1);
+    expect(urls.at(-1)).toBe(SMALLEST);
+  });
+
   it('refuses before downloading segments when the audio is over the cap', async () => {
     const fetch = replayFetch([syn(ROMAN), ...hls]);
     const ctx = testContext({ fetch, env: { VID2CONTEXT_MAX_MEDIA_MB: '0.1' } });

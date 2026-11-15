@@ -1,0 +1,56 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/caption-languages?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DjNQXAC9IVRw"
+  },
+  "status": 200,
+  "contentType": "application/json",
+  "body": {
+    "videoId": "youtube:jNQXAC9IVRw",
+    "url": "https://www.youtube.com/watch?v=jNQXAC9IVRw",
+    "tracks": [
+      {
+        "language": "en",
+        "name": "English",
+        "origin": "creator-captions",
+        "translatable": true,
+        "provider": "youtube-captions"
+      },
+      {
+        "language": "de",
+        "name": "German",
+        "origin": "creator-captions",
+        "translatable": true,
+        "provider": "youtube-captions"
+      },
+      {
+        "language": "en",
+        "name": "English",
+        "origin": "creator-captions",
+        "provider": "ytdlp-captions"
+      },
+      {
+        "language": "de",
+        "name": "German",
+        "origin": "creator-captions",
+        "provider": "ytdlp-captions"
+      },
+      {
+        "language": "en",
+        "name": "en",
+        "origin": "auto-captions",
+        "provider": "ytdlp-captions"
+      },
+      {
+        "language": "de",
+        "name": "de",
+        "origin": "auto-captions",
+        "provider": "ytdlp-captions"
+      }
+    ],
+    "translationTargets": [],
+    "notes": [
+      "YouTube offers no machine translation for these tracks."
+    ]
+  }
+}

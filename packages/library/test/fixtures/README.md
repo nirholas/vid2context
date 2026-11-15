@@ -15,3 +15,5 @@ Trimming, so nothing personal lands in this public repo:
 - The recorder refuses to write the file if the machine's public IP still appears anywhere in it.
 
 To re-record: `npx tsx packages/library/scripts/record-fixtures.ts`, then check the diff. If YouTube serves the caption tracks at that moment, the 8 videos will record as successes and the tests that count failures need updating.
+
+Replay rule for blocked captions: the 429 pages were YouTube refusing this machine's IP, which covers every caption track of the video. `blockedCaptions()` in `test/replay.ts` serves each video's recorded 429 to any caption request for that video, so a change in which track the provider picks (it now skips the machine-dubbed `variant=timing-optimized` tracks) does not turn a recorded block into a missing-fixture error.

@@ -2,7 +2,7 @@
  * The vid2context HTTP API as the web app uses it. The server only returns
  * VideoContext JSON; formats, the .zip and agent text are made in the browser.
  */
-import { type TranscriptMode, Vid2ContextError, type VideoContext, type VideoRef } from '@vid2context/core';
+import { type TranscriptMode, Vid2ContextError, type VideoContext, type VideoMetadata, type VideoRef } from '@vid2context/core';
 import { type AppError, fromApiBody, isAbort, isApiErrorBody, withAttempts } from './errors.ts';
 
 export const API_BASE_KEY = 'v2c.apiBase';
@@ -148,6 +148,40 @@ export function getContext(input: string, opts: RunOptions = {}, call: CallOptio
 export async function getItems(input: string, call: CallOptions = {}, limit = 200): Promise<VideoRef[]> {
   const res = await getJson<{ items: VideoRef[] }>('/items', { url: input, limit: String(limit) }, call);
   return res.items;
+}
+
+/** A playlist a video link sits in, with what the banner needs to show it. */
+export interface PlaylistInfo {
+  /** The playlist's own link: opening it lists every video. */
+  url: string;
+  title?: string;
+  /** Videos in the playlist, when the platform reports a count. */
+  count?: number;
+}
+
+/**
+ * The playlist a video link also names (a YouTube watch URL with list=), or
+ * null when it names none. GET /items says whether there is one; GET /metadata
+ * on the playlist adds its title and size. A playlist whose metadata cannot be
+ * read is still returned, without title and count.
+ */
+export async function getPlaylistOf(input: string, call: CallOptions = {}): Promise<PlaylistInfo | null> {
+  const res = await getJson<{ items: VideoRef[]; list?: VideoRef }>('/items', { url: input, limit: '1' }, call);
+  const list = res.list;
+  if (!list) return null;
+  const url = list.url ?? list.input;
+  try {
+    const meta = await getJson<VideoMetadata>('/metadata', { url }, call);
+    const count = meta.extra?.itemCount;
+    return {
+      url,
+      ...(meta.title ? { title: meta.title } : {}),
+      ...(typeof count === 'number' ? { count } : {}),
+    };
+  } catch (err) {
+    if (call.signal?.aborted) throw err;
+    return { url };
+  }
 }
 
 /** GET /comments. */

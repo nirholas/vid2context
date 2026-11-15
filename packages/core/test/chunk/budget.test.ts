@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { type BudgetPlan, fitToBudget, transcriptOutline } from '../../src/chunk/index.ts';
+import { item as at } from '../../src/chunk/spans.ts';
 import { Vid2ContextError } from '../../src/errors.ts';
 import type { VideoContext } from '../../src/types.ts';
 
@@ -13,9 +14,9 @@ const gwagon = load('youtube-cCPsdFdlshc.json');
 function checkCoverage(contexts: VideoContext[], plan: BudgetPlan): void {
   expect(plan.items.map((i) => i.videoId)).toEqual(contexts.map((c) => c.metadata.ref.id));
   for (const [n, ctx] of contexts.entries()) {
-    const item = plan.items[n];
+    const item = at(plan.items, n);
     const sections = transcriptOutline(ctx).sections;
-    const start = sections[0].startSec;
+    const start = at(sections, 0).startSec;
     const end = sections.at(-1)?.endSec;
     const omitted = plan.omitted.filter((o) => o.videoId === item.videoId);
     if (item.whole) {
@@ -24,9 +25,9 @@ function checkCoverage(contexts: VideoContext[], plan: BudgetPlan): void {
       continue;
     }
     const ranges = [...(item.sections ?? []), ...omitted].sort((a, b) => a.startSec - b.startSec);
-    expect(ranges[0].startSec).toBe(start);
+    expect(at(ranges, 0).startSec).toBe(start);
     expect(ranges.at(-1)?.endSec).toBe(end);
-    for (let i = 1; i < ranges.length; i++) expect(ranges[i].startSec).toBe(ranges[i - 1].endSec);
+    for (let i = 1; i < ranges.length; i++) expect(at(ranges, i).startSec).toBe(at(ranges, i - 1).endSec);
     // Included sections are leading: every one comes before every omitted range.
     const lastIncluded = item.sections?.at(-1)?.endSec ?? start;
     for (const o of omitted) expect(o.startSec).toBeGreaterThanOrEqual(lastIncluded);
@@ -35,7 +36,7 @@ function checkCoverage(contexts: VideoContext[], plan: BudgetPlan): void {
 
 const used = (plan: BudgetPlan, overhead = 0) =>
   plan.items.reduce((sum, item, n) => {
-    if (item.whole) return sum + transcriptOutline([zoo, gwagon][n]).totalTokens + overhead;
+    if (item.whole) return sum + transcriptOutline(at([zoo, gwagon], n)).totalTokens + overhead;
     const t = (item.sections ?? []).reduce((a, s) => a + s.tokens, 0);
     return sum + (item.sections?.length ? t + overhead : 0);
   }, 0);
@@ -64,16 +65,16 @@ describe('fitToBudget', () => {
 
   it('keeps small videos whole and fills the rest with leading sections of the long one', () => {
     const plan = fitToBudget(contexts, 3000);
-    expect(plan.items[0].whole).toBe(true);
-    const g = plan.items[1];
+    expect(at(plan.items, 0).whole).toBe(true);
+    const g = at(plan.items, 1);
     expect(g.whole).toBe(false);
     const sections = transcriptOutline(gwagon).sections;
     // The first two five-minute sections fit whole, then part of the third.
     expect(g.sections?.slice(0, 2)).toEqual(
       sections.slice(0, 2).map((s) => ({ startSec: s.startSec, endSec: s.endSec, tokens: s.tokens })),
     );
-    expect(g.sections?.[2].startSec).toBe(sections[2].startSec);
-    expect(g.sections?.[2].endSec).toBeLessThan(sections[2].endSec);
+    expect(g.sections?.[2]?.startSec).toBe(at(sections, 2).startSec);
+    expect(g.sections?.[2]?.endSec).toBeLessThan(at(sections, 2).endSec);
     // Nearly the whole budget is used.
     expect(plan.totalTokens).toBeGreaterThan(2900);
   });
@@ -82,8 +83,8 @@ describe('fitToBudget', () => {
     // 40 tokens: neither the 51-token zoo video nor the long one fits whole.
     const plan = fitToBudget(contexts, 40);
     expect(plan.items.every((i) => !i.whole)).toBe(true);
-    const z = (plan.items[0].sections ?? []).reduce((a, s) => a + s.tokens, 0);
-    const g = (plan.items[1].sections ?? []).reduce((a, s) => a + s.tokens, 0);
+    const z = (at(plan.items, 0).sections ?? []).reduce((a, s) => a + s.tokens, 0);
+    const g = (at(plan.items, 1).sections ?? []).reduce((a, s) => a + s.tokens, 0);
     expect(g).toBeGreaterThan(z);
     expect(plan.totalTokens).toBeLessThanOrEqual(40);
     checkCoverage(contexts, plan);

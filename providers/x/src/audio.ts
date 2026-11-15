@@ -10,7 +10,8 @@
  * services need (OVH's keyless lane misreads the length of X's MP4 files).
  *
  * When the post has no usable HLS audio (no playlist, encryption, an
- * unexpected layout), the smallest MP4 rendition is downloaded instead.
+ * unexpected layout, a segment that fails twice), the smallest MP4
+ * rendition is downloaded instead.
  * Both paths stop at VID2CONTEXT_MAX_MEDIA_MB.
  */
 import { type AudioInput, type Ctx, errorFromResponse, fetchWithTimeout, Vid2ContextError } from '@vid2context/core';
@@ -19,6 +20,8 @@ import type { XMedia } from './post.ts';
 
 const MB = 1024 * 1024;
 const CONCURRENCY = 6;
+const SEGMENT_TIMEOUT_MS = 30_000;
+const SEGMENT_ATTEMPTS = 2;
 const HINT = 'Raise VID2CONTEXT_MAX_MEDIA_MB; this is already the smallest audio X serves.';
 
 export interface HlsAudio {
@@ -80,20 +83,48 @@ function tooLarge(what: string, bytes: number, cap: number): Vid2ContextError {
   );
 }
 
-/** Download segments a few at a time, in order, stopping as soon as the total passes the cap. */
+/** A 5xx, a 429 or a network error is worth one more try; a 403 or 404 is not. */
+function retryable(err: unknown): boolean {
+  if (!(err instanceof Vid2ContextError)) return true;
+  return err.code === 'upstream' || err.code === 'rate-limited' || err.code === 'timeout';
+}
+
+async function fetchSegment(url: string, ctx: Ctx): Promise<Uint8Array> {
+  for (let attempt = 1; ; attempt++) {
+    try {
+      const res = await fetchWithTimeout(ctx, url, {}, SEGMENT_TIMEOUT_MS);
+      if (!res.ok) throw await errorFromResponse(res, 'X HLS segment');
+      return new Uint8Array(await res.arrayBuffer());
+    } catch (err) {
+      if (attempt >= SEGMENT_ATTEMPTS || ctx.signal?.aborted || !retryable(err)) throw err;
+      ctx.log.debug('x HLS segment failed, retrying', { attempt, error: String(err) });
+    }
+  }
+}
+
+/**
+ * Download segments a few at a time and join them in order. Stops as soon as
+ * the total passes the cap, a segment fails twice, or ctx.signal aborts; the
+ * other workers stop at their next segment instead of downloading the rest.
+ */
 export async function downloadSegments(urls: string[], ctx: Ctx, cap: number, what: string): Promise<Uint8Array> {
   const parts: Uint8Array[] = new Array(urls.length);
   let total = 0;
   let next = 0;
+  let failed = false;
   const worker = async () => {
-    while (next < urls.length) {
+    while (next < urls.length && !failed) {
+      if (ctx.signal?.aborted) throw new Vid2ContextError('timeout', `Stopped downloading ${what}: the request was cancelled.`);
       const i = next++;
-      const res = await fetchWithTimeout(ctx, urls[i] as string, {}, 60_000);
-      if (!res.ok) throw await errorFromResponse(res, 'X HLS segment');
-      const data = new Uint8Array(await res.arrayBuffer());
-      total += data.byteLength;
-      if (total > cap) throw tooLarge(what, total, cap);
-      parts[i] = data;
+      try {
+        const data = await fetchSegment(urls[i] as string, ctx);
+        total += data.byteLength;
+        if (total > cap) throw tooLarge(what, total, cap);
+        parts[i] = data;
+      } catch (err) {
+        failed = true;
+        throw err;
+      }
     }
   };
   await Promise.all(Array.from({ length: Math.min(CONCURRENCY, urls.length) }, worker));
@@ -119,8 +150,14 @@ export async function downloadAudio(media: XMedia, ctx: Ctx, name: string, what:
       const durationSec = media.durationSec ?? hls.durationSec;
       if (Number.isFinite(hls.bitrate) && (hls.bitrate / 8) * durationSec > cap)
         throw tooLarge(what, (hls.bitrate / 8) * durationSec, cap);
-      const data = await downloadSegments(hls.urls, ctx, cap, what);
-      return { kind: 'bytes', data, mimeType: 'audio/mp4', filename: `${name}.m4a`, durationSec };
+      try {
+        const data = await downloadSegments(hls.urls, ctx, cap, what);
+        return { kind: 'bytes', data, mimeType: 'audio/mp4', filename: `${name}.m4a`, durationSec };
+      } catch (err) {
+        // Too large or cancelled stays final; a broken segment falls back to the single MP4 file.
+        if (ctx.signal?.aborted || (err instanceof Vid2ContextError && err.code === 'too-large')) throw err;
+        ctx.log.debug('x HLS audio download failed, using the MP4', { error: String(err) });
+      }
     }
   }
   // Every MP4 rendition carries the same audio track, so the smallest one is downloaded.

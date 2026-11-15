@@ -153,11 +153,16 @@ export function registerListTools(server: McpServer, deps: ToolDeps): void {
       title: 'List the videos in a playlist, channel or feed',
       description:
         'Expand a playlist, channel, podcast feed or page into its videos (a single video URL returns itself). ' +
+        'A video URL that also names a playlist (watch?v=...&list=...) returns the video plus `list`, the playlist; pass playlist: true to expand the playlist instead. ' +
         'Use it to see what a list contains before reading, or pass the list straight to add_to_collection. ' +
         'Cost: about 40 tokens per item; limit defaults to 50.',
       inputSchema: {
         url: z.string().min(1).describe('Playlist, channel, feed or page URL'),
         limit: z.number().int().min(1).max(MAX_LIST_LIMIT).optional().describe(`Most items to return. Default: ${LIST_LIMIT}`),
+        playlist: z
+          .boolean()
+          .optional()
+          .describe('When url is a video link that also names a playlist (list=), list the playlist instead of the one video'),
       },
       outputSchema: {
         input: z.string(),
@@ -165,12 +170,17 @@ export function registerListTools(server: McpServer, deps: ToolDeps): void {
         items: z.array(
           z.object({ id: z.string(), platform: z.string(), kind: z.string(), nativeId: z.string(), url: z.string().optional() }),
         ),
+        list: z.object({ id: z.string(), url: z.string().optional() }).optional(),
       },
       annotations: { readOnlyHint: true, openWorldHint: true, idempotentHint: true },
     },
     async (args, extra) => {
       try {
-        const refs = await expandInput(registry, args.url, callCtx(deps.ctx, extra.signal), { limit: args.limit ?? LIST_LIMIT });
+        const refs = await expandInput(registry, args.url, callCtx(deps.ctx, extra.signal), {
+          limit: args.limit ?? LIST_LIMIT,
+          list: args.playlist,
+        });
+        const list = args.playlist ? undefined : registry.resolve(args.url).list;
         return structured({
           input: args.url,
           count: refs.length,
@@ -181,6 +191,7 @@ export function registerListTools(server: McpServer, deps: ToolDeps): void {
             nativeId: r.nativeId,
             ...(r.url ? { url: r.url } : {}),
           })),
+          ...(list ? { list: { id: list.id, ...(list.url ? { url: list.url } : {}) } } : {}),
         });
       } catch (err) {
         return toolError(err);

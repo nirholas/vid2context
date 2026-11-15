@@ -1,0 +1,81 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/transcript?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DjNQXAC9IVRw&lang=fr&format=srt&mode=captions"
+  },
+  "status": 503,
+  "contentType": "application/json",
+  "body": {
+    "error": {
+      "code": "blocked",
+      "message": "YouTube captions en->fr: YouTube answered HTTP 429 (automated-traffic block).",
+      "hint": "YouTube is refusing requests from this IP address, which is common on cloud servers. Fixes, best first: run vid2context on your own machine; route the server through your home network (docs/guides/cloudflare-tunnel.md); set YOUTUBE_COOKIE to a signed-in Cookie header (ties requests to your account); or install the yt-dlp provider. Then wait for the block to clear (YOUTUBE_BLOCK_COOLDOWN_SEC)."
+    },
+    "attempts": [
+      {
+        "id": "youtube",
+        "stage": "resolve",
+        "outcome": "ok",
+        "detail": "youtube:jNQXAC9IVRw"
+      },
+      {
+        "id": "youtube",
+        "stage": "metadata",
+        "outcome": "ok",
+        "ms": 552
+      },
+      {
+        "id": "youtube-captions",
+        "stage": "captions",
+        "outcome": "error",
+        "reason": "blocked",
+        "detail": "YouTube captions en->fr: YouTube answered HTTP 429 (automated-traffic block).",
+        "ms": 269
+      },
+      {
+        "id": "ytdlp-captions",
+        "stage": "captions",
+        "outcome": "empty",
+        "reason": "no-tracks",
+        "ms": 3155
+      }
+    ],
+    "recovery": [
+      {
+        "action": "download-media",
+        "title": "Download the audio and transcribe it",
+        "detail": "POST /downloads with kind \"audio\", wait for the job, then upload the file (POST /uploads) and read GET /context?url=upload:<sha256>."
+      },
+      {
+        "action": "import-transcript",
+        "title": "Paste or upload the transcript",
+        "detail": "POST /imports with the transcript text or a subtitle file (.vtt, .srt, .txt); the result is a normal context."
+      },
+      {
+        "action": "local-file",
+        "title": "Download it yourself and use the file",
+        "detail": "Upload the file with POST /uploads, then read GET /context?url=upload:<sha256>.",
+        "command": "yt-dlp -x --audio-format mp3 -o audio.mp3 'https://www.youtube.com/watch?v=jNQXAC9IVRw'"
+      },
+      {
+        "action": "add-key",
+        "title": "Add a transcript API key",
+        "detail": "Send SUPADATA_API_KEY with the request in the X-Vid2Context-Keys header (JSON object). The server uses it for that request only and never stores it.",
+        "keys": [
+          {
+            "name": "SUPADATA_API_KEY",
+            "service": "Supadata",
+            "unlocks": "YouTube transcripts fetched from Supadata servers, not this one",
+            "free": "100 transcripts a month",
+            "signupUrl": "https://supadata.ai"
+          }
+        ]
+      },
+      {
+        "action": "retry",
+        "title": "Try again later",
+        "detail": "Blocks like this usually clear after a while."
+      }
+    ]
+  }
+}

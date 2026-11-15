@@ -101,3 +101,24 @@ export const captionedVideos: Override[] = [
     response: { body: readFixture('timedtext-jNQXAC9IVRw-en.srv3.xml') },
   },
 ];
+
+/**
+ * The recorded caption downloads were refused by a datacenter IP block, which
+ * applies to every track of the video, not to the one URL the provider asked
+ * for at recording time. When track selection changes (the provider now skips
+ * YouTube's machine-dubbed `variant=timing-optimized` tracks), a request for
+ * another track of a blocked video gets the real 429 page recorded for it.
+ */
+export function blockedCaptions(fixture: Fixture): Override[] {
+  const out: Override[] = [];
+  for (const c of fixture.calls) {
+    if (c.status !== 429 || !c.url.includes('/api/timedtext?')) continue;
+    const v = new URL(c.url).searchParams.get('v');
+    if (!v) continue;
+    out.push({
+      match: (call) => call.url.includes('/api/timedtext?') && new URL(call.url).searchParams.get('v') === v,
+      response: { status: c.status, body: c.body, headers: c.contentType ? { 'content-type': c.contentType } : {} },
+    });
+  }
+  return out;
+}

@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { chunkTranscript, type TranscriptChunk, transcriptOutline } from '../../src/chunk/index.ts';
-import { isCut, segmentTokens } from '../../src/chunk/spans.ts';
+import { item as at, isCut, segmentTokens } from '../../src/chunk/spans.ts';
 import { Vid2ContextError } from '../../src/errors.ts';
 import { segmentsToText } from '../../src/segments.ts';
 import { estimateTokens } from '../../src/tokens.ts';
@@ -36,11 +36,11 @@ function checkInvariants(
     expect(c.index).toBe(i);
     expect(c.text).toBe(segmentsToText(segs.slice(first, last + 1)));
     expect(c.tokens).toBe(estimateTokens(c.text));
-    expect(c.startSec).toBe(segs[first].startSec);
-    expect(c.endSec).toBe(segs[last].endSec);
+    expect(c.startSec).toBe(at(segs, first).startSec);
+    expect(c.endSec).toBe(at(segs, last).endSec);
     if (i > 0) {
-      expect(c.startSec).toBeGreaterThanOrEqual(chunks[i - 1].startSec);
-      expect(c.endSec).toBeGreaterThanOrEqual(chunks[i - 1].endSec);
+      expect(c.startSec).toBeGreaterThanOrEqual(at(chunks, i - 1).startSec);
+      expect(c.endSec).toBeGreaterThanOrEqual(at(chunks, i - 1).endSec);
     }
     // Budget: only a lone oversized segment may exceed it.
     if (c.tokens > maxTokens) {
@@ -49,13 +49,13 @@ function checkInvariants(
     }
     // Overlap: whole segments repeated from the end of the previous chunk, within overlapTokens.
     if (c.overlapSegments > 0) {
-      const prev = chunks[i - 1];
-      expect(first).toBeGreaterThanOrEqual(prev.segmentRange[0] + prev.overlapSegments);
-      expect(coreStart).toBe(prev.segmentRange[1] + 1);
+      const prev = at(chunks, i - 1);
+      expect(first).toBeGreaterThanOrEqual(at(prev.segmentRange, 0) + prev.overlapSegments);
+      expect(coreStart).toBe(at(prev.segmentRange, 1) + 1);
       expect(tokens.slice(first, coreStart).reduce((a, b) => a + b, 0)).toBeLessThanOrEqual(overlapTokens);
     }
     // Cuts: a chunk ends on a sentence end or pause, or because the next segment would not fit.
-    if (checkCuts && i < chunks.length - 1 && chunks[i + 1].chapterIndex === c.chapterIndex) {
+    if (checkCuts && i < chunks.length - 1 && at(chunks, i + 1).chapterIndex === c.chapterIndex) {
       const withNext = tokens.slice(coreStart, last + 2).reduce((a, b) => a + b, 0);
       expect(isCut(segs, last) || withNext > core, `chunk ${i} ends mid-sentence while the next segment fits`).toBe(true);
     }
@@ -70,14 +70,14 @@ describe('chunkTranscript', () => {
     const sections = transcriptOutline(zoo).sections;
     for (const c of chunks) {
       expect(c.chapterIndex).toBeDefined();
-      const s = sections[c.chapterIndex ?? -1];
+      const s = at(sections, c.chapterIndex ?? -1);
       expect(c.chapterTitle).toBe(s.title);
       expect(c.startSec).toBeGreaterThanOrEqual(s.startSec);
-      expect(zoo.transcript.segments[c.segmentRange[1]].startSec).toBeLessThan(s.endSec);
+      expect(at(zoo.transcript.segments, c.segmentRange[1]).startSec).toBeLessThan(s.endSec);
     }
     // "Intro" holds only the first segment, so it is a chunk of its own even though the next would fit.
-    expect(chunks[0].text).toBe('All right, so here we are, in front of the elephants');
-    expect(chunks[0].chapterTitle).toBe('Intro');
+    expect(at(chunks, 0).text).toBe('All right, so here we are, in front of the elephants');
+    expect(at(chunks, 0).chapterTitle).toBe('Intro');
     expect(chunks.slice(1).every((c) => c.chapterTitle === 'The cool thing')).toBe(true);
   });
 
@@ -98,7 +98,7 @@ describe('chunkTranscript', () => {
       [200, 40],
       [1000, 100],
       [4000, 400],
-    ]) {
+    ] as const) {
       const chunks = chunkTranscript(gwagon, { maxTokens, overlapTokens });
       checkInvariants(gwagon, chunks, maxTokens, overlapTokens);
       expect(chunks.slice(1).every((c) => c.overlapSegments > 0)).toBe(true);
@@ -107,7 +107,7 @@ describe('chunkTranscript', () => {
     checkInvariants(zoo, chapterChunks, 30, 10);
     // The first chunk of each chapter starts clean.
     for (const [i, c] of chapterChunks.entries()) {
-      if (i === 0 || chapterChunks[i - 1].chapterIndex !== c.chapterIndex) expect(c.overlapSegments).toBe(0);
+      if (i === 0 || at(chapterChunks, i - 1).chapterIndex !== c.chapterIndex) expect(c.overlapSegments).toBe(0);
     }
   });
 
@@ -118,13 +118,13 @@ describe('chunkTranscript', () => {
     expect(chunks.length).toBeGreaterThanOrEqual(7);
     const zooTime = chunkTranscript(zoo, { maxTokens: 4000, by: 'time', targetSec: 10 });
     checkInvariants(zoo, zooTime, 4000, 0, false);
-    expect(zooTime[0].chapterTitle).toBe('Intro');
+    expect(at(zooTime, 0).chapterTitle).toBe('Intro');
   });
 
   it('keeps chunks whole in tokens mode even when the video has chapters', () => {
     const chunks = chunkTranscript(zoo, { maxTokens: 4000, by: 'tokens' });
     expect(chunks).toHaveLength(1);
-    expect(chunks[0].segmentRange).toEqual([0, 5]);
+    expect(at(chunks, 0).segmentRange).toEqual([0, 5]);
   });
 
   it('rejects bad budgets with bad-request', () => {

@@ -2,7 +2,7 @@ import { type Env, type KvStore, MemoryKv, MemoryStorage, Registry } from '@vid2
 import { type RecordedCall, testContext } from '@vid2context/core/testing';
 import youtube from '@vid2context/provider-youtube';
 import { createLibrary, type LibraryDeps } from '../src/index.ts';
-import { captionedVideos, fixtureFetch, loadFixture } from './replay.ts';
+import { blockedCaptions, captionedVideos, fixtureFetch, loadFixture } from './replay.ts';
 
 export const PLAYLIST = 'https://www.youtube.com/playlist?list=PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b';
 export const PLAYLIST_SIZE = 9;
@@ -24,7 +24,8 @@ export interface SetupOptions {
  * the network.
  */
 export function setup(opts: SetupOptions = {}) {
-  const replay = fixtureFetch(loadFixture(), { overrides: captionedVideos, around: opts.around });
+  const fixture = loadFixture();
+  const replay = fixtureFetch(fixture, { overrides: [...captionedVideos, ...blockedCaptions(fixture)], around: opts.around });
   const fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
     const url = new URL(typeof input === 'string' ? input : input instanceof URL ? input.href : input.url);
     if (url.hostname === '127.0.0.1') return globalThis.fetch(input, init);

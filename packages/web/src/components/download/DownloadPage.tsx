@@ -20,6 +20,7 @@ import { shortInput } from '../../lib/format.ts';
 import { downloadSearch, navigate } from '../../lib/route.ts';
 import { ErrorPanel } from '../ErrorPanel.tsx';
 import { UrlForm } from '../home/UrlForm.tsx';
+import { PlaylistNotice } from '../playlist/PlaylistNotice.tsx';
 import { Button, Spinner } from '../ui.tsx';
 import { DownloadForm } from './DownloadForm.tsx';
 import { DownloadJobView, POLL_MS } from './DownloadJobView.tsx';
@@ -196,7 +197,8 @@ export function DownloadPage({ url, call, pollMs }: { url?: string; call?: CallO
             (isList ? (
               <PlaylistDownloads url={url} status={availability.status} call={call} pollMs={pollMs} />
             ) : (
-              <section className="rounded-v2c-lg border border-border bg-surface p-4 sm:p-5">
+              <section className="space-y-4 rounded-v2c-lg border border-border bg-surface p-4 sm:p-5">
+                <PlaylistNotice input={url} searchFor={downloadSearch} call={call} />
                 <DownloadPanel
                   url={url}
                   status={availability.status}

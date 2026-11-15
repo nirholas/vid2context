@@ -9,7 +9,7 @@ import { listMetadata } from '../src/browse/metadata.ts';
 import { parsePage } from '../src/browse/parse.ts';
 import { youtubeSource } from '../src/index.ts';
 import { resetBreaker } from '../src/resilience/breaker.ts';
-import { matchYouTube, videoRef } from '../src/url.ts';
+import { matchYouTube, matchYouTubeList, videoRef } from '../src/url.ts';
 
 // Real innertube responses recorded on 2026-11-14, see test/fixtures/browse/README.md.
 // requests.json lists every request the recording run made (endpoint and body)
@@ -86,7 +86,8 @@ function errorOf(p: Promise<unknown>): Promise<Vid2ContextError> {
   );
 }
 
-const callBodies = (fetch: ReplayFetch) => fetch.calls.map((c) => ({ endpoint: endpointOf(c), ...bodyOf(c) }));
+const callBodies = (fetch: ReplayFetch): Record<string, unknown>[] =>
+  fetch.calls.map((c) => ({ endpoint: endpointOf(c), ...bodyOf(c) }));
 
 beforeEach(() => resetBreaker());
 
@@ -174,6 +175,25 @@ describe('matchYouTube list inputs', () => {
       'youtube:cCPsdFdlshc',
     );
     expect(ref('https://www.youtube.com/watch?v=cCPsdFdlshc&list=RDcCPsdFdlshc').id).toBe('youtube:cCPsdFdlshc');
+  });
+
+  it('finds the playlist a video URL sits in, never a mix', () => {
+    const input = 'https://www.youtube.com/watch?v=PzJL3aBRas8&list=PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b';
+    expect(matchYouTubeList(input)).toEqual({
+      input,
+      platform: 'youtube',
+      kind: 'playlist',
+      id: 'youtube:playlist:PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b',
+      nativeId: 'PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b',
+      url: 'https://www.youtube.com/playlist?list=PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b',
+    });
+    expect(matchYouTubeList('https://youtu.be/PzJL3aBRas8?list=PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b&index=1')?.nativeId).toBe(
+      'PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b',
+    );
+    expect(matchYouTubeList('https://www.youtube.com/watch?v=cCPsdFdlshc&list=RDcCPsdFdlshc')).toBeNull();
+    expect(matchYouTubeList('https://www.youtube.com/watch?v=cCPsdFdlshc')).toBeNull();
+    expect(matchYouTubeList('https://www.youtube.com/playlist?list=PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b')).toBeNull();
+    expect(matchYouTubeList('https://www.youtube.com/watch?v=cCPsdFdlshc&list=WL')).toBeNull();
   });
 
   it('builds canonical URLs for list refs', () => {
@@ -387,6 +407,40 @@ describe('listYouTube: search', () => {
     expect(await ids('ytsearch5:g wagon buyers guide', five.ctx)).toHaveLength(5);
     const limited = setup();
     expect(await ids('ytsearch30:g wagon buyers guide', limited.ctx, 3)).toHaveLength(3);
+  });
+});
+
+describe('a video URL inside a playlist', () => {
+  const WATCH = 'https://www.youtube.com/watch?v=PzJL3aBRas8&list=PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b';
+  const registry = new Registry([youtubeSource], 'node');
+
+  it('resolves to the video, with the playlist beside it', () => {
+    const { ref: video, list } = registry.resolve(WATCH);
+    expect(video.id).toBe('youtube:PzJL3aBRas8');
+    expect(list?.id).toBe('youtube:playlist:PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b');
+    expect(registry.resolve('https://www.youtube.com/watch?v=PzJL3aBRas8').list).toBeUndefined();
+  });
+
+  it('expands to the one video by default, without a request', async () => {
+    const { ctx, fetch } = setup();
+    expect((await expandInput(registry, WATCH, ctx)).map((r) => r.id)).toEqual(['youtube:PzJL3aBRas8']);
+    expect(fetch.calls).toHaveLength(0);
+  });
+
+  it('expands to every video of the playlist with list: true', async () => {
+    const { ctx } = setup();
+    const refs = await expandInput(registry, WATCH, ctx, { list: true });
+    expect(refs).toHaveLength(9);
+    expect(refs[0]?.nativeId).toBe('PzJL3aBRas8');
+    expect((await expandInput(registry, WATCH, setup().ctx, { list: true, limit: 3 })).length).toBe(3);
+  });
+
+  it('leaves inputs without a playlist alone under list: true', async () => {
+    const { ctx } = setup();
+    const refs = await expandInput(registry, 'https://www.youtube.com/watch?v=cCPsdFdlshc&list=RDcCPsdFdlshc', ctx, {
+      list: true,
+    });
+    expect(refs.map((r) => r.id)).toEqual(['youtube:cCPsdFdlshc']);
   });
 });
 

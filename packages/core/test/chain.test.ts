@@ -131,6 +131,37 @@ describe('runChain', () => {
     expect(used).toEqual(['rejected', 'accepted']);
   });
 
+  it('gives up on a hosted rung that hangs and tries the next one, then skips it for a while', async () => {
+    let hungCalls = 0;
+    const hung = rung('free/hung', 'free', {
+      run: () => {
+        hungCalls++;
+        return new Promise<string>(() => undefined);
+      },
+    });
+    const backup = rung('keyless/a', 'keyless');
+    const res = await runChain('stt', [hung, backup], (r) => r.run(), { rungTimeoutMs: 30 }, testContext());
+    expect(res.value).toBe('keyless/a');
+    expect(res.attempts[0]).toMatchObject({ id: 'free/hung', outcome: 'error', reason: 'timeout' });
+    expect(res.attempts[0]?.detail).toContain('did not answer within');
+    const again = await runChain('stt', [hung, backup], (r) => r.run(), { rungTimeoutMs: 30 }, testContext());
+    expect(again.attempts[0]).toMatchObject({ id: 'free/hung', outcome: 'skipped', reason: 'cooldown' });
+    expect(hungCalls).toBe(1);
+  });
+
+  it('never times out a local rung, and reads the limit from env', async () => {
+    const slowLocal = rung('local/slow', 'local', { run: () => new Promise((r) => setTimeout(() => r('local done'), 60)) });
+    const res = await runChain('stt', [slowLocal], (r) => r.run(), { rungTimeoutMs: 10 }, testContext());
+    expect(res.value).toBe('local done');
+    const slowFree = rung('free/slow', 'free', { run: () => new Promise((r) => setTimeout(() => r('late'), 60)) });
+    const off = await runChain('stt', [slowFree], (r) => r.run(), {}, testContext({ env: { VID2CONTEXT_RUNG_TIMEOUT_MS: '0' } }));
+    expect(off.value).toBe('late');
+    const err = await runChain('stt', [slowFree], (r) => r.run(), {}, testContext({ env: { VID2CONTEXT_RUNG_TIMEOUT_MS: '10' } })).catch(
+      (e: unknown) => e,
+    );
+    expect(attemptsOf(err)[0]).toMatchObject({ reason: 'timeout' });
+  });
+
   it('names the failed stage on no-provider and all-rungs-failed', async () => {
     await expect(runChain('stt', [], async () => 'x', {}, testContext())).rejects.toMatchObject({ stage: 'stt' });
     const failing = rung('free/a', 'free', {

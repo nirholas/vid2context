@@ -119,6 +119,20 @@ describe('video routes', () => {
     expect((await app.request(`/api/v1/items?url=${ZOO}&limit=0`)).status).toBe(400);
   });
 
+  it('names the playlist a video link sits in, and expands it only on playlist=1', async () => {
+    const { app, fetch } = makeApp();
+    const watch = encodeURIComponent('https://www.youtube.com/watch?v=PzJL3aBRas8&list=PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b');
+    const body = await (await app.request(`/api/v1/items?url=${watch}&limit=1`)).json();
+    expect(body.items).toEqual([expect.objectContaining({ id: 'youtube:PzJL3aBRas8', kind: 'video' })]);
+    expect(body.list).toMatchObject({
+      id: 'youtube:playlist:PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b',
+      kind: 'playlist',
+      url: 'https://www.youtube.com/playlist?list=PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b',
+    });
+    expect(calls(fetch, /./)).toBe(0);
+    expect((await (await app.request(`/api/v1/items?url=${ZOO}`)).json()).list).toBeUndefined();
+  });
+
   it('renders sections by time range and by chapter index', async () => {
     const { app } = makeApp();
     const range = await app.request('/api/v1/section?url=jNQXAC9IVRw&from=0:00&to=5&timestamps=1');

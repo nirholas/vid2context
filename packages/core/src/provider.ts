@@ -263,6 +263,13 @@ export interface ChainOptions {
   needs?: string[];
   /** Max rungs tried. Default 8. */
   maxAttempts?: number;
+  /**
+   * Longest one hosted (non-local) rung may take before the chain gives up on
+   * it and tries the next one, in milliseconds. Default
+   * VID2CONTEXT_RUNG_TIMEOUT_MS, else 180000; 0 turns it off. Local rungs
+   * have no limit: transcribing long audio on this machine is slow on purpose.
+   */
+  rungTimeoutMs?: number;
 }
 
 export type { Attempt };

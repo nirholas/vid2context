@@ -45,6 +45,8 @@ export interface XPost {
   reposts?: number;
   views?: number;
   replyTo?: string;
+  /** The id of the post this one quotes. Neither service sends the quoted post's media, so it is fetched on its own. */
+  quotedId?: string;
   /** Every media item in post order (photos too, so /video/<n> positions line up). */
   media: XMedia[];
   via: 'syndication' | 'fxtwitter';
@@ -119,6 +121,7 @@ export interface SyndicationTweet {
   };
   mediaDetails?: SynMedia[];
   tombstone?: { text?: { text?: string } };
+  quoted_tweet?: { id_str?: string };
 }
 
 function synMedia(m: SynMedia): XMedia {
@@ -161,6 +164,7 @@ export function fromSyndication(t: SyndicationTweet): XPost {
     likes: num(t.favorite_count),
     replies: num(t.conversation_count),
     ...(t.in_reply_to_screen_name ? { replyTo: t.in_reply_to_screen_name } : {}),
+    ...(t.quoted_tweet?.id_str ? { quotedId: t.quoted_tweet.id_str } : {}),
     media: (t.mediaDetails ?? []).map(synMedia),
     via: 'syndication',
   };
@@ -197,6 +201,7 @@ export interface FxTweet {
   author?: { id?: string; name?: string; screen_name?: string };
   raw_text?: { facets?: { type?: string; original?: string }[] };
   media?: { all?: FxMedia[] };
+  quote?: { id?: string } | null;
 }
 
 function fxMedia(m: FxMedia): XMedia {
@@ -231,6 +236,7 @@ export function fromFxTwitter(t: FxTweet): XPost {
     reposts: num(t.retweets),
     views: num(t.views),
     ...(t.replying_to ? { replyTo: t.replying_to } : {}),
+    ...(t.quote?.id ? { quotedId: t.quote.id } : {}),
     media: (t.media?.all ?? []).map(fxMedia),
     via: 'fxtwitter',
   };

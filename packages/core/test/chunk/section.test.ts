@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { getSection, outlineForApi, parseTimeArg, transcriptOutline } from '../../src/chunk/index.ts';
+import { item as at } from '../../src/chunk/spans.ts';
 import { Vid2ContextError } from '../../src/errors.ts';
 import { formatters, render } from '../../src/format/index.ts';
 import { segmentsToText } from '../../src/segments.ts';
@@ -40,12 +41,12 @@ describe('transcriptOutline', () => {
   it('cuts synthetic sections of about five minutes, contiguous, titled by time range', () => {
     const o = transcriptOutline(gwagon);
     expect(o.sections.length).toBe(4);
-    expect(o.sections[0].startSec).toBe(0);
+    expect(at(o.sections, 0).startSec).toBe(0);
     expect(o.sections.at(-1)?.endSec).toBe(o.durationSec);
     for (const [i, s] of o.sections.entries()) {
       expect(s.source).toBe('time');
       expect(s.title).toMatch(/^\d+:\d\d to \d+:\d\d$/);
-      if (i > 0) expect(s.startSec).toBe(o.sections[i - 1].endSec);
+      if (i > 0) expect(s.startSec).toBe(at(o.sections, i - 1).endSec);
       if (i < o.sections.length - 1) expect(Math.abs(s.endSec - s.startSec - 300)).toBeLessThan(120);
     }
     // Whole-text estimate and sum of sections agree closely.

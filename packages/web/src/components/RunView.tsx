@@ -12,12 +12,13 @@ import { type AppError, isAbort, toAppError } from '../lib/errors.ts';
 import { getEntry, putEntry, runKey, summarize } from '../lib/history.ts';
 import { type ImportResponse, isImportableInput } from '../lib/imports.ts';
 import { acceptedKeyNames } from '../lib/recovery.ts';
-import { navigate, type RunParams } from '../lib/route.ts';
+import { navigate, type RunParams, runSearch } from '../lib/route.ts';
 import { keysForServer } from '../lib/settings.ts';
 import { ClientOnlyNotice } from './ClientOnlyNotice.tsx';
 import { ErrorPanel } from './ErrorPanel.tsx';
 import { ImportedNotice } from './import/ImportedNotice.tsx';
 import { ImportPanel } from './import/ImportPanel.tsx';
+import { PlaylistNotice } from './playlist/PlaylistNotice.tsx';
 import { RecoveryPanel } from './recovery/RecoveryPanel.tsx';
 import { Button, Card, Spinner } from './ui.tsx';
 
@@ -212,6 +213,11 @@ export function RunView({ params }: { params: RunParams }) {
             onBundle={onBundle}
             notices={
               <>
+                <PlaylistNotice
+                  input={params.url}
+                  enabled={api.status !== 'checking' && !isClientOnly(api)}
+                  searchFor={(url) => runSearch({ ...params, url })}
+                />
                 {state.imported && <ImportedNotice {...state.imported} />}
                 {state.notice && (
                   <ErrorPanel title="Comments could not be fetched" error={state.notice}>

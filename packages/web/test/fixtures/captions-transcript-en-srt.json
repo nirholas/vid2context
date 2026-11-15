@@ -1,0 +1,9 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/transcript?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DjNQXAC9IVRw&lang=en&format=srt&mode=captions"
+  },
+  "status": 200,
+  "contentType": "application/x-subrip; charset=utf-8",
+  "body": "1\n00:00:01,200 --> 00:00:03,360\nAll right, so here we are,\nin front of the elephants\n\n2\n00:00:05,318 --> 00:00:07,974\nthe cool thing about these guys\nis that they have really...\n\n3\n00:00:07,974 --> 00:00:12,616\nreally really long trunks\n\n4\n00:00:12,616 --> 00:00:14,367\nand that's cool\n\n5\n00:00:14,421 --> 00:00:15,733\n(baaaaaaaaaaahhh!!)\n\n6\n00:00:16,881 --> 00:00:18,881\nand that's pretty much all there is to say\n"
+}

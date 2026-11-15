@@ -20,6 +20,7 @@ import { createDownloader } from '@vid2context/downloads/node';
 import { bool, positiveInt, str } from '../args.ts';
 import { exitCodeFor, UsageError } from '../exit-codes.ts';
 import type { CommandContext } from '../runtime.ts';
+import { notePlaylist } from './video.ts';
 
 /** SponsorBlock categories `--sponsorblock` cuts when given without a list. */
 export const DEFAULT_SPONSOR_CUT = 'sponsor,selfpromo,interaction';

@@ -1,7 +1,9 @@
 /**
- * Extraction and brief templates. Each is TypeScript (not a .md file read at
- * runtime) so the package runs unchanged on Workers and in the browser; the
- * prompt text is the Markdown string in `instructions`.
+ * Extraction and brief templates. The prompt text of each lives in
+ * src/templates/<id>.md; scripts/embed-templates.mjs embeds those files into
+ * prompts.generated.ts so the package runs unchanged on Workers and in the
+ * browser (no filesystem read at runtime). The id, title, topics and JSON
+ * Schema live in <id>.ts next to it.
  */
 import { Vid2ContextError } from '@vid2context/core';
 import { brief } from './brief.ts';
@@ -12,6 +14,7 @@ import { tutorialSteps } from './tutorial-steps.ts';
 import type { Template } from './types.ts';
 
 export { CITE_SCHEMA } from './cite.ts';
+export { templatePrompt } from './prompt.ts';
 export type { Template } from './types.ts';
 
 export const templates: Record<string, Template> = {

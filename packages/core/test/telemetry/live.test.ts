@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import mediaFile from '@vid2context/provider-media-file';
+import { mediaFile } from '@vid2context/provider-media-file';
 import sttProvider from '@vid2context/provider-stt-openai-compatible';
 import { describe, expect, it } from 'vitest';
 import { createContext, getVideoContext, Registry } from '../../src/index.ts';

@@ -30,12 +30,24 @@ export interface Span {
   last: number;
 }
 
+/**
+ * Element `i` of `list`, for indexes the caller has already bounded. Throws
+ * instead of returning undefined, so a broken invariant fails loudly at the
+ * read rather than as a confusing NaN or crash later.
+ */
+export function item<T>(list: readonly T[], i: number): T {
+  const value = list[i];
+  if (value === undefined) throw new Error(`vid2context chunking bug: read index ${i} of a list of ${list.length}.`);
+  return value;
+}
+
 /** True when the text may end right after segment `i`: a sentence end, a pause, or the end of the run. */
 export function isCut(segs: Segment[], i: number): boolean {
   const next = segs[i + 1];
+  const cur = item(segs, i);
   if (!next) return true;
-  if (next.startSec - segs[i].endSec >= PAUSE_SEC) return true;
-  return SENTENCE_END.test(segs[i].text.trim());
+  if (next.startSec - cur.endSec >= PAUSE_SEC) return true;
+  return SENTENCE_END.test(cur.text.trim());
 }
 
 /** Estimated tokens of one segment's text. */
@@ -76,8 +88,8 @@ export function splitByTokens(segs: Segment[], first: number, last: number, max:
     let e = s;
     let strong = -1;
     let strongSum = 0;
-    while (e <= last && (e === s || sum + tokens[e] <= max)) {
-      sum += tokens[e];
+    while (e <= last && (e === s || sum + item(tokens, e) <= max)) {
+      sum += item(tokens, e);
       if (isCut(segs, e)) {
         strong = e;
         strongSum = sum;
@@ -104,8 +116,8 @@ export function splitByTime(segs: Segment[], first: number, last: number, target
   const out: Range[] = [];
   let s = first;
   while (s <= last) {
-    const ws = segs[s].startSec;
-    if (segs[last].endSec - ws <= targetSec * 1.4) {
+    const ws = item(segs, s).startSec;
+    if (item(segs, last).endSec - ws <= targetSec * 1.4) {
       out.push([s, last]);
       break;
     }
@@ -115,7 +127,7 @@ export function splitByTime(segs: Segment[], first: number, last: number, target
     let bestAny = s;
     let bestAnyDist = Number.POSITIVE_INFINITY;
     for (let i = s; i < last; i++) {
-      const end = segs[i].endSec;
+      const end = item(segs, i).endSec;
       if (end > ws + targetSec * 1.4) break;
       const dist = Math.abs(end - goal);
       if (dist < bestAnyDist) {
@@ -144,10 +156,11 @@ function chapterSpans(context: VideoContext): Span[] {
   for (let c = 0; c < chapters.length; c++) {
     const nextStart = chapters[c + 1]?.startSec;
     const first = seg;
-    while (seg < segs.length && (nextStart === undefined || segs[seg].startSec < nextStart)) seg++;
-    const startSec = c === 0 ? Math.min(chapters[0].startSec, segs[0]?.startSec ?? chapters[0].startSec) : chapters[c].startSec;
-    const endSec = nextStart ?? Math.max(chapters[c].endSec ?? 0, end, startSec);
-    spans.push({ index: c, title: chapters[c].title, startSec, endSec, source: 'chapters', first, last: seg - 1 });
+    while (seg < segs.length && (nextStart === undefined || item(segs, seg).startSec < nextStart)) seg++;
+    const chapter = item(chapters, c);
+    const startSec = c === 0 ? Math.min(chapter.startSec, segs[0]?.startSec ?? chapter.startSec) : chapter.startSec;
+    const endSec = nextStart ?? Math.max(chapter.endSec ?? 0, end, startSec);
+    spans.push({ index: c, title: chapter.title, startSec, endSec, source: 'chapters', first, last: seg - 1 });
   }
   return spans;
 }
@@ -160,8 +173,8 @@ function timeSpans(context: VideoContext): Span[] {
   const long = end >= 3600;
   const ranges = splitByTime(segs, 0, segs.length - 1, SECTION_TARGET_SEC);
   return ranges.map(([first, last], index) => {
-    const startSec = index === 0 ? 0 : segs[first].startSec;
-    const endSec = index === ranges.length - 1 ? end : segs[last + 1].startSec;
+    const startSec = index === 0 ? 0 : item(segs, first).startSec;
+    const endSec = index === ranges.length - 1 ? end : item(segs, last + 1).startSec;
     const title = `${formatTimestamp(startSec, long)} to ${formatTimestamp(endSec, long)}`;
     return { index, title, startSec, endSec, source: 'time' as const, first, last };
   });

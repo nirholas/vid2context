@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import llmProvider from '@vid2context/provider-llm-openai-compatible';
-import mediaFile from '@vid2context/provider-media-file';
+import { mediaFile } from '@vid2context/provider-media-file';
 import sttProvider from '@vid2context/provider-stt-openai-compatible';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import {

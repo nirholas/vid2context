@@ -3,7 +3,7 @@
  * in a token budget, and exactly what was left out so the reader can be told.
  */
 import type { VideoContext } from '../types.ts';
-import { assertBudget, mediaEnd, rangeTokens, sectionSpans, segmentTokens, splitByTokens } from './spans.ts';
+import { assertBudget, item, mediaEnd, rangeTokens, sectionSpans, segmentTokens, splitByTokens } from './spans.ts';
 
 export interface BudgetOptions {
   /** Tokens to reserve per included video for its header (title, link, chapter list). Default 0. */
@@ -60,8 +60,8 @@ function splitUnit(context: VideoContext, unit: Unit, max: number): Unit[] {
     of: unit.of,
     first,
     last,
-    startSec: i === 0 ? unit.startSec : segs[first].startSec,
-    endSec: i === ranges.length - 1 ? unit.endSec : segs[last + 1].startSec,
+    startSec: i === 0 ? unit.startSec : item(segs, first).startSec,
+    endSec: i === ranges.length - 1 ? unit.endSec : item(segs, last + 1).startSec,
     tokens: rangeTokens(segs, first, last),
   }));
 }
@@ -69,8 +69,7 @@ function splitUnit(context: VideoContext, unit: Unit, max: number): Unit[] {
 /** Take leading sections of `v` within `allowance` tokens, splitting the next section when it does not fit whole. */
 function takeLeading(v: Video, allowance: number): number {
   let spent = 0;
-  while (v.sections.length > 0) {
-    const next = v.sections[0];
+  for (let next = v.sections[0]; next !== undefined; next = v.sections[0]) {
     if (next.tokens <= allowance - spent) {
       v.sections.shift();
       const prev = v.taken.at(-1);
@@ -85,7 +84,8 @@ function takeLeading(v: Video, allowance: number): number {
     const room = allowance - spent;
     if (room <= 0 || next.first > next.last) break;
     const pieces = splitUnit(v.context, next, room);
-    if (pieces[0].tokens > room) break;
+    const head = pieces[0];
+    if (!head || head.tokens > room) break;
     v.sections.splice(0, 1, ...pieces);
   }
   return spent;

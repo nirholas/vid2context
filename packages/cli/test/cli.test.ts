@@ -161,6 +161,38 @@ describe('list', () => {
   });
 });
 
+describe('a video link inside a playlist', () => {
+  const WATCH = 'https://www.youtube.com/watch?v=PzJL3aBRas8&list=PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b';
+
+  it('lists the one video and says how to list the playlist', async () => {
+    const res = await cli(['list', WATCH]);
+    expect(res.code).toBe(0);
+    expect(res.stdout).toBe('https://www.youtube.com/watch?v=PzJL3aBRas8\n');
+    expect(res.stderr).toBe(
+      `1 item\nThis video is part of a playlist (https://www.youtube.com/playlist?list=PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b). For the whole playlist: vid2context list --playlist "${WATCH}"\n`,
+    );
+  });
+
+  it('lists the playlist with --playlist', async () => {
+    const res = await cli(['list', WATCH, '--playlist', '--limit', '3']);
+    expect(res.code).toBe(0);
+    expect(res.stdout).toBe(
+      [
+        'https://www.youtube.com/watch?v=PzJL3aBRas8',
+        'https://www.youtube.com/watch?v=1Xx1fmHIsiA',
+        'https://www.youtube.com/watch?v=AS6LYBzFtEU',
+        '',
+      ].join('\n'),
+    );
+    expect(res.stderr).toBe('3 items\n');
+  });
+
+  it('keeps the note out of quiet runs and leaves plain videos alone', async () => {
+    expect((await cli(['list', WATCH, '-q'])).stderr).toBe('');
+    expect((await cli(['list', 'jNQXAC9IVRw'])).stderr).toBe('1 item\n');
+  });
+});
+
 describe('formats', () => {
   it('lists the formatters map at runtime', async () => {
     const res = await cli(['formats', '--json']);

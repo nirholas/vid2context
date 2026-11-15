@@ -135,6 +135,7 @@ async function gather(c: CommandContext, storage: Storage | null): Promise<{ con
     } finally {
       c.progress.stop();
     }
+    if (!bool(c.values, 'playlist')) notePlaylist(c, input, c.args.command.name);
   }
   const contexts: VideoContext[] = [];
   let firstError: unknown;

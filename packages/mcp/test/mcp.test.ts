@@ -248,8 +248,22 @@ describe('list_items', () => {
 
   it('returns a single video as itself', async () => {
     const { client } = await connect();
-    const out = (await call(client, 'list_items', { url: ZOO })).structuredContent as { items: { id: string }[] };
+    const out = (await call(client, 'list_items', { url: ZOO })).structuredContent as { items: { id: string }[]; list?: unknown };
     expect(out.items.map((i) => i.id)).toEqual(['youtube:jNQXAC9IVRw']);
+    expect(out.list).toBeUndefined();
+  });
+
+  it('names the playlist a video link sits in, and lists it with playlist: true', async () => {
+    const { client } = await connect();
+    const watch = 'https://www.youtube.com/watch?v=PzJL3aBRas8&list=PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b';
+    type Out = { count: number; items: { id: string }[]; list?: { id: string; url?: string } };
+    const one = (await call(client, 'list_items', { url: watch })).structuredContent as Out;
+    expect(one.items.map((i) => i.id)).toEqual(['youtube:PzJL3aBRas8']);
+    expect(one.list).toEqual({ id: 'youtube:playlist:PLHeawKfarQSPKIjpe86at3Ttc2sz7uD_b', url: GWAGON_PLAYLIST });
+    const all = (await call(client, 'list_items', { url: watch, playlist: true, limit: 5 })).structuredContent as Out;
+    expect(all.count).toBe(5);
+    expect(all.items[0]?.id).toBe('youtube:PzJL3aBRas8');
+    expect(all.list).toBeUndefined();
   });
 });
 

@@ -5,7 +5,7 @@
 import { Vid2ContextError } from '../errors.ts';
 import { formatTimestamp } from '../segments.ts';
 import type { VideoContext } from '../types.ts';
-import { mediaEnd, type Span, sectionSpans } from './spans.ts';
+import { item, mediaEnd, type Span, sectionSpans } from './spans.ts';
 
 export interface SectionSelector {
   /** Start of the range in seconds. Default: the start of the video. */
@@ -54,7 +54,7 @@ function findSection(spans: Span[], chapter: number | string): Span {
   const i = [titles.indexOf(q), titles.findIndex((t) => t.startsWith(q)), titles.findIndex((t) => t.includes(q))].find(
     (n) => n >= 0,
   );
-  if (q && i !== undefined) return spans[i];
+  if (q && i !== undefined) return item(spans, i);
   throw new Vid2ContextError('bad-request', `No chapter matches "${chapter}".`, { hint });
 }
 

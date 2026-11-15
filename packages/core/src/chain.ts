@@ -48,7 +48,40 @@ export function resolveChainOptions(opts: ChainOptions, env: Env): Required<Omit
     skip: [...(opts.skip ?? []), ...listFromEnv(env.VID2CONTEXT_SKIP)],
     needs: opts.needs ?? [],
     maxAttempts: opts.maxAttempts ?? 8,
+    rungTimeoutMs: opts.rungTimeoutMs ?? rungTimeoutFromEnv(env),
   };
+}
+
+/** Default per-rung limit: 3 minutes, under the HTTP API's 5-minute request timeout so a fallback still gets its turn. */
+export const DEFAULT_RUNG_TIMEOUT_MS = 180_000;
+
+function rungTimeoutFromEnv(env: Env): number {
+  const raw = env.VID2CONTEXT_RUNG_TIMEOUT_MS?.trim();
+  if (!raw) return DEFAULT_RUNG_TIMEOUT_MS;
+  const n = Number(raw);
+  return Number.isFinite(n) && n >= 0 ? Math.floor(n) : DEFAULT_RUNG_TIMEOUT_MS;
+}
+
+/**
+ * Settle with `work`, or reject with a `timeout` error after `ms` (0: no
+ * limit). The abandoned call keeps running until the request's own signal
+ * ends it; the chain no longer waits for it.
+ */
+function withRungTimeout<T>(rung: Rung, ms: number, work: () => Promise<T>): Promise<T> {
+  if (ms <= 0 || rung.tier === 'local') return work();
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const expired = new Promise<never>((_, reject) => {
+    timer = setTimeout(
+      () =>
+        reject(
+          new Vid2ContextError('timeout', `${rung.id} did not answer within ${Math.round(ms / 1000)} s.`, {
+            hint: 'The service is slow or stuck; the next rung was tried. Raise VID2CONTEXT_RUNG_TIMEOUT_MS for very long inputs.',
+          }),
+        ),
+      ms,
+    );
+  });
+  return Promise.race([work(), expired]).finally(() => clearTimeout(timer));
 }
 
 /** Filter and order rungs for a request. Pure: no network, no cooldown state. */
@@ -116,6 +149,8 @@ function cooldownFor(err: unknown): number {
   if (err.code === 'auth') return 10 * 60 * 1000;
   if (err.code === 'not-found' && err.status !== undefined) return 30 * 60 * 1000;
   if (err.code === 'upstream' && (err.status ?? 0) >= 500) return 30 * 1000;
+  // A rung that hung: skip it for a minute instead of making every request wait for it again.
+  if (err.code === 'timeout' && err.status === undefined) return 60 * 1000;
   return 0;
 }
 
@@ -149,7 +184,7 @@ export async function runChain<R extends Rung, T>(
   ctx: Ctx,
 ): Promise<ChainSuccess<R, T>> {
   const ranked = rankRungs(rungs, opts, ctx.env);
-  const { maxAttempts } = resolveChainOptions(opts, ctx.env);
+  const { maxAttempts, rungTimeoutMs } = resolveChainOptions(opts, ctx.env);
   const attempts: Attempt[] = [];
   if (ranked.length === 0) {
     throw Object.assign(
@@ -186,7 +221,9 @@ export async function runChain<R extends Rung, T>(
     tried++;
     const started = Date.now();
     try {
-      const value = await (tel ? tracedRungCall(tel, stage, rung, call, reasonFor) : call(rung));
+      const value = await withRungTimeout(rung, rungTimeoutMs, () =>
+        tel ? tracedRungCall(tel, stage, rung, call, reasonFor) : call(rung),
+      );
       attempts.push({ id: rung.id, stage, outcome: 'ok', ms: Date.now() - started });
       return { value, rung, attempts };
     } catch (err) {

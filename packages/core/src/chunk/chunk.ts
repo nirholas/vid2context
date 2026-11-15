@@ -8,6 +8,7 @@ import { estimateTokens } from '../tokens.ts';
 import type { VideoContext } from '../types.ts';
 import {
   assertBudget,
+  item,
   type Range,
   rangeTokens,
   SECTION_TARGET_SEC,
@@ -91,10 +92,10 @@ export function chunkTranscript(context: VideoContext, opts: ChunkOptions): Tran
     ranges.forEach(([first, last], k) => {
       let start = first;
       if (overlap > 0 && k > 0) {
-        const prevFirst = ranges[k - 1][0];
+        const prevFirst = item(ranges, k - 1)[0];
         let sum = 0;
-        while (start - 1 >= prevFirst && sum + tokens[start - 1] <= overlap) {
-          sum += tokens[start - 1];
+        while (start - 1 >= prevFirst && sum + item(tokens, start - 1) <= overlap) {
+          sum += item(tokens, start - 1);
           start--;
         }
         while (start < first && rangeTokens(segs, start, last) > opts.maxTokens) start++;
@@ -104,8 +105,8 @@ export function chunkTranscript(context: VideoContext, opts: ChunkOptions): Tran
       const chapter = chapterOf(first);
       out.push({
         index: out.length,
-        startSec: slice[0].startSec,
-        endSec: slice[slice.length - 1].endSec,
+        startSec: item(slice, 0).startSec,
+        endSec: item(slice, slice.length - 1).endSec,
         text,
         tokens: estimateTokens(text),
         ...(chapter ? { chapterIndex: chapter.index, chapterTitle: chapter.title } : {}),

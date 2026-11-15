@@ -1,6 +1,6 @@
 import { resolve } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
-import mediaFile from '../../../../providers/media-file/src/index.ts';
+import { mediaFile } from '../../../../providers/media-file/src/index.ts';
 import { expandInput, getVideoContext } from '../../src/pipeline.ts';
 import { Registry } from '../../src/registry.ts';
 import { checkInput, enforceInputPolicy, isPublicMode, limits, setHostResolver } from '../../src/security/index.ts';

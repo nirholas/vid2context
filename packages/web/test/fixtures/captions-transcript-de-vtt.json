@@ -1,0 +1,9 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/transcript?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DjNQXAC9IVRw&lang=de&format=vtt&mode=captions"
+  },
+  "status": 200,
+  "contentType": "text/vtt; charset=utf-8",
+  "body": "WEBVTT\n\nNOTE\nMe at the zoo\nSource: https://www.youtube.com/watch?v=jNQXAC9IVRw\nTranscript: creator captions from youtube-captions\n\n00:00:00.000 --> 00:00:05.067\nAlso hier sind wir vor den Elefanten.\n\n00:00:05.067 --> 00:00:12.467\nDas Coole an den Typen ist dass sie\nsehr, sehr, sehr, lange Rüssel haben.\n\n00:00:12.467 --> 00:00:14.267\nUnd das ist cool.\n\n00:00:17.067 --> 00:00:21.000\nAnsonsten gibt es nicht\nwirklich viel zu sagen.\n"
+}
