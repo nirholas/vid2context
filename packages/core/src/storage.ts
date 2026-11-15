@@ -93,17 +93,60 @@ function slugId(name: string): string {
   return `${slug || 'collection'}-${Array.from(rand, (b) => b.toString(16).padStart(2, '0')).join('')}`;
 }
 
+/** Default cap on contexts a MemoryStorage keeps. A long video's context is a few MB, so this bounds memory to the low hundreds of MB. */
+export const MEMORY_STORAGE_MAX_CONTEXTS = 200;
+
+export interface MemoryStorageOptions {
+  /** Most contexts to keep. The least recently used ones not in any collection are dropped first. Default 200. */
+  maxContexts?: number;
+}
+
+/**
+ * Process-local Storage. It is the fallback cache of a public server with no
+ * database, so it is bounded: past `maxContexts` the least recently read or
+ * written context is evicted, preferring ones no collection lists. An evicted
+ * video is simply fetched again on its next request.
+ */
 export class MemoryStorage implements Storage {
   readonly backend = 'memory';
+  /** Map order is recency order: oldest first. */
   private contexts = new Map<string, { context: VideoContext; savedAt: string }>();
   private collections = new Map<string, Collection>();
+  private readonly maxContexts: number;
+
+  constructor(opts: MemoryStorageOptions = {}) {
+    const max = opts.maxContexts ?? MEMORY_STORAGE_MAX_CONTEXTS;
+    this.maxContexts = Number.isFinite(max) && max >= 1 ? Math.floor(max) : MEMORY_STORAGE_MAX_CONTEXTS;
+  }
 
   async getContext(id: string): Promise<VideoContext | null> {
-    return this.contexts.get(id)?.context ?? null;
+    const entry = this.contexts.get(id);
+    if (!entry) return null;
+    this.contexts.delete(id);
+    this.contexts.set(id, entry);
+    return entry.context;
   }
 
   async putContext(context: VideoContext): Promise<void> {
-    this.contexts.set(context.metadata.ref.id, { context, savedAt: new Date().toISOString() });
+    const id = context.metadata.ref.id;
+    this.contexts.delete(id);
+    this.contexts.set(id, { context, savedAt: new Date().toISOString() });
+    this.evict();
+  }
+
+  private evict(): void {
+    if (this.contexts.size <= this.maxContexts) return;
+    const pinned = new Set<string>();
+    for (const c of this.collections.values()) for (const v of c.videoIds) pinned.add(v);
+    for (const id of this.contexts.keys()) {
+      if (this.contexts.size <= this.maxContexts) return;
+      if (!pinned.has(id)) this.contexts.delete(id);
+    }
+    // Every remaining context is in a collection: drop the oldest anyway so memory stays bounded.
+    for (const id of this.contexts.keys()) {
+      if (this.contexts.size <= this.maxContexts) return;
+      this.contexts.delete(id);
+    }
   }
 
   async deleteContext(id: string): Promise<void> {

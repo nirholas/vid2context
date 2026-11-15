@@ -66,9 +66,41 @@ export function hasVectors<S extends Storage>(storage: S | null | undefined): st
   return typeof s?.queryVectors === 'function' && typeof s.upsertVectors === 'function';
 }
 
-/** Process-local KvStore. State is lost on restart. */
+/** Default cap on MemoryKv entries. */
+export const MEMORY_KV_MAX_ENTRIES = 50_000;
+/** Expired entries are swept every this many writes. */
+const SWEEP_EVERY = 512;
+
+export interface MemoryKvOptions {
+  /** Most entries to keep; past it the oldest written are dropped. Default 50,000. */
+  maxEntries?: number;
+}
+
+/**
+ * Process-local KvStore. State is lost on restart. Rate-limit buckets write
+ * one short-lived key per client IP, so expired keys are swept every few
+ * hundred writes (not only when read again) and the total is capped, keeping
+ * a long-running public server's memory flat.
+ */
 export class MemoryKv implements KvStore {
+  /** Map order is write order: oldest first. */
   private data = new Map<string, { json: string; expiresAt?: number }>();
+  private readonly maxEntries: number;
+  private writes = 0;
+
+  constructor(opts: MemoryKvOptions = {}) {
+    const max = opts.maxEntries ?? MEMORY_KV_MAX_ENTRIES;
+    this.maxEntries = Number.isFinite(max) && max >= 1 ? Math.floor(max) : MEMORY_KV_MAX_ENTRIES;
+  }
+
+  /** Number of stored entries, expired ones included until the next sweep. */
+  get size(): number {
+    return this.data.size;
+  }
+
+  private sweep(now: number): void {
+    for (const [k, e] of this.data) if (e.expiresAt !== undefined && e.expiresAt <= now) this.data.delete(k);
+  }
 
   async kvGet<T = unknown>(key: string): Promise<T | null> {
     const entry = this.data.get(key);
@@ -81,8 +113,15 @@ export class MemoryKv implements KvStore {
   }
 
   async kvSet(key: string, value: unknown, opts: { ttlSec?: number } = {}): Promise<void> {
-    const expiresAt = opts.ttlSec && opts.ttlSec > 0 ? Date.now() + opts.ttlSec * 1000 : undefined;
+    const now = Date.now();
+    const expiresAt = opts.ttlSec && opts.ttlSec > 0 ? now + opts.ttlSec * 1000 : undefined;
+    this.data.delete(key);
     this.data.set(key, { json: JSON.stringify(value), expiresAt });
+    if (++this.writes % SWEEP_EVERY === 0 || this.data.size > this.maxEntries) this.sweep(now);
+    for (const k of this.data.keys()) {
+      if (this.data.size <= this.maxEntries) break;
+      this.data.delete(k);
+    }
   }
 
   async kvDelete(key: string): Promise<void> {
