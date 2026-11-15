@@ -551,6 +551,25 @@ describe('speakers (real diarized Deepgram utterances)', () => {
     const rows = parseCsv(render(call, 'csv'));
     expect(rows.slice(1).map((r) => r[2])).toEqual(segs.map((s) => s.speaker));
   });
+
+  it('vtt opens each cue with a <v Speaker> voice tag naming its segment speaker', () => {
+    const cues = parseVtt(render(call, 'vtt')).cues;
+    const built = buildCues(segs, false);
+    expect(cues).toHaveLength(built.length);
+    expect(cues.map((c) => c.voice)).toEqual(built.map((c) => c.speaker));
+    // No "Name: " prefix in VTT: the voice tag carries the speaker.
+    expect(cues.some((c) => /^Speaker \d: /.test(c.lines[0] ?? ''))).toBe(false);
+  });
+
+  it('markdown and pack start a **Speaker:** paragraph at every turn', () => {
+    for (const f of ['markdown', 'pack']) {
+      const paras = render(call, f).match(/^\[\d+:\d\d\](?:\([^)]*\))? .*$/gm) ?? [];
+      const labels = paras.map((p) => /^\[[^\]]+\](?:\([^)]*\))? \*\*(Speaker \d):\*\* /.exec(p)?.[1]);
+      // Every paragraph is labelled, and consecutive paragraphs only repeat a speaker when a long turn was split.
+      expect(labels.every(Boolean), f).toBe(true);
+      expect(labels.filter((l, i) => l !== labels[i - 1]), f).toEqual(turns.map((t) => t.speaker));
+    }
+  });
 });
 
 describe('formats without speakers or a second language are unchanged by the new options', () => {
