@@ -12,6 +12,16 @@ export {
 export { buildGlossary, MAX_GLOSSARY_TERMS, metadataTerms } from './glossary.ts';
 export { isLanguageTag, languageName, sameLanguage } from './languages.ts';
 export {
+  formatterFor,
+  type StorageSource,
+  TRANSCRIPT_MODES,
+  type TranslateVideoDeps,
+  type TranslateVideoOptions,
+  type TranslateVideoResult,
+  type TranslationSummary,
+  translateVideo,
+} from './service.ts';
+export {
   type FailedChunk,
   type TranslateOptions,
   type TranslationReport,

@@ -12,3 +12,5 @@ Real LLM responses recorded on 2026-11-14 from this repo's VM by `scripts/record
 Serving `llm-de-chunks-001.json` (ids 0 to 11) to a request for ids 0 to 29 is how the tests get a real answer with missing ids, to check the single retry and the keep-original fallback.
 
 The YouTube responses (player, the creator `de` track of "Me at the zoo", and the HTTP 429 for `tlang=de`) are read from `providers/youtube/test/fixtures/`; see its README.
+
+`test/surfaces.test.ts` (the MCP tool and HTTP route) replays the same `llm-de-whole-001.json` and YouTube responses.

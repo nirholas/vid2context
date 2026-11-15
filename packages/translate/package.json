@@ -5,10 +5,15 @@
   "license": "Apache-2.0",
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./mcp": "./src/mcp.ts",
+    "./http": "./src/http.ts"
   },
   "dependencies": {
-    "@vid2context/core": "*"
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "@vid2context/core": "*",
+    "hono": "^4.13.18",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@vid2context/provider-llm-openai-compatible": "*",
