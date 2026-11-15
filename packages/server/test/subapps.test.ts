@@ -118,3 +118,73 @@ describe('hosted mode (@vid2context/accounts)', () => {
     expect(bad.status).toBe(401);
   });
 });
+
+describe('duplicates, live and bot webhooks', () => {
+  it('compares stored videos on POST /duplicates with a read-scoped key', async () => {
+    const { storage } = await seededStorage();
+    const { app, fetch } = makeApp({ storage, env: { VID2CONTEXT_API_KEYS: 'reader' } });
+    const auth = { authorization: 'Bearer reader', 'content-type': 'application/json' };
+    const res = await app.request('/api/v1/duplicates', {
+      method: 'POST',
+      headers: auth,
+      body: JSON.stringify({ inputs: ['https://youtu.be/jNQXAC9IVRw', 'https://youtu.be/cCPsdFdlshc'] }),
+    });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.groups).toEqual([]);
+    expect(Object.keys(body.videos).sort()).toEqual(['youtube:cCPsdFdlshc', 'youtube:jNQXAC9IVRw']);
+    expect(body.stats.videos).toBe(2);
+    // Both came from the library, nothing was fetched.
+    expect(fetch.calls).toHaveLength(0);
+
+    const bad = await app.request('/api/v1/duplicates', { method: 'POST', headers: auth, body: 'not json' });
+    expect(bad.status).toBe(400);
+    expect(await bad.json()).toMatchObject({ error: { code: 'bad-request', hint: expect.any(String) }, attempts: [] });
+  });
+
+  it('validates GET /live before opening the stream', async () => {
+    const { app } = makeApp();
+    const res = await app.request('/api/v1/live');
+    expect(res.status).toBe(400);
+    expect(await res.json()).toMatchObject({ error: { code: 'bad-request', hint: expect.stringContaining('url') } });
+    const minutes = await app.request('/api/v1/live?url=https://youtu.be/jNQXAC9IVRw&maxMinutes=-1');
+    expect(minutes.status).toBe(400);
+  });
+
+  it('lets bot webhooks past the API keys and checks the platform secret instead', async () => {
+    const env = { VID2CONTEXT_API_KEYS: 'secret-key', VID2CONTEXT_RATE_LIMIT: '1' };
+    // Not configured: the bot answers 404, not the server's 401.
+    const off = makeApp({ env }).app;
+    expect((await off.request('/api/v1/bots/telegram', { method: 'POST', body: '{}' })).status).toBe(404);
+
+    const { app } = makeApp({
+      env: { ...env, TELEGRAM_BOT_TOKEN: '123456:recorded-format-token', TELEGRAM_WEBHOOK_SECRET: 'tg-secret' },
+    });
+    const wrong = await app.request('/api/v1/bots/telegram', {
+      method: 'POST',
+      headers: { 'x-telegram-bot-api-secret-token': 'nope' },
+      body: '{}',
+    });
+    expect(wrong.status).toBe(401);
+    // A verified update with nothing to answer is acknowledged; the server rate limit (1 per minute) does not apply.
+    for (const id of [1, 2, 3]) {
+      const ok = await app.request('/api/v1/bots/telegram', {
+        method: 'POST',
+        headers: { 'x-telegram-bot-api-secret-token': 'tg-secret' },
+        body: JSON.stringify({ update_id: id }),
+      });
+      expect(ok.status).toBe(200);
+    }
+    // Other routes still need the key.
+    expect((await app.request('/api/v1/library')).status).toBe(401);
+    await app.close();
+  });
+
+  it('lists the new routes in openapi.json', async () => {
+    const { app } = makeApp();
+    const doc = await (await app.request('/api/v1/openapi.json')).json();
+    for (const path of ['/api/v1/duplicates', '/api/v1/live', '/api/v1/bots/telegram', '/api/v1/bots/slack/events']) {
+      expect(Object.keys(doc.paths)).toContain(path);
+    }
+  });
+});

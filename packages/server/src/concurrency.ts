@@ -60,6 +60,7 @@ const HEAVY = new Set([
   'skips',
   'exports',
   'imports',
+  'duplicates',
 ]);
 
 /** True for requests the cap applies to. */

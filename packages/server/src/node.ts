@@ -18,6 +18,7 @@ import { getConnInfo } from '@hono/node-server/conninfo';
 import { MemoryStorage } from '@vid2context/core';
 import { createDownloader, createDownloadManager } from '@vid2context/downloads/node';
 import { createJobQueue, registerBuiltinKinds } from '@vid2context/jobs';
+import { createFfmpegExtractor } from '@vid2context/live/node';
 import { createNodeContext, createRegistry, loadEnvFiles } from '@vid2context/registry/node';
 import pkg from '../package.json' with { type: 'json' };
 import { createApp } from './app.ts';
@@ -53,6 +54,8 @@ const app = createApp({
   },
   mcpDnsRebindingProtection: loopback,
   healthChecks: nodeHealthChecks,
+  // GET /live: chunks go through the local ffmpeg (a managed copy on Linux unless VID2CONTEXT_FFMPEG_DOWNLOAD=0).
+  liveExtractAudio: createFfmpegExtractor({ env: baseCtx.env, download: true }),
 });
 
 const server = serve({ fetch: app.fetch, port, hostname, serverOptions: serverOptions(process.env) }, (info) => {

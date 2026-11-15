@@ -42,6 +42,20 @@ const REQUEST_ID = /^[A-Za-z0-9._:-]{1,128}$/;
 /** Paths that never need a key and are never rate limited. */
 const OPEN_PATHS = new Set(['/api/v1/health', '/api/v1/healthz']);
 
+/**
+ * Chat bot webhooks (@vid2context/bots): Telegram, Discord and Slack cannot
+ * send a Bearer key, so each request is verified by the platform's signature
+ * inside the sub-app, which also rate limits per chat and user. Unconfigured
+ * platforms answer 404.
+ */
+function isBotWebhook(path: string): boolean {
+  return path === '/api/v1/bots' || path.startsWith('/api/v1/bots/');
+}
+
+function skipsKeysAndLimits(path: string): boolean {
+  return OPEN_PATHS.has(path) || isBotWebhook(path);
+}
+
 export function requestContext(
   services: Services,
   opts: { onAccessLog?: (entry: AccessLogEntry) => void; clientIp: (c: Context<AppEnv>) => string | undefined },
@@ -136,7 +150,7 @@ export function auth(services: Services): MiddlewareHandler<AppEnv> {
   return async (c, next) => {
     const cfg = services.config(c.req.raw);
     const raw = cfg.apiKeys;
-    if (!raw || cfg.hosted || OPEN_PATHS.has(c.req.path) || c.req.method === 'OPTIONS') return next();
+    if (!raw || cfg.hosted || skipsKeysAndLimits(c.req.path) || c.req.method === 'OPTIONS') return next();
     const principal = await authenticate(c.req.header('authorization'), await apiKeysFor(raw));
     c.set('principal', principal);
     assertScope(principal, requiredScope(c.req.method, c.req.path), c.req.method, c.req.path);
@@ -159,7 +173,7 @@ export function rateLimitBinding(ctx: Ctx): RateLimitBinding | undefined {
 export function rateLimit(services: Services, clientIp: (c: Context<AppEnv>) => string | undefined): MiddlewareHandler<AppEnv> {
   return async (c, next) => {
     const cfg = services.config(c.req.raw);
-    if (cfg.ratePerMinute <= 0 || cfg.hosted || OPEN_PATHS.has(c.req.path) || c.req.method === 'OPTIONS') return next();
+    if (cfg.ratePerMinute <= 0 || cfg.hosted || skipsKeysAndLimits(c.req.path) || c.req.method === 'OPTIONS') return next();
     const principal = c.get('principal');
     const who = principal ? `key:${principal.name}` : `ip:${clientIp(c) ?? 'unknown'}`;
     // On Workers each isolate has its own in-memory KV, so without a KV binding the token bucket

@@ -165,6 +165,9 @@ Mounted by `createApp` (`packages/server/src/app.ts`, `MOUNTED_SUB_APPS`). They 
 | `@vid2context/webhooks` (59) | `webhookRoutes` | `/api/v1` | |
 | `@vid2context/imports` | `importRoutes` | `/api/v1` | `POST /imports`, see below. Gets `hosted` from the server config; caps its own body at 5 MB, so the server's JSON body limit skips this path |
 | `@vid2context/downloads` | `downloadsRoutes` | `/api/v1` | `/downloads/*`, see below. `createApp({ downloads })` takes the Node entry's `createDownloadManager`; without one (Workers) every route but `/downloads/status` answers `no-provider` |
+| `@vid2context/dedupe` (62) | `dedupeRoutes` | `/api/v1` | `POST /duplicates`; counts against the expensive-request cap |
+| `@vid2context/live` (61) | `liveRoutes` | `/api/v1` | `GET /live` (event stream). `createApp({ liveExtractAudio })` takes the Node entry's `createFfmpegExtractor`; without one (Workers) the stream answers a `no-provider` error event |
+| `@vid2context/bots` (56) | `botsRoutes` | `/api/v1` | `/bots/telegram`, `/bots/discord`, `/bots/slack/*`. Each platform's signature is checked inside the sub-app, so the server's API keys and rate limit skip `/bots/*`; a platform without its secrets answers 404. `close()` waits for replies in flight |
 | `@vid2context/mcp-http` (45) | `mcpHttpRoutes` | `/` | `/mcp`, `/oauth/*`, `/.well-known/*`; answers its own errors and keeps its own auth and CORS rules |
 
 Hosted mode (58): `hostedMiddleware` from `@vid2context/accounts/http` runs on `/api/*` after CORS and before the server's own key check, and `accountsRoutes` is mounted at `/api/v1`. Both are inert unless `VID2CONTEXT_HOSTED=1`. With hosted mode on, accounts owns authentication (sessions, `v2c_` keys, the anonymous plan), per-IP limits and quotas, so the server skips `VID2CONTEXT_API_KEYS` and its own rate limit; pipeline work for a request runs on `hosted.registry(registry)` (metered against the caller's plan) and `hosted.storage(storage, ...)` (the shared cache for public videos), and single-flight runs are shared per caller only.
@@ -199,8 +202,6 @@ When the server cannot read a video's captions (YouTube blocks many cloud IPs), 
 | Method and path | Request | Response |
 |---|---|---|
 | `GET /translate?url=&lang=&format=&timestamps=&mode=&refresh=&llm=` | `url` (or `input`) and `lang` (target, BCP-47) are required; `format` any formatter id (default `text`); `llm=0` allows only the platform's tracks | The translation rendered by the formatter with its `mimeType`; `format=json` returns `{ videoId, title, url?, language, via, producer, rungs, model?, glossary, report, notes, source: { language, origin, producer, segments }, attempts, context, sourceTranscript }`. Headers `X-Translated-Via` (`source`, `platform` or `llm`), `X-Translation-Producer`, `X-Source-Language`. The source transcript is saved to the library unchanged, the translation never. Errors: `bad-request` (missing `url` or `lang`, bad language code, format, mode or flag), `no-transcript` with `llm=0`, `all-rungs-failed` |
-
-Not mounted, because the package exports no route factory yet: bots (56), live (61) and duplicates (62).
 
 ## Planned routes
 
@@ -339,8 +340,8 @@ interface Job {
 
 ### Auth and limits (owner: 45 and 46, implemented by 46 for `/api/*`)
 
-- API keys (not in hosted mode, where accounts authenticates instead): when `VID2CONTEXT_API_KEYS` is set (comma-separated), every `/api/*` route except `/health` requires `Authorization: Bearer <key>`; otherwise the server is open and the Node entry binds to 127.0.0.1 by default. Each entry is a plain key (full access) or a hashed entry `name:scope:sha256hex`, where the hex is the SHA-256 of the key and the scope is `read`, `write` or `admin`. `read` allows `GET` and the POST routes that only compute an answer (`/pack`, `/bundle`, `/ask`, `/chat`, `/research`, `/duplicates`, `/exports/obsidian`); `write` also allows every other POST, PUT, PATCH and DELETE; `admin` allows everything. Keys are compared by SHA-256 in constant time. Missing or wrong keys get `401 unauthorized`, a key without the scope `403 forbidden`. Logs name the key (`key-1` for the first plain key, or the hashed entry's name), never the key itself. `/mcp` and the OAuth paths use mcp-http's own credentials.
-- Rate limiting (not in hosted mode, where accounts applies per-IP limits and plan quotas): a token bucket per key (or per client IP in open mode) in a KvStore (`ratelimit:` keys; the storage's own KV when it has one, else process memory). `VID2CONTEXT_RATE_LIMIT` requests per minute (default 120, `0` off) with bursts of `VID2CONTEXT_RATE_BURST` (default half the rate). Over the limit: `429` with `Retry-After` and the standard error body (`code: rate-limited`). `/health` and CORS preflights are not limited. The client IP is the socket address on Node and `CF-Connecting-IP` on Workers; `X-Forwarded-For` and `X-Real-IP` count only with `VID2CONTEXT_TRUST_PROXY=1`.
+- API keys (not in hosted mode, where accounts authenticates instead): when `VID2CONTEXT_API_KEYS` is set (comma-separated), every `/api/*` route except `/health`, `/healthz` and the bot webhooks (`/bots/*`, verified by each platform's signature) requires `Authorization: Bearer <key>`; otherwise the server is open and the Node entry binds to 127.0.0.1 by default. Each entry is a plain key (full access) or a hashed entry `name:scope:sha256hex`, where the hex is the SHA-256 of the key and the scope is `read`, `write` or `admin`. `read` allows `GET` and the POST routes that only compute an answer (`/pack`, `/bundle`, `/ask`, `/chat`, `/research`, `/duplicates`, `/exports/obsidian`); `write` also allows every other POST, PUT, PATCH and DELETE; `admin` allows everything. Keys are compared by SHA-256 in constant time. Missing or wrong keys get `401 unauthorized`, a key without the scope `403 forbidden`. Logs name the key (`key-1` for the first plain key, or the hashed entry's name), never the key itself. `/mcp` and the OAuth paths use mcp-http's own credentials.
+- Rate limiting (not in hosted mode, where accounts applies per-IP limits and plan quotas): a token bucket per key (or per client IP in open mode) in a KvStore (`ratelimit:` keys; the storage's own KV when it has one, else process memory). `VID2CONTEXT_RATE_LIMIT` requests per minute (default 120, `0` off) with bursts of `VID2CONTEXT_RATE_BURST` (default half the rate). Over the limit: `429` with `Retry-After` and the standard error body (`code: rate-limited`). `/health`, `/healthz`, the bot webhooks (the bots package limits per chat and user) and CORS preflights are not limited. The client IP is the socket address on Node and `CF-Connecting-IP` on Workers; `X-Forwarded-For` and `X-Real-IP` count only with `VID2CONTEXT_TRUST_PROXY=1`.
 - CORS is off by default; `VID2CONTEXT_CORS_ORIGINS` lists allowed origins (`https://vid2context.com`, `chrome-extension://<id>`, or `*`). Preflights are answered before auth. Allowed request headers: `Authorization`, `Content-Type`, `X-Request-Id`, `If-None-Match`; exposed: `X-Request-Id`, `Retry-After`, `ETag`, `Content-Disposition`, `X-Data-Attribution`, `X-RateLimit-*`.
 - Body limits: `VID2CONTEXT_MAX_BODY_KB` (default 1024) for JSON bodies, the upload cap for `POST /uploads`; larger bodies get `413 too-large`.
 - Timeout: a request that runs longer than `VID2CONTEXT_REQUEST_TIMEOUT_MS` (default 300000) is answered with `504 timeout`, and its Ctx signal aborts the providers' work.
@@ -367,16 +368,16 @@ Same conventions as above. Each package exports a Hono sub-app factory from its 
 | `POST /research` | 54 | `{ urls: string[], query, contextSec?, maxExcerpts? }` | `{ results: { videoId, title, excerpts: { startSec, endSec, text, context, url? }[] }[] }` |
 | `GET /caption-languages?url=` | 54 | | `{ tracks: CaptionTrackInfo[], translationTargets: { language, name }[] }` |
 | `GET /key-moments?url=&count=` | 54 | | `{ moments: { startSec, title, why, url? }[], rung }` |
-| `POST /bots/telegram` | 56 | Telegram update; `X-Telegram-Bot-Api-Secret-Token` checked | `200` |
-| `POST /bots/discord` | 56 | Discord interaction; Ed25519 signature checked | interaction response |
-| `POST /bots/slack/events`, `POST /bots/slack/commands` | 56 | Slack payloads; signing secret checked | `200` within 3 seconds |
+| `POST /bots/telegram` | 56, implemented | Telegram update; `X-Telegram-Bot-Api-Secret-Token` checked | `200` |
+| `POST /bots/discord` | 56, implemented | Discord interaction; Ed25519 signature checked | interaction response |
+| `POST /bots/slack/events`, `POST /bots/slack/commands` | 56, implemented | Slack payloads; signing secret checked | `200` within 3 seconds |
 | `POST /exports/notion` | 57 | `{ inputs?, collectionId?, parentPageId? }` | `{ pages: { videoId, url }[] }` |
 | `POST /exports/obsidian` | 57 | `{ inputs?, collectionId? }` | `{ files: { path, content }[] }` (the caller writes them, or 15 zips them) |
 | `GET /auth/github/login`, `GET /auth/github/callback`, `POST /auth/logout` | 58 | | session cookie; only the GitHub id and login are stored |
 | `GET /me`, `GET /me/usage` | 58 | | `{ id, login, plan }`, `{ period, used, limits }` |
 | `GET /me/keys`, `POST /me/keys`, `DELETE /me/keys/:id` | 58 | `{ name }` on POST | the key is shown once on creation, stored hashed |
 | `GET /webhooks`, `POST /webhooks`, `DELETE /webhooks/:id`, `POST /webhooks/:id/test` | 59 | `{ url, events: string[] }` on POST | `Webhook` (the signing secret is shown once) |
-| `GET /live?url=&maxMinutes=` | 61 | | `text/event-stream`: `segment`, `status`, `done`, `error` |
-| `POST /duplicates` | 62 | `{ inputs?, collectionId? }` | `{ groups: { kind: 'reupload' \| 'clip', members: { videoId, offsetSec? }[], evidence }[] }` |
+| `GET /live?url=&maxMinutes=` | 61, implemented | | `text/event-stream`: `segment`, `status`, `done`, `error` |
+| `POST /duplicates` | 62, implemented | `{ inputs?, collectionId? }` | `{ groups: { kind: 'reupload' \| 'clip', members: { videoId, offsetSec? }[], evidence }[] }` |
 
 Hosted mode (58): when `VID2CONTEXT_HOSTED=1`, the accounts middleware runs in front of every route except `/health`, `/auth/*` and `/bots/*`, enforcing sessions or API keys, per-account quotas and per-IP limits.

@@ -101,11 +101,20 @@ curl -s  "$API/pack" -H 'content-type: application/json' -d '{"inputs": ["upload
 
 ## More routes
 
-Mounted from other packages, documented in their guides: collections ([collections.md](collections.md)), search ([search.md](search.md)), ask and chat ([ask.md](ask.md)), briefs and extraction, auto-chapters and translation ([translate-and-chapters.md](translate-and-chapters.md)), jobs ([jobs.md](jobs.md)), SponsorBlock skips, research, exports, webhooks, and the remote MCP server at `/mcp` ([remote-mcp.md](remote-mcp.md)).
+Mounted from other packages, documented in their guides: collections ([collections.md](collections.md)), search ([search.md](search.md)), ask and chat ([ask.md](ask.md)), briefs and extraction, auto-chapters and translation ([translate-and-chapters.md](translate-and-chapters.md)), jobs ([jobs.md](jobs.md)), SponsorBlock skips, research, exports, webhooks, duplicates, live streams, chat bot webhooks, and the remote MCP server at `/mcp` ([remote-mcp.md](remote-mcp.md)).
 
 ```sh
 curl -s "$API/openapi.json" | jq '.paths | keys'
+
+# Reuploads and clips among videos (read scope is enough).
+curl -s "$API/duplicates" -H 'content-type: application/json' \
+  -d '{"inputs":["https://youtu.be/jNQXAC9IVRw","https://www.youtube.com/watch?v=jNQXAC9IVRw"]}'
+
+# A live stream transcribed as it plays (event stream; Node only, needs ffmpeg).
+curl -sN "$API/live?url=https://www.youtube.com/watch?v=<live id>&maxMinutes=5"
 ```
+
+The chat bot webhooks (`POST /bots/telegram`, `/bots/discord`, `/bots/slack/events`, `/bots/slack/commands`) are called by the platforms, not by you. Each request is checked against that platform's signature or secret, so they skip the server's API keys and rate limit. A platform whose secrets are not set answers 404.
 
 ## API keys
 
@@ -134,7 +143,7 @@ VID2CONTEXT_API_KEYS=ci-reader:read:3b5d...e1,ingest:write:9a41...7c
 | `write` | also every other POST, PUT, PATCH and DELETE (uploads, collections, jobs, library deletes) |
 | `admin` | everything |
 
-A missing or wrong key gets `401 unauthorized` (with `WWW-Authenticate: Bearer`); a key without the scope gets `403 forbidden`. `/api/v1/health` is always open. Access logs name the key (`key-1` for the first plain key, or the hashed entry's name), never the key itself. `/mcp` has its own credentials (`VID2CONTEXT_MCP_TOKENS` or OAuth, see [remote-mcp.md](remote-mcp.md)).
+A missing or wrong key gets `401 unauthorized` (with `WWW-Authenticate: Bearer`); a key without the scope gets `403 forbidden`. `/api/v1/health` and `/api/v1/healthz` are always open, and the bot webhooks are checked by each platform's signature instead. Access logs name the key (`key-1` for the first plain key, or the hashed entry's name), never the key itself. `/mcp` has its own credentials (`VID2CONTEXT_MCP_TOKENS` or OAuth, see [remote-mcp.md](remote-mcp.md)).
 
 In hosted mode (`VID2CONTEXT_HOSTED=1`), `@vid2context/accounts` takes over: GitHub sign-in sessions, `v2c_` keys made at `/api/v1/me/keys`, the anonymous plan, per-IP limits and daily quotas. `VID2CONTEXT_API_KEYS` and the server's own rate limit are then not used.
 

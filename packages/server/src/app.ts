@@ -5,15 +5,17 @@
  * log sink) comes in through AppOptions, so the app itself is the same on
  * Node, Workers, Vercel and the rest.
  *
- * Routes built here: health, context, transcript, metadata, formats, items,
+ * Routes built here: health, healthz, context, transcript, metadata, formats, items,
  * section, outline, comments, pack, library, models, uploads, bundle and
  * openapi.json. Sub-apps exported by other packages are mounted below
  * (see SUB_APPS); docs/contracts/http-api.md lists every route and its owner.
  */
 import { accountsRoutes, hostedMiddleware } from '@vid2context/accounts/http';
 import { askRoutes } from '@vid2context/ask/http';
+import { type BotsApp, botsRoutes } from '@vid2context/bots/http';
 import { chaptersRoutes } from '@vid2context/chapters/http';
 import { type Ctx, formatters, type RecoveryContext, type Registry, type Storage } from '@vid2context/core';
+import { dedupeRoutes } from '@vid2context/dedupe/http';
 import { type DownloadManager, downloadPolicy } from '@vid2context/downloads';
 import { downloadsRoutes } from '@vid2context/downloads/http';
 import { exporterRoutes } from '@vid2context/exporters/http';
@@ -21,6 +23,7 @@ import { importRoutes } from '@vid2context/imports/http';
 import { insightsRoutes } from '@vid2context/insights/http';
 import { type JobsRouteDeps, jobsRoutes } from '@vid2context/jobs/http';
 import { libraryRoutes as collectionRoutes } from '@vid2context/library/http';
+import { type AudioExtractor, liveRoutes } from '@vid2context/live';
 import { type McpHttpApp, mcpHttpRoutes } from '@vid2context/mcp-http';
 import { researchRoutes } from '@vid2context/research/http';
 import { searchRoutes } from '@vid2context/search/http';
@@ -82,9 +85,15 @@ export interface AppOptions {
    * src/health-node.ts for disk, yt-dlp, ffmpeg and the network).
    */
   healthChecks?: HealthChecks;
+  /**
+   * Audio extractor for GET /live (Node: createFfmpegExtractor from
+   * @vid2context/live/node). Without it the live stream answers a
+   * `no-provider` error event (Workers have no ffmpeg).
+   */
+  liveExtractAudio?: AudioExtractor;
 }
 
-/** The app plus `close()`, which ends open MCP sessions (call it on shutdown). */
+/** The app plus `close()`, which ends open MCP sessions and waits for bot replies in flight (call it on shutdown). */
 export type ServerApp = Hono<AppEnv> & { close(): Promise<void> };
 
 /** A sub-app another package exports, mounted under `prefix`. */
@@ -117,6 +126,9 @@ export const MOUNTED_SUB_APPS = [
   '@vid2context/webhooks',
   '@vid2context/imports',
   '@vid2context/downloads',
+  '@vid2context/dedupe',
+  '@vid2context/live',
+  '@vid2context/bots',
 ] as const;
 
 function subApps(
@@ -124,7 +136,7 @@ function subApps(
   opts: AppOptions,
   version: string,
   accountsDeps: Parameters<typeof accountsRoutes>[0],
-): { list: SubApp[]; mcp: McpHttpApp } {
+): { list: SubApp[]; mcp: McpHttpApp; bots: BotsApp } {
   const deps = { registry: services.registry, makeCtx: services.ctxFor, storage: services.storage };
   const mcp = mcpHttpRoutes({
     ...deps,
@@ -132,6 +144,8 @@ function subApps(
     ...(opts.clientIp ? { clientIp: opts.clientIp } : {}),
     ...(opts.mcpDnsRebindingProtection ? { dnsRebindingProtection: true } : {}),
   });
+  // Webhooks verify each platform's signature themselves; the server's API keys and rate limits skip /bots/*.
+  const bots = botsRoutes({ registry: services.registry, makeCtx: services.ctxFor, storage: services.storage });
   const list: SubApp[] = [
     // Inert (404) unless VID2CONTEXT_HOSTED=1.
     { name: '@vid2context/accounts', prefix: '/api/v1', routes: accountsRoutes(accountsDeps) },
@@ -172,9 +186,20 @@ function subApps(
       prefix: '/api/v1',
       routes: downloadsRoutes({ makeCtx: services.ctxFor, ...(opts.downloads ? { manager: opts.downloads } : {}) }),
     },
+    { name: '@vid2context/dedupe', prefix: '/api/v1', routes: dedupeRoutes(deps) },
+    {
+      name: '@vid2context/live',
+      prefix: '/api/v1',
+      routes: liveRoutes({
+        registry: services.registry,
+        makeCtx: services.ctxFor,
+        ...(opts.liveExtractAudio ? { extractAudio: opts.liveExtractAudio } : {}),
+      }),
+    },
+    { name: '@vid2context/bots', prefix: '/api/v1', routes: bots },
     { name: '@vid2context/mcp-http', prefix: '', routes: mcp },
   ];
-  return { list, mcp };
+  return { list, mcp, bots };
 }
 
 function forwardedIp(c: Context): string | undefined {
@@ -330,7 +355,7 @@ export function createApp(opts: AppOptions): ServerApp {
   app.route('/api/v1', uploadRoutes(deps));
   app.route('/api/v1', bundleRoutes(deps));
 
-  const { list: mounted, mcp } = subApps(services, opts, version, accountsDeps);
+  const { list: mounted, mcp, bots } = subApps(services, opts, version, accountsDeps);
   for (const sub of mounted) app.route(sub.prefix || '/', sub.routes);
 
   docs.add({
@@ -373,5 +398,10 @@ export function createApp(opts: AppOptions): ServerApp {
     ),
   );
 
-  return Object.assign(app, { close: () => mcp.closeSessions() });
+  return Object.assign(app, {
+    close: async () => {
+      // Finish bot replies already accepted (their webhooks answered before the work ran).
+      await Promise.allSettled([mcp.closeSessions(), bots.idle()]);
+    },
+  });
 }
