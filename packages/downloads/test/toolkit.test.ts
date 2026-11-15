@@ -14,7 +14,7 @@ import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { formatters, Registry, Vid2ContextError } from '@vid2context/core';
 import { testContext } from '@vid2context/core/testing';
-import { probe, tryLocateFfmpeg } from '@vid2context/ffmpeg';
+import { locateFfmpeg, probe, runProcess, tryLocateFfmpeg } from '@vid2context/ffmpeg';
 import mediaFile from '@vid2context/provider-media-file';
 import { Hono } from 'hono';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
@@ -242,6 +242,47 @@ describe.skipIf(!hasFfmpeg)('frames and animated clips', () => {
     expect(w.subarray(0, 4).toString('latin1')).toBe('RIFF');
     expect(w.subarray(8, 12).toString('latin1')).toBe('WEBP');
     expect(w.includes(Buffer.from('ANIM'))).toBe(true);
+  });
+
+  it('never upscales: the 160 px Apollo clip stays 160 px wide by default, explicitly, and for frames', async () => {
+    const out = join(dir, 'noupscale');
+    const gif = await toolkit.animation(normalizeAnimationRequest({ url: MP4, from: '10', to: '13' }), ctx, { dir: out });
+    expect((await readFile(gif.path)).readUInt16LE(6)).toBe(160);
+    // The same clip forced to 480 px (the old behaviour) for comparison, made with the real ffmpeg.
+    const big = join(out, 'upscaled.gif');
+    await runProcess(
+      (await locateFfmpeg({ env })).ffmpeg,
+      [
+        '-v',
+        'error',
+        '-y',
+        '-ss',
+        '10',
+        '-t',
+        '3',
+        '-i',
+        MP4,
+        '-filter_complex',
+        '[0:v:0]fps=10,scale=480:-2:flags=lanczos,split[a][b];[a]palettegen=stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle',
+        big,
+      ],
+      { label: 'ffmpeg upscaled reference' },
+    );
+    expect(gif.bytes).toBeLessThan((await readFile(big)).length / 3);
+
+    const webp = await toolkit.animation(
+      normalizeAnimationRequest({ url: MP4, from: '0', to: '1', format: 'webp', width: 640 }),
+      ctx,
+      {
+        dir: out,
+      },
+    );
+    // ffprobe reports no size for animated WebP; the VP8X chunk holds the canvas width minus one (24 bits at byte 24).
+    const w = await readFile(webp.path);
+    expect(w.subarray(12, 16).toString('latin1')).toBe('VP8X');
+    expect(w.readUIntLE(24, 3) + 1).toBe(160);
+    const frame = await toolkit.frames(normalizeFramesRequest({ url: MP4, times: '5', width: 1000 }), ctx, { dir: out });
+    expect((await probe(frame.path, ctx)).streams[0]?.width).toBe(160);
   });
 
   it('enforces the clip limits, tighter on public servers', () => {

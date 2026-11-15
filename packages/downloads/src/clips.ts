@@ -27,7 +27,7 @@ export interface FramesRequest {
   /** Seconds into the video, sorted, without duplicates. */
   times: number[];
   format: FrameFormat;
-  /** Output width in pixels; height keeps the aspect ratio. Leave out for the source size. */
+  /** Largest output width in pixels (never wider than the source); height keeps the aspect ratio. Leave out for the source size. */
   width?: number;
   /** Picture size downloaded from a website to grab from (smaller side). Default 1080. */
   quality: VideoQuality;
@@ -43,7 +43,7 @@ export interface AnimationRequest {
   toSec: number;
   /** Frames per second. Default 10, capped by VID2CONTEXT_MAX_CLIP_FPS. */
   fps: number;
-  /** Width in pixels. Default 480, capped by VID2CONTEXT_MAX_CLIP_WIDTH. */
+  /** Largest width in pixels: default 480, capped by VID2CONTEXT_MAX_CLIP_WIDTH, and never wider than the source. */
   width: number;
   /** Repeat forever (true, default) or play once. */
   loop: boolean;
@@ -181,9 +181,18 @@ export function normalizeAnimationRequest(
   };
 }
 
+/**
+ * A scale filter that shrinks to `width` but never enlarges: upscaling adds
+ * bytes and no detail (a 3 s GIF of a 160 px clip at 480 px was 3 MB). The
+ * quotes keep the comma inside min() from splitting the filter chain.
+ */
+export function noUpscale(width: number): string {
+  return `scale=w='min(${Math.round(width)},iw)':h=-2:flags=lanczos`;
+}
+
 /** Output arguments for one still frame (after `-ss <t> -i <file>`). */
 export function frameArgs(format: FrameFormat, width?: number): string[] {
-  const vf = width ? ['-vf', `scale=${width}:-2:flags=lanczos`] : [];
+  const vf = width ? ['-vf', noUpscale(width)] : [];
   const codec =
     format === 'png'
       ? ['-c:v', 'png', '-f', 'image2pipe']
@@ -198,7 +207,7 @@ export function frameArgs(format: FrameFormat, width?: number): string[] {
  * animated WebP at quality 75.
  */
 export function animationArgs(req: Pick<AnimationRequest, 'format' | 'fps' | 'width' | 'loop'>): string[] {
-  const base = `fps=${req.fps},scale=${req.width}:-2:flags=lanczos`;
+  const base = `fps=${req.fps},${noUpscale(req.width)}`;
   const loop = ['-loop', req.loop ? '0' : req.format === 'gif' ? '-1' : '1'];
   if (req.format === 'gif') {
     // The filter graph picks the picture stream itself; a -map next to it would add the raw stream as a second output.
