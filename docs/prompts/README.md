@@ -87,7 +87,7 @@ A review of wave 1 against popular open-source projects (`docs/prior-art.md`) fo
 | 59 | [Outbound webhooks and an n8n node](59-webhooks-n8n.md) | `packages/webhooks/`, `packages/n8n-nodes/` | L. Reach |
 | 60 | [More sources: cloud share links and Bilibili](60-share-links-bilibili.md) | `providers/share-links/`, `providers/bilibili/` | N. Sources |
 | 61 | [Live streams: transcribe while the stream runs](61-live-streams.md) | `packages/live/` | N. Sources |
-| 62 | [Duplicate, reupload and clip detection](62-dedupe.md) | `packages/dedupe/` | K. Content quality |
+| 62 | [Duplicate, reupload and clip detection](archive/62-dedupe.md) | `packages/dedupe/` | K. Content quality |
 
 Wave 2 was started on 2026-11-14 by the owner's coordinating session as background agents, one per prompt. Do not open chats for 51 to 62 unless that session reports one of them failed.
 
