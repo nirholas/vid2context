@@ -270,7 +270,15 @@ describe.skipIf(!hasFfmpeg)('MCP tools', () => {
     try {
       const client = await connect(testContext({ env }), true);
       const tools = (await client.listTools()).tools.map((t) => t.name).sort();
-      expect(tools).toEqual(['download_media', 'get_media_options']);
+      expect(tools).toEqual([
+        'download_batch',
+        'download_captions',
+        'download_media',
+        'export_clip',
+        'get_caption_options',
+        'get_media_options',
+        'grab_frames',
+      ]);
       const opts = await client.callTool({ name: 'get_media_options', arguments: { url: APOLLO } });
       expect((opts.content as { text: string }[])[0]?.text).toContain('Video: none (audio only)');
       const res = await client.callTool({

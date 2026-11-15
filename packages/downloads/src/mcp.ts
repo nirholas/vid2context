@@ -17,6 +17,7 @@ import {
   VIDEO_CONTAINERS,
   VIDEO_QUALITIES,
 } from './options.ts';
+import { registerToolkitTools } from './mcp-toolkit.ts';
 import { downloadPolicy, NOTICE } from './policy.ts';
 import { mb, optionsSummary } from './summary.ts';
 import type { DownloadedFile, Downloader } from './types.ts';
@@ -48,6 +49,8 @@ function toolError(err: unknown): ToolResult {
 export function registerDownloadTools(server: McpServer, deps: DownloadToolDeps): void {
   const downloader = deps.downloader;
   if (!downloader) return;
+  // Captions, frames, clips and batches (mcp-toolkit.ts), when the downloader carries the toolkit.
+  registerToolkitTools(server, { ctx: deps.ctx, downloader });
 
   const enabled = (ctx: Ctx) => {
     const policy = downloadPolicy(ctx.env);

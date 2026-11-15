@@ -25,6 +25,7 @@ import {
   VIDEO_CONTAINERS,
   VIDEO_QUALITIES,
 } from './options.ts';
+import { toolkitRoutes } from './http-toolkit.ts';
 import { downloadPolicy, NOTICE } from './policy.ts';
 import type { DownloadManager } from './types.ts';
 
@@ -69,6 +70,9 @@ export function parseRange(header: string | undefined, size: number): { start: n
 
 export function downloadsRoutes(deps: DownloadsRouteDeps): Hono {
   const app = new Hono();
+  // Captions, frames, clips and batches (http-toolkit.ts). Mounted first: their paths win over /downloads/:id,
+  // and ids that are not toolkit tasks fall through to the download routes below.
+  app.route('/', toolkitRoutes(deps));
 
   /** The manager when downloads are allowed here, else an error saying why not. */
   const ready = (ctx: Ctx): DownloadManager => {
