@@ -129,18 +129,26 @@ async function ask(
   }
 }
 
+/**
+ * Translate one chunk with at most one retry. A wrong answer (missing ids,
+ * bad JSON) is sent back with the problem. An answer that echoes the source
+ * comes from a rung that ignores the task, so the retry goes to the next rung
+ * instead, and `echoing` keeps that rung out of later chunks too.
+ */
 async function translateChunk(
   registry: Registry,
   chunk: Item[],
   first: ChatRequest,
   chain: ChainOptions,
+  echoing: Set<string>,
   ctx: Ctx,
   attempts: Attempt[],
 ): Promise<ChunkOutcome> {
   let req = first;
   let problem = '';
   for (let round = 0; round < 2; round++) {
-    const res = await ask(registry, req, chain, ctx, attempts);
+    const skip = [...(chain.skip ?? []), ...echoing];
+    const res = await ask(registry, req, skip.length > 0 ? { ...chain, skip } : chain, ctx, attempts);
     if ('error' in res) {
       problem = res.error;
       if (res.fatal) return { retried: round > 0, problem };
@@ -150,8 +158,20 @@ async function translateChunk(
     const checked = verifyItems(parseItems(res.text), chunk);
     if ('texts' in checked) return { texts: checked.texts, rung: res.rung, model: res.model, retried: round > 0 };
     problem = checked.problem;
-    attempts.push({ id: res.rung, stage: 'llm', outcome: 'error', reason: 'bad-segments', detail: problem.slice(0, 300) });
-    req = retryRequest(first, res.text, problem, chunk);
+    attempts.push({
+      id: res.rung,
+      stage: 'llm',
+      outcome: 'error',
+      reason: checked.unchanged ? 'untranslated' : 'bad-segments',
+      detail: problem.slice(0, 300),
+    });
+    if (checked.unchanged) {
+      echoing.add(res.rung);
+      ctx.log.warn('llm rung returned the segments untranslated, skipping it', { rung: res.rung });
+      req = first;
+    } else {
+      req = retryRequest(first, res.text, problem, chunk);
+    }
   }
   return { retried: true, problem };
 }
@@ -208,6 +228,7 @@ export async function translateContext(
   const texts = new Map<number, string>();
   const report: TranslationReport = { chunks: chunks.length, retried: [], failed: [], untranslatedSegments: 0 };
   const rungs: string[] = [];
+  const echoing = new Set<string>();
   let model: string | undefined;
 
   for (const [index, chunk] of chunks.entries()) {
@@ -218,7 +239,7 @@ export async function translateContext(
       glossary,
       origin: context.metadata.ref.url ?? context.metadata.ref.id,
     });
-    const out = await translateChunk(registry, chunk, req, chain, ctx, attempts);
+    const out = await translateChunk(registry, chunk, req, chain, echoing, ctx, attempts);
     if (out.retried) report.retried.push(index);
     if (out.texts && out.rung) {
       for (const [id, t] of out.texts) texts.set(id, t);

@@ -126,7 +126,10 @@ const listIds = (ids: number[]): string =>
  * non-empty string. Returns the translated texts by id, or a sentence saying
  * what is wrong (sent back to the model on retry).
  */
-export function verifyItems(answer: unknown[] | null, chunk: Item[]): { texts: Map<number, string> } | { problem: string } {
+export function verifyItems(
+  answer: unknown[] | null,
+  chunk: Item[],
+): { texts: Map<number, string> } | { problem: string; unchanged?: boolean } {
   if (!answer) return { problem: 'It was not valid JSON with a "segments" array.' };
   const want = new Set(chunk.map((it) => it.id));
   const texts = new Map<number, string>();
@@ -162,5 +165,38 @@ export function verifyItems(answer: unknown[] | null, chunk: Item[]): { texts: M
   if (duplicate.length > 0) problems.push(`Repeated ids: ${listIds(duplicate)}.`);
   if (empty.length > 0) problems.push(`Empty text for ids: ${listIds(empty)}.`);
   if (problems.length > 0) return { problem: problems.join(' ') };
+  const echoed = unchangedIds(chunk, texts);
+  if (echoed) {
+    return {
+      problem: `Segments ${listIds(echoed.ids)} (${echoed.ids.length} of ${echoed.of}) came back unchanged, still in the source language.`,
+      unchanged: true,
+    };
+  }
   return { texts };
+}
+
+/** Normalize for comparing a translation with its source: case, spacing and edge punctuation do not count. */
+const same = (t: string): string =>
+  t
+    .toLowerCase()
+    .replace(/\s+/g, ' ')
+    .replace(/^[\s\p{P}]+|[\s\p{P}]+$/gu, '');
+
+/** A segment worth checking: at least three words of two or more letters (not a sound tag, a name or "OK"). */
+const sentenceLike = (t: string): boolean => (t.match(/\p{L}{2,}/gu)?.length ?? 0) >= 3;
+
+/** Minimum sentence-like segments in a chunk before echoed answers are judged. */
+export const ECHO_MIN_SEGMENTS = 3;
+
+/**
+ * Some models answer with the input unchanged: valid ids, nothing translated.
+ * When a chunk has at least three sentence-like segments and more than half
+ * of them come back identical to the source, the answer is an echo. Returns
+ * the echoed ids, or null.
+ */
+export function unchangedIds(chunk: Item[], texts: Map<number, string>): { ids: number[]; of: number } | null {
+  const judged = chunk.filter((it) => sentenceLike(it.text));
+  if (judged.length < ECHO_MIN_SEGMENTS) return null;
+  const ids = judged.filter((it) => same(texts.get(it.id) ?? '') === same(it.text)).map((it) => it.id);
+  return ids.length * 2 > judged.length ? { ids, of: judged.length } : null;
 }
