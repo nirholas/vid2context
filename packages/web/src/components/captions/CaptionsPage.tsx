@@ -8,7 +8,7 @@
  * Every request uses mode=captions, so no audio is downloaded or transcribed
  * here; videos without captions point to the run page, which can transcribe.
  */
-import type { VideoMetadata, VideoRef } from '@vid2context/core';
+import { Vid2ContextError, type VideoMetadata, type VideoRef } from '@vid2context/core';
 import { Captions, Download, Eye, FileArchive, Languages, ListVideo } from 'lucide-react';
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { type CallOptions, getItems, isListError, requestJson } from '../../lib/api.ts';
@@ -27,7 +27,7 @@ import {
   zipCaptions,
 } from '../../lib/captions.ts';
 import { saveBlob } from '../../lib/download.ts';
-import { isAbort, toAppError } from '../../lib/errors.ts';
+import { type AppError, isAbort, toAppError, withAttempts } from '../../lib/errors.ts';
 import { shortInput } from '../../lib/format.ts';
 import { appHref, captionsSearch, navigate, onAppLinkClick, runSearch } from '../../lib/route.ts';
 import { ErrorPanel } from '../ErrorPanel.tsx';
@@ -169,6 +169,7 @@ function VideoCaptions({
     work('Getting every track', async (signal) => {
       const files: { name: string; text: string }[] = [];
       const failed: string[] = [];
+      let first: AppError | undefined;
       for (const [i, t] of listing.tracks.entries()) {
         setBusy(`Getting ${t.name} (${i + 1} of ${listing.tracks.length})`);
         setProgress((i / listing.tracks.length) * 100);
@@ -177,10 +178,23 @@ function VideoCaptions({
           files.push({ name: captionFileName(title, t.language, ext, { auto: t.origin === 'auto-captions' }), text: file.text });
         } catch (err) {
           if (isAbort(err)) throw err;
-          failed.push(`${t.name}: ${toAppError(err).message}`);
+          const e = toAppError(err);
+          first ??= e;
+          failed.push(`${t.name}: ${e.message}`);
         }
       }
-      if (files.length === 0) throw new Error(`No track could be fetched. ${failed.join(' ')}`);
+      if (files.length === 0 && first) {
+        // Keep the first failure's code, hint and retry time (a rate limit says when to try again), naming every track.
+        throw withAttempts(
+          new Vid2ContextError(first.code, `No track could be fetched. ${failed.join(' ')}`, {
+            hint: first.hint,
+            status: first.status,
+            retryAfterSec: first.retryAfterSec,
+            cause: first,
+          }),
+          first.attempts,
+        );
+      }
       setBusy('Making the .zip');
       saveBlob(await zipCaptions(files), captionFileName(title, '', 'zip'));
       setFailures(failed);

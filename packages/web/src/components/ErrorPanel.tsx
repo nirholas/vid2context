@@ -40,7 +40,10 @@ export function ErrorPanel({
             </p>
           )}
           <p className="text-xs text-muted">
-            Error code <code className="font-mono">{e.code}</code>
+            Error code{' '}
+            <code className="font-mono" data-testid="error-code">
+              {e.code}
+            </code>
             {e.status ? `, HTTP ${e.status}` : ''}
             {e.retryAfterSec ? `, retry after ${e.retryAfterSec} s` : ''}
           </p>

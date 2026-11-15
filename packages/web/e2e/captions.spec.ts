@@ -119,9 +119,23 @@ test.describe('live', () => {
       .getByRole('listitem')
       .evaluateAll((els) => els.map((e) => e.getAttribute('data-language') ?? ''));
     expect(languages).toEqual(expect.arrayContaining(['en', 'de']));
-    const saved = page.waitForEvent('download', { timeout: 120_000 });
+    const saved = page.waitForEvent('download', { timeout: 120_000 }).then((d) => ({ zip: d }));
+    const refused = page
+      .getByRole('alert')
+      .filter({ hasText: 'No track could be fetched' })
+      .waitFor({ timeout: 120_000 })
+      .then(() => ({ zip: undefined }));
     await page.getByTestId('captions-save-all').click();
-    const zip = await saved;
+    const { zip } = await Promise.race([saved, refused]);
+    if (!zip) {
+      // YouTube refused every track (it blocks this IP for a while after too many requests). The page must say so
+      // with the block's own code and hint, never a generic "reload the page".
+      test.info().annotations.push({ type: 'platform-block', description: 'YouTube refused every caption track' });
+      const alert = page.getByRole('alert');
+      await expect(alert.getByTestId('error-code')).toHaveText(/^(blocked|rate-limited)$/);
+      await expect(alert.getByTestId('error-hint')).not.toContainText('browser console');
+      return;
+    }
     expect(zip.suggestedFilename()).toBe('Me at the zoo.zip');
     const raw = readFileSync(await zip.path()).toString('latin1');
     expect(raw.startsWith('PK')).toBe(true);
