@@ -12,7 +12,8 @@ async function host(page: Page, baseURL: string, body: string): Promise<void> {
   );
 }
 
-const messages = (page: Page) => page.evaluate(() => (window as unknown as { msgs: { type: string; [k: string]: unknown }[] }).msgs);
+const messages = (page: Page) =>
+  page.evaluate(() => (window as unknown as { msgs: { type: string; [k: string]: unknown }[] }).msgs);
 
 test('the transcript view renders a sample, searches it and switches to chapters', async ({ page }) => {
   await page.goto('/embed/?sample=zoo');
@@ -52,7 +53,10 @@ test('quote, card and link box views', async ({ page }) => {
 
   await page.goto('/embed/?sample=zoo&view=card');
   await expect(page.locator('.w-card img')).toHaveAttribute('src', 'https://i.ytimg.com/vi/jNQXAC9IVRw/hqdefault.jpg');
-  await expect(page.getByRole('link', { name: 'Read the transcript' })).toHaveAttribute('href', /\/app\/\?url=https%3A%2F%2Fwww\.youtube\.com/);
+  await expect(page.getByRole('link', { name: 'Read the transcript' })).toHaveAttribute(
+    'href',
+    /\/app\/\?url=https%3A%2F%2Fwww\.youtube\.com/,
+  );
 
   await page.goto('/embed/?view=input');
   const form = page.locator('form.w-form');
@@ -87,13 +91,17 @@ test('the downloads are real transcript files', async ({ page }) => {
 
 test('an iframe posts ready, loaded, resize and segment, and obeys commands from its parent', async ({ page, baseURL }) => {
   await host(page, baseURL ?? '', '<iframe id="f" src="BASE/embed/?sample=zoo" style="width:600px;height:400px"></iframe>');
-  await expect.poll(async () => (await messages(page)).map((m) => m.type)).toEqual(expect.arrayContaining(['ready', 'loaded', 'resize']));
+  await expect
+    .poll(async () => (await messages(page)).map((m) => m.type))
+    .toEqual(expect.arrayContaining(['ready', 'loaded', 'resize']));
   const loaded = (await messages(page)).find((m) => m.type === 'loaded');
   expect(loaded).toMatchObject({ title: 'Me at the zoo', segments: 6, chapters: 3, origin: 'creator-captions' });
 
   const frame = page.frameLocator('#f');
   await frame.locator('.w-tx').nth(2).click();
-  await expect.poll(async () => (await messages(page)).find((m) => m.type === 'segment')).toMatchObject({ text: 'really really long trunks' });
+  await expect
+    .poll(async () => (await messages(page)).find((m) => m.type === 'segment'))
+    .toMatchObject({ text: 'really really long trunks' });
 
   const origin = new URL(baseURL ?? '').origin;
   await page.evaluate((o) => {
@@ -120,17 +128,26 @@ test('<vid2context-embed> sizes itself, re-dispatches events and has methods', a
      <vid2context-embed id="t" sample="gwagon" max-height="300" loading="eager"></vid2context-embed>
      <script>window.events=[];for(const id of ['e','t'])for(const t of ['loaded','search','segment','resize'])document.getElementById(id).addEventListener('vid2context:'+t,ev=>events.push({id,t,d:ev.detail}))</script>`,
   );
-  const events = () => page.evaluate(() => (window as unknown as { events: { id: string; t: string; d: Record<string, unknown> }[] }).events);
+  const events = () =>
+    page.evaluate(() => (window as unknown as { events: { id: string; t: string; d: Record<string, unknown> }[] }).events);
   await expect.poll(async () => (await events()).filter((e) => e.t === 'loaded').length).toBe(2);
-  expect(await page.evaluate(() => typeof (window as unknown as { Vid2Context?: { embed: unknown } }).Vid2Context?.embed)).toBe('function');
+  expect(await page.evaluate(() => typeof (window as unknown as { Vid2Context?: { embed: unknown } }).Vid2Context?.embed)).toBe(
+    'function',
+  );
 
   // The quote grows to its content; the transcript stops at max-height and scrolls inside.
-  const height = (id: string) => page.evaluate((i) => document.getElementById(i)?.shadowRoot?.querySelector('iframe')?.getBoundingClientRect().height ?? 0, id);
+  const height = (id: string) =>
+    page.evaluate(
+      (i) => document.getElementById(i)?.shadowRoot?.querySelector('iframe')?.getBoundingClientRect().height ?? 0,
+      id,
+    );
   await expect.poll(() => height('e')).toBeLessThan(260);
   await expect.poll(() => height('t')).toBe(300);
 
   await page.evaluate(() => (document.getElementById('t') as unknown as { search(q: string): void }).search('engine'));
-  await expect.poll(async () => (await events()).find((e) => e.id === 't' && e.t === 'search' && e.d.query === 'engine')?.d.matches).toBeGreaterThan(0);
+  await expect
+    .poll(async () => (await events()).find((e) => e.id === 't' && e.t === 'search' && e.d.query === 'engine')?.d.matches)
+    .toBeGreaterThan(0);
 
   // Changing an attribute reloads the widget with the new option.
   await page.evaluate(() => document.getElementById('e')?.setAttribute('view', 'chapters'));
@@ -148,7 +165,7 @@ test('the builder updates the preview, the snippets and the hash, and logs event
   await builder.getByLabel('View', { exact: true }).selectOption('quote');
   await builder.getByLabel('Start (seconds)').fill('0:05');
   await builder.getByLabel('End (seconds)').fill('0:13');
-  await expect(builder.locator('[data-eb-out="iframe"]')).toContainText('view=quote&amp;start=5&amp;end=13'.replaceAll('&amp;', '&'));
+  await expect(builder.locator('[data-eb-out="iframe"]')).toContainText('view=quote&amp;start=5&amp;end=13');
   await expect(page.locator('[data-eb-frame]')).toHaveAttribute('src', /view=quote/);
   await expect(preview.locator('blockquote')).toContainText('really really long trunks');
   await expect(page).toHaveURL(/#embed=.*view%3Dquote/);
@@ -158,15 +175,15 @@ test('the builder updates the preview, the snippets and the hash, and logs event
   await builder.getByRole('tab', { name: 'Web component' }).press('ArrowRight');
   await expect(builder.getByRole('tab', { name: 'JavaScript' })).toHaveAttribute('aria-selected', 'true');
 
-  await builder.getByLabel('Accent color').fill('red;}');
+  await builder.getByLabel('Accent color', { exact: true }).fill('red;}');
   await expect(builder.locator('[data-eb-error]')).toContainText('hex color');
-  await builder.getByLabel('Accent color').fill('3b82f6');
+  await builder.getByLabel('Accent color', { exact: true }).fill('3b82f6');
   await expect(builder.locator('[data-eb-error]')).toBeHidden();
 
   // A shared link restores the setup.
   await page.reload();
   await expect(builder.getByLabel('View', { exact: true })).toHaveValue('quote');
-  await expect(builder.getByLabel('Accent color')).toHaveValue('3b82f6');
+  await expect(builder.getByLabel('Accent color', { exact: true })).toHaveValue('3b82f6');
 
   // The drive buttons send real commands.
   await builder.locator('[data-preset="transcript"]').click();

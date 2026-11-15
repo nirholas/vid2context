@@ -15,7 +15,17 @@ import { createRunnableRenderer, expandRunFencesForTwin, FIXTURE_DIR, RUN_FENCE,
 import { expandTokens } from './tokens.ts';
 import { expandWidgetFencesForTwin, renderWidget, WIDGET_FENCE, widgetFenceIds } from './widgets.ts';
 
-export type Section = 'start' | 'tutorials' | 'examples' | 'embed' | 'how-to' | 'clients' | 'guides' | 'deploy' | 'compare' | 'contracts';
+export type Section =
+  | 'start'
+  | 'tutorials'
+  | 'examples'
+  | 'embed'
+  | 'how-to'
+  | 'clients'
+  | 'guides'
+  | 'deploy'
+  | 'compare'
+  | 'contracts';
 
 export const SECTIONS: { id: Section; label: string }[] = [
   { id: 'start', label: 'Start here' },

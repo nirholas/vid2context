@@ -146,13 +146,20 @@ async function loadContext(p: EmbedParams, signal: AbortSignal): Promise<VideoCo
     throw {
       code: 'network',
       message: `Could not reach ${where}.`,
-      hint: p.src || p.api ? 'Check the address, and that the server sends Access-Control-Allow-Origin for this page.' : 'Check your connection and try again.',
+      hint:
+        p.src || p.api
+          ? 'Check the address, and that the server sends Access-Control-Allow-Origin for this page.'
+          : 'Check your connection and try again.',
     } satisfies WidgetError;
   }
   if (!res.ok) throw await readError(res);
   const body: unknown = await res.json().catch(() => undefined);
   if (!isContext(body)) {
-    throw { code: 'bad_context', message: 'The response is not a VideoContext.', hint: 'Point src at the JSON from `vid2context get <url> --format json` or GET /api/v1/context.' } satisfies WidgetError;
+    throw {
+      code: 'bad_context',
+      message: 'The response is not a VideoContext.',
+      hint: 'Point src at the JSON from `vid2context get <url> --format json` or GET /api/v1/context.',
+    } satisfies WidgetError;
   }
   return body;
 }
@@ -174,7 +181,9 @@ let lastUserScroll = 0;
 
 function header(ctx: VideoContext): HTMLElement {
   const m = ctx.metadata;
-  const bits = [m.channel?.name, m.durationSec ? clock(m.durationSec) : undefined, ctx.transcript.language?.toUpperCase()].filter(Boolean);
+  const bits = [m.channel?.name, m.durationSec ? clock(m.durationSec) : undefined, ctx.transcript.language?.toUpperCase()].filter(
+    Boolean,
+  );
   const link = isHttps(m.ref.url) ? el('a', { href: m.ref.url, target: '_blank', rel: 'noopener', text: m.title }) : m.title;
   return el(
     'header',
@@ -196,7 +205,10 @@ function playerFrame(ctx: VideoContext): HTMLElement | null {
     referrerpolicy: 'strict-origin-when-cross-origin',
   });
   frame.addEventListener('load', () => {
-    frame.contentWindow?.postMessage(JSON.stringify({ event: 'listening', id: 1, channel: 'widget' }), 'https://www.youtube-nocookie.com');
+    frame.contentWindow?.postMessage(
+      JSON.stringify({ event: 'listening', id: 1, channel: 'widget' }),
+      'https://www.youtube-nocookie.com',
+    );
   });
   player = frame;
   return el('div', { class: 'w-player' }, frame);
@@ -217,25 +229,49 @@ function highlighted(text: string): (Node | string)[] {
   return out;
 }
 
-function lineItem(ctx: VideoContext, item: { startSec: number; endSec?: number; text: string }, index: number, kind: 'segment' | 'chapter'): HTMLLIElement {
+function lineItem(
+  ctx: VideoContext,
+  item: { startSec: number; endSec?: number; text: string },
+  index: number,
+  kind: 'segment' | 'chapter',
+): HTMLLIElement {
   const showTs = params.timestamps === '1' || kind === 'chapter';
   const href = params.player === '1' && player ? undefined : linkAt(ctx, item.startSec);
   const ts = showTs
     ? href
-      ? el('a', { class: 'w-ts', href, target: '_blank', rel: 'noopener', 'aria-label': `Open the video at ${clock(item.startSec)}`, text: clock(item.startSec) })
+      ? el('a', {
+          class: 'w-ts',
+          href,
+          target: '_blank',
+          rel: 'noopener',
+          'aria-label': `Open the video at ${clock(item.startSec)}`,
+          text: clock(item.startSec),
+        })
       : el('span', { class: 'w-ts', text: clock(item.startSec) })
     : null;
-  const button = el('button', { type: 'button', class: `w-tx${kind === 'chapter' ? ' w-chapter-title' : ''}`, 'data-i': String(index), 'data-kind': kind });
+  const button = el('button', {
+    type: 'button',
+    class: `w-tx${kind === 'chapter' ? ' w-chapter-title' : ''}`,
+    'data-i': String(index),
+    'data-kind': kind,
+  });
   button.append(...highlighted(item.text));
   return el('li', { class: `w-line${showTs ? '' : ' no-ts'}`, 'data-start': String(item.startSec) }, ts, button);
 }
 
 function transcriptList(ctx: VideoContext): HTMLElement {
-  const visible = segments.map((s, i) => [s, i] as const).filter(([s]) => !query || s.text.toLowerCase().includes(query.toLowerCase()));
+  const visible = segments
+    .map((s, i) => [s, i] as const)
+    .filter(([s]) => !query || s.text.toLowerCase().includes(query.toLowerCase()));
   post('search', { query, matches: query ? visible.length : segments.length });
   const count = document.querySelector('.w-count');
   if (count) count.textContent = query ? `${visible.length} of ${segments.length}` : `${segments.length} lines`;
-  if (!visible.length) return el('p', { class: 'w-empty', role: 'status', text: query ? `No line contains "${query}".` : 'This transcript is empty.' });
+  if (!visible.length)
+    return el('p', {
+      class: 'w-empty',
+      role: 'status',
+      text: query ? `No line contains "${query}".` : 'This transcript is empty.',
+    });
   return el('ol', { class: 'w-list', 'aria-label': 'Transcript' }, ...visible.map(([s, i]) => lineItem(ctx, s, i, 'segment')));
 }
 
@@ -264,7 +300,14 @@ function toolbar(view: EmbedView): HTMLElement | null {
   if (showTabs) {
     const tabs = el('div', { class: 'w-tabs', role: 'tablist', 'aria-label': 'Show' });
     for (const t of ['transcript', 'chapters'] as const) {
-      const b = el('button', { type: 'button', class: 'w-tab', role: 'tab', 'aria-selected': String(tab === t), 'data-tab': t, text: t === 'transcript' ? 'Transcript' : `Chapters (${chapters.length})` });
+      const b = el('button', {
+        type: 'button',
+        class: 'w-tab',
+        role: 'tab',
+        'aria-selected': String(tab === t),
+        'data-tab': t,
+        text: t === 'transcript' ? 'Transcript' : `Chapters (${chapters.length})`,
+      });
       b.addEventListener('click', () => {
         tab = t;
         for (const x of tabs.querySelectorAll('.w-tab')) x.setAttribute('aria-selected', String(x === b));
@@ -277,7 +320,13 @@ function toolbar(view: EmbedView): HTMLElement | null {
     bar.append(tabs);
   }
   if (showSearch) {
-    const input = el('input', { class: 'w-search', type: 'search', placeholder: 'Search the transcript', 'aria-label': 'Search the transcript', value: query });
+    const input = el('input', {
+      class: 'w-search',
+      type: 'search',
+      placeholder: 'Search the transcript',
+      'aria-label': 'Search the transcript',
+      value: query,
+    });
     let timer: ReturnType<typeof setTimeout> | undefined;
     input.addEventListener('input', () => {
       clearTimeout(timer);
@@ -315,7 +364,12 @@ function download(name: string, type: string, text: string): void {
 }
 
 function fileBase(ctx: VideoContext): string {
-  return ctx.metadata.title.replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-|-$/g, '').slice(0, 60) || 'transcript';
+  return (
+    ctx.metadata.title
+      .replace(/[^\p{L}\p{N}]+/gu, '-')
+      .replace(/^-|-$/g, '')
+      .slice(0, 60) || 'transcript'
+  );
 }
 
 function footer(ctx: VideoContext, view: EmbedView): HTMLElement | null {
@@ -344,14 +398,32 @@ function footer(ctx: VideoContext, view: EmbedView): HTMLElement | null {
     ];
     actions.append(copy);
     for (const [label, run] of files) {
-      const b = el('button', { type: 'button', class: 'w-btn', 'data-action': `download${label}`, 'aria-label': `Download ${label.slice(1).toUpperCase()}`, text: label });
+      const b = el('button', {
+        type: 'button',
+        class: 'w-btn',
+        'data-action': `download${label}`,
+        'aria-label': `Download ${label.slice(1).toUpperCase()}`,
+        text: label,
+      });
       b.addEventListener('click', run);
       actions.append(b);
     }
-    if (isHttps(ctx.metadata.ref.url)) actions.append(el('a', { class: 'w-btn', href: appUrl(ctx.metadata.ref.url), target: '_blank', rel: 'noopener', text: 'Open in app' }));
+    if (isHttps(ctx.metadata.ref.url))
+      actions.append(
+        el('a', { class: 'w-btn', href: appUrl(ctx.metadata.ref.url), target: '_blank', rel: 'noopener', text: 'Open in app' }),
+      );
     foot.append(actions);
   }
-  if (params.branding === '1') foot.append(el('a', { class: 'w-credit', href: `${location.origin}${BASE}/`, target: '_blank', rel: 'noopener', text: 'Context by vid2context' }));
+  if (params.branding === '1')
+    foot.append(
+      el('a', {
+        class: 'w-credit',
+        href: `${location.origin}${BASE}/`,
+        target: '_blank',
+        rel: 'noopener',
+        text: 'Context by vid2context',
+      }),
+    );
   return foot;
 }
 
@@ -382,16 +454,33 @@ function cardView(ctx: VideoContext): HTMLElement {
   const card = el('div', { class: 'w-card' });
   const yt = youtubeId(ctx);
   const thumb = yt ? `https://i.ytimg.com/vi/${yt}/hqdefault.jpg` : isHttps(m.thumbnailUrl) ? m.thumbnailUrl : undefined;
-  if (thumb) card.append(el('img', { src: thumb, alt: '', loading: 'lazy', referrerpolicy: 'no-referrer', width: '480', height: '270' }));
+  if (thumb)
+    card.append(el('img', { src: thumb, alt: '', loading: 'lazy', referrerpolicy: 'no-referrer', width: '480', height: '270' }));
   if (chapters.length) {
-    card.append(el('ol', { 'aria-label': 'Chapters' }, ...chapters.slice(0, 8).map((c, i) => lineItem(ctx, { startSec: c.startSec, text: c.title }, i, 'chapter'))));
+    card.append(
+      el(
+        'ol',
+        { 'aria-label': 'Chapters' },
+        ...chapters.slice(0, 8).map((c, i) => lineItem(ctx, { startSec: c.startSec, text: c.title }, i, 'chapter')),
+      ),
+    );
   } else {
     const words = segments.reduce((n, s) => n + s.text.split(/\s+/).filter(Boolean).length, 0);
-    card.append(el('p', { class: 'w-sub', text: `${segments.length} transcript lines, about ${words.toLocaleString('en')} words.` }));
+    card.append(
+      el('p', { class: 'w-sub', text: `${segments.length} transcript lines, about ${words.toLocaleString('en')} words.` }),
+    );
   }
   const actions = el('div', { class: 'w-actions' });
   if (isHttps(m.ref.url)) {
-    actions.append(el('a', { class: 'w-btn primary', href: appUrl(m.ref.url), target: '_blank', rel: 'noopener', text: 'Read the transcript' }));
+    actions.append(
+      el('a', {
+        class: 'w-btn primary',
+        href: appUrl(m.ref.url),
+        target: '_blank',
+        rel: 'noopener',
+        text: 'Read the transcript',
+      }),
+    );
     actions.append(el('a', { class: 'w-btn', href: m.ref.url, target: '_blank', rel: 'noopener', text: 'Watch' }));
   }
   card.append(actions);
@@ -403,7 +492,15 @@ function inputView(): HTMLElement {
   const id = 'w-input-url';
   form.append(
     el('label', { for: id, text: 'Turn a video into context for AI' }),
-    el('input', { id, name: 'url', type: 'url', required: true, placeholder: 'Paste a YouTube, Vimeo or podcast link', value: params.url, autocomplete: 'off' }),
+    el('input', {
+      id,
+      name: 'url',
+      type: 'url',
+      required: true,
+      placeholder: 'Paste a YouTube, Vimeo or podcast link',
+      value: params.url,
+      autocomplete: 'off',
+    }),
     el('button', { type: 'submit', class: 'w-btn primary', text: 'Get context' }),
   );
   return form;
@@ -419,7 +516,13 @@ function showError(err: WidgetError): void {
       el('h1', { text: err.message }),
       err.hint ? el('p', { text: err.hint }) : null,
       el('p', {}, el('code', { text: err.code })),
-      params.url ? el('p', {}, el('a', { href: appUrl(params.url), target: '_blank', rel: 'noopener', text: 'Try it in the vid2context app' })) : null,
+      params.url
+        ? el(
+            'p',
+            {},
+            el('a', { href: appUrl(params.url), target: '_blank', rel: 'noopener', text: 'Try it in the vid2context app' }),
+          )
+        : null,
     ),
   );
   post('error', { code: err.code, message: err.message, hint: err.hint });
@@ -434,7 +537,25 @@ function render(): void {
   player = undefined;
   if (view === 'input') {
     root.dataset.state = 'ready';
-    root.replaceChildren(inputView(), ...(params.branding === '1' ? [el('footer', { class: 'w-foot' }, el('span'), el('a', { class: 'w-credit', href: `${location.origin}${BASE}/`, target: '_blank', rel: 'noopener', text: 'vid2context' }))] : []));
+    root.replaceChildren(
+      inputView(),
+      ...(params.branding === '1'
+        ? [
+            el(
+              'footer',
+              { class: 'w-foot' },
+              el('span'),
+              el('a', {
+                class: 'w-credit',
+                href: `${location.origin}${BASE}/`,
+                target: '_blank',
+                rel: 'noopener',
+                text: 'vid2context',
+              }),
+            ),
+          ]
+        : []),
+    );
     postResize();
     return;
   }
@@ -462,7 +583,11 @@ async function load(): Promise<void> {
   applyAccent(params.accent);
   post('ready', { protocol: PROTOCOL });
   if (parsed.errors.length) {
-    showError({ code: 'bad_param', message: parsed.errors.join(' '), hint: 'See the parameter list at vid2context.com/docs/embed/parameters/.' });
+    showError({
+      code: 'bad_param',
+      message: parsed.errors.join(' '),
+      hint: 'See the parameter list at vid2context.com/docs/embed/parameters/.',
+    });
     return;
   }
   if (params.view === 'input') {
@@ -470,12 +595,22 @@ async function load(): Promise<void> {
     return;
   }
   if (!params.url && !params.sample && !params.src) {
-    showError({ code: 'no_video', message: 'No video to show.', hint: 'Add ?url=<video link>, ?sample=zoo or ?src=<context JSON URL> to the widget address.' });
+    showError({
+      code: 'no_video',
+      message: 'No video to show.',
+      hint: 'Add ?url=<video link>, ?sample=zoo or ?src=<context JSON URL> to the widget address.',
+    });
     return;
   }
   root.dataset.state = 'loading';
   root.setAttribute('aria-busy', 'true');
-  root.replaceChildren(el('p', { class: 'w-status', role: 'status', text: params.url ? 'Fetching the transcript. Long videos can take a moment.' : 'Loading video context' }));
+  root.replaceChildren(
+    el('p', {
+      class: 'w-status',
+      role: 'status',
+      text: params.url ? 'Fetching the transcript. Long videos can take a moment.' : 'Loading video context',
+    }),
+  );
   const abort = new AbortController();
   loadAbort = abort;
   try {
@@ -508,7 +643,10 @@ async function load(): Promise<void> {
 function seekTo(sec: number, fromPlayer = false): void {
   if (!fromPlayer && player?.contentWindow) {
     const cmd = (func: string, args: unknown[] = []) =>
-      player?.contentWindow?.postMessage(JSON.stringify({ event: 'command', func, args, id: 1, channel: 'widget' }), 'https://www.youtube-nocookie.com');
+      player?.contentWindow?.postMessage(
+        JSON.stringify({ event: 'command', func, args, id: 1, channel: 'widget' }),
+        'https://www.youtube-nocookie.com',
+      );
     cmd('seekTo', [sec, true]);
     cmd('playVideo');
   }
@@ -539,7 +677,8 @@ function markActive(sec: number, scroll: boolean): void {
   const li = root.querySelector(`.w-tx[data-kind="segment"][data-i="${i}"]`)?.closest('.w-line');
   if (!li) return;
   li.setAttribute('aria-current', 'true');
-  if (scroll) li.scrollIntoView({ block: 'nearest', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  if (scroll)
+    li.scrollIntoView({ block: 'nearest', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   const seg = segments[i];
   if (seg) post('seek', { sec, index: i });
 }
@@ -559,16 +698,29 @@ root.addEventListener('click', (e) => {
   seekTo(item.startSec);
 });
 
-root.addEventListener('wheel', () => {
-  lastUserScroll = Date.now();
-}, { passive: true });
-root.addEventListener('touchmove', () => {
-  lastUserScroll = Date.now();
-}, { passive: true });
+root.addEventListener(
+  'wheel',
+  () => {
+    lastUserScroll = Date.now();
+  },
+  { passive: true },
+);
+root.addEventListener(
+  'touchmove',
+  () => {
+    lastUserScroll = Date.now();
+  },
+  { passive: true },
+);
 
 window.addEventListener('message', (e: MessageEvent) => {
   // The YouTube player reports its time as a JSON string.
-  if (player && e.source === player.contentWindow && e.origin === 'https://www.youtube-nocookie.com' && typeof e.data === 'string') {
+  if (
+    player &&
+    e.source === player.contentWindow &&
+    e.origin === 'https://www.youtube-nocookie.com' &&
+    typeof e.data === 'string'
+  ) {
     try {
       const msg = JSON.parse(e.data) as { event?: string; info?: { currentTime?: number } };
       if (msg.event === 'infoDelivery' && typeof msg.info?.currentTime === 'number') seekTo(msg.info.currentTime, true);

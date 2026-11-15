@@ -118,7 +118,7 @@ function html(): string {
 
   const radios = (
     [
-      ['fixture', 'Fixture'],
+      ['fixture', 'Repo fixture'],
       ['paste', 'Paste JSON'],
       ['api', 'From the API'],
     ] as const
@@ -186,7 +186,7 @@ function html(): string {
   ].join('');
   const secondary = `<details class="pg-secondary" data-pg-opt="secondary"><summary>Bilingual: add a second transcript</summary>${field('secondary', 'Second transcript (JSON)', `<textarea id="${id('secondary')}" data-pg-field="secondary" rows="6" spellcheck="false" autocomplete="off" autocapitalize="off"></textarea>`, 'A <code>Transcript</code> or a whole <code>VideoContext</code> of the same video in another language. Each of its segments goes under the primary segment it overlaps most. Not kept in shared links.')}<pre class="pg-error" data-pg-secondary-error role="alert" hidden></pre></details>`;
 
-  const operation = `<fieldset class="pg-step"><legend>Operation</legend>
+  const operation = `<fieldset class="pg-step"><legend>Core function</legend>
 <div class="pg-fields">${field(
     'op',
     'Operation',

@@ -86,7 +86,8 @@ function setup(root: HTMLElement): void {
         heightInput?.setAttribute('aria-invalid', 'true');
       }
     }
-    if (params.view !== 'input' && !params.url && !params.sample && !params.src) errors.push('Pick a sample, or enter a video URL or a context JSON URL.');
+    if (params.view !== 'input' && !params.url && !params.sample && !params.src)
+      errors.push('Pick a sample, or enter a video URL or a context JSON URL.');
     return { params, errors };
   }
 
@@ -96,7 +97,7 @@ function setup(root: HTMLElement): void {
   }
 
   /** userChange: only a change the reader made rewrites the hash, so loading the page keeps any #anchor. */
-  function update(userChange = true): void {
+  const update = (userChange = true): void => {
     const { params, errors } = read();
     current = params;
     errorBox.hidden = errors.length === 0;
@@ -108,7 +109,8 @@ function setup(root: HTMLElement): void {
       let text = s.build(origin, params);
       if (s.id === 'iframe') text = text.replace(/height="\d+"/, `height="${height}"`);
       if (s.id === 'react') text = text.replace(/height=\{\d+\}/, `height={${height}}`);
-      if (s.id === 'component' && fixedHeight) text = text.replace(/<vid2context-embed/, `<vid2context-embed height="${fixedHeight}"`);
+      if (s.id === 'component' && fixedHeight)
+        text = text.replace(/<vid2context-embed/, `<vid2context-embed height="${fixedHeight}"`);
       out.textContent = text;
     }
     const absolute = embedUrl(origin, params);
@@ -123,7 +125,7 @@ function setup(root: HTMLElement): void {
     }, 250);
     const hash = `#embed=${encodeURIComponent(new URLSearchParams(embedUrl('', params).split('?')[1] ?? '').toString())}${fixedHeight ? `&height=${fixedHeight}` : ''}`;
     if (userChange) history.replaceState(null, '', hash);
-  }
+  };
 
   // One source at a time: typing a URL clears the sample, and so on.
   form.addEventListener('input', (e) => {
@@ -146,7 +148,8 @@ function setup(root: HTMLElement): void {
     b.addEventListener('click', () => {
       const preset = PRESETS[b.dataset.preset ?? ''];
       if (!preset) return;
-      const next = { ...current, start: '', end: '', ...preset };
+      const next: EmbedParams = { ...current, start: '', end: '' };
+      for (const [k, v] of Object.entries(preset)) if (v !== undefined) next[k] = v;
       if (!next.url && !next.sample && !next.src && next.view !== 'input') next.sample = 'zoo';
       write(next);
       update();
@@ -187,7 +190,16 @@ function setup(root: HTMLElement): void {
     t.addEventListener('click', () => select(t));
     t.addEventListener('keydown', (e) => {
       const i = tabs.indexOf(t);
-      const next = e.key === 'ArrowRight' ? tabs[(i + 1) % tabs.length] : e.key === 'ArrowLeft' ? tabs[(i - 1 + tabs.length) % tabs.length] : e.key === 'Home' ? tabs[0] : e.key === 'End' ? tabs[tabs.length - 1] : undefined;
+      const next =
+        e.key === 'ArrowRight'
+          ? tabs[(i + 1) % tabs.length]
+          : e.key === 'ArrowLeft'
+            ? tabs[(i - 1 + tabs.length) % tabs.length]
+            : e.key === 'Home'
+              ? tabs[0]
+              : e.key === 'End'
+                ? tabs[tabs.length - 1]
+                : undefined;
       if (!next) return;
       e.preventDefault();
       select(next);
@@ -224,7 +236,8 @@ function setup(root: HTMLElement): void {
           return;
         }
         send({ type: 'seek', sec });
-      } else if (cmd === 'search') send({ type: 'search', query: root.querySelector<HTMLInputElement>('#eb-cmd-search')?.value ?? '' });
+      } else if (cmd === 'search')
+        send({ type: 'search', query: root.querySelector<HTMLInputElement>('#eb-cmd-search')?.value ?? '' });
       else if (cmd === 'theme') send({ type: 'theme', theme: b.dataset.themeValue });
     });
   });

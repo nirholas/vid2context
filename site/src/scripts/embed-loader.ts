@@ -56,7 +56,8 @@ type LoadTarget = { url: string } | { sample: string } | { src: string };
       if (this.frame) return;
       const shadow = this.shadowRoot ?? this.attachShadow({ mode: 'open' });
       const style = document.createElement('style');
-      style.textContent = ':host{display:block;max-width:100%}iframe{display:block;width:100%;border:0;border-radius:12px;background:transparent;transition:height .15s ease}';
+      style.textContent =
+        ':host{display:block;max-width:100%}iframe{display:block;width:100%;border:0;border-radius:12px;background:transparent;transition:height .15s ease}';
       const frame = document.createElement('iframe');
       frame.title = this.getAttribute('title') || 'Video context by vid2context';
       frame.loading = this.getAttribute('loading') === 'eager' ? 'eager' : 'lazy';
@@ -77,7 +78,10 @@ type LoadTarget = { url: string } | { sample: string } | { src: string };
 
     attributeChangedCallback(name: string, before: string | null, after: string | null): void {
       if (!this.frame || before === after) return;
-      if (name === 'theme') return this.setTheme((after as 'auto' | 'light' | 'dark') || 'auto');
+      if (name === 'theme') {
+        this.setTheme((after as 'auto' | 'light' | 'dark') || 'auto');
+        return;
+      }
       if (name === 'height' || name === 'max-height') {
         this.frame.style.height = `${this.fixedHeight() ?? this.defaultHeight()}px`;
         return;
@@ -133,7 +137,7 @@ type LoadTarget = { url: string } | { sample: string } | { src: string };
     private receive(e: MessageEvent): void {
       if (!this.frame || e.source !== this.frame.contentWindow || e.origin !== ORIGIN) return;
       const msg = e.data as WidgetMessage | null;
-      if (!msg || msg.source !== 'vid2context' || typeof msg.type !== 'string') return;
+      if (msg?.source !== 'vid2context' || typeof msg.type !== 'string') return;
       const { source: _source, type, ...detail } = msg;
       if (type === 'resize' && typeof detail.height === 'number' && this.fixedHeight() === undefined) {
         const view = this.getAttribute('view') || 'transcript';

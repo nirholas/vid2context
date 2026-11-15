@@ -64,7 +64,9 @@ describe('parameters', () => {
     const params = { ...embedDefaults(), url: 'https://www.youtube.com/watch?v=jNQXAC9IVRw', theme: 'light', start: '75' };
     expect(changedParams(params).map(([k]) => k)).toEqual(['url', 'theme', 'start']);
     const url = embedUrl('https://vid2context.com', params);
-    expect(url).toBe('https://vid2context.com/embed/?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DjNQXAC9IVRw&theme=light&start=75');
+    expect(url).toBe(
+      'https://vid2context.com/embed/?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DjNQXAC9IVRw&theme=light&start=75',
+    );
     expect(parseEmbedParams(new URL(url).search).params).toEqual(params);
     expect(embedUrl('https://vid2context.com', embedDefaults())).toBe('https://vid2context.com/embed/');
   });
@@ -78,7 +80,8 @@ describe('parameters', () => {
 });
 
 describe('built files', () => {
-  if (!existsSync(join(DIST, 'embed', 'index.html'))) throw new Error('site/dist/embed is missing. Run `npm run build:site` first.');
+  if (!existsSync(join(DIST, 'embed', 'index.html')))
+    throw new Error('site/dist/embed is missing. Run `npm run build:site` first.');
 
   it('the widget page is noindex, has no canonical, and loads only this origin', () => {
     const html = read('embed/index.html');

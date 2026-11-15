@@ -213,7 +213,8 @@ export function parseSeconds(raw: string | null | undefined): number | undefined
   const clock = s.match(/^(?:(\d+):)?(\d{1,2}):(\d{1,2}(?:\.\d+)?)$/);
   if (clock) return Number(clock[1] ?? 0) * 3600 + Number(clock[2]) * 60 + Number(clock[3]);
   const units = s.match(/^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+(?:\.\d+)?)s)?$/);
-  if (units && (units[1] || units[2] || units[3])) return Number(units[1] ?? 0) * 3600 + Number(units[2] ?? 0) * 60 + Number(units[3] ?? 0);
+  if (units && (units[1] || units[2] || units[3]))
+    return Number(units[1] ?? 0) * 3600 + Number(units[2] ?? 0) * 60 + Number(units[3] ?? 0);
   return undefined;
 }
 
@@ -256,14 +257,18 @@ export function checkParam(name: string, raw: string): { value: string } | { err
       return { error: `${p.label} must be 1 or 0.` };
     case 'color': {
       const hex = v.replace(/^#/, '');
-      return /^[0-9a-f]{3}([0-9a-f]{3})?$/i.test(hex) ? { value: hex.toLowerCase() } : { error: `${p.label} must be a hex color like 3b82f6.` };
+      return /^[0-9a-f]{3}([0-9a-f]{3})?$/i.test(hex)
+        ? { value: hex.toLowerCase() }
+        : { error: `${p.label} must be a hex color like 3b82f6.` };
     }
     case 'seconds': {
       const n = parseSeconds(v);
       return n === undefined ? { error: `${p.label} must be seconds, m:ss or 1m15s.` } : { value: String(n) };
     }
     case 'text':
-      return /^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$/.test(v) ? { value: v } : { error: `${p.label} must be a language code like en or pt-BR.` };
+      return /^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$/.test(v)
+        ? { value: v }
+        : { error: `${p.label} must be a language code like en or pt-BR.` };
   }
 }
 
@@ -409,7 +414,11 @@ export const WIDGET_EVENTS: WidgetEvent[] = [
     detail: '`{ sec, index }`',
   },
   { type: 'search', description: 'The search box changed.', detail: '`{ query, matches }`' },
-  { type: 'error', description: 'The context could not be loaded or a parameter was wrong.', detail: '`{ code, message, hint }`' },
+  {
+    type: 'error',
+    description: 'The context could not be loaded or a parameter was wrong.',
+    detail: '`{ code, message, hint }`',
+  },
 ];
 
 export interface WidgetCommand {

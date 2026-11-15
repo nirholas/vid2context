@@ -8,12 +8,12 @@ import { SITE_URL } from '../data/site.ts';
 import {
   BUILDER_START,
   EMBED_PARAMS,
-  type EmbedParams,
-  embedDefaults,
-  iframeSnippet,
   EMBED_SAMPLES,
   type EmbedParam,
+  type EmbedParams,
+  embedDefaults,
   embedUrl,
+  iframeSnippet,
   SNIPPETS,
   suggestedHeight,
   WIDGET_COMMANDS,
@@ -22,7 +22,6 @@ import {
 import type { Widget } from './widgets.ts';
 
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-
 
 const GROUPS: { id: EmbedParam['group']; label: string }[] = [
   { id: 'source', label: 'Video' },
@@ -48,10 +47,14 @@ function field(p: EmbedParam, value: string): string {
     return `<div class="eb-field"><label for="${id}">${esc(p.label)}</label><select id="${id}" name="${p.name}" ${described}>${opts}</select>${help}</div>`;
   }
   const type = p.type === 'url' ? 'url' : 'text';
-  const placeholder = { url: p.name === 'url' ? 'https://www.youtube.com/watch?v=...' : 'https://...', color: '3b82f6', seconds: '1:15', text: 'en' }[
-    p.type as 'url' | 'color' | 'seconds' | 'text'
-  ];
-  const extra = p.type === 'color' ? '<input type="color" class="eb-swatch" aria-label="Pick the accent color" value="#3b82f6" />' : '';
+  const placeholder = {
+    url: p.name === 'url' ? 'https://www.youtube.com/watch?v=...' : 'https://...',
+    color: '3b82f6',
+    seconds: '1:15',
+    text: 'en',
+  }[p.type as 'url' | 'color' | 'seconds' | 'text'];
+  const extra =
+    p.type === 'color' ? '<input type="color" class="eb-swatch" aria-label="Pick the accent color" value="#3b82f6" />' : '';
   return `<div class="eb-field"><label for="${id}">${esc(p.label)}</label><div class="eb-inline"><input type="${type}" id="${id}" name="${p.name}" value="${esc(value)}" placeholder="${esc(placeholder ?? '')}" spellcheck="false" autocomplete="off" ${described} />${extra}</div>${help}</div>`;
 }
 
@@ -130,14 +133,26 @@ const cell = (s: string) => s.replace(/\|/g, '\\|').replace(/\n/g, ' ');
 export function paramsTable(): string {
   const rows = EMBED_PARAMS.map((p) => {
     const def = p.type === 'flag' ? (p.default === '1' ? 'on (1)' : 'off (0)') : p.default ? `\`${p.default}\`` : 'none';
-    const values = p.options ? p.options.map((o) => `\`${o}\``).join(', ') : { url: 'URL', text: 'language code', flag: '1 or 0', seconds: 'seconds, m:ss or 1m15s', color: 'hex', sample: '', select: '' }[p.type];
+    const values = p.options
+      ? p.options.map((o) => `\`${o}\``).join(', ')
+      : {
+          url: 'URL',
+          text: 'language code',
+          flag: '1 or 0',
+          seconds: 'seconds, m:ss or 1m15s',
+          color: 'hex',
+          sample: '',
+          select: '',
+        }[p.type];
     return `| \`${p.name}\` | ${cell(values)} | ${def} | ${cell(p.help)} |`;
   });
   return ['| Parameter | Values | Default | What it does |', '|---|---|---|---|', ...rows].join('\n');
 }
 
 export function eventsTable(): string {
-  const rows = WIDGET_EVENTS.map((e) => `| \`${e.type}\` | \`vid2context:${e.type}\` | ${cell(e.detail)} | ${cell(e.description)} |`);
+  const rows = WIDGET_EVENTS.map(
+    (e) => `| \`${e.type}\` | \`vid2context:${e.type}\` | ${cell(e.detail)} | ${cell(e.description)} |`,
+  );
   return ['| Message `type` | DOM event | Fields | When |', '|---|---|---|---|', ...rows].join('\n');
 }
 
@@ -153,11 +168,31 @@ export function samplesList(): string {
 // ------------------------------------------------------------------ gallery and component demo
 
 const GALLERY: { title: string; note: string; params: Partial<EmbedParams> }[] = [
-  { title: 'Transcript', note: 'Searchable, with chapters as a second tab. Click a line to get a segment event.', params: { sample: 'zoo' } },
-  { title: 'Chapters', note: 'Only the chapter list, each one a link to that moment.', params: { sample: 'zoo', view: 'chapters', tools: '0' } },
-  { title: 'Quote', note: 'The lines between start and end, with a timed citation.', params: { sample: 'zoo', view: 'quote', start: '5', end: '13' } },
-  { title: 'Card', note: 'Title, thumbnail and chapters, with a button to the full transcript. Loads the thumbnail from YouTube.', params: { sample: 'zoo', view: 'card' } },
-  { title: 'Link box', note: 'A small form that opens any video in the vid2context app. Needs no video.', params: { view: 'input' } },
+  {
+    title: 'Transcript',
+    note: 'Searchable, with chapters as a second tab. Click a line to get a segment event.',
+    params: { sample: 'zoo' },
+  },
+  {
+    title: 'Chapters',
+    note: 'Only the chapter list, each one a link to that moment.',
+    params: { sample: 'zoo', view: 'chapters', tools: '0' },
+  },
+  {
+    title: 'Quote',
+    note: 'The lines between start and end, with a timed citation.',
+    params: { sample: 'zoo', view: 'quote', start: '5', end: '13' },
+  },
+  {
+    title: 'Card',
+    note: 'Title, thumbnail and chapters, with a button to the full transcript. Loads the thumbnail from YouTube.',
+    params: { sample: 'zoo', view: 'card' },
+  },
+  {
+    title: 'Link box',
+    note: 'A small form that opens any video in the vid2context app. Needs no video.',
+    params: { view: 'input' },
+  },
 ];
 
 function codeBlock(label: string, text: string): string {
