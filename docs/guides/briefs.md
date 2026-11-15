@@ -26,7 +26,7 @@ console.log(brief.markdown);
 
 1. Budget. The source budget per call comes from the first rung the chain would try: 75 percent of its `contextTokens`, minus the answer and the prompt, capped at 24k tokens (keyless hosts are slow on huge prompts). `maxChunkTokens` lowers it.
 2. Single pass. When every source fits, one call returns the claims and their organization into topics and points. It does the reduce step's work, so it runs on the reduce chain (policy `quality` by default).
-3. Map. Otherwise each video is cut at line boundaries (lines are about 10 s of segments) into chunks that fit, and each chunk becomes claims JSON: `{ claim, quote, videoId, startSec, topic, stance? }`.
+3. Map. Otherwise each video is cut into chunks that fit by core `chunkTranscript` (sentence ends and pauses first, whole segments otherwise, so a quote is rarely split between chunks), and each chunk becomes claims JSON: `{ claim, quote, videoId, startSec, topic, stance? }`.
 4. Verify. Every claim's quote is checked against its transcript (rules below). Only verified claims go on.
 5. Reduce. Claims are grouped by normalized topic (lowercase, stop words and simple plurals folded) and packed into batches; an LLM merges topics that mean the same thing and groups claims into points with `support`, `oppose` and a `counter` sentence. By default the reduce step uses policy `quality` (unless you set a policy), so it prefers the strongest rung you have.
 6. Classify, in code, never by the model: a point is `consensus` when its supporting claims come from two or more distinct videos and nothing opposes it, `disagreement` when claims sit on both sides, `single-source` otherwise. Verified claims that no point mentions become single-source points, so nothing verified is lost.
