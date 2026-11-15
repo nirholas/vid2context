@@ -75,6 +75,8 @@ The starting point is the committed example, [`packages/config/examples/vid2cont
 }
 ```
 
+To start from one profile only, copy one of the single-profile files instead: [`default.config.jsonc`](../packages/config/examples/default.config.jsonc) (free first), [`private.config.jsonc`](../packages/config/examples/private.config.jsonc) (nothing leaves the machine) or [`quality.config.jsonc`](../packages/config/examples/quality.config.jsonc) (best model first, paid backstops). Each holds exactly the matching profile from the combined file above and sets it as `defaultProfile`; a test keeps them identical.
+
 When you copy the file elsewhere, point `$schema` at `node_modules/@vid2context/config/schema/config.schema.json` or the absolute path of [`packages/config/schema/config.schema.json`](../packages/config/schema/config.schema.json), so editors (VS Code, JetBrains, Zed) offer autocomplete and inline errors. The schema is generated from the same definitions the validator uses (`npm run gen:schema -w @vid2context/config`), and a test fails when the committed file is stale.
 
 ## Schema reference (version 1)

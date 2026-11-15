@@ -1,0 +1,18 @@
+// vid2context config, free-first profile only. Copy to ./vid2context.config.jsonc
+// or ~/.config/vid2context/config.json. Keys never go here: they stay in .env.
+// Reference: docs/configuration.md
+{
+  "$schema": "../schema/config.schema.json",
+  "version": 1,
+  "defaultProfile": "default",
+  "profiles": {
+    // Free first: local rungs, then free tiers with your keys, then keyless hosts.
+    // Paid rungs stay last and only run when their key is set.
+    "default": {
+      "description": "Free first: local, then free tiers with your keys, then keyless hosts, paid only as a keyed backstop.",
+      "policy": "free",
+      "keyless": true,
+      "allowPaid": true
+    }
+  }
+}

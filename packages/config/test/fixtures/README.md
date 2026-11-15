@@ -1,6 +1,6 @@
 # packages/config test fixtures
 
-Config files written by hand for the validator, resolver and compiler tests (2026-11-14). They are inputs to the code under test, not recorded service responses: this package makes no network calls. The three built-in example profiles are tested straight from `packages/config/examples/vid2context.config.jsonc`, so the shipped examples and the tests cannot drift.
+Config files written by hand for the validator, resolver and compiler tests (2026-11-14). They are inputs to the code under test, not recorded service responses: this package makes no network calls. The three built-in example profiles are tested straight from `packages/config/examples/vid2context.config.jsonc`, and from the single-profile copies `examples/default.config.jsonc`, `examples/private.config.jsonc` and `examples/quality.config.jsonc` (a test checks each copy matches the combined file), so the shipped examples and the tests cannot drift.
 
 | File | What it exercises |
 |---|---|

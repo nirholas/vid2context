@@ -161,6 +161,22 @@ describe('toEnv', () => {
     });
   });
 
+  it('ships each built-in profile as its own copy-ready file, identical to the combined example', () => {
+    const combined = examples();
+    const expected: Record<string, Record<string, string>> = {
+      default: { VID2CONTEXT_POLICY: 'free', VID2CONTEXT_ALLOW_PAID: '1', VID2CONTEXT_KEYLESS: '1' },
+      private: { VID2CONTEXT_POLICY: 'local-only', VID2CONTEXT_ALLOW_PAID: '0', VID2CONTEXT_KEYLESS: '0' },
+      quality: { VID2CONTEXT_POLICY: 'quality', VID2CONTEXT_ALLOW_PAID: '1', VID2CONTEXT_KEYLESS: '1' },
+    };
+    for (const [name, env] of Object.entries(expected)) {
+      const single = load(resolve(pkg, `examples/${name}.config.jsonc`));
+      expect(Object.keys(single.profiles)).toEqual([name]);
+      expect(single.defaultProfile).toBe(name);
+      expect(single.profiles[name]).toEqual(combined.profiles[name]);
+      expect(toEnv(single, name)).toEqual(env);
+    }
+  });
+
   it('compiles every field of an extended profile and resolves env: references', () => {
     const env = { WORK_CEREBRAS_MODEL: 'llama-3.3-70b', WORK_GROQ_KEY: 'value-from-env' };
     expect(toEnv(load(fixture('extends.jsonc')), 'work', env)).toEqual({

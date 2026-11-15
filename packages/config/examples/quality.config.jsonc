@@ -1,0 +1,17 @@
+// vid2context config, quality profile only. Copy to ./vid2context.config.jsonc
+// or ~/.config/vid2context/config.json. Keys never go here: they stay in .env.
+// Reference: docs/configuration.md
+{
+  "$schema": "../schema/config.schema.json",
+  "version": 1,
+  "defaultProfile": "quality",
+  "profiles": {
+    // Best model first, tier as tie-breaker. Paid rungs with a key can win.
+    "quality": {
+      "description": "Best model first; paid rungs allowed when their key is set.",
+      "policy": "quality",
+      "keyless": true,
+      "allowPaid": true
+    }
+  }
+}

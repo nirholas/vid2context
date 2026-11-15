@@ -15,6 +15,6 @@ const ctx = createNodeContext({ env });
 
 `vid2context config [--profile name]` prints the effective settings and where each came from.
 
-- Example file with the `default`, `private`, `quality` and `hybrid` profiles: [examples/vid2context.config.jsonc](examples/vid2context.config.jsonc)
+- Example file with the `default`, `private`, `quality` and `hybrid` profiles: [examples/vid2context.config.jsonc](examples/vid2context.config.jsonc). Each built-in profile also ships alone, ready to copy: [default](examples/default.config.jsonc), [private](examples/private.config.jsonc), [quality](examples/quality.config.jsonc).
 - JSON Schema for editor autocomplete: [schema/config.schema.json](schema/config.schema.json) (regenerate with `npm run gen:schema -w @vid2context/config`)
 - Full reference: [docs/configuration.md](../../docs/configuration.md)
