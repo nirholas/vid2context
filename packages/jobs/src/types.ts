@@ -98,6 +98,14 @@ export interface KindOptions {
   /** Total handler runs allowed, including the first. Default 3. */
   maxAttempts?: number;
   backoff?: BackoffOptions;
+  /**
+   * Seconds a running attempt may go without a `progress` or `item` event
+   * before it is aborted as stalled (a retryable `timeout`). Default
+   * VID2CONTEXT_JOB_STALL_SEC or 1800; 0 turns the check off for this kind.
+   */
+  stallSec?: number;
+  /** Longest one attempt may run, in seconds. Default VID2CONTEXT_JOB_TIMEOUT_SEC or 0 (no limit). */
+  timeoutSec?: number;
 }
 
 export interface ListJobsQuery {

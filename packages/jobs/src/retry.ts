@@ -11,6 +11,12 @@ export const RETRYABLE_CODES: ReadonlySet<string> = new Set(['rate-limited', 'ti
 
 export type JobFailure = JobError & { retryAfterSec?: number };
 
+/**
+ * The longest any retry waits: one hour. An upstream may send a Retry-After of
+ * days, and timers overflow past about 24.8 days (2^31 ms) and then fire at once.
+ */
+export const MAX_RETRY_DELAY_MS = 60 * 60_000;
+
 /** Turn anything thrown by a handler into the job's error shape. Unknown errors leak no detail. */
 export function toJobError(err: unknown): JobFailure {
   if (err instanceof Vid2ContextError) {
@@ -30,7 +36,8 @@ export function publicError(e: JobFailure): JobError {
 /**
  * Delay before the next attempt, or null when the failure must not be
  * retried. Exponential with equal jitter: half the step is fixed, half
- * random. `Retry-After` from the upstream wins when it is longer.
+ * random. `Retry-After` from the upstream wins when it is longer, up to
+ * MAX_RETRY_DELAY_MS.
  */
 export function retryDelayMs(
   failure: JobFailure,
@@ -42,6 +49,8 @@ export function retryDelayMs(
   const step =
     failure.code === 'blocked' ? backoff.blockedMs : Math.min(backoff.maxMs, backoff.baseMs * 2 ** Math.max(0, attempt - 1));
   let delay = step / 2 + random() * (step / 2);
-  if (failure.retryAfterSec !== undefined) delay = Math.max(delay, failure.retryAfterSec * 1000);
-  return Math.round(delay);
+  if (failure.retryAfterSec !== undefined && Number.isFinite(failure.retryAfterSec)) {
+    delay = Math.max(delay, failure.retryAfterSec * 1000);
+  }
+  return Math.round(Math.min(delay, MAX_RETRY_DELAY_MS));
 }

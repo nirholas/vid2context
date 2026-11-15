@@ -9,6 +9,9 @@ export interface KindEntry {
   handler: JobHandler;
   maxAttempts: number;
   backoff: { baseMs: number; maxMs: number; blockedMs: number };
+  /** Per-kind watchdog overrides; undefined means the env default (see watchdog.ts). */
+  stallSec?: number;
+  timeoutSec?: number;
 }
 
 export const DEFAULT_MAX_ATTEMPTS = 3;
@@ -26,7 +29,21 @@ export class JobKinds {
       });
     }
     const maxAttempts = Math.max(1, Math.floor(opts.maxAttempts ?? DEFAULT_MAX_ATTEMPTS));
-    this.entries.set(kind, { handler: handler as JobHandler, maxAttempts, backoff: { ...DEFAULT_BACKOFF, ...opts.backoff } });
+    for (const name of ['stallSec', 'timeoutSec'] as const) {
+      const v = opts[name];
+      if (v !== undefined && !(Number.isFinite(v) && v >= 0)) {
+        throw new Vid2ContextError('bad-request', `Job kind "${kind}": ${name} must be a number of seconds, 0 or more.`, {
+          hint: `Pass ${name}: 0 to turn the check off, or omit it for the default.`,
+        });
+      }
+    }
+    this.entries.set(kind, {
+      handler: handler as JobHandler,
+      maxAttempts,
+      backoff: { ...DEFAULT_BACKOFF, ...opts.backoff },
+      ...(opts.stallSec !== undefined ? { stallSec: opts.stallSec } : {}),
+      ...(opts.timeoutSec !== undefined ? { timeoutSec: opts.timeoutSec } : {}),
+    });
   }
 
   /** Same as `register`, so a bare kind table can be passed wherever a queue's `registerKind` is expected. */

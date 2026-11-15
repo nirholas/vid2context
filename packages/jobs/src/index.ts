@@ -14,3 +14,4 @@ export * from './retry.ts';
 export * from './sse.ts';
 export * from './store.ts';
 export * from './types.ts';
+export * from './watchdog.ts';

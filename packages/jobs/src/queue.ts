@@ -31,6 +31,10 @@ export interface InProcessQueueOptions {
   concurrency?: number;
   /** Hours a finished job is kept. Default VID2CONTEXT_JOB_TTL_HOURS or 72. */
   ttlHours?: number;
+  /** Jobs waiting to run (queued or waiting to retry) before enqueue refuses more. Default VID2CONTEXT_MAX_QUEUED_JOBS or 1000. */
+  maxQueued?: number;
+  /** See RunDeps.abortGraceMs. */
+  abortGraceMs?: number;
   /** Start running (and resume persisted jobs) right away. Default true; otherwise call `start()`. */
   autoStart?: boolean;
   /** Random source for retry jitter. */
@@ -56,6 +60,11 @@ export function jobSettings(env: Env): { concurrency: number; ttlHours: number }
   };
 }
 
+/** Queued jobs allowed before enqueue answers rate-limited. A flood of requests must not grow memory and the store without bound. */
+export function maxQueuedJobs(env: Env): number {
+  return Math.floor(envNumber(env, 'VID2CONTEXT_MAX_QUEUED_JOBS', 1000, 1));
+}
+
 export function assertOptions(options: unknown): Record<string, unknown> {
   if (options === undefined || options === null) return {};
   if (typeof options !== 'object' || Array.isArray(options)) {
@@ -73,6 +82,7 @@ export class InProcessQueue implements JobQueue {
   readonly store: JobStore;
   readonly storage: Storage;
   readonly concurrency: number;
+  readonly maxQueued: number;
   private readonly kindTable = new JobKinds();
   private readonly hub = new EventHub();
   private readonly deps: RunDeps;
@@ -85,6 +95,7 @@ export class InProcessQueue implements JobQueue {
   constructor(private opts: InProcessQueueOptions) {
     const settings = jobSettings(opts.ctx.env);
     this.concurrency = Math.max(1, Math.floor(opts.concurrency ?? settings.concurrency));
+    this.maxQueued = Math.max(1, Math.floor(opts.maxQueued ?? maxQueuedJobs(opts.ctx.env)));
     this.storage = opts.storage ?? new MemoryStorage();
     const kv = opts.kv ?? (hasKv(this.storage) ? this.storage : new MemoryKv());
     this.store = new JobStore(kv, Math.round((opts.ttlHours ?? settings.ttlHours) * 3600));
@@ -96,6 +107,7 @@ export class InProcessQueue implements JobQueue {
       ctx: opts.ctx,
       hub: this.hub,
       ...(opts.random ? { random: opts.random } : {}),
+      ...(opts.abortGraceMs !== undefined ? { abortGraceMs: opts.abortGraceMs } : {}),
     };
     if (opts.autoStart !== false) void this.start();
   }
@@ -139,6 +151,13 @@ export class InProcessQueue implements JobQueue {
   async enqueue(kind: string, input: unknown, options?: Record<string, unknown>): Promise<Job> {
     if (this.closed) throw new Vid2ContextError('unavailable', 'The job queue is shut down.', { hint: 'Restart the server.' });
     this.kindTable.require(kind);
+    const waiting = this.pending.length + this.delayed.size;
+    if (waiting >= this.maxQueued) {
+      throw new Vid2ContextError('rate-limited', `The job queue is full (${waiting} jobs waiting).`, {
+        hint: 'Retry once some jobs have finished. Operators can raise VID2CONTEXT_MAX_QUEUED_JOBS or VID2CONTEXT_JOB_CONCURRENCY.',
+        retryAfterSec: 30,
+      });
+    }
     const rec = newRecord(kind, input ?? null, assertOptions(options));
     await this.store.put(rec);
     this.pending.push(rec.id);

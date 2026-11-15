@@ -9,6 +9,17 @@ import type { JobKinds } from './kinds.ts';
 import { publicError, retryDelayMs, toJobError } from './retry.ts';
 import { isFinished, type JobStore, MAX_EVENTS, publicJob } from './store.ts';
 import type { ItemEvent, Job, JobError, JobEvent, JobEventRecord, JobListener, JobProgress, JobRecord } from './types.ts';
+import {
+  DEFAULT_STALL_SEC,
+  DEFAULT_TIMEOUT_SEC,
+  JobStalled,
+  startWatchdog,
+  type WatchdogLimits,
+  watchdogLimits,
+} from './watchdog.ts';
+
+/** How long an aborted attempt keeps its slot while the handler winds down. */
+export const DEFAULT_ABORT_GRACE_MS = 5_000;
 
 /** Abort reason when a user cancels a job. */
 export class JobCanceled extends Error {
@@ -71,6 +82,12 @@ export interface RunDeps {
   ctx: Ctx;
   hub?: EventHub;
   random?: () => number;
+  /**
+   * After an abort (cancel, shutdown, stall), how long runJob waits for the
+   * handler to settle before returning, so the runner does not start the next
+   * job while this one still holds connections or a child process. Default 5000.
+   */
+  abortGraceMs?: number;
 }
 
 export type RunOutcome =
@@ -168,6 +185,32 @@ function raceAbort<T>(work: Promise<T>, signal: AbortSignal): Promise<T> {
   });
 }
 
+/** Wait for an aborted handler to settle, at most `ms`. Never rejects. */
+async function settleWithin(work: Promise<unknown>, ms: number): Promise<void> {
+  if (ms <= 0) return;
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  await Promise.race([
+    work.then(
+      () => undefined,
+      () => undefined,
+    ),
+    new Promise<void>((resolve) => {
+      timer = setTimeout(resolve, ms);
+    }),
+  ]);
+  if (timer) clearTimeout(timer);
+}
+
+function limitsFor(rec: JobRecord, kind: NonNullable<ReturnType<RunDeps['kinds']['get']>>, ctx: Ctx): WatchdogLimits {
+  try {
+    return watchdogLimits(ctx.env, kind);
+  } catch (err) {
+    // A bad env value must not fail every job; the defaults still protect the queue.
+    ctx.log.warn('jobs: invalid watchdog setting, using the defaults', { id: rec.id, message: (err as Error).message });
+    return { stallSec: kind.stallSec ?? DEFAULT_STALL_SEC, timeoutSec: kind.timeoutSec ?? DEFAULT_TIMEOUT_SEC };
+  }
+}
+
 /** Mark a job that is not running as canceled. Finished jobs are returned unchanged. */
 export async function finishCanceled(rec: JobRecord, deps: Pick<RunDeps, 'store' | 'hub' | 'ctx'>): Promise<Job> {
   if (isFinished(rec.status)) return publicJob(rec);
@@ -207,30 +250,48 @@ export async function runJob(id: string, deps: RunDeps, signal: AbortSignal): Pr
 
   const attempt = rec.attempts + 1;
   writer.update({ status: 'running', attempts: attempt, notBefore: undefined, error: undefined });
-  const jobSignal = deps.ctx.signal ? AbortSignal.any([deps.ctx.signal, signal]) : signal;
+  const dog = startWatchdog(rec.kind, limitsFor(rec, kind, deps.ctx));
+  const stopSignal = AbortSignal.any([signal, dog.signal]);
+  const jobSignal = deps.ctx.signal ? AbortSignal.any([deps.ctx.signal, stopSignal]) : stopSignal;
   const ctx: Ctx = { ...deps.ctx, signal: jobSignal };
+  let work: Promise<unknown> = Promise.resolve();
 
   try {
-    const result = await raceAbort(
+    // Started inside the try: a handler that throws synchronously fails the attempt like a rejection.
+    work = Promise.resolve().then(() =>
       kind.handler({
         job: { id: rec.id, kind: rec.kind, attempt },
         input: rec.input,
         options: rec.options,
         signal: jobSignal,
-        progress: (update: JobProgress) => writer.emit({ type: 'progress', data: validProgress(update) }),
-        item: (event: ItemEvent) => writer.emit({ type: 'item', data: event }),
+        progress: (update: JobProgress) => {
+          const data = validProgress(update);
+          dog.touch(data.message);
+          writer.emit({ type: 'progress', data });
+        },
+        item: (event: ItemEvent) => {
+          dog.touch();
+          writer.emit({ type: 'item', data: event });
+        },
         registry: deps.registry,
         storage: deps.storage,
         ctx,
       }),
-      signal,
     );
+    const result = await raceAbort(work, stopSignal);
+    dog.stop();
     writer.update({ status: 'succeeded', result: result === undefined ? null : result });
     writer.emit({ type: 'done', data: { result: result === undefined ? null : result } });
     writer.seal();
     await writer.flush();
     return { status: 'succeeded', job: publicJob(rec) };
-  } catch (err) {
+  } catch (thrown) {
+    dog.stop();
+    if (signal.aborted || dog.signal.aborted) await settleWithin(work, deps.abortGraceMs ?? DEFAULT_ABORT_GRACE_MS);
+    // A stalled attempt fails with the watchdog's timeout error (retryable), whatever the handler threw on abort.
+    const err = !signal.aborted && dog.signal.reason instanceof JobStalled ? dog.signal.reason.error : thrown;
+    if (err !== thrown)
+      log.warn('jobs: attempt stopped by the watchdog', { id, kind: rec.kind, attempt, message: (err as Error).message });
     if (signal.aborted && signal.reason instanceof RunnerShutdown) {
       writer.update({ status: 'queued' });
       writer.seal();

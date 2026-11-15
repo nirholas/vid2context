@@ -371,6 +371,9 @@ The job engine from `@vid2context/jobs` (`POST /jobs`, `GET /jobs/:id`, `GET /jo
 |---|---|---|
 | `VID2CONTEXT_JOB_CONCURRENCY` | `@vid2context/jobs` | jobs that run at once in the in-process runner, default `2` |
 | `VID2CONTEXT_JOB_TTL_HOURS` | `@vid2context/jobs` | hours a finished job is kept (KvStore TTL), default `72` |
+| `VID2CONTEXT_JOB_STALL_SEC` | `@vid2context/jobs` | seconds a running job may go without a progress or item event before it is stopped and retried as `timeout`, default `1800`; `0` turns it off |
+| `VID2CONTEXT_JOB_TIMEOUT_SEC` | `@vid2context/jobs` | longest one attempt may run in seconds, default `0` (no limit) |
+| `VID2CONTEXT_MAX_QUEUED_JOBS` | `@vid2context/jobs` | jobs waiting to run before `enqueue` answers `rate-limited`, default `1000` |
 | `VID2CONTEXT_CLOUD_TASKS_QUEUE` | `@vid2context/jobs` | `projects/<project>/locations/<location>/queues/<queue>` |
 | `VID2CONTEXT_CLOUD_TASKS_RUN_URL` | `@vid2context/jobs` | public https base of the API including `/api/v1`; tasks POST to `<url>/jobs/<id>/run` |
 | `VID2CONTEXT_CLOUD_TASKS_SERVICE_ACCOUNT` | `@vid2context/jobs` | service account Cloud Tasks signs the OIDC token as; the run endpoint requires it |

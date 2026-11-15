@@ -49,6 +49,22 @@ Pass a long-lived `ctx`, not a request's: jobs outlive requests. Register kinds 
 |---|---|---|
 | `VID2CONTEXT_JOB_CONCURRENCY` | `2` | jobs that run at once; the rest wait in FIFO order |
 | `VID2CONTEXT_JOB_TTL_HOURS` | `72` | finished jobs expire after this, through the KvStore TTL |
+| `VID2CONTEXT_JOB_STALL_SEC` | `1800` | a running job with no progress or item event for this long is stopped (see below); `0` is off |
+| `VID2CONTEXT_JOB_TIMEOUT_SEC` | `0` | longest one attempt may run; `0` is no limit |
+| `VID2CONTEXT_MAX_QUEUED_JOBS` | `1000` | jobs waiting to run (queued or waiting to retry) before `enqueue` answers `rate-limited` with `retryAfterSec: 30` |
+
+`items` and `bundle` never expand a list past `VID2CONTEXT_MAX_PLAYLIST_ITEMS` (default 500) videos, the same cap `GET /items` uses, whatever `limit` asks for. Without it, one channel URL could queue every upload the channel has.
+
+## Stalled jobs
+
+A handler that hangs, for example on an upstream that accepts the connection and never answers, would otherwise hold one of the runner's slots forever, and with the default concurrency of 2, two such jobs stop every job behind them. So every attempt is watched:
+
+- **No progress.** An attempt that sends no `progress` or `item` event for `VID2CONTEXT_JOB_STALL_SEC` (30 minutes) is stopped. Report progress as you go and a slow job is never mistaken for a stuck one.
+- **Too long.** With `VID2CONTEXT_JOB_TIMEOUT_SEC` set, an attempt that runs longer is stopped even while it reports progress.
+
+Stopping aborts the handler's `signal` (so fetches and child processes that honour it end) and fails the attempt with a `timeout` error that names the last progress message. `timeout` is retried like any transient failure. The runner keeps the slot for up to 5 seconds while the aborted handler winds down, so the next job does not start while the old one still holds connections. A kind can set its own limits: `registerKind(kind, handler, { stallSec: 7200, timeoutSec: 0 })`, where 0 turns a check off.
+
+A retry never waits more than an hour, even when an upstream sends a longer `Retry-After`.
 
 ## Registering a kind
 
@@ -95,6 +111,7 @@ curl -N localhost:8787/api/v1/jobs/job_.../events
 - A new connection first replays the state (item events so far and the latest progress, or the final event of a finished job), then streams live events.
 - Event ids are a per-job sequence. Browsers' `EventSource` sends `Last-Event-ID` when it reconnects, and the stream then resumes after that id with no duplicates.
 - A `: heartbeat` comment is sent every 15 seconds so proxies keep the connection open. The stream closes after `done` or `error`.
+- Each heartbeat also re-reads the job from the store, so a job run by another process (Cloud Tasks, Cloudflare Queues, a second server) still reaches the client, and the stream closes once that job is finished or has expired.
 - `DELETE /api/v1/jobs/:id` cancels: a queued job never runs, a running job's `AbortSignal` fires. Either way the job ends `canceled` and the stream gets `error` with `code: 'canceled'`.
 
 ## Persistence and resume

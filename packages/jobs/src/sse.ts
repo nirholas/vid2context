@@ -2,7 +2,8 @@
  * A job's live progress as Server-Sent Events. The stream first replays the
  * current state (item events so far and the latest progress, or the final
  * event of a finished job), then forwards live events, sends a heartbeat
- * comment every 15 s and closes after `done` or `error`.
+ * comment every 15 s and closes after `done` or `error`. Every heartbeat also
+ * re-reads the job, so a job run by another process still reaches the client.
  *
  * Event ids are the job's monotonic event sequence. A client that reconnects
  * with `Last-Event-ID: n` gets only events after n, so nothing is duplicated.
@@ -124,8 +125,35 @@ export async function toSSE(queue: JobQueue, id: string, opts: SSEOptions = {}):
       if (closed) return;
       push = send;
 
+      // Each heartbeat also re-reads the job from the store. Live events only reach this
+      // process when the job runs here; a job run by another runner (Cloud Tasks, Queues,
+      // a second server) or one whose runner died would otherwise leave the stream open
+      // forever with nothing but heartbeats. The poll forwards what the store has and
+      // closes the stream once the job is finished or gone.
+      let polling = false;
+      const poll = async () => {
+        if (closed || polling) return;
+        polling = true;
+        try {
+          const now = await queue.snapshot(id);
+          if (closed) return;
+          if (!now) return close();
+          for (const e of now.events) if (e.id > last) send(e);
+          const finished = now.job.status === 'succeeded' || now.job.status === 'failed' || now.job.status === 'canceled';
+          if (finished && !closed) {
+            for (const e of replayEvents(now, undefined)) if (isTerminal(e)) send({ ...e, id: Math.max(e.id, last + 1) });
+            close();
+          }
+        } catch {
+          // A store hiccup must not end the stream; the next heartbeat tries again.
+        } finally {
+          polling = false;
+        }
+      };
       heartbeat = setInterval(() => {
-        if (!closed) controller.enqueue(encoder.encode(': heartbeat\n\n'));
+        if (closed) return;
+        controller.enqueue(encoder.encode(': heartbeat\n\n'));
+        void poll();
       }, opts.heartbeatMs ?? 15_000);
       if (opts.signal) {
         onAbort = close;

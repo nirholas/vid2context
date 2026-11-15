@@ -11,6 +11,7 @@ import {
   expandInput,
   type GetContextOptions,
   getVideoContext,
+  limits,
   summarize,
   type TranscriptMode,
   Vid2ContextError,
@@ -164,13 +165,23 @@ function allFailed(items: ItemEvent[]): Vid2ContextError {
   });
 }
 
+/**
+ * Videos one job may expand a list into: the requested limit, never more than
+ * VID2CONTEXT_MAX_PLAYLIST_ITEMS (default 500), the same cap GET /items uses.
+ * Without it a channel URL would queue every upload the channel has.
+ */
+function listLimit(requested: number | undefined, env: Parameters<typeof limits>[0]): number {
+  const max = limits(env).maxPlaylistItems;
+  return Math.min(requested ?? max, max);
+}
+
 export const itemsKind: JobHandler = async (args) => {
   const { input, options, registry, ctx, progress } = args;
   const list = inputString(input, 'items');
-  const limit = intOption(options, 'limit', 1, 5_000);
+  const limit = listLimit(intOption(options, 'limit', 1, 5_000), ctx.env);
   const concurrency = intOption(options, 'concurrency', 1, 8) ?? 2;
   progress({ done: 0, message: `expanding ${list}` });
-  const refs = await expandInput(registry, list, ctx, limit ? { limit } : {});
+  const refs = await expandInput(registry, list, ctx, { limit });
   if (refs.length === 0) {
     throw new Vid2ContextError('not-found', `"${list}" lists no videos.`, {
       hint: 'Check that the playlist, channel or feed is public and not empty.',
@@ -197,9 +208,10 @@ function fileContent(bytes: Uint8Array): { encoding: 'utf-8' | 'base64'; content
   try {
     return { encoding: 'utf-8', content: new TextDecoder('utf-8', { fatal: true }).decode(bytes) };
   } catch {
-    let bin = '';
-    for (const b of bytes) bin += String.fromCharCode(b);
-    return { encoding: 'base64', content: btoa(bin) };
+    // In 32 KB chunks: one string concatenation per byte is quadratic-ish on large files and spikes memory.
+    const parts: string[] = [];
+    for (let i = 0; i < bytes.length; i += 0x8000) parts.push(String.fromCharCode(...bytes.subarray(i, i + 0x8000)));
+    return { encoding: 'base64', content: btoa(parts.join('')) };
   }
 }
 
@@ -209,7 +221,8 @@ export const bundleKind: JobHandler = async (args) => {
   const inputs = (Array.isArray(input) ? input : [input]).map((i) => inputString(i, 'bundle'));
   if (inputs.length === 0 || inputs.length > 200)
     throw bad('The bundle job takes 1 to 200 inputs.', 'Pass "input" as a URL or an array of URLs.');
-  const limit = intOption(options, 'limit', 1, 5_000);
+  const limit = listLimit(intOption(options, 'limit', 1, 5_000), ctx.env);
+  const total = limits(ctx.env).maxPlaylistItems;
   const concurrency = intOption(options, 'concurrency', 1, 8) ?? 2;
   const formats = options.formats;
   if (formats !== undefined && !(Array.isArray(formats) && formats.every((f) => typeof f === 'string'))) {
@@ -221,13 +234,16 @@ export const bundleKind: JobHandler = async (args) => {
   progress({ done: 0, message: 'expanding inputs' });
   const refs: VideoRef[] = [];
   const seen = new Set<string>();
+  // `limit` applies per input; the whole bundle also stops at VID2CONTEXT_MAX_PLAYLIST_ITEMS videos.
   for (const one of inputs) {
-    for (const ref of await expandInput(registry, one, ctx, limit ? { limit } : {})) {
+    if (refs.length >= total) break;
+    for (const ref of await expandInput(registry, one, ctx, { limit: Math.min(limit, total - refs.length) })) {
       if (seen.has(ref.id)) continue;
       seen.add(ref.id);
       refs.push(ref);
     }
   }
+  if (refs.length >= total) progress({ done: 0, message: `stopped at ${total} videos (VID2CONTEXT_MAX_PLAYLIST_ITEMS)` });
   if (refs.length === 0) throw new Vid2ContextError('not-found', 'The inputs list no videos.', { hint: 'Check the URLs.' });
   progress({ done: 0, total: refs.length, message: `found ${refs.length} videos` });
   const { items, contexts } = await fetchAll(refs, concurrency, args);
