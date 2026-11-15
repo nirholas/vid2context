@@ -109,7 +109,7 @@ When YouTube wants a proof-of-origin token for a client, caption tracks come bac
 
 ## Metadata and chapters
 
-`youtube.getMetadata` makes one player request (the same cached response the captions provider uses), one `next` request (the watch page's data, WEB client) and one `HEAD` request for the maxres thumbnail, the last two in parallel. No key. It succeeds whenever the player returns `videoDetails`, including age-restricted, members-only, live and upcoming videos: those states are reported in `extra`, and the transcript stage raises the errors. If the `next` request fails, the player fields are still returned and a warning is logged.
+`youtube.getMetadata` makes one player request (the same cached response the captions provider uses), one `next` request (the watch page's data, WEB client) and one `HEAD` request for the maxres thumbnail, the last two in parallel. No key. With `YOUTUBE_METADATA_MICROFORMAT=1` it also asks the WEB player for its microformat (see below), and that answer replaces the `HEAD` request. It succeeds whenever the player returns `videoDetails`, including age-restricted, members-only, live and upcoming videos: those states are reported in `extra`, and the transcript stage raises the errors. If the `next` request fails, the player fields are still returned and a warning is logged.
 
 ### Fields and where they come from
 
@@ -117,25 +117,29 @@ When YouTube wants a proof-of-origin token for a client, caption tracks come bac
 |---|---|
 | `title`, `description` (full), `tags`, `durationSec` | player `videoDetails` (`title`, `shortDescription`, `keywords`, `lengthSeconds`; 0 for live and upcoming becomes `undefined`) |
 | `channel.name`, `channel.id`, `channel.url` | player `author` and `channelId`; the URL is the stable `/channel/<id>` form |
-| `publishedAt` | the date line under the title in `next` (`dateText`), as an ISO date `YYYY-MM-DD`. "Premiered Feb 24, 2026", "Streamed live on Apr 1, 2026" and "Started streaming on Aug 19, 2026" give that date. Relative dates ("23 hours ago") and "Scheduled for" give none |
-| `thumbnailUrl` | `maxresdefault.jpg` when a `HEAD` request finds it, else the largest thumbnail the player lists (usually `sddefault` or `hqdefault`). The player never lists maxres, and its presence cannot be inferred (5 of 14 sampled videos listing sddefault had none) |
+| `publishedAt` | the microformat `publishDate` when it was fetched (full ISO 8601 with time and offset, `2025-06-16T04:00:04-07:00`; not used for upcoming streams, where it is the page's creation time), else the date line under the title in `next` (`dateText`), as an ISO date `YYYY-MM-DD`. "Premiered Feb 24, 2026", "Streamed live on Apr 1, 2026" and "Started streaming on Aug 19, 2026" give that date. Relative dates ("23 hours ago") and "Scheduled for" give none |
+| `thumbnailUrl` | `maxresdefault.jpg` when the microformat lists it or a `HEAD` request finds it, else the largest thumbnail the player lists (usually `sddefault` or `hqdefault`). The player never lists maxres, and its presence cannot be inferred (5 of 14 sampled videos listing sddefault had none) |
 | `language` | the language of the auto-caption (asr) track, which is the spoken language; `undefined` without one |
 | `isLive`, `extra.isLive` | player `isLive` |
 | `extra.viewCount` | player `viewCount` (total views, also for live streams) |
-| `extra.likeCount` | the exact count in the like button's label in `next` ("along with 20,138,292 other people"); absent when likes are hidden |
+| `extra.likeCount` | the exact count in the like button's label in `next` ("along with 20,138,292 other people"), else the microformat `likeCount`; absent when likes are hidden |
 | `extra.liveViewers` | the "watching now" (live) or "waiting" (upcoming) count in `next` |
 | `extra.dateText` | the date line as YouTube shows it |
-| `extra.channelHandle`, `extra.channelHandleUrl` | the owner's `@handle` from `next` and `https://www.youtube.com/@handle` |
+| `extra.channelHandle`, `extra.channelHandleUrl` | the owner's `@handle` from `next` (else the microformat `ownerProfileUrl`) and `https://www.youtube.com/@handle` |
 | `extra.subscriberCountText` | as shown, for example "6.74M subscribers" |
-| `extra.isShort` | true when the input was a `/shorts/` URL, or every video stream is taller than wide and the video is at most 3 minutes long. Neither the player nor `next` flags Shorts directly (checked on 2026-11-14) |
+| `extra.isShort` | the first signal available: the input was a `/shorts/` URL; else the microformat's `isShortsEligible` (true for the recorded Short, false for every other recorded video, checked on 2026-11-15); else every video stream is taller than wide and the video is at most 3 minutes long. The ANDROID player and `next` do not flag Shorts (checked on 2026-11-14) |
 | `extra.isUpcoming`, `extra.premiereAt` | player `isUpcoming`, and the scheduled start (`scheduledStartTime`, ISO 8601) of an upcoming premiere or live stream |
 | `extra.ageRestricted` | the player status is not OK and its reason mentions age or "inappropriate" |
 | `extra.membersOnly` | the player reason mentions members, or `next` shows the members-only badge |
 | `extra.isLiveContent`, `extra.playability` | player `isLiveContent` and `playabilityStatus.status` |
 | `extra.links` | every http(s) URL in the description, de-duplicated, in order, without trailing punctuation |
 | `extra.chapterSource` | `description`, `markers` or `key-moments` (absent when there are no chapters) |
+| `extra.category`, `extra.uploadDate`, `extra.isUnlisted` | microformat `category` ("Comedy"), `uploadDate` (ISO 8601 with time) and `isUnlisted`; only with the microformat |
+| `extra.liveStartedAt`, `extra.liveEndedAt` | microformat `liveBroadcastDetails` start and end (ISO 8601) of a live or past live stream; only with the microformat, and no start for an upcoming stream |
 
-Not available without an extra request: the category and a separate upload date. They are only in the WEB player response's microformat, and the ANDROID and IOS player responses and `next` do not carry them, so they are left out rather than costing a second player call.
+### The microformat (opt-in)
+
+The category, exact publish and upload timestamps, the unlisted flag, YouTube's own Shorts flag and live start and end times exist only in the WEB player response's `microformat.playerMicroformatRenderer`. The ANDROID and IOS player responses and `next` do not carry them. The WEB player answers `UNPLAYABLE` without a PO token, but it still returns the microformat (checked for 9 videos on 2026-11-15). Fetching it is a second player request, and the default keeps to one player request shared with captions, so it is off unless `YOUTUBE_METADATA_MICROFORMAT=1` (or `true`, `yes`, `on`). When it is on, it runs in parallel with `next`, its thumbnail list replaces the maxres `HEAD` check, and a failure is logged and skipped (the `HEAD` check runs instead). A blocked answer counts against the player breaker like any other player call. A microformat already in the shared player response is always read, at no cost.
 
 ### Chapter precedence
 

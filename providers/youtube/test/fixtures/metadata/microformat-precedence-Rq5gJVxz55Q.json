@@ -1,0 +1,50 @@
+{
+  "playabilityStatus": {
+    "status": "UNPLAYABLE",
+    "reason": "The page needs to be reloaded."
+  },
+  "microformat": {
+    "playerMicroformatRenderer": {
+      "thumbnail": {
+        "thumbnails": [
+          {
+            "url": "https://i.ytimg.com/vi/Rq5gJVxz55Q/maxresdefault.jpg",
+            "width": 1280,
+            "height": 720
+          }
+        ]
+      },
+      "embed": {
+        "iframeUrl": "https://www.youtube.com/embed/Rq5gJVxz55Q",
+        "width": 1280,
+        "height": 720
+      },
+      "title": {
+        "simpleText": "Python Full Course for Beginners (13 Hours) – From Zero to Hero"
+      },
+      "description": {
+        "simpleText": "Learn Python from scratch in this complete 13-hour course designed for beginners who want to build real programming confidence.\n- *Python Full Package* https://www.datawithbaraa.com/course/the-ultimate-python-mastery\n- *Python Handbook* https://academy.datawithbaraa.com/l/digital_download/998313/the-python-handbook\n- *Free Python materials* https://www.datawithbaraa.com/wiki/python\n- *Python course playlist* https://www.youtube.com/playlist?list=PLNcg_FV9n7qZGfFl2ANI_zISzNp257Lwn\n\n━━━━━━━━━━━━━━━━━━━━\n\n*🏆 My Academy (recommended)*\n- *SQL* https://www.datawithbaraa.com/course/sql-full-course-for-beginners\n- *SQL Handbook* https://academy.datawithbaraa.com/l/digital_download/1087406/the-sql-handbook\n- *Tableau* https://www.datawithbaraa.com/course/tableau-ultimate-full-course-for-beginners\n\n*🎓 Udemy*\n- *SQL* https://www.udemy.com/course/the-complete-sql-bootcamp-30-hours-go-from-zero-to-hero/?referralCode=D20781228C2EB8B98339\n- *Python* https://www.udemy.com/course/the-complete-python-bootcamp-13hours-go-from-zero-to-hero/?referralCode=776491A4119FF8AF41CA\n- *Tableau* https://www.udemy.com/course/the-tableau-ultimate-course-from-zero-to-hero/?referralCode=6544726FDC491A6B25EC\n\n*💼 LinkedIn Learning*\n- *Databricks for Data Analysts* https://www.linkedin.com/learning/databricks-for-data-analysts\n- *Claude Code for Data Analysis* https://www.linkedin.com/learning/claude-code-for-data-analysis-build-repeatable-reliable-workflows\n\n📬 *Newsletter for data friends*\nhttps://www.blog.datawithbaraa.com\n\n*Get 25% OFF DataCamp's Here*\nhttps://datacamp.pxf.io/bOEe66\n\n━━━━━━━━━━━━━━━━━━━━\n\n📖 *Table of Content*\n0:00 Python Course Introduction\n2:07 Python Learning Roadmap\n5:55 What Is Python & How It Works\n12:48 Installing Python\n26:11 Comments & print()\n52:01 Variables\n1:05:39 User input()\n1:14:25 Python Data Types\n1:46:54 String Basics & Transformations\n2:16:56 Indexing & Slicing\n2:39:04 Search, Validation & Case Conversion\n2:59:31 Integer & Float, Types, Math\n3:11:33 Rounding, Random, Validation\n3:28:04 Boolean Values\n3:42:33 Comparison & Logical Operators\n4:06:13 Membership & Identity Operators\n4:19:19 If, Else, Elif\n4:40:34 Nested & Advanced Conditions\n4:57:33 Inline If & Match Case\n5:24:56 For Loops\n5:47:57 Break, Continue, Pass\n6:18:39 For-Else & Nested Loops\n6:40:52 While Loops\n7:10:04 Lists Overview\n7:19:40 Creating & Accessing Lists\n7:48:08 Unpacking & Analyzing\n8:19:18 Add, Remove & Update\n8:41:46 Sorting & Combining\n9:18:29 Iterables & Filtering\n9:41:38 Lambda & List Comprehension\n10:12:01 Tuples\n10:19:59 Sets\n10:38:12 Dictionaries\n11:09:45 Functions Introduction\n11:28:12 Function Parameters & Return\n12:20:31 Types of Python Functions\n12:46:09 Writing Clean Functions\n\n━━━━━━━━━━━━━━━━━━━━\n\n*CONNECT WITH ME*\n💬 Discord https://discord.gg/gsVJbMxKcA\n👨‍💻 LinkedIn https://www.linkedin.com/in/baraa-khatib-salkini/\n📸 Instagram https://www.instagram.com/datawithbaraa/\n🎥 TikTok https://www.tiktok.com/@datawithbaraa\n🧭 Notion Roadmaps https://www.notion.com/@datawithbaraa\n\nNote: some links above are affiliates. I may earn a small commission\nif you enroll. Thank you for supporting the channel.\n\n#python #learnpython #ai #dataanalytics #datascience #coding"
+      },
+      "lengthSeconds": "46973",
+      "ownerProfileUrl": "http://www.youtube.com/@DataWithBaraa",
+      "externalChannelId": "UC8_RSKwbU1OmZWNEoLV1tQg",
+      "isFamilySafe": true,
+      "isUnlisted": false,
+      "hasYpcMetadata": false,
+      "viewCount": "1694901",
+      "category": "Education",
+      "publishDate": "2026-02-24T05:00:07-08:00",
+      "ownerChannelName": "Data with Baraa",
+      "liveBroadcastDetails": {
+        "isLiveNow": false,
+        "startTimestamp": "2026-02-24T13:00:07+00:00",
+        "endTimestamp": "2026-02-24T13:28:42+00:00"
+      },
+      "uploadDate": "2026-02-24T05:00:07-08:00",
+      "isShortsEligible": false,
+      "externalVideoId": "Rq5gJVxz55Q",
+      "likeCount": "27001",
+      "canonicalUrl": "https://www.youtube.com/watch?v=Rq5gJVxz55Q"
+    }
+  }
+}

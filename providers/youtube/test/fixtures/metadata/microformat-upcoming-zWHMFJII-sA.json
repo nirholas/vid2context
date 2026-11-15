@@ -1,0 +1,48 @@
+{
+  "playabilityStatus": {
+    "status": "LIVE_STREAM_OFFLINE",
+    "reason": "This live event will begin in 43 minutes."
+  },
+  "microformat": {
+    "playerMicroformatRenderer": {
+      "thumbnail": {
+        "thumbnails": [
+          {
+            "url": "https://i.ytimg.com/vi/zWHMFJII-sA/maxresdefault.jpg?v=6af88748",
+            "width": 1280,
+            "height": 720
+          }
+        ]
+      },
+      "embed": {
+        "iframeUrl": "https://www.youtube.com/embed/zWHMFJII-sA",
+        "width": 480,
+        "height": 360
+      },
+      "title": {
+        "simpleText": "ULA launches Vulcan launches Amazon Leo (LV-01)"
+      },
+      "description": {
+        "simpleText": "Launch Window: 12:11pm Eastern to 12:40pm Eastern.\n\n⚡ Become a member of NASASpaceflight's channel for exclusive discord access, fast turnaround clips, and other exclusive benefits. Your support helps us continue our 24/7 coverage. ⚡\n\n🔍 If you are interested in using footage captured by this stream, please review our content use policy: https://www.nasaspaceflight.com/content-use-policy/\n\n\n LDAPAABJRG2UMCU3 🎵 Intro song: New Way Out by Denis. Licensed via PremiumBeat. LDAPAABJRG2UMCU3\n🎵 Music used on streams and in videos is licensed via EpidemicSound: https://share.epidemicsound.com/qvh38e\n\nAll content copyright NASASpaceflight LLC. All Rights Reserved. For licensing information please visit:  https://www.nasaspaceflight.com/content-use-policy/\n\nNASASpaceflight (NSF) delivers live rocket launch coverage, breaking spaceflight news, and in-depth reporting from around the world.\n\nNASASpaceflight is not affiliated with or does not represent the National Aeronautics and Space Administration (NASA). NASA initials used with NASA’s permission.\n\nNow in its 20th year, NSF covers all major players in space: SpaceX, NASA, Blue Origin, ULA, Rocket Lab, Relativity, Arianespace, Firefly, Stoke, Northrop Grumman, and more. From Starship test campaigns at Starbase to crew missions, infrastructure rollouts, and international launches, NSF delivers multi-angle livestreams, on-site reporting, and expert analysis from locations like Kennedy Space Center, Cape Canaveral, Vandenberg, Wallops, and Starbase."
+      },
+      "ownerProfileUrl": "http://www.youtube.com/@NASASpaceflight",
+      "externalChannelId": "UCSUu1lih2RifWkKtDOJdsBA",
+      "isFamilySafe": true,
+      "isUnlisted": false,
+      "hasYpcMetadata": false,
+      "viewCount": "0",
+      "category": "Science & Technology",
+      "publishDate": "2026-11-14T08:07:35-08:00",
+      "ownerChannelName": "NASASpaceflight",
+      "liveBroadcastDetails": {
+        "isLiveNow": false,
+        "startTimestamp": "2026-11-15T16:11:00+00:00"
+      },
+      "uploadDate": "2026-11-14T08:07:35-08:00",
+      "isShortsEligible": false,
+      "externalVideoId": "zWHMFJII-sA",
+      "likeCount": "97",
+      "canonicalUrl": "https://www.youtube.com/watch?v=zWHMFJII-sA"
+    }
+  }
+}

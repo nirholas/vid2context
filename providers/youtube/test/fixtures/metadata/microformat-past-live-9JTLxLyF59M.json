@@ -1,0 +1,50 @@
+{
+  "playabilityStatus": {
+    "status": "UNPLAYABLE",
+    "reason": "The page needs to be reloaded."
+  },
+  "microformat": {
+    "playerMicroformatRenderer": {
+      "thumbnail": {
+        "thumbnails": [
+          {
+            "url": "https://i.ytimg.com/vi/9JTLxLyF59M/maxresdefault.jpg",
+            "width": 1280,
+            "height": 720
+          }
+        ]
+      },
+      "embed": {
+        "iframeUrl": "https://www.youtube.com/embed/9JTLxLyF59M",
+        "width": 1280,
+        "height": 720
+      },
+      "title": {
+        "simpleText": "NASA Holds News Conference After Artemis II Launch"
+      },
+      "description": {
+        "simpleText": "NASA holds a news conference after the launch of Artemis II, the first human-crewed test mission of the program for future voyages to the Moon. https://www.c-span.org/event/news-conference/nasa-holds-news-conference-after-artemis-ii-launch/441609\n\n\nDownload the FREE C-SPAN Now App. https://www.c-span.org/c-spanNow/\n\nDiscover the C-SPAN Video Library at https://www.c-span.org/quickguide/\n\nExplore C-SPAN's Free Educational Resources at https://www.c-span.org/classroom/\n\nC-SPAN: Created by Cable in 1979. Offered as a public service.\n\nSupport C-SPAN by Donating Today: https://donorbox.org/support-c-span?utm_source=YouTube&utm_medium=Video_Description&utm_campaign=Donations&utm_content=Donate\n\nSubscribe to our YouTube channel: https://www.youtube.com/user/CSPAN \n\nFollow us:\nFacebook: https://www.facebook.com/CSPAN\nTwitter: https://twitter.com/cspan\nInstagram: https://www.instagram.com/cspan/\n\nSubscribe:\nC-SPAN Podcasts: https://www.c-span.org/podcasts/\nNewsletters: https://www.c-span.org/connect/\nVisit the C-SPAN Shop: https://c-spanshop.org/\n#cspan"
+      },
+      "lengthSeconds": "2771",
+      "ownerProfileUrl": "http://www.youtube.com/@CSPAN",
+      "externalChannelId": "UCb--64Gl51jIEVE-GLDAVTg",
+      "isFamilySafe": true,
+      "isUnlisted": false,
+      "hasYpcMetadata": false,
+      "viewCount": "126862",
+      "category": "News & Politics",
+      "publishDate": "2026-04-01T18:10:08-07:00",
+      "ownerChannelName": "C-SPAN",
+      "liveBroadcastDetails": {
+        "isLiveNow": false,
+        "startTimestamp": "2026-04-02T00:16:16+00:00",
+        "endTimestamp": "2026-04-02T01:02:11+00:00"
+      },
+      "uploadDate": "2026-04-01T18:10:08-07:00",
+      "isShortsEligible": false,
+      "externalVideoId": "9JTLxLyF59M",
+      "likeCount": "1125",
+      "canonicalUrl": "https://www.youtube.com/watch?v=9JTLxLyF59M"
+    }
+  }
+}

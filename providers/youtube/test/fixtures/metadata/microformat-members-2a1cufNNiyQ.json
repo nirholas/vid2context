@@ -1,0 +1,44 @@
+{
+  "playabilityStatus": {
+    "status": "UNPLAYABLE",
+    "reason": "This video is available to this channel's members on level: LTT Members Plus (or any higher level). Join this channel to get access to members-only content and other exclusive perks."
+  },
+  "microformat": {
+    "playerMicroformatRenderer": {
+      "thumbnail": {
+        "thumbnails": [
+          {
+            "url": "https://i.ytimg.com/vi/2a1cufNNiyQ/maxresdefault.jpg",
+            "width": 1280,
+            "height": 720
+          }
+        ]
+      },
+      "embed": {
+        "iframeUrl": "https://www.youtube.com/embed/2a1cufNNiyQ",
+        "width": 1280,
+        "height": 720
+      },
+      "title": {
+        "simpleText": "Linus is Late for His Brace Removal"
+      },
+      "description": {
+        "simpleText": "Thank you for your support! Check out Floatplane for more benefits at a lower price at https://lmg.gg/ytmemberships\n\n► GET MERCH: https://lttstore.com\n► LTX: https://lmg.gg/ltx23\n► SPONSORS, AFFILIATES, AND PARTNERS: https://lmg.gg/partners\n► OUR WAN PODCAST GEAR: https://lmg.gg/wanset\n\nFOLLOW US \n---------------------------------------------------  \nTwitter: https://twitter.com/linustech\nFacebook: http://www.facebook.com/LinusTech\nInstagram: https://www.instagram.com/linustech\nTikTok: https://www.tiktok.com/@linustech\nTwitch: https://www.twitch.tv/linustech"
+      },
+      "lengthSeconds": "586",
+      "ownerProfileUrl": "http://www.youtube.com/@LinusTechTips",
+      "externalChannelId": "UCXuqSBlHAE6Xw-yeJA0Tunw",
+      "isFamilySafe": true,
+      "isUnlisted": false,
+      "hasYpcMetadata": false,
+      "category": "Science & Technology",
+      "publishDate": "2026-11-13T11:03:37-08:00",
+      "ownerChannelName": "Linus Tech Tips",
+      "uploadDate": "2026-11-13T11:03:37-08:00",
+      "isShortsEligible": false,
+      "externalVideoId": "2a1cufNNiyQ",
+      "likeCount": "13",
+      "canonicalUrl": "https://www.youtube.com/watch?v=2a1cufNNiyQ"
+    }
+  }
+}

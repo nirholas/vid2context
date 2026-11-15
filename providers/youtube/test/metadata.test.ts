@@ -12,6 +12,7 @@ import {
   parseChapterLine,
   parseDateText,
   parseDescriptionChapters,
+  parseMicroformat,
   parseWatch,
   pickChapters,
   toMetadata,
@@ -39,6 +40,7 @@ const labelOf = (id: string) => (Object.entries(VIDEOS).find(([, v]) => v === id
 
 const player = (label: Label) => JSON.parse(read(`player-${label}-${VIDEOS[label]}.json`)) as PlayerResponse;
 const next = (label: Label) => JSON.parse(read(`next-${label}-${VIDEOS[label]}.json`)) as unknown;
+const webPlayer = (label: Label) => JSON.parse(read(`microformat-${label}-${VIDEOS[label]}.json`)) as unknown;
 const maxresStatus = JSON.parse(read('maxres-status.json')) as Record<string, number>;
 
 const ref = (input: string): VideoRef => {
@@ -49,16 +51,25 @@ const ref = (input: string): VideoRef => {
 
 const PLAYER_URL = 'https://www.youtube.com/youtubei/v1/player?prettyPrint=false';
 const NEXT_URL = 'https://www.youtube.com/youtubei/v1/next?prettyPrint=false';
-const videoIdOf = (call: RecordedCall) => (JSON.parse(String(call.body)) as { videoId: string }).videoId;
+type Body = { videoId: string; context: { client: { clientName: string } } };
+const bodyOf = (call: RecordedCall) => JSON.parse(String(call.body)) as Body;
+const videoIdOf = (call: RecordedCall) => bodyOf(call).videoId;
 const json = (body: string) => ({ body, headers: { 'content-type': 'application/json' } });
 
-/** Replays the recorded player, next and maxres HEAD responses. `withNext: false` leaves next unrecorded, so it fails. */
+/**
+ * Replays the recorded player (ANDROID), WEB player (microformat), next and
+ * maxres HEAD responses. `withNext: false` leaves next unrecorded, so it fails.
+ */
 function metadataReplay(opts: { withNext?: boolean } = {}) {
   return replayFetch([
     {
       method: 'POST',
       url: PLAYER_URL,
-      response: (call) => json(read(`player-${labelOf(videoIdOf(call))}-${videoIdOf(call)}.json`)),
+      response: (call) => {
+        const id = videoIdOf(call);
+        const web = bodyOf(call).context.client.clientName === 'WEB';
+        return json(read(`${web ? 'microformat' : 'player'}-${labelOf(id)}-${id}.json`));
+      },
     },
     ...(opts.withNext === false
       ? []
@@ -77,9 +88,11 @@ function metadataReplay(opts: { withNext?: boolean } = {}) {
   ]);
 }
 
-async function metadataFor(label: Label, input: string = VIDEOS[label]) {
+/** Metadata through the recorded responses, with the opt-in microformat request on unless `withMicroformat: false`. */
+async function metadataFor(label: Label, input: string = VIDEOS[label], opts: { withMicroformat?: boolean } = {}) {
   const fetch = metadataReplay();
-  const meta = await getYouTubeMetadata(ref(input), testContext({ fetch }));
+  const env = opts.withMicroformat === false ? {} : { YOUTUBE_METADATA_MICROFORMAT: '1' };
+  const meta = await getYouTubeMetadata(ref(input), testContext({ fetch, env }));
   return { meta, calls: fetch.calls };
 }
 
@@ -205,18 +218,18 @@ describe('watch page (next) parsing', () => {
 });
 
 describe('youtube metadata', () => {
-  it('fills every field for a video with creator chapters, in one player, one next and one HEAD request', async () => {
+  it('fills every field for a video with creator chapters, in one player, one next and one WEB player request', async () => {
     const { meta, calls } = await metadataFor('chapters');
-    // next and the HEAD run in parallel, so their order varies.
-    expect(calls.map((c) => `${c.method} ${c.url.split('?')[0]}`).sort()).toEqual([
-      'HEAD https://i.ytimg.com/vi/2VDV87iHfKw/maxresdefault.jpg',
-      'POST https://www.youtube.com/youtubei/v1/next',
-      'POST https://www.youtube.com/youtubei/v1/player',
+    // next and the WEB player run in parallel, so their order varies.
+    expect(calls.map((c) => `${c.method} ${c.url.split('?')[0]} ${bodyOf(c).context.client.clientName}`).sort()).toEqual([
+      'POST https://www.youtube.com/youtubei/v1/next WEB',
+      'POST https://www.youtube.com/youtubei/v1/player ANDROID',
+      'POST https://www.youtube.com/youtubei/v1/player WEB',
     ]);
     expect(meta).toMatchObject({
       title: "David Spade Talks SNL, Chris Farley & Norm Macdonald (FULL EPISODE) | Conan O'Brien Needs A Friend",
       durationSec: 3758,
-      publishedAt: '2025-06-16',
+      publishedAt: '2025-06-16T04:00:04-07:00',
       thumbnailUrl: 'https://i.ytimg.com/vi/2VDV87iHfKw/maxresdefault.jpg',
       language: 'en',
       isLive: false,
@@ -228,6 +241,9 @@ describe('youtube metadata', () => {
       extra: {
         likeCount: 16105,
         dateText: 'Jun 16, 2025',
+        uploadDate: '2025-06-16T04:00:04-07:00',
+        category: 'Comedy',
+        isUnlisted: false,
         channelHandle: '@TeamCoco',
         channelHandleUrl: 'https://www.youtube.com/@TeamCoco',
         subscriberCountText: '9.22M subscribers',
@@ -246,6 +262,37 @@ describe('youtube metadata', () => {
     expect(meta.chapters).toHaveLength(9);
     expect(meta.chapters[1]).toEqual({ title: 'Conan’s Pomegranate Tree', startSec: 27, endSec: 630 });
     expect(meta.chapters.at(-1)).toEqual({ title: 'Mark Twain Prize', startSec: 3710, endSec: 3758 });
+  });
+
+  it('by default keeps to one player, one next and one HEAD request, with the date from the watch page', async () => {
+    const { meta, calls } = await metadataFor('chapters', VIDEOS.chapters, { withMicroformat: false });
+    expect(calls.map((c) => `${c.method} ${c.url.split('?')[0]}`).sort()).toEqual([
+      'HEAD https://i.ytimg.com/vi/2VDV87iHfKw/maxresdefault.jpg',
+      'POST https://www.youtube.com/youtubei/v1/next',
+      'POST https://www.youtube.com/youtubei/v1/player',
+    ]);
+    expect(meta.publishedAt).toBe('2025-06-16');
+    expect(meta.thumbnailUrl).toBe('https://i.ytimg.com/vi/2VDV87iHfKw/maxresdefault.jpg');
+    expect(meta.extra?.category).toBeUndefined();
+    expect(meta.extra?.uploadDate).toBeUndefined();
+  });
+
+  it('reads category, timestamps, Shorts and live broadcast fields from the microformat', () => {
+    expect(parseMicroformat(webPlayer('zoo'))).toMatchObject({
+      category: 'Film & Animation',
+      publishDate: '2005-04-23T20:31:52-07:00',
+      uploadDate: '2005-04-23T20:31:52-07:00',
+      isShortsEligible: false,
+      isUnlisted: false,
+      channelHandle: '@jawed',
+    });
+    expect(parseMicroformat(webPlayer('short'))?.isShortsEligible).toBe(true);
+    expect(parseMicroformat(webPlayer('past-live'))).toMatchObject({
+      liveStartedAt: '2026-04-02T00:16:16+00:00',
+      liveEndedAt: '2026-04-02T01:02:11+00:00',
+      isLiveNow: false,
+    });
+    expect(parseMicroformat(player('zoo'))).toBeUndefined();
   });
 
   it('prefers creator chapters over key moments', async () => {
@@ -271,18 +318,30 @@ describe('youtube metadata', () => {
   it('uses key moments for a past live stream without creator chapters', async () => {
     const { meta } = await metadataFor('past-live');
     expect(meta).toMatchObject({
-      publishedAt: '2026-04-01',
+      publishedAt: '2026-04-01T18:10:08-07:00',
       isLive: false,
-      extra: { chapterSource: 'key-moments', isLiveContent: true, isLive: false, dateText: 'Streamed live on Apr 1, 2026' },
+      extra: {
+        chapterSource: 'key-moments',
+        isLiveContent: true,
+        isLive: false,
+        dateText: 'Streamed live on Apr 1, 2026',
+        category: 'News & Politics',
+        liveStartedAt: '2026-04-02T00:16:16+00:00',
+        liveEndedAt: '2026-04-02T01:02:11+00:00',
+      },
     });
     expect(meta.chapters[0]).toEqual({ title: 'Artemis 2 mission update', startSec: 0, endSec: 155.68 });
     expect(meta.chapters.at(-1)).toEqual({ title: 'C-SPAN programming', startSec: 2534.56, endSec: 2770 });
   });
 
-  it('flags a Short from its vertical streams, and any video opened through a /shorts/ URL', async () => {
+  it('flags a Short from the microformat, its vertical streams, or a /shorts/ URL', async () => {
     const { meta } = await metadataFor('short', 'https://www.youtube.com/watch?v=0U0O-P43MNQ');
     expect(meta.extra?.isShort).toBe(true);
     expect(meta.durationSec).toBe(33);
+    const shortRef = ref('0U0O-P43MNQ');
+    expect(detectShort(shortRef, player('short'), 33, parseMicroformat(webPlayer('short')))).toBe(true);
+    expect(detectShort(shortRef, player('short'), 33)).toBe(true);
+    expect(detectShort(ref('2VDV87iHfKw'), player('chapters'), 3758, parseMicroformat(webPlayer('chapters')))).toBe(false);
     expect(detectShort(ref('https://www.youtube.com/shorts/jNQXAC9IVRw'), player('zoo'), 19)).toBe(true);
     expect(detectShort(ref('jNQXAC9IVRw'), player('zoo'), 19)).toBe(false);
     expect(detectShort(ref('2VDV87iHfKw'), player('chapters'), 3758)).toBe(false);
@@ -293,8 +352,15 @@ describe('youtube metadata', () => {
     expect(meta).toMatchObject({
       isLive: true,
       durationSec: undefined,
-      publishedAt: '2026-08-19',
-      extra: { isLive: true, isUpcoming: false, liveViewers: 10409, playability: 'OK', isShort: false },
+      publishedAt: '2026-08-19T00:31:51-07:00',
+      extra: {
+        isLive: true,
+        isUpcoming: false,
+        liveViewers: 10409,
+        playability: 'OK',
+        isShort: false,
+        liveStartedAt: '2026-08-19T07:43:43+00:00',
+      },
     });
   });
 
@@ -308,14 +374,17 @@ describe('youtube metadata', () => {
         premiereAt: '2026-11-15T16:11:00.000Z',
         dateText: 'Scheduled for Nov 15, 2026',
         playability: 'LIVE_STREAM_OFFLINE',
+        category: 'Science & Technology',
       },
     });
+    expect(meta.extra?.liveStartedAt).toBeUndefined();
   });
 
   it('reports age-restricted and members-only videos instead of throwing', async () => {
     const age = (await metadataFor('age')).meta;
     expect(age.extra).toMatchObject({ ageRestricted: true, membersOnly: false, playability: 'LOGIN_REQUIRED' });
-    expect(age.publishedAt).toBe('2014-06-05');
+    expect(age.publishedAt).toBe('2014-06-05T11:07:43-07:00');
+    expect(age.extra?.category).toBe('Gaming');
     const members = (await metadataFor('members')).meta;
     expect(members.extra).toMatchObject({ membersOnly: true, ageRestricted: false, playability: 'UNPLAYABLE' });
     expect(members.channel?.name).toBe('Linus Tech Tips');
@@ -324,8 +393,10 @@ describe('youtube metadata', () => {
   });
 
   it('keeps the largest listed thumbnail when maxresdefault does not exist', async () => {
-    const { meta } = await metadataFor('zoo');
+    const { meta, calls } = await metadataFor('zoo');
+    // The microformat lists no maxresdefault (the CDN answers 404), so no HEAD check is needed.
     expect(maxresStatus.jNQXAC9IVRw).toBe(404);
+    expect(calls.map((c) => c.method)).not.toContain('HEAD');
     expect(meta.thumbnailUrl).toBe(largestThumbnail(player('zoo').videoDetails?.thumbnail?.thumbnails));
     expect(meta.thumbnailUrl).toMatch(/\/hqdefault\.jpg/);
   });
@@ -377,6 +448,14 @@ describe.skipIf(!process.env.LIVE)('youtube metadata (live)', () => {
     expect(meta.extra?.channelHandle).toBe('@jawed');
     expect(meta.chapters.map((c) => c.endSec)).toEqual([5, 17, 19]);
     expect(meta.extra?.chapterSource).toBe('description');
+  });
+
+  it('jNQXAC9IVRw with the opt-in microformat request', async () => {
+    const ctx = createContext({ runtime: 'node', env: { ...process.env, YOUTUBE_METADATA_MICROFORMAT: '1' } });
+    const meta = await getYouTubeMetadata(ref('jNQXAC9IVRw'), ctx);
+    expect(meta.publishedAt).toBe('2005-04-23T20:31:52-07:00');
+    expect(meta.extra?.category).toBe('Film & Animation');
+    expect(meta.extra?.isShort).toBe(false);
   });
 
   it('a chaptered video', async () => {

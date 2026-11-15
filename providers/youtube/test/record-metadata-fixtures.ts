@@ -1,13 +1,14 @@
 /**
  * Records metadata fixtures through the real code path: prompt 06's getPlayer,
- * this prompt's fetchNext and the maxres HEAD check. Usage:
- *   npx tsx providers/youtube/test/record-metadata-fixtures.ts providers/youtube/test/fixtures/metadata <label>:<videoId> ...
+ * this prompt's fetchNext, the WEB player microformat and the maxres HEAD check. Usage:
+ *   npx tsx providers/youtube/test/record-metadata-fixtures.ts providers/youtube/test/fixtures/metadata [--microformat-only] <label>:<videoId> ...
+ * --microformat-only records only microformat-<label>-<id>.json and keeps the other files.
  * Then grep the output for your public IP and any email or phone number before committing.
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { createContext } from '@vid2context/core';
-import { fetchNext, findMaxres } from '../src/metadata/index.ts';
+import { fetchNext, fetchWebPlayer, findMaxres } from '../src/metadata/index.ts';
 import { getPlayer } from '../src/resilience/player.ts';
 
 type Json = Record<string, unknown>;
@@ -81,7 +82,20 @@ function trimNext(n: Json): Json {
   return strip(out, NEXT_DROP) as Json;
 }
 
-const [outDir, ...specs] = process.argv.slice(2);
+/** The WEB player response cut down to what parseMicroformat reads (availableCountries dropped: long and unused). */
+function trimMicroformat(p: Json): Json {
+  const m = { ...(((p.microformat as Json | undefined)?.playerMicroformatRenderer as Json | undefined) ?? {}) };
+  delete m.availableCountries;
+  const ps = (p.playabilityStatus ?? {}) as Json;
+  return strip(
+    { playabilityStatus: { status: ps.status, reason: ps.reason }, microformat: { playerMicroformatRenderer: m } },
+    PLAYER_DROP,
+  ) as Json;
+}
+
+const args = process.argv.slice(2);
+const microformatOnly = args.includes('--microformat-only');
+const [outDir, ...specs] = args.filter((a) => a !== '--microformat-only');
 if (!outDir) throw new Error('usage: record-metadata-fixtures.ts <outDir> <label>:<id> ...');
 mkdirSync(outDir, { recursive: true });
 const maxresFile = join(outDir, 'maxres-status.json');
@@ -98,6 +112,12 @@ for (const spec of specs) {
       return res;
     },
   });
+  const web = (await fetchWebPlayer(id, ctx)) as Json;
+  writeFileSync(join(outDir, `microformat-${label}-${id}.json`), `${JSON.stringify(trimMicroformat(web), null, 2)}\n`);
+  if (microformatOnly) {
+    console.error(`${label} ${id}: WEB player ${String((web.playabilityStatus as Json | undefined)?.status)}`);
+    continue;
+  }
   const player = (await getPlayer(id, ctx)) as unknown as Json;
   const client = player.client;
   delete player.client;

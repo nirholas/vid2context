@@ -1,0 +1,48 @@
+{
+  "playabilityStatus": {
+    "status": "UNPLAYABLE",
+    "reason": "The page needs to be reloaded."
+  },
+  "microformat": {
+    "playerMicroformatRenderer": {
+      "thumbnail": {
+        "thumbnails": [
+          {
+            "url": "https://i.ytimg.com/vi/rFZHOHl-L8A/maxresdefault.jpg?v=6ad62bed",
+            "width": 1280,
+            "height": 720
+          }
+        ]
+      },
+      "embed": {
+        "iframeUrl": "https://www.youtube.com/embed/rFZHOHl-L8A",
+        "width": 480,
+        "height": 360
+      },
+      "title": {
+        "simpleText": "lofi hip hop radio 📚 beats to relax/study to"
+      },
+      "description": {
+        "simpleText": "Holiday season is approaching 🎄 2026 Christmas playlist available now: https://lnk.to/Christmas_lofi02\n\n🎼 | Listen on Spotify, Apple music and more\n→  https://lnk.to/lofi-hiphop-beats-to-r...\n\n🌎 | Lofi Girl on all social media\n→  https://link.lofigirl.com/m/Community\n\n🌐| Our Websites\n→  https://link.lofigirl.com/m/website\n\n👕 | Lofi Girl merch\n→  https://link.lofigirlshop.com/shop\n\n🎮 | Our video games\n→ https://link.lofigirl.com/m/games\n\n🎭 | Create your lofi avatar now\n→  https://lofigirl.com/generator/\n\n🎨 | Art by Lofi Studio (full list of artists here)\n→   https://www.instagram.com/p/CuChqFXs08M/?img_index=6\n\n🤗 Thank you for listening, I hope you will have a good time here\n\n🧡All visuals and music in this video are 100% crafted by talented human artists, without the use of AI. We’re committed to delivering genuine, hand-made creations for our audience to enjoy."
+      },
+      "ownerProfileUrl": "http://www.youtube.com/@LofiGirl",
+      "externalChannelId": "UCSJ4gkVC6NrvII8umztf0Ow",
+      "isFamilySafe": true,
+      "isUnlisted": false,
+      "hasYpcMetadata": false,
+      "viewCount": "23987698",
+      "category": "Music",
+      "publishDate": "2026-08-19T00:31:51-07:00",
+      "ownerChannelName": "Lofi Girl",
+      "liveBroadcastDetails": {
+        "isLiveNow": true,
+        "startTimestamp": "2026-08-19T07:43:43+00:00"
+      },
+      "uploadDate": "2026-08-19T00:31:51-07:00",
+      "isShortsEligible": false,
+      "externalVideoId": "rFZHOHl-L8A",
+      "likeCount": "60109",
+      "canonicalUrl": "https://www.youtube.com/watch?v=rFZHOHl-L8A"
+    }
+  }
+}

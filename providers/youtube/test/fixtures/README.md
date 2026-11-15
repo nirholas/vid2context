@@ -110,6 +110,8 @@ Metadata without a player (`fallbackMetadata`), recorded on 2026-11-14 with `tes
 | `oembed-jNQXAC9IVRw.json` | `GET https://www.youtube.com/oembed?url=...&format=json`, HTTP 200 |
 | `oembed-400-xxxxxxxxxxx.txt` | The same request for the id `xxxxxxxxxxx`: HTTP 400, body `Bad Request` |
 
+WEB player microformat (`microformat-<label>-<id>.json`, one per video in the table above, same labels), recorded on 2026-11-15 with `test/record-metadata-fixtures.ts --microformat-only` (real code path: `fetchWebPlayer`, `POST /youtubei/v1/player` with the WEB client `2.20261112.10.00`, `hl=en`, `gl=US`). Every answer was `UNPLAYABLE` ("The page needs to be reloaded"), except `upcoming` (`LIVE_STREAM_OFFLINE`) and `age` (`LOGIN_REQUIRED`), and every one still carried `microformat.playerMicroformatRenderer`. Kept: `playabilityStatus` (`status`, `reason`) and the microformat minus `availableCountries`. These responses hold no stream URLs. `short` is the only one with `isShortsEligible: true`; `zoo` lists `hqdefault` and no maxresdefault, which matches its 404 in `maxres-status.json`.
+
 Not found: a video whose description markers exist while its description has no parseable timestamps (class (b) in prompt 07). In the 220-video sample, every `DESCRIPTION_CHAPTERS` list also parsed from the description.
 
 Trimming (only removals, except the email redaction):

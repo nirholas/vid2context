@@ -1,0 +1,45 @@
+{
+  "playabilityStatus": {
+    "status": "UNPLAYABLE",
+    "reason": "The page needs to be reloaded."
+  },
+  "microformat": {
+    "playerMicroformatRenderer": {
+      "thumbnail": {
+        "thumbnails": [
+          {
+            "url": "https://i.ytimg.com/vi/0U0O-P43MNQ/maxres2.jpg?sqp=-oaymwEoCIAKENAF8quKqQMcGADwAQH4AbYIgAKAD4oCDAgAEAEYciA3KGIwDw==&rs=AOn4CLCjfJ1SfWCxmtCpG1tOA3GY2dCikg",
+            "width": 1280,
+            "height": 720
+          }
+        ]
+      },
+      "embed": {
+        "iframeUrl": "https://www.youtube.com/embed/0U0O-P43MNQ",
+        "width": 405,
+        "height": 720
+      },
+      "title": {
+        "simpleText": "How NASA's Parker Solar Probe Survives the Sun's Atmosphere #shorts"
+      },
+      "description": {
+        "simpleText": "NASA's Parker Solar Probe plunges directly into the Sun's corona, coming closer to our star than any human-made object in history. Discover how advanced carbon-composite heat shields and secret magnetic patterns protect this historic space mission from millions of degrees of extreme thermal environments.\n\nLearn how solar wind acceleration data helps scientists understand space weather and protect Earth's power grids and satellite networks from solar disruptions.\n\nCould we ever harness energy directly from a star's corona?\n\nOur latest deep dive: How Internet Crosses the Ocean Floor on Fragile Glass\nhttps://youtu.be/P0BubbItsl0\n\n#NASA #SpaceExploration #SpaceNews #Astronomy #Science\n\nFootage: NASA, Pixabay\n\nBased on reporting from: NASA Science (.gov), Science Daily"
+      },
+      "lengthSeconds": "33",
+      "ownerProfileUrl": "http://www.youtube.com/@Tomorrowly.009",
+      "externalChannelId": "UCk36hqP7Za87855aOBACZKg",
+      "isFamilySafe": true,
+      "isUnlisted": false,
+      "hasYpcMetadata": false,
+      "viewCount": "1190",
+      "category": "Science & Technology",
+      "publishDate": "2026-11-14T07:12:27-08:00",
+      "ownerChannelName": "Tomorrowly",
+      "uploadDate": "2026-11-14T07:12:27-08:00",
+      "isShortsEligible": true,
+      "externalVideoId": "0U0O-P43MNQ",
+      "likeCount": "28",
+      "canonicalUrl": "https://www.youtube.com/shorts/0U0O-P43MNQ"
+    }
+  }
+}
