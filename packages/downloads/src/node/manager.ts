@@ -34,6 +34,25 @@ interface Entry {
   dir?: string;
   path?: string;
   ttlMin: number;
+  /** Settles when the job's work (and its child processes) has ended. */
+  running?: Promise<void>;
+}
+
+/** How long a canceled job may take to stop its child processes before its folder is removed anyway. */
+const STOP_GRACE_MS = 10_000;
+
+/** Wait for a job that was just aborted to finish unwinding, so its yt-dlp or ffmpeg no longer writes into the folder. */
+async function settled(e: Entry): Promise<void> {
+  if (!e.running) return;
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  await Promise.race([
+    e.running.catch(() => undefined),
+    new Promise<void>((r) => {
+      timer = setTimeout(r, STOP_GRACE_MS);
+      timer.unref?.();
+    }),
+  ]);
+  if (timer) clearTimeout(timer);
 }
 
 export function createDownloadManager(options: ManagerOptions): DownloadManager {
@@ -83,7 +102,7 @@ export function createDownloadManager(options: ManagerOptions): DownloadManager 
       if (running >= downloadPolicy(next.ctx.env).concurrency) return;
       queue.shift();
       running++;
-      void runJob(next).finally(() => {
+      next.running = runJob(next).finally(() => {
         running--;
         pump();
       });
@@ -190,6 +209,7 @@ export function createDownloadManager(options: ManagerOptions): DownloadManager 
         e.abort.abort(new Vid2ContextError('bad-request', 'The download was canceled.'));
       }
       entries.delete(id);
+      await settled(e);
       await discard(e);
       return true;
     },
@@ -219,6 +239,7 @@ export function createDownloadManager(options: ManagerOptions): DownloadManager 
       for (const e of entries.values()) {
         if (e.job.status === 'queued' || e.job.status === 'running') e.abort.abort();
       }
+      await Promise.all([...entries.values()].map(settled));
       await Promise.all([...entries.values()].map(discard));
       entries.clear();
       if (root && !options.dir) await rm(await root, { recursive: true, force: true });

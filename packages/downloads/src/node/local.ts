@@ -12,6 +12,7 @@
 import type { Ctx } from '@vid2context/core';
 import { type FfmpegTools, hasVideo, type ProbeResult, probeWith, runProcess } from '@vid2context/ffmpeg';
 import type { DownloadRequest, MediaFormat, VideoContainer } from '../options.ts';
+import { Watchdog, waitForExit } from './watchdog.ts';
 
 /** Codecs (ffprobe names) each container can hold without re-encoding. */
 const VIDEO_COPY: Record<VideoContainer, { video: string[]; audio: string[] }> = {
@@ -150,6 +151,8 @@ export interface RunFfmpegOptions {
   ctx: Ctx;
   timeoutMs: number;
   onPercent?: (percent: number) => void;
+  /** Stall protection: kill ffmpeg when it reports no progress for `stallMs`, passes `deadlineAt`, or writes more than `maxBytes` (0: no cap). */
+  watchdog?: { stallMs: number; deadlineAt?: number; maxBytes?: number };
 }
 
 /** Run ffmpeg with -progress on stderr and report the percentage done. */
@@ -174,17 +177,42 @@ export async function runFfmpeg(o: RunFfmpegOptions): Promise<void> {
     MUXER[o.format],
     o.output,
   ];
-  await runProcess(o.tools.ffmpeg, args, {
-    label: `ffmpeg ${o.format} conversion`,
-    signal: o.ctx.signal,
-    timeoutMs: o.timeoutMs,
-    onStderrLine: (line) => {
-      const m = /^out_time_us=(\d+)/.exec(line);
-      if (m && o.durationSec && o.onPercent) {
-        o.onPercent(Math.min(99.9, Math.round((Number(m[1]) / 1e6 / o.durationSec) * 1000) / 10));
-      }
-    },
-  });
+  const label = `ffmpeg ${o.format} conversion`;
+  const dog = o.watchdog
+    ? new Watchdog({
+        label,
+        stallMs: o.watchdog.stallMs,
+        ...(o.watchdog.deadlineAt !== undefined ? { deadlineAt: o.watchdog.deadlineAt } : {}),
+        ...(o.watchdog.maxBytes ? { maxBytes: o.watchdog.maxBytes } : {}),
+        ...(o.ctx.signal ? { parent: o.ctx.signal } : {}),
+      })
+    : undefined;
+  let pid: number | undefined;
+  try {
+    await runProcess(o.tools.ffmpeg, args, {
+      label,
+      signal: dog?.signal ?? o.ctx.signal,
+      timeoutMs: dog ? dog.remainingMs(o.timeoutMs) + 5000 : o.timeoutMs,
+      onSpawn: (p) => {
+        pid = p;
+      },
+      onStderrLine: (line) => {
+        dog?.touch();
+        const size = /^total_size=(\d+)/.exec(line);
+        if (size) dog?.reportBytes(Number(size[1]));
+        const m = /^out_time_us=(\d+)/.exec(line);
+        if (m && o.durationSec && o.onPercent) {
+          o.onPercent(Math.min(99.9, Math.round((Number(m[1]) / 1e6 / o.durationSec) * 1000) / 10));
+        }
+      },
+    });
+  } catch (err) {
+    // runProcess rejects as soon as it kills ffmpeg; wait for the process to be gone so callers can delete its files.
+    await waitForExit(pid);
+    throw dog?.error() ?? err;
+  } finally {
+    dog?.stop();
+  }
 }
 
 /** Output arguments that cut a finished download without re-encoding (or with, for exact video cuts). */

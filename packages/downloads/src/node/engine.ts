@@ -31,13 +31,17 @@ import {
   withFallbackUrl,
 } from '@vid2context/provider-ytdlp';
 import { downloadArgs } from '../args.ts';
+import { estimateBytes } from '../estimate.ts';
 import { type MediaInfo, type MediaOptions, mediaOptions } from '../formats.ts';
+import { toolkitLimits } from '../limits.ts';
 import { clock, type DownloadRequest, findChapter, isTrimmed, MIME_TYPES } from '../options.ts';
 import { downloadPolicy } from '../policy.ts';
 import { type DownloadProgress, ProgressTracker, parseLine } from '../progress.ts';
 import type { DownloadedFile, Downloader, DownloaderStatus, DownloadOptions } from '../types.ts';
+import { preflightDisk } from './disk.ts';
 import { moveInto, outputName } from './files.ts';
 import { convertPlan, hasVideo, probeFile, runFfmpeg, trimArgs } from './local.ts';
+import { Watchdog } from './watchdog.ts';
 
 export interface DownloaderOptions {
   /** Resolves YouTube ids and other inputs to URLs or local files. Without one, inputs must be http(s) URLs or paths. */
@@ -195,6 +199,17 @@ export function createDownloader(options: DownloaderOptions = {}): Downloader {
     const section = resolveSection(req, info);
     checkLimits(ctx, info, section);
     const policy = downloadPolicy(ctx.env);
+    const tk = toolkitLimits(ctx.env);
+    // One budget for the whole download: retries and the local trim share it instead of each getting the full timeout.
+    const deadlineAt = Date.now() + policy.timeoutSec * 1000;
+    const estimate = estimateBytes(req, mediaOptions(info), section);
+    if (estimate !== undefined && policy.maxBytes > 0 && estimate > policy.maxBytes * 1.25) {
+      throw new Vid2ContextError(
+        'too-large',
+        `This download would be about ${Math.round(estimate / 1048576)} MB; the limit is ${Math.round(policy.maxBytes / 1048576)} MB.`,
+        { hint: 'Pick a lower quality or a shorter part, or raise VID2CONTEXT_MAX_DOWNLOAD_MB.' },
+      );
+    }
     const { bin, cfg } = await prepare(ctx);
     if (!cfg.ffmpeg) {
       throw new Vid2ContextError(
@@ -209,20 +224,45 @@ export function createDownloader(options: DownloaderOptions = {}): Downloader {
     const work = await mkdtemp(join(tmpdir(), 'vid2context-dl-'));
     const warnings: string[] = [];
     try {
+      if (estimate !== undefined) {
+        // A video is downloaded as two streams and merged into a third file, so the temp folder holds it about twice.
+        await preflightDisk(
+          [
+            { dir: work, bytes: estimate * (req.kind === 'video' ? 2 : 1.5), label: 'the temp folder' },
+            { dir: opts.dir, bytes: estimate, label: 'the download folder' },
+          ],
+          tk.minFreeMb,
+        );
+      }
       const infoJson = join(work, 'info.json');
       await writeFile(infoJson, JSON.stringify(info));
       let useInfo = true;
       let useSection = section !== undefined;
       let skipSubtitles = false;
       let tracker = new ProgressTracker();
+      let stalls = 0;
       for (let attempt = 0; ; attempt++) {
         tracker = new ProgressTracker();
         const t = tracker;
-        const onLine = (line: string) => {
-          const event = parseLine(line);
-          if (event && t.apply(event)) report(t.progress);
-        };
         const attemptDir = join(work, `a${attempt}`);
+        const dog = new Watchdog({
+          label: 'yt-dlp download',
+          stallMs: tk.stallSec * 1000,
+          deadlineAt,
+          ...(policy.maxBytes > 0 ? { maxBytes: Math.round(policy.maxBytes * 1.1) } : {}),
+          dir: attemptDir,
+          ...(ctx.signal ? { parent: ctx.signal } : {}),
+        });
+        const runCtx: Ctx = { ...ctx, signal: dog.signal };
+        const onLine = (line: string) => {
+          // Any output, progress or not, means the process is alive and working.
+          dog.touch();
+          const event = parseLine(line);
+          if (event && t.apply(event)) {
+            if (event.type === 'download') dog.reportBytes(t.progress.downloadedBytes);
+            report(t.progress);
+          }
+        };
         const url = target.url;
         const args = downloadArgs(req, {
           common: commonArgs(cfg, url),
@@ -234,11 +274,12 @@ export function createDownloader(options: DownloaderOptions = {}): Downloader {
           skipSubtitles,
         });
         try {
-          await withFallbackUrl(ctx, url, async (u) => {
+          await withFallbackUrl(runCtx, url, async (u) => {
             const finalArgs = useInfo ? args : [...args.slice(0, -1), u];
-            const res = await run(bin.path, finalArgs, ctx, {
+            // The watchdog's deadline fires first, with the right setting in its hint; this timer is a backstop.
+            const res = await run(bin.path, finalArgs, runCtx, {
               label: 'yt-dlp download',
-              timeoutMs: policy.timeoutSec * 1000,
+              timeoutMs: dog.remainingMs(policy.timeoutSec * 1000) + 5000,
               ownQueue: true,
               discardStdout: true,
               onStdoutLine: onLine,
@@ -248,6 +289,17 @@ export function createDownloader(options: DownloaderOptions = {}): Downloader {
             if (res.code !== 0) throw errorFromStderr(res.stderr, 'yt-dlp download', res.code);
           });
         } catch (err) {
+          dog.stop();
+          const stopped = dog.error();
+          if (dog.tripped === 'stall' && stalls < tk.stallRetries) {
+            stalls++;
+            warnings.push(
+              `yt-dlp stopped making progress for ${tk.stallSec} s, so it was restarted (${stalls} of ${tk.stallRetries}).`,
+            );
+            ctx.log.info('downloads: stalled; restarting yt-dlp', { url, stalls });
+            continue;
+          }
+          if (stopped) throw stopped;
           const msg = err instanceof Error ? err.message : String(err);
           if (attempt >= 4 || !(err instanceof Vid2ContextError)) throw err;
           if (is403(msg) && useInfo) {
@@ -269,6 +321,7 @@ export function createDownloader(options: DownloaderOptions = {}): Downloader {
           }
           throw err;
         }
+        dog.stop();
         break;
       }
 
@@ -299,7 +352,8 @@ export function createDownloader(options: DownloaderOptions = {}): Downloader {
           format: req.format,
           section,
           ctx,
-          timeoutMs: policy.timeoutSec * 1000,
+          timeoutMs: Math.max(1000, deadlineAt - Date.now()),
+          watchdog: { stallMs: tk.stallSec * 1000, deadlineAt, maxBytes: policy.maxBytes },
           ...(section.toSec !== undefined ? { durationSec: section.toSec - section.fromSec } : {}),
         });
         file = trimmed;
@@ -370,6 +424,8 @@ export function createDownloader(options: DownloaderOptions = {}): Downloader {
     };
     const section = resolveSection(req, info);
     const policy = downloadPolicy(ctx.env);
+    const tk = toolkitLimits(ctx.env);
+    const deadlineAt = Date.now() + policy.timeoutSec * 1000;
     const plan = convertPlan(req, source, { trimmed: section !== undefined });
     const work = await mkdtemp(join(tmpdir(), 'vid2context-dl-'));
     try {
@@ -386,6 +442,7 @@ export function createDownloader(options: DownloaderOptions = {}): Downloader {
         ...(duration ? { durationSec: duration } : {}),
         ctx,
         timeoutMs: policy.timeoutSec * 1000,
+        watchdog: { stallMs: tk.stallSec * 1000, deadlineAt, maxBytes: policy.maxBytes },
         onPercent: (percent) =>
           report({ phase: 'processing', step: plan.reencodes ? 'Convert' : 'Remux', downloadedBytes: 0, percent }),
       });

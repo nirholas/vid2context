@@ -416,7 +416,17 @@ OAuth clients, codes and tokens are kept in the storage backend when it implemen
 | `VID2CONTEXT_DOWNLOAD_TTL_MIN` | HTTP server: minutes a finished file stays downloadable (default 30) |
 | `VID2CONTEXT_DOWNLOAD_CONCURRENCY` | HTTP server: downloads that run at once (default 2), separate from `YTDLP_CONCURRENCY` |
 | `VID2CONTEXT_MAX_DOWNLOAD_JOBS` | HTTP server: jobs kept (queued, running, finished) before new ones get `rate-limited` (default 50) |
-| `VID2CONTEXT_DOWNLOAD_TIMEOUT_SEC` | longest one download may run (default 7200) |
+| `VID2CONTEXT_DOWNLOAD_TIMEOUT_SEC` | longest one download may run (default 7200); one budget shared by every retry and the local trim |
+| `VID2CONTEXT_DOWNLOAD_STALL_SEC` | seconds a yt-dlp or ffmpeg process may report no progress before it is killed and restarted (default 120, 60 on public servers; at least 10) |
+| `VID2CONTEXT_DOWNLOAD_STALL_RETRIES` | restarts after a stall before the download fails (default 2) |
+| `VID2CONTEXT_DOWNLOAD_MIN_FREE_MB` | disk that must stay free after the estimated download; larger downloads are refused before they start (default 256, 1024 on public servers) |
+| `VID2CONTEXT_MAX_CAPTION_TRACKS` | caption tracks in one captions download (default 50, 10 on public servers) |
+| `VID2CONTEXT_MAX_FRAMES` | frame grabs in one request (default 100, 20 on public servers) |
+| `VID2CONTEXT_MAX_CLIP_SEC` | longest animated GIF or WebP clip in seconds (default 60, 15 on public servers) |
+| `VID2CONTEXT_MAX_CLIP_WIDTH` | widest animated clip in pixels (default 1280, 640 on public servers) |
+| `VID2CONTEXT_MAX_CLIP_FPS` | highest animated clip frame rate (default 30, 15 on public servers) |
+
+Batches (playlists, channels, URL lists) take at most `VID2CONTEXT_MAX_PLAYLIST_ITEMS` items; on a public server the default is 25 unless that variable is set.
 
 ## Planned (see ROADMAP.md)
 

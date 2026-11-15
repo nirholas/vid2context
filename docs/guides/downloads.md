@@ -124,7 +124,10 @@ With `VID2CONTEXT_PUBLIC=1`, downloads are **off** unless the operator sets `VID
 | `VID2CONTEXT_DOWNLOAD_TTL_MIN` | 30 | HTTP: minutes a finished file stays downloadable |
 | `VID2CONTEXT_DOWNLOAD_CONCURRENCY` | 2 | HTTP: downloads at once (separate from `YTDLP_CONCURRENCY`, so downloads never block metadata calls) |
 | `VID2CONTEXT_MAX_DOWNLOAD_JOBS` | 50 | HTTP: jobs kept before new ones are refused |
-| `VID2CONTEXT_DOWNLOAD_TIMEOUT_SEC` | 7200 | longest one download may run |
+| `VID2CONTEXT_DOWNLOAD_TIMEOUT_SEC` | 7200 | longest one download may run, retries included |
+| `VID2CONTEXT_DOWNLOAD_STALL_SEC` | 120; 60 when public | seconds without progress before yt-dlp or ffmpeg is killed and restarted |
+| `VID2CONTEXT_DOWNLOAD_STALL_RETRIES` | 2 | restarts after a stall |
+| `VID2CONTEXT_DOWNLOAD_MIN_FREE_MB` | 256; 1024 when public | disk that must stay free after the estimated download |
 
 The yt-dlp settings (`YTDLP_COOKIES_FILE`, `YTDLP_COOKIES_FROM_BROWSER`, `YTDLP_PATH`, ...) apply to downloads too. Cookies are how you download videos that need a signed-in account.
 
@@ -137,3 +140,13 @@ The engine recovers on its own from the three failures seen most often, and says
 - **ffmpeg crashes fetching a part.** It downloads the whole video and trims locally (see above).
 
 Other errors carry a code and a hint, for example `unsupported-input` for a live stream, which can be downloaded once it has ended.
+
+## Stall protection
+
+Every yt-dlp and ffmpeg process runs under a watchdog:
+
+- **No progress.** A process that prints no progress for `VID2CONTEXT_DOWNLOAD_STALL_SEC` seconds (a hung connection, a stuck muxer) is killed, with its whole process group, and restarted up to `VID2CONTEXT_DOWNLOAD_STALL_RETRIES` times. Each restart is noted on the result.
+- **One deadline.** `VID2CONTEXT_DOWNLOAD_TIMEOUT_SEC` is the budget for the whole download. Retries and the local trim share it, so a bad source can no longer run for several times the limit.
+- **Disk space.** Before a download starts, the estimated size (from the quality list) is checked against the free space of the temp folder (about twice the size for a video, which is merged from two streams) and of the download folder, plus `VID2CONTEXT_DOWNLOAD_MIN_FREE_MB`. A download that would not fit is refused with `too-large`.
+- **Size caps while streaming.** With `VID2CONTEXT_MAX_DOWNLOAD_MB` set, a download whose estimate is clearly over the limit is refused up front, and one that grows past it while running (bytes reported by yt-dlp or ffmpeg, or the work folder polled every second) is stopped at once instead of after it finished.
+- **Cancel.** Canceling a job (`DELETE /downloads/:id`, Ctrl+C, an MCP cancel) kills the child processes and waits for them to exit before their temp folder is removed.
