@@ -2,7 +2,7 @@
 title: Cited answers and briefs
 label: Cited answers and briefs
 description: Ask questions about videos and get answers whose citations are checked against the transcript, stream them, build a cited brief as a background job, and extract structured data.
-order: 4
+order: 5
 ---
 
 The routes in this tutorial put a language model on top of the transcripts. They run on the free LLM chain (keyless rungs need no account), and they never trust the model's citations blindly: every quote is looked up in the transcript near the time it claims, and claims that fail the check are reported separately.

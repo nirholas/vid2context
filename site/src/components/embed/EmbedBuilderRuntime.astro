@@ -1,0 +1,314 @@
+---
+/**
+ * The embed builder's browser script and styles. Docs.astro renders this only
+ * on pages with a `widget embed-builder` block; the markup comes from
+ * src/lib/embed-render.ts.
+ */
+---
+
+<script>
+  import '../../scripts/embed-builder.ts';
+</script>
+
+<style is:global>
+  .eb {
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: minmax(0, 1fr);
+    margin-block: 1.75rem;
+    padding: 1rem;
+    border: 1px solid var(--v2c-border);
+    border-radius: var(--v2c-radius-lg);
+    background: var(--v2c-panel);
+  }
+  @media (min-width: 1100px) {
+    .eb {
+      grid-template-columns: minmax(16rem, 20rem) minmax(0, 1fr);
+    }
+    .eb-snippets {
+      grid-column: 1 / -1;
+    }
+  }
+  .eb > * {
+    min-width: 0;
+  }
+  .prose .eb h3 {
+    margin: 0;
+    font-size: 0.95rem;
+  }
+  .eb-form {
+    display: grid;
+    gap: 0.75rem;
+    align-content: start;
+  }
+  .eb-presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    align-items: center;
+    font-size: 0.8125rem;
+    color: var(--v2c-muted);
+  }
+  .eb-presets > span {
+    width: 100%;
+  }
+  .eb .btn {
+    min-height: 2rem;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.8125rem;
+  }
+  .eb-group {
+    margin: 0;
+    padding: 0.75rem;
+    border: 1px solid var(--v2c-border);
+    border-radius: var(--v2c-radius);
+    display: grid;
+    gap: 0.625rem;
+  }
+  .eb-group legend {
+    padding: 0 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--v2c-muted);
+  }
+  .eb-field {
+    display: grid;
+    gap: 0.25rem;
+  }
+  .eb-field label {
+    font-size: 0.8125rem;
+    font-weight: 500;
+  }
+  .eb-field input[type='text'],
+  .eb-field input[type='url'],
+  .eb-field select,
+  .eb-drive-row input {
+    width: 100%;
+    min-width: 0;
+    min-height: 2.25rem;
+    padding: 0.25rem 0.625rem;
+    border: 1px solid var(--v2c-border-strong);
+    border-radius: var(--v2c-radius-sm);
+    background: var(--v2c-surface);
+    color: var(--v2c-text);
+    font: inherit;
+    font-size: 0.875rem;
+  }
+  .eb-field [aria-invalid] {
+    border-color: var(--v2c-danger);
+  }
+  .eb-inline {
+    display: flex;
+    gap: 0.375rem;
+  }
+  .eb-swatch {
+    flex: none;
+    width: 2.5rem;
+    min-height: 2.25rem;
+    padding: 2px;
+    border: 1px solid var(--v2c-border-strong);
+    border-radius: var(--v2c-radius-sm);
+    background: var(--v2c-surface);
+  }
+  .eb-check {
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    column-gap: 0.5rem;
+  }
+  .eb-check input {
+    width: 1rem;
+    height: 1rem;
+    accent-color: var(--v2c-accent);
+  }
+  .eb-check .eb-help {
+    grid-column: 1 / -1;
+  }
+  .prose .eb-help {
+    margin: 0;
+    font-size: 0.75rem;
+    line-height: 1.45;
+    color: var(--v2c-subtle);
+  }
+  .prose .eb-error {
+    margin: 0;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--v2c-danger);
+    border-radius: var(--v2c-radius-sm);
+    color: var(--v2c-danger);
+    font-size: 0.8125rem;
+  }
+  .eb-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .eb-preview {
+    display: grid;
+    gap: 0.75rem;
+    align-content: start;
+  }
+  .eb-preview-head,
+  .eb-log-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .eb-open {
+    font-size: 0.8125rem;
+  }
+  .eb-frame-wrap {
+    border-radius: var(--v2c-radius);
+    background: repeating-conic-gradient(var(--v2c-surface) 0 25%, var(--v2c-surface-2) 0 50%) 0 0 / 16px 16px;
+    padding: 0.75rem;
+  }
+  .eb-frame {
+    display: block;
+    width: 100%;
+    border: 0;
+    border-radius: var(--v2c-radius);
+    background: transparent;
+    transition: height 0.15s ease;
+  }
+  .prose .eb-url {
+    margin: 0;
+    display: grid;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+    color: var(--v2c-muted);
+  }
+  .eb-url code {
+    overflow-wrap: anywhere;
+    font-size: 0.75rem;
+  }
+  .eb-drive {
+    display: grid;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    border: 1px solid var(--v2c-border);
+    border-radius: var(--v2c-radius);
+  }
+  .eb-drive-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    align-items: center;
+    font-size: 0.8125rem;
+  }
+  .eb-drive-row > label,
+  .eb-drive-row > span {
+    width: 3.75rem;
+    flex: none;
+  }
+  .eb-drive-row input {
+    flex: 1 1 8rem;
+    width: auto;
+  }
+  .eb-log-wrap {
+    display: grid;
+    gap: 0.5rem;
+  }
+  .prose .eb-log {
+    margin: 0;
+    padding: 0.5rem;
+    list-style: none;
+    max-height: 12rem;
+    overflow: auto;
+    border: 1px solid var(--v2c-border);
+    border-radius: var(--v2c-radius-sm);
+    background: var(--v2c-surface);
+    font: 0.75rem/1.5 var(--v2c-font-mono);
+  }
+  .eb-log:empty::before {
+    content: 'Nothing yet. Click a line in the preview.';
+    color: var(--v2c-subtle);
+  }
+  .prose .eb-log li {
+    margin: 0;
+    display: flex;
+    gap: 0.5rem;
+    overflow-wrap: anywhere;
+  }
+  .eb-log-time {
+    flex: none;
+    color: var(--v2c-subtle);
+  }
+  .eb-log code {
+    flex: none;
+    font-weight: 600;
+  }
+  .eb-snippets {
+    display: grid;
+    gap: 0.5rem;
+  }
+  .eb-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+  .eb-tabs [role='tab'] {
+    min-height: 2rem;
+    padding: 0.25rem 0.75rem;
+    border: 1px solid transparent;
+    border-radius: var(--v2c-radius-pill);
+    background: none;
+    color: var(--v2c-muted);
+    font-size: 0.8125rem;
+    cursor: pointer;
+  }
+  .eb-tabs [role='tab']:hover {
+    color: var(--v2c-text);
+  }
+  .eb-tabs [role='tab'][aria-selected='true'] {
+    color: var(--v2c-text);
+    border-color: var(--v2c-border-strong);
+    background: var(--v2c-surface-2);
+  }
+  .eb-code pre {
+    white-space: pre;
+  }
+</style>
+
+<style is:global>
+  .eg {
+    display: grid;
+    gap: 1.5rem;
+    margin-block: 1.5rem;
+  }
+  .prose .eg-item {
+    margin: 0;
+    display: grid;
+    gap: 0.625rem;
+  }
+  .eg-item figcaption {
+    font-size: 0.875rem;
+    color: var(--v2c-muted);
+  }
+  .eg-item figcaption strong {
+    color: var(--v2c-text);
+  }
+  .ec {
+    display: grid;
+    gap: 0.75rem;
+    margin-block: 1.5rem;
+    padding: 1rem;
+    border: 1px solid var(--v2c-border);
+    border-radius: var(--v2c-radius-lg);
+    background: var(--v2c-panel);
+  }
+  .ec-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+  }
+  .ec-controls .btn {
+    font-family: var(--v2c-font-mono);
+    font-size: 0.75rem;
+  }
+  .ec-stage {
+    min-height: 6rem;
+  }
+</style>

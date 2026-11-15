@@ -30,6 +30,8 @@ Every block calls the HTTP API directly from your browser. Pick where with the *
 
 Each block also shows the same request as curl, JavaScript, Python and, where one exists, the CLI command and the MCP tool call. The snippets follow your edits and the server you picked, so you can copy a request you have just tried.
 
+**Share** copies a link to the block with your edits in it: whoever opens it sees the same fields, ready to run. **Reset** puts the fields back to the example's defaults. Press Ctrl+Enter (or Cmd+Enter) in any field to run the block without reaching for the button.
+
 ## Before you start
 
 No account and no key are needed. Captions come straight from the platform; when a video has none, speech-to-text runs on free and keyless Whisper rungs, and answers and briefs run on the free LLM chain. Keys you add to a server only add more rungs, tried before the keyless ones. The [Examples](/docs/examples/) section has every request on its own, grouped by what it does.

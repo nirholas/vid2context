@@ -135,6 +135,27 @@ describe('recorded responses', () => {
     const next = runnables.find((r) => r.id === 'upload-transcript');
     expect(next?.fields.find((f) => f.from === 'upload')?.default).toBe(input);
   });
+
+  it('the collection examples chain the id the create example really returned', () => {
+    const id = JSON.parse(recording('collection-create').body ?? '{}').id as string;
+    const readers = runnables.filter((r) => r.fields.some((f) => f.from === 'collection'));
+    expect(readers.map((r) => r.id)).toEqual(['collection-add', 'collection-get', 'collection-pack', 'collection-export']);
+    for (const r of readers) expect(r.fields.find((f) => f.from === 'collection')?.default, r.id).toBe(id);
+    const final = recording('collection-add').job?.final as { result: { summary: { added: unknown[] } } } | undefined;
+    expect(final?.result.summary.added).toHaveLength(2);
+    expect(JSON.parse(recording('collection-get').body ?? '{}').videos).toHaveLength(2);
+  });
+
+  it('the import example keeps the pasted captions as imported segments', () => {
+    const spec = runnables.find((r) => r.id === 'import-transcript');
+    const text = spec?.fields.find((f) => f.name === 'text');
+    expect(text?.type).toBe('textarea');
+    const body = JSON.parse(recording('import-transcript').body ?? '{}');
+    expect(body.format).toBe('srt');
+    expect(body.context.transcript.origin).toBe('imported');
+    expect(body.context.transcript.segments[0].text).toBe('All right, so here we are, in front of the elephants');
+    expect(body.context.transcript.segments).toHaveLength(6);
+  });
 });
 
 // ------------------------------------------------------------------ snippets

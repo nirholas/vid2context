@@ -8,7 +8,8 @@
 
 // ------------------------------------------------------------------ specs
 
-export type FieldType = 'url' | 'text' | 'select' | 'checkbox' | 'number' | 'list' | 'json' | 'file';
+/** `textarea` is a multi-line string (a pasted transcript, a note); `list` is one item per line. */
+export type FieldType = 'url' | 'text' | 'textarea' | 'select' | 'checkbox' | 'number' | 'list' | 'json' | 'file';
 
 /** How a body or MCP value is encoded from the field's string. */
 export type ValueKind = 'string' | 'number' | 'boolean' | 'list' | 'json';

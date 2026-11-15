@@ -1,0 +1,25 @@
+{
+  "id": "collection-create",
+  "recordedAt": "2026-11-15",
+  "server": {
+    "name": "vid2context",
+    "version": "0.1.0",
+    "runtime": "node"
+  },
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/collections",
+    "query": [],
+    "json": {
+      "name": "G-Wagon research",
+      "description": "Buyer videos to compare model years"
+    }
+  },
+  "status": 201,
+  "ms": 11,
+  "headers": {
+    "content-type": "application/json",
+    "x-ratelimit-remaining": "59"
+  },
+  "body": "{\"id\":\"g-wagon-research-2c2983f1\",\"name\":\"G-Wagon research\",\"description\":\"Buyer videos to compare model years\",\"sources\":[],\"videoIds\":[],\"createdAt\":\"2026-11-15T15:29:16.875Z\",\"updatedAt\":\"2026-11-15T15:29:16.875Z\"}"
+}

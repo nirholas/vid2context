@@ -101,3 +101,47 @@ test('pages without examples load no runnable script', async ({ page }) => {
   await page.goto('/docs/architecture/');
   expect(scripts.filter((s) => s.includes('RunnableRuntime'))).toEqual([]);
 });
+
+test('Share puts the edits in a link that fills the block again', async ({ page, context }) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  await page.goto('/docs/examples/transcripts/');
+  const block = page.locator('#run-transcript');
+  await block.getByLabel('Format').selectOption('srt');
+  await block.getByLabel('Video URL').fill('https://youtu.be/MBRqu0YOH14');
+  await block.getByRole('button', { name: 'Share' }).click();
+  await expect(block.getByRole('button', { name: 'Link copied' })).toBeVisible();
+  const shared = page.url();
+  expect(new URL(shared).searchParams.get('rx.run-transcript')).toBe('url=https%3A%2F%2Fyoutu.be%2FMBRqu0YOH14&format=srt');
+  expect(new URL(shared).hash).toBe('#run-transcript');
+
+  const fresh = await context.newPage();
+  await fresh.goto(shared);
+  const again = fresh.locator('#run-transcript');
+  await expect(again.getByLabel('Format')).toHaveValue('srt');
+  await expect(again.getByLabel('Video URL')).toHaveValue('https://youtu.be/MBRqu0YOH14');
+  await expect(again.locator('[data-rx-panel="curl"] pre')).toContainText('format=srt');
+  // Other blocks on the page keep their defaults.
+  await expect(fresh.locator('#run-transcript-srt').getByLabel('Video URL')).toHaveValue(
+    'https://www.youtube.com/watch?v=jNQXAC9IVRw',
+  );
+});
+
+test('a shared link with an option the select lacks is ignored for that field', async ({ page }) => {
+  await page.goto('/docs/examples/transcripts/?rx.run-transcript=format%3Dexe%26timestamps%3Dtrue#run-transcript');
+  const block = page.locator('#run-transcript');
+  await expect(block.getByLabel('Format')).toHaveValue('text');
+  await expect(block.getByLabel('Timestamps')).toBeChecked();
+});
+
+test('creating a collection fills its id into the blocks that read it', async ({ page }) => {
+  await page.goto('/docs/tutorials/collections/');
+  const create = page.locator('#run-collection-create');
+  await create.getByLabel('Name').fill('E2E shelf');
+  await create.getByRole('button', { name: 'Run' }).click();
+  await expect(create.locator('[data-rx-status]')).toHaveText(/^Your run: 201/);
+  const get = page.locator('#run-collection-get');
+  await expect(get.getByLabel('Collection id')).toHaveValue(/^e2e-shelf-[0-9a-f]+$/);
+  await get.getByRole('button', { name: 'Run' }).click();
+  await expect(get.locator('[data-rx-body]')).toContainText('"name": "E2E shelf"');
+  await expect(get.locator('[data-rx-body]')).toContainText('"videos": []');
+});

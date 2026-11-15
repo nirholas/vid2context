@@ -114,6 +114,50 @@ const question = (def: string): Field => ({
   mcp: { arg: 'question' },
 });
 
+/** The collection created by "collection-create", as it was when the examples were recorded. */
+export const COLLECTION_ID = 'g-wagon-research-2c2983f1';
+
+const collectionId = (over: Partial<Field> = {}): Field => ({
+  name: 'id',
+  label: 'Collection id',
+  type: 'text',
+  in: 'path',
+  default: COLLECTION_ID,
+  from: 'collection',
+  cli: { positional: true },
+  mcp: { arg: 'collection' },
+  ...over,
+});
+
+/** The creator captions of "Me at the zoo" as SRT, exactly as GET /transcript?format=srt returns them. */
+const ZOO_SRT = [
+  '1',
+  '00:00:01,200 --> 00:00:03,360',
+  'All right, so here we are,',
+  'in front of the elephants',
+  '',
+  '2',
+  '00:00:05,318 --> 00:00:07,974',
+  'the cool thing about these guys',
+  'is that they have really...',
+  '',
+  '3',
+  '00:00:07,974 --> 00:00:12,616',
+  'really really long trunks',
+  '',
+  '4',
+  '00:00:12,616 --> 00:00:14,367',
+  "and that's cool",
+  '',
+  '5',
+  '00:00:14,421 --> 00:00:15,733',
+  '(baaaaaaaaaaahhh!!)',
+  '',
+  '6',
+  '00:00:16,881 --> 00:00:18,881',
+  "and that's pretty much all there is to say",
+].join('\n');
+
 const transcript = (id: string, title: string, fields: Field[], note?: string): RunnableSpec => ({
   id,
   title,
@@ -171,6 +215,15 @@ export const runnables: RunnableSpec[] = [
     cli: { command: ['models'], extra: ['--json'] },
     mcp: { tool: 'list_models' },
     note: 'Every rung, enabled or not. requires names env vars, never their values.',
+  },
+  {
+    id: 'healthz',
+    title: 'Readiness for a container probe',
+    method: 'GET',
+    path: '/api/v1/healthz',
+    fields: [{ name: 'deep', label: 'Deep check', type: 'checkbox', in: 'query', default: 'true' }],
+    response: 'json',
+    note: 'Without deep it only says the process is up. With deep=1 it checks storage, rungs, disk, yt-dlp, ffmpeg and the network, and answers 503 when a required check fails.',
   },
 
   // Transcripts
@@ -509,6 +562,169 @@ export const runnables: RunnableSpec[] = [
     note: 'Searches the library: every video a request above has read is saved there.',
   },
 
+  // Library and collections
+  {
+    id: 'collection-create',
+    title: 'Create a collection',
+    method: 'POST',
+    path: '/api/v1/collections',
+    fields: [
+      {
+        name: 'name',
+        label: 'Name',
+        type: 'text',
+        in: 'body',
+        default: 'G-Wagon research',
+        cli: { positional: true },
+        mcp: { arg: 'name' },
+      },
+      {
+        name: 'description',
+        label: 'Description',
+        type: 'text',
+        in: 'body',
+        default: 'Buyer videos to compare model years',
+        optional: true,
+        cli: { flag: '--description' },
+        mcp: { arg: 'description' },
+      },
+      {
+        name: 'sources',
+        label: 'Sources to follow (one per line)',
+        type: 'list',
+        in: 'body',
+        default: '',
+        optional: true,
+        help: 'Playlists, channels or feeds. A refresh adds their new videos.',
+        cli: { flag: '--source' },
+        mcp: { arg: 'sources' },
+      },
+    ],
+    response: 'json',
+    cli: { command: ['collection', 'create'] },
+    mcp: { tool: 'create_collection' },
+    provides: { name: 'collection', path: 'id' },
+    note: 'The id is the name as a slug plus a random suffix. The blocks below use it once you run this one.',
+  },
+  {
+    id: 'collection-add',
+    title: 'Add videos to the collection',
+    method: 'POST',
+    path: '/api/v1/collections/{id}/items',
+    fields: [
+      collectionId(),
+      inputs([GWAGON, SELLING], { label: 'Videos or playlists (one per line)', cli: { positional: true }, mcp: { arg: 'urls' } }),
+    ],
+    response: 'json',
+    job: true,
+    cli: { command: ['collection', 'add'] },
+    mcp: { tool: 'add_to_collection' },
+    note: 'Each video is read once and saved in the library. With a jobs queue this answers 202 and a Job; the runner polls it.',
+  },
+  {
+    id: 'collection-get',
+    title: 'Read the collection',
+    method: 'GET',
+    path: '/api/v1/collections/{id}',
+    fields: [collectionId()],
+    response: 'json',
+    cli: { command: ['collection', 'show'] },
+    mcp: { tool: 'get_collection' },
+    note: 'Its videos (title, channel, duration, how the transcript was made), videos still pending, and the refresh schedule.',
+  },
+  {
+    id: 'collection-pack',
+    title: 'One context pack for the collection',
+    method: 'POST',
+    path: '/api/v1/pack',
+    fields: [
+      collectionId({ name: 'collectionId', in: 'body', cli: undefined, mcp: { arg: 'collectionId' } }),
+      {
+        name: 'maxTokens',
+        label: 'Max tokens',
+        type: 'number',
+        in: 'body',
+        default: '2500',
+        optional: true,
+        mcp: { arg: 'maxTokens' },
+      },
+    ],
+    response: 'text',
+    mcp: { tool: 'export_context_pack' },
+    note: 'The same pack as for a list of inputs, built from every video in the collection.',
+  },
+  {
+    id: 'obsidian-export',
+    title: 'Export notes for Obsidian',
+    method: 'POST',
+    path: '/api/v1/exports/obsidian',
+    fields: [
+      inputs([SELLING], { optional: true, cli: undefined, mcp: undefined }),
+      collectionId({
+        name: 'collectionId',
+        in: 'body',
+        default: '',
+        optional: true,
+        from: undefined,
+        help: 'Optional: a collection id from "Create a collection", to export every video in it too.',
+        cli: undefined,
+        mcp: undefined,
+      }),
+      {
+        name: 'folder',
+        label: 'Folder',
+        type: 'text',
+        in: 'body',
+        default: '',
+        optional: true,
+        help: 'Default: the collection name, or vid2context',
+      },
+    ],
+    response: 'json',
+    note: 'One Markdown note per video with frontmatter, chapters and timestamp links, and an index note. The server writes nothing: you get the files.',
+  },
+  {
+    id: 'collection-export',
+    title: 'Export the collection definition',
+    method: 'GET',
+    path: '/api/v1/collections/{id}/export',
+    fields: [collectionId()],
+    response: 'json',
+    note: 'Name, sources, video ids and schedule: everything another server needs to rebuild the collection with POST /collections/import.',
+  },
+  {
+    id: 'library',
+    title: 'List the library',
+    method: 'GET',
+    path: '/api/v1/library',
+    fields: [
+      { name: 'limit', label: 'Limit', type: 'number', in: 'query', default: '5', optional: true, cli: { flag: '--limit' } },
+    ],
+    response: 'json',
+    cli: { command: ['library', 'ls'] },
+    note: 'Every saved video, newest first. A page with more after it has a cursor to pass back.',
+  },
+  {
+    id: 'library-item',
+    title: 'One saved video',
+    method: 'GET',
+    path: '/api/v1/library/{id}',
+    fields: [
+      {
+        name: 'id',
+        label: 'Video id',
+        type: 'text',
+        in: 'path',
+        default: 'youtube:MBRqu0YOH14',
+        help: 'platform:id, as the library list shows it',
+        cli: { positional: true },
+      },
+    ],
+    response: 'json',
+    cli: { command: ['library', 'show'], extra: ['--format', 'json'] },
+    note: 'The saved VideoContext, read from storage without contacting the platform.',
+  },
+
   // Answers and briefs
   {
     id: 'ask',
@@ -635,6 +851,31 @@ export const runnables: RunnableSpec[] = [
     ],
     'The input comes from the upload above once you run it. Uploads are transcribed by the speech-to-text chain.',
   ),
+  {
+    id: 'import-transcript',
+    title: 'Import a transcript you already have',
+    method: 'POST',
+    path: '/api/v1/imports',
+    fields: [
+      url(ZOO, {
+        in: 'body',
+        cli: undefined,
+        mcp: undefined,
+        help: 'The video the transcript belongs to; its metadata comes from the platform.',
+      }),
+      {
+        name: 'text',
+        label: 'Transcript (SRT, WebVTT or plain text)',
+        type: 'textarea',
+        in: 'body',
+        default: ZOO_SRT,
+        help: 'Edit a line and run it again: the import keeps your wording and timing.',
+      },
+      { ...lang('en'), in: 'body', key: 'language', cli: undefined, mcp: undefined },
+    ],
+    response: 'json',
+    note: 'Parses SRT, WebVTT, JSON segments or plain text into a VideoContext with origin "imported". Hosted servers return it without saving.',
+  },
 ];
 
 export function runnable(id: string): RunnableSpec {

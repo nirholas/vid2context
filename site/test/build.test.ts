@@ -34,7 +34,9 @@ const pathOf = (file: string) =>
   `/${relative(DIST, file)
     .replace(/index\.html$/, '')
     .replace(/\\/g, '/')}`;
-const pages = htmlFiles.filter((f) => !f.endsWith('404.html'));
+/** The embed widget (/embed/) is a page for other sites' iframes: noindex, no site chrome, checked in test/embed.test.ts. */
+const isEmbed = (f: string) => pathOf(f).startsWith('/embed/');
+const pages = htmlFiles.filter((f) => !f.endsWith('404.html') && !isEmbed(f));
 
 function attrs(html: string, tag: string, attr: string): string[] {
   const re = new RegExp(`<${tag}\\b[^>]*?\\s${attr}="([^"]*)"`, 'gi');
@@ -211,7 +213,7 @@ describe('JSON-LD', () => {
       (m) => JSON.parse(m[1] ?? '') as { '@context': string; '@graph': Node[] },
     );
 
-  it.each(htmlFiles.map((f) => [pathOf(f), f]))('%s has one valid @graph', (path, file) => {
+  it.each(htmlFiles.filter((f) => !isEmbed(f)).map((f) => [pathOf(f), f]))('%s has one valid @graph', (path, file) => {
     const blocks = graphs(read(file));
     expect(blocks).toHaveLength(1);
     const g = blocks[0];

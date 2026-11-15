@@ -6,6 +6,7 @@
  */
 import { chatgpt, clients, type InstallStep, npmPublished } from '../data/agents.ts';
 import { allRungs, data, rungsByTier, serviceCount } from '../data/site.ts';
+import { commandsTable, eventsTable, paramsTable, samplesList } from './embed-render.ts';
 
 function stepsMarkdown(steps: InstallStep[]): string {
   return steps
@@ -66,6 +67,11 @@ function values(): Record<string, string> {
   v['demo.fileList'] = data.demo.files.map((f) => `\`${f.path}\``).join(', ');
   v['mcp.toolCount'] = String(data.mcpTools?.length ?? 0);
   v['mcp.tools'] = (data.mcpTools ?? []).map((t) => `- \`${t.name}\`: ${t.description}`).join('\n');
+  // The embed widget's contract, from src/lib/embed.ts.
+  v['embed.params'] = paramsTable();
+  v['embed.events'] = eventsTable();
+  v['embed.commands'] = commandsTable();
+  v['embed.samples'] = samplesList();
   if (data.playlist) {
     v['playlist.url'] = data.playlist.url;
     v['playlist.title'] = data.playlist.title ?? 'the playlist';

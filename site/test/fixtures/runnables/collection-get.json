@@ -1,0 +1,21 @@
+{
+  "id": "collection-get",
+  "recordedAt": "2026-11-15",
+  "server": {
+    "name": "vid2context",
+    "version": "0.1.0",
+    "runtime": "node"
+  },
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/collections/g-wagon-research-2c2983f1",
+    "query": []
+  },
+  "status": 200,
+  "ms": 4,
+  "headers": {
+    "content-type": "application/json",
+    "x-ratelimit-remaining": "58"
+  },
+  "body": "{\"id\":\"g-wagon-research-2c2983f1\",\"name\":\"G-Wagon research\",\"description\":\"Buyer videos to compare model years\",\"sources\":[],\"videoIds\":[\"youtube:cCPsdFdlshc\",\"youtube:PzJL3aBRas8\"],\"createdAt\":\"2026-11-15T15:29:16.875Z\",\"updatedAt\":\"2026-11-15T15:29:16.890Z\",\"videos\":[{\"id\":\"youtube:cCPsdFdlshc\",\"ref\":{\"input\":\"https://www.youtube.com/watch?v=cCPsdFdlshc\",\"platform\":\"youtube\",\"kind\":\"video\",\"id\":\"youtube:cCPsdFdlshc\",\"nativeId\":\"cCPsdFdlshc\",\"url\":\"https://www.youtube.com/watch?v=cCPsdFdlshc\"},\"title\":\"Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!\",\"channel\":\"Alliance Motorworks\",\"durationSec\":1084,\"origin\":\"stt\",\"language\":\"en\",\"savedAt\":\"2026-11-14T17:39:41.214Z\"},{\"id\":\"youtube:PzJL3aBRas8\",\"ref\":{\"input\":\"https://www.youtube.com/watch?v=PzJL3aBRas8\",\"platform\":\"youtube\",\"kind\":\"video\",\"id\":\"youtube:PzJL3aBRas8\",\"nativeId\":\"PzJL3aBRas8\",\"url\":\"https://www.youtube.com/watch?v=PzJL3aBRas8\"},\"title\":\"Why I'm Selling My DREAM G-Wagon (Custom Build 2015 Mercedes G550)\",\"channel\":\"Alliance Motorworks\",\"durationSec\":697,\"origin\":\"stt\",\"language\":\"en\",\"savedAt\":\"2026-11-14T17:37:21.797Z\"}],\"pending\":[],\"watch\":null}"
+}

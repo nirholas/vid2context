@@ -2,7 +2,7 @@
 title: Call the API from your code
 label: The API from code
 description: Use the vid2context HTTP API from JavaScript or Python the robust way: the error shape and codes, retries with Retry-After, API keys, ETag caching, jobs and timeouts.
-order: 6
+order: 7
 ---
 
 Every block on these pages has JavaScript and Python versions of its request. This tutorial covers what those short snippets leave out: how errors look, which ones to retry, and the headers that save work.

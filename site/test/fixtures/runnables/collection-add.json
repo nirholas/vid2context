@@ -1,0 +1,99 @@
+{
+  "id": "collection-add",
+  "recordedAt": "2026-11-15",
+  "server": {
+    "name": "vid2context",
+    "version": "0.1.0",
+    "runtime": "node"
+  },
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/collections/g-wagon-research-2c2983f1/items",
+    "query": [],
+    "json": {
+      "inputs": [
+        "https://www.youtube.com/watch?v=cCPsdFdlshc",
+        "https://www.youtube.com/watch?v=PzJL3aBRas8"
+      ]
+    }
+  },
+  "status": 202,
+  "ms": 1518,
+  "headers": {
+    "content-type": "application/json",
+    "x-ratelimit-remaining": "58"
+  },
+  "body": "{\"id\":\"job_cGwJKXxEL5ySzsETnHWCFg\",\"kind\":\"ingest\",\"status\":\"queued\",\"createdAt\":\"2026-11-15T15:29:16.882Z\",\"updatedAt\":\"2026-11-15T15:29:16.882Z\"}",
+  "job": {
+    "polls": 1,
+    "final": {
+      "id": "job_cGwJKXxEL5ySzsETnHWCFg",
+      "kind": "ingest",
+      "status": "succeeded",
+      "createdAt": "2026-11-15T15:29:16.882Z",
+      "updatedAt": "2026-11-15T15:29:16.891Z",
+      "progress": {
+        "done": 2,
+        "total": 2,
+        "message": "Added Why I'm Selling My DREAM G-Wagon (Custom Build 2015 Mercedes G550)"
+      },
+      "result": {
+        "collection": {
+          "id": "g-wagon-research-2c2983f1",
+          "name": "G-Wagon research",
+          "description": "Buyer videos to compare model years",
+          "sources": [],
+          "videoIds": [
+            "youtube:cCPsdFdlshc",
+            "youtube:PzJL3aBRas8"
+          ],
+          "createdAt": "2026-11-15T15:29:16.875Z",
+          "updatedAt": "2026-11-15T15:29:16.890Z"
+        },
+        "summary": {
+          "collectionId": "g-wagon-research-2c2983f1",
+          "added": [
+            {
+              "id": "youtube:cCPsdFdlshc",
+              "ref": {
+                "input": "https://www.youtube.com/watch?v=cCPsdFdlshc",
+                "platform": "youtube",
+                "kind": "video",
+                "id": "youtube:cCPsdFdlshc",
+                "nativeId": "cCPsdFdlshc",
+                "url": "https://www.youtube.com/watch?v=cCPsdFdlshc"
+              },
+              "title": "Best & Worst G-Wagon Years: Reliability, Interiors & Engines Ranked!",
+              "channel": "Alliance Motorworks",
+              "durationSec": 1084,
+              "origin": "stt",
+              "language": "en",
+              "savedAt": "2026-11-14T17:39:41.214Z"
+            },
+            {
+              "id": "youtube:PzJL3aBRas8",
+              "ref": {
+                "input": "https://www.youtube.com/watch?v=PzJL3aBRas8",
+                "platform": "youtube",
+                "kind": "video",
+                "id": "youtube:PzJL3aBRas8",
+                "nativeId": "PzJL3aBRas8",
+                "url": "https://www.youtube.com/watch?v=PzJL3aBRas8"
+              },
+              "title": "Why I'm Selling My DREAM G-Wagon (Custom Build 2015 Mercedes G550)",
+              "channel": "Alliance Motorworks",
+              "durationSec": 697,
+              "origin": "stt",
+              "language": "en",
+              "savedAt": "2026-11-14T17:37:21.797Z"
+            }
+          ],
+          "skipped": 0,
+          "failed": [],
+          "remaining": 0,
+          "checkedAt": "2026-11-15T15:29:16.891Z"
+        }
+      }
+    }
+  }
+}

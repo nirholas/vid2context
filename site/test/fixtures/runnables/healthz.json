@@ -1,0 +1,25 @@
+{
+  "id": "healthz",
+  "recordedAt": "2026-11-15",
+  "server": {
+    "name": "vid2context",
+    "version": "0.1.0",
+    "runtime": "node"
+  },
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/healthz",
+    "query": [
+      [
+        "deep",
+        "1"
+      ]
+    ]
+  },
+  "status": 200,
+  "ms": 917,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": "{\"ok\":true,\"status\":\"ok\",\"checkedAt\":\"2026-11-15T15:29:16.862Z\",\"checks\":[{\"id\":\"storage\",\"status\":\"ok\",\"detail\":\"sqlite: write, read and delete ok\",\"required\":true},{\"id\":\"rungs\",\"status\":\"ok\",\"detail\":\"4 speech-to-text and 7 LLM rungs enabled, first stt/cloudflare/@cf/openai/whisper-large-v3-turbo and llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast\",\"required\":true},{\"id\":\"disk\",\"status\":\"ok\",\"detail\":\"774948 MB free in the data directory\",\"required\":true},{\"id\":\"yt-dlp\",\"status\":\"ok\",\"detail\":\"2026.10.26\",\"required\":false},{\"id\":\"ffmpeg\",\"status\":\"ok\",\"detail\":\"7.0.2-static\",\"required\":false},{\"id\":\"network\",\"status\":\"ok\",\"detail\":\"oai.endpoints.kepler.ai.cloud.ovh.net answered HTTP 200\",\"required\":false}],\"version\":\"0.1.0\"}"
+}

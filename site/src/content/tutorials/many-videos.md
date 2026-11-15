@@ -48,5 +48,6 @@ On a server with an embedding model configured, the same route also runs a vecto
 
 ## Next
 
+- [Build a research collection](/docs/tutorials/collections/): keep these videos together under one id, then pack, export and share them.
 - [Cited answers and briefs](/docs/tutorials/cited-answers/) from the same videos.
 - [Many-video examples](/docs/examples/many-videos/) on one page.

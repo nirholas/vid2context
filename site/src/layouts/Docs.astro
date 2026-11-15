@@ -1,4 +1,6 @@
 ---
+import EmbedBuilderRuntime from '../components/embed/EmbedBuilderRuntime.astro';
+import PlaygroundRuntime from '../components/playground/PlaygroundRuntime.astro';
 import RunnableRuntime from '../components/RunnableRuntime.astro';
 import { withBase } from '../lib/base.ts';
 /** Docs pages: sidebar, article, in-page table of contents. */
@@ -94,6 +96,8 @@ const copyScript = `document.addEventListener('click',function(e){var b=e.target
   </div>
   <script is:inline set:html={copyScript} />
   {page.runnables > 0 && <RunnableRuntime />}
+  {page.widgets.some((w) => w.startsWith('embed-')) && <EmbedBuilderRuntime />}
+  {page.widgets.includes('playground') && <PlaygroundRuntime />}
 </Base>
 
 <style is:global>

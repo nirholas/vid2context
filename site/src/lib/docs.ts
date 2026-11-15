@@ -13,13 +13,15 @@ import { type Heading, renderMarkdown } from './markdown.ts';
 import { repoPath } from './paths.ts';
 import { createRunnableRenderer, expandRunFencesForTwin, FIXTURE_DIR, RUN_FENCE, runFenceIds } from './runnable-render.ts';
 import { expandTokens } from './tokens.ts';
+import { expandWidgetFencesForTwin, renderWidget, WIDGET_FENCE, widgetFenceIds } from './widgets.ts';
 
-export type Section = 'start' | 'tutorials' | 'examples' | 'how-to' | 'clients' | 'guides' | 'deploy' | 'compare' | 'contracts';
+export type Section = 'start' | 'tutorials' | 'examples' | 'embed' | 'how-to' | 'clients' | 'guides' | 'deploy' | 'compare' | 'contracts';
 
 export const SECTIONS: { id: Section; label: string }[] = [
   { id: 'start', label: 'Start here' },
   { id: 'tutorials', label: 'Tutorials' },
   { id: 'examples', label: 'Examples' },
+  { id: 'embed', label: 'Embed' },
   { id: 'how-to', label: 'How to' },
   { id: 'clients', label: 'Agent clients' },
   { id: 'guides', label: 'Guides' },
@@ -50,6 +52,8 @@ export interface DocPage {
   order: number;
   /** How many runnable examples the page has (the browser script loads only when there are some). */
   runnables: number;
+  /** Ids of the page's `widget <id>` blocks (each loads its browser script only where it is used). */
+  widgets: string[];
 }
 
 /** `/docs/x/` to `/docs/x.md`; `/` to `/index.md`. */
@@ -147,6 +151,7 @@ function repoPage(doc: RepoDoc): DocPage {
     editUrl: `${REPO_URL}/blob/main/${doc.path}`,
     order: doc.order,
     runnables: 0,
+    widgets: [],
   };
 }
 
@@ -194,6 +199,7 @@ function parseFrontmatter(text: string, file: string): { fm: Frontmatter; body: 
 const CONTENT_SECTIONS: { dir: string; section: Section }[] = [
   { dir: 'tutorials', section: 'tutorials' },
   { dir: 'examples', section: 'examples' },
+  { dir: 'embed', section: 'embed' },
   { dir: 'how-to', section: 'how-to' },
   { dir: 'compare', section: 'compare' },
 ];
@@ -235,12 +241,15 @@ function authoredPage(section: Section, dir: string, entry: Authored, siblings: 
   });
   const expanded = `# ${fm.title}\n\n${expandTokens(withList, rel).trim()}\n`;
   const ids = runFenceIds(expanded);
+  const widgets = widgetFenceIds(expanded, rel);
   const renderRun = createRunnableRenderer();
   const rendered = renderMarkdown(expanded, {
     rewriteHref: (h) => resolveSiteLink(h, false),
     renderCode: (lang) => {
       const m = lang.match(RUN_FENCE);
-      return m?.[1] ? renderRun(m[1]) : undefined;
+      if (m?.[1]) return renderRun(m[1]);
+      const w = lang.match(WIDGET_FENCE);
+      return w?.[1] ? renderWidget(w[1], rel) : undefined;
     },
   });
   const url = `/docs/${slug}/`;
@@ -255,12 +264,13 @@ function authoredPage(section: Section, dir: string, entry: Authored, siblings: 
     description: fm.description,
     html: rendered.html,
     headings: rendered.headings,
-    twin: renderTwin(expandRunFencesForTwin(expanded), (h) => resolveSiteLink(h, true)),
+    twin: renderTwin(expandWidgetFencesForTwin(expandRunFencesForTwin(expanded), rel), (h) => resolveSiteLink(h, true)),
     sources: [rel, ...runSources, 'tests/fixtures/contexts', 'packages/discovery/src'],
     lastmod: lastModOf([rel, ...runSources]),
     editUrl: `${REPO_URL}/blob/main/${rel}`,
     order: fm.order,
     runnables: ids.length,
+    widgets: [...new Set(widgets)],
   };
 }
 
@@ -351,6 +361,7 @@ The full list, with every model override, is in [Providers and rungs](/docs/prov
     editUrl: `${REPO_URL}/blob/main/${rel}`,
     order,
     runnables: 0,
+    widgets: [],
   };
 }
 

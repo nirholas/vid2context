@@ -23,4 +23,10 @@ What is in them, and what was kept out:
 - `outline-sections.json` and `chapters-auto.json` were meant for `1Xx1fmHIsiA`, a 15-minute playlist video without chapters, but YouTube was blocking this VM (HTTP 429 on captions, then on every request) and the keyless Whisper rung was rate-limited, so they use videos the server had already read. Re-record them with a longer chapterless video when YouTube answers again.
 - `search.json` reflects the recording server's library at the time (its `meta.indexed` counts the videos it held).
 
+The collection, library, import and readiness examples (`collection-*.json`, `obsidian-export.json`, `library*.json`, `import-transcript.json`, `healthz.json`) were recorded on 2026-11-15 from the same Node server, run with `VID2CONTEXT_DB` pointing at a copy of its library trimmed to the example videos, because YouTube was again answering this VM with HTTP 429. That way the collection's two videos (`cCPsdFdlshc` and `PzJL3aBRas8`) came from the library, and `library.json` lists only example videos. Notes:
+
+- `collection-create.json` holds the id the server generated (`g-wagon-research-2c2983f1`). `COLLECTION_ID` in `src/data/runnables.ts` is that id, and the blocks that read it were recorded with it; a test checks they agree. Re-record the whole chain together (`record -- collection-create collection-add collection-get collection-pack collection-export`) and update `COLLECTION_ID`.
+- `obsidian-export.json` exports `PzJL3aBRas8` only: the notes carry each video's description, and the G-Wagon buyer's guide description holds the channel's business email, which the recorder refuses.
+- `import-transcript.json` imports the creator captions of "Me at the zoo" exactly as `transcript-srt.json` returns them.
+
 `test/runnables.test.ts` fails when a file is missing, when a file has no example, or when an example's default request no longer matches the recorded one: re-record that example after changing its spec.

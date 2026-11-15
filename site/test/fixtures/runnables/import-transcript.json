@@ -1,0 +1,26 @@
+{
+  "id": "import-transcript",
+  "recordedAt": "2026-11-15",
+  "server": {
+    "name": "vid2context",
+    "version": "0.1.0",
+    "runtime": "node"
+  },
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/imports",
+    "query": [],
+    "json": {
+      "url": "https://www.youtube.com/watch?v=jNQXAC9IVRw",
+      "text": "1\n00:00:01,200 --> 00:00:03,360\nAll right, so here we are,\nin front of the elephants\n\n2\n00:00:05,318 --> 00:00:07,974\nthe cool thing about these guys\nis that they have really...\n\n3\n00:00:07,974 --> 00:00:12,616\nreally really long trunks\n\n4\n00:00:12,616 --> 00:00:14,367\nand that's cool\n\n5\n00:00:14,421 --> 00:00:15,733\n(baaaaaaaaaaahhh!!)\n\n6\n00:00:16,881 --> 00:00:18,881\nand that's pretty much all there is to say",
+      "language": "en"
+    }
+  },
+  "status": 201,
+  "ms": 865,
+  "headers": {
+    "content-type": "application/json",
+    "x-ratelimit-remaining": "52"
+  },
+  "body": "{\"context\":{\"metadata\":{\"ref\":{\"input\":\"https://www.youtube.com/watch?v=jNQXAC9IVRw\",\"platform\":\"youtube\",\"kind\":\"video\",\"id\":\"youtube:jNQXAC9IVRw\",\"nativeId\":\"jNQXAC9IVRw\",\"url\":\"https://www.youtube.com/watch?v=jNQXAC9IVRw\"},\"title\":\"Me at the zoo\",\"description\":\"Microplastics are accumulating in human brains at an alarming rate\\nhttps://www.youtube.com/watch?v=0PT5c1z3LL8\\n\\n“Nanoplastics and Human Health” with Matthew J Campen, PhD, MSPH\\nhttps://www.youtube.com/watch?v=RRBN_4L09Mg\\n\\n00:00 Intro\\n00:05 The cool thing\\n00:17 End\",\"durationSec\":19,\"publishedAt\":\"2005-04-23\",\"thumbnailUrl\":\"https://i.ytimg.com/vi/jNQXAC9IVRw/hqdefault.jpg?sqp=-oaymwEmCOADEOgC8quKqQMa8AEB-AG-AoAC8AGKAgwIABABGFUgWShlMA8=&rs=AOn4CLA9eLBatYv9WbkD4BbZ2Im-biSPTw\",\"tags\":[\"me at the zoo\",\"jawed karim\",\"first youtube video\"],\"chapters\":[{\"title\":\"Intro\",\"startSec\":0,\"endSec\":5},{\"title\":\"The cool thing\",\"startSec\":5,\"endSec\":17},{\"title\":\"End\",\"startSec\":17,\"endSec\":19}],\"isLive\":false,\"extra\":{\"viewCount\":448610409,\"likeCount\":20139792,\"dateText\":\"Apr 23, 2005\",\"channelHandle\":\"@jawed\",\"channelHandleUrl\":\"https://www.youtube.com/@jawed\",\"subscriberCountText\":\"6.74M subscribers\",\"isShort\":false,\"isLive\":false,\"isUpcoming\":false,\"isLiveContent\":false,\"ageRestricted\":false,\"membersOnly\":false,\"playability\":\"OK\",\"chapterSource\":\"description\",\"links\":[\"https://www.youtube.com/watch?v=0PT5c1z3LL8\",\"https://www.youtube.com/watch?v=RRBN_4L09Mg\"]},\"channel\":{\"name\":\"jawed\",\"id\":\"UC4QobU6STFB0P71PMvOGN5A\",\"url\":\"https://www.youtube.com/channel/UC4QobU6STFB0P71PMvOGN5A\"}},\"transcript\":{\"ref\":{\"input\":\"https://www.youtube.com/watch?v=jNQXAC9IVRw\",\"platform\":\"youtube\",\"kind\":\"video\",\"id\":\"youtube:jNQXAC9IVRw\",\"nativeId\":\"jNQXAC9IVRw\",\"url\":\"https://www.youtube.com/watch?v=jNQXAC9IVRw\"},\"language\":\"en\",\"origin\":\"imported\",\"producer\":\"import/paste\",\"segments\":[{\"startSec\":1.2,\"endSec\":3.36,\"text\":\"All right, so here we are, in front of the elephants\"},{\"startSec\":5.318,\"endSec\":7.974,\"text\":\"the cool thing about these guys is that they have really...\"},{\"startSec\":7.974,\"endSec\":12.616,\"text\":\"really really long trunks\"},{\"startSec\":12.616,\"endSec\":14.367,\"text\":\"and that's cool\"},{\"startSec\":14.421,\"endSec\":15.733,\"text\":\"(baaaaaaaaaaahhh!!)\"},{\"startSec\":16.881,\"endSec\":18.881,\"text\":\"and that's pretty much all there is to say\"}],\"createdAt\":\"2026-11-15T15:29:19.319Z\"},\"attempts\":[{\"id\":\"youtube\",\"stage\":\"metadata\",\"outcome\":\"ok\",\"ms\":858},{\"id\":\"import\",\"stage\":\"captions\",\"outcome\":\"ok\",\"detail\":\"paste, srt\"}]},\"format\":\"srt\",\"saved\":true}"
+}

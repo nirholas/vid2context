@@ -33,6 +33,8 @@ interface Settings {
 }
 
 const LOCAL = 'http://127.0.0.1:8787';
+/** Query keys of shared links: `?rx.<block id>=<the block's edited fields, URL-encoded>`. */
+const SHARE_PREFIX = 'rx.';
 const SETTINGS_KEY = 'v2c.run.server';
 const KEY_KEY = 'v2c.run.key';
 const BASE_PATH = (import.meta.env.BASE_URL ?? '/').replace(/\/$/, '');
@@ -349,6 +351,7 @@ class Block {
       }
     });
     this.el.querySelector('[data-rx-reset]')?.addEventListener('click', () => this.reset());
+    this.el.querySelector('[data-rx-share]')?.addEventListener('click', () => void this.share());
     this.el.querySelector('[data-rx-sample]')?.addEventListener('click', () => this.useSample());
     this.el.querySelector('[data-rx-settings]')?.addEventListener('click', () => openSettings());
     this.server.addEventListener('change', () => {
@@ -424,6 +427,53 @@ class Block {
     const res = await fetch(`${BASE_PATH}${sample.href}`);
     if (!res.ok) throw new Error(`Could not load the sample file (HTTP ${res.status}).`);
     return new File([await res.blob()], sample.name, { type: res.headers.get('content-type') ?? 'audio/mpeg' });
+  }
+
+  /** The fields that differ from their defaults, as `?rx.<block id>=` in a link to this block. */
+  shareUrl(): string {
+    const changed = new URLSearchParams();
+    for (const [name, value] of Object.entries(this.values())) {
+      const f = this.spec.fields.find((x) => x.name === name);
+      if (f && value !== (f.default ?? '')) changed.set(name, value);
+    }
+    const url = new URL(location.href);
+    for (const k of [...url.searchParams.keys()]) if (k.startsWith(SHARE_PREFIX)) url.searchParams.delete(k);
+    if ([...changed.keys()].length > 0) url.searchParams.set(`${SHARE_PREFIX}${this.el.id}`, changed.toString());
+    url.hash = this.el.id;
+    return url.toString();
+  }
+
+  private async share(): Promise<void> {
+    const btn = this.el.querySelector<HTMLButtonElement>('[data-rx-share]');
+    const url = this.shareUrl();
+    history.replaceState(history.state, '', url);
+    let copied = false;
+    try {
+      await navigator.clipboard.writeText(url);
+      copied = true;
+    } catch {
+      // Clipboard refused (insecure origin or permission): the address bar holds the link instead.
+    }
+    if (!btn) return;
+    btn.textContent = copied ? 'Link copied' : 'Link in address bar';
+    setTimeout(() => {
+      btn.textContent = 'Share';
+    }, 1800);
+  }
+
+  /** Fill fields from a shared link (`?rx.<block id>=name=value&...`). */
+  applyShared(params: URLSearchParams): boolean {
+    const raw = params.get(`${SHARE_PREFIX}${this.el.id}`);
+    if (raw === null) return false;
+    for (const [name, value] of new URLSearchParams(raw)) {
+      const f = this.spec.fields.find((x) => x.name === name);
+      if (!f || f.type === 'file') continue;
+      if (f.type === 'select' && !(f.options ?? []).includes(value)) continue;
+      this.setValue(name, value);
+      this.edited.add(name);
+    }
+    this.refresh();
+    return true;
   }
 
   private reset(): void {
@@ -721,6 +771,12 @@ function unreachableHelp(status: number | null): string {
 // ------------------------------------------------------------------ start
 
 for (const el of document.querySelectorAll<HTMLElement>('[data-rx]')) blocks.push(new Block(el));
+{
+  // A shared link fills its block's fields and scrolls to it (the hash alone ran before the runtime loaded).
+  const params = new URLSearchParams(location.search);
+  const target = blocks.filter((b) => b.applyShared(params)).at(-1);
+  if (target) target.el.scrollIntoView({ block: 'start' });
+}
 if (blocks.length && settings.mode === 'site') {
   // Same-origin only on load; a local or custom server is checked when you pick it.
   const first = blocks[0]?.el;

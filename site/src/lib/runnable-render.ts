@@ -78,6 +78,7 @@ function fieldHtml(spec: RunnableSpec, f: Field, uid: string, sourceTitle: strin
         .join('')}</select>`;
       break;
     case 'list':
+    case 'textarea':
     case 'json': {
       const rows = Math.min(14, Math.max(2, (f.default ?? '').split('\n').length));
       control = `<textarea id="${id}" ${name} rows="${rows}" spellcheck="false"${describedBy}>${value}</textarea>`;
@@ -95,7 +96,12 @@ function fieldHtml(spec: RunnableSpec, f: Field, uid: string, sourceTitle: strin
     default:
       control = `<input id="${id}" type="text" ${name} value="${value}" spellcheck="false" autocomplete="off"${f.type === 'url' ? ' inputmode="url"' : ''}${describedBy}>`;
   }
-  const wide = f.type === 'url' || f.type === 'list' || f.type === 'json' || (f.type === 'text' && (f.default ?? '').length > 24);
+  const wide =
+    f.type === 'url' ||
+    f.type === 'list' ||
+    f.type === 'textarea' ||
+    f.type === 'json' ||
+    (f.type === 'text' && (f.default ?? '').length > 24);
   return `<div class="rx-field${wide ? ' rx-wide' : ''}"><label for="${id}">${esc(f.label)}</label>${control}${help}</div>`;
 }
 
@@ -154,7 +160,7 @@ function renderBlock(spec: RunnableSpec, uid: string): string {
 <script type="application/json" data-rx-spec>${scriptJson(spec)}</script>
 <header class="rx-head"><span class="rx-method rx-method-${spec.method.toLowerCase()}">${spec.method}</span><code class="rx-path">${esc(spec.path)}</code><a class="rx-title" id="${uid}-title" href="#${uid}">${esc(spec.title)}</a></header>
 ${spec.note ? `<p class="rx-note">${esc(spec.note)}</p>` : ''}
-<form class="rx-form" novalidate>${fields ? `<div class="rx-fields">${fields}</div>` : ''}<p class="rx-input-error" data-rx-input-error role="alert" hidden></p><div class="rx-actions"><button type="submit" class="btn btn-primary rx-run" data-rx-run disabled title="Loading">Run</button><button type="button" class="btn rx-reset" data-rx-reset>Reset</button><span class="rx-server"><label for="${uid}-server">Server</label><select id="${uid}-server" data-rx-server disabled><option value="site">This site</option><option value="local">Local server (127.0.0.1:8787)</option><option value="custom">Custom URL</option></select><button type="button" class="rx-gear" data-rx-settings aria-label="Server URL and API key" title="Server URL and API key" disabled><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg></button><span class="rx-health" data-rx-health></span></span></div></form>
+<form class="rx-form" novalidate>${fields ? `<div class="rx-fields">${fields}</div>` : ''}<p class="rx-input-error" data-rx-input-error role="alert" hidden></p><div class="rx-actions"><button type="submit" class="btn btn-primary rx-run" data-rx-run disabled title="Loading">Run</button><button type="button" class="btn rx-reset" data-rx-reset>Reset</button><button type="button" class="btn rx-share" data-rx-share title="Copy a link to this example with your edits">Share</button><span class="rx-server"><label for="${uid}-server">Server</label><select id="${uid}-server" data-rx-server disabled><option value="site">This site</option><option value="local">Local server (127.0.0.1:8787)</option><option value="custom">Custom URL</option></select><button type="button" class="rx-gear" data-rx-settings aria-label="Server URL and API key" title="Server URL and API key" disabled><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg></button><span class="rx-health" data-rx-health></span></span></div></form>
 <div class="rx-code"><div class="rx-tabs" role="tablist" aria-label="Code for this request">${tabs}</div>${panels}</div>
 ${out}
 </section>`;

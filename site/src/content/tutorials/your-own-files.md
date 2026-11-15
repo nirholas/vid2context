@@ -1,8 +1,8 @@
 ---
 title: Your own audio and video files
 label: Your own files
-description: Upload an audio or video file to the vid2context HTTP API and get its transcript in any format, with a public-domain Apollo 11 clip you can send from the page.
-order: 5
+description: Upload an audio or video file to the vid2context HTTP API and get its transcript in any format, or import a transcript you already have, with a public-domain Apollo 11 clip you can send from the page.
+order: 6
 ---
 
 Not every video is on a platform. A recording of a meeting, a lecture you filmed, a podcast you downloaded: upload the file, and every route that takes a `url` accepts it.
@@ -30,6 +30,17 @@ Run the upload above and its `input` fills in the field below. Uploads have no c
 ```
 
 An upload's transcript is kept next to the upload and expires with it; it is never saved in the library.
+
+## 3. Or import a transcript you already have
+
+Sometimes the transcript exists and only needs to get in: captions you fixed by hand, an SRT from your video editor, a transcript a speaker sent you. `POST /imports` takes the text (SRT, WebVTT, JSON segments or plain text, up to 5 MB) and the video it belongs to, parses it, and returns a `VideoContext` whose `transcript.origin` is `imported`, so a model or a later step can tell it apart from captions read from the platform.
+
+The block holds the real captions of "Me at the zoo". Change a line, run it, and the change is in the segments that come back.
+
+```run import-transcript
+```
+
+On a server you run, the import is saved in the library under the video's id, so later requests for that video answer with your transcript (`saved` in the response says so). Hosted servers (`VID2CONTEXT_HOSTED=1`) return the import without saving it, because their library is shared and an imported text is not verified.
 
 ## Files on the server's own disk
 
