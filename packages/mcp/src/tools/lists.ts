@@ -168,7 +168,15 @@ export function registerListTools(server: McpServer, deps: ToolDeps): void {
         input: z.string(),
         count: z.number(),
         items: z.array(
-          z.object({ id: z.string(), platform: z.string(), kind: z.string(), nativeId: z.string(), url: z.string().optional() }),
+          z.object({
+            id: z.string(),
+            platform: z.string(),
+            kind: z.string(),
+            nativeId: z.string(),
+            url: z.string().optional(),
+            title: z.string().optional(),
+            durationSec: z.number().optional(),
+          }),
         ),
         list: z.object({ id: z.string(), url: z.string().optional() }).optional(),
       },
@@ -190,6 +198,8 @@ export function registerListTools(server: McpServer, deps: ToolDeps): void {
             kind: r.kind,
             nativeId: r.nativeId,
             ...(r.url ? { url: r.url } : {}),
+            ...(r.title ? { title: r.title } : {}),
+            ...(r.durationSec !== undefined ? { durationSec: r.durationSec } : {}),
           })),
           ...(list ? { list: { id: list.id, ...(list.url ? { url: list.url } : {}) } } : {}),
         });
