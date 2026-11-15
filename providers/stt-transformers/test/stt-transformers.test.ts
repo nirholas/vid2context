@@ -11,9 +11,11 @@ import provider, {
   DEFAULT_MODEL,
   decodeWithFfmpeg,
   mapChunks,
+  maxDecodedBytes,
   modelCacheDir,
   modelsFromEnv,
   type PipelineOutput,
+  readAudioCapped,
   resolveModelId,
   TURBO_MODEL,
 } from '../src/node.ts';
@@ -199,6 +201,22 @@ describe.skipIf(!hasFfmpeg)('ffmpeg decoding (local, no network)', () => {
     expect(err.hint).toBeTruthy();
   });
 
+  it('stops ffmpeg once the decoded samples pass the byte cap', async () => {
+    const data = new Uint8Array(readFileSync(apolloPath));
+    const err = await decodeWithFfmpeg({ kind: 'bytes', data, mimeType: 'audio/mpeg', filename: 'a.mp3' }, testContext(), {
+      maxBytes: 16000 * 4 * 2,
+    }).catch((e) => e);
+    expect(err).toBeInstanceOf(Vid2ContextError);
+    expect(err.code).toBe('too-large');
+    expect(err.hint).toMatch(/TRANSFORMERS_MAX_DECODED_MB/);
+  });
+
+  it('reads the decoded cap from TRANSFORMERS_MAX_DECODED_MB', () => {
+    expect(maxDecodedBytes({ TRANSFORMERS_MAX_DECODED_MB: '2' })).toBe(2 * 1024 * 1024);
+    expect(maxDecodedBytes({})).toBe(1024 * 1024 * 1024);
+    expect(maxDecodedBytes({ TRANSFORMERS_MAX_DECODED_MB: '-1' })).toBe(1024 * 1024 * 1024);
+  });
+
   it('reports a missing ffmpeg with a hint', async () => {
     const ctx = testContext({ env: { FFMPEG_PATH: '/nonexistent/ffmpeg' } });
     const err = await decodeWithFfmpeg(
@@ -229,4 +247,27 @@ describe.skipIf(!process.env.LIVE)('live: Whisper on onnxruntime-node', () => {
     expect(cached).toMatch(/encoder_model\.onnx/);
     expect(cached).toMatch(/decoder_model_merged\.onnx/);
   }, 300_000);
+});
+
+describe('readAudioCapped', () => {
+  // The shared public-domain Apollo 11 clip (145,412 bytes).
+  const mp3 = new Uint8Array(readFileSync(new URL('../../../tests/fixtures/media/apollo11-small-step.mp3', import.meta.url)));
+
+  it('returns the whole file under the cap', async () => {
+    const data = await readAudioCapped(new Response(mp3, { headers: { 'content-type': 'audio/mpeg' } }), {});
+    expect(data).toEqual(mp3);
+  });
+
+  it('refuses a declared size over VID2CONTEXT_MAX_MEDIA_MB', async () => {
+    const res = new Response(mp3, { headers: { 'content-length': String(mp3.byteLength) } });
+    await expect(readAudioCapped(res, { VID2CONTEXT_MAX_MEDIA_MB: '0.1' })).rejects.toMatchObject({ code: 'too-large' });
+  });
+
+  it('stops a stream without a length once it passes the cap', async () => {
+    const res = new Response(new Blob([mp3]).stream());
+    await expect(readAudioCapped(res, { VID2CONTEXT_MAX_MEDIA_MB: '0.1' })).rejects.toMatchObject({
+      code: 'too-large',
+      hint: expect.stringMatching(/VID2CONTEXT_MAX_MEDIA_MB/),
+    });
+  });
 });

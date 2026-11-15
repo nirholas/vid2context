@@ -22,6 +22,7 @@ import { normalizeLanguage } from '@vid2context/provider-stt-openai-compatible';
 import { run, SpawnError } from './exec.ts';
 import { isEnglishOnly, resolveModel } from './models.ts';
 import { isFile, resolveBinary, resolveFfmpeg } from './paths.ts';
+import { Semaphore } from './semaphore.ts';
 import { inferViaServer, managedServerUrl } from './server.ts';
 
 /** SttOptions plus whisper's built-in translate-to-English. */
@@ -47,6 +48,26 @@ export interface WhisperCppConfig {
 
 export function defaultThreads(): number {
   return Math.max(1, Math.min(availableParallelism(), 8));
+}
+
+/**
+ * How many transcriptions run whisper.cpp at once in this process:
+ * WHISPER_CONCURRENCY, default 1. Each run already uses WHISPER_CPP_THREADS
+ * threads and holds a whole model in memory, so parallel runs mostly compete.
+ */
+export function whisperConcurrency(env: Env): number {
+  const n = Number(env.WHISPER_CONCURRENCY);
+  return env.WHISPER_CONCURRENCY?.trim() && Number.isInteger(n) && n > 0 ? n : 1;
+}
+
+const slots = new Semaphore();
+
+/**
+ * Run `fn` while holding one of the WHISPER_CONCURRENCY slots. A caller whose
+ * ctx.signal aborts while waiting leaves the queue and never runs `fn`.
+ */
+export function withWhisperSlot<T>(ctx: Ctx, fn: () => Promise<T>): Promise<T> {
+  return slots.run(whisperConcurrency(ctx.env), ctx.signal, fn);
 }
 
 /** Read the whisper.cpp settings from env. Throws when WHISPER_CPP_MODEL is missing. */
@@ -156,17 +177,65 @@ export function cliError(stderr: string, code: number | null, signal: string | n
   });
 }
 
-async function materialize(audio: AudioInput, dir: string, ctx: Ctx): Promise<string> {
+const MB = 1024 * 1024;
+
+/** VID2CONTEXT_MAX_MEDIA_MB in bytes (default 200 MB), the same cap the media-url provider uses. */
+export function maxDownloadBytes(env: Env): number {
+  const mb = Number(env.VID2CONTEXT_MAX_MEDIA_MB);
+  return Math.round((Number.isFinite(mb) && mb > 0 ? mb : 200) * MB);
+}
+
+function downloadTooLarge(bytes: number, cap: number): Vid2ContextError {
+  return new Vid2ContextError(
+    'too-large',
+    `The audio for whisper.cpp is over ${(cap / MB).toFixed(0)} MB (${(bytes / MB).toFixed(1)} MB so far).`,
+    { hint: 'Raise VID2CONTEXT_MAX_MEDIA_MB, or pass a shorter or audio-only file.' },
+  );
+}
+
+/**
+ * Write the audio to a file whisper.cpp can read. A URL is streamed to disk
+ * (never held in memory) and stopped as soon as it passes VID2CONTEXT_MAX_MEDIA_MB.
+ */
+export async function materialize(audio: AudioInput, dir: string, ctx: Ctx): Promise<string> {
   if (audio.kind === 'bytes') {
     const ext = extname(audio.filename || '') || '.bin';
     const p = join(dir, `input${ext}`);
     await writeFile(p, audio.data);
     return p;
   }
+  const cap = maxDownloadBytes(ctx.env);
   const res = await fetchWithTimeout(ctx, audio.url, { redirect: 'follow' }, 30 * 60_000);
   if (!res.ok) throw await errorFromResponse(res, 'Audio download for whisper.cpp');
+  const declared = Number(res.headers.get('content-length'));
+  if (Number.isFinite(declared) && declared > cap) {
+    await res.body?.cancel().catch(() => undefined);
+    throw downloadTooLarge(declared, cap);
+  }
   const p = join(dir, 'input.media');
-  await writeFile(p, new Uint8Array(await res.arrayBuffer()));
+  if (!res.body) {
+    const data = new Uint8Array(await res.arrayBuffer());
+    if (data.byteLength > cap) throw downloadTooLarge(data.byteLength, cap);
+    await writeFile(p, data);
+    return p;
+  }
+  const file = await open(p, 'w');
+  const reader = res.body.getReader();
+  let total = 0;
+  try {
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      total += value.byteLength;
+      if (total > cap) {
+        await reader.cancel().catch(() => undefined);
+        throw downloadTooLarge(total, cap);
+      }
+      await file.write(value);
+    }
+  } finally {
+    await file.close();
+  }
   return p;
 }
 
@@ -271,14 +340,17 @@ export async function transcribeWhisperCpp(audio: AudioInput, opts: WhisperCppOp
 
     if (cfg.serverUrl || cfg.managedServer) {
       const url = cfg.serverUrl ?? (await managedServerUrl(model.path, cfg.threads, ctx));
-      const started = Date.now();
-      const parsed = await inferViaServer(
-        url,
-        wav,
-        { language, prompt: opts.prompt, translate: opts.translate && !englishOnly },
-        ctx,
-        timeoutMs,
-      );
+      let started = Date.now();
+      const parsed = await withWhisperSlot(ctx, () => {
+        started = Date.now();
+        return inferViaServer(
+          url,
+          wav,
+          { language, prompt: opts.prompt, translate: opts.translate && !englishOnly },
+          ctx,
+          timeoutMs,
+        );
+      });
       const wallSec = (Date.now() - started) / 1000;
       return finish(parsed, model.name, audioSec, wallSec, cfg.serverUrl ? 'server' : 'managed server', cfg.threads, ctx);
     }
@@ -300,10 +372,13 @@ export async function transcribeWhisperCpp(audio: AudioInput, opts: WhisperCppOp
       translate: opts.translate,
       englishOnly,
     });
-    const started = Date.now();
+    let started = Date.now();
     let r: Awaited<ReturnType<typeof run>>;
     try {
-      r = await run(bin.path, args, { timeoutMs, signal: ctx.signal, env: ctx.env });
+      r = await withWhisperSlot(ctx, () => {
+        started = Date.now();
+        return run(bin.path, args, { timeoutMs, signal: ctx.signal, env: ctx.env });
+      });
     } catch (err) {
       if (err instanceof SpawnError) {
         throw new Vid2ContextError('unavailable', `Cannot run whisper-cli at ${bin.path} (${err.errno}).`, {

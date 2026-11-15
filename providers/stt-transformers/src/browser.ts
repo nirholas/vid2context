@@ -3,8 +3,11 @@
  * to 16 kHz), runs on WebGPU when an adapter is available and WASM otherwise,
  * and caches models in the browser's Cache Storage. No Node built-ins.
  */
-import { type AudioInput, type Ctx, errorFromResponse, Vid2ContextError } from '@vid2context/core';
-import { createTransformersProvider, type RuntimeHooks, SAMPLE_RATE } from './index.ts';
+import { type AudioInput, type Ctx, errorFromResponse, fetchWithTimeout, Vid2ContextError } from '@vid2context/core';
+import { createTransformersProvider, type RuntimeHooks, readAudioCapped, SAMPLE_RATE } from './index.ts';
+
+/** The longest one audio download may take in the browser. */
+const DOWNLOAD_TIMEOUT_MS = 10 * 60_000;
 
 export * from './index.ts';
 
@@ -34,9 +37,10 @@ export async function decodeWithWebAudio(audio: AudioInput, ctx: Ctx): Promise<F
   if (audio.kind === 'bytes') {
     bytes = audio.data.slice().buffer as ArrayBuffer;
   } else {
-    const res = await ctx.fetch(audio.url, { signal: ctx.signal });
+    // Same bounds as the Node path: a time limit and a size cap, so a stalled or huge file cannot hang the tab.
+    const res = await fetchWithTimeout(ctx, audio.url, {}, DOWNLOAD_TIMEOUT_MS);
     if (!res.ok) throw await errorFromResponse(res, 'transformers: audio download');
-    bytes = await res.arrayBuffer();
+    bytes = (await readAudioCapped(res, ctx.env)).slice().buffer as ArrayBuffer;
   }
   if (typeof OfflineAudioContext === 'undefined') {
     throw new Vid2ContextError('no-provider', 'transformers: Web Audio is not available in this browser', {

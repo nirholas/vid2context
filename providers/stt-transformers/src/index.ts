@@ -22,6 +22,60 @@ import {
   Vid2ContextError,
 } from '@vid2context/core';
 
+const MB = 1024 * 1024;
+
+/** VID2CONTEXT_MAX_MEDIA_MB in bytes (default 200 MB), the same cap the media-url provider uses. */
+export function maxAudioBytes(env: Env): number {
+  const mb = Number(env.VID2CONTEXT_MAX_MEDIA_MB);
+  return Math.round((Number.isFinite(mb) && mb > 0 ? mb : 200) * MB);
+}
+
+/**
+ * Read an audio download, refusing anything over VID2CONTEXT_MAX_MEDIA_MB:
+ * checked against content-length first, then while streaming, so a huge or
+ * endless response never fills memory (decoded samples take about 230 MB per
+ * hour on top of the file itself).
+ */
+export async function readAudioCapped(res: Response, env: Env): Promise<Uint8Array> {
+  const cap = maxAudioBytes(env);
+  const tooLarge = (bytes: number) =>
+    new Vid2ContextError(
+      'too-large',
+      `transformers: the audio is over ${(cap / MB).toFixed(0)} MB (${(bytes / MB).toFixed(1)} MB so far).`,
+      { hint: 'Raise VID2CONTEXT_MAX_MEDIA_MB, or pass a shorter or audio-only file.' },
+    );
+  const declared = Number(res.headers.get('content-length'));
+  if (Number.isFinite(declared) && declared > cap) {
+    await res.body?.cancel().catch(() => undefined);
+    throw tooLarge(declared);
+  }
+  if (!res.body) {
+    const data = new Uint8Array(await res.arrayBuffer());
+    if (data.byteLength > cap) throw tooLarge(data.byteLength);
+    return data;
+  }
+  const reader = res.body.getReader();
+  const parts: Uint8Array[] = [];
+  let total = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    total += value.byteLength;
+    if (total > cap) {
+      await reader.cancel().catch(() => undefined);
+      throw tooLarge(total);
+    }
+    parts.push(value);
+  }
+  const out = new Uint8Array(total);
+  let offset = 0;
+  for (const part of parts) {
+    out.set(part, offset);
+    offset += part.byteLength;
+  }
+  return out;
+}
+
 /** Repo on the Hugging Face Hub that publishes the Whisper ONNX exports. */
 export const MODEL_ORG = 'onnx-community';
 /** Default: small, multilingual, about 80 MB quantized; fine on CPU and WASM. */

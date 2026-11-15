@@ -7,6 +7,8 @@ import { inferenceUrl, inferViaServer } from '../src/server.ts';
 import {
   buildCliArgs,
   cliError,
+  materialize,
+  maxDownloadBytes,
   parseCliJson,
   readConfig,
   realtimeDetail,
@@ -191,5 +193,32 @@ describe('transcribeWhisperCpp checks before spawning', () => {
       code: 'unavailable',
       hint: expect.stringMatching(/multilingual/),
     });
+  });
+});
+
+describe('materialize (audio URLs)', () => {
+  // The shared public-domain Apollo 11 clip, served as a URL.
+  const mp3 = new Uint8Array(readFileSync(new URL('../../../tests/fixtures/media/apollo11-small-step.mp3', import.meta.url)));
+  const url = 'https://media.example.org/apollo11-small-step.mp3';
+  const route = { url, response: { body: mp3, headers: { 'content-type': 'audio/mpeg' } } };
+  const dir = mkdtempSync(join(tmpdir(), 'v2c-materialize-'));
+  afterAll(() => rmSync(dir, { recursive: true, force: true }));
+
+  it('streams the file to disk', async () => {
+    const p = await materialize({ kind: 'url', url }, dir, testContext({ fetch: replayFetch([route]) }));
+    expect(new Uint8Array(readFileSync(p))).toEqual(mp3);
+  });
+
+  it('stops at VID2CONTEXT_MAX_MEDIA_MB', async () => {
+    const ctx = testContext({ fetch: replayFetch([route]), env: { VID2CONTEXT_MAX_MEDIA_MB: '0.1' } });
+    await expect(materialize({ kind: 'url', url }, dir, ctx)).rejects.toMatchObject({
+      code: 'too-large',
+      hint: expect.stringMatching(/VID2CONTEXT_MAX_MEDIA_MB/),
+    });
+  });
+
+  it('defaults to 200 MB', () => {
+    expect(maxDownloadBytes({})).toBe(200 * 1024 * 1024);
+    expect(maxDownloadBytes({ VID2CONTEXT_MAX_MEDIA_MB: 'x' })).toBe(200 * 1024 * 1024);
   });
 });
