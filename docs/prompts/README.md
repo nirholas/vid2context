@@ -18,7 +18,7 @@ Numbers match `docs/ROADMAP.md` and the owner columns in `docs/contracts/`. Ever
 
 | # | Prompt | Owns | Track |
 |---|---|---|---|
-| 01 | [Output formats: Markdown, SRT, WebVTT, context pack](01-output-formats.md) | `packages/core/src/format/` | A. Core bones |
+| 01 | [Output formats: Markdown, SRT, WebVTT, context pack](archive/01-output-formats.md) | `packages/core/src/format/` | A. Core bones |
 | 02 | [Caption and transcript cleanup](02-caption-cleanup.md) | `packages/core/src/clean/` | A. Core bones |
 | 03 | [Token estimates, chunking and sections](03-chunking-sections.md) | `packages/core/src/chunk/` | A. Core bones |
 | 04 | [Long audio: split, transcribe in parallel, stitch, resume](04-long-audio.md) | `packages/core/src/longform/` | A. Core bones |
