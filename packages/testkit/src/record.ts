@@ -8,7 +8,7 @@
  * stdout: what was recorded and the scrub report. stderr: logs.
  */
 import { spawn } from 'node:child_process';
-import { existsSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
@@ -21,17 +21,41 @@ import {
   type VideoContext,
 } from '@vid2context/core';
 import { replayFetch } from '@vid2context/core/testing';
-import { loadRuntimeProviders } from './invariants.ts';
+import { loadRuntimeProviders, providerPackages, reachableFiles, runtimeEntry, stripComments } from './invariants.ts';
 import { fixtureRoutes, recordingFetch } from './recorder.ts';
+
+/**
+ * Provider packages whose node entry reaches child_process (yt-dlp, local
+ * whisper builds). Their network traffic, if any, never passes through
+ * ctx.fetch, so a recording cannot capture it and a replay would quietly run
+ * them for real again.
+ */
+function subprocessPackages(): Set<string> {
+  const out = new Set<string>();
+  for (const pkg of providerPackages()) {
+    const entry = runtimeEntry(pkg.dir, 'node');
+    if (!entry) continue;
+    const spawns = reachableFiles(entry).some((f) =>
+      /\b(?:from|import)\s*\(?\s*['"](?:node:)?child_process['"]/.test(stripComments(readFileSync(f, 'utf8'))),
+    );
+    if (spawns) out.add(pkg.name);
+  }
+  return out;
+}
 
 /**
  * The node registry, built package by package so one provider that is broken
  * or not installed yet is skipped with a warning instead of stopping the run.
+ * Unless allowSubprocess is set, providers that spawn processes are left out
+ * (see subprocessPackages), so every byte the pipeline used is in the fixtures.
  */
-async function nodeRegistry(): Promise<Registry> {
-  const { providers, failures } = await loadRuntimeProviders('node');
-  for (const f of failures) console.error(`record: skipping ${f.pkg}: ${f.error}`);
-  return new Registry(providers, 'node');
+async function nodeRegistry(allowSubprocess: boolean, quiet = false): Promise<{ registry: Registry; excluded: string[] }> {
+  const { providers, origins, failures } = await loadRuntimeProviders('node');
+  if (!quiet) for (const f of failures) console.error(`record: skipping ${f.pkg}: ${f.error}`);
+  const spawning = allowSubprocess ? new Set<string>() : subprocessPackages();
+  const kept = providers.filter((p) => !spawning.has(origins.get(p.id) ?? ''));
+  const excluded = providers.filter((p) => !kept.includes(p)).map((p) => p.id);
+  return { registry: new Registry(kept, 'node'), excluded };
 }
 
 /** Same files as loadEnvFiles in @vid2context/registry/node: VID2CONTEXT_ENV_FILE, then ./.env. Shell variables win. */
@@ -41,13 +65,15 @@ function loadEnv(): void {
 }
 
 const USAGE =
-  'Usage: npm run record -- --out <dir> [--name <n>] -- <input> [--mode auto|captions|stt|video] [--lang xx] [--no-auto]';
+  'Usage: npm run record -- --out <dir> [--name <n>] [--allow-subprocess] -- <input> [--mode auto|captions|stt|video] [--lang xx] [--no-auto]';
 
 interface Args {
   out: string;
   /** Internal: replay `out` instead of recording (used by the verification child process). */
   replay?: boolean;
   name?: string;
+  /** Keep providers that spawn processes (yt-dlp): their traffic is not recorded, so replay is not verified. */
+  allowSubprocess: boolean;
   input: string;
   opts: GetContextOptions;
 }
@@ -59,8 +85,10 @@ function parse(argv: string[]): Args {
   let out: string | undefined;
   let name: string | undefined;
   let replay = false;
+  let allowSubprocess = false;
   for (let i = 0; i < own.length; i++) {
     if (own[i] === '--replay') replay = true;
+    else if (own[i] === '--allow-subprocess') allowSubprocess = true;
     else if (own[i] === '--out') out = own[++i];
     else if (own[i] === '--name') name = own[++i];
     else throw new Error(`unknown option ${own[i]}\n${USAGE}`);
@@ -77,7 +105,7 @@ function parse(argv: string[]): Args {
     else throw new Error(`unexpected argument ${a}\n${USAGE}`);
   }
   if (!out || !input) throw new Error(USAGE);
-  return { out, name, input, opts, replay };
+  return { out, name, input, opts, replay, allowSubprocess };
 }
 
 function slug(input: string): string {
@@ -109,7 +137,12 @@ async function main(): Promise<number> {
   if (args.replay) return replayOnly(args, name);
   const env = process.env as Env;
   const rec = recordingFetch(globalThis.fetch.bind(globalThis), { dir: args.out, name, scrub: { env } });
-  const registry = await nodeRegistry();
+  const { registry, excluded } = await nodeRegistry(args.allowSubprocess);
+  if (excluded.length > 0) {
+    console.error(
+      `record: left out ${excluded.join(', ')}: they spawn processes whose traffic cannot be recorded (pass --allow-subprocess to keep them)`,
+    );
+  }
 
   let live: VideoContext;
   try {
@@ -119,12 +152,12 @@ async function main(): Promise<number> {
     if (rec.files.length > 0) console.error(`record: ${rec.files.length} exchange(s) were still written to ${args.out}`);
     return 1;
   }
-  return finish(args, name, rec, live);
+  return finish(args, name, rec, live, excluded);
 }
 
 /** Replay mode (run in a child process, so circuit breakers and caches start fresh): print the replayed transcript as JSON. */
 async function replayOnly(args: Args, name: string): Promise<number> {
-  const registry = await nodeRegistry();
+  const { registry } = await nodeRegistry(args.allowSubprocess, true);
   const replay = replayFetch(fixtureRoutes(args.out, { name }));
   const ctx = createContext({ runtime: 'node', env: process.env as Env, fetch: replay });
   const again = await getVideoContext(registry, args.input, args.opts, ctx);
@@ -150,8 +183,15 @@ function replayInChild(argv: string[]): Promise<{ ok: boolean; stdout: string; s
   });
 }
 
-async function finish(args: Args, name: string, rec: ReturnType<typeof recordingFetch>, live: VideoContext): Promise<number> {
+async function finish(
+  args: Args,
+  name: string,
+  rec: ReturnType<typeof recordingFetch>,
+  live: VideoContext,
+  excluded: string[],
+): Promise<number> {
   const out: string[] = [];
+  if (excluded.length > 0) out.push(`Left out (they spawn processes): ${excluded.join(', ')}`, '');
   out.push(`Recorded ${rec.files.length} exchange(s) into ${args.out}:`);
   for (const f of rec.files) out.push(`  ${f}`);
 
@@ -167,6 +207,19 @@ async function finish(args: Args, name: string, rec: ReturnType<typeof recording
     '',
     `Live VideoContext written to ${contextFile} (${live.transcript.segments.length} segments, ${live.transcript.origin}).`,
   );
+
+  if (rec.files.length === 0) {
+    out.push(
+      'Replay: not verified. Nothing went through fetch, so the transcript came from somewhere a recording cannot capture.',
+    );
+    process.stdout.write(`${out.join('\n')}\n`);
+    return 1;
+  }
+  if (args.allowSubprocess) {
+    out.push('Replay: not verified, because --allow-subprocess lets providers reach the network outside fetch.');
+    process.stdout.write(`${out.join('\n')}\n`);
+    return 0;
+  }
 
   // The pipeline part of the command line (input and options after --) goes to the child unchanged.
   const raw = process.argv.slice(2);
