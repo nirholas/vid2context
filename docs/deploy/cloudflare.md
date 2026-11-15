@@ -42,6 +42,10 @@ npx wrangler secret put VID2CONTEXT_API_KEYS     # comma-separated keys for /api
 
 Every variable in `.env.example` works the same way. `wrangler.jsonc` sets one plain variable, `VID2CONTEXT_PUBLIC=1`, which marks this deployment as the public, internet-facing instance.
 
+## Rate limiting
+
+Each Worker isolate has its own memory, so the in-memory token bucket behind `VID2CONTEXT_RATE_LIMIT` only limits one isolate. `wrangler.jsonc` therefore declares a Workers rate limiting binding, `RATE_LIMITER` (60 requests per 60 seconds per API key or client IP, counted across the isolates in a location), and points `VID2CONTEXT_RATE_LIMIT_BINDING` at it. Nothing has to be created. Change `limit` (any number) and `period` (10 or 60 seconds) in the `ratelimits` entry; remove the entry and the variable to go back to the in-memory bucket.
+
 ## Optional bindings
 
 Workers AI is on by default; the rest are commented out in `wrangler.jsonc`. Without them the Worker keeps the library in memory (per isolate), uses hosted and keyless rungs, and runs no background jobs. To turn one on, create the resource, uncomment its block, and uncomment the matching variable in `vars` (the storage provider reads the variable to find the binding).

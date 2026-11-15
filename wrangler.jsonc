@@ -38,7 +38,10 @@
     // LLM rungs, so the public instance can transcribe uploads and direct media
     // links and write briefs without any key. Capped by the daily free neurons;
     // when they run out, the rung fails over to the next one.
-    "CLOUDFLARE_AI_BINDING": "AI"
+    "CLOUDFLARE_AI_BINDING": "AI",
+    // Rate limit per API key or client IP through the "ratelimits" binding below.
+    // Counted across isolates; without it each isolate keeps its own bucket.
+    "VID2CONTEXT_RATE_LIMIT_BINDING": "RATE_LIMITER"
     // Storage on Cloudflare (providers/storage-cloudflare): each variable names
     // a binding declared below. Uncomment together with that binding (add a
     // comma after the line before it).
@@ -49,10 +52,16 @@
 
   // Workers AI: free Whisper and LLM rungs through the binding (providers/cloudflare-ai).
   // Nothing to create; on. Remove this and CLOUDFLARE_AI_BINDING above to turn it off.
-  "ai": { "binding": "AI" }
+  "ai": { "binding": "AI" },
+
+  // Workers rate limiting: 60 requests per 60 s per API key or client IP, shared by
+  // every isolate in a location. Nothing to create; namespace_id is any integer
+  // unique in the account. It replaces VID2CONTEXT_RATE_LIMIT on this Worker; remove
+  // this and VID2CONTEXT_RATE_LIMIT_BINDING above to go back to the in-memory bucket.
+  "ratelimits": [{ "name": "RATE_LIMITER", "namespace_id": "1001", "simple": { "limit": 60, "period": 60 } }]
 
   // ---------------------------------------------------------------- optional bindings
-  // Uncomment what you use, and add a comma after the "ai" line above.
+  // Uncomment what you use, and add a comma after the "ratelimits" line above.
   // Every binding is optional: without them the Worker uses in-memory storage,
   // hosted and keyless rungs, and no background jobs.
 

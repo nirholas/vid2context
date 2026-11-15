@@ -275,6 +275,7 @@ Read by `@vid2context/server` (`npm run start:server`, the Worker, containers). 
 | `VID2CONTEXT_API_KEYS` | comma-separated API keys; when set, every `/api/*` route except `/health` needs `Authorization: Bearer <key>`. Plain keys have full access; hashed entries `name:scope:sha256hex` (scope `read`, `write` or `admin`) keep the key itself out of the config. Ignored in hosted mode |
 | `VID2CONTEXT_RATE_LIMIT` | requests per minute per key, or per client IP in open mode; default `120`, `0` off. Answers 429 with `Retry-After` |
 | `VID2CONTEXT_RATE_BURST` | requests allowed at once before the per-minute rate applies; default half of `VID2CONTEXT_RATE_LIMIT` |
+| `VID2CONTEXT_RATE_LIMIT_BINDING` | Cloudflare Workers only: name of a `ratelimits` binding in wrangler.jsonc. When set and bound, requests are counted per key or client IP across isolates by that binding (its `limit` and `period` apply) instead of the in-memory bucket, which on Workers only covers one isolate. The repo's wrangler.jsonc binds `RATE_LIMITER` at 60 per minute |
 | `VID2CONTEXT_TRUST_PROXY` | `1` behind a reverse proxy you control: take the client IP from `X-Forwarded-For` or `X-Real-IP`. Off by default because clients can forge them |
 | `VID2CONTEXT_CORS_ORIGINS` | browser origins allowed to call `/api/*` (`https://vid2context.com`, `chrome-extension://<id>`, or `*`), comma-separated; shared with `/mcp`. Off by default |
 | `VID2CONTEXT_MAX_BODY_KB` | largest JSON body; default `1024` |
