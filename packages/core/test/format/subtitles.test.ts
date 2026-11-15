@@ -567,7 +567,10 @@ describe('speakers (real diarized Deepgram utterances)', () => {
       const labels = paras.map((p) => /^\[[^\]]+\](?:\([^)]*\))? \*\*(Speaker \d):\*\* /.exec(p)?.[1]);
       // Every paragraph is labelled, and consecutive paragraphs only repeat a speaker when a long turn was split.
       expect(labels.every(Boolean), f).toBe(true);
-      expect(labels.filter((l, i) => l !== labels[i - 1]), f).toEqual(turns.map((t) => t.speaker));
+      expect(
+        labels.filter((l, i) => l !== labels[i - 1]),
+        f,
+      ).toEqual(turns.map((t) => t.speaker));
     }
   });
 });
