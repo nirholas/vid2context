@@ -12,8 +12,9 @@
  *   to `overlapSec` seconds, so a sentence cut at a boundary is still found.
  *
  * Segments are never split, so every chunk maps back to exact transcript time.
- * (Core's chunkTranscript is token-budget based and is not exported from the
- * core index, so search keeps this small time-based chunker of its own.)
+ * (Core's chunkTranscript splits by token budget and by whole chapters, which
+ * gives chunks far longer than a minute and cannot target a time window, so
+ * search keeps this small time-based chunker of its own.)
  */
 
 import type { Segment, VideoContext } from '@vid2context/core';
