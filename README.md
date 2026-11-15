@@ -4,6 +4,8 @@
 
 **Turn any video into context for AI agents.** An MCP server, CLI, HTTP API and library that gives Claude, ChatGPT, Cursor, VS Code Copilot and any other agent the transcript, metadata and chapters of a video, playlist, podcast or media file, with timestamps it can cite.
 
+[![The vid2context.com landing page: paste a video or podcast link and get context for AI agents](docs/images/landing.png)](https://vid2context.com)
+
 Paste a video link or drop in a media file. vid2context returns the transcript, metadata and chapters in a form your agent can read and cite: plain text with `[m:ss]` timestamps, JSON, Markdown, SRT, VTT, or one Markdown context pack for many videos that you can upload to ChatGPT Projects, Claude Projects or a custom GPT.
 
 It is free first. Local models run first, then hosted free tiers with your own key, then keyless hosts that need no account. Paid APIs are used last, and only when you set their key. With zero configuration it already works.
@@ -15,6 +17,10 @@ $ vid2context https://www.youtube.com/watch?v=jNQXAC9IVRw --timestamps
 [0:07] really really long trunks
 [0:12] and that's cool
 ```
+
+![The vid2context web app: a YouTube link goes in, and the transcript, SRT captions, chapters and a context pack for agents come out](docs/demo/web-app.gif)
+
+The web app on an 18 minute YouTube video: paste the link, then copy or download the transcript, captions, chapters or a context pack sized for an agent. Recorded live against the local API. [MP4 version](docs/demo/web-app.mp4).
 
 ## Why
 
@@ -53,7 +59,7 @@ First release (0.1.0), on npm as [`vid2context-mcp`](https://www.npmjs.com/packa
 
 | Area | What you get |
 | --- | --- |
-| Sources | YouTube (videos, Shorts, playlists, channels, comments, no key), any of the 1,000+ sites yt-dlp supports, Bilibili, Vimeo, Loom and Wistia transcripts, direct media URLs, Google Drive, Dropbox and OneDrive share links, local files, and every video embedded in a web page |
+| Sources | YouTube (videos, Shorts, playlists, channels, comments, no key), any of the 1,000+ sites yt-dlp supports, Bilibili, X (Twitter) posts, Vimeo, Loom and Wistia transcripts, direct media URLs, Google Drive, Dropbox and OneDrive share links, local files, and every video embedded in a web page |
 | Speech-to-text | Local whisper.cpp and Transformers.js (offline), any OpenAI-compatible server, Groq, Mistral, DeepInfra, Together, Cloudflare Workers AI, OVH (keyless), OpenAI |
 | LLMs | Ollama, LM Studio, llama.cpp, vLLM and other local servers, in-browser WebLLM, free tiers (Groq, Cerebras, Gemini, Mistral, GitHub Models, NVIDIA, SambaNova, OpenRouter `:free`), keyless hosts, native Anthropic, Gemini and Vertex |
 | Output | text, JSON, Markdown with timestamp links, SRT, VTT, the context pack, and a .zip bundle with all of them |
@@ -66,7 +72,15 @@ Planned: video mode, where a multimodal model watches the whole video. The `--mo
 
 ## Quick start (zero keys)
 
-Requires Node.js 22 or newer.
+No install: open the web app at [vid2context.com/app](https://vid2context.com/app/), paste a link and get every format as a file, a .zip, or text to paste into an agent. This is the real result for "Me at the zoo":
+
+![The vid2context web app showing the result for "Me at the zoo": metadata, a creator captions badge, ten generated files and the context.md preview](docs/images/app-result.png)
+
+Then open it in chat and ask questions. Answers cite the moment in the video they came from, here using a free model with no key:
+
+![The vid2context chat answering "What does he say about the elephants?" with a citation chip linking to Me at the zoo at 0:05](docs/images/app-chat.png)
+
+On your machine, it requires Node.js 22 or newer.
 
 ```sh
 npx vid2context "https://www.youtube.com/watch?v=jNQXAC9IVRw" --timestamps
