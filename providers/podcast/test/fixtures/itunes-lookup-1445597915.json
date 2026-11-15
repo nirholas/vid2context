@@ -1,0 +1,177 @@
+{
+ "resultCount": 5,
+ "results": [
+  {
+   "wrapperType": "track",
+   "kind": "podcast",
+   "artistId": 121678267,
+   "collectionId": 1445597915,
+   "trackId": 1445597915,
+   "artistName": "National Aeronautics and Space Administration (NASA)",
+   "collectionName": "Small Steps, Giant Leaps",
+   "trackName": "Small Steps, Giant Leaps",
+   "collectionCensoredName": "Small Steps, Giant Leaps",
+   "trackCensoredName": "Small Steps, Giant Leaps",
+   "artistViewUrl": "https://podcasts.apple.com/us/artist/nasa/121678267?uo=4",
+   "collectionViewUrl": "https://podcasts.apple.com/us/podcast/small-steps-giant-leaps/id1445597915?uo=4",
+   "feedUrl": "https://feeds.megaphone.fm/NATIONALAERONAUTICSANDSPACEADMINISTRATION5360639309",
+   "trackViewUrl": "https://podcasts.apple.com/us/podcast/small-steps-giant-leaps/id1445597915?uo=4",
+   "artworkUrl30": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts211/v4/6a/d6/9e/6ad69e59-4030-dee8-09f6-16bf66c9724f/mza_3748126404263591325.png/30x30bb.jpg",
+   "artworkUrl60": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts211/v4/6a/d6/9e/6ad69e59-4030-dee8-09f6-16bf66c9724f/mza_3748126404263591325.png/60x60bb.jpg",
+   "artworkUrl100": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts211/v4/6a/d6/9e/6ad69e59-4030-dee8-09f6-16bf66c9724f/mza_3748126404263591325.png/100x100bb.jpg",
+   "collectionPrice": 0.0,
+   "trackPrice": 0.0,
+   "collectionHdPrice": 0,
+   "releaseDate": "2026-11-10T23:10:00Z",
+   "collectionExplicitness": "notExplicit",
+   "trackExplicitness": "cleaned",
+   "trackCount": 184,
+   "trackTimeMillis": 1031,
+   "country": "USA",
+   "currency": "USD",
+   "primaryGenreName": "Science",
+   "contentAdvisoryRating": "Clean",
+   "artworkUrl600": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts211/v4/6a/d6/9e/6ad69e59-4030-dee8-09f6-16bf66c9724f/mza_3748126404263591325.png/600x600bb.jpg",
+   "genreIds": [
+    "1533",
+    "26"
+   ],
+   "genres": [
+    "Science",
+    "Podcasts"
+   ]
+  },
+  {
+   "artistIds": [],
+   "genres": [
+    {
+     "name": "Science",
+     "id": "1533"
+    }
+   ],
+   "episodeGuid": "f7a05c70-dd5b-11f1-b073-879875e7952e",
+   "shortDescription": "Dr. Marian Nemec, chief of the Computational Physics Branch at NASA Ames Research Center in Silicon Valley, California, takes us inside the world of NASA Advanced Supercomputing.",
+   "trackId": 1000801085715,
+   "trackName": "Supercomputing",
+   "feedUrl": "https://feeds.megaphone.fm/NATIONALAERONAUTICSANDSPACEADMINISTRATION5360639309",
+   "closedCaptioning": "none",
+   "collectionId": 1445597915,
+   "collectionName": "Small Steps, Giant Leaps",
+   "kind": "podcast-episode",
+   "wrapperType": "podcastEpisode",
+   "description": "Dr. Marian Nemec, chief of the Computational Physics Branch at NASA Ames Research Center in Silicon Valley, California, takes us inside the world of NASA Advanced Supercomputing.",
+   "country": "USA",
+   "collectionViewUrl": "https://itunes.apple.com/us/podcast/small-steps-giant-leaps/id1445597915?mt=2&uo=4",
+   "trackViewUrl": "https://podcasts.apple.com/us/podcast/supercomputing/id1445597915?i=1000801085715&uo=4",
+   "artworkUrl60": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts211/v4/6a/d6/9e/6ad69e59-4030-dee8-09f6-16bf66c9724f/mza_3748126404263591325.png/60x60bb.png",
+   "trackTimeMillis": 1031000,
+   "contentAdvisoryRating": "Clean",
+   "artworkUrl600": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts211/v4/6a/d6/9e/6ad69e59-4030-dee8-09f6-16bf66c9724f/mza_3748126404263591325.png/600x600bb.jpg",
+   "episodeFileExtension": "mp3",
+   "episodeContentType": "audio",
+   "previewUrl": "https://traffic.megaphone.fm/NATIONALAERONAUTICSANDSPACEADMINISTRATION1474801934.mp3",
+   "episodeUrl": "https://traffic.megaphone.fm/NATIONALAERONAUTICSANDSPACEADMINISTRATION1474801934.mp3",
+   "artworkUrl160": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts211/v4/6a/d6/9e/6ad69e59-4030-dee8-09f6-16bf66c9724f/mza_3748126404263591325.png/160x160bb.jpg",
+   "releaseDate": "2026-11-10T23:10:00Z"
+  },
+  {
+   "artistIds": [],
+   "genres": [
+    {
+     "name": "Science",
+     "id": "1533"
+    }
+   ],
+   "episodeGuid": "3959dce4-d317-11f1-ada2-e7c5c1b324fc",
+   "shortDescription": "The Flight Dynamics Facility provides tracking data on spacecraft including the Orion crew capsule and the Roman Space Telescope. The facility’s history stretches back to the earliest days of Mercury, Gemini and Apollo.",
+   "trackId": 1000798597398,
+   "trackName": "NASA's Flight Dynamics Facility",
+   "feedUrl": "https://feeds.megaphone.fm/NATIONALAERONAUTICSANDSPACEADMINISTRATION5360639309",
+   "closedCaptioning": "none",
+   "collectionId": 1445597915,
+   "collectionName": "Small Steps, Giant Leaps",
+   "kind": "podcast-episode",
+   "wrapperType": "podcastEpisode",
+   "description": "The Flight Dynamics Facility provides tracking data on spacecraft including the Orion crew capsule and the Roman Space Telescope. The facility’s history stretches back to the earliest days of Mercury, Gemini and Apollo.",
+   "country": "USA",
+   "collectionViewUrl": "https://itunes.apple.com/us/podcast/small-steps-giant-leaps/id1445597915?mt=2&uo=4",
+   "trackViewUrl": "https://podcasts.apple.com/us/podcast/nasas-flight-dynamics-facility/id1445597915?i=1000798597398&uo=4",
+   "artworkUrl60": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts211/v4/6a/d6/9e/6ad69e59-4030-dee8-09f6-16bf66c9724f/mza_3748126404263591325.png/60x60bb.png",
+   "trackTimeMillis": 998000,
+   "contentAdvisoryRating": "Clean",
+   "artworkUrl600": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts211/v4/6a/d6/9e/6ad69e59-4030-dee8-09f6-16bf66c9724f/mza_3748126404263591325.png/600x600bb.jpg",
+   "episodeFileExtension": "mp3",
+   "episodeContentType": "audio",
+   "previewUrl": "https://traffic.megaphone.fm/NATIONALAERONAUTICSANDSPACEADMINISTRATION7257246022.mp3",
+   "episodeUrl": "https://traffic.megaphone.fm/NATIONALAERONAUTICSANDSPACEADMINISTRATION7257246022.mp3",
+   "artworkUrl160": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts211/v4/6a/d6/9e/6ad69e59-4030-dee8-09f6-16bf66c9724f/mza_3748126404263591325.png/160x160bb.jpg",
+   "releaseDate": "2026-10-28T21:33:00Z"
+  },
+  {
+   "artistIds": [],
+   "genres": [
+    {
+     "name": "Science",
+     "id": "1533"
+    }
+   ],
+   "episodeGuid": "6cf7c0c2-c7fd-11f1-82ad-2765dd59474d",
+   "shortDescription": "NASA, through the Office of STEM Engagement, has launched the State Hubs Initiative, awarding $10.5 million to seven institutions with the goal of getting more students into highly skilled manufacturing jobs in the aerospace industry.",
+   "trackId": 1000796361339,
+   "trackName": "State Hubs: Opening Doors for Technical Students",
+   "feedUrl": "https://feeds.megaphone.fm/NATIONALAERONAUTICSANDSPACEADMINISTRATION5360639309",
+   "closedCaptioning": "none",
+   "collectionId": 1445597915,
+   "collectionName": "Small Steps, Giant Leaps",
+   "kind": "podcast-episode",
+   "wrapperType": "podcastEpisode",
+   "description": "NASA, through the Office of STEM Engagement, has launched the State Hubs Initiative, awarding $10.5 million to seven institutions with the goal of getting more students into highly skilled manufacturing jobs in the aerospace industry.",
+   "country": "USA",
+   "collectionViewUrl": "https://itunes.apple.com/us/podcast/small-steps-giant-leaps/id1445597915?mt=2&uo=4",
+   "trackViewUrl": "https://podcasts.apple.com/us/podcast/state-hubs-opening-doors-for-technical-students/id1445597915?i=1000796361339&uo=4",
+   "artworkUrl60": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts211/v4/6a/d6/9e/6ad69e59-4030-dee8-09f6-16bf66c9724f/mza_3748126404263591325.png/60x60bb.png",
+   "trackTimeMillis": 1109000,
+   "contentAdvisoryRating": "Clean",
+   "artworkUrl600": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts211/v4/6a/d6/9e/6ad69e59-4030-dee8-09f6-16bf66c9724f/mza_3748126404263591325.png/600x600bb.jpg",
+   "episodeFileExtension": "mp3",
+   "episodeContentType": "audio",
+   "previewUrl": "https://traffic.megaphone.fm/NATIONALAERONAUTICSANDSPACEADMINISTRATION5643462700.mp3",
+   "episodeUrl": "https://traffic.megaphone.fm/NATIONALAERONAUTICSANDSPACEADMINISTRATION5643462700.mp3",
+   "artworkUrl160": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts211/v4/6a/d6/9e/6ad69e59-4030-dee8-09f6-16bf66c9724f/mza_3748126404263591325.png/160x160bb.jpg",
+   "releaseDate": "2026-10-14T18:31:00Z"
+  },
+  {
+   "artistIds": [],
+   "genres": [
+    {
+     "name": "Science",
+     "id": "1533"
+    }
+   ],
+   "episodeGuid": "ec4ca5ac-bcd3-11f1-8707-0340476f3360",
+   "shortDescription": "Dr. Cynthia Null, NASA Technical Fellow for Human Factors, discusses the myths of human limitations and how she got involved in the scientific discipline of human factors.",
+   "trackId": 1000792393324,
+   "trackName": "Human Factors: Designing Systems with People in Mind - Part 2 of 2",
+   "feedUrl": "https://feeds.megaphone.fm/NATIONALAERONAUTICSANDSPACEADMINISTRATION5360639309",
+   "closedCaptioning": "none",
+   "collectionId": 1445597915,
+   "collectionName": "Small Steps, Giant Leaps",
+   "kind": "podcast-episode",
+   "wrapperType": "podcastEpisode",
+   "description": "Dr. Cynthia Null, NASA Technical Fellow for Human Factors, discusses the myths of human limitations and how she got involved in the scientific discipline of human factors.",
+   "country": "USA",
+   "collectionViewUrl": "https://itunes.apple.com/us/podcast/small-steps-giant-leaps/id1445597915?mt=2&uo=4",
+   "trackViewUrl": "https://podcasts.apple.com/us/podcast/human-factors-designing-systems-with-people-in-mind/id1445597915?i=1000792393324&uo=4",
+   "artworkUrl60": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts211/v4/6a/d6/9e/6ad69e59-4030-dee8-09f6-16bf66c9724f/mza_3748126404263591325.png/60x60bb.png",
+   "trackTimeMillis": 1327000,
+   "contentAdvisoryRating": "Clean",
+   "artworkUrl600": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts211/v4/6a/d6/9e/6ad69e59-4030-dee8-09f6-16bf66c9724f/mza_3748126404263591325.png/600x600bb.jpg",
+   "episodeFileExtension": "mp3",
+   "episodeContentType": "audio",
+   "previewUrl": "https://traffic.megaphone.fm/NATIONALAERONAUTICSANDSPACEADMINISTRATION5465271457.mp3",
+   "episodeUrl": "https://traffic.megaphone.fm/NATIONALAERONAUTICSANDSPACEADMINISTRATION5465271457.mp3",
+   "artworkUrl160": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts211/v4/6a/d6/9e/6ad69e59-4030-dee8-09f6-16bf66c9724f/mza_3748126404263591325.png/160x160bb.jpg",
+   "releaseDate": "2026-09-30T13:36:00Z"
+  }
+ ]
+}

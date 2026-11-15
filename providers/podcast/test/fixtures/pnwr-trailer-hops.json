@@ -1,0 +1,30 @@
+[
+ {
+  "url": "https://op3.dev/e/www.buzzsprout.com/1538779/episodes/6749611-the-podnews-weekly-review-the-last-word-in-podcast-news.mp3",
+  "status": 302,
+  "headers": {
+   "content-length": "0",
+   "location": "https://www.buzzsprout.com/1538779/episodes/6749611-the-podnews-weekly-review-the-last-word-in-podcast-news.mp3"
+  }
+ },
+ {
+  "url": "https://www.buzzsprout.com/1538779/episodes/6749611-the-podnews-weekly-review-the-last-word-in-podcast-news.mp3",
+  "status": 302,
+  "headers": {
+   "content-type": "audio/mpeg; charset=utf-8",
+   "content-length": "0",
+   "location": "https://audio.buzzsprout.com/9ogawcx1pih931bknlkr31ik77k4?response-content-disposition=inline"
+  }
+ },
+ {
+  "url": "https://audio.buzzsprout.com/9ogawcx1pih931bknlkr31ik77k4?response-content-disposition=inline",
+  "status": 200,
+  "headers": {
+   "content-type": "audio/mpeg",
+   "content-length": "916092",
+   "accept-ranges": "bytes",
+   "last-modified": "Fri, 08 Dec 2023 10:43:52 GMT",
+   "etag": "\"7f4e23985cb8097fb7847be64c3afc2e\""
+  }
+ }
+]

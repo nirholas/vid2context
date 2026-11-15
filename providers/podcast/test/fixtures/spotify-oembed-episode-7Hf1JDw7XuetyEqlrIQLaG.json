@@ -1,0 +1,14 @@
+{
+ "html": "<iframe style=\"border-radius: 12px\" width=\"624\" height=\"351\" title=\"Spotify Embed: #2581 - Protect Our Parks 18\" frameborder=\"0\" allowfullscreen allow=\"autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture\" loading=\"lazy\" src=\"https://open.spotify.com/embed/episode/7Hf1JDw7XuetyEqlrIQLaG/video?utm_source=oembed\"></iframe>",
+ "iframe_url": "https://open.spotify.com/embed/episode/7Hf1JDw7XuetyEqlrIQLaG/video?utm_source=oembed",
+ "width": 624,
+ "height": 351,
+ "version": "1.0",
+ "provider_name": "Spotify",
+ "provider_url": "https://spotify.com",
+ "type": "video",
+ "title": "#2581 - Protect Our Parks 18",
+ "thumbnail_url": "https://image-cdn-fa.spotifycdn.com/image/ab6772ab000015be76c167361bad35ce890415f8",
+ "thumbnail_width": 640,
+ "thumbnail_height": 360
+}

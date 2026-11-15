@@ -1,0 +1,179 @@
+{
+ "resultCount": 5,
+ "results": [
+  {
+   "wrapperType": "track",
+   "kind": "podcast",
+   "collectionId": 1542481043,
+   "trackId": 1542481043,
+   "artistName": "James Cridland and Sam Sethi",
+   "collectionName": "Podnews Weekly Review",
+   "trackName": "Podnews Weekly Review",
+   "collectionCensoredName": "Podnews Weekly Review",
+   "trackCensoredName": "Podnews Weekly Review",
+   "collectionViewUrl": "https://podcasts.apple.com/us/podcast/podnews-weekly-review/id1542481043?uo=4",
+   "feedUrl": "https://rss.buzzsprout.com/1538779.rss",
+   "trackViewUrl": "https://podcasts.apple.com/us/podcast/podnews-weekly-review/id1542481043?uo=4",
+   "artworkUrl30": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts211/v4/19/92/44/19924476-c9f9-7e8f-cfa6-3fafef7aad00/mza_3043801308304088966.jpg/30x30bb.jpg",
+   "artworkUrl60": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts211/v4/19/92/44/19924476-c9f9-7e8f-cfa6-3fafef7aad00/mza_3043801308304088966.jpg/60x60bb.jpg",
+   "artworkUrl100": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts211/v4/19/92/44/19924476-c9f9-7e8f-cfa6-3fafef7aad00/mza_3043801308304088966.jpg/100x100bb.jpg",
+   "collectionPrice": 0.0,
+   "trackPrice": 0.0,
+   "collectionHdPrice": 0,
+   "releaseDate": "2026-11-13T03:00:00Z",
+   "collectionExplicitness": "notExplicit",
+   "trackExplicitness": "cleaned",
+   "trackCount": 317,
+   "trackTimeMillis": 4778,
+   "country": "USA",
+   "currency": "USD",
+   "primaryGenreName": "News Commentary",
+   "contentAdvisoryRating": "Clean",
+   "artworkUrl600": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts211/v4/19/92/44/19924476-c9f9-7e8f-cfa6-3fafef7aad00/mza_3043801308304088966.jpg/600x600bb.jpg",
+   "genreIds": [
+    "1530",
+    "26",
+    "1489",
+    "1528"
+   ],
+   "genres": [
+    "News Commentary",
+    "Podcasts",
+    "News",
+    "Tech News"
+   ]
+  },
+  {
+   "episodeUrl": "https://op3.dev/e/www.buzzsprout.com/1538779/episodes/20117890-iheart-the-business-deal-that-doesn-t-make-any-sense.mp3",
+   "previewUrl": "https://op3.dev/e/www.buzzsprout.com/1538779/episodes/20117890-iheart-the-business-deal-that-doesn-t-make-any-sense.mp3",
+   "artistIds": [],
+   "artworkUrl600": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts211/v4/19/92/44/19924476-c9f9-7e8f-cfa6-3fafef7aad00/mza_3043801308304088966.jpg/600x600bb.jpg",
+   "genres": [
+    {
+     "name": "News Commentary",
+     "id": "1530"
+    }
+   ],
+   "trackId": 1000801656977,
+   "trackName": "iHeart - the business deal that doesn't make any sense",
+   "releaseDate": "2026-11-13T03:00:00Z",
+   "shortDescription": "Send James and Sam a message or voicemail\nSam gets out of his sick bed and joins James for a discussion of the latest podcast industry news.\n\n• iHeartMedia sale rumours versus a financial reporting split for investors \n• Radio’s share of listenin",
+   "feedUrl": "https://rss.buzzsprout.com/1538779.rss",
+   "closedCaptioning": "none",
+   "collectionId": 1542481043,
+   "collectionName": "Podnews Weekly Review",
+   "kind": "podcast-episode",
+   "wrapperType": "podcastEpisode",
+   "description": "Send James and Sam a message or voicemail\nSam gets out of his sick bed and joins James for a discussion of the latest podcast industry news.\n\n• iHeartMedia sale rumours versus a financial reporting split for investors \n• Radio’s share of listening in the UK, US, and Canada versus podcasting’s smaller base \n• Duplicate podcast feeds and hosting accountability through an industry code of practice \n• Meta-hosted AI podcast production at scale and the risks of unpoliced synthetic content \n• Spoofed user agents, broken analytics, and Common Access Tokens as a practical signal \n• Podcast ad load growth, listener tolerance, and how it compares with radio ad minutes \n• AI-assisted video repackaging for YouTube and LinkedIn and what actually moves numbers \n• Unified creator dashboards, why downloads persist, and the missing “plays” debate \n• Membership bundles, newsletters, and using the Podcasting 2.0 funding tag for paid offers \n• Webby credits registry as an IMDB-like ledger for podcast and digital work \n• Industry moves including SiriusXM’s new CEO and the collapse of Message Heard \n• HLS video support, “video-first” marketing confusion, and why RSS video still matters \nSupport the show\nConnect With Us: \nEmail: [address removed]Fediverse: @[address removed] and @[address removed]Support us: www.buzzsprout.com/1538779/supportGet Podnews: podnews.net",
+   "country": "USA",
+   "collectionViewUrl": "https://itunes.apple.com/us/podcast/podnews-weekly-review/id1542481043?mt=2&uo=4",
+   "trackViewUrl": "https://podcasts.apple.com/us/podcast/iheart-the-business-deal-that-doesnt-make-any-sense/id1542481043?i=1000801656977&uo=4",
+   "artworkUrl60": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts211/v4/19/92/44/19924476-c9f9-7e8f-cfa6-3fafef7aad00/mza_3043801308304088966.jpg/60x60bb.jpg",
+   "trackTimeMillis": 4778000,
+   "contentAdvisoryRating": "Clean",
+   "episodeFileExtension": "mp3",
+   "episodeContentType": "audio",
+   "artworkUrl160": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts211/v4/19/92/44/19924476-c9f9-7e8f-cfa6-3fafef7aad00/mza_3043801308304088966.jpg/160x160bb.jpg",
+   "episodeGuid": "Buzzsprout-20117890"
+  },
+  {
+   "episodeUrl": "https://op3.dev/e/www.buzzsprout.com/1538779/episodes/20081931-libraries-networks-and-kickstarters-podcasters-growing-audiences-and-revenue.mp3",
+   "previewUrl": "https://op3.dev/e/www.buzzsprout.com/1538779/episodes/20081931-libraries-networks-and-kickstarters-podcasters-growing-audiences-and-revenue.mp3",
+   "artistIds": [],
+   "artworkUrl600": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts221/v4/2c/77/4a/2c774ae2-eec4-f515-9f05-d03c5d03b88c/mza_4532776821003680057.jpg/600x600bb.jpg",
+   "genres": [
+    {
+     "name": "News Commentary",
+     "id": "1530"
+    }
+   ],
+   "trackId": 1000800175443,
+   "trackName": "Libraries, networks and Kickstarters: podcasters growing audiences and revenue",
+   "releaseDate": "2026-11-06T02:00:00Z",
+   "shortDescription": "Send James and Sam a message or voicemail\nOne podcast earned $311,000 in a month - using the revolutionary idea of... asking their listeners. We chat with Myke Hurley, and also learn more about the Health Podcast Library.\n\n• liquid content research fr",
+   "feedUrl": "https://rss.buzzsprout.com/1538779.rss",
+   "closedCaptioning": "none",
+   "collectionId": 1542481043,
+   "collectionName": "Podnews Weekly Review",
+   "kind": "podcast-episode",
+   "wrapperType": "podcastEpisode",
+   "description": "Send James and Sam a message or voicemail\nOne podcast earned $311,000 in a month - using the revolutionary idea of... asking their listeners. We chat with Myke Hurley, and also learn more about the Health Podcast Library.\n\n• liquid content research from France and Australia and what multi-platform listening means for creators \n• algorithmic recommendations and the reality behind the death of the follower \n• Instagram paying for creator content and why platform promises can flip fast \n• Triton’s AI-to-AI audio ad buy and how automation could change pricing and ad load \n• AI for coding and operations versus AI replacing creative work \n• Dan Kendall on Health Podcast Library, credibility in healthcare, playlists, and discovery beyond Apple and Spotify search \n• Myke Hurley on Relay, Kickstarter as pre-sold memberships, and why Designed In California raised $311,000 \n• Netflix pushing into mobile clips and what it signals for media companies entering podcasting \n• Flightcast workflow that ports YouTube catalogues into Spotify monetisation \n• Safari blocking resolution infrastructure and the knock-on effects for ad targeting \n• Spreaker piracy copies, Podcast Index look-alike feeds, lock tag limits, and PodProtect monitoring \n\n\nSupport the show\nConnect With Us: \nEmail: [address removed]Fediverse: @[address removed] and @[address removed]Support us: www.buzzsprout.com/1538779/supportGet Podnews: podnews.net",
+   "country": "USA",
+   "collectionViewUrl": "https://itunes.apple.com/us/podcast/podnews-weekly-review/id1542481043?mt=2&uo=4",
+   "trackViewUrl": "https://podcasts.apple.com/us/podcast/libraries-networks-and-kickstarters-podcasters/id1542481043?i=1000800175443&uo=4",
+   "artworkUrl60": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts221/v4/2c/77/4a/2c774ae2-eec4-f515-9f05-d03c5d03b88c/mza_4532776821003680057.jpg/60x60bb.jpg",
+   "trackTimeMillis": 5998000,
+   "contentAdvisoryRating": "Clean",
+   "episodeFileExtension": "mp3",
+   "episodeContentType": "audio",
+   "artworkUrl160": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts221/v4/2c/77/4a/2c774ae2-eec4-f515-9f05-d03c5d03b88c/mza_4532776821003680057.jpg/160x160bb.jpg",
+   "episodeGuid": "Buzzsprout-20081931"
+  },
+  {
+   "episodeUrl": "https://op3.dev/e/www.buzzsprout.com/1538779/episodes/20044916-beehiv-podcast-ads-can-make-money-while-spreaker-steals-shows.mp3",
+   "previewUrl": "https://op3.dev/e/www.buzzsprout.com/1538779/episodes/20044916-beehiv-podcast-ads-can-make-money-while-spreaker-steals-shows.mp3",
+   "artistIds": [],
+   "artworkUrl600": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts221/v4/94/d9/3f/94d93fd6-f638-3904-be83-7d49ff2cd153/mza_12138556581084338752.jpg/600x600bb.jpg",
+   "genres": [
+    {
+     "name": "News Commentary",
+     "id": "1530"
+    }
+   ],
+   "trackId": 1000798819154,
+   "trackName": "Beehiv podcast ads can make money - while Spreaker steals shows",
+   "releaseDate": "2026-10-30T02:00:00Z",
+   "shortDescription": "Send James and Sam a message or voicemail\nWe dig into how podcast theft actually works, why one-click importing and monetization can turn into an engine for piracy, and what hosting platforms should change right now. We also look at where the creator ec",
+   "feedUrl": "https://rss.buzzsprout.com/1538779.rss",
+   "closedCaptioning": "none",
+   "collectionId": 1542481043,
+   "collectionName": "Podnews Weekly Review",
+   "kind": "podcast-episode",
+   "wrapperType": "podcastEpisode",
+   "description": "Send James and Sam a message or voicemail\nWe dig into how podcast theft actually works, why one-click importing and monetization can turn into an engine for piracy, and what hosting platforms should change right now. We also look at where the creator economy is heading as newsletters, subscriptions, AI tools, and algorithmic discovery reshape how people find and fund audio.\n• Spreaker’s import and monetisation flow enabling cloned podcasts and chart manipulation\n• RSS.com handling of a hijacked show including ad revenue repayment and feed recovery\n• PodProtect and the need for detection plus a hosting code of conduct\n• Newsletter and membership convergence with Supercast adding newsletters\n• Beehive’s monetisation suite including dynamic ad insertion, targeting, and ad-free subscriptions\n• Instagram testing 90-minute horizontal video and what it means for podcasters\n• Kate Cocker’s 3,000 consecutive daily episodes and how community drives content\n• The business reality of ads in short-form daily podcasts and listener expectations\n• The shift from followers to algorithms plus new discovery-first podcast apps\n• Spotify’s AI agent questions, subscription risk, and the subscription model trend\n• Progress on transcripts accessibility as SiriusXM lawsuit nears settlement\n• Tooling updates including Buzzsprout’s admin app and Riverside’s AI agents\nSupport the show\nConnect With Us: \nEmail: [address removed]Fediverse: @[address removed] and @[address removed]Support us: www.buzzsprout.com/1538779/supportGet Podnews: podnews.net",
+   "country": "USA",
+   "collectionViewUrl": "https://itunes.apple.com/us/podcast/podnews-weekly-review/id1542481043?mt=2&uo=4",
+   "trackViewUrl": "https://podcasts.apple.com/us/podcast/beehiv-podcast-ads-can-make-money-while-spreaker-steals/id1542481043?i=1000798819154&uo=4",
+   "artworkUrl60": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts221/v4/94/d9/3f/94d93fd6-f638-3904-be83-7d49ff2cd153/mza_12138556581084338752.jpg/60x60bb.jpg",
+   "trackTimeMillis": 5632000,
+   "contentAdvisoryRating": "Clean",
+   "episodeFileExtension": "mp3",
+   "episodeContentType": "audio",
+   "artworkUrl160": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts221/v4/94/d9/3f/94d93fd6-f638-3904-be83-7d49ff2cd153/mza_12138556581084338752.jpg/160x160bb.jpg",
+   "episodeGuid": "Buzzsprout-20044916"
+  },
+  {
+   "episodeUrl": "https://op3.dev/e/www.buzzsprout.com/1538779/episodes/20007510-podcasting-is-liquid-content-now.mp3",
+   "previewUrl": "https://op3.dev/e/www.buzzsprout.com/1538779/episodes/20007510-podcasting-is-liquid-content-now.mp3",
+   "artistIds": [],
+   "artworkUrl600": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts221/v4/92/82/4d/92824dc9-e92c-daf0-0d6a-9bb5dcd81f77/mza_16628261798916191689.jpg/600x600bb.jpg",
+   "genres": [
+    {
+     "name": "News Commentary",
+     "id": "1530"
+    }
+   ],
+   "trackId": 1000797737264,
+   "trackName": "Podcasting is liquid content now",
+   "releaseDate": "2026-10-23T06:00:00Z",
+   "shortDescription": "Send James and Sam a message or voicemail\nSam Sethi talks with Steven Goldstein about Liquid Content - and why our biggest threat is measurement that can't keep up with how the podcast world is changing.\nPlus...\n• Spotify memberships pricing tiers bad",
+   "feedUrl": "https://rss.buzzsprout.com/1538779.rss",
+   "closedCaptioning": "none",
+   "collectionId": 1542481043,
+   "collectionName": "Podnews Weekly Review",
+   "kind": "podcast-episode",
+   "wrapperType": "podcastEpisode",
+   "description": "Send James and Sam a message or voicemail\nSam Sethi talks with Steven Goldstein about Liquid Content - and why our biggest threat is measurement that can't keep up with how the podcast world is changing.\nPlus...\n• Spotify memberships pricing tiers badges and email access for creators \n• why web-based purchasing matters for app store rules and funding links \n• ad skipping tools and the knock-on effect for podcast advertising \n• Apple Podcasts positioning HLS ads and the coming fight over fees \n• Substack and Beehive adding dynamic ad insertion for podcasts \n• liquid content across audio video newsletters and social clips \n• clip culture microdramas and what retention looks like now \n• “the download is dead” and the need for people plays and time \n• Netflix podcast hype versus what investors actually hear \n• smart glasses as another listening surface and why it changes nothing without better metrics \n\n\nSupport the show\nConnect With Us: \nEmail: [address removed]Fediverse: @[address removed] and @[address removed]Support us: www.buzzsprout.com/1538779/supportGet Podnews: podnews.net",
+   "country": "USA",
+   "collectionViewUrl": "https://itunes.apple.com/us/podcast/podnews-weekly-review/id1542481043?mt=2&uo=4",
+   "trackViewUrl": "https://podcasts.apple.com/us/podcast/podcasting-is-liquid-content-now/id1542481043?i=1000797737264&uo=4",
+   "artworkUrl60": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts221/v4/92/82/4d/92824dc9-e92c-daf0-0d6a-9bb5dcd81f77/mza_16628261798916191689.jpg/60x60bb.jpg",
+   "trackTimeMillis": 5752000,
+   "contentAdvisoryRating": "Clean",
+   "episodeFileExtension": "mp3",
+   "episodeContentType": "audio",
+   "artworkUrl160": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts221/v4/92/82/4d/92824dc9-e92c-daf0-0d6a-9bb5dcd81f77/mza_16628261798916191689.jpg/160x160bb.jpg",
+   "episodeGuid": "Buzzsprout-20007510"
+  }
+ ]
+}

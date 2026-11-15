@@ -1,0 +1,14 @@
+{
+ "html": "<iframe style=\"border-radius: 12px\" width=\"100%\" height=\"152\" title=\"Spotify Embed: Introducing Michelle Obama and Her Mentees\" frameborder=\"0\" allowfullscreen allow=\"autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture\" loading=\"lazy\" src=\"https://open.spotify.com/embed/show/5CfCWKI5pZ28U0uOzXkDHe?utm_source=oembed\"></iframe>",
+ "iframe_url": "https://open.spotify.com/embed/show/5CfCWKI5pZ28U0uOzXkDHe?utm_source=oembed",
+ "width": 456,
+ "height": 152,
+ "version": "1.0",
+ "provider_name": "Spotify",
+ "provider_url": "https://spotify.com",
+ "type": "rich",
+ "title": "Introducing Michelle Obama and Her Mentees",
+ "thumbnail_url": "https://image-cdn-fa.spotifycdn.com/image/ab67656300005f1ff32c0fce7b4c17fefe3e38e9",
+ "thumbnail_width": 300,
+ "thumbnail_height": 300
+}

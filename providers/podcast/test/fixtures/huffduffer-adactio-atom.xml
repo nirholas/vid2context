@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <title>adactio on Huffduffer</title>
+    <subtitle type="html">An Irish web developer living in Brighton, England working with Clearleft.    I built Huffduffer.</subtitle>
+    <icon>https://huffduffer.com/favicon.ico</icon>
+    <logo>https://huffduffer.com/images/podcast.jpg</logo>
+    <link rel="alternate" type="text/html" hreflang="en" href="https://huffduffer.com/adactio"/>
+    <link rel="self" type="application/atom+xml" href="https://huffduffer.com/adactio/atom"/>
+    <link rel="next" type="application/atom+xml" href="https://huffduffer.com/adactio/atom?page=2"/>
+    <id>urn:uuid:7b5b7ac0-c582-688c-eddb-9953325d28ef</id>
+    <updated>2026-10-17T00:39:15Z</updated>
+    <entry>
+        <title>Benchma(r)king – James Bridle</title>
+        <link rel="alternate" type="text/html" href="https://huffduffer.com/adactio/719053"/>
+        <link rel="enclosure" type="audio/mpeg" href="https://emergencemagazine.org/app/uploads/2026/10/James_Bridle_Benchmarking_2026-10-14_WEB.mp3" length="0"/>
+        <updated>2026-10-17T00:39:15Z</updated>
+        <published>2026-10-17T00:39:15Z</published>
+        <id>urn:uuid:4af84d7c-8211-abb2-3281-13e58bebb3f9</id>
+        <content>Technologist and artist James Bridle conducts a simple chair-building experiment to explore how our embodied intelligence could meet AI’s disembodied knowledge in more meaningful ways.
+
+https://emergencemagazine.org/essay/benchmarking/</content>
+        <author>
+            <name>adactio</name>
+            <uri>https://huffduffer.com/adactio</uri>
+        </author>
+    </entry>
+    <entry>
+        <title>“Nothing Is Ever Over” - AT Protocol</title>
+        <link rel="alternate" type="text/html" href="https://huffduffer.com/adactio/718620"/>
+        <link rel="enclosure" type="audio/mpeg" href="https://media.atproto.com/off-protocol/2026-07-22-erin-kissane/2026-07-22-erin-kissane.mp3" length="0"/>
+        <updated>2026-09-15T11:09:04Z</updated>
+        <published>2026-09-15T11:09:04Z</published>
+        <id>urn:uuid:4d04c4aa-a888-c85a-91ce-b644fa057e86</id>
+        <content>Writer, speaker, and researcher Erin Kissane joins Jim to trace how the social internet got here, what’s worth salvaging, and how we can do better by listening to people.
+
+https://atproto.com/off-protocol/2026-07-22-erin-kissane</content>
+        <author>
+            <name>adactio</name>
+            <uri>https://huffduffer.com/adactio</uri>
+        </author>
+    </entry>
+    <entry>
+        <title>Designing for Uncertainty - AT Protocol</title>
+        <link rel="alternate" type="text/html" href="https://huffduffer.com/adactio/718619"/>
+        <link rel="enclosure" type="audio/mpeg" href="https://media.atproto.com/off-protocol/2026-07-31-2026-07-31-design-for-uncertainty-ethan-marcotte/2026-07-31-design-for-uncertainty-ethan-marcotte.mp3" length="0"/>
+        <updated>2026-09-15T11:08:47Z</updated>
+        <published>2026-09-15T11:08:47Z</published>
+        <id>urn:uuid:f36a85f0-66cd-4256-f813-bcab14117ef7</id>
+        <content>Ethan Marcotte, who first coined the phrase Responsive Design, joins to discuss how to operate in a world defined by uncertainty.
+
+https://atproto.com/off-protocol/2026-08-03-designing-for-uncertainty-ethan-marcotte</content>
+        <author>
+            <name>adactio</name>
+            <uri>https://huffduffer.com/adactio</uri>
+        </author>
+    </entry>
+    <entry>
+        <title>Episode 13: Joanne O&#039;Connor - Irish Tenor Banjo - Inside the Banjoverse</title>
+        <link rel="alternate" type="text/html" href="https://huffduffer.com/adactio/716874"/>
+        <link rel="enclosure" type="audio/mpeg" href="https://www.ivoox.com/en/episode-13-joanne-o-connor-irish-tenor-banjo-audios-mp3_rf_88087771_1.html#" length="0"/>
+        <updated>2026-07-28T22:35:51Z</updated>
+        <published>2026-07-28T22:35:51Z</published>
+        <id>urn:uuid:b9468fe5-832b-a865-c6e7-d79551bdcf4a</id>
+        <content>Joanne and I go way back, having come up through the life universities of The Willie Clancy summer school and the Fleadh Cheoil competitions in Ireland. We&#039;ve had great fun over the years knocking head over our differing opinions on the virtue of playing polkas on a banjo. I&#039;m not a fan, but Joanne finally explains to me how to do it properly!! We take a fond trip down memory lane in this interview, Joanne reminiscing about simpler times playing music as a child growing up in Co Limerick, the &quot;craic&quot; of the fleadhs, the mummers and the wren boys. Joanne is a terrific story teller and even better musician and a truly kind hearted soul. 
+
+https://www.ivoox.com/en/episode-13-joanne-o-connor-irish-tenor-banjo-audios-mp3_rf_88087771_1.html</content>
+        <author>
+            <name>adactio</name>
+            <uri>https://huffduffer.com/adactio</uri>
+        </author>
+    </entry>
+</feed>

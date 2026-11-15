@@ -1,0 +1,23 @@
+{
+  "name": "@vid2context/provider-podcast",
+  "version": "0.1.0",
+  "description": "Podcasts for vid2context: RSS and Atom feeds, Apple Podcasts and Spotify links. Episodes with a Podcasting 2.0 podcast:transcript get it with no speech-to-text, chapters come from podcast:chapters, and everything else gets the enclosure audio. Keyless, runs on Node and Workers.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "vid2context": {
+    "runtimes": [
+      "node",
+      "workers"
+    ]
+  },
+  "dependencies": {
+    "@vid2context/core": "*",
+    "@vid2context/provider-media-url": "*"
+  },
+  "devDependencies": {
+    "@vid2context/registry": "*"
+  }
+}
