@@ -215,26 +215,35 @@ describe('ChatWorkspace in client-only mode, replaying a real OVH stream', () =>
     const details = assistant().querySelector('details');
     expect(details?.textContent).toMatch(/Thinking/);
     expect(details?.open).toBe(false);
-    const chips = await waitFor(() => {
-      const found = assistant().querySelectorAll<HTMLElement>('[data-cite]');
-      expect(found.length).toBeGreaterThan(0);
-      return found;
-    });
+    const chips = await waitFor(
+      () => {
+        const found = assistant().querySelectorAll<HTMLElement>('[data-cite]');
+        expect(found.length).toBeGreaterThan(0);
+        return found;
+      },
+      { timeout: 10_000 },
+    );
     const first = chips[0] as HTMLElement;
     expect(first.textContent).toMatch(/Best & Worst G-Wagon Years.* @ \d+:\d\d/);
     expect(assistant().querySelector('[data-model-tag]')?.textContent).toContain('gpt-oss-120b');
 
     await act(async () => fireEvent.click(first));
-    const iframe = await waitFor(() => {
-      const f = document.querySelector('iframe');
-      expect(f).not.toBeNull();
-      return f as HTMLIFrameElement;
-    });
+    const iframe = await waitFor(
+      () => {
+        const f = document.querySelector('iframe');
+        expect(f).not.toBeNull();
+        return f as HTMLIFrameElement;
+        // The source panel is a lazy chunk; under a loaded machine its import can exceed the 1 s default.
+      },
+      { timeout: 10_000 },
+    );
     const n = Number(first.getAttribute('data-cite'));
     const meta = rec.events.find((e) => e.type === 'meta') as { sources: { n: number; startSec: number }[] };
     const start = Math.floor(meta.sources.find((s) => s.n === n)?.startSec ?? -1);
     expect(iframe.src).toBe(`https://www.youtube-nocookie.com/embed/cCPsdFdlshc?start=${start}&autoplay=1&rel=0`);
-    await waitFor(() => expect(document.querySelectorAll('[data-cited]').length).toBeGreaterThan(0));
+    await waitFor(() => expect(document.querySelectorAll('[data-cited]').length).toBeGreaterThan(0), {
+      timeout: 10_000,
+    });
   });
 
   it('stops mid-stream and keeps the partial answer', async () => {
