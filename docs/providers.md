@@ -283,6 +283,11 @@ Read by `@vid2context/server` (`npm run start:server`, the Worker, containers). 
 | `VID2CONTEXT_MAX_CONCURRENT` | expensive requests (context, transcript, pack, bundle, ask, briefs, uploads, `POST /mcp` and the like) running at once per process; default `16`, `0` no cap. See [guides/reliability.md](guides/reliability.md) |
 | `VID2CONTEXT_MAX_WAITING` | expensive requests allowed to wait for a slot; one more is answered `503` `busy` with `Retry-After: 5`; default `64` |
 | `VID2CONTEXT_QUEUE_WAIT_MS` | longest a request waits for a slot before it is answered `busy`; default `30000` |
+| `VID2CONTEXT_HEALTH_REQUIRE` | checks of `GET /healthz?deep=1` (also `/api/v1/healthz`) that make it answer `503` when they fail, on top of `storage`, `rungs` and `disk`; e.g. `yt-dlp,ffmpeg,network`. Others only mark it `degraded` |
+| `VID2CONTEXT_HEALTH_CACHE_SEC` | how long a deep health result is reused; default `15` (concurrent probes share one run) |
+| `VID2CONTEXT_HEALTH_TIMEOUT_MS` | deadline of each deep health check; default `5000` |
+| `VID2CONTEXT_HEALTH_MIN_FREE_MB` | the `disk` check fails below this much free space in the data directory; default `512` |
+| `VID2CONTEXT_HEALTH_PROBE_URL` | URL the `network` check fetches; default the keyless OVH model list when keyless rungs are on, `0` turns it off |
 | `VID2CONTEXT_ACCESS_LOG` | `0` turns off the JSON access log line per request on stderr |
 | `VID2CONTEXT_REQUEST_KEYS` | `0` stops accepting provider keys sent per request in `X-Vid2Context-Keys`. On by default: a caller whose run failed for lack of a key can retry with its own, used for that request only and never stored. Only credential names registered providers declare are accepted (see [contracts/http-api.md](contracts/http-api.md#provider-keys-per-request)) |
 | `VID2CONTEXT_SHUTDOWN_TIMEOUT_MS` | Node: how long in-flight requests may finish after `SIGTERM` or `SIGINT`; default `10000` |

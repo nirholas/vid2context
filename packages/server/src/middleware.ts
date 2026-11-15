@@ -40,7 +40,7 @@ export interface AccessLogEntry {
 const REQUEST_ID = /^[A-Za-z0-9._:-]{1,128}$/;
 
 /** Paths that never need a key and are never rate limited. */
-const OPEN_PATHS = new Set(['/api/v1/health']);
+const OPEN_PATHS = new Set(['/api/v1/health', '/api/v1/healthz']);
 
 export function requestContext(
   services: Services,

@@ -29,6 +29,7 @@ import { webhookRoutes } from '@vid2context/webhooks/http';
 import { type Context, Hono } from 'hono';
 import { concurrencyLimit } from './concurrency.ts';
 import { renderError } from './errors.ts';
+import { createDeepHealth, type HealthChecks } from './health.ts';
 import { type AccessLogEntry, auth, bodyLimit, cors, rateLimit, requestContext, requestKeys, timeout } from './middleware.ts';
 import { buildOpenApi, json, type PathsObject, RouteDocs } from './openapi.ts';
 import { bundleRoutes } from './routes/bundle.ts';
@@ -75,6 +76,11 @@ export interface AppOptions {
    * @vid2context/downloads/node). Without it /downloads answers no-provider.
    */
   downloads?: DownloadManager;
+  /**
+   * Runtime checks added to GET /healthz?deep=1 (Node: nodeHealthChecks from
+   * src/health-node.ts for disk, yt-dlp, ffmpeg and the network).
+   */
+  healthChecks?: HealthChecks;
 }
 
 /** The app plus `close()`, which ends open MCP sessions (call it on shutdown). */
@@ -283,6 +289,35 @@ export function createApp(opts: AppOptions): ServerApp {
       requestKeys: { accepted: services.requestKeyNames(c.req.raw).length > 0, names: services.requestKeyNames(c.req.raw) },
     });
   });
+
+  const deepHealth = createDeepHealth({ registry: opts.registry, storage: services.storage, extra: opts.healthChecks });
+  docs.add({
+    method: 'get',
+    path: '/api/v1/healthz',
+    summary: 'Container health: liveness, or with deep=1 readiness (storage, rungs, disk, yt-dlp, ffmpeg, network).',
+    description:
+      'Also at /healthz. Open without an API key and never rate limited. deep=1 answers 503 when a required check fails (storage, rungs and disk, plus VID2CONTEXT_HEALTH_REQUIRE) and is cached for VID2CONTEXT_HEALTH_CACHE_SEC.',
+    tags: ['meta'],
+    auth: false,
+    responses: {
+      '200': {
+        description: 'Healthy or degraded.',
+        content: json({ type: 'object', properties: { ok: { type: 'boolean' } }, required: ['ok'] }),
+      },
+      '503': {
+        description: 'A required check failed.',
+        content: json({ type: 'object', properties: { ok: { type: 'boolean' } }, required: ['ok'] }),
+      },
+    },
+  });
+  const healthz = async (c: Context<AppEnv>) => {
+    const deep = ['1', 'true', 'yes'].includes((c.req.query('deep') ?? '').toLowerCase());
+    if (!deep) return c.json({ ok: true, version }, 200, { 'cache-control': 'no-store' });
+    const result = await deepHealth(services.ctxFor(c.req.raw));
+    return c.json({ ...result, version }, result.ok ? 200 : 503, { 'cache-control': 'no-store' });
+  };
+  app.get('/healthz', healthz);
+  app.get('/api/v1/healthz', healthz);
 
   const deps = { services, docs, version };
   app.route('/api/v1', videoRoutes(deps));

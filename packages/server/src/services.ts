@@ -338,10 +338,20 @@ export function createServices(
     }
     const results: VideoContext[] = new Array(jobs.length);
     let next = 0;
+    // Each video runs under shared()'s own signal, so stop handing out new ones once the
+    // client is gone, the deadline passed or one video failed; otherwise up to 100 runs
+    // would continue for a response nobody will read.
+    let failed = false;
     const worker = async () => {
-      while (next < jobs.length) {
+      while (next < jobs.length && !failed) {
+        ctx.signal?.throwIfAborted();
         const i = next++;
-        results[i] = await (jobs[i] as () => Promise<VideoContext>)();
+        try {
+          results[i] = await (jobs[i] as () => Promise<VideoContext>)();
+        } catch (err) {
+          failed = true;
+          throw err;
+        }
       }
     };
     await Promise.all(Array.from({ length: Math.min(BATCH_CONCURRENCY, jobs.length) }, worker));

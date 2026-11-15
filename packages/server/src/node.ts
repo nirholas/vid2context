@@ -17,6 +17,7 @@ import { createJobQueue, registerBuiltinKinds } from '@vid2context/jobs';
 import { createNodeContext, createRegistry, loadEnvFiles } from '@vid2context/registry/node';
 import pkg from '../package.json' with { type: 'json' };
 import { createApp } from './app.ts';
+import { nodeHealthChecks } from './health-node.ts';
 
 loadEnvFiles();
 const registry = createRegistry();
@@ -45,6 +46,7 @@ const app = createApp({
     }
   },
   mcpDnsRebindingProtection: loopback,
+  healthChecks: nodeHealthChecks,
 });
 
 const server = serve({ fetch: app.fetch, port, hostname }, (info) => {
