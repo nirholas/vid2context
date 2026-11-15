@@ -105,15 +105,17 @@ export async function downloadCommand(c: CommandContext): Promise<number> {
   // Playlists, channels and feeds become their videos.
   const limit = positiveInt(c.values, 'limit') ?? limits(ctx.env).maxPlaylistItems;
   const inputs: string[] = [];
+  const playlist = bool(c.values, 'playlist');
   for (const input of c.positionals) {
-    const { ref } = c.deps.registry.resolve(input);
-    if (ref.kind === 'video') {
+    const resolved = c.deps.registry.resolve(input);
+    if (resolved.ref.kind === 'video' && !(playlist && resolved.list)) {
       inputs.push(input);
+      if (resolved.list) notePlaylist(c, input, 'download');
       continue;
     }
     c.progress.start(`Listing ${input}`);
     try {
-      const refs = await expandInput(c.deps.registry, input, ctx, { limit });
+      const refs = await expandInput(c.deps.registry, input, ctx, { limit, list: playlist });
       inputs.push(...refs.map((r) => r.url ?? r.id));
       c.progress.stop();
       c.note(`${input}: ${refs.length} video${refs.length === 1 ? '' : 's'}`);

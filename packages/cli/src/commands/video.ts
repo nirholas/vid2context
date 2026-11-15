@@ -56,7 +56,26 @@ export async function getCommand(c: CommandContext): Promise<number> {
     }),
   );
   if (c.verbose) c.deps.io.stderr(formatAttempts(context.attempts));
+  notePlaylist(c, input, 'pack');
   return 0;
+}
+
+/**
+ * A video link that also names a playlist: say so on stderr, with the command
+ * that uses the playlist. Silent for every other input and for inputs no
+ * source understands (the command itself reports those).
+ */
+export function notePlaylist(c: CommandContext, input: string, command: string): void {
+  let list: { url?: string; id: string } | undefined;
+  try {
+    list = c.deps.registry.resolve(input).list;
+  } catch {
+    return;
+  }
+  if (!list) return;
+  c.note(
+    `This video is part of a playlist (${list.url ?? list.id}). For the whole playlist: vid2context ${command} --playlist "${input}"`,
+  );
 }
 
 export async function listCommand(c: CommandContext): Promise<number> {
@@ -64,13 +83,17 @@ export async function listCommand(c: CommandContext): Promise<number> {
   c.progress.start(`Listing ${input}`);
   let refs: Awaited<ReturnType<typeof expandInput>>;
   try {
-    refs = await expandInput(c.deps.registry, input, c.deps.ctx, { limit: positiveInt(c.values, 'limit') });
+    refs = await expandInput(c.deps.registry, input, c.deps.ctx, {
+      limit: positiveInt(c.values, 'limit'),
+      list: bool(c.values, 'playlist'),
+    });
   } finally {
     c.progress.stop();
   }
   if (c.json) c.out.text(`${JSON.stringify(refs, null, 2)}\n`);
   else c.out.text(refs.map((r) => `${r.url ?? r.id}\n`).join(''));
   c.note(`${refs.length} item${refs.length === 1 ? '' : 's'}`);
+  if (!bool(c.values, 'playlist')) notePlaylist(c, input, 'list');
   return 0;
 }
 
@@ -107,7 +130,7 @@ async function gather(c: CommandContext, storage: Storage | null): Promise<{ con
   for (const input of c.positionals) {
     c.progress.start(`Resolving ${input}`);
     try {
-      const refs = await expandInput(c.deps.registry, input, c.deps.ctx);
+      const refs = await expandInput(c.deps.registry, input, c.deps.ctx, { list: bool(c.values, 'playlist') });
       inputs.push(...refs.map((r) => r.url ?? r.input));
     } finally {
       c.progress.stop();
