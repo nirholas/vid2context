@@ -9,6 +9,9 @@ Real LLM responses recorded on 2026-11-14 from this repo's VM by `scripts/record
 | `llm-de-chunks-003.json` | OVH keyless `gpt-oss-120b`, chunk 3: ids 24 to 29 (the Llama rung timed out first; a timeout leaves no file) |
 | `llm-de-whole-001.json` | OVH keyless `gpt-oss-120b`, all 30 segments in one chunk (default `chunkTokens`) |
 
+| `llm-fr-echo-001.json` | Recorded 2026-11-15 from this repo's VM by `scripts/record.ts llm-fr-echo`: Kilo keyless `nvidia/nemotron-3.5-lightning:free`, "Me at the zoo" (`tests/fixtures/contexts/youtube-jNQXAC9IVRw.json`, 6 segments) to French. The model answered with the English text unchanged |
+| `llm-fr-echo-002.json` | Same run: Kilo keyless `nvidia/nemotron-3-ultra-550b-a55b:free`, the retry on the next rung, a correct French translation |
+
 Serving `llm-de-chunks-001.json` (ids 0 to 11) to a request for ids 0 to 29 is how the tests get a real answer with missing ids, to check the single retry and the keep-original fallback.
 
 The YouTube responses (player, the creator `de` track of "Me at the zoo", and the HTTP 429 for `tlang=de`) are read from `providers/youtube/test/fixtures/`; see its README.

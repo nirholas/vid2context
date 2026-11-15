@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { clearCooldowns, getVideoContext, Registry, type VideoContext } from '@vid2context/core';
 import { type RecordedCall, type Route, replayFetch, testContext } from '@vid2context/core/testing';
+import freeCatalog from '@vid2context/provider-llm-free-catalog';
 import llm from '@vid2context/provider-llm-openai-compatible';
 import { youtubeCaptions, youtubeSource } from '@vid2context/provider-youtube';
 import { type RecordedExchange, readRecorded } from '@vid2context/testkit/recorder';
@@ -14,6 +15,7 @@ import {
   parseItems,
   sameLanguage,
   translateContext,
+  unchangedIds,
   verifyItems,
 } from '../src/index.ts';
 
@@ -34,6 +36,14 @@ const OVH = 'https://oai.endpoints.kepler.ai.cloud.ovh.net/v1/chat/completions';
 const recorded = (name: string): RecordedExchange[] => readRecorded(fixtures, { name }).map((r) => r.exchange);
 const [chunk1, chunk2, chunk3] = recorded('llm-de-chunks');
 const [whole] = recorded('llm-de-whole');
+// "Me at the zoo" to French on Kilo keyless: the first rung echoed the English, the next one translated.
+const [echoAnswer, frAnswer] = recorded('llm-fr-echo');
+const KILO = 'https://api.kilo.ai/api/gateway/chat/completions';
+const answerItems = (ex: RecordedExchange | undefined): unknown[] | null => {
+  const body = JSON.parse(String(ex?.response.body)) as { choices: { message: { content: string } }[] };
+  return parseItems(body.choices[0]?.message.content ?? '');
+};
+const zooItems = () => zoo.transcript.segments.map((s, id) => ({ id, text: s.text }));
 
 /** Serve recorded OVH answers in exactly this order; any extra call fails the test. */
 function ovhQueue(answers: (RecordedExchange | undefined)[]): Route {
@@ -103,6 +113,21 @@ describe('helpers', () => {
     expect('problem' in bad && bad.problem).toBe(
       'Expected 30 segments, got 12. Missing ids: 12, 13, 14, 15, 16, 17, 18, 19 and 10 more.',
     );
+  });
+});
+
+describe('untranslated answers', () => {
+  it('flags the real echoed answer and accepts the real French one', () => {
+    const echoed = verifyItems(answerItems(echoAnswer), zooItems());
+    expect(echoed).toMatchObject({ unchanged: true, problem: expect.stringContaining('(5 of 5) came back unchanged') });
+    const fr = verifyItems(answerItems(frAnswer), zooItems());
+    expect('texts' in fr && fr.texts.get(2)).toBe('vraiment vraiment de longues trompes');
+  });
+
+  it('does not judge chunks with fewer than three sentence-like segments', () => {
+    // "and that's cool" and the sound tag stay as they are: too little to call an echo.
+    const short = zooItems().slice(3, 5);
+    expect(unchangedIds(short, new Map(short.map((it) => [it.id, it.text])))).toBeNull();
   });
 });
 
@@ -203,6 +228,41 @@ describe('translateContext', () => {
     expect(res.notes[0]).toContain('6 of 30 segments kept their original text');
   });
 
+  it('moves to the next rung when one returns the segments untranslated, with exactly one retry', async () => {
+    const before = JSON.stringify(zoo);
+    const byModel: Route = {
+      method: 'POST',
+      url: KILO,
+      response: (call: RecordedCall) => {
+        const { model } = JSON.parse(String(call.body)) as { model: string };
+        const ex = [echoAnswer, frAnswer].find((e) => JSON.parse(String(e?.request.body)).model === model);
+        if (!ex) throw new Error(`no recorded answer for ${model}`);
+        return { status: ex.response.status, headers: { 'content-type': 'application/json' }, body: ex.response.body };
+      },
+    };
+    const fetch = replayFetch([byModel]);
+    const res = await translateContext(
+      new Registry([freeCatalog], 'node'),
+      zoo,
+      { language: 'fr', platform: false, chain: { only: ['kilo'] } },
+      testContext({ fetch }),
+    );
+    const bodies = fetch.calls
+      .filter((c) => c.url === KILO)
+      .map((c) => JSON.parse(String(c.body)) as { model: string; messages: { role: string }[] });
+    expect(bodies.map((b) => b.model)).toEqual(['nvidia/nemotron-3.5-lightning:free', 'nvidia/nemotron-3-ultra-550b-a55b:free']);
+    // The retry is the first request again, sent to the next rung: feedback does not fix a rung that echoes.
+    expect(bodies[1]?.messages.map((m) => m.role)).toEqual(['system', 'user']);
+    expect(res.report).toEqual({ chunks: 1, retried: [0], failed: [], untranslatedSegments: 0 });
+    expect(res.attempts.filter((a) => a.reason === 'untranslated').map((a) => a.id)).toEqual([
+      'llm/kilo/nvidia/nemotron-3.5-lightning:free',
+    ]);
+    expect(res.producer).toBe('llm/kilo/nvidia/nemotron-3-ultra-550b-a55b:free');
+    expect(res.transcript.segments[0]?.text).toBe('Très bien, nous voici devant les éléphants');
+    assertTimingsKept(res.transcript, zoo.transcript);
+    expect(JSON.stringify(zoo)).toBe(before);
+  });
+
   it('fails clearly when no rung can translate, and on a bad language code', async () => {
     await expect(
       translateContext(
@@ -231,7 +291,7 @@ describe.skipIf(!process.env.LIVE)('live', () => {
     expect(res.transcript.language).toMatch(/^fr/);
     if (res.via === 'llm') assertTimingsKept(res.transcript, context.transcript);
     console.error(res.via, res.producer, JSON.stringify(res.transcript.segments, null, 2));
-  });
+  }, 600_000);
 
   it('translates a real transcript with the live LLM chain (no YouTube call)', async () => {
     const { createNodeContext, createRegistry } = await import('@vid2context/registry/node');
@@ -239,6 +299,10 @@ describe.skipIf(!process.env.LIVE)('live', () => {
     const res = await translateContext(createRegistry(), zoo, { language: 'fr', platform: false }, ctx);
     expect(res.via).toBe('llm');
     assertTimingsKept(res.transcript, zoo.transcript);
+    expect(res.attempts.filter((a) => a.outcome === 'ok').length).toBeGreaterThan(0);
+    for (const [i, s] of res.transcript.segments.entries()) {
+      if (i !== 4) expect(s.text).not.toBe(zoo.transcript.segments[i]?.text);
+    }
     console.error(res.producer, JSON.stringify(res.report), JSON.stringify(res.transcript.segments, null, 2));
-  });
+  }, 600_000);
 });

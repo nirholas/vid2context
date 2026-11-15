@@ -96,7 +96,8 @@ for (let round = 1; wanted(echoName) && round <= 5; round++) {
     const echoed = res.attempts.some((a) => a.reason === 'untranslated');
     console.error(`${echoName} round ${round}: ${res.producer}, echo ${echoed}, report ${JSON.stringify(res.report)}`);
     if (echoed && res.report.failed.length === 0) {
-      for (const [i, s] of res.transcript.segments.entries()) console.error(i, s.startSec, s.text, '|', zoo.transcript.segments[i]?.text);
+      for (const [i, s] of res.transcript.segments.entries())
+        console.error(i, s.startSec, s.text, '|', zoo.transcript.segments[i]?.text);
       break;
     }
   } catch (err) {
