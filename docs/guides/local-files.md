@@ -70,7 +70,7 @@ There is no managed download on macOS or Windows: no source with a published che
 
 ### Static builds and network input
 
-Some static builds, including the johnvansickle.com builds, crash (SIGSEGV) when they open an http(s) URL, because their statically linked C library cannot resolve DNS unless `nscd` is running. Local files are unaffected. Streams need ffmpeg to fetch the playlist itself, so with such a build, install ffmpeg from your package manager or point `FFMPEG_PATH` and `FFPROBE_PATH` at another build (the managed BtbN build works). vid2context reports this crash with that hint.
+Some static builds, including the johnvansickle.com builds, crash (SIGSEGV) whenever they open an http(s) URL, even a numeric IP, because their statically linked C library cannot load the system's name service modules unless `nscd` is running. Local files are unaffected. Streams need ffmpeg to fetch the playlist itself, so when the found build crashes on a URL, vid2context remembers that for the rest of the process and retries URL inputs with the managed BtbN build (downloading it as described above, unless `VID2CONTEXT_FFMPEG_DOWNLOAD=0`; an existing managed copy is used either way). Local files keep using the system build. A binary pinned with `FFMPEG_PATH` or `FFPROBE_PATH` is never replaced: the crash is reported with a hint to install ffmpeg from your package manager or point those variables at another build.
 
 ### Safety
 
