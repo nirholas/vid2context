@@ -179,6 +179,19 @@ describe('transcript viewer', () => {
     expect(bar.hidden).toBe(true);
   });
 
+  it('grows the range when a second line checkbox is checked', () => {
+    const { root } = mount(long);
+    const box = (i: number) => root.querySelector<HTMLInputElement>(`.row[data-i="${i}"] input.sel`) as HTMLInputElement;
+    box(2).click();
+    expect(root.querySelector('.sel-label')?.textContent).toMatch(/^1 line at /);
+    box(5).click();
+    expect(root.querySelector('.sel-label')?.textContent).toMatch(/^4 lines, /);
+    expect(rows(root).filter((r) => r.classList.contains('selected'))).toHaveLength(4);
+    expect(box(2).checked).toBe(true);
+    box(5).click();
+    expect(root.querySelector('.sel-label')?.textContent).toMatch(/^3 lines, /);
+  });
+
   it('moves between lines with the keyboard and keeps one tab stop', () => {
     const { viewer, root } = mount(long);
     viewer.focusLine(5);
