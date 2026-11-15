@@ -12,7 +12,12 @@
     "@vid2context/ask": "*",
     "@vid2context/core": "*",
     "@vid2context/insights": "*",
+    "@vid2context/provider-media-file": "*",
+    "@vid2context/provider-youtube": "*",
     "@vid2context/registry": "*",
     "@vid2context/search": "*"
+  },
+  "devDependencies": {
+    "@vid2context/provider-media-url": "*"
   }
 }

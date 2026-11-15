@@ -1,6 +1,12 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { Registry } from '@vid2context/core';
+import mediaFile from '@vid2context/provider-media-file';
+import mediaUrl from '@vid2context/provider-media-url';
 import { describe, expect, it } from 'vitest';
 import { loadCitationsDataset, loadSearchDataset, loadVideoDataset, videoItemProblems } from '../src/dataset.ts';
 import { checkCitation, citationAccuracy } from '../src/metrics/citations.ts';
+import { findRef, REFS_DIR, type RecordedRef } from '../src/refs.ts';
 import { scoreCitations } from '../src/suites/citations.ts';
 import { sharedContext } from './helpers.ts';
 
@@ -10,10 +16,27 @@ describe('dataset files', () => {
   it('stt.json lists 10 or more short videos, at least two non-English', () => {
     const d = loadVideoDataset('stt.json');
     expect(d.items.length).toBeGreaterThanOrEqual(10);
-    expect(d.items.every((i) => i.durationSec >= 60 && i.durationSec <= 360)).toBe(true);
+    // 1 to 6 minutes; the one shorter item is the archival Apollo 11 clip.
+    expect(d.items.every((i) => i.durationSec <= 360 && (i.durationSec >= 60 || i.tags.includes('archival')))).toBe(true);
     const languages = new Set(d.items.map((i) => i.language.split('-')[0]));
     expect([...languages].filter((l) => l !== 'en').length).toBeGreaterThanOrEqual(2);
     expect(d.items.every((i) => i.why.length > 10 && i.license.length > 10)).toBe(true);
+  });
+
+  it('every committed-reference item outside YouTube has its reference in datasets/refs/', () => {
+    const registry = new Registry([mediaUrl, ...mediaFile], 'node');
+    const d = loadVideoDataset('stt.json');
+    const offYouTube = d.items.filter((i) => !/youtube\.com|youtu\.be/.test(i.url));
+    expect(offYouTube.length).toBeGreaterThanOrEqual(15);
+    for (const item of offYouTube) {
+      const rec = item.referenceFile
+        ? (JSON.parse(readFileSync(join(REFS_DIR, item.referenceFile), 'utf8')) as RecordedRef)
+        : findRef([REFS_DIR], registry.resolve(item.url).ref.id, 'creator-captions', item.language);
+      expect(rec, item.id).not.toBeNull();
+      expect(rec?.language.split('-')[0], item.id).toBe(item.language.split('-')[0]);
+      expect(rec?.segments.length, item.id).toBeGreaterThan(0);
+      if (item.referenceUrl) expect(rec?.source, item.id).toBe(item.referenceUrl);
+    }
   });
 
   it('captions.json lists videos whose references may be committed', () => {
@@ -24,7 +47,9 @@ describe('dataset files', () => {
 
   it('reports what is wrong with a malformed entry', () => {
     expect(videoItemProblems({ id: 'x', url: 'u' })).toContain('durationSec must be a positive number');
-    expect(videoItemProblems({ id: 'x', url: 'u' })).toContain('reference must be "creator-captions"');
+    expect(videoItemProblems({ id: 'x', url: 'u' })).toContain('reference must be "creator-captions" or "human-transcript"');
+    expect(videoItemProblems({ reference: 'human-transcript' })).toContain('a human-transcript needs referenceFile');
+    expect(videoItemProblems({ referenceUrl: 'http://x' })).toContain('referenceUrl must be an https URL');
   });
 
   it('every citations.json quote occurs in the recorded transcript inside its labeled range', () => {

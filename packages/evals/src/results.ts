@@ -48,6 +48,14 @@ export interface ItemResult {
     /** Citations the producer itself rejected or could not resolve (unverified brief claims, unknown [n] refs). */
     rejected: number;
   };
+  /** Cleanup suite: what the cleanup run did (steps, segments merged or rewritten, LLM chunks). */
+  cleanup?: {
+    steps: string[];
+    merged: number;
+    removed: number;
+    rewritten: number;
+    llm?: { chunks: number; accepted: number; rejected: number; failed: number; rungs: string[] };
+  };
   /** Search suite: scores for one query. */
   retrieval?: { k: number; precisionAtK: number; recallAtK: number; reciprocalRank: number };
   /** The first 300 characters of the hypothesis text, for diagnosing bad scores. */

@@ -23,8 +23,30 @@ export interface VideoItem {
   tags: string[];
   /** License or terms note. */
   license: string;
-  /** Where the reference transcript comes from. */
-  reference: 'creator-captions';
+  /**
+   * Where the reference transcript comes from: `creator-captions` (captions
+   * the video's publisher wrote: a YouTube creator track, or a subtitle file
+   * the publisher hosts, see `referenceUrl`), or `human-transcript` (a
+   * published human transcript stored in `referenceFile`).
+   */
+  reference: 'creator-captions' | 'human-transcript';
+  /**
+   * The publisher's own subtitle file (SRT or WebVTT) for media outside
+   * YouTube, for example the .srt NASA publishes next to each video in its
+   * Image and Video Library. Downloaded when no recorded reference exists.
+   */
+  referenceUrl?: string;
+  /**
+   * A reference file in datasets/refs/ to use instead of looking one up by
+   * video id. Needed for local files, whose ids depend on file timestamps.
+   */
+  referenceFile?: string;
+  /**
+   * True when the license lets the reference be committed (public domain or
+   * Creative Commons): `--record` then writes it into datasets/refs/. Other
+   * references are only cached locally under .vid2context/cache/evals/refs/.
+   */
+  storeReference?: boolean;
 }
 
 export interface Dataset<T> {
@@ -98,7 +120,14 @@ export function videoItemProblems(v: unknown): string[] {
     if (!isStr(o[k])) problems.push(`${k} missing`);
   if (typeof o.durationSec !== 'number' || o.durationSec <= 0) problems.push('durationSec must be a positive number');
   if (!Array.isArray(o.tags)) problems.push('tags must be an array');
-  if (o.reference !== 'creator-captions') problems.push('reference must be "creator-captions"');
+  if (o.reference !== 'creator-captions' && o.reference !== 'human-transcript')
+    problems.push('reference must be "creator-captions" or "human-transcript"');
+  if (o.reference === 'human-transcript' && !isStr(o.referenceFile)) problems.push('a human-transcript needs referenceFile');
+  if (o.referenceUrl !== undefined && !(isStr(o.referenceUrl) && /^https:\/\//.test(o.referenceUrl)))
+    problems.push('referenceUrl must be an https URL');
+  if (o.referenceFile !== undefined && !(isStr(o.referenceFile) && /^[\w.-]+\.json$/.test(o.referenceFile)))
+    problems.push('referenceFile must be a .json file name in datasets/refs/');
+  if (o.storeReference !== undefined && typeof o.storeReference !== 'boolean') problems.push('storeReference must be a boolean');
   return problems;
 }
 

@@ -18,6 +18,7 @@ import { renderReport } from './report.ts';
 import { type EvalResult, type SuiteName, summarize } from './results.ts';
 import { runCaptionsSuite } from './suites/captions.ts';
 import { runCitationsSuite } from './suites/citations.ts';
+import { runCleanupSuite } from './suites/cleanup.ts';
 import type { SuiteContext } from './suites/common.ts';
 import { runSearchSuite } from './suites/search.ts';
 import { runSttSuite, type SuiteOutput } from './suites/stt.ts';
@@ -43,8 +44,8 @@ export function liveAllowed(env: Env, args: Pick<EvalArgs, 'live'>): boolean {
 
 async function runSuite(suite: SuiteName, sc: SuiteContext): Promise<SuiteOutput> {
   if (suite === 'stt') return runSttSuite(sc);
-  if (suite === 'captions') return runCaptionsSuite(sc, false);
-  if (suite === 'cleanup') return runCaptionsSuite(sc, true);
+  if (suite === 'captions') return runCaptionsSuite(sc);
+  if (suite === 'cleanup') return runCleanupSuite(sc);
   if (suite === 'citations') return runCitationsSuite(sc);
   return runSearchSuite(sc);
 }

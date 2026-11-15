@@ -22,6 +22,8 @@ export interface RecordedRef {
   producer: string;
   /** ISO 8601 date the track was downloaded. */
   recordedAt: string;
+  /** Where the reference was downloaded from, when it is not the video's own caption track (a publisher-hosted subtitle file). */
+  source?: string;
   segments: Segment[];
 }
 

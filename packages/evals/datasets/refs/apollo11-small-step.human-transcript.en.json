@@ -1,0 +1,16 @@
+{
+  "videoId": "file:apollo11-small-step",
+  "title": "Apollo 11: \"That's one small step for man\" (Armstrong Small Step.ogg)",
+  "language": "en",
+  "origin": "imported",
+  "producer": "wikimedia-commons-file-description",
+  "recordedAt": "2026-11-15",
+  "source": "https://commons.wikimedia.org/wiki/File:Armstrong_Small_Step.ogg",
+  "segments": [
+    {
+      "startSec": 0,
+      "endSec": 24.19,
+      "text": "And, uh, step off the LM now. That's one small step for man, one giant leap for mankind."
+    }
+  ]
+}

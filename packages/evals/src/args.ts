@@ -38,7 +38,8 @@ Options:
                      (default: packages/evals/results)
   --json             print the result JSON instead of the Markdown report
   --check            exit 1 when a rung breaks packages/evals/thresholds.json
-  --record           save fetched creator captions into datasets/refs/
+  --record           save fetched creator captions into datasets/refs/ for
+                     items marked storeReference (public domain or CC)
   --live             same as LIVE=1
   --help             show this help
 `;

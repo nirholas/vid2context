@@ -1,12 +1,29 @@
 {
   "stt": {
-    "stt/ovh/whisper-large-v3-turbo": { "maxWer": 0.25, "maxCer": 0.2 },
-    "stt/groq/whisper-large-v3-turbo": { "maxWer": 0.25, "maxCer": 0.2 }
+    "stt/ovh/whisper-large-v3-turbo": {
+      "maxWer": 0.25,
+      "maxCer": 0.2
+    },
+    "stt/groq/whisper-large-v3-turbo": {
+      "maxWer": 0.25,
+      "maxCer": 0.2
+    }
   },
   "captions": {
-    "youtube-auto-captions": { "maxWer": 0.3, "maxTimingMedianSec": 1.5 }
+    "youtube-auto-captions": {
+      "maxWer": 0.3,
+      "maxTimingMedianSec": 1.5
+    }
   },
   "cleanup": {
-    "youtube-auto-captions+clean": { "maxWer": 0.3 }
+    "raw": {
+      "maxWer": 0.3
+    },
+    "clean:rules": {
+      "maxWer": 0.3
+    },
+    "clean:llm": {
+      "maxWer": 0.3
+    }
   }
 }

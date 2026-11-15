@@ -13,16 +13,11 @@
     "platform": "linux-x64",
     "policy": "free",
     "keyless": true,
-    "rungs": [
-      "ask",
-      "brief"
-    ],
+    "rungs": ["ask", "brief"],
     "envFiles": 1
   },
   "skippedRungs": [],
-  "notes": [
-    "LLM rungs that answered: llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast."
-  ],
+  "notes": ["LLM rungs that answered: llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast."],
   "items": [
     {
       "item": "reliable-engine",

@@ -53,7 +53,27 @@ function summaryTable(suite: EvalResult['suite'], rows: RungSummary[]): string {
       ]),
     );
   }
-  if (suite === 'captions' || suite === 'cleanup') {
+  if (suite === 'cleanup') {
+    const raw = rows.find((r) => r.rung === 'raw');
+    const delta = (v: number | undefined, base: number | undefined) =>
+      v === undefined || base === undefined ? 'n/a' : `${v >= base ? '+' : ''}${((v - base) * 100).toFixed(1)}`;
+    return table(
+      ['Variant', 'Items', 'OK', 'WER', 'WER vs raw', 'Punct. F1', 'Punct. vs raw', 'Caps F1', 'Caps vs raw', 'p50 latency'],
+      rows.map((r) => [
+        r.rung,
+        String(r.items),
+        String(r.ok),
+        pct(r.wer),
+        delta(r.wer, raw?.wer),
+        pct(r.punctuationF1),
+        delta(r.punctuationF1, raw?.punctuationF1),
+        pct(r.capitalizationF1),
+        delta(r.capitalizationF1, raw?.capitalizationF1),
+        ms(r.p50LatencyMs),
+      ]),
+    );
+  }
+  if (suite === 'captions') {
     return table(
       ['Producer', 'Items', 'OK', 'WER', 'CER', 'S / D / I', 'Timing p50', 'Punct. F1', 'Caps F1'],
       rows.map((r) => [
@@ -112,13 +132,26 @@ function itemRow(suite: EvalResult['suite'], i: ItemResult): string[] {
       ms(i.latencyMs),
     ];
   }
+  if (suite === 'cleanup') {
+    const llm = i.cleanup?.llm;
+    return [
+      i.item,
+      i.rung,
+      outcome,
+      pct(i.wer?.rate),
+      pct(i.punctuation?.punctuation.f1),
+      pct(i.punctuation?.capitalization.f1),
+      llm ? `${llm.accepted} / ${llm.chunks}` : 'n/a',
+      ms(i.latencyMs),
+    ];
+  }
   return [i.item, i.language, i.rung, outcome, pct(i.wer?.rate), pct(i.cer?.rate), sec(i.timing?.medianSec), ms(i.latencyMs)];
 }
 
 const ITEM_HEAD: Record<EvalResult['suite'], string[]> = {
   stt: ['Item', 'Lang', 'Rung', 'Outcome', 'WER', 'CER', 'Timing p50', 'Latency'],
   captions: ['Item', 'Lang', 'Producer', 'Outcome', 'WER', 'CER', 'Timing p50', 'Latency'],
-  cleanup: ['Item', 'Lang', 'Producer', 'Outcome', 'WER', 'CER', 'Timing p50', 'Latency'],
+  cleanup: ['Item', 'Variant', 'Outcome', 'WER', 'Punct. F1', 'Caps F1', 'LLM chunks applied', 'Latency'],
   citations: ['Question', 'Producer', 'Outcome', 'Verified / cited', 'Hit', 'Latency'],
   search: ['Query', 'Mode', 'Outcome', 'Precision@k', 'Recall@k', 'RR', 'Latency'],
 };
@@ -128,7 +161,7 @@ const LEGEND: Record<EvalResult['suite'], string> = {
   captions:
     'WER and CER are pooled over items. S / D / I are substitutions, deletions and insertions. Timing p50 is the median word start-time difference against the creator captions. Punctuation and capitalization F1 compare matched words with the creator text.',
   cleanup:
-    'Each video has a raw auto-caption row and a row after core cleanup (rule-based steps, no LLM). The raw track is kept; cleanup is scored as an added layer.',
+    'Every variant starts from the same raw auto-captions and is scored against the creator captions. raw: as served. clean:rules: rule-based cleanup (normalization, rolling-duplicate folding, sentences). clean:fillers: rules plus filler removal. clean:llm: rules plus the LLM punctuation pass. WER should stay at the raw level (cleanup must not change what was said); punctuation and capitalization F1 show what cleanup adds. "vs raw" columns are percentage points. The raw track is kept; cleanup is an added layer.',
   citations:
     'Citation accuracy: citations whose quote occurs in the transcript within 30 s of their time, over all citations returned. Expected place hit: questions where at least one citation lands within 30 s of a labeled answer. Self-rejected: citations the producer dropped itself (unverified brief claims, unknown [n] refs).',
   search:

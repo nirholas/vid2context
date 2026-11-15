@@ -12,7 +12,8 @@
       "why": "Unscripted expert answer to camera, light background music; short, so it is first and makes --limit runs cheap.",
       "tags": ["en", "interview", "unscripted", "music"],
       "license": "NASA video: NASA media is generally not subject to US copyright (NASA media usage guidelines). Reference captions are committed in datasets/refs/.",
-      "reference": "creator-captions"
+      "reference": "creator-captions",
+      "storeReference": true
     },
     {
       "id": "nasa-sea-level",
@@ -24,7 +25,8 @@
       "why": "Scientist speaking unscripted; tests auto-captions on jargon.",
       "tags": ["en", "interview", "jargon"],
       "license": "NASA video: NASA media is generally not subject to US copyright (NASA media usage guidelines). Reference captions are committed in datasets/refs/.",
-      "reference": "creator-captions"
+      "reference": "creator-captions",
+      "storeReference": true
     },
     {
       "id": "nasa-spacecraft-comms",
@@ -36,7 +38,8 @@
       "why": "Proper nouns and engineering terms.",
       "tags": ["en", "interview", "proper-nouns"],
       "license": "NASA video: NASA media is generally not subject to US copyright (NASA media usage guidelines). Reference captions are committed in datasets/refs/.",
-      "reference": "creator-captions"
+      "reference": "creator-captions",
+      "storeReference": true
     },
     {
       "id": "ted-ed-spiciness",
@@ -48,7 +51,8 @@
       "why": "Narration over music; creator captions are fully punctuated, auto-captions are not.",
       "tags": ["en", "narration", "music"],
       "license": "TED content, shared under CC BY-NC-ND 4.0 per TED's usage policy (attribution: TED). Reference captions are committed in datasets/refs/.",
-      "reference": "creator-captions"
+      "reference": "creator-captions",
+      "storeReference": true
     },
     {
       "id": "ted-ed-bridge-riddle",
@@ -60,7 +64,8 @@
       "why": "Numbers written as digits by one track and words by the other.",
       "tags": ["en", "narration", "numbers"],
       "license": "TED content, shared under CC BY-NC-ND 4.0 per TED's usage policy (attribution: TED). Reference captions are committed in datasets/refs/.",
-      "reference": "creator-captions"
+      "reference": "creator-captions",
+      "storeReference": true
     },
     {
       "id": "tedx-one-minute",
@@ -72,7 +77,8 @@
       "why": "Fast stage speech with audience reactions and a live-room acoustic.",
       "tags": ["en", "stage", "fast", "audience"],
       "license": "TED content, shared under CC BY-NC-ND 4.0 per TED's usage policy (attribution: TED). Reference captions are committed in datasets/refs/.",
-      "reference": "creator-captions"
+      "reference": "creator-captions",
+      "storeReference": true
     }
   ]
 }

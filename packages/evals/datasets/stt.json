@@ -1,7 +1,216 @@
 {
   "suite": "stt",
-  "description": "Short public YouTube videos (1 to 4 minutes) with creator-uploaded captions in a known language. The creator captions are the reference for word and character error rates of each speech-to-text rung. Ordered so the first three cover English, German and a stage talk.",
+  "description": "Short public videos (1 to 4 minutes, plus one 24-second archival clip) with a human reference transcript in a known language. The first 15 items are NASA public-domain media served from NASA's Image and Video Library (images-assets.nasa.gov), whose reference is the SRT NASA publishes next to each video, plus the Apollo 11 clip with NASA's published transcript: they need no YouTube access at all. The YouTube items after them use creator-uploaded captions as the reference. Ordered so the first three cover English, Spanish and archival radio audio.",
   "items": [
+    {
+      "id": "nasa-lib-black-hole",
+      "url": "https://images-assets.nasa.gov/video/What%20is%20a%20Black%20Hole/What%20is%20a%20Black%20Hole~mobile.mp4",
+      "title": "What is a Black Hole | We Asked a NASA Expert",
+      "channel": "NASA Image and Video Library",
+      "language": "en",
+      "durationSec": 93,
+      "why": "Astrophysicist explaining black holes: physics vocabulary (event horizon, gravity), calm studio speech.",
+      "tags": ["en", "interview", "jargon"],
+      "license": "NASA video and captions: NASA media is generally not subject to US copyright (NASA media usage guidelines). Served from images-assets.nasa.gov, not YouTube, so the reference and audio do not depend on YouTube being reachable. Reference committed in datasets/refs/.",
+      "reference": "creator-captions",
+      "referenceUrl": "https://images-assets.nasa.gov/video/What%20is%20a%20Black%20Hole/What%20is%20a%20Black%20Hole.srt",
+      "storeReference": true
+    },
+    {
+      "id": "nasa-lib-recientemente",
+      "url": "https://images-assets.nasa.gov/video/20230317_recientemente/20230317_recientemente~mobile.mp4",
+      "title": "Recientemente: El presidente solicita presupuesto para la NASA - 17/03/23",
+      "channel": "NASA Image and Video Library",
+      "language": "es",
+      "durationSec": 130,
+      "why": "Spanish-language NASA news summary (Recientemente en la NASA), scripted narration with English mission names inside Spanish speech.",
+      "tags": ["es", "news", "non-english", "narrated"],
+      "license": "NASA video and captions: NASA media is generally not subject to US copyright (NASA media usage guidelines). Served from images-assets.nasa.gov, not YouTube, so the reference and audio do not depend on YouTube being reachable. Reference committed in datasets/refs/.",
+      "reference": "creator-captions",
+      "referenceUrl": "https://images-assets.nasa.gov/video/20230317_recientemente/20230317_recientemente.srt",
+      "storeReference": true
+    },
+    {
+      "id": "apollo11-small-step",
+      "url": "tests/fixtures/media/apollo11-small-step.mp3",
+      "title": "Apollo 11: \"That's one small step for man\" (Armstrong Small Step.ogg)",
+      "channel": "NASA (via Wikimedia Commons)",
+      "language": "en",
+      "durationSec": 24,
+      "why": "1969 air-to-ground radio: narrow bandwidth, static and a famous line every model has heard; a local file, so it needs no network for audio.",
+      "tags": ["en", "archival", "radio", "noise", "local-file"],
+      "license": "Public domain (NASA). Audio is the shared fixture tests/fixtures/media/apollo11-small-step.mp3 (from Wikimedia Commons File:Armstrong_Small_Step.ogg); the reference is the transcription in that file's description, committed in datasets/refs/.",
+      "reference": "human-transcript",
+      "referenceFile": "apollo11-small-step.human-transcript.en.json"
+    },
+    {
+      "id": "nasa-lib-uranus",
+      "url": "https://images-assets.nasa.gov/video/Have%20We%20Been%20to%20Uranus/Have%20We%20Been%20to%20Uranus~mobile.mp4",
+      "title": "Have We Been to Uranus? | We Asked a NASA Expert",
+      "channel": "NASA Image and Video Library",
+      "language": "en",
+      "durationSec": 109,
+      "why": "Planetary scientist naming missions and moons (Voyager 2, Uranus); proper nouns test spelling.",
+      "tags": ["en", "interview", "proper-nouns"],
+      "license": "NASA video and captions: NASA media is generally not subject to US copyright (NASA media usage guidelines). Served from images-assets.nasa.gov, not YouTube, so the reference and audio do not depend on YouTube being reachable. Reference committed in datasets/refs/.",
+      "reference": "creator-captions",
+      "referenceUrl": "https://images-assets.nasa.gov/video/Have%20We%20Been%20to%20Uranus/Have%20We%20Been%20to%20Uranus.srt",
+      "storeReference": true
+    },
+    {
+      "id": "nasa-lib-space-dangers",
+      "url": "https://images-assets.nasa.gov/video/What%20Are%20the%20Dangers%20of%20Going%20to%20Space/What%20Are%20the%20Dangers%20of%20Going%20to%20Space~mobile.mp4",
+      "title": "What Are the Dangers of Going to Space | We Asked a NASA Expert",
+      "channel": "NASA Image and Video Library",
+      "language": "en",
+      "durationSec": 89,
+      "why": "Human-spaceflight expert on radiation, isolation and gravity; medical vocabulary.",
+      "tags": ["en", "interview", "jargon"],
+      "license": "NASA video and captions: NASA media is generally not subject to US copyright (NASA media usage guidelines). Served from images-assets.nasa.gov, not YouTube, so the reference and audio do not depend on YouTube being reachable. Reference committed in datasets/refs/.",
+      "reference": "creator-captions",
+      "referenceUrl": "https://images-assets.nasa.gov/video/What%20Are%20the%20Dangers%20of%20Going%20to%20Space/What%20Are%20the%20Dangers%20of%20Going%20to%20Space.srt",
+      "storeReference": true
+    },
+    {
+      "id": "nasa-lib-moon-horizon",
+      "url": "https://images-assets.nasa.gov/video/Why%20Does%20the%20Moon%20Look%20Larger%20at%20the%20Horizo/Why%20Does%20the%20Moon%20Look%20Larger%20at%20the%20Horizo~mobile.mp4",
+      "title": "Why Does the Moon Look Larger at the Horizon? We Asked a NASA Expert",
+      "channel": "NASA Image and Video Library",
+      "language": "en",
+      "durationSec": 79,
+      "why": "Short answer about the Moon illusion; light background music under speech.",
+      "tags": ["en", "interview", "short"],
+      "license": "NASA video and captions: NASA media is generally not subject to US copyright (NASA media usage guidelines). Served from images-assets.nasa.gov, not YouTube, so the reference and audio do not depend on YouTube being reachable. Reference committed in datasets/refs/.",
+      "reference": "creator-captions",
+      "referenceUrl": "https://images-assets.nasa.gov/video/Why%20Does%20the%20Moon%20Look%20Larger%20at%20the%20Horizo/Why%20Does%20the%20Moon%20Look%20Larger%20at%20the%20Horizo.srt",
+      "storeReference": true
+    },
+    {
+      "id": "nasa-lib-zero-gravity",
+      "url": "https://images-assets.nasa.gov/video/How%20Do%20We%20Do%20Research%20in%20Zero%20Gravity/How%20Do%20We%20Do%20Research%20in%20Zero%20Gravity~mobile.mp4",
+      "title": "How Do We Do Research in Zero Gravity | We Asked a NASA Expert",
+      "channel": "NASA Image and Video Library",
+      "language": "en",
+      "durationSec": 132,
+      "why": "Microgravity research: technical terms (ISS, microgravity, experiments), slightly faster delivery.",
+      "tags": ["en", "interview", "jargon"],
+      "license": "NASA video and captions: NASA media is generally not subject to US copyright (NASA media usage guidelines). Served from images-assets.nasa.gov, not YouTube, so the reference and audio do not depend on YouTube being reachable. Reference committed in datasets/refs/.",
+      "reference": "creator-captions",
+      "referenceUrl": "https://images-assets.nasa.gov/video/How%20Do%20We%20Do%20Research%20in%20Zero%20Gravity/How%20Do%20We%20Do%20Research%20in%20Zero%20Gravity.srt",
+      "storeReference": true
+    },
+    {
+      "id": "nasa-lib-planet-names",
+      "url": "https://images-assets.nasa.gov/video/How%20Do%20Planets%20Get%20Their%20Names_%20-%20Horizontal%20Video/How%20Do%20Planets%20Get%20Their%20Names_%20-%20Horizontal%20Video~mobile.mp4",
+      "title": "How Do Planets Get Their Names? We Asked A NASA Expert",
+      "channel": "NASA Image and Video Library",
+      "language": "en",
+      "durationSec": 106,
+      "why": "Naming conventions with Greek and Roman names and the IAU; many proper nouns.",
+      "tags": ["en", "interview", "proper-nouns"],
+      "license": "NASA video and captions: NASA media is generally not subject to US copyright (NASA media usage guidelines). Served from images-assets.nasa.gov, not YouTube, so the reference and audio do not depend on YouTube being reachable. Reference committed in datasets/refs/.",
+      "reference": "creator-captions",
+      "referenceUrl": "https://images-assets.nasa.gov/video/How%20Do%20Planets%20Get%20Their%20Names_%20-%20Horizontal%20Video/How%20Do%20Planets%20Get%20Their%20Names_%20-%20Horizontal%20Video.srt",
+      "storeReference": true
+    },
+    {
+      "id": "nasa-lib-found-life",
+      "url": "https://images-assets.nasa.gov/video/What%20Would%20It%20Take%20To%20Say%20We%20Found%20Life%3F%20-%20Tori%20Hoehler/What%20Would%20It%20Take%20To%20Say%20We%20Found%20Life%3F%20-%20Tori%20Hoehler~mobile.mp4",
+      "title": "What Would It Take To Say We Found Life? We Asked a NASA Expert",
+      "channel": "NASA Image and Video Library",
+      "language": "en",
+      "durationSec": 207,
+      "why": "The longest item (3.5 minutes): a scientist reasoning out loud about biosignatures, unscripted pauses.",
+      "tags": ["en", "interview", "long", "unscripted"],
+      "license": "NASA video and captions: NASA media is generally not subject to US copyright (NASA media usage guidelines). Served from images-assets.nasa.gov, not YouTube, so the reference and audio do not depend on YouTube being reachable. Reference committed in datasets/refs/.",
+      "reference": "creator-captions",
+      "referenceUrl": "https://images-assets.nasa.gov/video/What%20Would%20It%20Take%20To%20Say%20We%20Found%20Life%3F%20-%20Tori%20Hoehler/What%20Would%20It%20Take%20To%20Say%20We%20Found%20Life%3F%20-%20Tori%20Hoehler.srt",
+      "storeReference": true
+    },
+    {
+      "id": "nasa-lib-spinoff",
+      "url": "https://images-assets.nasa.gov/video/What%20is%20a%20NASA%20Spinoff/What%20is%20a%20NASA%20Spinoff~mobile.mp4",
+      "title": "What is a NASA Spinoff",
+      "channel": "NASA Image and Video Library",
+      "language": "en",
+      "durationSec": 111,
+      "why": "Technology transfer examples with product and brand names.",
+      "tags": ["en", "interview", "product-names"],
+      "license": "NASA video and captions: NASA media is generally not subject to US copyright (NASA media usage guidelines). Served from images-assets.nasa.gov, not YouTube, so the reference and audio do not depend on YouTube being reachable. Reference committed in datasets/refs/.",
+      "reference": "creator-captions",
+      "referenceUrl": "https://images-assets.nasa.gov/video/What%20is%20a%20NASA%20Spinoff/What%20is%20a%20NASA%20Spinoff.srt",
+      "storeReference": true
+    },
+    {
+      "id": "nasa-lib-northern-lights",
+      "url": "https://images-assets.nasa.gov/video/How%20Can%20I%20See%20the%20Northern%20Lights/How%20Can%20I%20See%20the%20Northern%20Lights~mobile.mp4",
+      "title": "How Can I See the Northern Lights? We Asked a NASA Expert",
+      "channel": "NASA Image and Video Library",
+      "language": "en",
+      "durationSec": 103,
+      "why": "Aurora viewing advice with places, times and solar-cycle numbers.",
+      "tags": ["en", "interview", "numbers"],
+      "license": "NASA video and captions: NASA media is generally not subject to US copyright (NASA media usage guidelines). Served from images-assets.nasa.gov, not YouTube, so the reference and audio do not depend on YouTube being reachable. Reference committed in datasets/refs/.",
+      "reference": "creator-captions",
+      "referenceUrl": "https://images-assets.nasa.gov/video/How%20Can%20I%20See%20the%20Northern%20Lights/How%20Can%20I%20See%20the%20Northern%20Lights.srt",
+      "storeReference": true
+    },
+    {
+      "id": "nasa-lib-polar-ice",
+      "url": "https://images-assets.nasa.gov/video/Is%20Polar%20Ice%20Melting/Is%20Polar%20Ice%20Melting~mobile.mp4",
+      "title": "Is Polar Ice Melting? We Asked a NASA Expert",
+      "channel": "NASA Image and Video Library",
+      "language": "en",
+      "durationSec": 77,
+      "why": "Climate scientist on ice sheets and sea ice (2026 upload, so new to every model's training data).",
+      "tags": ["en", "interview", "jargon"],
+      "license": "NASA video and captions: NASA media is generally not subject to US copyright (NASA media usage guidelines). Served from images-assets.nasa.gov, not YouTube, so the reference and audio do not depend on YouTube being reachable. Reference committed in datasets/refs/.",
+      "reference": "creator-captions",
+      "referenceUrl": "https://images-assets.nasa.gov/video/Is%20Polar%20Ice%20Melting/Is%20Polar%20Ice%20Melting.srt",
+      "storeReference": true
+    },
+    {
+      "id": "nasa-lib-earthquakes",
+      "url": "https://images-assets.nasa.gov/video/Are%20There%20Earthquakes%20On%20Other%20Planets_%20-%20Horizontal%20Video/Are%20There%20Earthquakes%20On%20Other%20Planets_%20-%20Horizontal%20Video~mobile.mp4",
+      "title": "Are There Earthquakes On Other Planets? We Asked A NASA Expert",
+      "channel": "NASA Image and Video Library",
+      "language": "en",
+      "durationSec": 103,
+      "why": "Seismology terms (marsquakes, moonquakes, InSight lander).",
+      "tags": ["en", "interview", "jargon"],
+      "license": "NASA video and captions: NASA media is generally not subject to US copyright (NASA media usage guidelines). Served from images-assets.nasa.gov, not YouTube, so the reference and audio do not depend on YouTube being reachable. Reference committed in datasets/refs/.",
+      "reference": "creator-captions",
+      "referenceUrl": "https://images-assets.nasa.gov/video/Are%20There%20Earthquakes%20On%20Other%20Planets_%20-%20Horizontal%20Video/Are%20There%20Earthquakes%20On%20Other%20Planets_%20-%20Horizontal%20Video.srt",
+      "storeReference": true
+    },
+    {
+      "id": "nasa-lib-moon-rocks",
+      "url": "https://images-assets.nasa.gov/video/Where%20Are%20the%20Moon%20Rocks_%20-%20Horizontal%20Video/Where%20Are%20the%20Moon%20Rocks_%20-%20Horizontal%20Video~mobile.mp4",
+      "title": "Where Are the Moon Rocks? We Asked A NASA Expert",
+      "channel": "NASA Image and Video Library",
+      "language": "en",
+      "durationSec": 70,
+      "why": "Short curator answer about Apollo samples, numbers and places.",
+      "tags": ["en", "interview", "short"],
+      "license": "NASA video and captions: NASA media is generally not subject to US copyright (NASA media usage guidelines). Served from images-assets.nasa.gov, not YouTube, so the reference and audio do not depend on YouTube being reachable. Reference committed in datasets/refs/.",
+      "reference": "creator-captions",
+      "referenceUrl": "https://images-assets.nasa.gov/video/Where%20Are%20the%20Moon%20Rocks_%20-%20Horizontal%20Video/Where%20Are%20the%20Moon%20Rocks_%20-%20Horizontal%20Video.srt",
+      "storeReference": true
+    },
+    {
+      "id": "nasa-lib-rubio-treadmill",
+      "url": "https://images-assets.nasa.gov/video/jsc2023m000211_Frank%20Rubio_Treadmill_Exercise_in_Space_Spanish_HighQuality_1080p_MP4/jsc2023m000211_Frank%20Rubio_Treadmill_Exercise_in_Space_Spanish_HighQuality_1080p_MP4~mobile.mp4",
+      "title": "Cómo correr en microgravedad (How to Run in Microgravity-Spanish)",
+      "channel": "NASA Image and Video Library",
+      "language": "es",
+      "durationSec": 153,
+      "why": "Astronaut Frank Rubio speaking Spanish on board the ISS: unscripted, equipment noise and room echo.",
+      "tags": ["es", "non-english", "unscripted", "noise"],
+      "license": "NASA video and captions: NASA media is generally not subject to US copyright (NASA media usage guidelines). Served from images-assets.nasa.gov, not YouTube, so the reference and audio do not depend on YouTube being reachable. Reference committed in datasets/refs/.",
+      "reference": "creator-captions",
+      "referenceUrl": "https://images-assets.nasa.gov/video/jsc2023m000211_Frank%20Rubio_Treadmill_Exercise_in_Space_Spanish_HighQuality_1080p_MP4/jsc2023m000211_Frank%20Rubio_Treadmill_Exercise_in_Space_Spanish_HighQuality_1080p_MP4.srt",
+      "storeReference": true
+    },
     {
       "id": "nasa-flat-earth",
       "url": "https://www.youtube.com/watch?v=GB06dUoGGRI",
@@ -12,7 +221,8 @@
       "why": "Unscripted expert answer to camera, light background music; short, so it is first and makes --limit runs cheap.",
       "tags": ["en", "interview", "unscripted", "music"],
       "license": "NASA video: NASA media is generally not subject to US copyright (NASA media usage guidelines). Reference captions are committed in datasets/refs/.",
-      "reference": "creator-captions"
+      "reference": "creator-captions",
+      "storeReference": true
     },
     {
       "id": "dw-kurz-und-leicht",
@@ -36,7 +246,8 @@
       "why": "Fast stage speech with audience reactions and a live-room acoustic.",
       "tags": ["en", "stage", "fast", "audience"],
       "license": "TED content, shared under CC BY-NC-ND 4.0 per TED's usage policy (attribution: TED). Reference captions are committed in datasets/refs/.",
-      "reference": "creator-captions"
+      "reference": "creator-captions",
+      "storeReference": true
     },
     {
       "id": "nasa-sea-level",
@@ -48,7 +259,8 @@
       "why": "Climate science vocabulary (ice sheets, thermal expansion) spoken by a scientist, not a narrator.",
       "tags": ["en", "interview", "jargon"],
       "license": "NASA video: NASA media is generally not subject to US copyright (NASA media usage guidelines). Reference captions are committed in datasets/refs/.",
-      "reference": "creator-captions"
+      "reference": "creator-captions",
+      "storeReference": true
     },
     {
       "id": "nasa-spacecraft-comms",
@@ -60,7 +272,8 @@
       "why": "Engineering jargon and proper nouns (Deep Space Network, mission names).",
       "tags": ["en", "interview", "jargon", "proper-nouns"],
       "license": "NASA video: NASA media is generally not subject to US copyright (NASA media usage guidelines). Reference captions are committed in datasets/refs/.",
-      "reference": "creator-captions"
+      "reference": "creator-captions",
+      "storeReference": true
     },
     {
       "id": "ted-ed-spiciness",
@@ -72,7 +285,8 @@
       "why": "Scripted narration over a constant music bed, with chemistry terms (capsaicin, Scoville).",
       "tags": ["en", "narration", "music", "jargon"],
       "license": "TED content, shared under CC BY-NC-ND 4.0 per TED's usage policy (attribution: TED). Reference captions are committed in datasets/refs/.",
-      "reference": "creator-captions"
+      "reference": "creator-captions",
+      "storeReference": true
     },
     {
       "id": "ted-ed-bridge-riddle",
@@ -84,7 +298,8 @@
       "why": "Narration with music and many spoken numbers (minutes and counts), which stresses number normalization.",
       "tags": ["en", "narration", "music", "numbers"],
       "license": "TED content, shared under CC BY-NC-ND 4.0 per TED's usage policy (attribution: TED). Reference captions are committed in datasets/refs/.",
-      "reference": "creator-captions"
+      "reference": "creator-captions",
+      "storeReference": true
     },
     {
       "id": "kurzgesagt-hidden-superpower",
