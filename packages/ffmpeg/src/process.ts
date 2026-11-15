@@ -87,6 +87,21 @@ export function inputGuards(input: string): string[] {
   return isUrlInput(input) ? ['-protocol_whitelist', 'http,https,tcp,tls,crypto'] : [];
 }
 
+/**
+ * The binary crashed (SIGSEGV) on a URL input. Some static builds (the
+ * johnvansickle.com ones, for example) do this on every network open because
+ * their statically linked C library cannot load the system's name service
+ * modules. Local files are unaffected, so callers can retry a URL with another
+ * build (see `withToolsFor` in locate.ts).
+ */
+export class NetworkCrashError extends Vid2ContextError {
+  constructor(label: string) {
+    super('upstream', `${label} crashed (SIGSEGV) while opening a network URL.`, {
+      hint: 'Some static ffmpeg builds (for example johnvansickle.com) crash on any network URL unless nscd is running. Install ffmpeg from your package manager, or point FFMPEG_PATH and FFPROBE_PATH at another build. Without FFMPEG_PATH, vid2context switches to its managed build by itself unless VID2CONTEXT_FFMPEG_DOWNLOAD=0.',
+    });
+  }
+}
+
 function failure(
   label: string,
   code: number | null,
@@ -95,11 +110,7 @@ function failure(
   network: boolean,
 ): Vid2ContextError {
   const tail = stderr.trim().split('\n').slice(-6).join(' | ').slice(0, 600);
-  if (code === null && sig === 'SIGSEGV' && network) {
-    return new Vid2ContextError('upstream', `${label} crashed (SIGSEGV) while opening a network URL.`, {
-      hint: 'Some static ffmpeg builds (for example johnvansickle.com) crash on DNS lookups unless nscd is running. Install ffmpeg from your package manager, or point FFMPEG_PATH and FFPROBE_PATH at another build.',
-    });
-  }
+  if (code === null && sig === 'SIGSEGV' && network) return new NetworkCrashError(label);
   if (code === null) {
     return new Vid2ContextError('upstream', `${label} was killed by ${sig ?? 'a signal'}${tail ? `: ${tail}` : ''}`, {
       hint: 'ffmpeg crashed. Try again; if it repeats, update ffmpeg or set FFMPEG_PATH to another build.',

@@ -9,6 +9,10 @@
  *   5. a managed download, when the caller allows it and
  *      VID2CONTEXT_FFMPEG_DOWNLOAD is not 0 (see download.ts)
  *
+ * For URL inputs, `withToolsFor` also recovers from builds that crash on any
+ * network open: it remembers the broken build and retries with the managed
+ * copy (downloading it when allowed), unless FFMPEG_PATH pins the binary.
+ *
  * Results are cached per process, keyed by the env values that affect them.
  */
 import { accessSync, constants, statSync } from 'node:fs';
@@ -17,7 +21,7 @@ import { delimiter, dirname, join } from 'node:path';
 import { type Env, Vid2ContextError } from '@vid2context/core';
 import { downloadFfmpeg } from './download.ts';
 import { managedBinDir } from './paths.ts';
-import { type FfCtx, runProcess } from './process.ts';
+import { type FfCtx, isUrlInput, NetworkCrashError, runProcess } from './process.ts';
 
 export type ToolSource = 'env' | 'path' | 'local-bin' | 'managed';
 
@@ -180,7 +184,80 @@ export async function tryLocateFfmpeg(ctx: FfCtx = {}): Promise<FfmpegTools | nu
   }
 }
 
+/** ffmpeg binaries that crashed on a URL input in this process. */
+const networkBroken = new Set<string>();
+const managedCache = new Map<string, Promise<FfmpegTools>>();
+
+/**
+ * The managed copy in <VID2CONTEXT_HOME or ./.vid2context>/bin, downloading it
+ * when `download` is set and VID2CONTEXT_FFMPEG_DOWNLOAD is not 0.
+ */
+export function managedTools(ctx: FfCtx = {}, opts: { download?: boolean } = {}): Promise<FfmpegTools> {
+  const env = ctx.env ?? {};
+  const bin = managedBinDir(env);
+  const ffmpeg = join(bin, `ffmpeg${EXE}`);
+  const ffprobe = join(bin, `ffprobe${EXE}`);
+  const installed = isExecutable(ffmpeg) && isExecutable(ffprobe);
+  if (!installed && (!opts.download || !downloadAllowed(env))) {
+    return Promise.reject(missing(`no managed copy in ${bin}, and downloading is not allowed here.`, env));
+  }
+  const hit = managedCache.get(bin);
+  if (hit) return hit;
+  const pending = (installed ? Promise.resolve({ ffmpeg, ffprobe }) : downloadFfmpeg(ctx))
+    .then((d) => describe({ ffmpeg: d.ffmpeg, ffprobe: d.ffprobe, source: 'managed' }, ctx))
+    .catch((err: unknown) => {
+      managedCache.delete(bin);
+      throw err;
+    });
+  managedCache.set(bin, pending);
+  return pending;
+}
+
+function canSwitch(tools: FfmpegTools, env: Env): boolean {
+  return tools.source !== 'managed' && !(env.FFMPEG_PATH?.trim() || env.FFPROBE_PATH?.trim());
+}
+
+/**
+ * Run `run` with the tools for `input`. For a URL input, a build that crashes
+ * on network opens (NetworkCrashError) is remembered and the call is retried
+ * once with the managed build, downloaded when `download` is set and allowed.
+ * An explicit FFMPEG_PATH or FFPROBE_PATH is never replaced. Local paths use
+ * the located tools as they are.
+ */
+export async function withToolsFor<T>(
+  input: string,
+  ctx: FfCtx,
+  opts: { download?: boolean },
+  run: (tools: FfmpegTools) => Promise<T>,
+): Promise<T> {
+  const env = ctx.env ?? {};
+  const located = await locateFfmpeg(ctx, opts);
+  if (!isUrlInput(input) || !canSwitch(located, env)) return run(located);
+  if (networkBroken.has(located.ffmpeg)) {
+    const managed = await managedTools(ctx, opts).catch(() => null);
+    return run(managed ?? located);
+  }
+  try {
+    return await run(located);
+  } catch (err) {
+    if (!(err instanceof NetworkCrashError)) throw err;
+    networkBroken.add(located.ffmpeg);
+    ctx.log?.warn('ffmpeg crashed opening a URL; retrying with the managed build', {
+      ffmpeg: located.ffmpeg,
+      version: located.version,
+    });
+    const managed = await managedTools(ctx, opts).catch((cause: unknown) => {
+      ctx.log?.warn('no managed ffmpeg build to retry with', { error: String(cause) });
+      return null;
+    });
+    if (!managed) throw err;
+    return run(managed);
+  }
+}
+
 /** Forget cached locations (after installing or removing ffmpeg). */
 export function clearLocateCache(): void {
   cache.clear();
+  managedCache.clear();
+  networkBroken.clear();
 }

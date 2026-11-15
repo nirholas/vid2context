@@ -11,7 +11,7 @@ import { mkdtemp, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { basename, extname, join } from 'node:path';
 import { type AudioBytes, Vid2ContextError } from '@vid2context/core';
-import { locateFfmpeg } from './locate.ts';
+import { type FfmpegTools, withToolsFor } from './locate.ts';
 import { probeWith } from './probe.ts';
 import { type FfCtx, inputGuards, isUrlInput, runProcess, toInput } from './process.ts';
 
@@ -82,8 +82,19 @@ export async function extractAudio(input: string, opts: ExtractAudioOptions = {}
   const sampleRate = opts.sampleRate ?? 16_000;
   const channels = opts.channels ?? 1;
   const bitrate = opts.bitrate ?? 32;
-  const tools = await locateFfmpeg(ctx, { download: opts.download ?? true });
+  return withToolsFor(target, ctx, { download: opts.download ?? true }, (tools) =>
+    extractWith(tools, target, { format, sampleRate, channels, bitrate }, opts, ctx),
+  );
+}
 
+async function extractWith(
+  tools: FfmpegTools,
+  target: string,
+  enc: { format: AudioFormat; sampleRate: number; channels: number; bitrate: number },
+  opts: ExtractAudioOptions,
+  ctx: FfCtx,
+): Promise<ExtractedAudio> {
+  const { format, sampleRate, channels, bitrate } = enc;
   return withTempDir(async (dir) => {
     const out = join(dir, `audio.${format}`);
     const args = ['-hide_banner', '-nostdin', '-loglevel', 'error', '-y', ...inputGuards(target)];

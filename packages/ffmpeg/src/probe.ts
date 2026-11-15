@@ -2,7 +2,7 @@
  * Media probing with ffprobe: duration, container, streams, tags and chapters.
  */
 import { Vid2ContextError } from '@vid2context/core';
-import { locateFfmpeg } from './locate.ts';
+import { withToolsFor } from './locate.ts';
 import { type FfCtx, inputGuards, isUrlInput, runProcess, toInput } from './process.ts';
 
 export interface ProbeStream {
@@ -246,8 +246,7 @@ export function hasVideo(p: ProbeResult): boolean {
 
 /** Probe a file path or http(s) URL with ffprobe. Never downloads ffmpeg. */
 export async function probe(input: string, ctx: FfCtx = {}, opts: { timeoutMs?: number } = {}): Promise<ProbeResult> {
-  const tools = await locateFfmpeg(ctx, { download: false });
-  return probeWith(tools.ffprobe, input, ctx, opts);
+  return withToolsFor(toInput(input), ctx, { download: false }, (tools) => probeWith(tools.ffprobe, input, ctx, opts));
 }
 
 /** Probe with a known ffprobe binary (skips locating). */

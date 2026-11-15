@@ -1,5 +1,6 @@
-import { execFileSync } from 'node:child_process';
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { execFileSync, spawn } from 'node:child_process';
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { createServer, type Server } from 'node:http';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { createContext, Vid2ContextError } from '@vid2context/core';
@@ -13,6 +14,7 @@ import {
   extractSubtitles,
   findTools,
   locateFfmpeg,
+  NetworkCrashError,
   pickBtbnAsset,
   planCuts,
   probe,
@@ -21,6 +23,7 @@ import {
   toBcp47,
   toInput,
   withFileLock,
+  withToolsFor,
 } from '../src/index.ts';
 
 const FIX = join(import.meta.dirname, 'fixtures');
@@ -326,6 +329,61 @@ describe.skipIf(!HAVE_FFMPEG)('with ffmpeg', () => {
   });
 });
 
+/** Serve the Apollo mp3 over loopback HTTP (never the network) on a port in 20000-29999. */
+async function serveApollo(): Promise<{ url: string; server: Server }> {
+  const body = readFileSync(APOLLO_MP3);
+  const server = createServer((_req, res) => {
+    res.writeHead(200, { 'content-type': 'audio/mpeg', 'content-length': body.byteLength });
+    res.end(body);
+  });
+  for (;;) {
+    const port = 20000 + Math.floor(Math.random() * 10000);
+    const ok = await new Promise<boolean>((done) => {
+      server.once('error', () => done(false));
+      server.listen(port, '127.0.0.1', () => done(true));
+    });
+    if (ok) return { url: `http://127.0.0.1:${port}/apollo11-small-step.mp3`, server };
+  }
+}
+
+/** True when this ffmpeg build segfaults on any URL input (static glibc builds without nscd). Async: the server shares this process. */
+function crashesOnUrls(ffmpeg: string, url: string): Promise<boolean> {
+  return new Promise((done) => {
+    const child = spawn(ffmpeg, ['-hide_banner', '-loglevel', 'error', '-i', url, '-t', '1', '-f', 'null', '-'], {
+      stdio: 'ignore',
+      timeout: 30_000,
+    });
+    child.on('close', (_code, sig) => done(sig === 'SIGSEGV'));
+  });
+}
+
+describe.skipIf(!HAVE_FFMPEG)('URL inputs', () => {
+  it('reads an http URL, or reports a build that crashes on URLs and never swaps a pinned FFMPEG_PATH', async () => {
+    const { url, server } = await serveApollo();
+    try {
+      const broken = await crashesOnUrls(found.ffmpeg as string, url);
+      const pinned = { FFMPEG_PATH: found.ffmpeg as string, FFPROBE_PATH: found.ffprobe as string, VID2CONTEXT_HOME: tempDir() };
+      const unpinned = { ...ENV, VID2CONTEXT_HOME: tempDir() };
+      for (const env of [pinned, unpinned]) {
+        const run = extractAudio(url, { format: 'mp3' }, testContext({ env }));
+        if (broken) {
+          // No managed copy in the empty home and downloads are off: the crash is reported with its fix.
+          await expect(run).rejects.toBeInstanceOf(NetworkCrashError);
+          await expect(run).rejects.toMatchObject({ hint: expect.stringContaining('FFMPEG_PATH') });
+        } else {
+          const audio = await run;
+          expect(Math.abs(audio.durationSec - ffprobeDuration(APOLLO_MP3))).toBeLessThan(0.2);
+        }
+      }
+      // Local paths always use the located build as is.
+      const used = await withToolsFor(APOLLO_MP3, testContext({ env: unpinned }), {}, async (t) => t.source);
+      expect(used).toBe(found.source);
+    } finally {
+      server.close();
+    }
+  });
+});
+
 describe.skipIf(!process.env.LIVE)('managed download (LIVE)', () => {
   it('downloads, verifies and installs a working ffmpeg into VID2CONTEXT_HOME', { timeout: 15 * 60_000 }, async () => {
     if (!btbnPlatform()) return;
@@ -340,5 +398,22 @@ describe.skipIf(!process.env.LIVE)('managed download (LIVE)', () => {
     });
     const p = await probe(MP4, { env: { FFMPEG_PATH: a.ffmpeg, FFPROBE_PATH: a.ffprobe } });
     expect(p.durationSec).toBeGreaterThan(61);
+  });
+  it('switches URL inputs to the managed build when the system ffmpeg crashes on them', { timeout: 15 * 60_000 }, async () => {
+    if (!btbnPlatform()) return;
+    const { url, server } = await serveApollo();
+    try {
+      const home = tempDir();
+      const env = { PATH: process.env.PATH, VID2CONTEXT_HOME: home };
+      const broken = await crashesOnUrls(found.ffmpeg as string, url);
+      const audio = await extractAudio(url, { format: 'mp3' }, testContext({ env }));
+      expect(Math.abs(audio.durationSec - ffprobeDuration(APOLLO_MP3))).toBeLessThan(0.2);
+      const p = await probe(url, testContext({ env }));
+      expect(p.streams.some((s) => s.type === 'audio')).toBe(true);
+      // The managed build is only fetched when the system one could not read the URL.
+      expect(existsSync(join(home, 'bin', 'ffmpeg'))).toBe(broken);
+    } finally {
+      server.close();
+    }
   });
 });
