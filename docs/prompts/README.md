@@ -66,7 +66,7 @@ Numbers match `docs/ROADMAP.md` and the owner columns in `docs/contracts/`. Ever
 | 46 | [The full HTTP API](46-http-api.md) | `packages/server/` | H. Surfaces |
 | 47 | [Web app: paste a link or upload a video, get everything](47-web-app.md) | `packages/web/` | H. Surfaces |
 | 48 | [Browser extension](48-extension.md) | `packages/extension/` | H. Surfaces |
-| 49 | [Docker image and container deploys](49-containers.md) | `deploy/containers/` | I. Deploy and quality |
+| 49 | [Docker image and container deploys](archive/49-containers.md) | `deploy/containers/` | I. Deploy and quality |
 | 50 | [Serverless and static deploys](50-serverless-static.md) | `deploy/serverless/`, `wrangler.jsonc` | I. Deploy and quality |
 | 51 | [Discovery: npm, MCP Registry, directories, SEO](../guides/discovery.md) (built; the guide replaces a prompt) | `packages/discovery/`, root `server.json`, `glama.json`, `gemini-extension.json`, `context7.json`, `llms-install.md`, `Dockerfile`, `.dockerignore` | J. Discovery |
 
