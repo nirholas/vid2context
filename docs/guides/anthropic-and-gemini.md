@@ -2,7 +2,7 @@
 
 `providers/llm-native` talks to Claude and Gemini through their own APIs instead of the OpenAI-compatible endpoints. The native APIs add what matters for long transcripts: Anthropic prompt caching, Gemini's 1M-token context with implicit caching, native streaming with reasoning summaries, and schema-constrained JSON. The rungs show up in the chat page's model picker and in `GET /api/v1/models` like any other.
 
-Status on 2026-11-14: request building, auth, URLs and error mapping are covered by tests that replay real error responses. Successful answers, streaming, JSON and cache reads have not been verified live yet: no Anthropic or Gemini key was available, and the Vertex project's billing was locked. Run the live tests below once you have a key.
+Status on 2026-11-15: only the error paths are verified against the real services. Successful answers have never been seen by this code: no Anthropic or Gemini key was available, the Vertex project's billing was locked, and there is no keyless endpoint that speaks the native `messages` or `generateContent` protocols (keyless hosts such as Pollinations and OVH are OpenAI-compatible only, which the other LLM providers already cover). See [Verification status](#verification-status) for exactly what is and is not checked, and the one command that records the rest.
 
 ## Rungs
 
@@ -84,6 +84,32 @@ Both families also run on Vertex AI, billed to your project.
 Gemini on Vertex uses `.../publishers/google/models/{model}:generateContent` and `:streamGenerateContent?alt=sse`, with the same request body as AI Studio. Claude on Vertex uses `.../publishers/anthropic/models/{model}:rawPredict` and `:streamRawPredict` with `anthropic_version` in the body instead of `model`; caching and streaming work as on the Anthropic API.
 
 A project with a billing problem answers HTTP 403 "There are issues with your billing account"; it maps to `auth` with a billing hint, and the chain moves on.
+
+## Verification status
+
+| Path | Anthropic | Gemini (AI Studio) | Vertex Gemini | Vertex Claude |
+|---|---|---|---|---|
+| URL, headers, auth placement | recorded error | recorded error | recorded error | recorded error |
+| Error mapping (bad key, billing) | recorded 401 | recorded 400 `API_KEY_INVALID` | recorded 403 | recorded 403 |
+| GCE metadata token | | | recorded on the owner's VM | recorded on the owner's VM |
+| Non-streaming answer and usage | not verified | not verified | not verified | not verified |
+| SSE stream (text, reasoning, usage) | not verified | not verified | not verified | not verified |
+| JSON Schema output | not verified | not verified | not verified | not verified |
+| Cache creation then cache read | not verified | not verified (implicit caching) | | not verified |
+| Real 429 with rate-limit headers | not verified | not verified | not verified | not verified |
+
+"Not verified" means the parser for that response was written from the vendors' documentation and is tested only on request building, never on a real success body. Treat these rungs as unproven until the recording below has been done.
+
+### Recording the success fixtures
+
+With a key in `.env` (`GEMINI_API_KEY` is free at https://aistudio.google.com/apikey; `ANTHROPIC_API_KEY` needs credits; Vertex needs `GOOGLE_CLOUD_PROJECT` with active billing plus `GOOGLE_ACCESS_TOKEN` or `VID2CONTEXT_GCE_METADATA=1`), run from the repository root:
+
+```sh
+npx tsx --env-file=.env providers/llm-native/scripts/record-fixtures.ts
+LIVE=1 npx vitest run providers/llm-native/test/live.test.ts
+```
+
+The recorder runs each configured service through the provider's own rungs and writes, per service: `<service>.chat.json`, `<service>.stream.json`, `<service>.json-schema.json` (not for Vertex), and the cache pair `<service>.cache-1.json` and `<service>.cache-2.json` (two questions about the same real transcript, `tests/fixtures/contexts/youtube-cCPsdFdlshc.json`). A service that answers with an error is saved as `<name>.<status>.json` instead, never under the success name. Services without credentials are skipped and listed at the end. It keeps only an allowlist of headers and replaces keys, the project id and emails, but read every new file before committing it, add a row for it in `providers/llm-native/test/fixtures/README.md`, and add replay tests for stream parsing, JSON and usage mapping on those bodies.
 
 ## Testing and recording
 
