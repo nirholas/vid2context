@@ -2,7 +2,7 @@
 import { Vid2ContextError } from '@vid2context/core';
 import type { SuiteName } from './results.ts';
 
-export const SUITES: SuiteName[] = ['stt', 'captions', 'cleanup', 'citations', 'search'];
+export const SUITES: SuiteName[] = ['stt', 'captions', 'cleanup', 'citations', 'search', 'chapters'];
 
 export interface EvalArgs {
   suites: SuiteName[];
@@ -22,7 +22,7 @@ export interface EvalArgs {
   help: boolean;
 }
 
-export const USAGE = `Usage: npm run eval -- --suite <stt|captions|cleanup|citations|search|all> [options]
+export const USAGE = `Usage: npm run eval -- --suite <stt|captions|cleanup|citations|search|chapters|all> [options]
 
 Runs a real evaluation against real public videos and real rungs. Needs the
 network, so it only starts with LIVE=1 in the environment or --live.

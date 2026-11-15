@@ -1,0 +1,55 @@
+{
+  "suite": "chapters",
+  "description": "Chapter boundary agreement for auto-chapters (@vid2context/chapters). Each item is a VideoContext recorded by another package's tests, whose video already has chapters on YouTube: creator chapters (timestamps the creator wrote in the description) or YouTube's machine-generated key moments. The suite hides those chapters and the description, proposes chapters from the transcript alone, and scores the starts against the hidden ones.",
+  "toleranceSec": 30,
+  "items": [
+    {
+      "id": "lex-118-grant-sanderson",
+      "url": "https://www.youtube.com/watch?v=U_6AYX42gkU",
+      "title": "Grant Sanderson: Math, Manim, Neural Networks & Teaching with 3Blue1Brown | Lex Fridman Podcast #118",
+      "channel": "Lex Fridman",
+      "language": "en",
+      "durationSec": 7705,
+      "why": "Two-hour conversation with 20 creator chapters written in the description: the only human-made reference in the set, and a long video where topics drift gradually instead of switching.",
+      "license": "Standard YouTube license. The transcript is our own whisper.cpp output, recorded for the dedupe tests; used here only to score chapter boundaries.",
+      "reference": "creator-chapters",
+      "context": "packages/dedupe/test/fixtures/youtube-U_6AYX42gkU.json"
+    },
+    {
+      "id": "lex-clips-feynman",
+      "url": "https://www.youtube.com/watch?v=YrGuJ4Pkkuo",
+      "title": "Richard Feynman is misunderstood | Grant Sanderson and Lex Fridman",
+      "channel": "Lex Clips",
+      "language": "en",
+      "durationSec": 289,
+      "why": "Short clip (under 5 minutes) with 6 key moments, several under a minute apart: tests how the chapter rules (60 s minimum, one chapter per 3 to 8 minutes) limit recall on short videos.",
+      "license": "Standard YouTube license. Transcript is our own whisper.cpp output recorded for the dedupe tests; used only for scoring.",
+      "reference": "key-moments",
+      "context": "packages/dedupe/test/fixtures/youtube-YrGuJ4Pkkuo.json"
+    },
+    {
+      "id": "g-wagon-maintenance-costs",
+      "url": "https://www.youtube.com/watch?v=ovIkN7UgbgE",
+      "title": "G-Wagon Mechanic Reveals The Truth: Are They Ridiculously Expensive To Maintain?",
+      "channel": "Alliance Motorworks",
+      "language": "en",
+      "durationSec": 821,
+      "why": "14-minute single-speaker shop talk with 8 key moments and dense technical vocabulary (services, gearbox, brakes), where topic shifts are marked by vocabulary changes.",
+      "license": "Standard YouTube license. Transcript is our own whisper.cpp output recorded for the insights tests (contact details in the description redacted); used only for scoring.",
+      "reference": "key-moments",
+      "context": "packages/insights/test/fixtures/contexts/youtube-ovIkN7UgbgE.json"
+    },
+    {
+      "id": "g-wagon-used-buyer-inspection",
+      "url": "https://www.youtube.com/watch?v=q6dzm-O1i2o",
+      "title": "What to Look For When Buying a Used G-Wagon (Rust, Known Issues, Engine & More)",
+      "channel": "Alliance Motorworks",
+      "language": "en",
+      "durationSec": 1834,
+      "why": "30-minute walk-around inspection with only 4 key moments: long sections, so it tests precision when the segmenter proposes more chapters than the reference has.",
+      "license": "Standard YouTube license. Transcript is our own whisper.cpp output recorded for the insights tests (contact details in the description redacted); used only for scoring.",
+      "reference": "key-moments",
+      "context": "packages/insights/test/fixtures/contexts/youtube-q6dzm-O1i2o.json"
+    }
+  ]
+}

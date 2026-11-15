@@ -4,13 +4,15 @@
  * later reader can recompute any aggregate.
  */
 import type { Attempt, Tier } from '@vid2context/core';
+import type { ChapterReferenceKind } from './dataset.ts';
 import type { EditCounts } from './metrics/align.ts';
+import type { BoundaryAgreement } from './metrics/chapters.ts';
 import type { PunctuationScore } from './metrics/punctuation.ts';
 import { percentile } from './metrics/stats.ts';
 import type { TimingError } from './metrics/timing.ts';
 import { pooledRate } from './metrics/wer.ts';
 
-export type SuiteName = 'stt' | 'captions' | 'cleanup' | 'citations' | 'search';
+export type SuiteName = 'stt' | 'captions' | 'cleanup' | 'citations' | 'search' | 'chapters';
 
 /** Pseudo-rung for item-level failures before any rung ran (no reference, resolve errors). Not summarized. */
 export const REFERENCE = 'reference';
@@ -55,6 +57,14 @@ export interface ItemResult {
     removed: number;
     rewritten: number;
     llm?: { chunks: number; accepted: number; rejected: number; failed: number; rungs: string[] };
+  };
+  /** Chapters suite: boundary agreement with the reference chapters of one video. */
+  chapters?: BoundaryAgreement & {
+    referenceKind: ChapterReferenceKind;
+    /** Predicted chapter starts in seconds, 0 included. */
+    starts: number[];
+    /** `texttiling+llm` when an LLM answer was used, `texttiling` when the offline boundaries were kept. */
+    method?: string;
   };
   /** Search suite: scores for one query. */
   retrieval?: { k: number; precisionAtK: number; recallAtK: number; reciprocalRank: number };
@@ -123,6 +133,14 @@ export interface RungSummary {
   hitRate?: number;
   /** Citations: share of the producer's citations it rejected itself. */
   rejectedRate?: number;
+  /** Chapters: boundary precision, recall and F1 pooled over items (matched over predicted or reference boundaries). */
+  boundaryPrecision?: number;
+  boundaryRecall?: number;
+  boundaryF1?: number;
+  /** Chapters: pooled F1 over the items whose reference is creator chapters, and over YouTube key moments. */
+  boundaryF1Creator?: number;
+  boundaryF1KeyMoments?: number;
+  toleranceSec?: number;
   /** Search: means over queries. */
   precisionAtK?: number;
   recallAtK?: number;
@@ -187,6 +205,26 @@ export function summarize(items: readonly ItemResult[]): RungSummary[] {
       row.precisionAtK = avg((r) => r.precisionAtK);
       row.recallAtK = avg((r) => r.recallAtK);
       row.mrr = avg((r) => r.reciprocalRank);
+    }
+    const chap = ok.map((i) => i.chapters).filter((c): c is NonNullable<typeof c> => Boolean(c));
+    if (chap.length > 0) {
+      const pooled = (list: typeof chap) => {
+        const m = list.reduce((n, c) => n + c.matched, 0);
+        const p = list.reduce((n, c) => n + c.predicted, 0);
+        const r = list.reduce((n, c) => n + c.reference, 0);
+        const precision = p === 0 ? 0 : m / p;
+        const recall = r === 0 ? 0 : m / r;
+        return { precision, recall, f1: precision + recall === 0 ? 0 : (2 * precision * recall) / (precision + recall) };
+      };
+      const all = pooled(chap);
+      row.boundaryPrecision = all.precision;
+      row.boundaryRecall = all.recall;
+      row.boundaryF1 = all.f1;
+      const creator = chap.filter((c) => c.referenceKind === 'creator-chapters');
+      const moments = chap.filter((c) => c.referenceKind === 'key-moments');
+      if (creator.length > 0) row.boundaryF1Creator = pooled(creator).f1;
+      if (moments.length > 0) row.boundaryF1KeyMoments = pooled(moments).f1;
+      row.toleranceSec = chap[0]?.toleranceSec;
     }
     const costs = ok.map((i) => i.costUsd);
     if (costs.some((c) => c !== undefined))

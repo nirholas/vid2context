@@ -25,5 +25,10 @@
     "clean:llm": {
       "maxWer": 0.3
     }
+  },
+  "chapters": {
+    "chapters/texttiling": {
+      "minBoundaryF1": 0.3
+    }
   }
 }

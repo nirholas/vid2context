@@ -8,6 +8,7 @@ LIVE=1 npm run eval -- --suite captions           # YouTube auto-captions vs cre
 LIVE=1 npm run eval -- --suite cleanup            # raw vs rule-based vs LLM cleanup of auto-captions
 LIVE=1 npm run eval -- --suite citations          # cited answers (ask) and briefs (insights)
 LIVE=1 npm run eval -- --suite search             # keyword and hybrid transcript search
+LIVE=1 npm run eval -- --suite chapters           # auto-chapter boundaries vs creator chapters and key moments
 LIVE=1 npm run eval -- --suite stt --rungs stt/ovh/whisper-large-v3-turbo --check
 npx vitest run packages/evals                     # metric tests, offline
 ```
@@ -24,8 +25,9 @@ wordErrorRate(creatorText, sttText, { language: 'en' }); // { rate, substitution
 
 | Path | What |
 |---|---|
-| `datasets/` | `stt.json`, `captions.json`, `citations.json`, `search.json`, and recorded references in `refs/` (provenance in `refs/README.md`) |
+| `datasets/` | `stt.json`, `captions.json`, `citations.json`, `search.json`, `chapters.json`, and recorded references in `refs/` (provenance in `refs/README.md`) |
 | `src/metrics/` | normalization, alignment, WER and CER, timing, punctuation F1, chapters, citations, retrieval, cost |
-| `src/suites/` | the stt, captions, cleanup, citations and search suites |
+| `src/suites/` | the stt, captions, cleanup, citations, search and chapters suites |
 | `src/run.ts` | the `npm run eval` entry point |
+| `src/json.ts` | writes result JSON in Biome's layout so new results pass `biome check` |
 | `thresholds.json` | regression limits for `--check` |

@@ -13,10 +13,12 @@ import { type Ctx, type Env, keylessAllowed, type Registry, Vid2ContextError } f
 import { type EvalArgs, parseArgs, USAGE } from './args.ts';
 import { evalsCacheDir } from './cache.ts';
 import { checkThresholds, loadThresholds } from './check.ts';
+import { formatJson } from './json.ts';
 import { REFS_DIR } from './refs.ts';
 import { renderReport } from './report.ts';
 import { type EvalResult, type SuiteName, summarize } from './results.ts';
 import { runCaptionsSuite } from './suites/captions.ts';
+import { runChaptersSuite } from './suites/chapters.ts';
 import { runCitationsSuite } from './suites/citations.ts';
 import { runCleanupSuite } from './suites/cleanup.ts';
 import type { SuiteContext } from './suites/common.ts';
@@ -47,6 +49,7 @@ async function runSuite(suite: SuiteName, sc: SuiteContext): Promise<SuiteOutput
   if (suite === 'captions') return runCaptionsSuite(sc);
   if (suite === 'cleanup') return runCleanupSuite(sc);
   if (suite === 'citations') return runCitationsSuite(sc);
+  if (suite === 'chapters') return runChaptersSuite(sc);
   return runSearchSuite(sc);
 }
 
@@ -131,7 +134,7 @@ export async function main(argv: readonly string[], deps: RunDeps): Promise<numb
     mkdirSync(outDir, { recursive: true });
     const base = join(outDir, `${result.date}-${suite}`);
     const report = renderReport(result);
-    writeFileSync(`${base}.json`, `${JSON.stringify(result, null, 2)}\n`);
+    writeFileSync(`${base}.json`, formatJson(result));
     writeFileSync(`${base}.md`, report);
     deps.stderr(`Wrote ${relative(cwd, `${base}.json`)} and ${relative(cwd, `${base}.md`)}\n`);
     for (const s of result.skippedRungs) {

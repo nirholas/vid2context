@@ -13,10 +13,7 @@
     "platform": "linux-x64",
     "policy": "free",
     "keyless": true,
-    "rungs": [
-      "stt/ovh/whisper-large-v3-turbo",
-      "stt/whisper-cpp/small"
-    ],
+    "rungs": ["stt/ovh/whisper-large-v3-turbo", "stt/whisper-cpp/small"],
     "envFiles": 1
   },
   "skippedRungs": [],

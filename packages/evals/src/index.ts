@@ -4,6 +4,7 @@
  */
 export * from './check.ts';
 export * from './dataset.ts';
+export * from './json.ts';
 export * from './metrics/align.ts';
 export * from './metrics/chapters.ts';
 export * from './metrics/citations.ts';

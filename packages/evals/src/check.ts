@@ -17,6 +17,8 @@ export interface Limits {
   maxP90LatencyMs?: number;
   maxTimingMedianSec?: number;
   minPunctuationF1?: number;
+  /** Chapters: lowest allowed pooled boundary F1. */
+  minBoundaryF1?: number;
 }
 
 export type Thresholds = Partial<Record<SuiteName, Record<string, Limits>>>;
@@ -55,6 +57,9 @@ export function checkThresholds(suite: SuiteName, rows: readonly RungSummary[], 
     over('maxCer', l.maxCer, row.cer);
     over('maxP90LatencyMs', l.maxP90LatencyMs, row.p90LatencyMs);
     over('maxTimingMedianSec', l.maxTimingMedianSec, row.timingMedianSec);
+    if (l.minBoundaryF1 !== undefined && row.boundaryF1 !== undefined && row.boundaryF1 < l.minBoundaryF1) {
+      out.push({ suite, rung: row.rung, metric: 'minBoundaryF1', limit: l.minBoundaryF1, actual: row.boundaryF1 });
+    }
     if (l.minPunctuationF1 !== undefined && row.punctuationF1 !== undefined && row.punctuationF1 < l.minPunctuationF1) {
       out.push({ suite, rung: row.rung, metric: 'minPunctuationF1', limit: l.minPunctuationF1, actual: row.punctuationF1 });
     }

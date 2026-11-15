@@ -1,0 +1,418 @@
+{
+  "suite": "chapters",
+  "date": "2026-11-15",
+  "startedAt": "2026-11-15T16:35:07.181Z",
+  "finishedAt": "2026-11-15T16:35:17.237Z",
+  "dataset": {
+    "file": "packages/evals/datasets/chapters.json",
+    "items": 4,
+    "evaluated": 4
+  },
+  "environment": {
+    "node": "24.22.2",
+    "platform": "linux-x64",
+    "policy": "free",
+    "keyless": true,
+    "rungs": ["baseline/uniform", "chapters/texttiling", "chapters/llm"],
+    "envFiles": 1
+  },
+  "skippedRungs": [],
+  "notes": ["The LLM answered on 4 item runs and moved 0 boundaries away from the offline ones."],
+  "items": [
+    {
+      "item": "lex-118-grant-sanderson",
+      "videoId": "youtube:U_6AYX42gkU",
+      "language": "en",
+      "rung": "baseline/uniform",
+      "outcome": "ok",
+      "chapters": {
+        "reference": 19,
+        "predicted": 25,
+        "matched": 6,
+        "precision": 0.24,
+        "recall": 0.3157894736842105,
+        "f1": 0.2727272727272727,
+        "toleranceSec": 30,
+        "referenceKind": "creator-chapters",
+        "starts": [
+          0,
+          296.3,
+          592.7,
+          889,
+          1185.4,
+          1481.7,
+          1778.1,
+          2074.4,
+          2370.8,
+          2667.1,
+          2963.5,
+          3259.8,
+          3556.2,
+          3852.5,
+          4148.8,
+          4445.2,
+          4741.5,
+          5037.9,
+          5334.2,
+          5630.6,
+          5926.9,
+          6223.3,
+          6519.6,
+          6816,
+          7112.3,
+          7408.7
+        ]
+      },
+      "costUsd": 0
+    },
+    {
+      "item": "lex-118-grant-sanderson",
+      "videoId": "youtube:U_6AYX42gkU",
+      "language": "en",
+      "rung": "chapters/texttiling",
+      "outcome": "ok",
+      "chapters": {
+        "reference": 19,
+        "predicted": 25,
+        "matched": 9,
+        "precision": 0.36,
+        "recall": 0.47368421052631576,
+        "f1": 0.40909090909090906,
+        "toleranceSec": 30,
+        "referenceKind": "creator-chapters",
+        "starts": [
+          0,
+          148.96,
+          313.76,
+          436.08,
+          608.4,
+          934.92,
+          1116.64,
+          1396.36,
+          1623.6,
+          1816.36,
+          1989.12,
+          2183.28,
+          2417.16,
+          2749.16,
+          3040.04,
+          3819.8,
+          4192.68,
+          4766.36,
+          5536.48,
+          5927.6,
+          6070.16,
+          6419.4,
+          6785.28,
+          6965.8,
+          7273.12,
+          7583.92
+        ]
+      },
+      "latencyMs": 122.01262999999972,
+      "wallMs": 122.01262999999972,
+      "costUsd": 0
+    },
+    {
+      "item": "lex-118-grant-sanderson",
+      "videoId": "youtube:U_6AYX42gkU",
+      "language": "en",
+      "rung": "chapters/llm",
+      "outcome": "ok",
+      "chapters": {
+        "reference": 19,
+        "predicted": 25,
+        "matched": 9,
+        "precision": 0.36,
+        "recall": 0.47368421052631576,
+        "f1": 0.40909090909090906,
+        "toleranceSec": 30,
+        "referenceKind": "creator-chapters",
+        "starts": [
+          0,
+          148.96,
+          313.76,
+          436.08,
+          608.4,
+          934.92,
+          1116.64,
+          1396.36,
+          1623.6,
+          1816.36,
+          1989.12,
+          2183.28,
+          2417.16,
+          2749.16,
+          3040.04,
+          3819.8,
+          4192.68,
+          4766.36,
+          5536.48,
+          5927.6,
+          6070.16,
+          6419.4,
+          6785.28,
+          6965.8,
+          7273.12,
+          7583.92
+        ],
+        "method": "texttiling+llm"
+      },
+      "tier": "keyless",
+      "detail": "llm/kilo/nvidia/nemotron-3.5-lightning:free (nvidia/nemotron-3.5-lightning:free)",
+      "latencyMs": 3637,
+      "wallMs": 3955,
+      "costUsd": 0,
+      "attempts": [
+        {
+          "id": "llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+          "stage": "llm",
+          "outcome": "error",
+          "reason": "auth-401",
+          "detail": "cloudflare chat: HTTP 401 {\"result\":null,\"success\":false,\"errors\":[{\"code\":10000,\"message\":\"Authentication error\"}],\"messages\":[]}",
+          "ms": 178
+        },
+        {
+          "id": "llm/kilo/nvidia/nemotron-3.5-lightning:free",
+          "stage": "llm",
+          "outcome": "ok",
+          "ms": 3637
+        }
+      ]
+    },
+    {
+      "item": "lex-clips-feynman",
+      "videoId": "youtube:YrGuJ4Pkkuo",
+      "language": "en",
+      "rung": "baseline/uniform",
+      "outcome": "ok",
+      "chapters": {
+        "reference": 4,
+        "predicted": 0,
+        "matched": 0,
+        "precision": 0,
+        "recall": 0,
+        "f1": 0,
+        "toleranceSec": 30,
+        "referenceKind": "key-moments",
+        "starts": [0]
+      },
+      "costUsd": 0
+    },
+    {
+      "item": "lex-clips-feynman",
+      "videoId": "youtube:YrGuJ4Pkkuo",
+      "language": "en",
+      "rung": "chapters/texttiling",
+      "outcome": "ok",
+      "chapters": {
+        "reference": 4,
+        "predicted": 0,
+        "matched": 0,
+        "precision": 0,
+        "recall": 0,
+        "f1": 0,
+        "toleranceSec": 30,
+        "referenceKind": "key-moments",
+        "starts": [0]
+      },
+      "latencyMs": 0.365219999999681,
+      "wallMs": 0.365219999999681,
+      "costUsd": 0
+    },
+    {
+      "item": "lex-clips-feynman",
+      "videoId": "youtube:YrGuJ4Pkkuo",
+      "language": "en",
+      "rung": "chapters/llm",
+      "outcome": "ok",
+      "chapters": {
+        "reference": 4,
+        "predicted": 0,
+        "matched": 0,
+        "precision": 0,
+        "recall": 0,
+        "f1": 0,
+        "toleranceSec": 30,
+        "referenceKind": "key-moments",
+        "starts": [0],
+        "method": "texttiling+llm"
+      },
+      "tier": "keyless",
+      "detail": "llm/kilo/nvidia/nemotron-3.5-lightning:free (nvidia/nemotron-3.5-lightning:free)",
+      "latencyMs": 2730,
+      "wallMs": 2740,
+      "costUsd": 0,
+      "attempts": [
+        {
+          "id": "llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+          "stage": "llm",
+          "outcome": "skipped",
+          "reason": "cooldown"
+        },
+        {
+          "id": "llm/kilo/nvidia/nemotron-3.5-lightning:free",
+          "stage": "llm",
+          "outcome": "ok",
+          "ms": 2730
+        }
+      ]
+    },
+    {
+      "item": "g-wagon-maintenance-costs",
+      "videoId": "youtube:ovIkN7UgbgE",
+      "language": "en",
+      "rung": "baseline/uniform",
+      "outcome": "ok",
+      "chapters": {
+        "reference": 7,
+        "predicted": 2,
+        "matched": 0,
+        "precision": 0,
+        "recall": 0,
+        "f1": 0,
+        "toleranceSec": 30,
+        "referenceKind": "key-moments",
+        "starts": [0, 273.7, 547.3]
+      },
+      "costUsd": 0
+    },
+    {
+      "item": "g-wagon-maintenance-costs",
+      "videoId": "youtube:ovIkN7UgbgE",
+      "language": "en",
+      "rung": "chapters/texttiling",
+      "outcome": "ok",
+      "chapters": {
+        "reference": 7,
+        "predicted": 2,
+        "matched": 2,
+        "precision": 1,
+        "recall": 0.2857142857142857,
+        "f1": 0.4444444444444445,
+        "toleranceSec": 30,
+        "referenceKind": "key-moments",
+        "starts": [0, 178.28, 362.4]
+      },
+      "latencyMs": 12.024719999999434,
+      "wallMs": 12.024719999999434,
+      "costUsd": 0
+    },
+    {
+      "item": "g-wagon-maintenance-costs",
+      "videoId": "youtube:ovIkN7UgbgE",
+      "language": "en",
+      "rung": "chapters/llm",
+      "outcome": "ok",
+      "chapters": {
+        "reference": 7,
+        "predicted": 2,
+        "matched": 2,
+        "precision": 1,
+        "recall": 0.2857142857142857,
+        "f1": 0.4444444444444445,
+        "toleranceSec": 30,
+        "referenceKind": "key-moments",
+        "starts": [0, 178.28, 362.4],
+        "method": "texttiling+llm"
+      },
+      "tier": "keyless",
+      "detail": "llm/kilo/nvidia/nemotron-3.5-lightning:free (nvidia/nemotron-3.5-lightning:free)",
+      "latencyMs": 1084,
+      "wallMs": 1110,
+      "costUsd": 0,
+      "attempts": [
+        {
+          "id": "llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+          "stage": "llm",
+          "outcome": "skipped",
+          "reason": "cooldown"
+        },
+        {
+          "id": "llm/kilo/nvidia/nemotron-3.5-lightning:free",
+          "stage": "llm",
+          "outcome": "ok",
+          "ms": 1084
+        }
+      ]
+    },
+    {
+      "item": "g-wagon-used-buyer-inspection",
+      "videoId": "youtube:q6dzm-O1i2o",
+      "language": "en",
+      "rung": "baseline/uniform",
+      "outcome": "ok",
+      "chapters": {
+        "reference": 3,
+        "predicted": 4,
+        "matched": 0,
+        "precision": 0,
+        "recall": 0,
+        "f1": 0,
+        "toleranceSec": 30,
+        "referenceKind": "key-moments",
+        "starts": [0, 366.8, 733.6, 1100.4, 1467.2]
+      },
+      "costUsd": 0
+    },
+    {
+      "item": "g-wagon-used-buyer-inspection",
+      "videoId": "youtube:q6dzm-O1i2o",
+      "language": "en",
+      "rung": "chapters/texttiling",
+      "outcome": "ok",
+      "chapters": {
+        "reference": 3,
+        "predicted": 4,
+        "matched": 0,
+        "precision": 0,
+        "recall": 0,
+        "f1": 0,
+        "toleranceSec": 30,
+        "referenceKind": "key-moments",
+        "starts": [0, 519.1, 846.14, 1348.5, 1590.74]
+      },
+      "latencyMs": 20.993938999999955,
+      "wallMs": 20.993938999999955,
+      "costUsd": 0
+    },
+    {
+      "item": "g-wagon-used-buyer-inspection",
+      "videoId": "youtube:q6dzm-O1i2o",
+      "language": "en",
+      "rung": "chapters/llm",
+      "outcome": "ok",
+      "chapters": {
+        "reference": 3,
+        "predicted": 4,
+        "matched": 0,
+        "precision": 0,
+        "recall": 0,
+        "f1": 0,
+        "toleranceSec": 30,
+        "referenceKind": "key-moments",
+        "starts": [0, 519.1, 846.14, 1348.5, 1590.74],
+        "method": "texttiling+llm"
+      },
+      "tier": "keyless",
+      "detail": "llm/kilo/nvidia/nemotron-3.5-lightning:free (nvidia/nemotron-3.5-lightning:free)",
+      "latencyMs": 2016,
+      "wallMs": 2073,
+      "costUsd": 0,
+      "attempts": [
+        {
+          "id": "llm/cloudflare/@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+          "stage": "llm",
+          "outcome": "skipped",
+          "reason": "cooldown"
+        },
+        {
+          "id": "llm/kilo/nvidia/nemotron-3.5-lightning:free",
+          "stage": "llm",
+          "outcome": "ok",
+          "ms": 2016
+        }
+      ]
+    }
+  ]
+}

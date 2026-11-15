@@ -53,6 +53,34 @@ function summaryTable(suite: EvalResult['suite'], rows: RungSummary[]): string {
       ]),
     );
   }
+  if (suite === 'chapters') {
+    return table(
+      [
+        'Producer',
+        'Items',
+        'OK',
+        'Tolerance',
+        'Boundary precision',
+        'Boundary recall',
+        'Boundary F1',
+        'F1 vs creator',
+        'F1 vs key moments',
+        'p50 latency',
+      ],
+      rows.map((r) => [
+        r.rung,
+        String(r.items),
+        String(r.ok),
+        r.toleranceSec === undefined ? 'n/a' : `${r.toleranceSec} s`,
+        pct(r.boundaryPrecision),
+        pct(r.boundaryRecall),
+        pct(r.boundaryF1),
+        pct(r.boundaryF1Creator),
+        pct(r.boundaryF1KeyMoments),
+        ms(r.p50LatencyMs),
+      ]),
+    );
+  }
   if (suite === 'cleanup') {
     const raw = rows.find((r) => r.rung === 'raw');
     const delta = (v: number | undefined, base: number | undefined) =>
@@ -132,6 +160,19 @@ function itemRow(suite: EvalResult['suite'], i: ItemResult): string[] {
       ms(i.latencyMs),
     ];
   }
+  if (suite === 'chapters') {
+    const c = i.chapters;
+    return [
+      i.item,
+      c?.referenceKind ?? 'n/a',
+      i.rung,
+      outcome,
+      c ? `${c.matched} / ${c.predicted} / ${c.reference}` : 'n/a',
+      pct(c?.f1),
+      c ? c.starts.map((s) => Math.round(s)).join(', ') : 'n/a',
+      ms(i.latencyMs),
+    ];
+  }
   if (suite === 'cleanup') {
     const llm = i.cleanup?.llm;
     return [
@@ -154,6 +195,16 @@ const ITEM_HEAD: Record<EvalResult['suite'], string[]> = {
   cleanup: ['Item', 'Variant', 'Outcome', 'WER', 'Punct. F1', 'Caps F1', 'LLM chunks applied', 'Latency'],
   citations: ['Question', 'Producer', 'Outcome', 'Verified / cited', 'Hit', 'Latency'],
   search: ['Query', 'Mode', 'Outcome', 'Precision@k', 'Recall@k', 'RR', 'Latency'],
+  chapters: [
+    'Item',
+    'Reference',
+    'Producer',
+    'Outcome',
+    'Matched / predicted / reference',
+    'F1',
+    'Predicted starts (s)',
+    'Latency',
+  ],
 };
 
 const LEGEND: Record<EvalResult['suite'], string> = {
@@ -164,6 +215,8 @@ const LEGEND: Record<EvalResult['suite'], string> = {
     'Every variant starts from the same raw auto-captions and is scored against the creator captions. raw: as served. clean:rules: rule-based cleanup (normalization, rolling-duplicate folding, sentences). clean:fillers: rules plus filler removal. clean:llm: rules plus the LLM punctuation pass. WER should stay at the raw level (cleanup must not change what was said); punctuation and capitalization F1 show what cleanup adds. "vs raw" columns are percentage points. The raw track is kept; cleanup is an added layer.',
   citations:
     'Citation accuracy: citations whose quote occurs in the transcript within 30 s of their time, over all citations returned. Expected place hit: questions where at least one citation lands within 30 s of a labeled answer. Self-rejected: citations the producer dropped itself (unverified brief claims, unknown [n] refs).',
+  chapters:
+    'Each producer sees only the transcript (reference chapters and description hidden). A predicted chapter start matches a reference start when it is within the tolerance; matching is one to one and the start at 0 is ignored on both sides. Precision, recall and F1 are pooled over items. "F1 vs creator" counts only videos whose reference is the creator\'s own timestamps; "F1 vs key moments" only those whose reference is YouTube\'s machine-generated chapters. baseline/uniform spaces the same number of chapters as chapters/texttiling evenly, so it shows what segmentation adds.',
   search:
     'A hit is relevant when it overlaps a labeled range. Precision@k and recall@k are means over queries; MRR is the mean reciprocal rank of the first relevant hit. Latency is the engine total per query.',
 };

@@ -84,6 +84,37 @@ export interface SearchDataset {
   queries: SearchQuery[];
 }
 
+/** Where a chapters item's reference chapters come from. */
+export type ChapterReferenceKind = 'creator-chapters' | 'key-moments';
+
+export interface ChaptersItem {
+  id: string;
+  url: string;
+  title: string;
+  channel: string;
+  language: string;
+  durationSec: number;
+  why: string;
+  license: string;
+  /**
+   * `creator-chapters`: timestamps the creator wrote in the description (or
+   * YouTube's chapter markers built from them). `key-moments`: YouTube's own
+   * machine-generated chapters. Must match `metadata.extra.chapterSource` in
+   * the recorded context.
+   */
+  reference: ChapterReferenceKind;
+  /** Recorded VideoContext JSON with the transcript and the reference chapters, relative to the repository root. */
+  context: string;
+}
+
+export interface ChaptersDataset {
+  suite: 'chapters';
+  description: string;
+  /** A predicted boundary matches a reference boundary within plus or minus this many seconds. */
+  toleranceSec: number;
+  items: ChaptersItem[];
+}
+
 export const DATASETS_DIR = fileURLToPath(new URL('../datasets/', import.meta.url));
 
 /** A dataset file name relative to datasets/, or any path (absolute, or relative to the working directory). */
@@ -164,5 +195,25 @@ export function loadSearchDataset(file = 'search.json', dir = DATASETS_DIR): Sea
       throw bad(file, `query ${q.id ?? '?'} needs id, query and at least one expected range`);
     }
   }
+  return data;
+}
+
+export function loadChaptersDataset(file = 'chapters.json', dir = DATASETS_DIR): ChaptersDataset {
+  const data = readJson(file, dir) as ChaptersDataset;
+  if (!Array.isArray(data?.items)) throw bad(file, 'has no "items" array');
+  if (typeof data.toleranceSec !== 'number' || data.toleranceSec <= 0) throw bad(file, 'toleranceSec must be a positive number');
+  const ids = new Set<string>();
+  data.items.forEach((item, i) => {
+    const o = (item ?? {}) as unknown as Record<string, unknown>;
+    const problems: string[] = [];
+    for (const k of ['id', 'url', 'title', 'channel', 'language', 'why', 'license', 'context'])
+      if (!isStr(o[k])) problems.push(`${k} missing`);
+    if (typeof o.durationSec !== 'number' || o.durationSec <= 0) problems.push('durationSec must be a positive number');
+    if (o.reference !== 'creator-chapters' && o.reference !== 'key-moments')
+      problems.push('reference must be "creator-chapters" or "key-moments"');
+    if (problems.length > 0) throw bad(file, `item ${i}: ${problems.join(', ')}`);
+    if (ids.has(item.id)) throw bad(file, `duplicate id "${item.id}"`);
+    ids.add(item.id);
+  });
   return data;
 }

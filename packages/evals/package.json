@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@vid2context/ask": "*",
+    "@vid2context/chapters": "^0.1.0",
     "@vid2context/core": "*",
     "@vid2context/insights": "*",
     "@vid2context/provider-media-file": "*",
