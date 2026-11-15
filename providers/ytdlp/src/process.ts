@@ -3,7 +3,8 @@
  * array. Each run has a timeout, honours ctx.signal by killing the whole
  * process tree, keeps only the tail of stderr (the ERROR lines come last), and
  * caps stdout. A per-process semaphore bounds how many yt-dlp processes run
- * at once (YTDLP_CONCURRENCY, default 2).
+ * at once (YTDLP_CONCURRENCY, default 2) and how many calls may wait for one
+ * (YTDLP_MAX_WAITING, default 64).
  */
 import { spawn } from 'node:child_process';
 import { type Ctx, type Env, Vid2ContextError } from '@vid2context/core';
@@ -38,31 +39,90 @@ export interface RunOptions {
    * that metadata and caption calls need.
    */
   ownQueue?: boolean;
+  /** The env var that sets this run's timeout, named in the timeout hint. Default YTDLP_TIMEOUT_SEC. */
+  timeoutEnvVar?: string;
 }
 
 const DEFAULT_STDOUT = 64 * 1024 * 1024;
 const DEFAULT_STDERR = 64 * 1024;
-
-let active = 0;
-const waiting: (() => void)[] = [];
 
 export function concurrencyLimit(env: Env): number {
   const n = Number(env.YTDLP_CONCURRENCY);
   return Number.isInteger(n) && n > 0 ? n : 2;
 }
 
-async function acquire(limit: number, signal?: AbortSignal): Promise<void> {
-  while (active >= limit) {
-    if (signal?.aborted) throw abortError(signal);
-    await new Promise<void>((resolve) => waiting.push(resolve));
-  }
-  active++;
+/** Calls allowed to wait for a slot (YTDLP_MAX_WAITING, default 64); one more is refused as busy. */
+export function waitingLimit(env: Env): number {
+  const raw = env.YTDLP_MAX_WAITING?.trim();
+  const n = Number(raw);
+  return raw && Number.isInteger(n) && n >= 0 ? n : 64;
 }
 
-function release(): void {
-  active--;
-  waiting.shift()?.();
+interface Waiter {
+  grant: () => void;
 }
+
+/**
+ * A counting semaphore whose slots pass straight from the releasing call to
+ * the next waiter, so a slot can never be lost: a waiter that aborts leaves
+ * the queue at once (its promise rejects), and only live waiters are woken.
+ * The queue is bounded; past it, acquire fails with a `rate-limited` (busy)
+ * error instead of piling up work.
+ */
+export class Semaphore {
+  private active = 0;
+  private readonly waiting: Waiter[] = [];
+
+  get inUse(): number {
+    return this.active;
+  }
+
+  get queued(): number {
+    return this.waiting.length;
+  }
+
+  async acquire(limit: number, maxWaiting: number, signal?: AbortSignal): Promise<void> {
+    if (signal?.aborted) throw abortError(signal);
+    if (this.active < limit && this.waiting.length === 0) {
+      this.active++;
+      return;
+    }
+    if (this.waiting.length >= maxWaiting) {
+      throw new Vid2ContextError(
+        'rate-limited',
+        `yt-dlp is busy: ${this.active} calls are running and ${this.waiting.length} are waiting.`,
+        {
+          hint: 'Retry in a few seconds, or raise YTDLP_CONCURRENCY (parallel yt-dlp processes) or YTDLP_MAX_WAITING (calls allowed to queue).',
+          retryAfterSec: 5,
+        },
+      );
+    }
+    await new Promise<void>((resolve, reject) => {
+      const waiter: Waiter = {
+        grant: () => {
+          signal?.removeEventListener('abort', onAbort);
+          resolve();
+        },
+      };
+      const onAbort = () => {
+        const i = this.waiting.indexOf(waiter);
+        if (i >= 0) this.waiting.splice(i, 1);
+        reject(abortError(signal as AbortSignal));
+      };
+      signal?.addEventListener('abort', onAbort, { once: true });
+      this.waiting.push(waiter);
+    });
+  }
+
+  /** Hand the slot to the next waiter, or free it. */
+  release(): void {
+    const next = this.waiting.shift();
+    if (next) next.grant();
+    else this.active = Math.max(0, this.active - 1);
+  }
+}
+
+const slots = new Semaphore();
 
 function abortError(signal: AbortSignal): Error {
   return signal.reason instanceof Error ? signal.reason : new DOMException('Aborted', 'AbortError');
@@ -93,15 +153,17 @@ function killTree(pid: number | undefined): void {
 export async function run(bin: string, args: string[], ctx: Ctx, opts: RunOptions): Promise<RunResult> {
   if (ctx.signal?.aborted) throw abortError(ctx.signal);
   if (opts.ownQueue) return spawnOnce(bin, args, ctx, opts);
-  await acquire(concurrencyLimit(ctx.env), ctx.signal);
+  await slots.acquire(concurrencyLimit(ctx.env), waitingLimit(ctx.env), ctx.signal);
   try {
     return await spawnOnce(bin, args, ctx, opts);
   } finally {
-    release();
+    slots.release();
   }
 }
 
 function spawnOnce(bin: string, args: string[], ctx: Ctx, opts: RunOptions): Promise<RunResult> {
+  // An abort that landed while waiting for a slot: an abort listener added now would never fire.
+  if (ctx.signal?.aborted) return Promise.reject(abortError(ctx.signal));
   const maxStdout = opts.maxStdout ?? DEFAULT_STDOUT;
   const maxStderr = opts.maxStderr ?? DEFAULT_STDERR;
   return new Promise<RunResult>((resolve, reject) => {
@@ -128,7 +190,7 @@ function spawnOnce(bin: string, args: string[], ctx: Ctx, opts: RunOptions): Pro
     const timer = setTimeout(() => {
       fail(
         new Vid2ContextError('timeout', `${opts.label} timed out after ${Math.round(opts.timeoutMs / 1000)} s.`, {
-          hint: 'Raise YTDLP_TIMEOUT_SEC for long videos or slow networks.',
+          hint: `Raise ${opts.timeoutEnvVar ?? 'YTDLP_TIMEOUT_SEC'} for long videos or slow networks.`,
         }),
       );
     }, opts.timeoutMs);
