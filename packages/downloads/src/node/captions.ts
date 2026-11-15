@@ -206,16 +206,26 @@ export function createCaptionsEngine({ registry }: CaptionsEngineDeps) {
     const base = { ...opts.pipeline, storage: opts.pipeline?.storage ?? null, allowAuto: req.allowAuto };
     const lang = language ? { language } : {};
     const matches = (c: VideoContext) => !language || sameLanguage(c.transcript.language, language);
+    let captionsError: unknown;
     if (req.mode !== 'stt') {
       try {
         const c = await getVideoContext(registry, req.input, { ...base, ...lang, mode: 'captions' }, ctx);
         if (matches(c) && (req.allowTranslated || !c.transcript.translated)) return c;
       } catch (err) {
-        if (!(err instanceof Vid2ContextError && err.code === 'no-transcript') || !allowStt) throw err;
+        // No captions, or the captions are blocked (YouTube often answers 429 from servers):
+        // speech-to-text on the audio is the next way to a transcript.
+        if (!allowStt || ctx.signal?.aborted || !(err instanceof Vid2ContextError)) throw err;
+        captionsError = err;
       }
       if (!allowStt) return null;
     }
-    return getVideoContext(registry, req.input, { ...base, ...lang, mode: 'stt' }, ctx);
+    try {
+      return await getVideoContext(registry, req.input, { ...base, ...lang, mode: 'stt' }, ctx);
+    } catch (err) {
+      // "No transcript" from speech-to-text says less than why the captions failed.
+      if (captionsError && err instanceof Vid2ContextError && err.code === 'no-transcript') throw captionsError;
+      throw err;
+    }
   }
 
   /** One language through yt-dlp's subtitle download. Original bytes, or parsed WebVTT for conversions. */
