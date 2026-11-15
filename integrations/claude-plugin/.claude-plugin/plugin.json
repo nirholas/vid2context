@@ -1,6 +1,6 @@
 {
   "name": "vid2context",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Turn any video into context for Claude: transcripts, metadata and chapters with timestamps to cite. Adds the vid2context MCP server and a skill that reads long videos outline first and cites every claim.",
   "author": {
     "name": "nirholas",
