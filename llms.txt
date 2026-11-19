@@ -1,22 +1,29 @@
 # vid2context
 
-> Turn any video into context for AI agents and LLMs: transcripts, metadata, chapters and cited research briefs. Free-first (local models, then free tiers, then keyless hosts, paid APIs last), TypeScript, Apache-2.0.
+> Turn any video into context for AI agents and LLMs: transcripts, metadata, chapters and cited research briefs, as an MCP server, CLI, HTTP API, web app and TypeScript library. Free-first (local models, then free tiers, then keyless hosts, paid APIs last), Apache-2.0.
 
-vid2context resolves a video input (a YouTube URL or id, or a local media file), fetches its metadata and chapters, and produces a timed transcript. It prefers existing captions (creator, then platform auto-captions) and falls back to speech-to-text through a chain of OpenAI-compatible providers. Every result records which providers were tried and why each one succeeded or failed.
+vid2context takes a video link or a media file and returns its transcript with timestamps, metadata and chapters in a form an agent can read and cite. Sources: YouTube (videos, Shorts, playlists, channels, comments), X (Twitter) posts, podcasts (feeds, Apple Podcasts, Spotify), Bilibili, Vimeo, Loom, Wistia, direct media links, Google Drive, Dropbox and OneDrive share links, local files, videos embedded in web pages, and the 1,000+ sites yt-dlp supports. It uses existing captions first (creator, then platform auto-captions, then a feed's own transcript) and otherwise runs speech-to-text through a free-first chain. Every result lists the providers it tried and why. Raw transcripts are always kept; summaries and briefs are added layers.
 
-Status: early and pre-release (0.1.0). The TypeScript library core, four providers, the CLI and an MCP server over stdio (`get_transcript`, `get_metadata`) work today. The HTTP API (Hono) and remote MCP are in development, and a web app is planned; all of them share the same core. Requires Node.js 22 or newer.
+Status: version 0.2.0 on npm (`vid2context`, `vid2context-mcp`). The CLI, the MCP server (stdio and remote over HTTPS, 28 tools), the HTTP API with OpenAPI, the web app and the library all work today. A free public instance runs at https://vid2context.com (web app at /app/, API at /api/v1/). Requires Node.js 22 or newer to run locally.
 
 ## Install
 
-- MCP server, no keys needed: `npx -y vid2context-mcp` (npm `vid2context-mcp`, MCP Registry `io.github.nirholas/vid2context`). Claude Code: `claude mcp add --scope user --transport stdio vid2context -- npx -y vid2context-mcp`
+- No install: https://vid2context.com/app/ (paste a link), or the API: `GET https://vid2context.com/api/v1/context?url=<video link>`
+- MCP server, no keys needed: `npx -y vid2context-mcp` (MCP Registry `io.github.nirholas/vid2context`). Claude Code: `claude mcp add --scope user --transport stdio vid2context -- npx -y vid2context-mcp`
 - CLI: `npx vid2context <url-or-file> --timestamps`
 - [llms-install.md](https://github.com/nirholas/vid2context/blob/main/llms-install.md): step-by-step setup for agents installing the MCP server for a user, with the optional keys and a verification call
 
 ## Docs
 
-- [llms-full.txt](https://raw.githubusercontent.com/nirholas/vid2context/main/llms-full.txt): the complete guide in one file: data model, provider contracts, the rung chain, every environment variable, library usage and how to add a provider
-- [Contributing](https://github.com/nirholas/vid2context/blob/main/CONTRIBUTING.md): development setup, project layout, provider authoring rules
-- [Changelog](https://github.com/nirholas/vid2context/blob/main/CHANGELOG.md)
+- [llms-full.txt](https://raw.githubusercontent.com/nirholas/vid2context/main/llms-full.txt): the complete guide in one file: surfaces, data model, providers, the rung chain, environment variables, library usage and how to add a provider
+- [README](https://github.com/nirholas/vid2context/blob/main/README.md): overview, quick start, MCP tools, FAQ
+- [Providers and keys](https://github.com/nirholas/vid2context/blob/main/docs/providers.md): every source and model lane, its tier, limits and environment variables
+- [MCP guide](https://github.com/nirholas/vid2context/blob/main/docs/guides/mcp.md) and [remote MCP](https://github.com/nirholas/vid2context/blob/main/docs/guides/remote-mcp.md)
+- [HTTP API guide](https://github.com/nirholas/vid2context/blob/main/docs/guides/http-api.md)
+- [X (Twitter) videos](https://github.com/nirholas/vid2context/blob/main/docs/guides/x.md), [podcasts](https://github.com/nirholas/vid2context/blob/main/docs/guides/podcasts.md), [YouTube](https://github.com/nirholas/vid2context/blob/main/docs/guides/youtube.md), [local files](https://github.com/nirholas/vid2context/blob/main/docs/guides/local-files.md)
+- [Speech-to-text](https://github.com/nirholas/vid2context/blob/main/docs/guides/speech-to-text.md) and [long audio](https://github.com/nirholas/vid2context/blob/main/docs/long-audio.md): the free-first chain, splitting, stitching and decoder-loop recovery
+- [Comparison](https://github.com/nirholas/vid2context/blob/main/docs/comparison.md): how it differs from youtube-transcript-api, YouTube MCP servers, yt-dlp and summarize, and when to use those instead
+- [Contributing](https://github.com/nirholas/vid2context/blob/main/CONTRIBUTING.md) and [Changelog](https://github.com/nirholas/vid2context/blob/main/CHANGELOG.md)
 
 ## Source
 
@@ -24,14 +31,17 @@ Status: early and pre-release (0.1.0). The TypeScript library core, four provide
 - [Provider contracts](https://github.com/nirholas/vid2context/blob/main/packages/core/src/provider.ts): source, captions, stt, llm, embed, video, visual and storage providers; rungs
 - [Rung chain](https://github.com/nirholas/vid2context/blob/main/packages/core/src/chain.ts): free-first ordering, cooldowns and fallback
 - [Pipeline](https://github.com/nirholas/vid2context/blob/main/packages/core/src/pipeline.ts): getVideoContext, transcribe, chat, expandInput
-- [Output formats](https://github.com/nirholas/vid2context/blob/main/packages/core/src/format/index.ts): text and json renderers
+- [Long audio](https://github.com/nirholas/vid2context/blob/main/packages/core/src/longform/transcribe-long.ts): split, transcribe in parallel, stitch, recover decoder loops
+- [Output formats](https://github.com/nirholas/vid2context/blob/main/packages/core/src/format/index.ts): text, json, markdown, srt, vtt, pack, ass, ttml, sbv, lrc, csv
 
 ## Providers
 
-- [YouTube](https://github.com/nirholas/vid2context/blob/main/providers/youtube/src/index.ts): URL matching, metadata, description chapters, creator and auto captions through the innertube player API; no key, no SDK
-- [Local media files](https://github.com/nirholas/vid2context/blob/main/providers/media-file/src/index.ts): file paths and file:// URLs as sources of audio for speech-to-text (Node only)
-- [Speech-to-text](https://github.com/nirholas/vid2context/blob/main/providers/stt-openai-compatible/src/index.ts): any OpenAI-compatible /audio/transcriptions API: local servers, Groq, OVH (keyless), OpenAI
-- [LLM](https://github.com/nirholas/vid2context/blob/main/providers/llm-openai-compatible/src/index.ts): any OpenAI-compatible chat API: Ollama, LM Studio, Groq, Cerebras, Mistral, GitHub Models, Gemini, OVH and Pollinations (keyless), OpenAI
+- [YouTube](https://github.com/nirholas/vid2context/blob/main/providers/youtube): metadata, chapters, playlists, channels, comments, creator and auto captions through the innertube player API; no key
+- [X (Twitter)](https://github.com/nirholas/vid2context/blob/main/providers/x): post metadata, every MP4 quality as a direct link, audio-only HLS for speech-to-text; no key
+- [Podcasts](https://github.com/nirholas/vid2context/blob/main/providers/podcast): feeds, Apple Podcasts and Spotify links, Podcasting 2.0 transcripts
+- [yt-dlp](https://github.com/nirholas/vid2context/blob/main/providers/ytdlp): the 1,000+ sites yt-dlp supports, downloads and their captions (Node)
+- [Speech-to-text](https://github.com/nirholas/vid2context/blob/main/providers/stt-openai-compatible): any OpenAI-compatible /audio/transcriptions API: local servers, Groq, Mistral, OVH (keyless), DeepInfra, Together, OpenAI; also [whisper.cpp](https://github.com/nirholas/vid2context/blob/main/providers/stt-whisper-cpp), [in-browser Whisper](https://github.com/nirholas/vid2context/blob/main/providers/stt-transformers) and [Cloudflare Workers AI](https://github.com/nirholas/vid2context/blob/main/providers/cloudflare-ai)
+- [LLM](https://github.com/nirholas/vid2context/blob/main/providers/llm-openai-compatible): any OpenAI-compatible chat API: Ollama, LM Studio, Groq, Cerebras, Mistral, GitHub Models, Gemini, OVH and Pollinations (keyless), OpenAI
 
 ## Optional
 

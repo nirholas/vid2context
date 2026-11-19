@@ -6,17 +6,17 @@ This file is the complete, single-file guide to vid2context for language models 
 
 ## Status
 
-vid2context is early and pre-release (version 0.1.0). What exists today:
+vid2context 0.2.0 is on npm as `vid2context` (CLI) and `vid2context-mcp` (MCP server), listed in the MCP Registry as `io.github.nirholas/vid2context`. Everything below works today:
 
-- `@vid2context/core`: data model, provider contracts, the free-first rung chain, the video-to-context pipeline, output formatters, an in-memory storage backend. Runtime-neutral: no Node-only imports, so it runs on Node, Cloudflare Workers and in the browser.
-- `@vid2context/registry`: provider registries generated per runtime (node, workers, browser).
-- Providers: `youtube`, `media-file`, `stt-openai-compatible`, `llm-openai-compatible`.
-- `@vid2context/cli`: a minimal command line (see below), published to npm as `vid2context`.
-- `@vid2context/mcp`: an MCP server over stdio with `get_transcript` and `get_metadata`, published to npm as `vid2context-mcp` and listed in the MCP Registry as `io.github.nirholas/vid2context`.
-
-In development: more MCP tools, remote MCP over HTTPS, and the HTTP API (`@vid2context/server`, built on Hono). Planned: the web app, playlist and channel expansion for YouTube, and research briefs. Do not tell users these are ready.
+- **Surfaces:** the CLI, the MCP server (stdio, and remote over Streamable HTTP with a bearer token or built-in OAuth 2.1; 28 tools), the HTTP API (Hono, OpenAPI at `/api/v1/openapi.json`), the web app, a chat app, and the TypeScript library.
+- **Public instance:** https://vid2context.com runs the web app (`/app/`), the API (`/api/v1/`) and remote MCP (`/mcp`) on Cloudflare Workers, free and keyless, with Workers AI speech-to-text. Downloads are off there; run locally for those.
+- **Sources:** YouTube (videos, Shorts, playlists, channels, comments), X (Twitter) posts, podcasts (feeds, Apple Podcasts, Spotify), Bilibili, Vimeo, Loom and Wistia, direct media URLs and HLS/DASH streams, Google Drive, Dropbox and OneDrive share links, local files, videos embedded in web pages, and the 1,000+ sites yt-dlp supports.
+- **Beyond transcripts:** chapters and outlines with token counts, Q&A and cited briefs across videos, translation, speaker labels, visual notes from frames (OCR and vision models), collections with search, context packs for ChatGPT and Claude Projects, live-stream transcription, and downloads of video, audio, captions, frames and clips (Node, with yt-dlp and ffmpeg).
+- **Runtimes:** `@vid2context/core` has no Node-only imports, so the pipeline runs on Node, Cloudflare Workers and in the browser; Node adds yt-dlp, ffmpeg, local files and whisper.cpp.
 
 ## Install
+
+No install: paste a link at https://vid2context.com/app/, or call `GET https://vid2context.com/api/v1/context?url=<video link>` (`&format=text|json|markdown|srt|vtt`).
 
 The MCP server needs no keys:
 
@@ -26,7 +26,7 @@ npx -y vid2context-mcp
 
 Claude Code: `claude mcp add --scope user --transport stdio vid2context -- npx -y vid2context-mcp`. Other clients take `{"mcpServers": {"vid2context": {"command": "npx", "args": ["-y", "vid2context-mcp"]}}}`. Optional keys go in the server entry's `env`. Step-by-step agent setup: https://github.com/nirholas/vid2context/blob/main/llms-install.md
 
-The CLI: `npx vid2context <url-or-file> --timestamps`.
+The CLI: `npx vid2context <url-or-file> --timestamps`. The HTTP API and web app locally: `npx vid2context serve` (http://127.0.0.1:8787).
 
 The npm packages are single-file bundles built from this repo by `npm run build:npm` (`packages/discovery`).
 
@@ -45,22 +45,29 @@ The workspace packages (`@vid2context/*`) export TypeScript source and are not p
 
 ## Command line
 
-Run from a source checkout with `npm run cli --`:
+`npx vid2context <input>` is the same as `vid2context get <input>`. From a source checkout use `npm run cli --`.
 
 ```bash
-npm run cli -- https://www.youtube.com/watch?v=jNQXAC9IVRw --timestamps
-npm run cli -- ./interview.mp3 --format json > interview.json
+npx vid2context https://www.youtube.com/watch?v=jNQXAC9IVRw --timestamps
+npx vid2context https://x.com/anza_xyz/status/2122763240887468354 --format srt
+npx vid2context ./interview.mp3 --format json > interview.json
+npx vid2context list "https://www.youtube.com/playlist?list=..." --limit 10
+npx vid2context pack <url> <url> > context.md
 ```
+
+Commands: `get`, `list` (expand a playlist, channel, feed or page), `formats`, `pack` (one Markdown context pack from many videos), `bundle`, `download` (Node, yt-dlp), `captions`, `search`, `library`, `collection`, `models`, `doctor` (checks the setup), `config`, `serve` (HTTP API and web app), `mcp` (MCP server), `completion`, `help`.
+
+Common options:
 
 | Option | Meaning |
 | --- | --- |
-| `--format <id>` | Output format: `text` (default) or `json` |
+| `--format <id>` | `text` (default), `json`, `markdown`, `srt`, `vtt`, `pack`, `ass`, `ttml`, `sbv`, `lrc` or `csv` |
 | `--timestamps` | Prefix lines with timestamps where the format allows |
-| `--mode <mode>` | `auto`, `captions`, `stt` or `video` (default `auto`) |
+| `--mode <mode>` | `auto` (default: captions first, then speech-to-text), `captions` (never transcribes), `stt` (always transcribes) or `video` |
 | `--lang <code>` | Preferred transcript language, for example `en`, `de`, `pt-BR` |
-| `--verbose` | Log progress to stderr |
+| `--policy`, `--only`, `--skip` | Rung chain policy and filters (see below) |
 
-Program output goes to stdout. Logs, errors and the attempts list go to stderr, so redirecting stdout gives a clean transcript.
+Program output goes to stdout. Logs, errors and the attempts list go to stderr, so redirecting stdout gives a clean transcript. `npx vid2context help <command>` lists every option.
 
 ## Library usage
 
@@ -124,10 +131,14 @@ Defined in `packages/core/src/types.ts`. Every provider, surface and storage bac
 
 ## Output formats
 
-`render(context, format, { timestamps })` renders through a shared formatter registry (`formatters`), so every surface gets the same formats.
+`render(context, format, options)` renders through a shared formatter registry (`formatters`), so every surface gets the same formats:
 
 - `text`: plain transcript. With `timestamps: true`, one `[m:ss] line` per caption (`[h:mm:ss]` for videos an hour or longer).
-- `json`: the full VideoContext.
+- `json`: the full VideoContext: metadata, chapters, timed segments, and how it was produced.
+- `markdown`: title and metadata, chapters as headings, paragraphs prefixed with timestamp links.
+- `srt`, `vtt`, `ass`, `ttml`, `sbv`, `lrc`: subtitle and lyrics formats for players and editors.
+- `pack`: one Markdown context pack for many videos, sized for ChatGPT Projects, Claude Projects or a custom GPT.
+- `csv`: one row per segment.
 
 ## Providers
 
@@ -144,12 +155,15 @@ A provider is a workspace package under `providers/*` that default-exports one `
 | `visual` | Contributes rungs that read frames (OCR, vision models) |
 | `storage` | Creates a Storage backend |
 
-Shipped providers:
+Shipped providers (runtimes in brackets; full details, limits and keys in docs/providers.md):
 
-- `youtube` (node, workers, browser): matches YouTube URLs and ids, fetches metadata and chapters, and fetches creator or auto captions through the innertube player API. No API key, no SDK.
-- `media-file` (node only): matches absolute, relative and `~/` paths and `file://` URLs. A bare name only matches when it has a media extension, so it never shadows a YouTube id. The ref id is a sha256 of path, size and mtime, so a changed file never serves a stale cache. Supplies the audio for speech-to-text.
-- `stt-openai-compatible`: speech-to-text through any OpenAI-compatible `/audio/transcriptions` endpoint.
-- `llm-openai-compatible`: chat completions through any OpenAI-compatible endpoint.
+- Sources: `youtube` [node, workers, browser] (metadata, chapters, playlists, channels, comments, creator and auto captions via the innertube player API, no key); `x` [node, workers] (X posts: metadata, every MP4 quality as a direct link, audio-only HLS for speech-to-text, no key; https://github.com/nirholas/vid2context/blob/main/docs/guides/x.md); `podcast` [node, workers] (feeds, Apple Podcasts, Spotify); `bilibili` [node, workers]; `native-transcripts` [node, workers] (Vimeo, Loom and Wistia, with their creator captions or platform transcripts); `media-url` (direct media links); `share-links` [node, workers] (Google Drive, Dropbox, OneDrive); `web-page` [node, workers] (every video embedded in a page); `media-file` [node] (local files); `ytdlp` [node] (the 1,000+ sites yt-dlp supports, downloads, captions).
+- Captions: creator and platform captions from the source providers, `podcast-transcript` (a feed's Podcasting 2.0 transcript), `supadata` [node, workers] (hosted transcripts, with a key).
+- Speech-to-text: `stt-openai-compatible` (local servers, Groq, Mistral, OVH keyless, DeepInfra, Together, OpenAI), `stt-whisper-cpp` [node], `stt-transformers` [node, browser] (Whisper in WebAssembly/WebGPU), `cloudflare-ai` (Workers AI Whisper and Deepgram Nova 3, which also labels speakers).
+- LLM: `llm-openai-compatible` (Ollama, LM Studio, Groq, Cerebras, Mistral, GitHub Models, Gemini, OVH and Pollinations keyless, OpenAI), `llm-openrouter`, `llm-free-catalog`, `llm-local`, `llm-native`, `llm-browser` [browser] (Chrome's built-in model, WebLLM).
+- Embeddings: `embed`, `embed-transformers` [node, browser].
+- Visual: `visual-frames` (Tesseract OCR and vision models on frames).
+- Storage: `storage-sqlite` [node], `storage-postgres` [node, workers], `storage-cloudflare` [workers] (D1, R2, KV).
 
 ## The free-first rung chain
 
@@ -249,17 +263,20 @@ Rules:
 ## Repository layout
 
 ```
-packages/core/       contracts, rung chain, pipeline, formatters (runtime-neutral)
-packages/registry/   generated provider registries per runtime
-packages/cli/        command line
-packages/mcp/        MCP server (in development)
-packages/server/     HTTP API on Hono (in development)
+packages/core/       contracts, rung chain, pipeline, long audio, formatters (runtime-neutral)
+packages/registry/   generated provider registries per runtime (node adds the ffmpeg splitter)
+packages/cli/        command line (npm: vid2context)
+packages/mcp/        MCP server over stdio (npm: vid2context-mcp); mcp-http, mcp-apps for remote MCP and widgets
+packages/server/     HTTP API on Hono, Node and Cloudflare Workers entries
+packages/web/        the web app; packages/chat the chat app
+packages/*/          ask, research, insights, translate, speakers, library, search, downloads, ffmpeg, jobs, ...
 providers/*/         one package per provider
-scripts/             gen-registry.mjs
-tests/fixtures/      shared media fixtures
+clients/python/      Python client, LangChain loader and LlamaIndex reader
+site/                vid2context.com
+docs/                guides, provider reference, contracts, deploy guides
 ```
 
-Tooling: TypeScript, Vitest, Biome. Scripts: `npm run check` (typecheck, lint, test), `npm test`, `npm run test:live`, `npm run lint`, `npm run format`.
+Tooling: TypeScript, Vitest, Biome. `npm run ci` runs every check (typecheck, lint, tests, conformance, hygiene, the npm build and an npx smoke test); `npm run check` is the quick subset.
 
 ## Links
 
