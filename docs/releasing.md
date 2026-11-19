@@ -4,13 +4,13 @@ Two packages are published to npm: `vid2context` (the CLI, `npx vid2context`) an
 
 ## Versioning
 
-One version number covers both packages. It lives in three manifests that always move together: the root `package.json`, `packages/cli/package.json` and `packages/mcp/package.json` (the bundles take their versions from the last two, see `packages/discovery/src/meta.ts`). Release notes live in the root [CHANGELOG.md](../CHANGELOG.md), in the Keep a Changelog format.
+One version number covers both packages. It lives in four manifests that always move together: the root `package.json`, `packages/cli/package.json` and `packages/mcp/package.json` (the bundles take their versions from these two, see `packages/discovery/src/meta.ts`), and `packages/server/package.json`, which the HTTP API reports from `/health` (it was left at 0.1.0 until 0.2.1, so the public instance reported the wrong version). Release notes live in the root [CHANGELOG.md](../CHANGELOG.md), in the Keep a Changelog format.
 
 ```sh
 node tooling/release/version.mjs patch     # or minor, major, or an explicit 1.2.3
 ```
 
-[tooling/release/version.mjs](../tooling/release/version.mjs) changes only the `"version"` line of the three manifests and the `version` and `date-released` lines of `CITATION.cff`, moves the `## [Unreleased]` notes under `## [x.y.z] - date`, opens a fresh Unreleased section and updates the compare links. It refuses when the Unreleased section is empty, so every release says what changed. It does not commit, tag or publish; it prints those commands.
+[tooling/release/version.mjs](../tooling/release/version.mjs) changes only the `"version"` line of the four manifests and the `version` and `date-released` lines of `CITATION.cff`, moves the `## [Unreleased]` notes under `## [x.y.z] - date`, opens a fresh Unreleased section and updates the compare links. It refuses when the Unreleased section is empty, so every release says what changed. It does not commit, tag or publish; it prints those commands.
 
 Why not Changesets: Changesets writes a CHANGELOG.md per package and versions each workspace on its own, while this repo keeps one hand-written changelog at the root and ships two bundles under one version from more than 50 private workspaces. A 150-line script that fits that shape is simpler than configuring Changesets around it, and adds no dependency.
 
@@ -44,7 +44,7 @@ Publishing happens on Cloud Build when a version tag is pushed (setup in [ci.md]
 node tooling/release/version.mjs minor
 npm install                                   # sync package-lock.json
 npm run ci && npm run release:dry
-git commit -m "chore(release): v0.2.0" -- package.json packages/cli/package.json packages/mcp/package.json package-lock.json CHANGELOG.md
+git commit -m "chore(release): v0.2.0" -- package.json packages/cli/package.json packages/mcp/package.json packages/server/package.json package-lock.json CHANGELOG.md CITATION.cff
 git tag -a v0.2.0 -m "v0.2.0"
 git push origin main v0.2.0
 ```

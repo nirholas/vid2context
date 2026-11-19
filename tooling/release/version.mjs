@@ -20,7 +20,12 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-export const MANIFESTS = ['package.json', 'packages/cli/package.json', 'packages/mcp/package.json'];
+export const MANIFESTS = [
+  'package.json',
+  'packages/cli/package.json',
+  'packages/mcp/package.json',
+  'packages/server/package.json',
+];
 const REPO = 'https://github.com/nirholas/vid2context';
 const SEMVER = /^(\d+)\.(\d+)\.(\d+)$/;
 
