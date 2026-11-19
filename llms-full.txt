@@ -16,7 +16,7 @@ vid2context 0.2.0 is on npm as `vid2context` (CLI) and `vid2context-mcp` (MCP se
 
 ## Install
 
-No install: paste a link at https://vid2context.com/app/, or call `GET https://vid2context.com/api/v1/context?url=<video link>` (`&format=text|json|markdown|srt|vtt`).
+No install: paste a link at https://vid2context.com/app/, or call the API: `GET https://vid2context.com/api/v1/context?url=<video link>` returns the full VideoContext as JSON, and `GET https://vid2context.com/api/v1/transcript?url=<video link>&format=srt` returns one format (`text`, `json`, `markdown`, `srt`, `vtt`, `pack`, `ass`, `ttml`, `sbv`, `lrc`, `csv`). OpenAPI: `/api/v1/openapi.json`.
 
 The MCP server needs no keys:
 
