@@ -197,7 +197,9 @@ describe('DownloadPanel', () => {
       'downloads-job-bbb-running.json',
       'downloads-job-bbb-done.json',
     );
-    render(createElement(DownloadPanel, { url: BBB, status, call: { base: BASE, fetch }, pollMs: 20, showTitle: true }));
+    // This test reads the intermediate Preparing and 38% states, so each must outlast testing-library's 50 ms checks:
+    // with a 20 ms poll, a loaded machine skipped straight to done and the test failed now and then.
+    render(createElement(DownloadPanel, { url: BBB, status, call: { base: BASE, fetch }, pollMs: 300, showTitle: true }));
     expect((await screen.findByTestId('download-title')).textContent).toBe(bbb.title);
     expect(screen.getByTestId('download-notice').textContent).toBe(status.notice);
 
