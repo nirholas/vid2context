@@ -34,6 +34,7 @@ export {
   SYNDICATION,
   syndicationToken,
   syndicationUrl,
+  USER_AGENT,
   X_API,
 } from './api.ts';
 export { audioRenditions, downloadAudio, downloadSegments, type HlsAudio, hlsAudio, mediaSegments } from './audio.ts';

@@ -33,6 +33,14 @@ export const X_API = 'https://api.x.com';
 /** The `TweetResultByRestId` operation id x.com's web client used on 2026-11-19 (as in xactions). */
 export const GRAPHQL_TWEET_QUERY_ID = 'GZsN2Pc4knAoit6pXa4HSA';
 
+/**
+ * Every lane names its client. Cloudflare Workers' fetch sends no user-agent, and without one X's syndication
+ * endpoint answers 400 and FxTwitter 401 (checked 2026-11-19, which is how the public Worker failed every X link).
+ * Node's default `user-agent: node` is refused by X's guest activation with 404. video.twimg.com needs none.
+ */
+export const USER_AGENT = 'vid2context/0.1 (+https://github.com/nirholas/vid2context)';
+const JSON_HEADERS = { accept: 'application/json', 'user-agent': USER_AGENT };
+
 const NOT_FOUND_HINT =
   'Only public posts can be read. The post may be deleted, from a protected or suspended account, or the link may be wrong.';
 
@@ -50,7 +58,7 @@ function notFound(postId: string): Vid2ContextError {
 }
 
 export async function fetchSyndication(postId: string, ctx: Ctx): Promise<XPost> {
-  const res = await fetchWithTimeout(ctx, syndicationUrl(postId), { headers: { accept: 'application/json' } });
+  const res = await fetchWithTimeout(ctx, syndicationUrl(postId), { headers: JSON_HEADERS });
   if (res.status === 404) {
     await res.body?.cancel().catch(() => undefined);
     throw notFound(postId);
@@ -72,7 +80,7 @@ export function fxtwitterEnabled(ctx: Ctx): boolean {
 
 export async function fetchFxTwitter(postId: string, ctx: Ctx): Promise<XPost> {
   const base = (ctx.env.X_FXTWITTER_BASE_URL || FXTWITTER).replace(/\/+$/, '');
-  const res = await fetchWithTimeout(ctx, `${base}/i/status/${postId}`, { headers: { accept: 'application/json' } });
+  const res = await fetchWithTimeout(ctx, `${base}/i/status/${postId}`, { headers: JSON_HEADERS });
   if (res.status === 404) {
     await res.body?.cancel().catch(() => undefined);
     throw notFound(postId);
@@ -157,9 +165,6 @@ const guestTokens = new Map<string, { token: string; until: number }>();
 export function clearGuestTokens(): void {
   guestTokens.clear();
 }
-
-/** Node's fetch says `user-agent: node`, which X's guest activation answers with 404 (checked 2026-11-19); any named client works. */
-const USER_AGENT = 'vid2context/0.1 (+https://github.com/nirholas/vid2context)';
 
 function webHeaders(bearer: string): Record<string, string> {
   return {

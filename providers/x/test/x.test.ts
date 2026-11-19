@@ -19,6 +19,7 @@ import {
   parseRef,
   syndicationUrl,
   titleOf,
+  USER_AGENT,
   type XMedia,
   xSource,
 } from '../src/index.ts';
@@ -220,6 +221,13 @@ describe('xSource metadata', () => {
     expect(syndicationUrl(ROMAN)).toMatch(
       new RegExp(`^https://cdn\\.syndication\\.twimg\\.com/tweet-result\\?id=${ROMAN}&lang=en&token=[0-9a-z]+$`),
     );
+  });
+
+  it('names its client on both keyless lanes, which X and FxTwitter refuse without one (Workers fetch sends none)', async () => {
+    const fetch = replayFetch([synMissing(ROMAN), fx(ROMAN)]);
+    await xSource.getMetadata(ref(`https://x.com/i/status/${ROMAN}`), testContext({ fetch }));
+    expect(fetch.calls.map((c) => c.headers['user-agent'])).toEqual([USER_AGENT, USER_AGENT]);
+    expect(USER_AGENT).toMatch(/^vid2context\//);
   });
 
   it('falls back to FxTwitter when syndication refuses the post', async () => {
