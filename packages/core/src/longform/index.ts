@@ -10,6 +10,7 @@ export {
 export { type PlanInput, type PlannedCut, planCuts } from './plan.ts';
 export { type ChunkTranscript, normalizeWord, type SeamReport, stitchChunks } from './stitch.ts';
 export {
+  audioDurationSec,
   audioExceedsRung,
   builtinSplitters,
   durationLimitFrom,

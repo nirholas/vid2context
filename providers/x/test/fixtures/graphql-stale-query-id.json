@@ -1,0 +1,7 @@
+{
+  "status": 404,
+  "headers": {
+    "content-type": "text/plain; charset=utf-8"
+  },
+  "body": "{\"message\":\"Query not found\"}\n"
+}

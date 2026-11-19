@@ -192,15 +192,38 @@ export async function guestToken(ctx: Ctx): Promise<string> {
   return body.guest_token;
 }
 
+/** Statuses that say the guest token itself was refused or worn out: a fresh token can fix them. */
+const TOKEN_REFUSED = new Set([401, 403, 429]);
+
 export async function fetchGraphQL(postId: string, ctx: Ctx): Promise<XPost> {
-  const res = await fetchWithTimeout(ctx, graphqlUrl(postId, ctx), {
-    headers: {
-      ...webHeaders(bearerToken(ctx)),
-      'x-guest-token': await guestToken(ctx),
-      'x-twitter-active-user': 'yes',
-      'x-twitter-client-language': 'en',
-    },
-  });
+  const ask = async () =>
+    fetchWithTimeout(ctx, graphqlUrl(postId, ctx), {
+      headers: {
+        ...webHeaders(bearerToken(ctx)),
+        'x-guest-token': await guestToken(ctx),
+        'x-twitter-active-user': 'yes',
+        'x-twitter-client-language': 'en',
+      },
+    });
+  let res = await ask();
+  if (TOKEN_REFUSED.has(res.status)) {
+    // X can revoke or rate-limit a guest token long before it expires. Drop it and try once with a new one, so one
+    // bad token does not keep the lane down for the 2.5 hours it would otherwise stay cached.
+    // (No recorded refusal backs this path: on 2026-11-19 X answered even missing and made-up guest tokens with 200.)
+    await res.body?.cancel().catch(() => undefined);
+    guestTokens.delete(bearerToken(ctx));
+    res = await ask();
+    if (TOKEN_REFUSED.has(res.status)) guestTokens.delete(bearerToken(ctx));
+  }
+  if (res.status === 404) {
+    // X answers an operation id it no longer knows with 404 "Query not found" (recorded 2026-11-19). That is a stale
+    // X_GRAPHQL_QUERY_ID, not a missing post (a missing post is a 200 with an empty tweetResult).
+    await res.body?.cancel().catch(() => undefined);
+    throw new Vid2ContextError('upstream', 'X GraphQL does not know the TweetResultByRestId operation id; X has rotated it.', {
+      status: 404,
+      hint: "Set X_GRAPHQL_QUERY_ID to the current id from x.com's web client, or unset X_BEARER_TOKEN to skip this lane.",
+    });
+  }
   if (!res.ok) throw await errorFromResponse(res, 'X GraphQL');
   const body = (await res.json()) as { data?: { tweetResult?: { result?: GqlTweetResult } } };
   const result = body.data?.tweetResult?.result;
@@ -214,6 +237,15 @@ export async function fetchGraphQL(postId: string, ctx: Ctx): Promise<XPost> {
       },
     );
   }
+  // Only a Tweet (or a TweetWithVisibilityResults wrapping one) with its v1.1 body is a post. Anything else, such as
+  // the TweetUnavailable X sends guests for age-restricted or protected posts, must not pass as an empty post.
+  const tweet = result.__typename === 'TweetWithVisibilityResults' ? result.tweet : result;
+  if (!tweet?.legacy || (tweet.__typename !== undefined && tweet.__typename !== 'Tweet')) {
+    const why = result.reason ?? tweet?.__typename ?? result.__typename ?? 'no post in the answer';
+    throw new Vid2ContextError('unavailable', `X will not show post ${postId} to a guest (${why}).`, {
+      hint: 'Age-restricted and protected posts need a logged-in account. On Node, yt-dlp with browser cookies can read them.',
+    });
+  }
   return fromGraphQL(result);
 }
 
@@ -223,23 +255,28 @@ async function load(postId: string, ctx: Ctx): Promise<XPost> {
   const lanes: [string, () => Promise<XPost>][] = [['syndication', () => fetchSyndication(postId, ctx)]];
   if (fxtwitterEnabled(ctx)) lanes.push(['FxTwitter', () => fetchFxTwitter(postId, ctx)]);
   if (graphqlEnabled(ctx)) lanes.push(['GraphQL', () => fetchGraphQL(postId, ctx)]);
-  const errors: unknown[] = [];
+  const errors: { lane: string; err: unknown }[] = [];
   for (const [name, run] of lanes) {
     try {
       return await run();
     } catch (err) {
       ctx.log.debug(`x ${name} failed`, { postId, error: String(err) });
-      errors.push(err);
+      errors.push({ lane: name, err });
     }
   }
   // The first lane's error says more (a tombstone reason, a rate limit) unless it was a bare not-found; then the
-  // first later lane that knows more wins.
-  const [first] = errors;
+  // first later lane that knows more wins. The GraphQL lane only overrides a not-found with a verdict on the post
+  // itself (unavailable): its own failures (a stale operation id, a refused bearer token) are about configuration,
+  // and must not hide that both keyless lanes agree the post does not exist.
+  const [first] = errors.map((e) => e.err);
   if (first instanceof Vid2ContextError && first.code === 'not-found') {
-    const telling = errors.find((e) => e instanceof Vid2ContextError && e.code !== 'not-found');
-    if (telling) throw telling;
-    const last = errors.at(-1);
-    if (last instanceof Vid2ContextError) throw last;
+    const telling = errors.find(
+      ({ lane, err }) =>
+        err instanceof Vid2ContextError && err.code !== 'not-found' && (lane !== 'GraphQL' || err.code === 'unavailable'),
+    );
+    if (telling) throw telling.err;
+    const keyless = errors.filter(({ lane }) => lane !== 'GraphQL').at(-1)?.err;
+    if (keyless instanceof Vid2ContextError) throw keyless;
   }
   throw first;
 }

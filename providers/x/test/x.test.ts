@@ -66,6 +66,11 @@ const gql = (id: string) => ({
   url: new RegExp(`^https://api\\.x\\.com/graphql/[^/]+/TweetResultByRestId\\?variables=%7B%22tweetId%22%3A%22${id}%22`),
   response: { body: text(`graphql-${id}.json`), headers: json },
 });
+/** X's recorded answer to an operation id it no longer knows: 404 "Query not found" (test/fixtures/README.md). */
+const gqlStale = {
+  url: /^https:\/\/api\.x\.com\/graphql\/[^/]+\/TweetResultByRestId\?/,
+  response: JSON.parse(text('graphql-stale-query-id.json')) as { status: number; headers: Record<string, string>; body: string },
+};
 const mp4Head = {
   url: SMALLEST,
   response: {
@@ -318,6 +323,25 @@ describe('xSource metadata', () => {
     const ctx = testContext({ fetch, env: { X_BEARER_TOKEN: BEARER } });
     const err = await rejection(xSource.getMetadata(ref(`https://x.com/a/status/${MISSING}`), ctx));
     expect(err.code).toBe('not-found');
+    expect(fetch.calls).toHaveLength(4);
+  });
+
+  it('says a stale GraphQL operation id is a configuration problem, not a missing post', async () => {
+    clearGuestTokens();
+    const ctx = testContext({ fetch: replayFetch([activate, gqlStale]), env: { X_BEARER_TOKEN: BEARER } });
+    const err = await rejection(fetchGraphQL(ROMAN, ctx));
+    expect(err.code).toBe('upstream');
+    expect(err.hint).toMatch(/X_GRAPHQL_QUERY_ID/);
+  });
+
+  it("keeps the keyless lanes' not-found when the GraphQL lane fails on its own configuration", async () => {
+    // Found in review: a stale operation id (or a refused bearer token) in the third lane hid that the post is gone.
+    clearGuestTokens();
+    const fetch = replayFetch([synMissing(MISSING), fxMissing(MISSING), activate, gqlStale]);
+    const ctx = testContext({ fetch, env: { X_BEARER_TOKEN: BEARER } });
+    const err = await rejection(xSource.getMetadata(ref(`https://x.com/a/status/${MISSING}`), ctx));
+    expect(err.code).toBe('not-found');
+    expect(err.hint).toMatch(/public posts/);
     expect(fetch.calls).toHaveLength(4);
   });
 

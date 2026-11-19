@@ -88,4 +88,5 @@ npx vid2context https://x.com/NASA/status/2094024294988701975 --format json
 | `not-found: X post <id> was not found` | The post is deleted, protected, from a suspended account, or the link is wrong. | Only public posts can be read. |
 | `unavailable: X will not show post <id>` | Age-restricted or withheld. | Set `X_BEARER_TOKEN`, or on Node use yt-dlp with browser cookies. |
 | `unavailable: ... holds a GIF` | GIFs on X are silent loops. | `--mode video` with a multimodal rung describes what is on screen. |
+| `upstream: X GraphQL does not know the TweetResultByRestId operation id` | X rotated the GraphQL operation id the third lane uses. | Set `X_GRAPHQL_QUERY_ID` to the current id, or unset `X_BEARER_TOKEN`. The keyless lanes are unaffected. |
 | `too-large: ... no splitter for audio/mp4` | A video over 60 s on the keyless lane, on a runtime without ffmpeg. | Install ffmpeg (Node), or add `GROQ_API_KEY`. |

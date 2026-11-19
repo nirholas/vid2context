@@ -4,6 +4,13 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [Unreleased]
 
+### Fixed
+
+- Long audio: chunks running at the same time could race on the learned length limit, so when keyed rungs failed on auth for two chunks at once the second rethrew and failed the whole job. Found in review and reproduced; both chunks now split.
+- When a looped answer is transcribed again, the pieces are sized from the audio's measured length (MP3 frames or the WAV header, `audioDurationSec`) instead of the looped transcript's last timestamp, which could fall far short and cut many small pieces. Audio of unknown length falls back to cutting the loop back.
+- An abort during the loop retry no longer starts another long-audio run, and a half that fails during a loop re-split is no longer logged twice.
+- X: a GraphQL 404 is now reported as a rotated operation id (`X_GRAPHQL_QUERY_ID`), not as a missing post, and failures of the GraphQL lane no longer hide a not-found that both keyless lanes agree on. A `TweetUnavailable` answer (age-restricted or protected posts) is reported as unavailable instead of passing as an empty post. A guest token refused with 401, 403 or 429 is dropped and replaced once instead of staying cached for 2.5 hours.
+
 ## [0.2.0] - 2026-11-19
 
 ### Added

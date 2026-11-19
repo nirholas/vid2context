@@ -208,6 +208,8 @@ export interface GqlTweetResult {
   views?: { count?: string };
   /** Present on `TweetTombstone` results. */
   tombstone?: { text?: { text?: string } };
+  /** Why X withholds the post, on results that are not a Tweet (such as `TweetUnavailable`). */
+  reason?: string;
 }
 
 export function fromGraphQL(result: GqlTweetResult): XPost {

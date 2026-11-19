@@ -24,7 +24,7 @@ function run(response: string) {
  * The whole clip answers with the recorded loop; its two retry pieces answer with `pieces` (the recorded responses
  * for apollo11-small-step-part1/2, or the loop again). The clip's real length is given, so the retry is two pieces.
  */
-function runLooping(pieces: 'recorded' | 'loop') {
+function runLooping(pieces: 'recorded' | 'loop', declareLength = true) {
   const loop = fixture('ovh-whisper-loop.verbose.json');
   const fetch = replayFetch([
     {
@@ -37,7 +37,7 @@ function runLooping(pieces: 'recorded' | 'loop') {
       },
     },
   ]);
-  const timed = { ...audio, durationSec: 24.192 };
+  const timed = declareLength ? { ...audio, durationSec: 24.192 } : audio;
   return { fetch, res: transcribe(new Registry([stt], 'node'), ref, timed, {}, testContext({ fetch })) };
 }
 
@@ -55,6 +55,18 @@ describe('transcribe runs the repetition guard', () => {
       "That's one small step for man, one giant leap for mankind.",
     ]);
     expect(out.transcript.segments[1]?.startSec).toBeGreaterThan(10);
+  });
+
+  it('measures the length of undeclared MP3 audio, so the retry is still two pieces', async () => {
+    // Found in review: sizing the retry from the looped transcript's last timestamp (20 s here, for 24.2 s of
+    // audio) could cut many small pieces. The MP3 frames give the real length.
+    const { fetch, res } = runLooping('recorded', false);
+    const out = await res;
+    expect(fetch.calls).toHaveLength(3);
+    expect(out.transcript.segments.map((s) => s.text)).toEqual([
+      "I'm going to step off the lam now.",
+      "That's one small step for man, one giant leap for mankind.",
+    ]);
   });
 
   it('when the pieces loop too, collapses the loop and records clean/repetition-guard in attempts', async () => {

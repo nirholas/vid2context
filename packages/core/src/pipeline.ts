@@ -13,6 +13,7 @@ import type { AudioSplitter } from './audio-split.ts';
 import { attemptsOf, runChain } from './chain.ts';
 import { Vid2ContextError } from './errors.ts';
 import {
+  audioDurationSec,
   audioExceedsRung,
   durationLimitFrom,
   everyRungTooLarge,
@@ -274,7 +275,8 @@ export async function transcribe(
     // lose that speech, so first transcribe the audio again in overlapping pieces, which the long-audio path
     // checks for loops piece by piece. The guard below stays the fallback when that cannot run or fails.
     if (audio.kind === 'bytes' && hasDecoderLoop(transcript.segments)) {
-      const durationSec = audio.durationSec ?? transcript.segments.at(-1)?.endSec ?? 0;
+      // The real length, not the looped transcript's last timestamp, which can fall far short and cut many pieces.
+      const durationSec = audioDurationSec(audio);
       attempts.push({
         id: res.rung.id,
         stage: 'stt',
@@ -282,7 +284,7 @@ export async function transcribe(
         reason: 'repetition-loop',
         detail: 'the transcript repeats one phrase over and over (a decoder loop); transcribing again in smaller pieces',
       });
-      if (durationSec >= MIN_LOOP_SPLIT_SEC) {
+      if (durationSec !== undefined && durationSec >= MIN_LOOP_SPLIT_SEC) {
         try {
           const long = await transcribeLong(
             registry,
@@ -303,6 +305,8 @@ export async function transcribe(
     if (guard.attempt) attempts.push(guard.attempt);
     return { transcript, attempts };
   } catch (err) {
+    // An abort (including one during the loop retry above) ends here: never start another long-audio run for it.
+    if (ctx.signal?.aborted) throw err;
     const tried = [...pre, ...attemptsOf(err)];
     if (diarize && err instanceof Vid2ContextError && err.code === 'no-provider') {
       throw Object.assign(

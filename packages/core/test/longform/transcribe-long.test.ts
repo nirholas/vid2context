@@ -1,9 +1,11 @@
 import { existsSync, readFileSync } from 'node:fs';
 import {
   type Attempt,
+  type AudioBytes,
   type AudioChunk,
   type AudioInput,
   type AudioSplitter,
+  audioDurationSec,
   clearCooldowns,
   cooldownReason,
   everyRungTooLarge,
@@ -330,6 +332,38 @@ describe('transcribeLong on recorded OVH keyless responses', () => {
     expect(groq && cooldownReason(groq, env)).toBe('auth');
   });
 
+  it('re-splits every chunk when concurrent chunks hit the bad-key case at the same time', async () => {
+    // Found in review: two chunks failing together raced on the learned limit, and the second rethrew, failing the
+    // whole job. Two Groq keys (both answering Groq's recorded 401) start the chunks; the real OVH rung, copied with
+    // a 30 s cap, is the only rung left, so both 45 s chunks must be split. The OVH bodies are real recordings
+    // reused by piece number: this test checks scheduling, not words.
+    const capped = new Registry(
+      [
+        {
+          ...sttProvider,
+          rungs: (env) => sttProvider.rungs(env).map((r) => (r.service === 'ovh' ? { ...r, maxDurationSec: 30 } : r)),
+        },
+      ],
+      'node',
+    );
+    const fetch = ovhReplay(
+      (name) => name.replace(/^doubleday-ch00-90s-part\d-part(\d)$/, 'doubleday-ch00-58s-part$1'),
+      [{ method: 'POST', url: /^https:\/\/api\.groq\.com\//, response: groq401() }],
+    );
+    const env = { GROQ_API_KEY: 'gsk-value-for-tests', GROQ_FALLBACK_KEYS: 'gsk-second-value-for-tests' };
+    const res = await transcribeLong(
+      capped,
+      fileRef('doubleday-ch00-90s'),
+      audio90,
+      { kv: new MemoryKv(), concurrency: 2, targetSec: 50 },
+      testContext({ fetch, env }),
+    );
+    expect(res.chunks).toBe(2);
+    const resplits = res.attempts.filter((a) => a.reason === 'resplit').map((a) => a.detail?.slice(0, 9));
+    expect(resplits.sort()).toEqual(['chunk 1/2', 'chunk 2/2']);
+    expect(res.transcript.producer).toBe('stt/ovh/whisper-large-v3-turbo');
+  });
+
   it('resumes after an abort and only sends the unfinished chunks', async () => {
     const kv = new MemoryKv();
     const first = ovhReplay();
@@ -463,6 +497,21 @@ describe('loop helpers', () => {
       const parts = await collect(mp3FramesSplitter, audio, loopRetryTargetSec(sec, 2));
       expect(parts).toHaveLength(2);
     }
+  });
+
+  it('audioDurationSec measures MP3 and WAV, and says unknown for anything else', () => {
+    expect(audioDurationSec(audio58 as AudioBytes)).toBeCloseTo(58, 0);
+    expect(audioDurationSec(audio90 as AudioBytes)).toBeCloseTo(90.1, 1);
+    const wav = {
+      kind: 'bytes' as const,
+      data: fixtureBytes('apollo11-small-step.wav'),
+      mimeType: 'audio/wav',
+      filename: 'a.wav',
+    };
+    expect(audioDurationSec(wav)).toBeGreaterThan(20);
+    // MP3 bytes under a WAV name: the WAV header does not parse, so the length is unknown rather than wrong.
+    expect(audioDurationSec({ ...(audio58 as AudioBytes), filename: 'mislabelled.wav', mimeType: 'audio/wav' })).toBeUndefined();
+    expect(audioDurationSec({ ...(audio58 as AudioBytes), durationSec: 12.5 })).toBe(12.5);
   });
 
   it('exceedsEveryRung counts a known duration against the 60 s OVH declares', () => {

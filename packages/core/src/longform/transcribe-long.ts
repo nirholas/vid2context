@@ -36,9 +36,9 @@ import { limits } from '../security/limits.ts';
 import type { Storage } from '../storage.ts';
 import { hasKv, type KvStore, MemoryKv } from '../storage-ext.ts';
 import type { Attempt, AudioInput, Ctx, Segment, Transcript, VideoRef } from '../types.ts';
-import { mp3FramesSplitter } from './mp3.ts';
+import { mp3FramesSplitter, scanMp3 } from './mp3.ts';
 import { type SeamReport, stitchChunks } from './stitch.ts';
-import { wavPcmSplitter } from './wav.ts';
+import { parseWav, wavPcmSplitter } from './wav.ts';
 
 /** Built-in, runtime-neutral splitters. */
 export const builtinSplitters: AudioSplitter[] = [mp3FramesSplitter, wavPcmSplitter];
@@ -108,6 +108,28 @@ export interface SttDurationLimit {
 function maxDurationOf(r: SttRung): number | undefined {
   const d = r.maxDurationSec;
   return typeof d === 'number' && d > 0 ? d : undefined;
+}
+
+/**
+ * The audio's length in seconds: the declared `durationSec`, else measured from MP3 frames or the WAV header.
+ * Undefined for other containers, where only a splitter (ffmpeg) could measure it.
+ */
+export function audioDurationSec(audio: AudioBytes): number | undefined {
+  if (audio.durationSec !== undefined && audio.durationSec > 0) return audio.durationSec;
+  try {
+    if (mp3FramesSplitter.canSplit(audio)) {
+      const total = scanMp3(audio.data).times.at(-1);
+      return total !== undefined && total > 0 ? total : undefined;
+    }
+    if (wavPcmSplitter.canSplit(audio)) {
+      const w = parseWav(audio.data);
+      const sec = w.dataLength / w.blockAlign / w.sampleRate;
+      return Number.isFinite(sec) && sec > 0 ? sec : undefined;
+    }
+  } catch {
+    // A file named like an MP3 or WAV that is not one: its length is unknown.
+  }
+  return undefined;
 }
 
 /** Pieces shorter than this are not split again to escape a decoder loop. */
@@ -534,16 +556,14 @@ export async function transcribeLong(
       // The rungs that would take this piece all failed in ways a smaller piece cannot fix (a rejected key, a
       // cooldown), while a rung that declares a shorter cap than this piece was never asked: split for that rung.
       // (Chunks are planned for the first-ranked rungs; when those have bad keys, the plan is too coarse.)
-      const capped = ranked
-        .map(maxDurationOf)
-        .filter(
-          (d): d is number => d !== undefined && d < durationSec && (learnedMaxSec === undefined || d * 0.95 < learnedMaxSec),
-        );
+      // Decided from the declared caps alone and only ever lowering learnedMaxSec: chunks run concurrently, and a
+      // second chunk failing a moment after the first must reach the same answer, not find the limit already moved.
+      const capped = ranked.map(maxDurationOf).filter((d): d is number => d !== undefined && d < durationSec);
       const noFixHere = round.every(
         (a) => a.outcome === 'skipped' || (a.outcome === 'error' && Boolean(a.reason?.startsWith('auth'))),
       );
       if (capped.length > 0 && noFixHere) {
-        learnedMaxSec = Math.min(...capped) * 0.95;
+        learnedMaxSec = Math.min(learnedMaxSec ?? Number.POSITIVE_INFINITY, Math.min(...capped) * 0.95);
         log.push({
           id: 'longform',
           stage: 'stt',
@@ -627,8 +647,8 @@ export async function transcribeLong(
       try {
         return await resplit(piece, seed, tag, log, depth, false, target);
       } catch (err) {
+        // The halves already logged their own attempts (chainWithWait writes them to `log` before throwing).
         if (ctx.signal?.aborted) throw ctx.signal.reason ?? err;
-        log.push(...attemptsOf(err).map((a) => tagged(tag, a)));
       }
     }
 
