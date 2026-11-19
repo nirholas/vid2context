@@ -1,15 +1,20 @@
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { type Ctx, createContext, type Env, Registry } from '@vid2context/core';
+import { splitOnSilence } from '@vid2context/ffmpeg';
 import { providerPackages, providers } from './generated/node.ts';
 import { youtubeProxyFetch } from './proxy.ts';
 
 export { isYouTubeHost, parseProxyList, youtubeProxyFetch } from './proxy.ts';
 export { providerPackages, providers };
 
-/** Registry of every provider package that supports the node runtime. */
+/**
+ * Registry of every provider package that supports the node runtime, with the
+ * ffmpeg splitter for long audio in containers the built-in splitters cannot
+ * cut (X's m4a, opus, webm). It is used only when ffmpeg and ffprobe are found.
+ */
 export function createRegistry(): Registry {
-  return new Registry(providers, 'node');
+  return new Registry(providers, 'node', { splitters: [splitOnSilence] });
 }
 
 /**

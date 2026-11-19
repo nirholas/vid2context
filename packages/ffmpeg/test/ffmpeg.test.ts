@@ -3,8 +3,9 @@ import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'no
 import { createServer, type Server } from 'node:http';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
-import { createContext, Vid2ContextError } from '@vid2context/core';
-import { testContext } from '@vid2context/core/testing';
+import { clearCooldowns, createContext, Registry, transcribe, Vid2ContextError } from '@vid2context/core';
+import { replayFetch, testContext } from '@vid2context/core/testing';
+import stt from '@vid2context/provider-stt-openai-compatible';
 import { afterAll, describe, expect, it } from 'vitest';
 import {
   btbnPlatform,
@@ -326,6 +327,51 @@ describe.skipIf(!HAVE_FFMPEG)('with ffmpeg', () => {
     await expect(extractAudio(MP4, {}, testContext({ env: ENV, signal: pre.signal }))).rejects.toMatchObject({
       name: 'AbortError',
     });
+  });
+
+  it('lets transcribe() cut m4a over the 60 s keyless cap when the registry carries this splitter (X audio is m4a)', async () => {
+    // 61.5 s of AAC: just over OVH's declared 60 s, and a container the built-in MP3 and WAV splitters cannot cut.
+    // The OVH answers for the pieces were recorded from this exact run (see fixtures/README.md).
+    const audio = {
+      kind: 'bytes' as const,
+      data: new Uint8Array(readFileSync(M4A)),
+      mimeType: 'audio/mp4',
+      filename: 'apollo11-first-steps-chapters.m4a',
+      durationSec: 61.518,
+    };
+    const ref = { input: 'a', platform: 'file', kind: 'video' as const, id: 'file:apollo-m4a', nativeId: 'apollo-m4a' };
+    const ovh = () =>
+      replayFetch([
+        {
+          method: 'POST',
+          url: /\/audio\/transcriptions$/,
+          response: (call) => {
+            const name = ((call.body as FormData).get('file') as File).name.replace(/\.[^.]+$/, '');
+            return { headers: { 'content-type': 'application/json' }, body: readFileSync(join(FIX, `ovh-${name}.json`), 'utf8') };
+          },
+        },
+      ]);
+
+    const without = new Registry([stt], 'node');
+    await expect(transcribe(without, ref, audio, {}, testContext({ env: ENV, fetch: ovh() }))).rejects.toMatchObject({
+      code: 'too-large',
+    });
+
+    clearCooldowns();
+    const fetch = ovh();
+    const res = await transcribe(
+      new Registry([stt], 'node', { splitters: [splitOnSilence] }),
+      ref,
+      audio,
+      {},
+      testContext({ env: ENV, fetch }),
+    );
+    expect(res.attempts.find((a) => a.reason === 'split')?.id).toBe('ffmpeg-silence');
+    expect(fetch.calls).toHaveLength(2);
+    const text = res.transcript.segments.map((s) => s.text).join(' ');
+    expect(text).toContain("I'm at the foot of the ladder.");
+    expect(text).toContain('one giant leap for mankind');
+    expect(res.transcript.segments.at(-1)?.endSec).toBeGreaterThan(50);
   });
 });
 

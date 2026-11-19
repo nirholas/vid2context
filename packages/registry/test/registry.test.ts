@@ -31,6 +31,12 @@ describe('generated registries', () => {
   it('resolve YouTube inputs before anything else claims them', () => {
     expect(createRegistry().resolve('https://youtu.be/jNQXAC9IVRw').source.id).toBe('youtube');
   });
+
+  it('give long audio the ffmpeg splitter on Node only (X audio is m4a, which the built-in splitters cannot cut)', () => {
+    expect(createRegistry().splitters.map((s) => s.id)).toEqual(['ffmpeg-silence']);
+    expect(createWorkersRegistry().splitters).toEqual([]);
+    expect(createBrowserRegistry().splitters).toEqual([]);
+  });
 });
 
 describe('loadEnvFiles', () => {

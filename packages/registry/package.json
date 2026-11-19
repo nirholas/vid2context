@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@vid2context/core": "*",
+    "@vid2context/ffmpeg": "*",
     "undici": "^7.16.0"
   }
 }

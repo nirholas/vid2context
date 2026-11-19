@@ -23,3 +23,5 @@ All commands below used ffmpeg 7.0.2-static (johnvansickle.com build).
 | File | Source |
 |---|---|
 | `btbn-checksums.sha256` | `https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/checksums.sha256`, fetched 2026-11-14. Real checksum list of the BtbN static builds that the managed download verifies against. |
+| `ovh-apollo11-first-steps-chapters.part001-part1.json` | OVH AI Endpoints, keyless (`whisper-large-v3-turbo`, `verbose_json`), recorded 2026-11-19 by running `transcribeLong` on `apollo11-first-steps-chapters.m4a` (61.5 s) with a `Registry` carrying `splitOnSilence`: the `ffmpeg-silence` splitter re-encoded it to one MP3 chunk (`part001`), which was over the 57 s piece limit, so the built-in MP3 splitter cut it in two. This is piece 1 (123,264 bytes uploaded): "I'm at the foot of the ladder ..." through "Groundman is very fine." |
+| `ovh-apollo11-first-steps-chapters.part001-part2.json` | Piece 2 of the same run (131,040 bytes uploaded): "I'm going to step off the lam now." and "That's one small step for man, one giant leap for mankind." Response bodies hold no IP or account data. |
