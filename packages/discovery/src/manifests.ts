@@ -168,7 +168,7 @@ export function npmReadme(pkg: PublishedPackage): string {
 
 ${DESCRIPTION}
 
-This is the MCP server for [vid2context](${REPO_URL}). Give your agent a YouTube link or a media file and it gets the transcript with timestamps it can cite.
+This is the MCP server for [vid2context](${REPO_URL}). Give your agent a link to a YouTube video, an X (Twitter) post, a podcast episode, a page on any of the 1,000+ sites yt-dlp supports, or a media file, and it gets the transcript with timestamps it can cite. Videos without captions are transcribed with speech-to-text, free first. To try it without installing anything, paste a link into the web app at ${SITE_URL}/app/.
 
 ## Install
 
@@ -224,10 +224,13 @@ ${DESCRIPTION}
 
 \`\`\`sh
 npx vid2context https://www.youtube.com/watch?v=jNQXAC9IVRw --timestamps
+npx vid2context https://x.com/anza_xyz/status/2122763240887468354 --format srt
 npx vid2context ./interview.mp3 --format json > interview.json
 \`\`\`
 
-Commands: \`get\` (the default), \`list\` (expand a playlist, channel, feed or page), \`pack\` (one context pack for many videos), \`bundle\` (a .zip with every format), \`search\`, \`library\`, \`collection\`, \`models\`, \`doctor\`, \`config\`, \`serve\` (HTTP API), \`mcp\` (stdio MCP server). Formats: text, json, markdown, srt, vtt, pack.
+Sources: YouTube (videos, Shorts, playlists, channels), X (Twitter) posts, podcasts, Bilibili, Vimeo, Loom, Wistia, direct media links, cloud share links, local files and the 1,000+ sites yt-dlp supports. Captions are used first; anything without them is transcribed with speech-to-text, free first. No install needed to try it: ${SITE_URL}/app/.
+
+Commands: \`get\` (the default), \`list\` (expand a playlist, channel, feed or page), \`formats\`, \`pack\` (one context pack for many videos), \`bundle\` (a .zip with every format), \`download\` (video, audio, captions, frames and clips, with yt-dlp), \`captions\`, \`search\`, \`library\`, \`collection\`, \`models\`, \`doctor\`, \`config\`, \`serve\` (HTTP API and web app), \`mcp\` (stdio MCP server). Formats: text, json, markdown, srt, vtt, pack, ass, ttml, sbv, lrc, csv.
 
 Run \`npx vid2context --help\` for every option.
 

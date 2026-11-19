@@ -16,7 +16,7 @@ Several open-source MCP servers give an agent a YouTube transcript tool, among t
 | Other sources | YouTube (transcriptor-mcp: 11 platforms) | X posts, podcasts, Bilibili, Vimeo, Loom, Wistia, media links, share links, local files, embedded videos, and the 1,000+ sites yt-dlp supports |
 | Long videos | The whole transcript at once, or pages | An outline with token counts, then only the sections the agent needs (about 12k tokens per hour of speech) |
 | Tools | One to a few | 28: transcripts, outlines, sections, comments, key moments, playlists, search, Q&A and cited briefs, collections, live streams, exports |
-| Remote use | Local stdio | Local stdio, or remote over HTTPS with a bearer token or OAuth 2.1, and a free public instance |
+| Remote use | Local stdio | Local stdio, or your own remote server over HTTPS with a bearer token or OAuth 2.1 |
 | What it tried | Usually not reported | Every result lists each provider tried and why it moved on |
 
 ## When to pick a small captions server
@@ -29,7 +29,7 @@ Several open-source MCP servers give an agent a YouTube transcript tool, among t
 - Some videos have no captions, or are not on YouTube.
 - Your agent should read long videos without loading the whole transcript.
 - You want answers with timestamp citations, briefs across several videos, or a context pack for ChatGPT or Claude Projects.
-- You want the same server reachable remotely, or no install at all: [vid2context.com](https://vid2context.com) runs it in the browser and over HTTPS.
+- You want the same server reachable remotely ([remote MCP](/docs/guides/remote-mcp/)), or to try it with no install first: [vid2context.com](https://vid2context.com) runs the web app and HTTP API.
 
 ## Setup
 
