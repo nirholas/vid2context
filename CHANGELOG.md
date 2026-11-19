@@ -4,6 +4,8 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-11-19
+
 ### Fixed
 
 - Long audio: chunks running at the same time could race on the learned length limit, so when keyed rungs failed on auth for two chunks at once the second rethrew and failed the whole job. Found in review and reproduced; both chunks now split.
@@ -52,5 +54,6 @@ All notable changes to this project are documented here. The format follows [Kee
 - Runnable examples in `examples/` (library, CLI, HTTP API, MCP, LangChain.js, Python, LangChain and LlamaIndex) with a docs section in `docs/examples/`. Code blocks and the output of offline examples are synced by `npm run examples:docs` and checked by `npm test`; `LIVE=1` runs the live examples too.
 - `llm-openai-compatible` provider: Ollama, LM Studio, local servers, Groq, Cerebras, Mistral, GitHub Models, Gemini, OVH and Pollinations (keyless), and OpenAI.
 
-[Unreleased]: https://github.com/nirholas/vid2context/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/nirholas/vid2context/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/nirholas/vid2context/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/nirholas/vid2context/releases/tag/v0.2.0

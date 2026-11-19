@@ -1,6 +1,6 @@
 {
   "name": "vid2context",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "description": "Turn any video into context for AI agents: transcripts, metadata, chapters and cited research briefs. Free-first, works with local or hosted AI, ships as a CLI, MCP server, HTTP API and web app.",
   "license": "Apache-2.0",
