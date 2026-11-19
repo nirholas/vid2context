@@ -51,7 +51,23 @@ git push origin main v0.2.0
 
 [tooling/cloudbuild/release.yaml](../tooling/cloudbuild/release.yaml) runs the full CI, then `release.mjs --no-build --publish --tag v0.2.0`. That refuses unless the tag equals `v<version>` of every bundle, dry-runs every bundle before publishing any, and authenticates with the `npm-token` secret through `NPM_TOKEN`. The SBOMs are copied to `gs://<_ARTIFACT_BUCKET>/releases/<tag>/` when that substitution is set.
 
-To publish by hand instead, log in with `npm login` and run `node tooling/release/release.mjs --publish --tag v0.2.0`.
+To publish by hand instead, log in with `npm login` and run `node tooling/release/release.mjs --publish --tag v0.2.0`. A token works too, without touching `~/.npmrc`: put `//registry.npmjs.org/:_authToken=<token>` in a temporary file and run with `NPM_CONFIG_USERCONFIG=<that file>`, then delete it.
+
+npm now answers a successful publish with "Your package is being processed and may take a few minutes to become available": `npm view` and the registry return 404 for the new version for a minute or two (about four for v0.2.0). That is not a failure; check `https://registry.npmjs.org/<name>/<version>` before retrying.
+
+## Release checklist
+
+Everything a release touches, in order. v0.2.0 tripped on several of these, so each says what goes wrong when it is skipped.
+
+1. **Versions agree.** `version.mjs` refuses relative bumps while the three manifests differ (v0.2.0 found the root at 0.1.0 and the bundles at 0.1.1). Fix the odd one out by hand to the last published version, then bump.
+2. **Bump and cut the changelog:** `node tooling/release/version.mjs <part>`, then `npm install` to sync `package-lock.json`.
+3. **Regenerate the directory manifests:** `npm run discovery:gen`. `server.json` and `gemini-extension.json` carry the version, and `packages/discovery/test/manifests.test.ts` fails until they match.
+4. **Full CI:** `npm run ci`, every step green, then `npm run release:dry`.
+5. **Commit, tag, push:** the commit and tag commands above.
+6. **Publish to npm** (Cloud Build on the tag, or by hand as above), then confirm `https://registry.npmjs.org/vid2context/<version>` and `.../vid2context-mcp/<version>` answer 200 and `npx vid2context@<version> --help` runs.
+7. **GitHub release:** `gh release create v<version> --title "vid2context <version>" --notes-file <notes> --verify-tag --latest`, with the notes cut from that version's CHANGELOG section. Without it the repository page keeps showing the previous release as latest.
+8. **MCP Registry:** `mcp-publisher login github` (interactive, as the repository owner), then `mcp-publisher publish` from the repository root. It reads the regenerated `server.json`. Check `https://registry.modelcontextprotocol.io/v0/servers?search=vid2context` lists the new version.
+9. **The public instance:** `npm run deploy` (needs `CLOUDFLARE_API_TOKEN`), then `curl https://vid2context.com/api/v1/health` lists the expected sources. vid2context.com ran a build older than the X provider until 2026-11-19, so every X link failed there while npm and the CLI worked.
 
 ## Provenance
 

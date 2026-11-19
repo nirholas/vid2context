@@ -22,15 +22,30 @@ const h = (type: string, style: Record<string, unknown>, children?: unknown, ext
   props: { style, children, ...extra },
 });
 
-export async function ogImage(opts: { title: string; description: string; kicker: string }): Promise<Uint8Array<ArrayBuffer>> {
+/**
+ * One card. Default 1200x630 (Open Graph); the GitHub social preview uses 1280x640 (scripts/social-preview.ts).
+ * `footer` replaces the bottom-left line, which defaults to the site address.
+ */
+export async function ogImage(opts: {
+  title: string;
+  description: string;
+  kicker: string;
+  width?: number;
+  height?: number;
+  footer?: string;
+}): Promise<Uint8Array<ArrayBuffer>> {
+  const width = opts.width ?? 1200;
+  const height = opts.height ?? 630;
   const title = opts.title.length > 90 ? `${opts.title.slice(0, 87).replace(/\s+\S*$/, '')}...` : opts.title;
   const description =
     opts.description.length > 150 ? `${opts.description.slice(0, 147).replace(/\s+\S*$/, '')}...` : opts.description;
   const tree = h(
     'div',
     {
-      width: 1200,
-      height: 630,
+      width,
+      height,
+      // Padding inside the card's size, not added to it (without this the right margin and the footer fell off).
+      boxSizing: 'border-box',
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'space-between',
@@ -50,16 +65,34 @@ export async function ogImage(opts: { title: string; description: string; kicker
           opts.kicker,
         ),
       ]),
-      h('div', { display: 'flex', flexDirection: 'column', gap: 22 }, [
-        h('div', { fontSize: title.length > 50 ? 60 : 72, fontWeight: 700, lineHeight: 1.08, letterSpacing: -2 }, title),
-        description ? h('div', { fontSize: 28, lineHeight: 1.4, color: '#a3a3a3' }, description) : h('div', {}, ''),
+      // Satori wraps text only inside a box of definite width, so each block spans the card.
+      h('div', { display: 'flex', flexDirection: 'column', gap: 22, width: '100%' }, [
+        h(
+          'div',
+          {
+            display: 'flex',
+            width: '100%',
+            fontSize: title.length > 36 ? 60 : 72,
+            fontWeight: 700,
+            lineHeight: 1.08,
+            letterSpacing: -2,
+          },
+          title,
+        ),
+        description
+          ? h('div', { display: 'flex', width: '100%', fontSize: 28, lineHeight: 1.4, color: '#a3a3a3' }, description)
+          : h('div', {}, ''),
       ]),
-      h('div', { display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 24, color: '#a3a3a3' }, [
-        h('div', {}, 'vid2context.com'),
-        h('div', { width: 220, height: 6, borderRadius: 999, backgroundImage: 'linear-gradient(90deg, #ffffff, #d4d4d4)' }, ''),
-      ]),
+      h(
+        'div',
+        { display: 'flex', width: '100%', justifyContent: 'space-between', alignItems: 'center', fontSize: 24, color: '#a3a3a3' },
+        [
+          h('div', {}, opts.footer ?? 'vid2context.com'),
+          h('div', { width: 220, height: 6, borderRadius: 999, backgroundImage: 'linear-gradient(90deg, #ffffff, #d4d4d4)' }, ''),
+        ],
+      ),
     ],
   );
-  const svg = await satori(tree as never, { width: 1200, height: 630, fonts });
+  const svg = await satori(tree as never, { width, height, fonts });
   return new Uint8Array(await sharp(Buffer.from(svg)).png({ compressionLevel: 9 }).toBuffer());
 }
