@@ -26,17 +26,28 @@ describe('version', () => {
   });
 
   it('cuts the real changelog: notes move under the version, links point at the tags', () => {
-    const out = cutChangelog(changelog, { version: '0.2.0', previous: null, date: '2026-11-20' });
-    expect(out).toMatch(/## \[Unreleased\]\n\n## \[0\.2\.0\] - 2026-11-20\n\n### Added/);
-    expect(out).toContain('[Unreleased]: https://github.com/nirholas/vid2context/compare/v0.2.0...HEAD');
-    expect(out).toContain('[0.2.0]: https://github.com/nirholas/vid2context/releases/tag/v0.2.0');
+    // Right after a release the real Unreleased section is empty (and cutting it must refuse), so the test gives it
+    // notes and cuts versions newer than any released one: it holds at every point in the release cycle.
+    expect(() =>
+      cutChangelog(changelog.replace(/## \[Unreleased\]\n[\s\S]*?(?=## \[)/, '## [Unreleased]\n\n'), {
+        version: '9.0.0',
+        previous: null,
+        date: '2026-11-20',
+      }),
+    ).toThrow(/empty/);
+
+    const withNotes = changelog.replace('## [Unreleased]\n', '## [Unreleased]\n\n### Added\n\n- A feature.\n');
+    const out = cutChangelog(withNotes, { version: '9.0.0', previous: null, date: '2026-11-20' });
+    expect(out).toMatch(/## \[Unreleased\]\n\n## \[9\.0\.0\] - 2026-11-20\n\n### Added\n\n- A feature\./);
+    expect(out).toContain('[Unreleased]: https://github.com/nirholas/vid2context/compare/v9.0.0...HEAD');
+    expect(out).toContain('[9.0.0]: https://github.com/nirholas/vid2context/releases/tag/v9.0.0');
     expect(out).not.toContain('commits/main');
-    expect(() => cutChangelog(out, { version: '0.2.1', previous: '0.2.0', date: '2026-11-21' })).toThrow(/empty/);
+    expect(() => cutChangelog(out, { version: '9.0.1', previous: '9.0.0', date: '2026-11-21' })).toThrow(/empty/);
 
     const next = out.replace('## [Unreleased]\n', '## [Unreleased]\n\n### Fixed\n\n- A fix.\n');
-    const second = cutChangelog(next, { version: '0.2.1', previous: '0.2.0', date: '2026-11-21' });
-    expect(second).toContain('[0.2.1]: https://github.com/nirholas/vid2context/compare/v0.2.0...v0.2.1');
-    expect(second).toContain('[0.2.0]: https://github.com/nirholas/vid2context/releases/tag/v0.2.0');
-    expect(second.indexOf('## [0.2.1]')).toBeLessThan(second.indexOf('## [0.2.0]'));
+    const second = cutChangelog(next, { version: '9.0.1', previous: '9.0.0', date: '2026-11-21' });
+    expect(second).toContain('[9.0.1]: https://github.com/nirholas/vid2context/compare/v9.0.0...v9.0.1');
+    expect(second).toContain('[9.0.0]: https://github.com/nirholas/vid2context/releases/tag/v9.0.0');
+    expect(second.indexOf('## [9.0.1]')).toBeLessThan(second.indexOf('## [9.0.0]'));
   });
 });
