@@ -55,7 +55,7 @@ Attempts:
 
 ## Status
 
-First release (0.1.0), on npm as [`vid2context-mcp`](https://www.npmjs.com/package/vid2context-mcp) and [`vid2context`](https://www.npmjs.com/package/vid2context). Everything below is built and covered by tests that replay real recorded responses.
+Version 0.2.0 ([release notes](https://github.com/nirholas/vid2context/releases/tag/v0.2.0)), on npm as [`vid2context-mcp`](https://www.npmjs.com/package/vid2context-mcp) and [`vid2context`](https://www.npmjs.com/package/vid2context). Everything below is built and covered by tests that replay real recorded responses.
 
 | Area | What you get |
 | --- | --- |

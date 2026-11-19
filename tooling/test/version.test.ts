@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { ROOT } from '../checks/lib.mjs';
-import { cutChangelog, MANIFESTS, nextVersion, setVersion } from '../release/version.mjs';
+import { cutChangelog, MANIFESTS, nextVersion, setCitation, setVersion } from '../release/version.mjs';
 
 const changelog = readFileSync(join(ROOT, 'CHANGELOG.md'), 'utf8');
 
@@ -23,6 +23,19 @@ describe('version', () => {
       expect(JSON.parse(out).version).toBe('9.8.7');
       expect(out.split('\n').filter((l, i) => l !== text.split('\n')[i])).toHaveLength(1);
     }
+  });
+
+  it('moves the real CITATION.cff to the release: version and date-released only', () => {
+    const cff = readFileSync(join(ROOT, 'CITATION.cff'), 'utf8');
+    const out = setCitation(cff, '9.0.0', '2026-11-20');
+    expect(out).toMatch(/^version: 9\.0\.0$/m);
+    expect(out).toMatch(/^date-released: 2026-11-20$/m);
+    const changed = out.split('\n').filter((l) => !cff.split('\n').includes(l));
+    expect(changed.sort()).toEqual(['date-released: 2026-11-20', 'version: 9.0.0']);
+    // A second release replaces the date instead of adding another line.
+    const again = setCitation(out, '9.0.1', '2026-11-21');
+    expect(again.match(/^date-released:/gm)).toHaveLength(1);
+    expect(again).toMatch(/^date-released: 2026-11-21$/m);
   });
 
   it('cuts the real changelog: notes move under the version, links point at the tags', () => {

@@ -10,7 +10,7 @@ One version number covers both packages. It lives in three manifests that always
 node tooling/release/version.mjs patch     # or minor, major, or an explicit 1.2.3
 ```
 
-[tooling/release/version.mjs](../tooling/release/version.mjs) changes only the `"version"` line of the three manifests, moves the `## [Unreleased]` notes under `## [x.y.z] - date`, opens a fresh Unreleased section and updates the compare links. It refuses when the Unreleased section is empty, so every release says what changed. It does not commit, tag or publish; it prints those commands.
+[tooling/release/version.mjs](../tooling/release/version.mjs) changes only the `"version"` line of the three manifests and the `version` and `date-released` lines of `CITATION.cff`, moves the `## [Unreleased]` notes under `## [x.y.z] - date`, opens a fresh Unreleased section and updates the compare links. It refuses when the Unreleased section is empty, so every release says what changed. It does not commit, tag or publish; it prints those commands.
 
 Why not Changesets: Changesets writes a CHANGELOG.md per package and versions each workspace on its own, while this repo keeps one hand-written changelog at the root and ships two bundles under one version from more than 50 private workspaces. A 150-line script that fits that shape is simpler than configuring Changesets around it, and adds no dependency.
 
@@ -60,7 +60,7 @@ npm now answers a successful publish with "Your package is being processed and m
 Everything a release touches, in order. v0.2.0 tripped on several of these, so each says what goes wrong when it is skipped.
 
 1. **Versions agree.** `version.mjs` refuses relative bumps while the three manifests differ (v0.2.0 found the root at 0.1.0 and the bundles at 0.1.1). Fix the odd one out by hand to the last published version, then bump.
-2. **Bump and cut the changelog:** `node tooling/release/version.mjs <part>`, then `npm install` to sync `package-lock.json`.
+2. **Bump and cut the changelog:** `node tooling/release/version.mjs <part>`, then `npm install` to sync `package-lock.json`. The script also sets `version` and `date-released` in `CITATION.cff` (what GitHub's "Cite this repository" and citation tools read).
 3. **Regenerate the directory manifests:** `npm run discovery:gen`. `server.json` and `gemini-extension.json` carry the version, and `packages/discovery/test/manifests.test.ts` fails until they match.
 4. **Full CI:** `npm run ci`, every step green, then `npm run release:dry`.
 5. **Commit, tag, push:** the commit and tag commands above.

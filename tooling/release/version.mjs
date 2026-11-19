@@ -47,6 +47,18 @@ export function setVersion(json, version) {
   return json.replace(re, `$1${version}$3`);
 }
 
+/**
+ * CITATION.cff moves with the release: `version` and `date-released` (what citation tools use for the year), set or
+ * added after `version:`, every other line left alone.
+ */
+export function setCitation(text, version, date) {
+  const re = /^version:.*$/m;
+  if (!re.test(text)) throw new Error('CITATION.cff has no top-level "version:" line');
+  const withVersion = text.replace(re, `version: ${version}`);
+  if (/^date-released:.*$/m.test(withVersion)) return withVersion.replace(/^date-released:.*$/m, `date-released: ${date}`);
+  return withVersion.replace(/^version:.*$/m, `version: ${version}\ndate-released: ${date}`);
+}
+
 /** Moves the Unreleased notes under a new version heading and fixes the link references. */
 export function cutChangelog(text, { version, previous, date }) {
   const head = /^## \[Unreleased\][^\n]*\n/m;
@@ -103,16 +115,19 @@ function main(argv) {
   const changelogPath = join(root, 'CHANGELOG.md');
   const changelog = readFileSync(changelogPath, 'utf8');
   const cut = cutChangelog(changelog, { version, previous: hasRelease(changelog, current) ? current : null, date });
+  const citationPath = join(root, 'CITATION.cff');
+  const citation = setCitation(readFileSync(citationPath, 'utf8'), version, date);
 
   // Everything is computed before anything is written, so a refusal changes nothing.
   for (const f of files) writeFileSync(join(root, f.path), setVersion(f.text, version));
   writeFileSync(changelogPath, cut);
+  writeFileSync(citationPath, citation);
   console.error(`version: ${current} -> ${version}`);
   console.error('next steps:');
   console.error('  npm install                      # sync package-lock.json');
   console.error('  npm run ci && npm run release:dry');
   console.error(
-    `  git commit -m "chore(release): v${version}" -- ${[...MANIFESTS, 'package-lock.json', 'CHANGELOG.md'].join(' ')}`,
+    `  git commit -m "chore(release): v${version}" -- ${[...MANIFESTS, 'package-lock.json', 'CHANGELOG.md', 'CITATION.cff'].join(' ')}`,
   );
   console.error(`  git tag -a v${version} -m "v${version}" && git push origin main v${version}`);
 }
