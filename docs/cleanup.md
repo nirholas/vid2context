@@ -8,11 +8,13 @@ Code: `packages/core/src/clean/`. Every function takes segments (or a transcript
 
 ## What runs automatically
 
-Only the repetition guard. `transcribe()` in `packages/core/src/pipeline.ts` runs `guardRepetition` on every speech-to-text result and, when it changed something, adds this to `attempts`:
+Only the repetition guard. `transcribe()` in `packages/core/src/pipeline.ts` runs `guardRepetition` on every speech-to-text result, single request or long audio (`transcribeLong` runs it on the stitched transcript), and, when it changed something, adds this to `attempts`:
 
 ```json
 { "id": "clean/repetition-guard", "stage": "stt", "outcome": "ok", "detail": "collapsed 1 segments" }
 ```
+
+Before that, a decoder loop is treated as a failed answer, not just text to tidy: the audio is transcribed again (other rungs, then two overlapping pieces) so the speech under the loop is recovered, and the guard only cuts the loop back when every retry still loops. See [long-audio.md](long-audio.md#decoder-loops).
 
 Everything else is opt-in for surfaces through `cleanTranscript`.
 

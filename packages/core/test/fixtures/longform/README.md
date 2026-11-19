@@ -13,7 +13,7 @@ The tests also use a 58 s input, `doubleday-ch00-58s.mp3`, cut in code from the 
 
 ## OVH Whisper responses
 
-Recorded on 2026-11-14 from OVH AI Endpoints, keyless (`whisper-large-v3-turbo`, `response_format=verbose_json`), by `npx tsx packages/core/test/longform/record-ovh.ts`, except the last row (curl, same request). Each file is the response body for the upload named after it; the status is in the name when it is not 200. Bodies hold no IP, account or personal data (the 429 responses that carried request ids were not kept).
+Recorded on 2026-11-14 from OVH AI Endpoints, keyless (`whisper-large-v3-turbo`, `response_format=verbose_json`), by `npx tsx packages/core/test/longform/record-ovh.ts`, except the two `part2-part` rows (2026-11-19, `record-ovh.ts loop`) and the last row (curl, same request). Each file is the response body for the upload named after it; the status is in the name when it is not 200. Bodies hold no IP, account or personal data (the 429 responses that carried request ids were not kept).
 
 | File | Upload | Response |
 |---|---|---|
@@ -24,6 +24,8 @@ Recorded on 2026-11-14 from OVH AI Endpoints, keyless (`whisper-large-v3-turbo`,
 | `ovh-doubleday-ch00-90s-part1.413.json` | The 90 s file as one longform chunk | 413 `Audio duration too long, max duration allowed for unauthenticated users is 60 seconds` |
 | `ovh-doubleday-ch00-90s-part1-part1.json` | Piece 1 of 2 after the re-split (0 to 45.1 s) | 200 |
 | `ovh-doubleday-ch00-90s-part1-part2.json` | Piece 2 of 2 (43.1 to 90.1 s) | 200 |
+| `ovh-doubleday-ch00-58s-part2-part1.json` | Half 1 of chunk 2 (0 to 10.69 s of the 21.31 s chunk), split the way a looped piece is re-sent (`loopRetryTargetSec`, 2 s overlap). Recorded 2026-11-19 by `record-ovh.ts loop` | 200, 4 segments ("This reading is by Mark Smith ...", "Campaigns of the Civil War") |
+| `ovh-doubleday-ch00-58s-part2-part2.json` | Half 2 of chunk 2 (8.71 to 21.31 s of the chunk). Recorded 2026-11-19 by `record-ovh.ts loop` | 200, one segment ("... commanding the I Corps at Gettysburg.") |
 | `ovh-doubleday-ch00-90s.413.json` | The 90 s file in one plain request (`curl -F file=@doubleday-ch00-90s.mp3 -F model=whisper-large-v3-turbo -F response_format=verbose_json .../v1/audio/transcriptions`) | 413, same message |
 
 The keyless tier allows about 2 requests per minute per IP and caps audio at 60 seconds; the recorder waits through the 429s.

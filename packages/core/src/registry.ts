@@ -1,3 +1,4 @@
+import type { AudioSplitter } from './audio-split.ts';
 import { isRungEnabled, keylessAllowed } from './chain.ts';
 import { Vid2ContextError } from './errors.ts';
 import type {
@@ -27,8 +28,14 @@ export interface ProviderHealth {
 /** Holds the providers available in one runtime. Built from @vid2context/registry. */
 export class Registry {
   readonly providers: Provider[];
+  /**
+   * Audio splitters this runtime adds for long audio, tried after the caller's and the built-in MP3 and WAV ones.
+   * The Node registry adds the ffmpeg splitter here, which cuts any container (m4a from X, opus, webm).
+   */
+  readonly splitters: AudioSplitter[];
 
-  constructor(providers: Provider[], runtime: Runtime) {
+  constructor(providers: Provider[], runtime: Runtime, opts: { splitters?: AudioSplitter[] } = {}) {
+    this.splitters = opts.splitters ?? [];
     const seen = new Set<string>();
     this.providers = providers.filter((p) => {
       if (!p.runtimes.includes(runtime)) return false;

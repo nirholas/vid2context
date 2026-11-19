@@ -150,6 +150,8 @@ export interface SttResult {
 export interface SttRung extends Rung {
   /** Largest upload in bytes the rung accepts; larger audio must be split first. */
   maxBytes?: number;
+  /** Longest audio in seconds the rung accepts (OVH keyless: 60); longer audio is split before it is sent. */
+  maxDurationSec?: number;
   transcribe(audio: AudioInput, opts: SttOptions, ctx: Ctx): Promise<SttResult>;
 }
 

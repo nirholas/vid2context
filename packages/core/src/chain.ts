@@ -113,11 +113,14 @@ export function rankRungs<R extends Rung>(rungs: R[], opts: ChainOptions, env: E
  * never cools the rung down for everyone else, and the reverse.
  */
 const cooldowns = new Map<string, number>();
+/** Why each cooldown was set: the error code that caused it ('rate-limited', 'auth', 'upstream', ...). */
+const cooldownCauses = new Map<string, string>();
 /** Expired entries are dropped once the map holds this many (user keys add entries). */
 const COOLDOWN_PRUNE_AT = 2000;
 
 export function clearCooldowns(): void {
   cooldowns.clear();
+  cooldownCauses.clear();
 }
 
 /** FNV-1a, 32 bit, as 8 hex digits. Only an in-memory map key: never stored, logged or sent. */
@@ -135,12 +138,28 @@ function cooldownKey(rung: Rung, env: Env): string {
   return `${rung.id}@${fingerprint(rung.requires.map((v) => env[v] ?? '').join('\u0000'))}`;
 }
 
-function setCooldown(key: string, until: number): void {
+function setCooldown(key: string, until: number, cause: string): void {
   if (cooldowns.size >= COOLDOWN_PRUNE_AT) {
     const now = Date.now();
-    for (const [k, t] of cooldowns) if (t <= now) cooldowns.delete(k);
+    for (const [k, t] of cooldowns) {
+      if (t > now) continue;
+      cooldowns.delete(k);
+      cooldownCauses.delete(k);
+    }
   }
   cooldowns.set(key, until);
+  cooldownCauses.set(key, cause);
+}
+
+/**
+ * Why a rung is cooling down right now: the error code that put it there ('rate-limited', 'auth', 'upstream',
+ * 'timeout', 'not-found'), or undefined when it is not cooling down. Callers that wait for a rung use it to tell a
+ * cooldown that passes (a rate limit) from one waiting cannot fix (a rejected key).
+ */
+export function cooldownReason(rung: Rung, env: Env): string | undefined {
+  const key = cooldownKey(rung, env);
+  const until = cooldowns.get(key);
+  return until && until > Date.now() ? cooldownCauses.get(key) : undefined;
 }
 
 /** Longest cooldown a Retry-After can ask for: 10 minutes. */
@@ -233,7 +252,7 @@ export async function runChain<R extends Rung, T>(
     } catch (err) {
       if (isInputError(err)) throw err;
       const cd = cooldownFor(err);
-      if (cd > 0) setCooldown(cdKey, Date.now() + cd);
+      if (cd > 0) setCooldown(cdKey, Date.now() + cd, err instanceof Vid2ContextError ? err.code : 'error');
       attempts.push({
         id: rung.id,
         stage,

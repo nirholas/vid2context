@@ -15,12 +15,19 @@
  *   resplit  a chunk every rung refuses as too large (413: OVH keyless caps
  *            audio at 60 s) is split again under the limit the error states
  *            (or half its length), and the limit applies to later chunks too
+ *   loops    a piece whose text holds a decoder loop (Whisper repeating one
+ *            phrase over and over, which drops the real speech under it) is
+ *            sent again: first to the other rungs, then split in two at
+ *            different cut points. Only when every retry still loops is the
+ *            loop cut back by the repetition guard, and the attempts say so.
  *   resume   each finished chunk is saved under
  *            longform:<refId>:<audioSha256>:<chunkIndex> for 7 days
- *   stitch   see stitch.ts
+ *   stitch   see stitch.ts; the stitched transcript then goes through the
+ *            repetition guard once more, for loops that run across a seam
  */
 import type { AudioBytes, AudioChunk, AudioSplitter } from '../audio-split.ts';
-import { attemptsOf, rankRungs, runChain } from '../chain.ts';
+import { attemptsOf, cooldownReason, rankRungs, runChain } from '../chain.ts';
+import { guardRepetition } from '../clean/repetition.ts';
 import { fetchWithTimeout } from '../context.ts';
 import { errorFromResponse, Vid2ContextError } from '../errors.ts';
 import type { ChainOptions, SttOptions, SttResult, SttRung } from '../provider.ts';
@@ -63,6 +70,12 @@ export interface LongformOptions {
   maxPieceSec?: number;
   /** How long one chunk may wait in total for rate-limited rungs to cool down. Default 10 minutes. */
   rateLimitWaitMs?: number;
+  /**
+   * Split a piece whose answer loops into two and send the halves (default true). Each piece is split for a loop
+   * at most once, so a stubborn loop costs a few requests, not a cascade. False when the whole call is already a
+   * retry of a looped answer (the single-request path does that), so its chunks only try the other rungs.
+   */
+  splitLoops?: boolean;
 }
 
 export interface LongformResult {
@@ -85,16 +98,54 @@ interface Checkpoint extends Piece {
 }
 
 /**
- * Optional, duck-typed: a rung may declare the longest audio it accepts in
- * seconds (OVH keyless allows 60). The planner keeps chunks under it.
+ * The longest audio a rung accepts in seconds (OVH keyless allows 60). Now a
+ * field of SttRung; this type is kept so code written against it still compiles.
  */
 export interface SttDurationLimit {
   maxDurationSec?: number;
 }
 
 function maxDurationOf(r: SttRung): number | undefined {
-  const d = (r as SttRung & SttDurationLimit).maxDurationSec;
+  const d = r.maxDurationSec;
   return typeof d === 'number' && d > 0 ? d : undefined;
+}
+
+/** Pieces shorter than this are not split again to escape a decoder loop. */
+export const MIN_LOOP_SPLIT_SEC = 8;
+
+/**
+ * True when the segments hold a decoder loop: a phrase repeated so many times
+ * in a row that the repetition guard would cut text out. Natural repeats
+ * ("yes yes", "really really well") and a flagged sign-off line do not count.
+ */
+export function hasDecoderLoop(segments: readonly Segment[]): boolean {
+  const { report } = guardRepetition(segments, { flagHallucinations: false });
+  return report.rewritten + report.removed > 0;
+}
+
+/**
+ * Chunk length for re-transcribing a looped piece: exactly two parts that
+ * overlap by `overlapSec`, so the decoder hears each half without the context
+ * that sent it into the loop. (The planner steps by target minus overlap, so a
+ * target of half the length would give three or four parts.)
+ */
+export function loopRetryTargetSec(durationSec: number, overlapSec = 2): number {
+  return durationSec / 2 + overlapSec + 0.5;
+}
+
+/**
+ * Run the repetition guard on finished segments. Returns the cleaned segments
+ * and, when it changed or flagged anything, the attempt that records it.
+ */
+export function guardSegments(segments: readonly Segment[]): { segments: Segment[]; attempt?: Attempt } {
+  const guard = guardRepetition(segments);
+  const collapsed = guard.report.rewritten + guard.report.removed;
+  if (collapsed + guard.report.flagged === 0) return { segments: [...segments] };
+  const flagged = guard.report.flagged ? `, flagged ${guard.report.flagged}` : '';
+  return {
+    segments: guard.segments,
+    attempt: { id: 'clean/repetition-guard', stage: 'stt', outcome: 'ok', detail: `collapsed ${collapsed} segments${flagged}` },
+  };
 }
 
 /**
@@ -104,8 +155,11 @@ function maxDurationOf(r: SttRung): number | undefined {
  * on cooldown, so it must not stop the rungs that would take smaller pieces.
  */
 export function everyRungTooLarge(attempts: Attempt[]): boolean {
-  const errors = attempts.filter((a) => a.outcome === 'error' && !a.reason?.startsWith('auth'));
-  return errors.length > 0 && errors.every((a) => a.reason?.startsWith('too-large'));
+  // A rung skipped up front for a declared limit (`skipped`, `too-large`) refused the audio as surely as a 413 would.
+  const refusals = attempts.filter(
+    (a) => (a.outcome === 'error' && !a.reason?.startsWith('auth')) || (a.outcome === 'skipped' && a.reason === 'too-large'),
+  );
+  return refusals.length > 0 && refusals.every((a) => a.reason?.startsWith('too-large'));
 }
 
 /** A duration limit stated in an upstream message, e.g. "max duration allowed ... is 60 seconds". */
@@ -174,11 +228,18 @@ async function sha256Hex(data: Uint8Array): Promise<string> {
   return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, '0')).join('');
 }
 
-/** True when the audio is bytes and larger than every rung the chain would use accepts. */
+/** True when the rung declares an upload or duration limit this audio breaks. */
+export function audioExceedsRung(r: SttRung, audio: AudioBytes): boolean {
+  if (r.maxBytes !== undefined && audio.data.byteLength > r.maxBytes) return true;
+  const maxSec = maxDurationOf(r);
+  return maxSec !== undefined && audio.durationSec !== undefined && audio.durationSec > maxSec;
+}
+
+/** True when the audio is bytes and larger (in bytes, or in seconds when its length is known) than every rung the chain would use accepts. */
 export function exceedsEveryRung(registry: Registry, audio: AudioInput, chain: ChainOptions | undefined, ctx: Ctx): boolean {
   if (audio.kind !== 'bytes') return false;
   const ranked = rankRungs(registry.sttRungs(ctx.env), chain ?? {}, ctx.env);
-  return ranked.length > 0 && ranked.every((r) => r.maxBytes !== undefined && audio.data.byteLength > r.maxBytes);
+  return ranked.length > 0 && ranked.every((r) => audioExceedsRung(r, audio));
 }
 
 function tooLargeError(audio: AudioInput, detail: string): Vid2ContextError {
@@ -207,15 +268,32 @@ function sleep(ms: number, signal?: AbortSignal): Promise<void> {
   });
 }
 
-/** Every failure was a rate limit or a cooldown skip: waiting will help. */
-function onlyRateLimited(attempts: Attempt[]): boolean {
-  return (
-    attempts.length > 0 &&
-    attempts.every(
-      (a) =>
-        (a.outcome === 'skipped' && a.reason === 'cooldown') || (a.outcome === 'error' && a.reason?.startsWith('rate-limited')),
-    )
-  );
+function isCooldownSkip(a: Attempt): boolean {
+  return a.outcome === 'skipped' && a.reason === 'cooldown';
+}
+
+/** Cooldowns that end on their own: waiting for these helps. A rejected key ('auth') or a missing model does not. */
+const PASSING_COOLDOWNS = new Set(['rate-limited', 'upstream', 'timeout']);
+
+/**
+ * Whether waiting and asking again can help after a failed round. Yes when at least one rung will be back (it
+ * answered with a rate limit, or is skipped for a cooldown that ends on its own) and nothing else failed in a way
+ * waiting could fix or rule out: rungs that failed on auth, or are cooling down after one, are left out of the
+ * decision (they stay out either way, and must not stop the wait for a rate-limited rung). `cooldownOf` returns why
+ * a skipped rung is cooling down (`cooldownReason`), undefined when its cooldown is already over.
+ */
+export function waitHelps(attempts: Attempt[], cooldownOf: (rungId: string) => string | undefined): boolean {
+  let comesBack = false;
+  for (const a of attempts) {
+    if (a.outcome === 'error') {
+      if (a.reason?.startsWith('rate-limited')) comesBack = true;
+      else if (!a.reason?.startsWith('auth')) return false;
+    } else if (isCooldownSkip(a)) {
+      const why = cooldownOf(a.id);
+      if (why === undefined || PASSING_COOLDOWNS.has(why)) comesBack = true;
+    }
+  }
+  return comesBack;
 }
 
 /** A seam as an attempt; `tag` names the chunk for seams between the pieces of a re-split chunk (times are chunk-local there). */
@@ -271,7 +349,8 @@ export async function transcribeLong(
   const targetSec = Math.min(opts.targetSec ?? 600, learnedMaxSec ?? Number.POSITIVE_INFINITY);
   const overlapSec = opts.overlapSec ?? 2;
 
-  const splitters = [...(opts.splitters ?? []), ...builtinSplitters];
+  // The caller's splitters, then the built-in MP3 and WAV ones, then the runtime's (ffmpeg on Node) for every other container.
+  const splitters = [...(opts.splitters ?? []), ...builtinSplitters, ...registry.splitters];
   // A URL that names its container (mime type or extension) and that no splitter claims fails before the download.
   const named = input.kind === 'url' && (Boolean(input.mimeType) || /\.[a-z0-9]{2,5}$/i.test(new URL(input.url).pathname));
   if (input.kind === 'url' && named && !splitters.some((s) => s.canSplit(input))) {
@@ -331,26 +410,60 @@ export async function transcribeLong(
   const waitBudget = opts.rateLimitWaitMs ?? 10 * 60_000;
   let done = 0;
 
+  const waitWillHelp = (list: Attempt[]): boolean =>
+    waitHelps(list, (id) => {
+      const rung = ranked.find((r) => r.id === id);
+      return rung ? cooldownReason(rung, ctx.env) : undefined;
+    });
+
   const label = (i: number, detail?: string) => `chunk ${i + 1}/${total}${detail ? `: ${detail}` : ''}`;
   const tagged = (tag: string, a: Attempt): Attempt => ({ ...a, detail: a.detail ? `${tag}: ${a.detail}` : tag });
 
-  /** One request per rung order, waiting out rate limits. Throws with the last round's attempts attached. */
+  /**
+   * One request per rung order, waiting out rate limits. Throws with the last round's attempts attached.
+   * Rungs named in `exclude` are not asked (a rung whose answer for this piece looped).
+   *
+   * While every rung is rate limited the per-round cooldown skips are not logged one by one: the 429s are kept,
+   * and one `rate-limit-wait` attempt says how long the piece waited in total.
+   */
   async function chainWithWait(
     piece: AudioBytes,
     durationSec: number,
     seed: number,
     tag: string,
     log: Attempt[],
+    exclude: readonly string[] = [],
   ): Promise<Piece> {
     const size = piece.data.byteLength;
     const fits = ranked.filter(
       (r) =>
+        !exclude.includes(r.id) &&
         (r.maxBytes === undefined || size <= r.maxBytes) &&
         (maxDurationOf(r) === undefined || durationSec <= (maxDurationOf(r) as number)),
     );
     for (const r of ranked) {
+      if (exclude.includes(r.id)) continue;
       if (!fits.includes(r)) log.push({ id: r.id, stage: 'stt', outcome: 'skipped', reason: 'too-large', detail: tag });
     }
+    if (fits.length === 0) {
+      throw Object.assign(
+        new Vid2ContextError('no-provider', `No speech-to-text rung is left to try for ${tag}.`, {
+          hint: 'Configure another speech-to-text provider (see docs/providers.md).',
+        }),
+        { attempts: [] as Attempt[] },
+      );
+    }
+    const waitNote = (waited: number) => {
+      if (waited > 0) {
+        log.push({
+          id: 'longform',
+          stage: 'stt',
+          outcome: 'ok',
+          reason: 'rate-limit-wait',
+          detail: `${tag}: waited ${Math.round(waited / 1000)}s for rate limits`,
+        });
+      }
+    };
     // Start at a different rung per chunk (round-robin over the starters), then fall back along the rest in rank order.
     const first = starters[seed % starters.length] as SttRung;
     const order = fits.includes(first) ? [first, ...fits.filter((r) => r !== first)] : fits;
@@ -374,13 +487,18 @@ export async function transcribeLong(
           res = await runChain<SttRung, SttResult>('stt', order.slice(1), call, { ...chain, maxAttempts: max }, ctx);
         }
         round.push(...res.attempts);
-        log.push(...round.map((a) => tagged(tag, a)));
+        log.push(...round.filter((a) => !(waited > 0 && isCooldownSkip(a))).map((a) => tagged(tag, a)));
+        waitNote(waited);
         return { producer: res.rung.id, model: res.value.model, language: res.value.language, segments: res.value.segments };
       } catch (err) {
         if (ctx.signal?.aborted) throw ctx.signal.reason ?? err;
         const all = [...round, ...attemptsOf(err)];
-        log.push(...all.map((a) => tagged(tag, a)));
-        if (!onlyRateLimited(all) || waited >= waitBudget) throw Object.assign(err as object, { attempts: all });
+        const willWait = waitWillHelp(all) && waited < waitBudget;
+        log.push(...all.filter((a) => !(willWait && isCooldownSkip(a))).map((a) => tagged(tag, a)));
+        if (!willWait) {
+          waitNote(waited);
+          throw Object.assign(err as object, { attempts: all });
+        }
         const step = Math.min(RETRY_STEP_MS, waitBudget - waited);
         ctx.log.info('every stt rung is rate limited, waiting', { piece: tag, waitMs: step });
         await sleep(step, ctx.signal);
@@ -401,15 +519,42 @@ export async function transcribeLong(
     tag: string,
     log: Attempt[],
     depth: number,
+    loopSplit: boolean,
   ): Promise<Piece> {
     if (learnedMaxSec !== undefined && durationSec > learnedMaxSec && depth < MAX_DEPTH) {
-      return resplit(piece, seed, tag, log, depth);
+      return resplit(piece, seed, tag, log, depth, loopSplit);
     }
     try {
-      return await chainWithWait(piece, durationSec, seed, tag, log);
+      const first = await chainWithWait(piece, durationSec, seed, tag, log);
+      if (!hasDecoderLoop(first.segments)) return first;
+      return await escapeLoop(first, piece, durationSec, seed, tag, log, depth, loopSplit);
     } catch (err) {
       const round = attemptsOf(err);
-      if (depth >= MAX_DEPTH || !everyRungTooLarge(round)) throw err;
+      if (ctx.signal?.aborted || depth >= MAX_DEPTH) throw err;
+      // The rungs that would take this piece all failed in ways a smaller piece cannot fix (a rejected key, a
+      // cooldown), while a rung that declares a shorter cap than this piece was never asked: split for that rung.
+      // (Chunks are planned for the first-ranked rungs; when those have bad keys, the plan is too coarse.)
+      const capped = ranked
+        .map(maxDurationOf)
+        .filter(
+          (d): d is number => d !== undefined && d < durationSec && (learnedMaxSec === undefined || d * 0.95 < learnedMaxSec),
+        );
+      const noFixHere = round.every(
+        (a) => a.outcome === 'skipped' || (a.outcome === 'error' && Boolean(a.reason?.startsWith('auth'))),
+      );
+      if (capped.length > 0 && noFixHere) {
+        learnedMaxSec = Math.min(...capped) * 0.95;
+        log.push({
+          id: 'longform',
+          stage: 'stt',
+          outcome: 'ok',
+          reason: 'resplit',
+          detail: `${tag}: the rungs that take ${durationSec.toFixed(1)}s failed, and the rest take at most ${Math.min(...capped)}s; splitting to ${learnedMaxSec.toFixed(1)}s pieces`,
+        });
+        ctx.log.info('only length-capped stt rungs are left, splitting the chunk further', { piece: tag, maxSec: learnedMaxSec });
+        return resplit(piece, seed, tag, log, depth, loopSplit);
+      }
+      if (!everyRungTooLarge(round)) throw err;
       const said = durationLimitFrom(round);
       // Use the stated limit when there is one that this piece breaks; otherwise halve.
       let limit = said !== undefined ? said * 0.95 : durationSec / 2;
@@ -423,15 +568,95 @@ export async function transcribeLong(
         detail: `${tag}: every rung refused ${durationSec.toFixed(1)}s as too large; splitting to ${learnedMaxSec.toFixed(1)}s pieces`,
       });
       ctx.log.info('stt rungs refused a chunk as too large, splitting it further', { piece: tag, maxSec: learnedMaxSec });
-      return resplit(piece, seed, tag, log, depth);
+      return resplit(piece, seed, tag, log, depth, loopSplit);
     }
   }
 
-  async function resplit(piece: AudioBytes, seed: number, tag: string, log: Attempt[], depth: number): Promise<Piece> {
+  /**
+   * A piece came back with a decoder loop. Whisper loops are tied to the exact
+   * audio it was given, so the same piece is asked of the other rungs first,
+   * then (when `loopSplit`) split in two at new cut points; the halves are
+   * checked the same way but never split again for a loop. When nothing
+   * escapes the loop, the first answer is kept with the loop cut back by the
+   * repetition guard.
+   */
+  async function escapeLoop(
+    first: Piece,
+    piece: AudioBytes,
+    durationSec: number,
+    seed: number,
+    tag: string,
+    log: Attempt[],
+    depth: number,
+    loopSplit: boolean,
+  ): Promise<Piece> {
+    const tried = [first.producer];
+    const noteLoop = (p: Piece) =>
+      log.push({
+        id: p.producer,
+        stage: 'stt',
+        outcome: 'error',
+        reason: 'repetition-loop',
+        detail: `${tag}: the transcript repeats one phrase over and over (a decoder loop), so the speech under it was lost`,
+      });
+    noteLoop(first);
+    ctx.log.warn('stt answer holds a decoder loop, retrying', { piece: tag, rung: first.producer });
+
+    for (;;) {
+      let alt: Piece;
+      try {
+        alt = await chainWithWait(piece, durationSec, seed + tried.length, tag, log, tried);
+      } catch (err) {
+        if (ctx.signal?.aborted) throw ctx.signal.reason ?? err;
+        break;
+      }
+      if (!hasDecoderLoop(alt.segments)) return alt;
+      noteLoop(alt);
+      tried.push(alt.producer);
+    }
+
+    if (loopSplit && depth < MAX_DEPTH && durationSec >= MIN_LOOP_SPLIT_SEC && splitters.some((s) => s.canSplit(piece))) {
+      const target = loopRetryTargetSec(durationSec, overlapSec);
+      log.push({
+        id: 'longform',
+        stage: 'stt',
+        outcome: 'ok',
+        reason: 'loop-resplit',
+        detail: `${tag}: splitting ${durationSec.toFixed(1)}s into pieces of about ${target.toFixed(1)}s to escape the loop`,
+      });
+      try {
+        return await resplit(piece, seed, tag, log, depth, false, target);
+      } catch (err) {
+        if (ctx.signal?.aborted) throw ctx.signal.reason ?? err;
+        log.push(...attemptsOf(err).map((a) => tagged(tag, a)));
+      }
+    }
+
+    const kept = guardSegments(first.segments);
+    log.push({
+      id: 'clean/repetition-guard',
+      stage: 'stt',
+      outcome: 'ok',
+      reason: 'loop-kept',
+      detail: `${tag}: every retry still looped; the loop was cut back and the speech under it is missing`,
+    });
+    return { ...first, segments: kept.segments };
+  }
+
+  async function resplit(
+    piece: AudioBytes,
+    seed: number,
+    tag: string,
+    log: Attempt[],
+    depth: number,
+    loopSplit: boolean,
+    targetSec: number | undefined = learnedMaxSec,
+  ): Promise<Piece> {
     const sub = splitters.find((s) => s.canSplit(piece));
     if (!sub) throw tooLargeError(piece, 'no splitter for a chunk');
     const parts: AudioChunk[] = [];
-    for await (const p of sub.split(piece, { maxBytes, targetSec: learnedMaxSec, overlapSec }, ctx)) parts.push(p);
+    const pieceTarget = targetSec !== undefined && learnedMaxSec !== undefined ? Math.min(targetSec, learnedMaxSec) : targetSec;
+    for await (const p of sub.split(piece, { maxBytes, targetSec: pieceTarget, overlapSec }, ctx)) parts.push(p);
     const pieces: Piece[] = [];
     for (const p of parts) {
       pieces.push(
@@ -442,6 +667,7 @@ export async function transcribeLong(
           `${tag} part ${p.index + 1}/${parts.length}`,
           log,
           depth + 1,
+          loopSplit,
         ),
       );
     }
@@ -465,7 +691,7 @@ export async function transcribeLong(
       log.push({ id: saved.producer, stage: 'stt', outcome: 'ok', reason: 'resumed', detail: label(i) });
       return;
     }
-    const piece = await transcribePiece(chunk.audio, chunk.durationSec, i, label(i), log, 0);
+    const piece = await transcribePiece(chunk.audio, chunk.durationSec, i, label(i), log, 0, opts.splitLoops !== false);
     const cp: Checkpoint = { startSec: chunk.startSec, durationSec: chunk.durationSec, ...piece };
     results[i] = cp;
     await kv.kvSet(keyOf(i), cp, { ttlSec: CHECKPOINT_TTL_SEC });
@@ -501,7 +727,7 @@ export async function transcribeLong(
 
   // Stitch.
   const finished = results as Checkpoint[];
-  const { segments, seams } = stitchChunks(
+  const { segments: stitched, seams } = stitchChunks(
     chunks.map((c, i) => ({
       startSec: c.startSec,
       durationSec: c.durationSec,
@@ -514,6 +740,11 @@ export async function transcribeLong(
     if (a.id === 'longform/stitch' && a.reason === 'time-cut')
       ctx.log.warn('long audio seam not aligned, cut by time', { seam: a.detail });
   }
+  // Same guard the single-request path runs: catches loops that run across a seam and sign-off lines invented on
+  // silence at the end, and cleans checkpoints saved by versions that did not check pieces for loops.
+  const guarded = guardSegments(stitched);
+  const segments = guarded.segments;
+  if (guarded.attempt) attempts.push(guarded.attempt);
   const producer = majority(finished.map((r) => r.producer));
   const transcript: Transcript = {
     ref,

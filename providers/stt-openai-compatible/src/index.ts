@@ -58,6 +58,8 @@ interface LaneSpec {
   keyVar?: string;
   modelVar?: string;
   maxBytes?: number;
+  /** Longest audio in seconds the service accepts; the long-audio planner keeps pieces under it. */
+  maxDurationSec?: number;
   dialect?: Dialect;
   /** Requests and returns word timestamps. */
   words?: boolean;
@@ -91,6 +93,7 @@ function rung(spec: LaneSpec): SttRung {
     requires: spec.requires,
     isEnabled: () => spec.enabled,
     maxBytes: spec.maxBytes,
+    ...(spec.maxDurationSec ? { maxDurationSec: spec.maxDurationSec } : {}),
     transcribe: (audio, opts, ctx) => transcribeWith(ep, audio, opts, ctx),
   };
 }
@@ -155,7 +158,9 @@ export function sttRungs(env: Env): SttRung[] {
       promptMaxChars: 2000,
     }),
     // Keyless: about 2 requests per minute per IP (x-ratelimit-limit-minute: 2), so a 429 cools down at least 30 s.
-    // Uploads above 10 MB answer 413 "max size allowed for unauthenticated users is 10MB" (recorded 2026-11-15).
+    // Uploads above 10 MB answer 413 "max size allowed for unauthenticated users is 10MB" (recorded 2026-11-15), and
+    // audio over 60 s answers 413 "max duration allowed for unauthenticated users is 60 seconds" (recorded 2026-11-14).
+    // Declaring both lets long audio be split before the first upload instead of after two refused ones.
     rung({
       service: 'ovh',
       tier: 'keyless',
@@ -167,6 +172,7 @@ export function sttRungs(env: Env): SttRung[] {
       requires: [],
       enabled: true,
       maxBytes: 10 * MB,
+      maxDurationSec: 60,
       words: true,
       minRetryAfterSec: 30,
     }),

@@ -11,13 +11,17 @@
  */
 import type { AudioSplitter } from './audio-split.ts';
 import { attemptsOf, runChain } from './chain.ts';
-import { guardRepetition } from './clean/repetition.ts';
 import { Vid2ContextError } from './errors.ts';
 import {
+  audioExceedsRung,
   durationLimitFrom,
   everyRungTooLarge,
   exceedsEveryRung,
   fetchAudioBytes,
+  guardSegments,
+  hasDecoderLoop,
+  loopRetryTargetSec,
+  MIN_LOOP_SPLIT_SEC,
   transcribeLong,
 } from './longform/transcribe-long.ts';
 import type { ChainOptions, ChatRequest, ChatResult, LlmRung, SourceProvider, SttOptions, SttRung } from './provider.ts';
@@ -231,10 +235,14 @@ export async function transcribe(
     return { transcript: long.transcript, attempts: long.attempts };
   }
   const pre: Attempt[] = [];
-  const size = audio.kind === 'bytes' ? audio.data.byteLength : undefined;
   const rungs = registry.sttRungs(ctx.env).filter((r) => {
-    if (size !== undefined && r.maxBytes !== undefined && size > r.maxBytes) {
-      pre.push({ id: r.id, stage: 'stt', outcome: 'skipped', reason: 'too-large', detail: `${size} > ${r.maxBytes} bytes` });
+    if (audio.kind === 'bytes' && audioExceedsRung(r, audio)) {
+      const size = audio.data.byteLength;
+      const detail =
+        r.maxBytes !== undefined && size > r.maxBytes
+          ? `${size} > ${r.maxBytes} bytes`
+          : `${audio.durationSec?.toFixed(1)}s > ${r.maxDurationSec}s`;
+      pre.push({ id: r.id, stage: 'stt', outcome: 'skipped', reason: 'too-large', detail });
       return false;
     }
     return true;
@@ -262,18 +270,37 @@ export async function transcribe(
       createdAt: now(),
     };
     const attempts = [...pre, ...res.attempts];
-    const guard = guardRepetition(transcript.segments);
-    const collapsed = guard.report.rewritten + guard.report.removed;
-    if (collapsed + guard.report.flagged > 0) {
-      transcript.segments = guard.segments;
-      const flagged = guard.report.flagged ? `, flagged ${guard.report.flagged}` : '';
+    // A decoder loop (one phrase repeated over and over) hides the speech under it. Cutting the loop back would
+    // lose that speech, so first transcribe the audio again in overlapping pieces, which the long-audio path
+    // checks for loops piece by piece. The guard below stays the fallback when that cannot run or fails.
+    if (audio.kind === 'bytes' && hasDecoderLoop(transcript.segments)) {
+      const durationSec = audio.durationSec ?? transcript.segments.at(-1)?.endSec ?? 0;
       attempts.push({
-        id: 'clean/repetition-guard',
+        id: res.rung.id,
         stage: 'stt',
-        outcome: 'ok',
-        detail: `collapsed ${collapsed} segments${flagged}`,
+        outcome: 'error',
+        reason: 'repetition-loop',
+        detail: 'the transcript repeats one phrase over and over (a decoder loop); transcribing again in smaller pieces',
       });
+      if (durationSec >= MIN_LOOP_SPLIT_SEC) {
+        try {
+          const long = await transcribeLong(
+            registry,
+            ref,
+            audio,
+            { ...opts, chain: sttChain, targetSec: loopRetryTargetSec(durationSec), splitLoops: false },
+            ctx,
+          );
+          return { transcript: long.transcript, attempts: [...attempts, ...long.attempts] };
+        } catch (err) {
+          if (ctx.signal?.aborted) throw err;
+          attempts.push(...attemptsOf(err));
+        }
+      }
     }
+    const guard = guardSegments(transcript.segments);
+    transcript.segments = guard.segments;
+    if (guard.attempt) attempts.push(guard.attempt);
     return { transcript, attempts };
   } catch (err) {
     const tried = [...pre, ...attemptsOf(err)];

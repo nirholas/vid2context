@@ -11,6 +11,11 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ### Fixed
 
+- Speech-to-text decoder loops no longer cost the speech under them. A 9-minute interview on the keyless OVH lane came back with "issuance of" repeated 39 times over 45 seconds of real speech: the long-audio path never ran the repetition guard, and the guard alone would only have cut the junk back. Now every piece is checked; a looped piece is sent to the other rungs, then split in two at new cut points (once per piece), and only when every retry still loops is it cut back, with a `loop-kept` attempt saying the speech is missing. The single-request path re-transcribes a looped answer in two pieces the same way, and the stitched long-audio transcript gets the repetition guard too. See docs/long-audio.md, "Decoder loops".
+- The keyless OVH rung declares its 60 s audio cap (`maxDurationSec`, now a field of `SttRung`), so long audio is split before the first upload instead of after refused ones, and audio of known length over every rung's cap goes straight to the long-audio path.
+- Long-audio attempts no longer list every cooldown skip while a chunk waits out rate limits: the 429s stay, and one `rate-limit-wait` attempt gives the total wait.
+- Long audio no longer stalls behind a rung with a bad key. A rejected key puts a rung on a 10-minute cooldown, and the chunk wait loop counted those cooldowns as rate limits, so a chunk waited its whole 10-minute budget and then failed. Cooldowns now remember their cause (`cooldownReason`), and only rate limits, 5xx errors and timeouts are waited for. A chunk planned for keyed rungs that all failed is split again for the length cap of the rungs that are left (OVH's 60 s).
+- A rung skipped up front for a declared limit now counts as a too-large refusal, so audio still reaches the long-audio path when the only other rungs fail on auth (seen live: a bad Cloudflare key plus OVH skipped for length ended in "every rung failed").
 - Web playlist view: the progress line no longer counts failures as done ("1 of 3 done, 1 failed"), and long status messages wrap instead of being cut off.
 - The no-transcript hint follows what was tried: it suggests installing yt-dlp only when no source could download the audio, and otherwise says whether the download was blocked or speech-to-text failed.
 

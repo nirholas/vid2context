@@ -10,15 +10,21 @@ export {
 export { type PlanInput, type PlannedCut, planCuts } from './plan.ts';
 export { type ChunkTranscript, normalizeWord, type SeamReport, stitchChunks } from './stitch.ts';
 export {
+  audioExceedsRung,
   builtinSplitters,
   durationLimitFrom,
   everyRungTooLarge,
   exceedsEveryRung,
   fetchAudioBytes,
+  guardSegments,
+  hasDecoderLoop,
   type LongformOptions,
   type LongformProgress,
   type LongformResult,
+  loopRetryTargetSec,
+  MIN_LOOP_SPLIT_SEC,
   type SttDurationLimit,
   transcribeLong,
+  waitHelps,
 } from './transcribe-long.ts';
 export { blockRms, parseWav, type WavInfo, wavHeader, wavPcmSplitter } from './wav.ts';
