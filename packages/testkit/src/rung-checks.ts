@@ -71,7 +71,10 @@ export function rungProblems(rung: Rung, kind: RungKind, opts: { builtFromEmptyE
   if (kind === 'llm' && extra.contextTokens !== undefined && !(Number(extra.contextTokens) > 0)) {
     p.push('contextTokens is set but not positive');
   }
-  if (kind === 'embed' && !(Number.isInteger(extra.dimensions) && Number(extra.dimensions) > 0)) {
+  // Hosted models have a known size. A local rung serves whatever model the user names (Ollama, LM Studio, any
+  // OpenAI-compatible server), so its size can only be measured: 0 until the first answer, then the measured size.
+  const measuredLater = rung.tier === 'local' && extra.dimensions === 0;
+  if (kind === 'embed' && !measuredLater && !(Number.isInteger(extra.dimensions) && Number(extra.dimensions) > 0)) {
     p.push(`dimensions is ${String(extra.dimensions)}, not a positive integer known before the first call`);
   }
   return p;

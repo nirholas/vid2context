@@ -8,7 +8,7 @@
       "!**/dist",
       "!packages/registry/src/generated",
       "!**/test/fixtures",
-      "!tests/fixtures",
+      "!**/tests/fixtures",
       "!**/*.md"
     ]
   },

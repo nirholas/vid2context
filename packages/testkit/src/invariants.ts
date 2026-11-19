@@ -242,6 +242,21 @@ export function scanPortable(pkgDir: string, root = repoRoot, runtime?: Runtime)
   return hits;
 }
 
+/**
+ * Rungs whose model cannot be a `*_MODEL` value, each with the reason. The model-override check lists them as notes
+ * instead of violations. Add to this list only when no env value could pick the model.
+ */
+export const FIXED_MODEL_RUNGS: { match: RegExp; why: string }[] = [
+  {
+    match: /^llm\/chrome-ai\//,
+    why: "Chrome's Prompt API runs the browser's own on-device model; no request can choose another",
+  },
+  {
+    match: /^visual\/tesseract\//,
+    why: 'the model is the OCR language list, set with the documented TESSERACT_LANGS (language codes, not model ids)',
+  },
+];
+
 // ---------------------------------------------------------------- env helpers
 
 /** Env var names documented in docs/providers.md and .env.example. */
@@ -618,6 +633,11 @@ export async function checkInvariants(opts: CheckOptions = {}): Promise<Invarian
       }
       for (const r of base) {
         if (!overridden.has(r.id)) {
+          const fixed = FIXED_MODEL_RUNGS.find((f) => f.match.test(r.id));
+          if (fixed) {
+            notes.push(`${r.id}: no *_MODEL override by design (${fixed.why})`);
+            continue;
+          }
           const file = origins.get(p.id) ? relative(root, join(origins.get(p.id)?.dir ?? '', 'src')) : undefined;
           v({
             check: 'model-override',
