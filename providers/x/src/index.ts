@@ -1,6 +1,7 @@
 /**
  * X (Twitter) source. Keyless: the post comes from X's public syndication
- * endpoint (FxTwitter as a fallback), the video's MP4 renditions are listed
+ * endpoint (FxTwitter as a fallback, then x.com's GraphQL with a guest token
+ * when X_BEARER_TOKEN is set), the video's MP4 renditions are listed
  * in `metadata.extra.variants` as direct links (every quality X serves,
  * highest first), and audio for speech-to-text is the lowest-bitrate
  * audio-only HLS rendition (see audio.ts), else the smallest MP4, both
@@ -15,23 +16,33 @@ import { titleOf } from './post.ts';
 import { matchX, parseRef, postUrl } from './url.ts';
 
 export {
+  bearerToken,
+  clearGuestTokens,
   FXTWITTER,
   fetchFxTwitter,
+  fetchGraphQL,
   fetchSyndication,
   fxtwitterEnabled,
+  GRAPHQL_TWEET_QUERY_ID,
   getPost,
+  graphqlEnabled,
+  graphqlUrl,
+  guestToken,
   pickMedia,
   type ResolvedVideo,
   resolveVideo,
   SYNDICATION,
   syndicationToken,
   syndicationUrl,
+  X_API,
 } from './api.ts';
 export { audioRenditions, downloadAudio, downloadSegments, type HlsAudio, hlsAudio, mediaSegments } from './audio.ts';
 export {
   decodeEntities,
   fromFxTwitter,
+  fromGraphQL,
   fromSyndication,
+  type GqlTweetResult,
   titleOf,
   variantOf,
   type XMedia,

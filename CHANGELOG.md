@@ -9,6 +9,8 @@ All notable changes to this project are documented here. The format follows [Kee
 - Playlist view in the web app: rows show each video's title and length from the list page (new optional `VideoRef.title` and `durationSec` listing hints, read by the YouTube lister; also in `GET /items` and MCP `list_items`). Repeated entries are left out. A video waiting on a retry shows a live countdown and "Retry now", which cancels that job and starts it again. Stop and Retry now cancel the server job (`DELETE /jobs/:id`) instead of leaving it to retry for nobody.
 - Job `progress` events carry `retryAt` while a failed attempt waits to be retried.
 
+- X provider: a third lane for reading posts, x.com's GraphQL `TweetResultByRestId` with a guest token, the lane xactions runs for xactions.app/video. Tried after syndication and FxTwitter, only when `X_BEARER_TOKEN` (or `TWITTER_BEARER_TOKEN`) is set; `X_GRAPHQL_QUERY_ID` follows X when it rotates the operation id. Recorded fixtures and a gated live test.
+
 ### Fixed
 
 - Speech-to-text decoder loops no longer cost the speech under them. A 9-minute interview on the keyless OVH lane came back with "issuance of" repeated 39 times over 45 seconds of real speech: the long-audio path never ran the repetition guard, and the guard alone would only have cut the junk back. Now every piece is checked; a looped piece is sent to the other rungs, then split in two at new cut points (once per piece), and only when every retry still loops is it cut back, with a `loop-kept` attempt saying the speech is missing. The single-request path re-transcribes a looped answer in two pieces the same way, and the stitched long-audio transcript gets the repetition guard too. See docs/long-audio.md, "Decoder loops".

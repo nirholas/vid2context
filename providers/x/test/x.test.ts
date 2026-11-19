@@ -6,10 +6,14 @@ import { createRegistry } from '@vid2context/registry/node';
 import { describe, expect, it } from 'vitest';
 import {
   audioRenditions,
+  clearGuestTokens,
   downloadAudio,
   FXTWITTER,
   fetchFxTwitter,
+  fetchGraphQL,
   fromSyndication,
+  graphqlEnabled,
+  graphqlUrl,
   matchX,
   mediaSegments,
   parseRef,
@@ -44,6 +48,22 @@ const synMissing = (id: string) => ({
 const fxMissing = (id: string) => ({
   url: `${FXTWITTER}/i/status/${id}`,
   response: { status: 404, body: text('fxtwitter-404.json'), headers: json },
+});
+/** FxTwitter's recorded 404 body, served for another post id (the body names no id). */
+const fxMissingAt = (id: string) => ({
+  url: `${FXTWITTER}/i/status/${id}`,
+  response: { status: 404, body: text('fxtwitter-404.json'), headers: json },
+});
+/** A stand-in bearer value: replayFetch answers from recordings and never checks it. */
+const BEARER = 'bearer-value-for-tests';
+const activate = {
+  method: 'POST',
+  url: 'https://api.x.com/1.1/guest/activate.json',
+  response: { body: text('graphql-guest-activate.json'), headers: json },
+};
+const gql = (id: string) => ({
+  url: new RegExp(`^https://api\\.x\\.com/graphql/[^/]+/TweetResultByRestId\\?variables=%7B%22tweetId%22%3A%22${id}%22`),
+  response: { body: text(`graphql-${id}.json`), headers: json },
 });
 const mp4Head = {
   url: SMALLEST,
@@ -240,6 +260,67 @@ describe('xSource metadata', () => {
     expect(meta.extra).toMatchObject({ via: 'fxtwitter' });
   });
 
+  it('falls back to x.com GraphQL with a guest token when X_BEARER_TOKEN is set and both keyless lanes fail', async () => {
+    clearGuestTokens();
+    const fetch = replayFetch([synMissing(ROMAN), fxMissingAt(ROMAN), activate, gql(ROMAN)]);
+    const ctx = testContext({ fetch, env: { X_BEARER_TOKEN: BEARER } });
+    const meta = await xSource.getMetadata(ref(`https://x.com/i/status/${ROMAN}`), ctx);
+    expect(meta.title.startsWith('Liftoff! @NASARoman')).toBe(true);
+    expect(meta.description?.endsWith('our understanding of the universe.')).toBe(true);
+    expect(meta.channel).toEqual({ name: 'NASA', id: '11348282', url: 'https://x.com/NASA' });
+    expect(meta.durationSec).toBe(32.896);
+    expect(meta.publishedAt).toBe('2026-08-30T11:27:51.000Z');
+    expect(meta.extra).toMatchObject({
+      via: 'graphql',
+      likes: 2454,
+      replies: 52,
+      reposts: 686,
+      views: 452722,
+      replyTo: 'NASA',
+      mediaType: 'video',
+      hls: 'https://video.twimg.com/amplify_video/2094024240437547008/pl/MeWHHniTISojYyQH.m3u8?tag=29&v=d8b',
+    });
+    const variants = (meta.extra as { variants: { quality: string }[] }).variants;
+    expect(variants.map((v) => v.quality)).toEqual(['2160p', '1080p', '720p', '360p', '270p']);
+    expect(fetch.calls.map((c) => new URL(c.url).host)).toEqual([
+      'cdn.syndication.twimg.com',
+      'api.fxtwitter.com',
+      'api.x.com',
+      'api.x.com',
+    ]);
+    const [, , mint, read] = fetch.calls;
+    expect(mint?.method).toBe('POST');
+    expect(mint?.headers.authorization).toBe(`Bearer ${BEARER}`);
+    expect(read?.headers['x-guest-token']).toBe('0000000000000000000');
+    expect(read?.headers['user-agent']).toMatch(/^vid2context\//);
+  });
+
+  it('reuses the guest token for the next post', async () => {
+    clearGuestTokens();
+    const ctx = testContext({ fetch: replayFetch([activate, gql(ROMAN)]), env: { X_BEARER_TOKEN: BEARER } });
+    await fetchGraphQL(ROMAN, ctx);
+    const again = replayFetch([gql(ROMAN)]);
+    await fetchGraphQL(ROMAN, testContext({ fetch: again, env: { X_BEARER_TOKEN: BEARER } }));
+    expect(again.calls).toHaveLength(1);
+  });
+
+  it('says not-found when GraphQL has no such post either', async () => {
+    clearGuestTokens();
+    const fetch = replayFetch([synMissing(MISSING), fxMissing(MISSING), activate, gql(MISSING)]);
+    const ctx = testContext({ fetch, env: { X_BEARER_TOKEN: BEARER } });
+    const err = await rejection(xSource.getMetadata(ref(`https://x.com/a/status/${MISSING}`), ctx));
+    expect(err.code).toBe('not-found');
+    expect(fetch.calls).toHaveLength(4);
+  });
+
+  it('never asks GraphQL without a bearer token', () => {
+    expect(graphqlEnabled(testContext())).toBe(false);
+    expect(graphqlEnabled(testContext({ env: { TWITTER_BEARER_TOKEN: BEARER } }))).toBe(true);
+    expect(graphqlUrl(ROMAN, testContext({ env: { X_GRAPHQL_QUERY_ID: 'newQueryId' } }))).toMatch(
+      /^https:\/\/api\.x\.com\/graphql\/newQueryId\/TweetResultByRestId\?variables=/,
+    );
+  });
+
   it('follows a quote to the quoted post, and says so when neither has a video', async () => {
     // A real post that quotes another; neither holds media (recorded 2026-11-15).
     const fetch = replayFetch([syn(QUOTING), syn(QUOTED)]);
@@ -423,4 +504,15 @@ describe.skipIf(!process.env.LIVE)('xSource live', () => {
     expect(audio).toMatchObject({ mimeType: 'audio/mp4' });
     expect(audio?.kind === 'bytes' && audio.data.byteLength).toBeGreaterThan(100_000);
   });
+
+  it.skipIf(!process.env.X_BEARER_TOKEN && !process.env.TWITTER_BEARER_TOKEN)(
+    'reads the same post from x.com GraphQL with a guest token',
+    async () => {
+      clearGuestTokens();
+      const post = await fetchGraphQL(ROMAN, ctx());
+      expect(post).toMatchObject({ via: 'graphql', author: { handle: 'NASA' } });
+      expect(post.media[0]?.variants.length).toBeGreaterThan(1);
+      expect(post.media[0]?.hls).toMatch(/\.m3u8/);
+    },
+  );
 });

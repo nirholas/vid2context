@@ -26,3 +26,13 @@ Added later the same day:
 | `hls/5upmBTnQXx3UBWed.mp4`, `hls/*.m4s` | The init segment and the eleven fragments it lists (140,530 bytes together; joined in order they are a valid 32.9 s AAC .m4a, checked with ffprobe) |
 
 X's video host answers a missing file with HTTP 404 and an empty body (checked with a made-up segment name); the fallback test replays exactly that.
+
+Added 2026-11-19, recorded through this provider's own `fetchGraphQL` (so the request is exactly what the code sends) with `X_BEARER_TOKEN` set to the bearer token of x.com's web client:
+
+| File | Request |
+|---|---|
+| `graphql-guest-activate.json` | `POST https://api.x.com/1.1/guest/activate.json`: `{"guest_token":"..."}`. The token's digits were replaced with zeros before committing (it is a short-lived anonymous credential); nothing else was changed. |
+| `graphql-2094024294988701975.json` | `GET https://api.x.com/graphql/GZsN2Pc4knAoit6pXa4HSA/TweetResultByRestId?variables=...` for the NASA Roman post: a `Tweet` with the author under `core.user_results.result.core`, the v1.1 tweet under `legacy` (same media shape as syndication: an HLS playlist and five MP4 renditions, URLs ending `?tag=29`), and `views.count` 452722. Public post and account data only. |
+| `graphql-1263569466313105408.json` | The same request for the missing post: HTTP 200 with `{"data":{"tweetResult":{}}}`, which is how GraphQL says not found. |
+
+A request with a made-up guest token was answered normally (HTTP 200) on 2026-11-19, so there is no recorded refusal to test a token refresh against, and the provider does not implement one.

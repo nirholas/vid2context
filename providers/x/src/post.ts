@@ -1,8 +1,9 @@
 /**
- * One normalized shape for an X post, parsed from either X's syndication
- * endpoint (`cdn.syndication.twimg.com/tweet-result`, the JSON behind X's
- * embedded posts) or the FxTwitter API. Both list every MP4 rendition of a
- * video with its bitrate; widths and heights come from the rendition URL
+ * One normalized shape for an X post, parsed from X's syndication endpoint
+ * (`cdn.syndication.twimg.com/tweet-result`, the JSON behind X's embedded
+ * posts), the FxTwitter API, or x.com's GraphQL `TweetResultByRestId` (guest
+ * token, only with X_BEARER_TOKEN). All list every MP4 rendition of a video
+ * with its bitrate; widths and heights come from the rendition URL
  * (`.../vid/avc1/1280x720/...mp4`).
  */
 
@@ -49,7 +50,7 @@ export interface XPost {
   quotedId?: string;
   /** Every media item in post order (photos too, so /video/<n> positions line up). */
   media: XMedia[];
-  via: 'syndication' | 'fxtwitter';
+  via: 'syndication' | 'fxtwitter' | 'graphql';
 }
 
 const SIZE = /\/(\d{2,5})x(\d{2,5})\//;
@@ -144,7 +145,7 @@ function synMedia(m: SynMedia): XMedia {
 }
 
 /** The display text: X's display range (code points), media links dropped, t.co links expanded. */
-function synText(t: SyndicationTweet): string {
+function synText(t: Pick<SyndicationTweet, 'text' | 'display_text_range' | 'entities'>): string {
   const chars = Array.from(t.text ?? '');
   const [start, end] = t.display_text_range ?? [0, chars.length];
   let text = chars.slice(start, end).join('');
@@ -167,6 +168,70 @@ export function fromSyndication(t: SyndicationTweet): XPost {
     ...(t.quoted_tweet?.id_str ? { quotedId: t.quoted_tweet.id_str } : {}),
     media: (t.mediaDetails ?? []).map(synMedia),
     via: 'syndication',
+  };
+}
+
+// ---------------------------------------------------------------- graphql
+
+/** `legacy` of a GraphQL tweet: the v1.1 tweet object, the same shape syndication sends with `full_text` for `text`. */
+interface GqlLegacy {
+  id_str?: string;
+  full_text?: string;
+  lang?: string;
+  created_at?: string;
+  display_text_range?: [number, number];
+  favorite_count?: number;
+  reply_count?: number;
+  retweet_count?: number;
+  in_reply_to_screen_name?: string;
+  quoted_status_id_str?: string;
+  entities?: SyndicationTweet['entities'];
+  extended_entities?: { media?: SynMedia[] };
+}
+
+interface GqlUser {
+  rest_id?: string;
+  /** Where X keeps the name and handle since 2025. */
+  core?: { name?: string; screen_name?: string };
+  /** Where they were before. */
+  legacy?: { name?: string; screen_name?: string };
+}
+
+/** `data.tweetResult.result` of `TweetResultByRestId`. */
+export interface GqlTweetResult {
+  __typename?: string;
+  rest_id?: string;
+  /** Set when the result is a `TweetWithVisibilityResults` wrapper. */
+  tweet?: GqlTweetResult;
+  core?: { user_results?: { result?: GqlUser } };
+  legacy?: GqlLegacy;
+  views?: { count?: string };
+  /** Present on `TweetTombstone` results. */
+  tombstone?: { text?: { text?: string } };
+}
+
+export function fromGraphQL(result: GqlTweetResult): XPost {
+  const t = result.tweet ?? result;
+  const legacy = t.legacy ?? {};
+  const user = t.core?.user_results?.result;
+  const name = user?.core?.name ?? user?.legacy?.name;
+  const handle = user?.core?.screen_name ?? user?.legacy?.screen_name ?? '';
+  const views = Number(t.views?.count);
+  return {
+    id: legacy.id_str ?? t.rest_id ?? '',
+    text: synText({ text: legacy.full_text, display_text_range: legacy.display_text_range, entities: legacy.entities }),
+    author: { name: name ?? handle, handle, id: user?.rest_id },
+    createdAt: iso(legacy.created_at),
+    lang: legacy.lang,
+    hashtags: (legacy.entities?.hashtags ?? []).map((h) => h.text).filter((h): h is string => Boolean(h)),
+    likes: num(legacy.favorite_count),
+    replies: num(legacy.reply_count),
+    reposts: num(legacy.retweet_count),
+    ...(Number.isFinite(views) && t.views?.count ? { views } : {}),
+    ...(legacy.in_reply_to_screen_name ? { replyTo: legacy.in_reply_to_screen_name } : {}),
+    ...(legacy.quoted_status_id_str ? { quotedId: legacy.quoted_status_id_str } : {}),
+    media: (legacy.extended_entities?.media ?? []).map(synMedia),
+    via: 'graphql',
   };
 }
 
