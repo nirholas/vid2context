@@ -1,6 +1,6 @@
 {
   "name": "@vid2context/mcp",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "vid2context MCP server: agents (Claude Code, ChatGPT, Cursor) read videos as transcripts, outlines, sections, search hits, collections and cited briefs.",
   "license": "Apache-2.0",
   "type": "module",

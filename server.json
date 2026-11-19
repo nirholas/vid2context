@@ -3,7 +3,7 @@
   "name": "io.github.nirholas/vid2context",
   "title": "vid2context",
   "description": "Turn any video into context for AI agents: transcripts, metadata, chapters, timestamps.",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "websiteUrl": "https://vid2context.com",
   "repository": {
     "url": "https://github.com/nirholas/vid2context",
@@ -21,7 +21,7 @@
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "vid2context-mcp",
-      "version": "0.1.1",
+      "version": "0.2.0",
       "transport": {
         "type": "stdio"
       },

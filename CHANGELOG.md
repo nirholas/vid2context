@@ -4,6 +4,8 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-11-19
+
 ### Added
 
 - Playlist view in the web app: rows show each video's title and length from the list page (new optional `VideoRef.title` and `durationSec` listing hints, read by the YouTube lister; also in `GET /items` and MCP `list_items`). Repeated entries are left out. A video waiting on a retry shows a live countdown and "Retry now", which cancels that job and starts it again. Stop and Retry now cancel the server job (`DELETE /jobs/:id`) instead of leaving it to retry for nobody.
@@ -43,4 +45,5 @@ All notable changes to this project are documented here. The format follows [Kee
 - Runnable examples in `examples/` (library, CLI, HTTP API, MCP, LangChain.js, Python, LangChain and LlamaIndex) with a docs section in `docs/examples/`. Code blocks and the output of offline examples are synced by `npm run examples:docs` and checked by `npm test`; `LIVE=1` runs the live examples too.
 - `llm-openai-compatible` provider: Ollama, LM Studio, local servers, Groq, Cerebras, Mistral, GitHub Models, Gemini, OVH and Pollinations (keyless), and OpenAI.
 
-[Unreleased]: https://github.com/nirholas/vid2context/commits/main
+[Unreleased]: https://github.com/nirholas/vid2context/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/nirholas/vid2context/releases/tag/v0.2.0
