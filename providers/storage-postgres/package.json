@@ -20,7 +20,7 @@
   "dependencies": {
     "@neondatabase/serverless": "^1.2.0",
     "@vid2context/core": "*",
-    "postgres": "^3.4.9"
+    "postgres": "^4.1.1"
   },
   "devDependencies": {
     "@electric-sql/pglite": "0.5.16",
