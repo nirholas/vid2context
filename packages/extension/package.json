@@ -18,7 +18,7 @@
     "@fontsource/jetbrains-mono": "^5.3.0",
     "@vid2context/core": "*",
     "@vid2context/provider-youtube": "*",
-    "lucide-react": "^1.62.0",
+    "lucide-react": "^1.79.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1"
   },
