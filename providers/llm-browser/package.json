@@ -13,7 +13,7 @@
     ]
   },
   "dependencies": {
-    "@mlc-ai/web-llm": "^0.2.88",
+    "@mlc-ai/web-llm": "^0.2.89",
     "@vid2context/core": "*"
   },
   "devDependencies": {
