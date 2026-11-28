@@ -18,7 +18,7 @@
     ]
   },
   "dependencies": {
-    "@neondatabase/serverless": "^1.2.0",
+    "@neondatabase/serverless": "^1.2.1",
     "@vid2context/core": "*",
     "postgres": "^4.1.1"
   },
